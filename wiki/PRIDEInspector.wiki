@@ -21,8 +21,8 @@ The key features include:
   * User-friendly download facility for private PRIDE experiments.
 
 The data formats supported by PRIDE Inspector are:
- * *mzML*
- * *PRIDE XML* 
+ * *[http://www.psidev.info/index.php?q=node/257 mzML 1.1]*
+ * *[http://www.ebi.ac.uk/pride/schemaXmlspyDocumentation.do PRIDE XML 2.1]* 
 
 *Note*: We do have plan to support additional formats in the near future.
 

@@ -11,4 +11,3 @@
   * [PRIDEChart PRIDE Chart]
   * [PRIDEUtilities PRIDE Utilities]
   * [jmzML jmzML]
-  * [SupportAndFeedback Support and Feedback]

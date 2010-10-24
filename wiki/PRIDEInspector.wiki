@@ -26,14 +26,14 @@ You can learn more about *PRIDE Inspector* from the sections below:
 *_October 18. 2010:_ [http://code.google.com/p/pride-inspector/downloads/list PRIDE Inspector] is now available:*
  * This is the first beta release for external testing.
 
-[#PRIDE_Inspector Go to top of page]
+[#PRIDE_Inspector top of page]
 
 ----
 
 ===Supported Data Formats===
 PRIDE Inpsector can load mass spectrometery dataset in either *mzML* or *PRIDE XML* format. We do have plans to support additional formats in the near future.
 
-[#PRIDE_Inspector Go to top of page]
+[#PRIDE_Inspector top of page]
 
 ----
 
@@ -44,7 +44,7 @@ PRIDE Inpsector can load mass spectrometery dataset in either *mzML* or *PRIDE X
   * *Operating System*: The current verion has been tested on Windows 7, Windows Vista, Linux and Max OS X, it should also work on other platforms. If you come across any problems on your platform, please let us know.
   * *Memory*: MS dataset can be very large sometimes, in order to get good performence from PRIDE Inspector, we recommend you to have 1G of free memory.  
 
-[#PRIDE_Inspector Go to top of page]
+[#PRIDE_Inspector top of page]
 
 ----
 
@@ -63,28 +63,28 @@ If this fails, try to download and install Java 1.5 or above, as explained in th
 
 The zip file contains also an `examples` folder with 2 sample files: one in mzML format (`mzml-example.mzML`) and the other in PRIDE xml format (`pride-example.xml`) so you can upload them in pride inspector and try the application. There is and additional folder, `config`, that contains a file called `config.props` where you can modify the amount of memory assigned to your application (only change if you are trying to view files and is causing the software crash because of a "Out of memory..." exception). The additional 2 directories, `lib` and `log`, contain all the java libraries necessary for the application to run and some debugging information if the application crashes.
 
-[#PRIDE_Inspector Go to top of page]
+[#PRIDE_Inspector top of page]
 
 ----
 
 ===Troubleshooting===
   # *Memory Issue*: Although PRIDE Inspector is design to handle large datasets with small memory footprint, it can still run out of memory if many files or public experiments are opened at the same time. If you have seen such a warning message in a popup window, you should try to increase the memory allocation for the program.This can be done by editing the `config.props` file, this file is located in the `config` folder of the installation directory. In the file, change the `pride.inspector.max.memory=1024` to a higher number, for instance, `pride.inspector.max.memory=2048` will give PRIDE Inspector 2G of memory. Please note that you will need to restart PRIDE Inspector in order for the change to take effect. It is also important to know that on a 32-bit operating system you can not increase this value beyond 2000. 
  
-[#PRIDE_Inspector Go to top of page]
+[#PRIDE_Inspector top of page]
 
 ----
 
 ===Support===
 If you have questions or need additional help, please contact the PRIDE Helpdesk at the EBI: *pride-helpdesk at ebi.ac.uk* (replace at with @). To help us better identify the problem, you can also include a (preferably zipped) copy of the `pride-inspector.log` from the `log` folder. 
 
-[#PRIDE_Inspector Go to top of page]
+[#PRIDE_Inspector top of page]
 
 ----
 
 ===Source Code===
 The source code can be viewed and downloaded from [http://code.google.com/p/pride-inspector/source/checkout here]
 
-[#PRIDE_Inspector Go to top of page]
+[#PRIDE_Inspector top of page]
 
 ----
 

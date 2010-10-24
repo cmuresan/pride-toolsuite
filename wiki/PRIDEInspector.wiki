@@ -1,16 +1,7 @@
 #summary PRIDE Inspector is a desktop application to visualize and perform first quality assessment on Mass Spectrometry data.
 #sidebar TableOfContents
 
-It is completely open source and the key features include:
-  * Fast loading of *mzML* and *PRIDE XML* files.
-  * Direct access to all PRIDE public database experiments.
-  * Different views on spectra, chromatogram, protein, peptides and metadata.
-  * Visualization for all spectra and chromatograms, including automatic MS2 fragment ion annotations.
-  * Possibility to perform a quality assessment of the data using a statistical view with different charts.
-  * User-friendly download facility for private PRIDE experiments.
-
-You can learn more about *PRIDE Inspector* from the sections below:
- * [#News News]
+ * [#About_PRIDE_Inspector About PRIDE Inspector]
  * [#Supported_Data_Formats  Supported Data Formats]
  * [#Download_and_Installation Download and Installation]
   * [#Installation_Requirements Installation Requirements]
@@ -21,14 +12,16 @@ You can learn more about *PRIDE Inspector* from the sections below:
  * [#Screenshots Screenshots]
 ----
 
-===News===
-
-*_October 18. 2010:_ [http://code.google.com/p/pride-inspector/downloads/list PRIDE Inspector] is now available:*
- * This is the first beta release for external testing.
+===About PRIDE Inspector===
+*PRIDE Inspector* is completely open source and the key features include:
+  * Fast loading of *mzML* and *PRIDE XML* files.
+  * Direct access to all PRIDE public database experiments.
+  * Different views on spectra, chromatogram, protein, peptides and metadata.
+  * Visualization for all spectra and chromatograms, including automatic MS2 fragment ion annotations.
+  * Possibility to perform a quality assessment of the data using a statistical view with different charts.
+  * User-friendly download facility for private PRIDE experiments.
 
 [#PRIDE_Inspector top of page]
-
-----
 
 ===Supported Data Formats===
 PRIDE Inpsector can load mass spectrometery dataset in either *mzML* or *PRIDE XML* format. We do have plans to support additional formats in the near future.

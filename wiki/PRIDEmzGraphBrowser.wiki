@@ -38,6 +38,22 @@ The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list dow
  </dependency> 
 }}}
 
+{{{
+ <repository>
+  <id>ebi-repo</id>
+  <name>The EBI internal repository</name>
+  <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+  <releases>
+   <enabled>true</enabled>
+  </releases>
+  <snapshots>
+   <enabled>false</enabled>
+  </snapshots>
+ </repository>
+}}}
+
+*Note*: you need to change the version number to the latest version. 
+
 [PRIDEmzGraphBrowser top of page]
 ----
 == Using the Library ==

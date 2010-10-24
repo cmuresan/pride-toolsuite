@@ -7,7 +7,7 @@
   * [#Installation_Requirements Installation Requirements]
   * [#Download Download]
  * [#FAQs FAQs]
- * [#Support Support]
+ * [#Getting_Help Getting Help]
  * [#Source_Code Source Code]
  * [#Screenshots Screenshots]
 
@@ -73,7 +73,7 @@ The zip file contains also an `examples` folder with 2 sample files: one in mzML
 
 ----
 
-==Support==
+==Getting Help==
 If you have questions or need additional help, please contact the PRIDE Helpdesk at the EBI: *pride-helpdesk at ebi.ac.uk* (replace at with @). To help us better identify the problem, you can also include a (preferably zipped) copy of the `pride-inspector.log` from the `log` folder. 
 
 [#PRIDE_Inspector top of page]

@@ -24,7 +24,11 @@ The key features include:
 ----
 
 ===Supported Data Formats===
-PRIDE Inpsector can load mass spectrometery dataset in either *mzML* or *PRIDE XML* format. We do have plans to support additional formats in the near future.
+PRIDE Inpsector can load mass spectrometery dataset in:
+ * *mzML*
+ * *PRIDE XML* 
+
+*Note*: We do have plans to support additional formats in the near future.
 
 [#PRIDE_Inspector top of page]
 

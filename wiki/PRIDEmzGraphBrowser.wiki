@@ -1,7 +1,8 @@
 #summary a library to visualize and annotate MS spectrum and chromatogram.
 #sidebar TableOfContents
  * [#About_the_Library About the Library]
- * [#Getting_Started Getting Started]
+ * [#Getting_the_Library Getting the Library]
+ * [#Using_the_Library Using the Library]
  * [#API_Reference API Reference]
  * [#FAQs FAQs]
  * [#Screenshots Screenshots]
@@ -10,7 +11,9 @@
 
 Add your content here.
 
-== Getting Started ==
+== Getting the Library ==
+
+== Using the Library ==
 
 == API Reference ==
 

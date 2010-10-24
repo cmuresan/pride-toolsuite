@@ -6,6 +6,7 @@
      * [PRIDEInspector#Installation_Requirements Installation Requirements]
      * [PRIDEInspector#Download Download]
     * [PRIDEInspector#FAQs FAQs]
+    * [PRIDEInspector#Getting_Help Getting Help]
     * [PRIDEInspector#Source_Code Source Code]
     * [PRIDEInspector#Screenshots Screenshots]
   * [PRIDEmzGraphBrowser PRIDE mzGraph Browser]

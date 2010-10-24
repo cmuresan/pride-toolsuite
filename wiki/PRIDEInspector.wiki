@@ -16,7 +16,7 @@ You can learn more about *PRIDE Inspector* from the sections below:
  * [#Download_and_Installation Download and Installation]
   * [#Installation_Requirements Installation Requirements]
   * [#Download Download]
-  * [#Troubleshooting Troubleshooting]
+ * [#Troubleshooting Troubleshooting]
  * [#Support Support]
  * [#Source_Code Source Code]
  * [#Screenshots Screenshots]

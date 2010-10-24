@@ -26,4 +26,4 @@
 ----
 == Screenshots ==
 
-[#PRIDEmzGraphBrowser top of page]
+[#summary top of page]

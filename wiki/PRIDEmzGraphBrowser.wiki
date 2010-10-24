@@ -14,16 +14,20 @@
 
 == Getting the Library ==
 
+[PRIDEmzGraphBrowser top of page]
 ----
 == Using the Library ==
 
+[PRIDEmzGraphBrowser top of page]
 ----
 == API Reference ==
 
+[PRIDEmzGraphBrowser top of page]
 ----
 == FAQs ==
 
+[PRIDEmzGraphBrowser top of page]
 ----
 == Screenshots ==
 
-[#summary top of page]
+[PRIDEmzGraphBrowser top of page]

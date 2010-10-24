@@ -21,11 +21,7 @@ The key features include:
   * Possibility to perform a quality assessment of the data using a statistical view with different charts.
   * User-friendly download facility for private PRIDE experiments.
 
-[#PRIDE_Inspector top of page]
-----
-
-==Data Formats==
-PRIDE Inpsector can load mass spectrometery dataset in:
+The data formats supported by PRIDE Inspector are:
  * *mzML*
  * *PRIDE XML* 
 

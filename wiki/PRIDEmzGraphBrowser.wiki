@@ -19,14 +19,23 @@
  * Filtering on ion series. 
  * Filtering on annotation series
 
-We believe that this library is both easy to learn and easy to extend. It can be of great use for developing computational proteomics tools.
+We believe that this library is both easy to learn and to extend. It can be of great use for developing computational proteomics tools.
 
 This library is developed using Java, it uses both jFreeChart and PRIDE utilities library extensively.   
 
 [PRIDEmzGraphBrowser top of page]
 ----
-
 == Getting the Library ==
+The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list downloads section] contains the *PRIDE mzGraph Browser* jar file and all other required libraries.
+
+===Maven Dependency===
+*PRIDE mzGraph Browser* library can be used in Maven projects, you can include the following snippets in your Maven pom file. 
+
+ <dependency>
+  <groupId>uk.ac.ebi.pride.mzgraph</groupId>
+  <artifactId>pride-mzgraph-browser</artifactId>
+  <version>1.0.4-SNAPSHOT</version>
+ </dependency> 
 
 [PRIDEmzGraphBrowser top of page]
 ----

@@ -9,7 +9,6 @@
  * [#Support Support]
  * [#Source_Code Source Code]
  * [#Screenshots Screenshots]
-----
 
 ===Features===
 The key features include:

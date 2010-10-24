@@ -8,7 +8,6 @@ It is completely open source and the key features include:
   * Visualization for all spectra and chromatograms, including automatic MS2 fragment ion annotations.
   * Possibility to perform a quality assessment of the data using a statistical view with different charts.
   * User-friendly download facility for private PRIDE experiments.
-  * A host of programmable open source API/libraries (PRIDE-JAXB, PRIDE-mzGraph-browser, PRIDE-Chart).
 
 You can learn more about *PRIDE Inspector* from the sections below:
  * [#News News]

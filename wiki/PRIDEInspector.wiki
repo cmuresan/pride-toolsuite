@@ -1,7 +1,7 @@
 #summary PRIDE Inspector is a desktop application to visualize and perform first quality assessment on Mass Spectrometry data.
 #sidebar TableOfContents
 
- * [#About_PRIDE_Inspector About PRIDE Inspector]
+ * [#Introduction Introduction]
  * [#Supported_Data_Formats  Supported Data Formats]
  * [#Download_and_Installation Download and Installation]
   * [#Installation_Requirements Installation Requirements]
@@ -12,7 +12,7 @@
  * [#Screenshots Screenshots]
 ----
 
-===About PRIDE Inspector===
+===Introduction===
 *PRIDE Inspector* is completely open source and the key features include:
   * Fast loading of *mzML* and *PRIDE XML* files.
   * Direct access to all PRIDE public database experiments.
@@ -22,6 +22,7 @@
   * User-friendly download facility for private PRIDE experiments.
 
 [#PRIDE_Inspector top of page]
+----
 
 ===Supported Data Formats===
 PRIDE Inpsector can load mass spectrometery dataset in either *mzML* or *PRIDE XML* format. We do have plans to support additional formats in the near future.

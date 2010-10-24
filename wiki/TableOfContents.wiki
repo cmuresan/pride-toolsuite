@@ -3,6 +3,7 @@
     * [PRIDEInspector#News News]
     * [PRIDEInspector#Supported_Data_Formats Supported Data Formats]
     * [PRIDEInspector#Download_and_Installation Download and Installation]
+    * [PRIDEInspector#Troubleshooting Troubleshooting]
     * [PRIDEInspector#Source_Code Source Code]
     * [PRIDEInspector#Screenshots Screenshots]
   * [PRIDEmzGraphBrowser PRIDE mzGraph Browser]

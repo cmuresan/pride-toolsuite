@@ -1,15 +1,30 @@
 #summary One-sentence summary of this page.
 #sidebar TableOfContents
+ * [#About_the_Library About the Library]
+ * [#Getting_the_Library Getting the Library]
+ * [#Using_the_Library Using the Library]
+ * [#API_Reference API Reference]
+ * [#FAQs FAQs]
+ * [#Screenshots Screenshots]
 
+== About the Library ==
+[PRIDEUtilities top of page]
+----
+== Getting the Library ==
+[PRIDEUtilities top of page]
+----
+== Using the Library ==
 
-= Introduction =
+[PRIDEUtilities top of page]
+----
+== API Reference ==
 
-Add your content here.
+[PRIDEUtilities top of page]
+----
+== FAQs ==
 
+[PRIDEUtilities top of page]
+----
+== Screenshots ==
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+[PRIDEUtilities top of page]

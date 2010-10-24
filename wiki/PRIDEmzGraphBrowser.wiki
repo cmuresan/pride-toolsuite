@@ -1,14 +1,19 @@
-#summary One-sentence summary of this page.
+#summary a library to visualize and annotate MS spectrum and chromatogram.
 #sidebar TableOfContents
+ * [#About_the_Library About the Library]
+ * [#Getting_Started Getting Started]
+ * [#API_Reference API Reference]
+ * [#FAQs FAQs]
+ * [#Screenshots Screenshots]
 
-= Introduction =
+== About the Library ==
 
 Add your content here.
 
+== Getting Started ==
 
-= Details =
+== API Reference ==
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+== FAQs ==
+
+== Screenshots ==

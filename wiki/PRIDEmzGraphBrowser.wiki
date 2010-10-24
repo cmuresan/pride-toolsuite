@@ -8,6 +8,18 @@
  * [#Screenshots Screenshots]
 
 == About the Library ==
+*PRIDE mzGraph Browser* is a library for visualzing and annotating MS spectrum and chromatogram interactively. It includes features like:
+ * Zoom in/out.
+ * Export peak values.
+ * Save/Print spectrum and chromatogram as image.
+ * Highlight peak m/z and intensity values.
+ * Highlight mass differences. 
+ * Display fragment ion annotations. 
+ * Automatic annotation of amino acid identifications.
+ * Filtering on ion series. 
+ * Filtering on annotation series
+
+This library is developed using Java, it uses extensively both jFreeChart and PRIDE utilities library. We believe that this library is both easy to learn and easy to extend. It can be of great use for developing computational proteomics tools.  
 
 [PRIDEmzGraphBrowser top of page]
 ----

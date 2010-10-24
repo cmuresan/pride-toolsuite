@@ -63,7 +63,7 @@ The zip file contains also an `examples` folder with 2 sample files: one in mzML
 ----
 
 ==FAQs==
-  # What to do if PRIDE Inspector runs out of memory? 
+  # *What to do if PRIDE Inspector runs out of memory?* 
   Although PRIDE Inspector is design to handle large datasets with small memory footprint, it can still run out of memory if many files or public experiments are opened at the same time. If you have seen such a warning message in a popup window, you should try to increase the memory allocation for the program.This can be done by editing the `config.props` file, this file is located in the `config` folder of the installation directory. In the file, change the `pride.inspector.max.memory=1024` to a higher number, for instance, `pride.inspector.max.memory=2048` will give PRIDE Inspector 2G of memory. Please note that you will need to restart PRIDE Inspector in order for the change to take effect. It is also important to know that on a 32-bit operating system you can not increase this value beyond 2000. 
  
 [#PRIDE_Inspector top of page]

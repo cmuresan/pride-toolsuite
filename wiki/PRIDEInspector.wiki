@@ -10,6 +10,7 @@
  * [#Source_Code Source Code]
  * [#Screenshots Screenshots]
 
+----
 ===Features===
 The key features include:
   * Fast loading of *mzML* and *PRIDE XML* files.

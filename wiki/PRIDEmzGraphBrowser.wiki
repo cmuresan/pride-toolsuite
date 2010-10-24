@@ -1,13 +1,13 @@
 #summary a library to visualize and annotate MS spectrum and chromatogram.
 #sidebar TableOfContents
- * [#About_the_Library About the Library]
- * [#Getting_the_Library Getting the Library]
- * [#Using_the_Library Using the Library]
+ * [#About_mzGraph_Browser About mzGraph Browser]
+ * [#Getting_mzGraph_Browser Getting mzGraph Browser]
+ * [#Using_mzGraph_Browser Using mzGraph Browser]
  * [#API_Reference API Reference]
  * [#FAQs FAQs]
  * [#Screenshots Screenshots]
 
-== About the Library ==
+== About mzGraph Browser ==
 *PRIDE mzGraph Browser* is a library for visualzing and annotating MS spectrum and chromatogram interactively. It includes features like:
  * Zoom in/out.
  * Export peak values.
@@ -25,7 +25,7 @@ This library is developed using Java, it uses both jFreeChart and PRIDE utilitie
 
 [PRIDEmzGraphBrowser top of page]
 ----
-== Getting the Library ==
+== Getting mzGraph Browser ==
 The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list downloads section] contains the *PRIDE mzGraph Browser* jar file and all other required libraries.
 
 ===Maven Dependency===
@@ -56,7 +56,7 @@ The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list dow
 
 [PRIDEmzGraphBrowser top of page]
 ----
-== Using the Library ==
+== Using mzGraph Browser ==
 
 [PRIDEmzGraphBrowser top of page]
 ----

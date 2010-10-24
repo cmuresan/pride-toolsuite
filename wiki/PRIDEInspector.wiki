@@ -43,7 +43,7 @@ PRIDE Inpsector can load mass spectrometery dataset in either *mzML* or *PRIDE X
 ----
 
 ====Download====
-You can get the latest *PRIDE Inspector* from our [http://code.google.com/p/pride-inspector/downloads/list Download Section], and download `pride-inspector-X.Y.zip` (where X and Y represent the version of the software). Unzipping the file, creates the following directory structure:
+You can get the latest *PRIDE Inspector* from our [http://code.google.com/p/pride-toolsuite/downloads/list Download Section], and download `pride-inspector-X.Y.zip` (where X and Y represent the version of the software). Unzipping the file, creates the following directory structure:
 {{{
   pride-inspector-X.Y
      pride-inspector-X.Y.jar
@@ -76,7 +76,7 @@ If you have questions or need additional help, please contact the PRIDE Helpdesk
 ----
 
 ===Source Code===
-The source code can be viewed and downloaded from [http://code.google.com/p/pride-inspector/source/checkout here]
+The source code can be viewed and downloaded from [http://code.google.com/p/pride-toolsuite/source/checkout here]
 
 [#PRIDE_Inspector top of page]
 

@@ -1,5 +1,6 @@
   * [Welcome ↑ Home]
   * [PRIDEInspector PRIDE Inspector]
+    * [PRIDEInspector#News PRIDE Inspector]
   * [PRIDEmzGraphBrowser PRIDE mzGraph Browser]
   * [PRIDEJAXB PRIDE JAXB]
   * [PRIDEChart PRIDE Chart]

@@ -1,6 +1,6 @@
   * [Welcome ↑ Home]
   * [PRIDEInspector PRIDE Inspector]
-    * [PRIDEInspector#News News]
+    * [PRIDEInspector#About_PRIDE_Inspector About PRIDE Inspector]
     * [PRIDEInspector#Supported_Data_Formats Supported Data Formats]
     * [PRIDEInspector#Download_and_Installation Download and Installation]
     * [PRIDEInspector#Troubleshooting Troubleshooting]

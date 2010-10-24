@@ -30,12 +30,13 @@ The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list dow
 
 ===Maven Dependency===
 *PRIDE mzGraph Browser* library can be used in Maven projects, you can include the following snippets in your Maven pom file. 
-
+{{{
  <dependency>
   <groupId>uk.ac.ebi.pride.mzgraph</groupId>
   <artifactId>pride-mzgraph-browser</artifactId>
   <version>1.0.4-SNAPSHOT</version>
  </dependency> 
+}}}
 
 [PRIDEmzGraphBrowser top of page]
 ----

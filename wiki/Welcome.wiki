@@ -1,7 +1,7 @@
-#summary One-sentence summary of this page.
+#summary Welcome to PRIDE Tool Suite. Written for proteomics community, by the PRIDE Team.
 #sidebar TableOfContents
 
-= Introduction =
+=== Introduction ===
 
 Add your content here.
 

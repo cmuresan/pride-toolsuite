@@ -9,7 +9,7 @@
 
 == About the Library ==
 
-[#PRIDEmzGraphBrowser top of page]
+[PRIDEmzGraphBrowser top of page]
 ----
 
 == Getting the Library ==

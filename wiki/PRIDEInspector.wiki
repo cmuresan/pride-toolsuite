@@ -1,4 +1,4 @@
-#summary *PRIDE Inspector* is a desktop application to visualize and perform first quality assessment on Mass Spectrometry data.
+#summary PRIDE Inspector is a desktop application to visualize and perform first quality assessment on Mass Spectrometry data.
 #sidebar TableOfContents
 
 It is completely open source and the key features include:

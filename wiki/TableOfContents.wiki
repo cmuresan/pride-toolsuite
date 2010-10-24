@@ -9,5 +9,6 @@
   * [PRIDEmzGraphBrowser PRIDE mzGraph Browser]
   * [PRIDEJAXB PRIDE JAXB]
   * [PRIDEChart PRIDE Chart]
+  * [PRIDEUtilities PRIDE Utilities]
   * [jmzML jmzML]
   * [SupportAndFeedback Support and Feedback]

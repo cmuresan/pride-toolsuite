@@ -1,14 +1,6 @@
-#summary One-sentence summary of this page.
+#summary Please send your questions or feedbacks to PRIDE Help Desk.
 #sidebar TableOfContents
 
-= Introduction =
+Contact PRIDE Help Desk if you have questions related PRIDE Tool Suite, please also send us your feedback, including error reports, improvement suggestions, new feature requests and any other things you might want to suggest to the PRIDE team. 
 
-Add your content here.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+ * PRIDE Help Desk: *[mailto:pride-helpdesk@ebi.ac.uk, pride-helpdesk@ebi.ac.uk]*

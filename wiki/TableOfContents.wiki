@@ -1,7 +1,6 @@
   * [Welcome ↑ Home]
   * [PRIDEInspector PRIDE Inspector]
     * [PRIDEInspector#Features Features]
-    * [PRIDEInspector#Data_Formats Data Formats]
     * [PRIDEInspector#Getting_PRIDE_Inspector Getting PRIDE Inspector]
      * [PRIDEInspector#Installation_Requirements Installation Requirements]
      * [PRIDEInspector#Download Download]

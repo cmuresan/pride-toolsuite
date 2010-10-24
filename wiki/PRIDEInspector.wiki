@@ -28,7 +28,7 @@ PRIDE Inpsector can load mass spectrometery dataset in:
  * *mzML*
  * *PRIDE XML* 
 
-*Note*: We do have plans to support additional formats in the near future.
+*Note*: We do have plan to support additional formats in the near future.
 
 [#PRIDE_Inspector top of page]
 

@@ -9,4 +9,4 @@
   * [PRIDEJAXB PRIDE JAXB]
   * [PRIDEChart PRIDE Chart]
   * [jmzML jmzML]
-  * [SupportAndFeedback Support and Feedback]
+  * [SupportAndFeedback *Support and Feedback*]

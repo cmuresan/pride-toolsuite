@@ -2,7 +2,6 @@
 #sidebar TableOfContents
 
  * [#Features Features]
- * [#Data_Formats  Data Formats]
  * [#Getting_PRIDE_Inspector Getting PRIDE Inspector]
   * [#Installation_Requirements Installation Requirements]
   * [#Download Download]

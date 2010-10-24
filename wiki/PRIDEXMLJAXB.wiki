@@ -9,24 +9,24 @@
 
 == About the Library ==
 
-[PRIDEmzGraphBrowser top of page]
+[PRIDEXMLJAXB top of page]
 ----
 == Getting the Library ==
 
-[PRIDEmzGraphBrowser top of page]
+[PRIDEXMLJAXB top of page]
 ----
 == Using the Library ==
 
-[PRIDEmzGraphBrowser top of page]
+[PRIDEXMLJAXB top of page]
 ----
 == API Reference ==
 
-[PRIDEmzGraphBrowser top of page]
+[PRIDEXMLJAXB top of page]
 ----
 == FAQs ==
 
-[PRIDEmzGraphBrowser top of page]
+[PRIDEXMLJAXB top of page]
 ----
 == Screenshots ==
 
-[PRIDEmzGraphBrowser top of page]
+[PRIDEXMLJAXB top of page]

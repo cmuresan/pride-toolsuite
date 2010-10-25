@@ -61,13 +61,24 @@ For developers, the latest source code is available from our [#Source_Code SVN r
 [PRIDEmzGraphBrowser top of page]
 ----
 == Using mzGraph Browser ==
-PRIDE mzGraph Browser library gives you Java Swing based components for visualizing and annotating MS spectra and chromatogram. It is designed to be integrated easily into your project. 
+PRIDE mzGraph Browser library gives you Java Swing based components for visualizing and annotating MS spectra and chromatogram. 
 
-There are two common ways of using this library: 
+This library is designed to be integrated into your project easily, and there are two common ways of using it: 
  * *As an independent panel*: use this option if you just want to visulize spectrum or chromatogram or you want to program the user interactions yourself. 
  * *As a panel with a build-in tool bar*: this option provides you with the main visualize panel, in addition, you will also get a out-box tool bar which can be customized to include your own actions. 
 
 ====Independent Panel====
+The starting point in using PRIDE mzGraph library to visualize spectrum is to create a `SpectrumPanel`. This panel can be added as a component to Java Swing container, and it is the basis of all user interactions. 
+
+The following code shows you how to create an instance of the `SpectrumPanel` and add it to the Swing component in your project: 
+{{{
+// Create a m/z data array
+double[] mzArr = new double[]{1.0, 2.012312313, 3.0, 4.234, 6.0, 7.34342};
+// Create an intensity data array
+double[] intentArr = new double[]{2.0, 4.345345345, 6.0, 1.4545, 5.0, 8.23423};
+// Create a spectrum panel
+SpectrumPanel chartPanel = new SpectrumPanel(mzArr, intentArr);
+}}}
 
 ====Panel with a Build-in Tool Bar====
  

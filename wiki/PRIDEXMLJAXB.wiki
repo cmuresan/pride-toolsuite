@@ -132,8 +132,7 @@ To get references, you can use the `getReferences()` method:
 // Get a list of references
 List<Reference> references = reader.getReferences();
 }}}
-*Note*: a empty list will be returned when there is not reference details in the input PRIDE XML file.
-====Advanced====
+*Note*: An empty list will be returned when there is not reference details in the input PRIDE XML file.
 
 [PRIDEXMLJAXB top of page]
 ----

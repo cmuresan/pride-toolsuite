@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary a utility library for computational proteomics.
 #sidebar TableOfContents
  * [#About_PRIDE_Utilities About PRIDE Utilities]
  * [#Getting_PRIDE_Utilities Getting PRIDE Utilities]
@@ -9,6 +9,20 @@
  * [#Source_Code Source Code]
 
 == About PRIDE Utilities ==
+The primary purpose of PRIDE Utilities library is to provide commonly used classes, which are shared by all the PRIDE Tool Suite. You may also find it useful for your own computational proteomics projects.
+
+The library can be divided into 7 modules:
+ # *mol*:  
+
+Note: the library is still evolving, we are committed to expand this library and add more useful classes. 
+
+PRIDE Utilities library is currently used by three projects:
+ * [PRIDEInspector PRIDE Inspector]
+ * [PRIDEmzGraphBrowser PRIDE mzGraph Browser]
+ * [PRIDEQualityChart PRIDE Quality Chart]
+
+This library is written in Java, brought to you by the PRIDE team. 
+
 [PRIDEUtilities top of page]
 ----
 == Getting PRIDE Utilities ==

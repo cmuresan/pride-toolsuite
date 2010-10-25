@@ -122,8 +122,10 @@ If several ions of the same series are added, `SpectrumPanel` will try to assign
 // Set the length of peptide and PTMs as annotation parameters
 spectrum.setAminoAcidAnnotationParameters(8, modifications);
 spectrum.addFragmentIons(ions);
-}}} 
+}}}
+ 
 ====Spectrum Panel with a Build-in Tool Bar====
+
  
 [PRIDEmzGraphBrowser top of page]
 ----

@@ -125,7 +125,7 @@ spectrum.addFragmentIons(ions);
 }}}
  
 ====Spectrum Panel with a Build-in Tool Bar====
-
+`SpectrumBrowser` is an extension of `SpectrumPanel`, it uses `SpectrumPanel` to visualize spectrum, it also added a expandible tool bar to perform some common actions. For instance, save/print the spectrum as an image. 
  
 [PRIDEmzGraphBrowser top of page]
 ----

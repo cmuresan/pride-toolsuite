@@ -13,3 +13,4 @@
   * [PRIDEXMLJAXB PRIDE XML JAXB]
   * [jmzML jmzML]
   * [PRIDEUtilities PRIDE Utilities]
+  * [XXIndex XXIndex]

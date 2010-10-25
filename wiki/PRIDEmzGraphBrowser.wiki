@@ -34,23 +34,23 @@ The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list dow
 *PRIDE mzGraph Browser* library can be used in Maven projects, you can include the following snippets in your Maven pom file. 
 {{{
  <dependency>
-  <groupId>uk.ac.ebi.pride.mzgraph</groupId>
-  <artifactId>pride-mzgraph-browser</artifactId>
-  <version>1.0.4</version>
+   <groupId>uk.ac.ebi.pride.mzgraph</groupId>
+   <artifactId>pride-mzgraph-browser</artifactId>
+   <version>1.0.4</version>
  </dependency> 
 }}}
 
 {{{
  <repository>
-  <id>ebi-repo</id>
-  <name>The EBI internal repository</name>
-  <url>http://www.ebi.ac.uk/~maven/m2repo</url>
-  <releases>
-   <enabled>true</enabled>
-  </releases>
-  <snapshots>
-   <enabled>false</enabled>
-  </snapshots>
+   <id>ebi-repo</id>
+   <name>The EBI internal repository</name>
+   <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+   <releases>
+     <enabled>true</enabled>
+   </releases>
+   <snapshots>
+     <enabled>false</enabled>
+   </snapshots>
  </repository>
 }}}
 

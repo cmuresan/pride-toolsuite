@@ -11,8 +11,11 @@
 == About PRIDE Utilities ==
 The primary purpose of PRIDE Utilities library is to provide commonly used classes, which are shared by all the PRIDE Tool Suite. You may also find it useful for your own computational proteomics projects.
 
-The library can be divided into 7 modules:
- # *mol*:  
+The library provides four key modules:
+ # *mol*: contains classes describing entities at the molecular level, such as: amino acids, neutrual losses, peptides and fragment ions. 
+ # *gui*: contains several GUI components, you can use them if you want to replicate some of the features in PRIDE Inspector.
+ # *data*: contains classes for data structures missing JDK, such as: Tuple. 
+ # *util*: contains a selection of conveninent classes. For examples: formatting protein related informations, checking Internet availability or verfiy email addresses.
 
 Note: the library is still evolving, we are committed to expand this library and add more useful classes. 
 

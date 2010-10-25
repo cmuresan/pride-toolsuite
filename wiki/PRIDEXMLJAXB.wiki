@@ -143,6 +143,7 @@ To come in the future.
 ----
 == FAQs ==
 To come in the future.
+
 [PRIDEXMLJAXB top of page]
 ----
 == Getting Help ==
@@ -153,5 +154,6 @@ Please send us your feedback, including error reports, improvement suggestions, 
 [PRIDEmzGraphBrowser top of page]
 ----
 == Source Code ==
-To come in the future
+To come in the future.
+
 [PRIDEmzGraphBrowser top of page]

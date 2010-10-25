@@ -60,13 +60,26 @@ You can start using PRIDE XML JAXB once you have included it either on your clas
 ====Starting Point====
 The first step in using the PRIDE XML JAXB library is to create an instance of _PrideXmlReader_ object for a given PRIDE XML file, this object should provide all the methods you need to retrieve key information such as: spectra, identifications and peptides. 
 
-Assuming the file your want to load is pride-example.xml, you can include the following lines in your code:
+Assuming the file your want to load is _pride-example.xml_, you can include the following lines in your code:
 {{{
 // Create an instance of PrideXmlReader
 PrideXmlReader reader = new PrideXmlReader("pride-example.xml");
 }}} 
+*Note*: This step will start indexing the input PRIDE XML file automatically, the time it takes depends solely on the size of the input file.
 
 ====Getting Spectra====
+Once you had your _PrideXmlReader_ initialized, you can start querying spectra data. In PRIDE XML JAXB library, spectra are referenced by their spectrum ids, which is unique for each spectrum within each input file.
+
+If you want to iterate over all the spectra from the input file, you can use the following lines of code:
+{{{
+// Get a list of spectrum ids
+List<String> ids = reader.getSpectrumIds();
+
+// Iterate over each spectrum
+for(String id : ids) {
+  Spectrum spectrum = reader.getSpectrumById(id);
+}
+}}}  
 ====Getting Identification====
 ====Getting Peptide====
 ====Getting Other Details====

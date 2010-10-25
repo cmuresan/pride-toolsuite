@@ -30,7 +30,7 @@
   * [PRIDEUtilities PRIDE Utilities]
     * [PRIDEUtilities#About_PRIDE_Utilities About PRIDE Utilities]
     * [PRIDEUtilities#Getting_PRIDE_Utilities Getting PRIDE Utilities]
-    * [PRIDEUtilities#Using_mzGraph_Browser Using PRIDE Utilities]
+    * [PRIDEUtilities#Using_PRIDE_Utilities Using PRIDE Utilities]
     * [PRIDEUtilities#API_Reference API Reference]
     * [PRIDEUtilities#FAQs FAQs]
     * [PRIDEUtilities#Getting_Help Getting Help]

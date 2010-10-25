@@ -22,7 +22,35 @@ If you want to see PRIDE XML JAXB library in action, you can try out [http://cod
 [PRIDEXMLJAXB top of page]
 ----
 == Getting PRIDE XML JAXB ==
+The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list downloads section] contains the *PRIDE XML JAXB* jar file and all other required libraries.
 
+===Maven Dependency===
+*PRIDE XML JAXB* library can be used in Maven projects, you can include the following snippets in your Maven pom file. 
+{{{
+ <dependency>
+   <groupId>uk.ac.ebi.pride.jaxb</groupId>
+   <artifactId>pride-jaxb</artifactId>
+   <version>1.0.4</version>
+ </dependency> 
+}}}
+
+{{{
+ <repository>
+   <id>ebi-repo</id>
+   <name>The EBI internal repository</name>
+   <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+   <releases>
+     <enabled>true</enabled>
+   </releases>
+   <snapshots>
+     <enabled>false</enabled>
+   </snapshots>
+ </repository>
+}}}
+
+*Note*: you need to change the version number to the latest version.
+
+For developers, the latest source code is available from our [#Source_Code SVN repository]. 
 [PRIDEXMLJAXB top of page]
 ----
 == Using PRIDE XML JAXB ==

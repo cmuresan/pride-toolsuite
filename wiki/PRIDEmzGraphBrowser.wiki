@@ -133,11 +133,17 @@ You can also add your own component or actions to the build-in tool bar. For ins
 SpectrumBrowser browser = new SpectrumBrowser();
 // Set the spectrum peak list
 browser.setPeakList(mzArray, intensityArray);
+// Add fragment ions
+browser.addFragmentIons(ions);
+
 // Create a general description panel
 JPanel descPanel = new JPanel();
 // Add the panel to SpectrumBrowser
 browser.add(icon, label, tooltip, actionCommand, descPanel);
 }}} 
+This code will add a new button the tool bar, the general description panel will show/hide when you click on the button.
+
+You can call 
 
 [PRIDEmzGraphBrowser top of page]
 ----

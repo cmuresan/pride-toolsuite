@@ -101,7 +101,7 @@ for(String id : ids) {
 }
 }}}
 
-Alternatively, you can iterate over all the identifications:
+Alternatively, you can simply iterate over all the identifications:
 {{{
 // Get a list of Identification ids
 List<String> ids = reader.getIdentIds();
@@ -112,7 +112,27 @@ for(String id : ids) {
 } 
 }}}  
 ====Getting Peptide====
+Since all peptides must be located within an identification, they are indexed according their order within their parent identification. For example, if there are three peptides within a protein identification, then they will be given index: 1, 2 and 3. 
+
+To unqiuely locate a peptide, you must combine its index with its parent identification id, the code below shows you how:
+{{{
+// Get the number of peptides within an identification
+int numOfPeptides = reader.getNumberOfPeptides(identId);
+
+// Iterate over each peptide
+for(int i=0; i < numOfPeptides; i++) {
+ Peptide peptide = reader.getPeptide(identId, i);
+}
+}}} 
 ====Getting Other Details====
+If you are interested in accessing other meta data information, such as: protocol, references, `PrideXmlReader` also have convenient methods for that.
+
+To get references, you can use the `getReferences()` method:
+{{{
+// Get a list of references
+List<Reference> references = reader.getReferences();
+}}}
+*Note*: a empty list will be returned when there is not reference details in the input PRIDE XML file.
 ====Advanced====
 
 [PRIDEXMLJAXB top of page]

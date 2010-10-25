@@ -78,7 +78,15 @@ Double mzDelta = MolecularUtilitites.calculateDeltaMz(sequence, precursorMz, pre
 }}}
 
 ==== Calculate Theoretical Mass====
-You can also find the method for calculating theoretical mass value from `MoleculeUtilitites`. It needs two input parameters 
+You can also find the method for calculating theoretical mass value from `MoleculeUtilitites`. It needs two input parameters:
+ * `sequence` is the peptide sequence in `String`,
+ * `masses` is a optional list array of masses you want to add as extras.
+
+The following lines of code shows you how:
+{{{
+// Direct call on the method
+double result = MolecularUtilitites.calculateTheoreticalMass(sequence, masses);
+}}}
 
 *Tip*: Take a close look at other methods within `MoleculeUtilitites`, you might find them useful.
  

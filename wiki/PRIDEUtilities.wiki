@@ -95,10 +95,12 @@ double result = MolecularUtilitites.calculateTheoreticalMass(sequence, masses);
 
 == API Reference ==
 To come in the future
+
 [PRIDEUtilities top of page]
 ----
 == FAQs ==
 To come in the future
+
 [PRIDEUtilities top of page]
 ----
 == Getting Help ==

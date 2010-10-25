@@ -13,7 +13,7 @@ PRIDE XML JAXB library is a library for indexing and parsing [http://www.ebi.ac.
 PRIDE XML JAXB library is written in Java, brought to you by the PRIDE team. 
 
 This library uses the following two external libraries: 
- * [XXIndex xxindex]: Indexing XML files.
+ * [XXIndex XXIndex]: Indexing XML files.
  * [https://jaxb.dev.java.net/ JAXB]: Parsing XML snippets into object model.
 
 If you want to see PRIDE XML JAXB library, you can try out [http://code.google.com/p/pride-toolsuite/w/edit/PRIDEInspector PRIDE Inspector].

@@ -5,7 +5,8 @@
  * [#Using_the_Library Using the Library]
  * [#API_Reference API Reference]
  * [#FAQs FAQs]
- * [#Screenshots Screenshots]
+ * [#Getting_Help Getting Help]
+ * [#Source_Code Source Code]
 
 == About the Library ==
 [PRIDEUtilities top of page]
@@ -25,6 +26,10 @@
 
 [PRIDEUtilities top of page]
 ----
-== Screenshots ==
+== Getting Help ==
+
+[PRIDEUtilities top of page]
+----
+== Source Code ==
 
 [PRIDEUtilities top of page]

@@ -125,8 +125,11 @@ spectrum.addFragmentIons(ions);
 }}}
  
 ====Spectrum Panel with a Build-in Tool Bar====
-`SpectrumBrowser` is an extension of `SpectrumPanel`, it uses `SpectrumPanel` to visualize spectrum, it also added a expandible tool bar to perform some common actions. For instance, save/print the spectrum as an image. 
+`SpectrumBrowser` is an extension of `SpectrumPanel`, it uses `SpectrumPanel` to visualize spectrum, it also added a expandible tool bar to perform some common actions. For instance, save/print spectrum as an image, hide the entire peak list and clear all the highlighted mass differences. More importantly, it provides a annotation panel which can filter based on ion series and amino acid annotation series.
+
+You can also add your own component or actions to the build-in tool bar.  
  
+
 [PRIDEmzGraphBrowser top of page]
 ----
 == API Reference ==

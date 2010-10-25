@@ -84,7 +84,7 @@ spectrum.paintGraph();
 JPanel container = new JPanel(new BorderLayout());
 container.add(spectrum, BorderLayout.CENTER);
 }}}
-As you can see, only an array of m/z values and an array of intensity values are required to build a spectrum. You can also overwrite this peak list with a new one, the code below shows you how:
+Only an array of m/z values and an array of intensity values are required to build a spectrum. You can also overwrite this peak list with a new one, the code below shows you how:
 {{{
 // New m/z array
 double[] newMz = new double[]{2.0, 3.0, 12.23, 1.45};
@@ -93,6 +93,7 @@ double[] newIntent = new double[]{45, 67, 18.34, 34.78};
 // Set a new peak list
 spectrum.setPeakList(newMz, newIntent);
 }}}
+Once 
 ====Panel with a Build-in Tool Bar====
  
 [PRIDEmzGraphBrowser top of page]

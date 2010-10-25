@@ -6,7 +6,6 @@
  * [#API_Reference API Reference]
  * [#FAQs FAQs]
  * [#Getting_Help Getting Help]
- * [#Screenshots Screenshots]
 
 == About PRIDE XML JAXB ==
 
@@ -31,7 +30,3 @@
 == Getting Help ==
 
 [PRIDEmzGraphBrowser top of page]
-----
-== Screenshots ==
-
-[PRIDEXMLJAXB top of page]

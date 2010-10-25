@@ -143,8 +143,6 @@ browser.add(icon, label, tooltip, actionCommand, descPanel);
 }}} 
 This code will add a new button the tool bar, the general description panel will show/hide when you click on the button.
 
-You can call 
-
 [PRIDEmzGraphBrowser top of page]
 ----
 == API Reference ==

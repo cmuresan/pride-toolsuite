@@ -50,14 +50,15 @@ The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list dow
 
 *Note*: you need to change the version number to the latest version.
 
-For developers, the latest source code is available from our [#Source_Code SVN repository]. 
+For developers, the latest source code is available from our [#Source_Code SVN repository].
+ 
 [PRIDEXMLJAXB top of page]
 ----
 == Using PRIDE XML JAXB ==
 You can start using PRIDE XML JAXB once you have included it either on your classpath or your Maven pom file. The section below will show you how to retrieve spectra, identifications and peptides. 
 
 ====Starting Point====
-The first step in using the PRIDE XML JAXB library is to create an instance of PrideXmlReader object for a given PRIDE XML file, this object should provide all the methods you need to retrieve key information such as: spectra, identifications and peptides. 
+The first step in using the PRIDE XML JAXB library is to create an instance of _PrideXmlReader_ object for a given PRIDE XML file, this object should provide all the methods you need to retrieve key information such as: spectra, identifications and peptides. 
 
 Assuming the file your want to load is pride-example.xml, you can include the following lines in your code:
 {{{
@@ -75,6 +76,7 @@ PrideXmlReader reader = new PrideXmlReader("pride-example.xml");
 ----
 == API Reference ==
 To come in the future.
+
 [PRIDEXMLJAXB top of page]
 ----
 == FAQs ==

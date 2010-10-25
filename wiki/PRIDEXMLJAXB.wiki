@@ -6,6 +6,7 @@
  * [#API_Reference API Reference]
  * [#FAQs FAQs]
  * [#Getting_Help Getting Help]
+ * [#Source_Code Source Code]
 
 == About PRIDE XML JAXB ==
 PRIDE XML JAXB library is a library for indexing and parsing [http://www.ebi.ac.uk/pride/schemaXmlspyDocumentation.do PRIDE XML 2.1] files. This library *does not* load the whole file into the memory upfront, instead it employs XML indexing technique to index the file on the fly which gives fast accessing and small meomory footprint. Additionaly, all entitites in PRIDE XML file are mapped as objects, and the internal reference between the objects are resolved automatically, this gives you direct access in the object model to entities that are only referenced by ID in the actual XML file.  
@@ -37,5 +38,9 @@ If you want to see PRIDE XML JAXB library in action, you can try out [http://cod
 [PRIDEXMLJAXB top of page]
 ----
 == Getting Help ==
+
+[PRIDEmzGraphBrowser top of page]
+----
+== Source Code ==
 
 [PRIDEmzGraphBrowser top of page]

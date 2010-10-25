@@ -16,7 +16,7 @@ This library uses the following two external libraries:
  * [XXIndex XXIndex]: Indexing XML files.
  * [https://jaxb.dev.java.net/ JAXB]: Parsing XML snippets into object model.
 
-If you want to see PRIDE XML JAXB library, you can try out [http://code.google.com/p/pride-toolsuite/w/edit/PRIDEInspector PRIDE Inspector].
+If you want to see PRIDE XML JAXB library in action, you can try out [http://code.google.com/p/pride-toolsuite/w/edit/PRIDEInspector PRIDE Inspector].
 
 [PRIDEXMLJAXB top of page]
 ----

@@ -59,9 +59,9 @@ For developers, the latest source code is available from our [#Source_Code SVN r
 You can start using PRIDE XML JAXB once you have included it either on your classpath or your Maven pom file. The section below will show you how to retrieve spectra, identifications and peptides. 
 
 ====Starting Point====
-The first step in using the PRIDE XML JAXB library is to create an instance of _PrideXmlReader_ object for a given PRIDE XML file, this object should provide all the methods you need to retrieve key information such as: spectra, identifications and peptides. 
+The first step in using the PRIDE XML JAXB library is to create an instance of `PrideXmlReader` object for a given PRIDE XML file, this object should provide all the methods you need to retrieve key information such as: spectra, identifications and peptides. 
 
-Assuming the file your want to load is _pride-example.xml_, you can include the following lines in your code:
+Assuming the file your want to load is `pride-example.xml`, you can include the following lines in your code:
 {{{
 // Create an instance of PrideXmlReader
 PrideXmlReader reader = new PrideXmlReader("pride-example.xml");
@@ -69,7 +69,7 @@ PrideXmlReader reader = new PrideXmlReader("pride-example.xml");
 *Note*: This step will start indexing the input PRIDE XML file automatically, the time it takes depends solely on the size of the input file.
 
 ====Getting Spectra====
-You can start querying spectra data once you had your _PrideXmlReader_ initialized. In PRIDE XML JAXB library, spectra are referenced by their spectrum ids, which is unique for each spectrum within each input file.
+You can start querying spectra data once you had your `PrideXmlReader` initialized. In PRIDE XML JAXB library, spectra are referenced by their spectrum ids, which is unique for each spectrum within each input file.
 
 If you want to iterate over all the spectra from the input file, you can use the following lines of code:
 {{{
@@ -81,14 +81,14 @@ for(String id : ids) {
   Spectrum spectrum = reader.getSpectrumById(id);
 }
 }}}
-You can access information stored in a _Spectrum_ object just like you would access a normal Java object. For instance, you can include the following lines of code to get the meta data associated with SpectrumDesc. 
+You can access information stored in a `Spectrum` object just like you would access a normal Java object. For instance, you can include the following lines of code to get the meta data associated with SpectrumDesc. 
 {{{
 // Get spectrum meta data
 SpectrumDesc spectrumDesc = spectrum.getSpectrumDesc();
 }}} 
   
 ====Getting Identification====
-There are two types of protein identifications: _GelFreeIdentification_ or _TwoDimensionalIdentification_. Although it is rare, these two types of identifications can co-exist. This means protein accessions are not unique, the same protein accession may appear many times in the same file. In PRIDE XML JAXB library, we choose to generate unique ids for protein identifications according to their order in the file. 
+There are two types of protein identifications: `GelFreeIdentification` or `TwoDimensionalIdentification`. Although it is rare, these two types of identifications can co-exist. This means protein accessions are not unique, the same protein accession may appear many times in the same file. In PRIDE XML JAXB library, we choose to generate unique ids for protein identifications according to their order in the file. 
 
 If you want to iterate over all the protein identifications of a certain type, you can include the following lines in your code:
 {{{
@@ -101,7 +101,7 @@ for(String id : ids) {
 }
 }}}
 
-Alternatively, you can choose to iterate over all the identifications:
+Alternatively, you can iterate over all the identifications:
 {{{
 // Get a list of Identification ids
 List<String> ids = reader.getIdentIds();

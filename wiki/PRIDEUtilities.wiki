@@ -8,13 +8,13 @@
  * [#Getting_Help Getting Help]
  * [#Source_Code Source Code]
 
-== About the Library ==
+== About PRIDE Utilities ==
 [PRIDEUtilities top of page]
 ----
-== Getting the Library ==
+== Getting PRIDE Utilities ==
 [PRIDEUtilities top of page]
 ----
-== Using the Library ==
+== Using PRIDE Utilities ==
 
 [PRIDEUtilities top of page]
 ----

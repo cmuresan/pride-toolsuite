@@ -77,7 +77,12 @@ double[] mzArr = new double[]{1.0, 2.012312313, 3.0, 4.234, 6.0, 7.34342};
 // Create an intensity data array
 double[] intentArr = new double[]{2.0, 4.345345345, 6.0, 1.4545, 5.0, 8.23423};
 // Create a spectrum panel
-SpectrumPanel chartPanel = new SpectrumPanel(mzArr, intentArr);
+SpectrumPanel spectrum = new SpectrumPanel(mzArr, intentArr);
+// Paint the spectrum peaks
+spectrum.paintGraph();
+// Added the spectrum panel to your own JPanel
+JPanel container = new JPanel(new BorderLayout());
+container.add(spectrum, BorderLayout.CENTER);
 }}}
 
 ====Panel with a Build-in Tool Bar====

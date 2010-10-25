@@ -68,7 +68,7 @@ PrideXmlReader reader = new PrideXmlReader("pride-example.xml");
 *Note*: This step will start indexing the input PRIDE XML file automatically, the time it takes depends solely on the size of the input file.
 
 ====Getting Spectra====
-Once you had your _PrideXmlReader_ initialized, you can start querying spectra data. In PRIDE XML JAXB library, spectra are referenced by their spectrum ids, which is unique for each spectrum within each input file.
+You can start querying spectra data once you had your _PrideXmlReader_ initialized. In PRIDE XML JAXB library, spectra are referenced by their spectrum ids, which is unique for each spectrum within each input file.
 
 If you want to iterate over all the spectra from the input file, you can use the following lines of code:
 {{{

@@ -1,22 +1,22 @@
-#summary One-sentence summary of this page.
+#summary a lightweight library for indexing and parsing PRIDE XML files.
 #sidebar TableOfContents
- * [#About_the_Library About the Library]
- * [#Getting_the_Library Getting the Library]
- * [#Using_the_Library Using the Library]
+ * [#About_PRIDE_XML_JAXB About PRIDE XML JAXB]
+ * [#Getting_PRIDE_XML_JAXB Getting PRIDE XML JAXB]
+ * [#Using_PRIDE_XML_JAXB Using PRIDE XML JAXB]
  * [#API_Reference API Reference]
  * [#FAQs FAQs]
  * [#Getting_Help Getting Help]
  * [#Screenshots Screenshots]
 
-== About the Library ==
+== About PRIDE XML JAXB ==
 
 [PRIDEXMLJAXB top of page]
 ----
-== Getting the Library ==
+== Getting PRIDE XML JAXB ==
 
 [PRIDEXMLJAXB top of page]
 ----
-== Using the Library ==
+== Using PRIDE XML JAXB ==
 
 [PRIDEXMLJAXB top of page]
 ----

@@ -61,7 +61,9 @@ For developers, the latest source code is available from our [#Source_Code SVN r
 [PRIDEmzGraphBrowser top of page]
 ----
 == Using mzGraph Browser ==
-PRIDE mzGraph Browser is Java Swing based component, it is designed to be integrated easily into your project. There are two common ways of using this library: 
+PRIDE mzGraph Browser library gives you Java Swing based components for visualizing and annotating MS spectra and chromatogram. It is designed to be integrated easily into your project. 
+
+There are two common ways of using this library: 
  # As an independent panel. 
  # As a panel with a build-in tool bar. 
 

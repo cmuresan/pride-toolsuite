@@ -1,8 +1,8 @@
 #summary One-sentence summary of this page.
 #sidebar TableOfContents
- * [#About_the_Library About the Library]
- * [#Getting_the_Library Getting the Library]
- * [#Using_the_Library Using the Library]
+ * [#About_PRIDE_Utilities About PRIDE Utilities]
+ * [#Getting_PRIDE_Utilities Getting PRIDE Utilities]
+ * [#Using_PRIDE_Utilities Using PRIDE Utilities]
  * [#API_Reference API Reference]
  * [#FAQs FAQs]
  * [#Getting_Help Getting Help]

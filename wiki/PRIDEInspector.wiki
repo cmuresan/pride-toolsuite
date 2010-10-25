@@ -1,7 +1,7 @@
 #summary PRIDE Inspector is a desktop application to visualize and perform first quality assessment on Mass Spectrometry data.
 #sidebar TableOfContents
 
- * [#Features Features]
+ * [#About_PRIDE_Inspector About PRIDE Inspector]
  * [#Getting_PRIDE_Inspector Getting PRIDE Inspector]
   * [#Installation_Requirements Installation Requirements]
   * [#Download Download]
@@ -11,7 +11,7 @@
  * [#Screenshots Screenshots]
 
 ----
-==Features==
+==About PRIDE Inspector==
 The key features include:
   * Fast loading of *mzML* and *PRIDE XML* files.
   * Direct access to all PRIDE public database experiments.

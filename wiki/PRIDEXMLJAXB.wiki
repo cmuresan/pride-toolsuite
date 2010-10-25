@@ -17,6 +17,7 @@ This library uses the following two external libraries:
  * [https://jaxb.dev.java.net/ JAXB]: Parsing XML snippets into object model.
 
 If you want to see PRIDE XML JAXB library, you can try out [http://code.google.com/p/pride-toolsuite/w/edit/PRIDEInspector PRIDE Inspector].
+
 [PRIDEXMLJAXB top of page]
 ----
 == Getting PRIDE XML JAXB ==

@@ -62,18 +62,32 @@ For developers, the latest source code is available from our [#Source_Code SVN r
 [PRIDEUtilities top of page]
 ----
 == Using PRIDE Utilities ==
+Here we will show you how to use the PRIDE Utilitites library to calculate m/z delta and calculate theoretical mass of a given peptide. 
+
+==== Calculate m/z Delta====
+You can find the method for calculating m/z delta from `MoleculeUtilitites` in *mol* package. It requires two input parameters: 'sequence' is the peptide sequence in `String`, `precursorMz` is the precusor m/z in `double`, `precursorCharge` is the precursor charge in double and `ptmMasses` is a list of post translational modifications in `double`. The following lines of code shows you how: 
+{{{
+// Direct call on the method
+Double mzDelta = MolecularUtilitites.calculateDeltaMz(sequence, precursorMz, precursorCharge, ptmMasses);
+}}}
+
+==== Calculate Theoretical Mass====
 
 [PRIDEUtilities top of page]
 ----
-== API Reference ==
 
+== API Reference ==
+To come in the future
 [PRIDEUtilities top of page]
 ----
 == FAQs ==
-
+To come in the future
 [PRIDEUtilities top of page]
 ----
 == Getting Help ==
+If you have questions or need additional help, please contact the PRIDE Helpdesk at the EBI: *pride-helpdesk at ebi.ac.uk (replace at with @)*.
+
+Please send us your feedback, including error reports, improvement suggestions, new feature requests and any other things you might want to suggest to the PRIDE team.
 
 [PRIDEUtilities top of page]
 ----

@@ -65,9 +65,9 @@ PRIDE mzGraph Browser is Java Swing based component, it is designed to be integr
  # Add as an independent panel. 
  # Add with a build-in control tool bar. 
 
-====Add as an Independent Panel====
+====Independent Panel====
 
-====Add with a Build-in Control Tool Bar====
+====Panel with a Build-in Control Tool Bar====
  
 [PRIDEmzGraphBrowser top of page]
 ----

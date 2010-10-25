@@ -29,6 +29,36 @@ This library is written in Java, brought to you by the PRIDE team.
 [PRIDEUtilities top of page]
 ----
 == Getting PRIDE Utilities ==
+The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list downloads section] contains the *PRIDE Utilities* jar file and all other required libraries.
+
+===Maven Dependency===
+*PRIDE Utilities* library can be used in Maven projects, you can include the following snippets in your Maven pom file. 
+{{{
+ <dependency>
+   <groupId>uk.ac.ebi.pride.util</groupId>
+   <artifactId>pride-utilities</artifactId>
+   <version>0.0.8</version>
+ </dependency> 
+}}}
+
+{{{
+ <repository>
+   <id>ebi-repo</id>
+   <name>The EBI internal repository</name>
+   <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+   <releases>
+     <enabled>true</enabled>
+   </releases>
+   <snapshots>
+     <enabled>false</enabled>
+   </snapshots>
+ </repository>
+}}}
+
+*Note*: you need to change the version number to the latest version.
+
+For developers, the latest source code is available from our [#Source_Code SVN repository].
+
 [PRIDEUtilities top of page]
 ----
 == Using PRIDE Utilities ==

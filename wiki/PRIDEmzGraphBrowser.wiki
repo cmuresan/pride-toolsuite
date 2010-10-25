@@ -95,7 +95,28 @@ double[] newIntent = new double[]{45, 67, 18.34, 34.78};
 spectrum.setPeakList(newMz, newIntent);
 }}}
 
-After the spectrum has been initialized, you can annotate it with fragment ion series. 
+After the spectrum has been initialized, you can annotate it with fragment ion information. Below is an example of adding a b ion and a y ion: 
+{{{
+// Create a new y ion with charge -2 and location 2 as well as a water loss
+IonAnnotationInfo yIonInfo = new IonAnnotationInfo();
+// Create and add an annotation item which describes the ion.
+IonAnnotationInfo.Item yIonItem = new IonAnnotationInfo.Item(-2, FragmentIonType.Y_ION, 2, NeutralLoss.WATER_LOSS);
+yIonInfo.addItem(yIonItem);
+// Create the y ion
+IonAnnotation yIon = new IonAnnotation(2.0, 45, yIonInfo);
+
+// Create a new b ion with charge +1 and location 3
+IonAnnotationInfo bIonInfo = new IonAnnotationInfo();
+IonAnnotationInfo.Item bIonItem = new IonAnnotationInfo.Item(1, FragmentIonType.B_ION, 3, null);
+bIonInfo.addItem(bIonItem);
+IonAnnotation bIon = new IonAnnotation(12.23, 18.34, bIonInfo);
+
+// Add these ions to the spectrum
+List<IonAnnotation> ions = new ArrayList<IonAnnotation>();
+ions.add(ion1);
+ions.add(ion2);
+spectrum.addFragmentIons(ions);
+}}} 
 ====Panel with a Build-in Tool Bar====
  
 [PRIDEmzGraphBrowser top of page]

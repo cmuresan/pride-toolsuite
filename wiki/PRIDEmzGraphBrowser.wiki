@@ -62,12 +62,12 @@ For developers, the latest source code is available from our [#Source_Code SVN r
 ----
 == Using mzGraph Browser ==
 PRIDE mzGraph Browser is Java Swing based component, it is designed to be integrated easily into your project. There are two common ways of using this library: 
- # Add as an independent panel. 
- # Add with a build-in control tool bar. 
+ # As an independent panel. 
+ # As a panel with a build-in tool bar. 
 
 ====Independent Panel====
 
-====Panel with a Build-in Control Tool Bar====
+====Panel with a Build-in Tool Bar====
  
 [PRIDEmzGraphBrowser top of page]
 ----

@@ -5,6 +5,7 @@
  * [#Using_the_Library Using the Library]
  * [#API_Reference API Reference]
  * [#FAQs FAQs]
+ * [#Getting_Help Getting Help]
  * [#Screenshots Screenshots]
 
 == About the Library ==
@@ -26,6 +27,10 @@
 == FAQs ==
 
 [PRIDEXMLJAXB top of page]
+----
+== Getting Help ==
+
+[PRIDEmzGraphBrowser top of page]
 ----
 == Screenshots ==
 

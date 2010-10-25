@@ -65,11 +65,11 @@ For developers, the latest source code is available from our [#Source_Code SVN r
 [PRIDEmzGraphBrowser top of page]
 ----
 == API Reference ==
-
+Will come shortly in the future.
 [PRIDEmzGraphBrowser top of page]
 ----
 == FAQs ==
-
+ # *
 [PRIDEmzGraphBrowser top of page]
 ----
 == Getting Help ==

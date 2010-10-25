@@ -5,6 +5,7 @@
  * [#Using_mzGraph_Browser Using mzGraph Browser]
  * [#API_Reference API Reference]
  * [#FAQs FAQs]
+ * [#Getting_Help Getting Help]
  * [#Screenshots Screenshots]
 
 == About mzGraph Browser ==
@@ -65,6 +66,10 @@ The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list dow
 [PRIDEmzGraphBrowser top of page]
 ----
 == FAQs ==
+
+[PRIDEmzGraphBrowser top of page]
+----
+== Getting Help ==
 
 [PRIDEmzGraphBrowser top of page]
 ----

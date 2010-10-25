@@ -79,7 +79,13 @@ List<String> ids = reader.getSpectrumIds();
 for(String id : ids) {
   Spectrum spectrum = reader.getSpectrumById(id);
 }
-}}}  
+}}}
+You can access information stored in a _Spectrum_ object just like you would access a normal Java object. For instance, you can include the following lines of code to get the meta data associated with SpectrumDesc. 
+{{{
+// Get spectrum meta data
+SpectrumDesc spectrumDesc = spectrum.getSpectrumDesc();
+}}} 
+  
 ====Getting Identification====
 ====Getting Peptide====
 ====Getting Other Details====

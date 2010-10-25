@@ -116,6 +116,11 @@ List<IonAnnotation> ions = new ArrayList<IonAnnotation>();
 ions.add(ion1);
 ions.add(ion2);
 spectrum.addFragmentIons(ions);
+}}}
+If several ions of the same series are added, `SpectrumPanel` will try to assign amino acid annotations between the ion peaks. However, if the identified peptide has post translational modifications(PTM), you will need to let `SpectrumPanel` know the length of the peptide as well as the modification details. The code below shows you how, assuming the length of the peptide is `8` and a list of PTMs are stored in `modifications`:
+{{{
+spectrum.setAminoAcidAnnotationParameters(8, modifications);
+spectrum.addFragmentIons(ions);
 }}} 
 ====Spectrum Panel with a Build-in Tool Bar====
  

@@ -51,6 +51,7 @@ The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list dow
 *Note*: you need to change the version number to the latest version.
 
 For developers, the latest source code is available from our [#Source_Code SVN repository].
+
  
 [PRIDEXMLJAXB top of page]
 ----
@@ -87,6 +88,29 @@ SpectrumDesc spectrumDesc = spectrum.getSpectrumDesc();
 }}} 
   
 ====Getting Identification====
+There are two types of protein identifications: _GelFreeIdentification_ or _TwoDimensionalIdentification_. Although it is rare, these two types of identifications can co-exist. This means protein accessions are not unique, the same protein accession may appear many times in the same file. In PRIDE XML JAXB library, we choose to generate unique ids for protein identifications according to their order in the file. 
+
+If you want to iterate over all the protein identifications of a certain type, you can include the following lines in your code:
+{{{
+// Get a list of GelFreeIdentification ids
+List<String> ids = reader.getGelFreeIdentIds();
+
+// Iterate over each identification
+for(String id : ids) {
+ GelFreeIdentification gelFree = reader.getGelFreeIdentById(id);
+}
+}}}
+
+Alternatively, you can choose to iterate over all the identifications:
+{{{
+// Get a list of Identification ids
+List<String> ids = reader.getIdentIds();
+
+// Iterate over each identification
+for(String id : ids) {
+ Identification ident = reader.getIdentById(id);
+} 
+}}}  
 ====Getting Peptide====
 ====Getting Other Details====
 ====Advanced====

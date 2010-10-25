@@ -36,7 +36,7 @@ The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list dow
  <dependency>
   <groupId>uk.ac.ebi.pride.mzgraph</groupId>
   <artifactId>pride-mzgraph-browser</artifactId>
-  <version>1.0.4-SNAPSHOT</version>
+  <version>1.0.4</version>
  </dependency> 
 }}}
 

@@ -13,15 +13,16 @@
 XXIndex library is originally a part of the PSI-Dev project. It aims at addressing the needs for quick data retrieval in large XML files.
  
 The key features of the library include:
- * *Easy to Use*: XXIndex using XPath to identify XML entities. 
- * *Small Memory Footprint*: Unlike some of XML indexing libraries, XXIndex does not require to load the whole file into the memory (large or small). Only the indexes are stored in order to archive minimum memory requirement.
- * *Quick Indexing*: Although the speed of indexing depends on the complexity of the input XML file, based on our experience, a 500M XML file normally takes around 50 seconds.
+ * *Easy to Use*: XXIndex uses XPath-like expressions to identify XML entities. 
+ * *Small Memory Footprint*: Unlike some XML indexing libraries, XXIndex does not require to load the whole file into memory (large or small). Only the indices are stored in order to achive minimum memory requirement.
+ * *Quick Indexing*: Although the speed of indexing depends on the complexity of the input XML file (the higher the XML tag density the slower the indexing), based on our experience, a 500MB XML file usually takes only around 50 seconds.
 
-XXIndex library is currently used by many projects, below are a couple of them:
+The XXIndex library is currently used by many projects, below are a couple of them:
  * [PRIDEXMLJAXB PRIDE XML JAXB Library]
  * [jmzML jmzML Library]
+ * [http://www.psidev.info/index.php?q=node/304 Most of the PSI semantic validators]
 
-This library is written in Java, brought to you by the PRIDE team. 
+This library is written in Java, brought to you by the [http://www.ebi.ac.uk/pride/ PRIDE] team. 
 
 [XXIndex top of page]
 ----
@@ -29,7 +30,7 @@ This library is written in Java, brought to you by the PRIDE team.
 The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list downloads section] contains the *XXIndex* jar file and all other required libraries.
 
 ===Maven Dependency===
-*XXIndex* library can be used in Maven projects, you can include the following snippets in your Maven pom file. 
+The *XXIndex* library can be used in Maven projects, just include the following snippets in the appropriate sections of your Maven pom file. 
 {{{
  <dependency>
    <groupId>psidev.psi.tools</groupId>
@@ -52,7 +53,7 @@ The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list dow
  </repository>
 }}}
 
-*Note*: you need to change the version number to the latest version.
+*Note*: you may want to update the version number to the latest version available in the repository.
 
 For developers, the latest source code is available from our [#Source_Code SVN repository].
 

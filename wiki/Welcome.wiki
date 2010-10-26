@@ -3,10 +3,11 @@
 
 *PRIDE Tool Suite* comprises of a following tools and libraries:
  * [PRIDEInspector PRIDE Inspector]
+ * [http://code.google.com/p/pride-converter/ PRIDE Converter]
  * [PRIDEmzGraphBrowser PRIDE mzGraph Browser]
  * [PRIDEQualityChart PRIDE Quality Chart]
  * [PRIDEXMLJAXB PRIDE XML JAXB]
- * [jmzML jmzML]
+ * [http://code.google.com/p/jmzml/ jmzML]
  * [PRIDEUtilities PRIDE Utilities]
 
 == News ==

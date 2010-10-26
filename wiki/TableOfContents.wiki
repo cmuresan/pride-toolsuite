@@ -11,7 +11,7 @@
   * [http://code.google.com/p/pride-converter/ PRIDE Converter]
     * [http://code.google.com/p/pride-converter/#About_PRIDE_Converter About PRIDE Converter]
     * [http://code.google.com/p/pride-converter/#Getting_PRIDE_Converter Getting PRIDE Converter]
-    * [http://code.google.com/p/pride-converter/##How_to_Submitt_Data_to_PRIDE How to Submitt Data to PRIDE]
+    * [http://code.google.com/p/pride-converter/#How_to_Submitt_Data_to_PRIDE How to Submitt Data to PRIDE]
     * [http://code.google.com/p/pride-converter/#Getting_Help Getting Help]
     * [http://code.google.com/p/pride-converter/#Source_Code Source Code]
     * [http://code.google.com/p/pride-converter/#Screenshots Screenshots]

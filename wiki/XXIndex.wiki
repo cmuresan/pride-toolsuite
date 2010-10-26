@@ -57,7 +57,7 @@ The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list dow
 
 For developers, the latest source code is available from our [#Source_Code SVN repository].
 
-[XXIndextop of page]
+[XXIndex top of page]
 ----
 == Using XXIndex ==
 

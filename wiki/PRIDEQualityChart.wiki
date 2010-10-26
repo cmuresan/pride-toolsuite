@@ -1,14 +1,14 @@
 #summary a utility library for PRIDE Tool Suite.
 #sidebar TableOfContents
- * [#About_PRIDE_Chart About PRIDE Chart]
- * [#Getting_PRIDE_Chart Getting PRIDE Chart]
- * [#Using_PRIDE_Utilities Using PRIDE Chart]
+ * [#About_PRIDE_Chart About PRIDE Quality Chart]
+ * [#Getting_PRIDE_Chart Getting PRIDE Quality Chart]
+ * [#Using_PRIDE_Utilities Using PRIDE Quality Chart]
  * [#API_Reference API Reference]
  * [#FAQs FAQs]
  * [#Getting_Help Getting Help]
  * [#Source_Code Source Code]
 
-== About PRIDE Chart ==
+== About PRIDE Quality Chart ==
 
 The purpose of PRIDE Chart library is to provide a tool for creating a set of chart in order to show the quality of the data in everyone of the PRIDE Expermients.
 
@@ -31,7 +31,7 @@ This library is written in Java, brought to you by the PRIDE team.
 
 [PRIDEQualityChart top of page]
 ----
-== Getting PRIDE Chart ==
+== Getting PRIDE Quality Chart ==
 The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list downloads section] contains the *PRIDE Chart* jar file and all other required libraries.
 
 ===Maven Dependency===
@@ -64,7 +64,7 @@ For developers, the latest source code is available from our [#Source_Code SVN r
 
 [PRIDEQualityChart top of page]
 ----
-== Using PRIDE Chart ==
+== Using PRIDE Quality Chart ==
 Here we will show you how to use the PRIDE Chart library to create all the charts associated to a PRIDE Experimet Accession Number (stored in the public PRIDE-database), how to store the intermediate data and how to reuse it instead of calculated it again.
 
 ==== Creating all the charts associated to a PRIDE Experimet Accession Number ====

@@ -26,7 +26,7 @@
     * [PRIDEXMLJAXB#FAQs FAQs]
     * [PRIDEXMLJAXB#Getting_Help Getting Help]
     * [PRIDEXMLJAXB#Source_Code Source Code]
-  * [jmzML jmzML]
+  * [http://code.google.com/p/jmzml/ jmzML]
   * [PRIDEUtilities PRIDE Utilities]
     * [PRIDEUtilities#About_PRIDE_Utilities About PRIDE Utilities]
     * [PRIDEUtilities#Getting_PRIDE_Utilities Getting PRIDE Utilities]

@@ -59,7 +59,18 @@ For developers, the latest source code is available from our [#Source_Code SVN r
 [XXIndex top of page]
 ----
 == Using XXIndex ==
-
+The first step of using the XXIndex library is to index the XML file. For instance, if you want to read a file named: `example.xml`, you should first initialize an instance of `StandardXpathAccess`, the code below will show you how to do that:
+{{{
+// create index for xml file
+StandardXpathAccess access = new StandardXpathAccess("example.xml");
+}}}
+Once the index has been created, you can access the elements using their Xpath. For example, the code below shows you how to get the number elements in the file:
+{{{
+// Get the index of the file
+XpathIndex index = access.getIndex();
+// Get the number of a element
+int count = index.getElementCount("xpath/to/element/");
+}}}
  
 [XXIndex top of page]
 ----

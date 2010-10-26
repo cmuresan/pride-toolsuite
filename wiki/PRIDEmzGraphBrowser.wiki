@@ -170,4 +170,11 @@ To come in the future.
 == Screenshots ==
 (Click on figure to see the full size version)
 
+<table><tr>
+<td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-mzgraph-browser/fragment_ions.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-mzgraph-browser/fragment_ions_small.png]</td>
+<td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-mzgraph-browser/zoom_in.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-mzgraph-browser/zoom_in_small.png]</td>
+<td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-mzgraph-browser/tooltip.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-mzgraph-browser/tooltip_small.png]</td>
+</tr>
+</table>
+
 [PRIDEmzGraphBrowser top of page]

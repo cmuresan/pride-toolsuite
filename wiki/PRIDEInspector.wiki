@@ -87,6 +87,11 @@ The source code can be viewed and downloaded from [http://code.google.com/p/prid
 <table><tr>
 <td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/general_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/general_tab_small.png]</td>
 <td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/protein_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/protein_tab_small.png]</td>
+<td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/peptide_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/peptide_tab_small.png]</td>
+<td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/spectrum_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/spectrum_tab_small.png]</td>
+</tr>
+<tr>
+<td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/chart_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/chart_tab_small.png]</td>
 </tr>
 </table>
 

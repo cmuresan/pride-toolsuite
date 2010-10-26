@@ -17,8 +17,7 @@ The key features of the library include:
  # *Small Memory Footprint*: Unlike some of XML indexing libraries, XXIndex does not require to load the whole file into the memory (large or small). Only the indexes are stored in order to archive minimum memory requirement.
  # *Quick Indexing*: Although the speed of indexing depends on the complexity of the input XML file, based on our experience, a 500M XML file normally takes around 50 seconds.
 
-XXIndex library is currently used by many projects, below are a few of them:
- * [PRIDEInspector PRIDE Inspector]
+XXIndex library is currently used by many projects, below are a couple of them:
  * [PRIDEXMLJAXB PRIDE XML JAXB Library]
  * [jmzML jmzML Library]
 

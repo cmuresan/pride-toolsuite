@@ -10,7 +10,7 @@
  * [#Source_Code Source Code]
 
 == About XXIndex ==
-XXIndex library is original designed as part of the PSI-Dev project. It aims at addressing the needs for quick data retrieval in large XML files.
+XXIndex library is originally a part of the PSI-Dev project. It aims at addressing the needs for quick data retrieval in large XML files.
  
 The key features of the library include:
  # *Easy to Use*: XXIndex using XPath to identify XML entities. 

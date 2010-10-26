@@ -1,14 +1,87 @@
-#summary One-sentence summary of this page.
+#summary a library to index XML files for random access.
 #sidebar TableOfContents
 
-= Introduction =
+ * [#About_PXXIndex About XXIndex]
+ * [#Getting_XXIndex Getting XXIndex]
+ * [#Using_XXIndex Using XXIndex]
+ * [#API_Reference API Reference]
+ * [#FAQs FAQs]
+ * [#Getting_Help Getting Help]
+ * [#Source_Code Source Code]
 
-Add your content here.
+== About PRIDE Utilities ==
+XXIndex library is original designed as part of the PSI-Dev project. It aims at addressing the needs for quick data retrieval in large XML files.
+ 
+The key features of the library include:
+ # *Easy to Use*: XXIndex using XPath to identify XML entities. 
+ # *Small Memory Footprint*: Unlike some of XML indexing libraries, XXIndex does not require to load the whole file into the memory (large or small). Only the indexes are stored in order to archive minimum memory requirement.
+ # *Quick Indexing*: Although the speed of indexing depends on the complexity of the input XML file, based on our experience, a 500M XML file normally takes around 50 seconds.
 
+XXIndex library is currently used by many projects, below are a few of them:
+ * [PRIDEInspector PRIDE Inspector]
+ * [PRIDEXMLJAXB PRIDE XML JAXB Library]
+ * [jmzML jmzML Library]
 
-= Details =
+This library is written in Java, brought to you by the PRIDE team. 
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+[PRIDEUtilities top of page]
+----
+== Getting PRIDE Utilities ==
+The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list downloads section] contains the *XXIndex* jar file and all other required libraries.
+
+===Maven Dependency===
+*XXIndex* library can be used in Maven projects, you can include the following snippets in your Maven pom file. 
+{{{
+ <dependency>
+   <groupId>psidev.psi.tools</groupId>
+   <artifactId>xxindex</artifactId>
+   <version>0.10</version>
+ </dependency> 
+}}}
+
+{{{
+ <repository>
+   <id>ebi-repo</id>
+   <name>The EBI internal repository</name>
+   <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+   <releases>
+     <enabled>true</enabled>
+   </releases>
+   <snapshots>
+     <enabled>false</enabled>
+   </snapshots>
+ </repository>
+}}}
+
+*Note*: you need to change the version number to the latest version.
+
+For developers, the latest source code is available from our [#Source_Code SVN repository].
+
+[PRIDEUtilities top of page]
+----
+== Using PRIDE Utilities ==
+
+ 
+[PRIDEUtilities top of page]
+----
+
+== API Reference ==
+To come in the future
+
+[PRIDEUtilities top of page]
+----
+== FAQs ==
+To come in the future
+
+[PRIDEUtilities top of page]
+----
+== Getting Help ==
+If you have questions or need additional help, please contact the PRIDE Helpdesk at the EBI: *pride-helpdesk at ebi.ac.uk (replace at with @)*.
+
+Please send us your feedback, including error reports, improvement suggestions, new feature requests and any other things you might want to suggest to the PRIDE team.
+
+[PRIDEUtilities top of page]
+----
+== Source Code ==
+
+[PRIDEUtilities top of page]

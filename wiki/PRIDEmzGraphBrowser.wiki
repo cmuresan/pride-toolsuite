@@ -168,5 +168,6 @@ To come in the future.
 [PRIDEmzGraphBrowser top of page]
 ----
 == Screenshots ==
+(Click on figure to see the full size version)
 
 [PRIDEmzGraphBrowser top of page]

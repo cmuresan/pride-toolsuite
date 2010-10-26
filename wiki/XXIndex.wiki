@@ -9,7 +9,7 @@
  * [#Getting_Help Getting Help]
  * [#Source_Code Source Code]
 
-== About PRIDE Utilities ==
+== About XXIndex ==
 XXIndex library is original designed as part of the PSI-Dev project. It aims at addressing the needs for quick data retrieval in large XML files.
  
 The key features of the library include:
@@ -24,9 +24,9 @@ XXIndex library is currently used by many projects, below are a few of them:
 
 This library is written in Java, brought to you by the PRIDE team. 
 
-[PRIDEUtilities top of page]
+[XXIndex top of page]
 ----
-== Getting PRIDE Utilities ==
+== Getting XXIndex ==
 The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list downloads section] contains the *XXIndex* jar file and all other required libraries.
 
 ===Maven Dependency===
@@ -57,31 +57,31 @@ The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list dow
 
 For developers, the latest source code is available from our [#Source_Code SVN repository].
 
-[PRIDEUtilities top of page]
+[XXIndextop of page]
 ----
-== Using PRIDE Utilities ==
+== Using XXIndex ==
 
  
-[PRIDEUtilities top of page]
+[XXIndex top of page]
 ----
 
 == API Reference ==
 To come in the future
 
-[PRIDEUtilities top of page]
+[XXIndex top of page]
 ----
 == FAQs ==
 To come in the future
 
-[PRIDEUtilities top of page]
+[XXIndex top of page]
 ----
 == Getting Help ==
 If you have questions or need additional help, please contact the PRIDE Helpdesk at the EBI: *pride-helpdesk at ebi.ac.uk (replace at with @)*.
 
 Please send us your feedback, including error reports, improvement suggestions, new feature requests and any other things you might want to suggest to the PRIDE team.
 
-[PRIDEUtilities top of page]
+[XXIndex top of page]
 ----
 == Source Code ==
 
-[PRIDEUtilities top of page]
+[XXIndex top of page]

@@ -10,7 +10,7 @@
 
 == About PRIDE Quality Chart==
 
-The purpose of PRIDE Chart library is to provide a tool for creating a set of chart in order to show the quality of the data in everyone of the PRIDE Expermients.
+The purpose of PRIDE Quality Chart library is to provide a tool for creating a set of chart in order to show the quality of the data in everyone of the PRIDE Expermients.
 
 Currently, the library provides eight different charts:
  # *Peak Intensity Distribution Chart*: A histogram of ion intensity vs frequency for all MS2 spectra in a single PRIDE experiment. 
@@ -24,7 +24,7 @@ Currently, the library provides eight different charts:
 
 Note: the library is still evolving, we are committed to expand this library and add more useful charts. 
 
-PRIDE Chart library is currently used by one project:
+PRIDE Quality Chart library is currently used by one project:
  * [PRIDEInspector PRIDE Inspector]
 
 This library is written in Java, brought to you by the PRIDE team. 
@@ -32,7 +32,7 @@ This library is written in Java, brought to you by the PRIDE team.
 [PRIDEQualityChart top of page]
 ----
 == Getting PRIDE Quality Chart==
-The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list downloads section] contains the *PRIDE Chart* jar file and all other required libraries.
+The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list downloads section] contains the *PRIDE Quality Chart* jar file and all other required libraries.
 
 ===Maven Dependency===
 *PRIDE Utilities* library can be used in Maven projects, you can include the following snippets in your Maven pom file. 
@@ -65,7 +65,7 @@ For developers, the latest source code is available from our [#Source_Code SVN r
 [PRIDEQualityChart top of page]
 ----
 == Using PRIDE Quality Chart==
-Here we will show you how to use the PRIDE Chart library to create all the charts associated to a PRIDE Experimet Accession Number (stored in the public PRIDE-database), how to store the intermediate data and how to reuse it instead of calculated it again.
+Here we will show you how to use the PRIDE Quality Chart library to create all the charts associated to a PRIDE Experimet Accession Number (stored in the public PRIDE-database), how to store the intermediate data and how to reuse it instead of calculated it again.
 
 ==== Creating all the charts associated to a PRIDE Experimet Accession Number ====
 Note. If you've download the code from the SVN, make sure that you've configured correctly the database access. If you're using the project as a library, then the connection to the database is already configured.

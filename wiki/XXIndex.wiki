@@ -13,9 +13,9 @@
 XXIndex library is originally a part of the PSI-Dev project. It aims at addressing the needs for quick data retrieval in large XML files.
  
 The key features of the library include:
- # *Easy to Use*: XXIndex using XPath to identify XML entities. 
- # *Small Memory Footprint*: Unlike some of XML indexing libraries, XXIndex does not require to load the whole file into the memory (large or small). Only the indexes are stored in order to archive minimum memory requirement.
- # *Quick Indexing*: Although the speed of indexing depends on the complexity of the input XML file, based on our experience, a 500M XML file normally takes around 50 seconds.
+ * *Easy to Use*: XXIndex using XPath to identify XML entities. 
+ * *Small Memory Footprint*: Unlike some of XML indexing libraries, XXIndex does not require to load the whole file into the memory (large or small). Only the indexes are stored in order to archive minimum memory requirement.
+ * *Quick Indexing*: Although the speed of indexing depends on the complexity of the input XML file, based on our experience, a 500M XML file normally takes around 50 seconds.
 
 XXIndex library is currently used by many projects, below are a couple of them:
  * [PRIDEXMLJAXB PRIDE XML JAXB Library]

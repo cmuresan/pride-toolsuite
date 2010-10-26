@@ -11,3 +11,5 @@
  * [PRIDEUtilities PRIDE Utilities]
 
 == News ==
+*_October 26. 2010:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector 0.7] is now available:*
+ * Note: this is a beta release of PRIDE Inspector.

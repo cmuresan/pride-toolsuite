@@ -84,4 +84,6 @@ The source code can be viewed and downloaded from [http://code.google.com/p/prid
 
 ==Screenshots==
 (Click on a screenshot to see the full size version)
+[http://code.google.com/p/pride-toolsuite/source/browse/wiki/images/screenshots/pride-inspector/general_tab.png http://code.google.com/p/pride-toolsuite/source/browse/wiki/images/screenshots/pride-inspector/general_tab_small.png]
+
 [PRIDEInspector top of page]

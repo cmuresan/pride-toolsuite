@@ -10,12 +10,12 @@
 
 == About PRIDE Quality Chart==
 
-The purpose of PRIDE Quality Chart library is to provide a tool for creating a set of charts in order to show the quality of the data for everyone of the PRIDE Expermients.
+The purpose of PRIDE Quality Chart library is to provide a tool for creating a set of charts in order to assess the quality of your MS experiments.
 
-Currently, the library provides eight different charts:
+Using this library, a number of quality charts can be generated which can allow quick quality checks on your dataset. Currently, the library provides eight different charts:
  # *Peak Intensity Distribution Chart*: A histogram of ion intensity vs frequency for all MS2 spectra in a single PRIDE experiment. 
  # *Precursor Ion Charge Distribution Chart*: Displays a bar chart of precursor ion charge for a single PRIDE experiment.
- # *MS^2 m/z Distribution Chart*: Displays a frequency distribution of product ion m/z for different precursor ion charges. 
+ # *MS2 m/z Distribution Chart*: Displays a frequency distribution of product ion m/z for different precursor ion charges. 
  # *Distribution of Precursor Ion Masses Chart*: Displays a frequency distribution of product ion m/z for different precursor ion charges.
  # *Number of Peptides Identified per Protein Chart*: Displays a bar chart with the number of peptides identified per protein for a single PRIDE experiment.
  # *Number of Peaks per Spectrum Chart*: Displays a histogram of number of peaks per MS/MS spectrum in a single PRIDE experiment. 
@@ -88,16 +88,38 @@ try {
     listOfCharts = new ArrayList<PrideChart>(); //An empty list
     //Treat the exception
 }
-//If everything was fine, here listOfCharts contains the charts associated
+//If everything was fine, here listOfCharts contains the available charts
 }}}
 
 ==== Store the intermediate data ====
+In order to visualize the data in the future without having to wait for the summarization process done by `PrideChartSummaryData` object, the PRIDE Quality Chart library allows you to store an intermediate data in JSon format.
+
+{{{
+///Supose the `listOfCharts` object previously loaded
+for(PrideChart prideChart : listOfCharts){
+    //jsonData will contain the neccessary data to create the chart
+    String jsonData = prideChart.getChartJsonData();
+    //type will contain the identifier associated to the PrideChart Object
+    int type = PrideChartFactory.getPrideChartIdentifier(prideChart);
+    //Store the string associated to the type in a file in order to use it in the future
+}
+}}}
+
+The `PrideChartFactory` object can be found in the *uk.ac.ebi.pride.chart.graphics.implementation* package.
  
 [PRIDEQualityChart top of page]
 ----
 
 ==== Reuse the intermediate data ====
- 
+If you have the json data stored with the associated type (PrideChart Object identifier), in order to have your chart again, you only need the next code:
+
+{{{
+//Supose the data is in a variable `jsonData` (as String) and the type in `type` as (Integer)
+PrideChart prideChart = PrideChartFactory.getChart(type, jsonData);
+}}}
+
+The `PrideChartFactory` object can be found in the *uk.ac.ebi.pride.chart.graphics.implementation* package.
+
 [PRIDEQualityChart top of page]
 ----
 

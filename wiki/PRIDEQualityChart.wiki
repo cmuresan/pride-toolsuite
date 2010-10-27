@@ -92,6 +92,8 @@ try {
 //If everything was fine, here listOfCharts contains the available charts
 }}}
 
+The `PrideChartFactory` object can be found in the *uk.ac.ebi.pride.chart.graphics.implementation* package.
+
 [PRIDEQualityChart top of page]
 ----
 ==== Store the intermediate data ====

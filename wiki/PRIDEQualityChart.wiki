@@ -82,6 +82,7 @@ String accessionNumber = "9759";
 List<PrideChart> listOfCharts;
 try {
     //Using PrideChartSummaryData only with the accesion number STRING, it will use
+    //the default configuration in your `settings.xml` file to access to de database
     ExperimentSummaryData summaryData = new PrideChartSummaryData(accessionNumber);
     listOfCharts = PrideChartFactory.getAllCharts(spectralSummaryData);
 } catch (SpectralDataPerExperimentException e) {

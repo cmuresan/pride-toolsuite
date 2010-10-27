@@ -116,7 +116,7 @@ The `PrideChartFactory` object can be found in the *uk.ac.ebi.pride.chart.graphi
 If you have the json data stored with the associated type (PrideChart Object identifier), in order to have your chart again, you only need the next code:
 
 {{{
-//Supose the data is in a variable `jsonData` (as String) and the type in `type` as (Integer)
+//Supose the data is in a variable `jsonData` (as String) and the type in `type` (as Integer)
 PrideChart prideChart = PrideChartFactory.getChart(type, jsonData);
 }}}
 

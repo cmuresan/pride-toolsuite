@@ -92,6 +92,8 @@ try {
 //If everything was fine, here listOfCharts contains the available charts
 }}}
 
+[PRIDEQualityChart top of page]
+----
 ==== Store the intermediate data ====
 In order to visualize the data in the future without having to wait for the summarization process done by `PrideChartSummaryData` object, the PRIDE Quality Chart library allows you to store an intermediate data in JSon format.
 
@@ -107,10 +109,9 @@ for(PrideChart prideChart : listOfCharts){
 }}}
 
 The `PrideChartFactory` object can be found in the *uk.ac.ebi.pride.chart.graphics.implementation* package.
- 
+
 [PRIDEQualityChart top of page]
 ----
-
 ==== Reuse the intermediate data ====
 If you have the json data stored with the associated type (PrideChart Object identifier), in order to have your chart again, you only need the next code:
 
@@ -123,7 +124,6 @@ The `PrideChartFactory` object can be found in the *uk.ac.ebi.pride.chart.graphi
 
 [PRIDEQualityChart top of page]
 ----
-
 == API Reference ==
 To come in the future
 

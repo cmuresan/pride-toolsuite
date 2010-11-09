@@ -40,7 +40,7 @@ The zip file in the [http://code.google.com/p/pride-toolsuite/downloads/list dow
  <dependency>
    <groupId>uk.ac.ebi.pride.chart</groupId>
    <artifactId>pride-chart</artifactId>
-   <version>0.0.20</version>
+   <version>0.1.0</version>
  </dependency> 
 }}}
 

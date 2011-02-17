@@ -76,7 +76,7 @@ If you have questions or need additional help, please contact the PRIDE Helpdesk
 ----
 
 ==Source Code==
-The source code can be viewed and downloaded from [http://code.google.com/p/pride-toolsuite/source/checkout here]
+Coming soon.
 
 [PRIDEInspector top of page]
 

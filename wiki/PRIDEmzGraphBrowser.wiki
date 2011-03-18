@@ -10,7 +10,7 @@
  * [#Screenshots Screenshots]
 
 == About mzGraph Browser ==
-*PRIDE mzGraph Browser* is a library for visualzing and annotating MS spectrum and chromatogram interactively. It includes features like:
+*PRIDE mzGraph Browser* is a library for visualizing and annotating MS spectrum and chromatogram. It includes features like:
  * Zoom in/out.
  * Export peak values.
  * Save/Print spectrum and chromatogram as image.

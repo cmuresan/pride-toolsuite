@@ -10,9 +10,7 @@
 
 == About PRIDE Quality Chart==
 
-The purpose of PRIDE Quality Chart library is to provide a tool for creating a set of charts in order to assess the quality of your MS experiments.
-
-Using this library, a number of quality charts can be generated which can allow quick quality checks on your dataset. Currently, the library provides eight different charts:
+The purpose of PRIDE Quality Chart library is to provide a tool for creating charts to assess the quality of your MS experiments. Currently, the library provides eight different charts:
  # *Peak Intensity Distribution Chart*: A histogram of ion intensity vs frequency for all MS2 spectra in a single PRIDE experiment. 
  # *Precursor Ion Charge Distribution Chart*: Displays a bar chart of precursor ion charge for a single PRIDE experiment.
  # *MS2 m/z Distribution Chart*: Displays a frequency distribution of product ion m/z for different precursor ion charges. 
@@ -20,7 +18,7 @@ Using this library, a number of quality charts can be generated which can allow 
  # *Number of Peptides Identified per Protein Chart*: Displays a bar chart with the number of peptides identified per protein for a single PRIDE experiment.
  # *Number of Peaks per Spectrum Chart*: Displays a histogram of number of peaks per MS/MS spectrum in a single PRIDE experiment. 
  # *Delta m/z Chart*: Displays a relative frequency distribution of theoretical precursor ion mass - experimental precursor ion mass. 
- # *Number of Missed Tryptic Cleavages Chart*: . 
+ # *Number of Missed Tryptic Cleavages Chart*: Display the number of missed tryptic cleavages. 
 
 Note: the library is still evolving, we are committed to expand this library and add more useful charts. 
 

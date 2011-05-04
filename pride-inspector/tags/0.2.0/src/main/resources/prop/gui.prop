@@ -1,0 +1,107 @@
+open.file.title=Open File...
+open.file.tooltip=Open mzML or Pride XML files
+open.file.menu.location=File
+open.file.icon.small=icon/16x16/open_file.gif
+open.file.icon.large=icon/128x128/open_file_128x128.png
+
+open.database.title=Open PRIDE database
+open.database.tooltip=Connection PRIDE public database
+open.database.menu.location=File
+open.database.icon.small=icon/16x16/open_database.gif
+open.database.icon.large=icon/128x128/open_database_128x128.png
+
+close.source.title=Close
+close.source.tooltip=Close file/database connection
+close.source.menu.location=File
+close.source.enable.icon.small=icon/16x16/delete_enable.gif
+close.source.disable.icon.small=icon/16x16/delete_disable.gif
+
+reload.source.title=Refresh
+reload.source.tooltip=Reload file/database
+reload.source.menu.location=File
+reload.source.enable.icon.small=icon/16x16/refresh_enable.gif
+reload.source.disable.icon.small=icon/16x16/refresh_disable.gif
+
+reviewer.download.title=Reviewer Download
+reviewer.download.tooltip=Reviewer download
+reviewer.download.menu.location=File
+reviewer.download.icon.small=icon/16x16/reviewer_download.png
+reviewer.download.icon.large=icon/128x128/download.png
+reviewer.download.url=http://www.ebi.ac.uk/pride/review
+
+help.title=Help
+help.tooltip=Open help document
+help.menu.location=Help
+help.icon.small=icon/16x16/help.gif
+
+about.title=About
+about.tooltip=Information about the tool
+about.menu.location=Help
+about.icon.small=icon/16x16/about.png
+
+exit.title=Exit
+exit.menu.location=File
+
+data.source.title=Data Sources
+data.source.small.icon=icon/16x16/data_source.gif
+data.source.tooltip=Display data sources
+
+property.small.icon=icon/16x16/property.png
+property.title=Property
+property.tooltip=Display Spectrum Properties
+
+file.source.small.icon=icon/16x16/xml_file.gif
+database.source.small.icon=icon/16x16/open_database.gif
+
+data.source.viewer.title=Data Sources
+data.source.viewer.small.icon=icon/16x16/data_source.gif
+data.source.viewer.tooltip=Opened data sources
+
+experiment.tree.viewer.title=Experiments
+experiment.tree.viewer.small.icon=icon/16x16/experiment_tree_enable.gif
+experiment.tree.viewer.node.small.icon=icon/16x16/experiment_tree_node_blue.png
+experiment.tree.viewer.root.node.small.icon=icon/16x16/open_database.gif
+experiment.tree.viewer.find.node.small.icon=icon/16x16/find_experiment.png
+experiment.tree.viewer.tooltip=List of experiments
+
+navigation.expand.small.icon=icon/16x16/navigation_expand.png
+navigation.collapse.small.icon=icon/16x16/navigation_collapse.png
+
+ptm.url.prefix=http://www.ebi.ac.uk/ontology-lookup/?termId=
+ptm.url.endfix=
+
+logback.configurationFile=prop/logback-test.xml
+
+export.enable.icon.small=icon/16x16/export_plan_16x16.gif
+export.disable.icon.small=icon/16x16/export_plan_disable_16x16.gif
+export.desc=Batch Download
+export.tooltip=Export into tab delimited file all spectrum data
+
+chart_auto_adjust.desc=AutoAdjust
+chart_auto_adjust.tooltip=Auto adjust the chart axis
+chart_auto_adjust.icon.small=icon/16x16/chart_auto_adjust.png
+chart_auto_adjust.icon.large=icon/32x32/chart_auto_adjust.png
+
+chart_all_charts.desc=AutoAdjust
+chart_all_charts.tooltip=Show all the chart thumbnails
+chart_all_charts.icon.small=icon/16x16/chart_all_charts.png
+chart_all_charts.icon.large=icon/32x32/chart_all_charts.png
+
+chart_previous.desc=Back
+chart_previous.tooltip=Show the previous chart
+chart_previous.icon.small=icon/16x16/chart_back.png
+chart_previous.icon.large=icon/32x32/chart_back.png
+
+chart_next.desc=Next
+chart_next.tooltip=Show the next chart
+chart_next.icon.small=icon/16x16/chart_next.png
+chart_next.icon.large=icon/32x32/chart_next.png
+
+chart_info.desc=Info
+chart_info.tooltip=Information
+chart_info.icon.small=icon/16x16/chart_info.png
+chart_info.icon.large=icon/32x32/chart_info.png
+
+chart_zoom_in.desc=Zoom
+chart_zoom_in.tooltip=Zoom
+chart_zoom_in.icon.small=icon/16x16/chart_zoom_in.png

@@ -1,0 +1,41 @@
+pride.inspector.name=${name}
+pride.inspector.version=${version}
+pride.inspector.jar.name=${name}-${version}.jar
+
+# pride helpdeskp email
+pride.helpdesk.email=pride-support@ebi.ac.uk
+
+# example files
+pride.inspector.pride.example.file=examples/pride-example.xml
+pride.inspector.mzml.example.file=examples/mzml-example.mzML
+
+# pride website
+pride.website=http://www.ebi.ac.uk/pride
+
+# pride inspector download website
+pride.inspector.website=http://code.google.com/p/pride-toolsuite
+
+# the size of each mzdata batch load
+mzdata.batch.load.size=100
+
+# threshold for starting calculating pride chart
+# this is the number of spectra
+chart.spectra.threshold = 25000
+
+# threshold for file size (in M)
+# this will trigger a warning message if the file is bigger
+open.file.threshold = 500
+
+# threshold for download size (in M)
+# this will trigger a warning message if the download size is over this limit
+download.size.threshold = 200
+
+# public experiments to be ignored, this is too big to open in the PRIDE Inspector
+large.pride.experiments=9776
+
+# default pride user login
+default.pride.username=inspector
+default.pride.password=inspector
+
+# URL for downloading pride experiments in xml file format
+pride.experiment.download.url=http://www.ebi.ac.uk/pride/review

@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" media="all" href="../../css/s.css">
+    <title>General Tab</title>
+</head>
+
+<body class="template">
+<div id="container">
+
+<!-- header -->
+<div id="header">
+    <h1>General Tab</h1>
+</div>
+
+<!-- navigation -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+    <tr>
+        <td align="left" class="topicpath">
+            <a href="../browse_data.html">Previous</a> | <a href="protein.html">Next</a> | <a
+                href="#topicSeeAlsoTopicsList">See Also</a>
+        </td>
+        <td width="70%" class="topicpath"></td>
+    </tr>
+</table>
+
+<!-- table of contents -->
+<div class="introduction">
+    <p>
+        The General Tab provides a unified view on the metadata of different types of data sources. It is
+        arranged in a series of panels, each panel showing a specific type of metadata. The type of metadata 
+        is indicated by the panel's title.
+    </p>
+    <br>
+
+    <p>
+        All metadata are shown by default. Missing panels imply that the related information is not available
+        in the data sources. To better view the data, you can click <img
+            src="../../../../icon/16x16/navigation_expand.gif" alt=""> to
+        hide the metadata you are not interested in. If the label is too long, you can mouse over the label to view the
+        full
+        label as a tooltip.
+    </p>
+    <br>
+
+    <p>
+        You can find out more about each metadata panels in the respective sections below:
+    </p>
+    <ul>
+        <li><a href="#general">General</a>, <a href="#reference">Reference</a>, <a href="#contact">Contact</a>, <a
+                href="#file">File Content</a></li>
+        <li><a href="#sample">Sample</a>, <a href="#protocol">Protocol</a>, <a href="#instrument">Instrument
+            Configuration</a></li>
+        <li><a href="#software">Software</a>, <a href="#scan">Scan Setting</a>, <a href="#data_processing">Data
+            Processing</a></li>
+    </ul>
+</div>
+
+<!-- content -->
+<div id="content">
+    <div class="section">
+        <div class="piProcedureSteps">
+            <a name="general"></a>
+
+            <h3>General</h3>
+
+            <p>
+                The overall information about the experiment.
+                <br>
+                For <span class="keyword">mzML</span>, you will see the ID, accession and version of the experiment.
+                <br>
+                For <span class="keyword">PRIDE XML</span>, you will see additional information, such as: title,
+                short
+                label, project name,
+                experiment description and etc.
+            </p>
+        </div>
+
+        <div class="piProcedureSteps">
+            <a name="reference"></a>
+
+            <h3>Reference</h3>
+
+            <p>
+                Any publication related to this data source. It consists of a full reference field
+                and a PubMed field. For more details, you can click on the hyperlink to go directly to the PubMed website.
+                <br>
+                In <span class="keyword">mzML</span>, reference information does not exist.
+                <br>
+                In <span class="keyword">PRIDE XML</span>, reference information is optional.
+            </p>
+        </div>
+
+        <div class="piProcedureSteps">
+            <a name="contact"></a>
+
+            <h3>Contact</h3>
+
+            <p>
+                Contact details for the people who are responsible for the experiment.
+                <br>
+                In <span class="keyword">mzML</span>, contact information does not exist.
+                <br>
+                In <span class="keyword">PRIDE XML</span>, contact information is required.
+            </p>
+        </div>
+
+        <div class="piProcedureSteps">
+            <a name="file"></a>
+
+            <h3>File Content</h3>
+
+            <p>
+                Description of what type of data is stored in the data source. For
+                instance, you can see "mass spectrum", which indicates that the data source contains spectra.
+            </p>
+        </div>
+
+        <div class="piProcedureSteps">
+            <a name="sample"></a>
+
+            <h3>Sample</h3>
+
+            <p>
+                Additional information on the sample investigated in the experiment. Both <span
+                    class="keyword">mzML</span> and <span class="keyword">PRIDE XML</span>
+                format contain this information. It generally contains the species, tissue and cell
+                type investigated in the experiment.
+            </p>
+        </div>
+
+        <div class="piProcedureSteps">
+            <a name="protocol"></a>
+
+            <h3>Protocol</h3>
+
+            <p>
+                Detailed description of the experimental steps. It starts with a name
+                for the protocol, followed by a list of steps. Note that, only PRIDE XML contains this information.
+            </p>
+        </div>
+
+        <div class="piProcedureSteps">
+            <a name="instrument"></a>
+
+            <h3>Instrument Configuration</h3>
+
+            <p>
+                Instrument Configuration captures the mass spectrometer model. It contains the following key
+                sections:
+            <ul>
+                <li>Instrument Name - Descriptive name of the instrument (make, model, significant customisations)
+                </li>
+                <li>Source - Invariant ion source (e.g. MALDI) information, as a run of name-value pairs</li>
+                <li>Analyzer - Mass analyzer component (e.g. quadrupole, collision cell), ordered so as to reflect the
+                    physical order of the
+                    described components in the mass spectrometer.
+                </li>
+                <li>Detector - Ion detector information, as a run of name-value pairs.</li>
+            </ul>
+            </p>
+        </div>
+
+        <div class="piProcedureSteps">
+            <a name="software"></a>
+
+            <h3>Software</h3>
+
+            <p>
+                Software information, for example: the software that produced the peak list. It contains the
+                official name for the software package used.
+            </p>
+        </div>
+
+        <div class="piProcedureSteps">
+            <a name="scan"></a>
+
+            <h3>Scan Setting</h3>
+
+            <p>
+                Description of the acquisition settings of the instrument prior to the start of the run.
+            </p>
+        </div>
+
+        <div class="piProcedureSteps">
+            <a name="data_processing"></a>
+
+            <h3>Data Processing</h3>
+
+            <p>
+                Description of the default processing by which the peak list(s) were generated.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+<div id="seealso">
+    <a name="topicSeeAlsoTopicsList"></a>
+
+    <h2>See Also</h2>
+
+    <p>
+        <strong>File formats:</strong>
+    </p>
+
+    <ul>
+        <li><a href="../../faq/mzml.html">mzML</a></li>
+        <li><a href="../../faq/pride_xml.html">PRIDE XML</a></li>
+    </ul>
+</div>
+<div id="footer">
+    <p>Comments, questions, suggestions? See the
+        <a href="../../feedback.html">Feedback</a> page to contact <strong>PRIDE HelpDesk</strong>
+    </p>
+</div>
+</div>
+</body>
+</html>

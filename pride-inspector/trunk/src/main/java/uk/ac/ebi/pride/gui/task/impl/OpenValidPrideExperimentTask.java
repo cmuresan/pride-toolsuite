@@ -2,10 +2,8 @@ package uk.ac.ebi.pride.gui.task.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.jdbc.odbc.JdbcOdbc;
 import uk.ac.ebi.pride.data.controller.impl.PrideDBAccessControllerImpl;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.TaskDialog;
 import uk.ac.ebi.pride.gui.component.reviewer.PrivateDownloadSelectionPane;
@@ -17,12 +15,10 @@ import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.text.ParseException;
 import java.util.*;
 import java.util.List;
 

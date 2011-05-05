@@ -263,7 +263,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
                 content.append(reader.readLine());
             }
             // check file type
-            if (content.toString().toLowerCase().contains("mzml")) {
+            if (content.toString().contains("<mzML xmlns=\"")) {
                 valid = true;
             }
         } catch (Exception e) {

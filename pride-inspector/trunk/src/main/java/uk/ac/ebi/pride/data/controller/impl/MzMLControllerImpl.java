@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * MzMLControllerImpl provides methods to access mzML files.
@@ -36,6 +38,7 @@ import java.util.List;
  */
 public class MzMLControllerImpl extends CachedDataAccessController {
     private static final Logger logger = LoggerFactory.getLogger(MzMLControllerImpl.class);
+    private static Pattern mzMLHeaderPattern = Pattern.compile("<\\?xml [^>]*>\\s*<mzML xmlns=.*", Pattern.MULTILINE);
 
     private MzMLUnmarshallerAdaptor unmarshaller = null;
 
@@ -262,10 +265,10 @@ public class MzMLControllerImpl extends CachedDataAccessController {
             for (int i = 0; i < 10; i++) {
                 content.append(reader.readLine());
             }
-            // check file type
-            if (content.toString().contains("<mzML xmlns=\"")) {
-                valid = true;
-            }
+            
+            Matcher matcher = mzMLHeaderPattern.matcher(content);
+            
+            valid = matcher.find();
         } catch (Exception e) {
             logger.error("Failed to read file", e);
         } finally {

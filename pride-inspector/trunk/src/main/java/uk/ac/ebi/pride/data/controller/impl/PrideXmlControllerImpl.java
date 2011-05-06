@@ -15,6 +15,8 @@ import uk.ac.ebi.pride.jaxb.xml.PrideXmlReader;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * PrideXmlControllerImpl is responsible for reading Pride Xml files.
@@ -25,6 +27,7 @@ import java.util.List;
  */
 public class PrideXmlControllerImpl extends CachedDataAccessController {
     private static final Logger logger = LoggerFactory.getLogger(PrideXmlControllerImpl.class);
+    private static final Pattern prideXmlHeaderPattern = Pattern.compile("^<\\?xml [^>]*>\\s*<ExperimentCollection [^>]*>", Pattern.MULTILINE);
 
     private PrideXmlReader reader = null;
 
@@ -414,9 +417,8 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 content.append(reader.readLine());
             }
             // check file type
-            if (content.toString().toLowerCase().contains("experimentcollection")) {
-                valid = true;
-            }
+            Matcher matcher = prideXmlHeaderPattern.matcher(content);
+            valid = matcher.find();
         } catch (Exception e) {
             logger.error("Failed to read file", e);
         } finally {

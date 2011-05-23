@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" media="all" href="../../css/s.css">
+    <title>Peptide Tab</title>
+</head>
+
+<body class="template">
+<div id="container">
+
+<!-- header -->
+<div id="header">
+    <h1>Peptide Tab</h1>
+</div>
+
+<!-- navigation -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+    <tr>
+        <td align="left" class="topicpath">
+            <a href="protein.html">Previous</a> | <a href="mzgraph.html">Next</a> | <a
+                href="#topicSeeAlsoTopicsList">See Also</a>
+        </td>
+        <td width="70%" class="topicpath"></td>
+    </tr>
+</table>
+
+<!-- table of contents -->
+<div class="introduction">
+    <p>
+        The Peptide Tab provides a peptide centric view. All identified peptides are displayed in this
+        area. The total number of peptides is part of the tab title.
+    </p>
+
+    <p>
+        From top to bottom, you can see three main areas of information:
+    <ul>
+        <li><a href="#peptide">Peptide</a> - a summary table containing all peptides in the experiment
+        </li>
+        <li><a href="#ptm">PTM</a> - a table showing the post translational modifications in the selected peptide
+        </li>
+        <li><a href="#spectrum">Spectrum Browser</a> - visualizes the spectrum used to identified the peptide.</li>
+    </ul>
+    </p>
+
+    <div class="note">
+        <p>
+            You can select the peptide you are interested in by clicking on the respective row in the peptide table. This
+            will trigger an automatic update of both the PTM table and the spectrum browser. The of PTMs
+            in the selected peptide will be updated in the PTM table. Additionally, the spectrum identifying 
+            the selected peptide will be displayed.
+        </p>
+    </div>
+
+    <div class="note">
+        <p>
+            You can sort the table according to the column by clicking on the column's title. Sorting can be
+            either ascending or descending.
+        </p>
+    </div>
+</div>
+
+<!-- content -->
+<div id="content">
+    <div class="section">
+        <div class="piProcedureSteps">
+            <a name="peptide"></a>
+
+            <h3>Peptide</h3>
+
+            <p>
+                The table below gives a short description for every column in the peptide table:
+            <table class="piTable" width="100%" cellpadding="4" cellspacing="4">
+                <tr class="piRowHead">
+                    <td width="20%">Column</td>
+                    <td>Description</td>
+                </tr>
+                <tr class="piRowEven">
+                    <td width="20%">Row Number</td>
+                    <td>Displays the row number</td>
+                </tr>
+                <tr class="piRowOdd">
+                    <td width="20%">Peptide Sequence</td>
+                    <td>The complete peptide sequence with modified amino acids highlighted in red. When 
+                    	putting the mouse cursour over the peptide sequence, a tooltip with PTM details is displayed.
+                    </td>
+                </tr>
+                <tr class="piRowEven">
+                    <td width="20%">Submitted Protein Accession</td>
+                    <td>The peptide's protein accession from the original data file/PRIDE experiment.</td>
+                </tr>
+                <tr class="piRowOdd">
+                    <td width="20%">Mapped Protein Accession</td>
+                    <td>As submitted protein accessions can sometimes
+                        include none-standard protein accessions PRIDE Inspector will try to format it to a more
+                        common format.
+                    </td>
+                </tr>
+                <tr class="piRowEven">
+                    <td width="20%">Precursor Charge</td>
+                    <td>Precursor ion charge</td>
+                </tr>
+                <tr class="piRowOdd">
+                    <td width="20%">Delta m/z</td>
+                    <td>
+                        The difference between the observed m/z and the theoretical m/z.
+                    </td>
+                </tr>
+                <tr class="piRowEven">
+                    <td width="20%">Precursor m/z</td>
+                    <td>Precursor ion m/z value.</td>
+                </tr>
+                <tr class="piRowOdd">
+                    <td width="20%">#PTMs</td>
+                    <td>Number of post translational modifications on this peptide.</td>
+                </tr>
+                <tr class="piRowEven">
+                    <td width="20%">PTM List</td>
+                    <td>A distinct list of PTM accessions together with their count</td>
+                </tr>
+                <tr class="piRowOdd">
+                    <td width="20%">#Ions</td>
+                    <td>Number of fragment ions reported for this peptide identification.</td>
+                </tr>
+                <tr class="piRowEven">
+                    <td width="20%">Peptide Score</td>
+                    <td>
+                        The peptide's score given by the search engine. The number of columns depends on the search engine used.
+                        For instance, Mascot score will be displayed if Mascot was used. Both X correlation and
+                        Delta Cn will be displayed for SEQUEST.
+                    </td>
+                </tr>
+                <tr class="piRowOdd">
+                    <td width="20%">Length</td>
+                    <td>Peptide length</td>
+                </tr>
+                <tr class="piRowEven">
+                    <td width="20%">Start</td>
+                    <td>The start position of the peptide within protein sequence.</td>
+                </tr>
+                <tr class="piRowOdd">
+                    <td width="20%">Stop</td>
+                    <td>The end position of the peptide within protein sequence.</td>
+                </tr>
+                <tr class="piRowEven">
+                    <td width="20%">Spectrum</td>
+                    <td>Spectrum ID</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="piProcedureSteps">
+            <a name="ptm"></a>
+
+            <h3>PTM</h3>
+
+            <p>
+                The table below gives a short description for every column in the PTM table:
+            <table class="piTable" width="100%" cellpadding="4" cellspacing="4">
+                <tr class="piRowHead">
+                    <td width="20%">Column</td>
+                    <td>Description</td>
+                </tr>
+                <tr class="piRowEven">
+                    <td width="20%">Row Number</td>
+                    <td>Displays the row number</td>
+                </tr>
+                <tr class="piRowOdd">
+                    <td width="20%">Accession</td>
+                    <td>The original accession from the PTM database.</td>
+                </tr>
+                <tr class="piRowEven">
+                    <td width="20%">Name</td>
+                    <td>PTM name</td>
+                </tr>
+                <tr class="piRowOdd">
+                    <td width="20%">Location</td>
+                    <td>The location within the peptide where the PTM occurred</td>
+                </tr>
+                <tr class="piRowEven">
+                    <td width="20%">Modified Residue</td>
+                    <td>The modified amino acid.</td>
+                </tr>
+                <tr class="piRowOdd">
+                    <td width="20%">Monoisotopic Mass Delta</td>
+                    <td>Monoisotopic Mass Delta</td>
+                </tr>
+                <tr class="piRowEven">
+                    <td width="20%">Average Mass Delta</td>
+                    <td>Average Mass Delta</td>
+                </tr>
+                <tr class="piRowOdd">
+                    <td width="20%">PTM Database</td>
+                    <td>The PTM database where the modification has been defined.</td>
+                </tr>
+                <tr class="piRowEven">
+                    <td width="20%">PTM Database Version</td>
+                    <td>The version of the PTM database.</td>
+                </tr>
+            </table>
+            <div class="tip">
+                PTM table is hidden when the selected peptide has not post translational modifications.
+            </div>
+            </p>
+        </div>
+
+        <div class="piProcedureSteps">
+            <a name="spectrum"></a>
+
+            <h3>Spectrum Browser</h3>
+
+            <p>
+                Displays the spectrum identifying the selected peptide.
+                <br>
+                For more details, please refer to: <a href="../mzgraph/spectra.html">Spectrum Browser</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+<div id="seealso">
+    <a name="topicSeeAlsoTopicsList"></a>
+
+    <h2>See Also</h2>
+
+    <ul>
+        <li><a href="../export.html">Exporting Data from PRIDE Inspector</a></li>
+    </ul>
+</div>
+<div id="footer">
+    <p>Comments, questions, suggestions? See the
+        <a href="../../feedback.html">Feedback</a> page to contact <strong>PRIDE HelpDesk</strong>
+    </p>
+</div>
+</div>
+</body>
+</html>

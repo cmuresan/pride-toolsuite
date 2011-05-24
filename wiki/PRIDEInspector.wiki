@@ -69,7 +69,7 @@ The zip file contains also an `examples` folder with 2 sample files: one in mzML
 ----
 
 ==Getting Help==
-If you have questions or need additional help, please contact the PRIDE Helpdesk at the EBI: *pride-helpdesk at ebi.ac.uk* (replace at with @). To help us better identify the problem, you can also include a (preferably zipped) copy of the `pride-inspector.log` from the `log` folder. 
+If you have questions or need additional help, please contact the PRIDE Helpdesk at the EBI: *pride-support at ebi.ac.uk* (replace at with @). To help us better identify the problem, you can also include a (preferably zipped) copy of the `pride-inspector.log` from the `log` folder. 
 
 [PRIDEInspector top of page]
 

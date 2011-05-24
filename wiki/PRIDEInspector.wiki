@@ -1,6 +1,9 @@
 #summary PRIDE Inspector is a desktop application to visualize and perform first quality assessment on Mass Spectrometry data.
 #sidebar TableOfContents
 
+<table>
+  <tr>
+    <td width="70%">
  * [#About_PRIDE_Inspector About PRIDE Inspector]
  * [#Getting_PRIDE_Inspector Getting PRIDE Inspector]
   * [#Installation_Requirements Installation Requirements]
@@ -9,6 +12,26 @@
  * [#Getting_Help Getting Help]
  * [#Source_Code Source Code]
  * [#Screenshots Screenshots]
+    </td>
+    <td width="30%">
+<table border="1">
+<tr>
+<td>
+[http://download.oracle.com/javase/6/docs/technotes/guides/javaws/developersguide/contents.html http://pride-toolsuite.googlecode.com/svn/wiki/images/java-webstart-logo.png]
+<p align="center">*PRIDE Inspector WebStart*</p>
+
+    * Visualize MS data in PRIDE XML and mzML format
+    * View all public experiments in PRIDE
+    * Assess data quality using plots and charts
+    * Download and view locally ALL private experiments in PRIDE
+<p align="center">
+[http://www.ebi.ac.uk/pride/webstart/pride-inspector.jnlp http://pride-toolsuite.googlecode.com/svn/wiki/images/pride-inspector-launch-button.png]</p>
+</td>
+</tr>
+</table>
+    </td>
+  </tr>
+</table>
 
 ----
 ==About PRIDE Inspector==

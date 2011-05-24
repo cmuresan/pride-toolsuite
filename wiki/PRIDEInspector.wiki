@@ -76,7 +76,14 @@ If you have questions or need additional help, please contact the PRIDE Helpdesk
 ----
 
 ==Source Code==
-Coming soon.
+
+You can browse the source code here:
+[http://code.google.com/p/pride-toolsuite/source/browse/#svn%2Fpride-inspector%2Ftrunk Browse code repository]
+
+Alternatively, non-members may check out a read-only working copy anonymously over HTTP:
+{{{
+svn checkout http://pride-toolsuite.googlecode.com/svn/pride-inspector/trunk pride-inspector-read-only
+}}}
 
 [PRIDEInspector top of page]
 

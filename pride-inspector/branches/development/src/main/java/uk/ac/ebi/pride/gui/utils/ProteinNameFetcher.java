@@ -5,6 +5,7 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.gui.component.SharedLabels;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static uk.ac.ebi.pride.gui.component.SharedLabels.TAB;
 
 public class ProteinNameFetcher {
     private Logger logger = LoggerFactory.getLogger(ProteinNameFetcher.class);
@@ -158,9 +161,9 @@ public class ProteinNameFetcher {
 
         for (int i = 1; i < lines.length; i++) {
             if (lines[i].contains("unreviewed"))
-                trembl.add(lines[i].substring(0, lines[i].indexOf('\t')));
+                trembl.add(lines[i].substring(0, lines[i].indexOf(TAB)));
             else
-                swissprot.add(lines[i].substring(0, lines[i].indexOf('\t')));
+                swissprot.add(lines[i].substring(0, lines[i].indexOf(TAB)));
         }
 
         // return the first swissprot name if there is one, otherwise the first trembl name
@@ -197,9 +200,9 @@ public class ProteinNameFetcher {
 
         for (int i = 1; i < lines.length; i++) {
             if (lines[i].contains("unreviewed"))
-                trembl.add(lines[i].substring(0, lines[i].indexOf('\t')));
+                trembl.add(lines[i].substring(0, lines[i].indexOf(TAB)));
             else
-                swissprot.add(lines[i].substring(0, lines[i].indexOf('\t')));
+                swissprot.add(lines[i].substring(0, lines[i].indexOf(TAB)));
         }
 
         // return the first swissprot accession if there is one, otherwise the first trembl accession

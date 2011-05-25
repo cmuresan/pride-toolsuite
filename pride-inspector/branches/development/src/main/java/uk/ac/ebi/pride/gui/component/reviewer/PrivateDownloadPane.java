@@ -2,26 +2,15 @@ package uk.ac.ebi.pride.gui.component.reviewer;
 
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.component.dialog.OpenFileDialog;
-import uk.ac.ebi.pride.gui.component.dialog.TaskDialog;
-import uk.ac.ebi.pride.gui.component.table.model.ListTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.ReviewDownloadTableModel;
-import uk.ac.ebi.pride.gui.desktop.*;
-import uk.ac.ebi.pride.gui.task.impl.DownloadExperimentTask;
 import uk.ac.ebi.pride.gui.task.impl.OpenReviewerConnectionTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.help.CSH;
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

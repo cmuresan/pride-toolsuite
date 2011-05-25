@@ -17,6 +17,10 @@ import java.util.List;
  */
 public class DataAccessUtilities {
 
+    public static List<Integer> getTaxonomy(MetaData metaData) {
+        // todo: to be implemented
+        return null;
+    }
 
     public static int getNumberOfPeaks(Spectrum spectrum) {
         int numOfPeaks = -1;

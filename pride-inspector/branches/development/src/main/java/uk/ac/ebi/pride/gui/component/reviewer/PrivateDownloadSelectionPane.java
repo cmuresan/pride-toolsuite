@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.component.reviewer;
 
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.component.dialog.OpenFileDialog;
+import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.component.dialog.TaskDialog;
 import uk.ac.ebi.pride.gui.component.table.model.ListTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.ReviewDownloadTableModel;
@@ -170,7 +170,7 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
     }
 
     private void browseButtonPressed() {
-        OpenFileDialog ofd = new OpenFileDialog(context.getOpenFilePath(), "Select Path Save To");
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select Path Save To", null, false);
         ofd.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         ofd.setMultiSelectionEnabled(false);
         int result = ofd.showOpenDialog(this);

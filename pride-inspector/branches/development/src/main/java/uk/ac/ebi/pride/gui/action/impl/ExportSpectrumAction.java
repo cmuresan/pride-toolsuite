@@ -7,7 +7,8 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.access.DataAccessMonitor;
 import uk.ac.ebi.pride.gui.action.PrideAction;
-import uk.ac.ebi.pride.gui.component.dialog.OpenFileDialog;
+import uk.ac.ebi.pride.gui.component.SharedLabels;
+import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.impl.ExportSpectrumMGFTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
@@ -18,6 +19,8 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+
+import static uk.ac.ebi.pride.gui.component.SharedLabels.*;
 
 /**
  * Export spectra to mgf format.
@@ -30,7 +33,7 @@ import java.io.File;
 public class ExportSpectrumAction extends PrideAction implements PropertyChangeListener {
     private static final Logger logger = LoggerFactory.getLogger(ExportSpectrumAction.class);
     private PrideInspectorContext context;
-    private static final String FILE_EXTENSION = ".mgf";
+    private static final String FILE_NAME = "spectrum";
 
     public ExportSpectrumAction(String name, Icon icon) {
         super(name, icon);
@@ -41,17 +44,18 @@ public class ExportSpectrumAction extends PrideAction implements PropertyChangeL
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        OpenFileDialog ofd = new OpenFileDialog(context.getOpenFilePath(), "Select File To Export Spectrum Data To", ".mgf");
+        DataAccessController controller = context.getForegroundDataAccessController();
+        String defaultFileName = controller.getName().split("\\" + DOT)[0] + "_" + FILE_NAME;
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select File To Export Spectrum Data To", defaultFileName, false, MGF_FILE);
         ofd.setMultiSelectionEnabled(false);
-        int result = ofd.showSaveDialog(Desktop.getInstance().getMainComponent());
+        int result = ofd.showDialog(Desktop.getInstance().getMainComponent(), null);
         if (result == JFileChooser.APPROVE_OPTION) {
-            DataAccessController controller = context.getForegroundDataAccessController();
             File selectedFile = ofd.getSelectedFile();
             // store file path for reuse
             String filePath = selectedFile.getPath();
             context.setOpenFilePath(filePath.replace(selectedFile.getName(), ""));
 
-            ExportSpectrumMGFTask newTask = new ExportSpectrumMGFTask(controller, filePath + (filePath.endsWith(FILE_EXTENSION) ? "" : FILE_EXTENSION));
+            ExportSpectrumMGFTask newTask = new ExportSpectrumMGFTask(controller, filePath + (filePath.endsWith(MGF_FILE) ? "" : MGF_FILE));
             // set task's gui blocker
             newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
             // add task listeners

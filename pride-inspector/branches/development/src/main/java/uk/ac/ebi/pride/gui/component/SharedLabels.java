@@ -54,4 +54,15 @@ public interface SharedLabels {
 
     public static final String PUBMED = "PubMed";
     public static final String DOI = "DOI";
+
+    public static final String DOT = ".";
+    public static final String COMMA = ",";
+    public static final String TAB = "\t";
+    public static final String TAB_SEP_FILE = ".tsv";
+    public static final String MGF_FILE = ".mgf";
+    public static final String MZXML_FILE = ".mzml";
+    public static final String XML_FILE = ".xml";
+    public static final String GZIPPED_FILE = ".gz";
+
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 }

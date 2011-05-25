@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
+import uk.ac.ebi.pride.gui.component.SharedLabels;
 import uk.ac.ebi.pride.gui.component.table.TableRowDataRetriever;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
@@ -16,6 +17,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static uk.ac.ebi.pride.gui.component.SharedLabels.COMMA;
+import static uk.ac.ebi.pride.gui.component.SharedLabels.LINE_SEPARATOR;
+import static uk.ac.ebi.pride.gui.component.SharedLabels.TAB;
 
 /**
  * Task to export peptide related information.
@@ -76,7 +81,7 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
             for (int i = 1; i < numOfCols; i++) {
                 if (!skipIndexes.contains(i)) {
                     header.append(pepTableModel.getColumnName(i));
-                    header.append("\t");
+                    header.append(COMMA);
                 }
             }
             writer.println(header.toString());
@@ -95,12 +100,12 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
                             if (!skipIndexes.contains(i + 1)) {
                                 Object entry = content.get(i);
                                 writer.print(entry == null ? "" : entry.toString());
-                                writer.print("\t");
+                                writer.print(TAB);
                             }
                         }
 
                         // line break
-                        writer.print("\n");
+                        writer.print(LINE_SEPARATOR);
 
                         // this is important for cancelling
                         if (Thread.interrupted()) {

@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.gui.task.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.gui.component.SharedLabels;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
@@ -151,7 +152,7 @@ public class OpenReviewerConnectionTask extends TaskAdapter<List<Map<String, Str
                     result.add(entry);
                     entry = new HashMap<String, String>();
                 } else if (!"".equals(str)) {
-                    String[] parts = str.split("\t");
+                    String[] parts = str.split(SharedLabels.TAB);
                     entry.put(parts[0], parts[1]);
                 }
             }

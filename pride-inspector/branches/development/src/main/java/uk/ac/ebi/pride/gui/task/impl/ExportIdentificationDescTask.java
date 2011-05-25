@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
+import uk.ac.ebi.pride.gui.component.SharedLabels;
 import uk.ac.ebi.pride.gui.component.table.TableRowDataRetriever;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
@@ -57,7 +58,9 @@ public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, V
 
         try {
             writer = new PrintWriter(new FileWriter(new File(outputFilePath)));
-            writer.println("Submitted Protein Accession\tMapped Protein Accession\tProtein Name\tScore\tThreshold\tNumber of peptides\tNumber of distinct peptides\tNumber of PTMs");
+            writer.println("Submitted Protein Accession" + SharedLabels.TAB + "Mapped Protein Accession" + SharedLabels.TAB + "Protein Name" + SharedLabels.TAB +
+                            "Score" + SharedLabels.TAB + "Threshold" + SharedLabels.TAB + "Number of peptides" + SharedLabels.TAB +
+                            "Number of distinct peptides" + SharedLabels.TAB + "Number of PTMs");
             Collection<Comparable> identIds = controller.getIdentificationIds();
             for (Comparable identId : identIds) {
                 // a row of data
@@ -68,11 +71,11 @@ public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, V
                 for (int i = 0; i < content.size() - 1; i++) {
                     Object entry = content.get(i);
                     writer.print(entry == null ? "" : entry.toString());
-                    writer.print("\t");
+                    writer.print(SharedLabels.TAB);
                 }
 
                 // line break
-                writer.print("\n");
+                writer.print(SharedLabels.LINE_SEPARATOR);
 
                 // this is important for cancelling
                 if (Thread.interrupted()) {

@@ -7,7 +7,8 @@ import uk.ac.ebi.pride.data.controller.impl.PrideXmlControllerImpl;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
-import uk.ac.ebi.pride.gui.component.dialog.OpenFileDialog;
+import uk.ac.ebi.pride.gui.component.SharedLabels;
+import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
@@ -185,8 +186,9 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
      */
     private List<File> createFileOpenDialog() {
 
-        OpenFileDialog ofd = new OpenFileDialog(context.getOpenFilePath(), "Select mzML/PRIDE xml Files", ".mzml", ".xml", ".gz");
-        int result = ofd.showOpenDialog(Desktop.getInstance().getMainComponent());
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/PRIDE xml Files", null, true,
+                                            SharedLabels.MZXML_FILE, SharedLabels.XML_FILE, SharedLabels.GZIPPED_FILE);
+        int result = ofd.showDialog(Desktop.getInstance().getMainComponent(), null);
 
         List<File> filesToOpen = new ArrayList<File>();
 

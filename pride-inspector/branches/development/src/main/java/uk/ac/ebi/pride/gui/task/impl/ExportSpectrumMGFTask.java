@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
+import uk.ac.ebi.pride.data.core.Experiment;
 import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.gui.GUIUtilities;
+import uk.ac.ebi.pride.gui.component.SharedLabels;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
 import java.io.File;
@@ -55,6 +57,13 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
 
         try {
             writer = new PrintWriter(new FileWriter(new File(outputFilePath)));
+            // title: COM
+            Experiment exp = (Experiment) controller.getMetaData();
+            String title = exp.getTitle();
+            if (title != null) {
+                writer.println("COM=" + title);
+            }
+            // taxonomy: TAXONOMY
             for (Comparable spectrumId : controller.getSpectrumIds()) {
                 writer.println("BEGIN IONS");
                 writer.println("TITLE=" + spectrumId);
@@ -65,14 +74,15 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
                 double[] intensityArray = spectrum.getIntensityBinaryDataArray().getDoubleArray();
 
                 for (int i = 0; i < mzBinaryArray.length; i++) {
-                    writer.println(mzBinaryArray[i] + "\t" + intensityArray[i]);
+                    writer.println(mzBinaryArray[i] + SharedLabels.TAB + intensityArray[i]);
                 }
-                writer.println("END IONS\n");
+                writer.println("END IONS" + SharedLabels.LINE_SEPARATOR);
 
                 // this is important for cancelling
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
                 }
+                writer.flush();
             }
             writer.flush();
 

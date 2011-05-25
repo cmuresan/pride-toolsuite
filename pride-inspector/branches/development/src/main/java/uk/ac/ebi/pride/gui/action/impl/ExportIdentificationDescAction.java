@@ -7,7 +7,8 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.access.DataAccessMonitor;
 import uk.ac.ebi.pride.gui.action.PrideAction;
-import uk.ac.ebi.pride.gui.component.dialog.OpenFileDialog;
+import uk.ac.ebi.pride.gui.component.SharedLabels;
+import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.impl.ExportIdentificationDescTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
@@ -19,6 +20,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 
+import static uk.ac.ebi.pride.gui.component.SharedLabels.DOI;
+import static uk.ac.ebi.pride.gui.component.SharedLabels.DOT;
+import static uk.ac.ebi.pride.gui.component.SharedLabels.TAB_SEP_FILE;
+
 /**
  * Created by IntelliJ IDEA.
  * User: rwang
@@ -27,7 +32,7 @@ import java.io.File;
  */
 public class ExportIdentificationDescAction extends PrideAction implements PropertyChangeListener {
     private static final Logger logger = LoggerFactory.getLogger(ExportIdentificationDescAction.class);
-    private static final String FILE_EXTENSION = ".txt";
+    private static final String FILE_NAME = "protein_desc";
 
     private final PrideInspectorContext context;
 
@@ -41,16 +46,17 @@ public class ExportIdentificationDescAction extends PrideAction implements Prope
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        OpenFileDialog ofd = new OpenFileDialog(context.getOpenFilePath(), "Export Identification Descriptions", FILE_EXTENSION);
+        DataAccessController controller = context.getForegroundDataAccessController();
+        String defaultFileName = controller.getName().split("\\" + DOT)[0] + "_" + FILE_NAME;
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Export Identification Descriptions", defaultFileName, false, TAB_SEP_FILE);
         ofd.setMultiSelectionEnabled(false);
-        int result = ofd.showSaveDialog(Desktop.getInstance().getMainComponent());
+        int result = ofd.showDialog(Desktop.getInstance().getMainComponent(), null);
         if (result == JFileChooser.APPROVE_OPTION) {
-            DataAccessController controller = context.getForegroundDataAccessController();
             File selectedFile = ofd.getSelectedFile();
             // store file path for reuse
             String filePath = selectedFile.getPath();
             context.setOpenFilePath(filePath.replace(selectedFile.getName(), ""));
-            ExportIdentificationDescTask newTask = new ExportIdentificationDescTask(controller, filePath + (filePath.endsWith(FILE_EXTENSION) ? "" : FILE_EXTENSION));
+            ExportIdentificationDescTask newTask = new ExportIdentificationDescTask(controller, filePath + (filePath.endsWith(TAB_SEP_FILE) ? "" : TAB_SEP_FILE));
             // set task's gui blocker
             newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
             // add task listeners

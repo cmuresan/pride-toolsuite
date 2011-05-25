@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.access.DataAccessMonitor;
 import uk.ac.ebi.pride.gui.action.PrideAction;
-import uk.ac.ebi.pride.gui.component.dialog.OpenFileDialog;
+import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.impl.ExportIdentificationPeptideTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
@@ -19,6 +19,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 
+import static uk.ac.ebi.pride.gui.component.SharedLabels.DOI;
+import static uk.ac.ebi.pride.gui.component.SharedLabels.DOT;
+import static uk.ac.ebi.pride.gui.component.SharedLabels.TAB_SEP_FILE;
+
 /**
  * Created by IntelliJ IDEA.
  * User: rwang
@@ -27,7 +31,8 @@ import java.io.File;
  */
 public class ExportIdentificationPeptideAction extends PrideAction implements PropertyChangeListener {
     private static final Logger logger = LoggerFactory.getLogger(ExportIdentificationPeptideAction.class);
-    private static final String FILE_EXTENSION = ".txt";
+    private static final String FILE_EXTENSION = ".tsv";
+    private static final String FILE_NAME = "protein_peptide";
 
     private final PrideInspectorContext context;
 
@@ -41,15 +46,16 @@ public class ExportIdentificationPeptideAction extends PrideAction implements Pr
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        OpenFileDialog ofd = new OpenFileDialog(context.getOpenFilePath(), "Export Identifications and Peptides", FILE_EXTENSION);
+        DataAccessController controller = context.getForegroundDataAccessController();
+        String defaultFileName = controller.getName().split("\\" + DOT)[0] + "_" + FILE_NAME;
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Export Identifications and Peptides", defaultFileName, false, TAB_SEP_FILE);
         ofd.setMultiSelectionEnabled(false);
-        int result = ofd.showSaveDialog(Desktop.getInstance().getMainComponent());
+        int result = ofd.showDialog(Desktop.getInstance().getMainComponent(), null);
         if (result == JFileChooser.APPROVE_OPTION) {
-            DataAccessController controller = context.getForegroundDataAccessController();
             File selectedFile = ofd.getSelectedFile();
             String filePath = selectedFile.getPath();
             context.setOpenFilePath(filePath.replace(selectedFile.getName(), ""));
-            ExportIdentificationPeptideTask newTask = new ExportIdentificationPeptideTask(controller, filePath + (filePath.endsWith(FILE_EXTENSION) ? "" : FILE_EXTENSION));
+            ExportIdentificationPeptideTask newTask = new ExportIdentificationPeptideTask(controller, filePath + (filePath.endsWith(TAB_SEP_FILE) ? "" : TAB_SEP_FILE));
             // set task's gui blocker
             newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
             // add task listeners

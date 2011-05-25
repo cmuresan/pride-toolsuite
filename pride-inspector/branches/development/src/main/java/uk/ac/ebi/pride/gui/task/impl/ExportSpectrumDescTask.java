@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
+import uk.ac.ebi.pride.gui.component.SharedLabels;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
 import java.io.File;
@@ -12,6 +13,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+
+import static uk.ac.ebi.pride.gui.component.SharedLabels.*;
+import static uk.ac.ebi.pride.gui.component.SharedLabels.LINE_SEPARATOR;
+import static uk.ac.ebi.pride.gui.component.SharedLabels.TAB;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,23 +59,25 @@ public class ExportSpectrumDescTask extends AbstractDataAccessTask<Void, Void> {
 
         try {
             writer = new PrintWriter(new FileWriter(new File(outputFilePath)));
-            writer.println("Spectrum ID\tMS Level\tPrecursor Charge\tPrecursor m/z\tPrecursor Intensity\tSum of Intensity\tNumber of peaks");
+            writer.println("Spectrum ID" +  TAB + "MS Level" + TAB + "Precursor Charge" +
+                            TAB + "Precursor m/z" + TAB + "Precursor Intensity" + TAB +
+                            "Sum of Intensity" + TAB + "Number of peaks");
             Collection<Comparable> spectrumIds = controller.getSpectrumIds();
             for (Comparable specId : spectrumIds) {
                 writer.print(specId);
-                writer.print("\t");
+                writer.print(TAB);
                 writer.print(controller.getMsLevel(specId));
-                writer.print("\t");
+                writer.print(TAB);
                 writer.print(controller.getPrecursorCharge(specId));
-                writer.print("\t");
+                writer.print(TAB);
                 writer.print(controller.getPrecursorMz(specId));
-                writer.print("\t");
+                writer.print(TAB);
                 writer.print(controller.getPrecursorIntensity(specId));
-                writer.print("\t");
+                writer.print(TAB);
                 writer.print(controller.getSumOfIntensity(specId));
-                writer.print("\t");
+                writer.print(TAB);
                 writer.print(controller.getNumberOfPeaks(specId));
-                writer.print("\n");
+                writer.print(LINE_SEPARATOR);
 
                 // this is important for cancelling
                 if (Thread.interrupted()) {

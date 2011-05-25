@@ -12,7 +12,10 @@ import java.util.Set;
  * Date: 11-Feb-2010
  * Time: 11:54:20
  */
-public class OpenFileDialog extends JFileChooser {
+public class SimpleFileDialog extends JFileChooser {
+    private static final String OPEN_FILE = "Open File";
+    private static final String SAVE_FILE = "Save File";
+
     private String[] fileFormats;
 
     /**
@@ -21,15 +24,21 @@ public class OpenFileDialog extends JFileChooser {
      * @param title title for the component
      * @param extensions a list of supported file extensions
      */
-    public OpenFileDialog(String path, String title, String ... extensions) {
+    public SimpleFileDialog(String path, String title, String defaultFileName,
+                            boolean openDialog, String... extensions) {
         super(path);
-        initialize(title, extensions);
-    }
-
-    private void initialize(String title, String[] extensions) {
         this.fileFormats = extensions;
-        this.setDialogTitle(title);
-        this.setDialogType(JFileChooser.OPEN_DIALOG);
+        // set dialog title
+        this.setDialogTitle(title == null ?
+                                (openDialog ? OPEN_FILE : SAVE_FILE) :
+                                 title);
+        // set dialog default file name
+        if (defaultFileName != null) {
+            this.setSelectedFile(new File(defaultFileName));
+        }
+        // set dialog type, either open or save
+        this.setDialogType(openDialog ? JFileChooser.OPEN_DIALOG : JFileChooser.SAVE_DIALOG);
+
         this.setFileSelectionMode(JFileChooser.FILES_ONLY);
         this.setMultiSelectionEnabled(true);
         this.setFileFilter(new InnerFileFilter());

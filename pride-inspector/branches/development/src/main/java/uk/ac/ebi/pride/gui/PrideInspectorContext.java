@@ -5,7 +5,8 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.cache.CachedMap;
 import uk.ac.ebi.pride.gui.access.DataAccessMonitor;
-import uk.ac.ebi.pride.gui.component.startup.DataSourceBrowser;
+import uk.ac.ebi.pride.gui.component.db.DatabaseSearchPane;
+import uk.ac.ebi.pride.gui.component.startup.WelcomePane;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.task.TaskManager;
 
@@ -13,7 +14,6 @@ import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.help.HelpSetException;
 import javax.swing.*;
-import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public class PrideInspectorContext extends DesktopContext {
     /**
      * triggered when the visibility property of data source browser is changed
      */
-    public static final String DATA_SOURCE_BROWSER_VISIBILITY = "dataSourceBrowserVisible";
+    public static final String LEFT_CONTROL_PANE_VISIBILITY = "leftControlPaneVisible";
 
     /**
      * default map size to store protein names
@@ -55,14 +55,9 @@ public class PrideInspectorContext extends DesktopContext {
     private final Map<DataAccessController, JComponent> dataContentPaneCache;
 
     /**
-     * Data source browser
-     */
-    private DataSourceBrowser dataSourceBrowser;
-
-    /**
      * data source browser visibility
      */
-    private boolean dataSourceBrowserVisible;
+    private boolean leftControlPaneVisible;
 
     /**
      * Protein name tracker
@@ -79,13 +74,20 @@ public class PrideInspectorContext extends DesktopContext {
      */
     private HelpBroker mainHelpBroker;
 
-//    /** memory usage timer */
-//    private Timer memoryUsageCheckTimer;
-
     /**
      * The path to open file
      */
     private String openFilePath;
+
+    /**
+     * welcome pane
+     */
+    private WelcomePane welcomePane = null;
+
+    /**
+     * database search pane
+     */
+    private DatabaseSearchPane databaseSearchPane = null;
 
     /**
      * Constructor
@@ -101,14 +103,9 @@ public class PrideInspectorContext extends DesktopContext {
         this.proteinNameTracker = Collections.synchronizedMap(new CachedMap<String, String>(DEFAULT_PROTEIN_NAME_TRACKER_SIZE));
 
         // by default the data source browser is invisible
-        this.dataSourceBrowserVisible = false;
+        this.leftControlPaneVisible = false;
 
-//        // start the memory usage check timer
-//        this.memoryUsageCheckTimer = new Timer(1000, new MemoryUsageListener());
-//
-//        // start the timer
-//        memoryUsageCheckTimer.start();
-        //
+        // set the default path for opening/saving files
         this.setOpenFilePath(System.getProperty("user.dir"));
     }
 
@@ -121,13 +118,20 @@ public class PrideInspectorContext extends DesktopContext {
         return dataAccessMonitor;
     }
 
-    /**
-     * Add a property change listener
-     *
-     * @param listener
-     */
-    public final void addPropertyChangeListenerToDataAccessMonitor(PropertyChangeListener listener) {
-        dataAccessMonitor.addPropertyChangeListener(listener);
+    public WelcomePane getWelcomePane() {
+        return welcomePane;
+    }
+
+    public void setWelcomePane(WelcomePane welcomePane) {
+        this.welcomePane = welcomePane;
+    }
+
+    public DatabaseSearchPane getDatabaseSearchPane() {
+        return databaseSearchPane;
+    }
+
+    public void setDatabaseSearchPane(DatabaseSearchPane databaseSearchPane) {
+        this.databaseSearchPane = databaseSearchPane;
     }
 
     /**
@@ -277,24 +281,6 @@ public class PrideInspectorContext extends DesktopContext {
     }
 
     /**
-     * Get data source browser
-     *
-     * @return DataSourceBrowser data source browser
-     */
-    public final synchronized DataSourceBrowser getDataSourceBrowser() {
-        return dataSourceBrowser;
-    }
-
-    /**
-     * Register data source browser
-     *
-     * @param dataSourceBrowser data source browser
-     */
-    public final synchronized void setDataSourceBrowser(DataSourceBrowser dataSourceBrowser) {
-        this.dataSourceBrowser = dataSourceBrowser;
-    }
-
-    /**
      * Get protein name
      *
      * @param protAcc protein accession
@@ -325,25 +311,25 @@ public class PrideInspectorContext extends DesktopContext {
      *
      * @return boolean visibility of the data source browser
      */
-    public final synchronized boolean isDataSourceBrowserVisible() {
-        return dataSourceBrowserVisible;
+    public final synchronized boolean isLeftControlPaneVisible() {
+        return leftControlPaneVisible;
     }
 
     /**
      * Set the visibility of the data source browser
-     * A DATA_SOURCE_BROWSER_VISIBILITY property change event will be triggered.
+     * A LEFT_CONTROL_PANE_VISIBILITY property change event will be triggered.
      *
-     * @param dataSourceBrowserVisible the new visibility of the data source browser
+     * @param leftControlPaneVisible the new visibility of the data source browser
      */
-    public void setDataSourceBrowserVisible(boolean dataSourceBrowserVisible) {
-        logger.debug("Set data source browser visibility to: {}", dataSourceBrowserVisible);
+    public void setLeftControlPaneVisible(boolean leftControlPaneVisible) {
+        logger.debug("Set data source browser visibility to: {}", leftControlPaneVisible);
         boolean oldVis, newVis;
         synchronized (this) {
-            oldVis = this.dataSourceBrowserVisible;
-            this.dataSourceBrowserVisible = dataSourceBrowserVisible;
-            newVis = dataSourceBrowserVisible;
+            oldVis = this.leftControlPaneVisible;
+            this.leftControlPaneVisible = leftControlPaneVisible;
+            newVis = leftControlPaneVisible;
         }
-        firePropertyChange(DATA_SOURCE_BROWSER_VISIBILITY, oldVis, newVis);
+        firePropertyChange(LEFT_CONTROL_PANE_VISIBILITY, oldVis, newVis);
     }
 
     private void createHelp() {
@@ -370,10 +356,6 @@ public class PrideInspectorContext extends DesktopContext {
         }
         return mainHelpBroker;
     }
-
-//    public Timer getMemoryUsageCheckTimer() {
-//        return memoryUsageCheckTimer;
-//    }
 
     /**
      * Get the current file open path

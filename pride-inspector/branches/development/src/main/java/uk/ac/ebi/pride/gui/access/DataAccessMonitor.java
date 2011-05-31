@@ -1,6 +1,10 @@
 package uk.ac.ebi.pride.gui.access;
 
+import org.bushe.swing.event.EventBus;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
+import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
+import uk.ac.ebi.pride.gui.event.RemoveDataSourceEvent;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 
 import java.util.ArrayList;
@@ -18,18 +22,6 @@ import java.util.List;
  */
 public class DataAccessMonitor extends PropertyChangeHelper {
     /**
-     * Property for add new data source
-     */
-    public static final String ADD_DATA_SOURCE_PROP = "add_new_data_source";
-    /**
-     * Property for remove a data source
-     */
-    public static final String REMOVE_DATA_SOURCE_PROP = "remove_new_data_source";
-    /**
-     * Property for set the foreground data source
-     */
-    public static final String NEW_FOREGROUND_DATA_SOURCE_PROP = "new_foreground_data_source";
-    /**
      * A list of existing DataAccessControllers
      */
     private final List<DataAccessController> controllers;
@@ -43,83 +35,74 @@ public class DataAccessMonitor extends PropertyChangeHelper {
         this.controllers = Collections.synchronizedList(new ArrayList<DataAccessController>());
     }
 
-    public void addDataAccessController(DataAccessController controller) {
+    public synchronized void addDataAccessController(DataAccessController controller) {
         // new controller should always be added to the end of the list
-        List<DataAccessController> oldControllers = null, newControllers = null;
+        List<DataAccessController> oldControllers, newControllers;
 
-        synchronized (this) {
-            if (!controllers.contains(controller)) {
-                oldControllers = new ArrayList<DataAccessController>(controllers);
-                controllers.add(controller);
-                newControllers = new ArrayList<DataAccessController>(controllers);
-            }
+        if (!controllers.contains(controller)) {
+            oldControllers = new ArrayList<DataAccessController>(controllers);
+            controllers.add(controller);
+            newControllers = new ArrayList<DataAccessController>(controllers);
+            EventBus.publish(new AddDataSourceEvent<DataAccessController>(this, oldControllers, newControllers));
+            setForegroundDataAccessController(controller);
         }
-        firePropertyChange(ADD_DATA_SOURCE_PROP, oldControllers, newControllers);
-        
-        setForegroundDataAccessController(controller);
+
     }
 
-    public void removeDataAccessController(DataAccessController controller) {
-        List<DataAccessController> oldControllers = null, newControllers = null;
+    public synchronized void removeDataAccessController(DataAccessController controller) {
+        List<DataAccessController> oldControllers, newControllers;
 
-        synchronized (this) {
-            int index = controllers.indexOf(controller);
-            if (index >= 0) {
-                oldControllers = new ArrayList<DataAccessController>(controllers);
-                // get the next available controller's index
-                int nextIndex = controllers.size() - 1 > index ? index : index - 1;
-                controllers.remove(controller);
-                if (foregroundController.equals(controller)) {
-                    if (nextIndex >= 0) {
-                        setForegroundDataAccessController(controllers.get(nextIndex));
-                    } else {
-                        setForegroundDataAccessController(null);
-                    }
-                }
-                controller.close();
-                newControllers = new ArrayList<DataAccessController>(controllers);
+        int index = controllers.indexOf(controller);
+        if (index >= 0) {
+            oldControllers = new ArrayList<DataAccessController>(controllers);
+            // get the next available controller's index
+            int nextIndex = controllers.size() - 1 > index ? index : index - 1;
+            controllers.remove(controller);
+            if (foregroundController.equals(controller)) {
+                setForegroundDataAccessController(nextIndex >= 0 ? controllers.get(nextIndex) : null);
             }
+            controller.close();
+            newControllers = new ArrayList<DataAccessController>(controllers);
+
+            EventBus.publish(new RemoveDataSourceEvent<DataAccessController>(this, oldControllers, newControllers));
         }
-        firePropertyChange(REMOVE_DATA_SOURCE_PROP, oldControllers, newControllers);
     }
 
     /**
      * Replace one data access controller with another, and retain the position in the DataAccessMonitor.
      *
-     * @param original  original data access controller
-     * @param replacement   replacement data access controller
+     * @param original    original data access controller
+     * @param replacement replacement data access controller
      */
-    public void replaceDataAccessController(DataAccessController original, DataAccessController replacement) {
-        List<DataAccessController> oldControllers = null, newControllers = null;
+    public synchronized void replaceDataAccessController(DataAccessController original, DataAccessController replacement) {
+        List<DataAccessController> oldControllers, newControllers;
 
-        synchronized (this) {
-            int index = controllers.indexOf(original);
-            if (index >= 0) {
-                oldControllers = new ArrayList<DataAccessController>(controllers);
-                controllers.add(index, replacement);
-                controllers.remove(original);
-                if (foregroundController.equals(original)) {
-                    setForegroundDataAccessController(replacement);
-                }
-                original.close();
-                newControllers = new ArrayList<DataAccessController>(controllers);
-                // notify others
-                firePropertyChange(ADD_DATA_SOURCE_PROP, oldControllers, newControllers);
-            } else {
-                // add as a new data access controller
-                addDataAccessController(replacement);
+        int index = controllers.indexOf(original);
+        if (index >= 0) {
+            oldControllers = new ArrayList<DataAccessController>(controllers);
+            controllers.add(index, replacement);
+            controllers.remove(original);
+            if (foregroundController.equals(original)) {
+                setForegroundDataAccessController(replacement);
             }
+            original.close();
+            newControllers = new ArrayList<DataAccessController>(controllers);
+            // notify others
+            EventBus.publish(new AddDataSourceEvent<DataAccessController>(this, oldControllers, newControllers));
+        } else {
+            // add as a new data access controller
+            addDataAccessController(replacement);
         }
     }
 
-    public void setForegroundDataAccessController(DataAccessController controller) {
+    public synchronized void setForegroundDataAccessController(DataAccessController controller) {
         DataAccessController oldController, newController;
-        synchronized (this) {
-            oldController = this.foregroundController;
-            foregroundController = controller;
-            newController = controller;
-        }
-        firePropertyChange(NEW_FOREGROUND_DATA_SOURCE_PROP, oldController, newController);
+
+        oldController = this.foregroundController;
+        foregroundController = controller;
+        newController = controller;
+
+        EventBus.publish(new ForegroundDataSourceEvent<DataAccessController>(this, oldController, newController));
     }
 
     public synchronized DataAccessController getForegroundDataAccessController() {
@@ -133,7 +116,7 @@ public class DataAccessMonitor extends PropertyChangeHelper {
      * @return boolean  true if it is foreground data access controller
      */
     public synchronized boolean isForegroundDataAccessController(DataAccessController controller) {
-        return foregroundController.equals(controller);
+        return foregroundController != null && foregroundController.equals(controller);
     }
 
     public List<DataAccessController> getControllers() {

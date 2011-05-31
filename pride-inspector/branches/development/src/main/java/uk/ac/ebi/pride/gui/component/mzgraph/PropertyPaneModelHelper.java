@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.component.mzgraph;
 
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.gui.component.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
 
 import java.util.Collection;
 import java.util.List;

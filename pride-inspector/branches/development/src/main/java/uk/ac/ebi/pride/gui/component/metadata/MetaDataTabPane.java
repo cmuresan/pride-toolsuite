@@ -8,7 +8,7 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
-import uk.ac.ebi.pride.gui.component.startup.DataContentDisplayPane;
+import uk.ac.ebi.pride.gui.component.startup.DataAccessControllerContentPane;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveMetaDataTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
@@ -144,8 +144,8 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> {
      * @param icon icon to show
      */
     private void showIcon(Icon icon) {
-        if (parentComponent != null && parentComponent instanceof DataContentDisplayPane && icon != null) {
-            DataContentDisplayPane contentPane = (DataContentDisplayPane) parentComponent;
+        if (parentComponent != null && parentComponent instanceof DataAccessControllerContentPane && icon != null) {
+            DataAccessControllerContentPane contentPane = (DataAccessControllerContentPane) parentComponent;
             contentPane.setTabIcon(contentPane.getMetaDataTabIndex(), icon);
         }
     }

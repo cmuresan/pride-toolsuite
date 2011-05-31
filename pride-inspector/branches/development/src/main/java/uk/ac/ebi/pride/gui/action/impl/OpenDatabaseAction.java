@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.action.impl;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
+import uk.ac.ebi.pride.gui.task.impl.OpenDatabaseSearchPaneTask;
 import uk.ac.ebi.pride.gui.task.impl.OpenPrideDatabaseTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
@@ -29,9 +30,7 @@ public class OpenDatabaseAction extends PrideAction {
         // get desktop context
         PrideInspectorContext context = (PrideInspectorContext)Desktop.getInstance().getDesktopContext();
         // create a new connection to pride database
-        OpenPrideDatabaseTask newTask = new OpenPrideDatabaseTask();
-        // register data source browser as a task listener
-        newTask.addTaskListener(context.getDataSourceBrowser());
+        OpenDatabaseSearchPaneTask newTask = new OpenDatabaseSearchPaneTask();
         // set task's gui blocker
         newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
         context.addTask(newTask);

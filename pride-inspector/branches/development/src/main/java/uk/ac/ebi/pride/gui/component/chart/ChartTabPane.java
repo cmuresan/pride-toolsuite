@@ -10,9 +10,9 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
-import uk.ac.ebi.pride.gui.component.Iconable;
+import uk.ac.ebi.pride.gui.component.startup.DataAccessControllerContentPane;
+import uk.ac.ebi.pride.gui.component.utils.Iconable;
 import uk.ac.ebi.pride.gui.component.PrideInspectorLoadingPanel;
-import uk.ac.ebi.pride.gui.component.startup.DataContentDisplayPane;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.impl.LoadChartDataTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
@@ -98,7 +98,7 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
         String title = PANE_TITLE + ((numberOfCharts == 0) ? "" : " (" + numberOfCharts + ")");
         setTitle(title);
 
-        DataContentDisplayPane dataContentPane = (DataContentDisplayPane) viewerContext.getDataContentPane(controller);
+        DataAccessControllerContentPane dataContentPane = (DataAccessControllerContentPane) viewerContext.getDataContentPane(controller);
         if (dataContentPane != null) {
             dataContentPane.setTabTitle(dataContentPane.getChartTabIndex(), title);
         }
@@ -253,8 +253,8 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
      * @param icon icon to show
      */
     private void showIcon(Icon icon) {
-        if (parentComponent != null && parentComponent instanceof DataContentDisplayPane && icon != null) {
-            DataContentDisplayPane contentPane = (DataContentDisplayPane) parentComponent;
+        if (parentComponent != null && parentComponent instanceof DataAccessControllerContentPane && icon != null) {
+            DataAccessControllerContentPane contentPane = (DataAccessControllerContentPane) parentComponent;
             contentPane.setTabIcon(contentPane.getChartTabIndex(), icon);
         }
     }

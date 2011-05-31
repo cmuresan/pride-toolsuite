@@ -4,13 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.PrideInspectorLoadingPanel;
-import uk.ac.ebi.pride.gui.component.PrideInspectorPanel;
 import uk.ac.ebi.pride.gui.component.chart.ChartTabPane;
-import uk.ac.ebi.pride.gui.component.db.DatabaseSearchTabPane;
 import uk.ac.ebi.pride.gui.component.metadata.MetaDataTabPane;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
@@ -32,8 +28,8 @@ import java.util.Collection;
  * Date: 29-Jul-2010
  * Time: 14:07:59
  */
-public class DataContentDisplayPane extends DataAccessControllerPane {
-    private static final Logger logger = LoggerFactory.getLogger(DataContentDisplayPane.class);
+public class DataAccessControllerContentPane extends DataAccessControllerPane {
+    private static final Logger logger = LoggerFactory.getLogger(DataAccessControllerContentPane.class);
 
     private JTabbedPane contentTabPane;
     private MetaDataTabPane metaDataTabPane;
@@ -41,21 +37,19 @@ public class DataContentDisplayPane extends DataAccessControllerPane {
     private ProteinTabPane proteinTabPane;
     private PeptideTabPane peptideTabPane;
     private ChartTabPane chartTabPane;
-    private DatabaseSearchTabPane databaseSearchTabPane;
 
     private int metaDataTabIndex;
     private int mzDataTabIndex;
     private int proteinTabIndex;
     private int peptideTabIndex;
     private int chartTabIndex;
-    private int databaseSearchTabIndex;
 
     /**
      * This indicates the index for the latest tab
      */
     private int indexCount = 0;
 
-    public DataContentDisplayPane(DataAccessController controller) {
+    public DataAccessControllerContentPane(DataAccessController controller) {
         super(controller);
     }
 
@@ -162,11 +156,6 @@ public class DataContentDisplayPane extends DataAccessControllerPane {
                 contentTabPane.insertTab(chartTabPane.getTitle(), chartTabPane.getIcon(), chartTabPane, chartTabPane.getTitle(), chartTabIndex);
                 chartTabPane.populate();
             }
-
-            // database search tab
-            databaseSearchTabPane = new DatabaseSearchTabPane();
-            databaseSearchTabIndex = indexCount++;
-            contentTabPane.insertTab("Database", null, databaseSearchTabPane, "Database", databaseSearchTabIndex);
         }
     }
 

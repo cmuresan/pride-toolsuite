@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.gui.component.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
 import uk.ac.ebi.pride.util.NumberUtilities;
 import uk.ac.ebi.pride.util.RegExUtilities;
 

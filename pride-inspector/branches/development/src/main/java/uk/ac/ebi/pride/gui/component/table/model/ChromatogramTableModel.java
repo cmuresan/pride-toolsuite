@@ -18,7 +18,7 @@ public class ChromatogramTableModel extends ProgressiveUpdateTableModel<Void, Tu
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("", "Row Number"),
+        ROW_NUMBER_COLUMN("Row", "Row Number"),
         CHROMATOGRAM_ID_COLUMN("Chromatogram ID", "Chromatogram ID");
 
         private final String header;

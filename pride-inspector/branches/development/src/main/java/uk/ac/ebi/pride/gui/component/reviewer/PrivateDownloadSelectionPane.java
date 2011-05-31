@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.component.reviewer;
 
+import org.jdesktop.swingx.JXTable;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.component.dialog.TaskDialog;
@@ -48,7 +49,7 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
      */
     private boolean toDispose;
     private JTextField pathField;
-    private JTable downloadTable;
+    private JXTable downloadTable;
     private ReviewDownloadTableModel downloadTableModel;
     private JButton selectAllButton;
     private JButton deselectAllButton;
@@ -119,10 +120,11 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
         this.add(dirPane, BorderLayout.NORTH);
 
         // create download table
-        downloadTable = new JTable();
+        downloadTable = new JXTable();
         downloadTableModel = new ReviewDownloadTableModel();
         downloadTableModel.addTableModelListener(this);
         downloadTable.setModel(downloadTableModel);
+        downloadTable.setColumnControlVisible(true);
         downloadTable.setFillsViewportHeight(true);
         downloadTable.setCellEditor(new DefaultCellEditor(new JCheckBox()));
         JScrollPane scrollPane = new JScrollPane(downloadTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

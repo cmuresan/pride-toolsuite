@@ -70,12 +70,21 @@ public class DefaultPrideTable extends AlterRowColorTable implements ActionListe
 
     @SuppressWarnings("unchecked")
     public DefaultPrideTable(TableModel tableModel, TableColumnModel tableColumnModel) {
-        this.setColumnModel(tableColumnModel);
+        super();
 
-        this.setModel(tableModel);
+        if (tableColumnModel != null) {
+            this.setColumnModel(tableColumnModel);
+        }
+
+        if (tableModel != null) {
+            this.setModel(tableModel);
+        }
 
         // selection mode
         setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        // set column control visible
+        setColumnControlVisible(true);
 
         // auto fill
         setFillsViewportHeight(true);

@@ -97,7 +97,8 @@ public class ReviewDownloadTableModel extends ListTableModel<List<Map<String, St
      */
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return getValueAt(0, columnIndex).getClass();
+        Object val = getValueAt(0, columnIndex);
+        return val == null ? Object.class : val.getClass();
     }
 
     /**

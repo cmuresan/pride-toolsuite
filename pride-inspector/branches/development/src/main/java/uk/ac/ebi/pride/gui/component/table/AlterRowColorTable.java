@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table;
 
+import org.jdesktop.swingx.JXTable;
+
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -13,7 +15,7 @@ import java.util.Vector;
  * Date: 22-Aug-2010
  * Time: 10:02:32
  */
-public class AlterRowColorTable extends JTable {
+public class AlterRowColorTable extends JXTable {
     private Color alterRowColor = new Color(246, 246, 248);
     /**
      * Selection background

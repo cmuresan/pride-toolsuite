@@ -16,7 +16,7 @@ public class SpectrumTableModel extends ProgressiveUpdateTableModel<Void, Tuple<
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("", "Row Number"),
+        ROW_NUMBER_COLUMN("Row", "Row Number"),
         SPECTRUM_ID_COLUMN("Spectrum ID", "Spectrum ID"),
         MZ_LEVEL_COLUMN("MS level", "MS Level"),
         IDENTIFIED_COLUMN("Identified", "Peptide Identified"),

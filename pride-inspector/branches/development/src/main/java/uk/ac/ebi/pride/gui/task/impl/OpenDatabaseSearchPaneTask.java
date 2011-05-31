@@ -27,7 +27,7 @@ public class OpenDatabaseSearchPaneTask extends TaskAdapter<Void, Void>{
         PrideInspectorContext context = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
         DatabaseSearchPane searchPane = context.getDatabaseSearchPane();
         if (searchPane == null) {
-            searchPane = new DatabaseSearchPane();
+            searchPane = new DatabaseSearchPane(null);
             context.setDatabaseSearchPane(searchPane);
         }
         EventBus.publish(new DatabaseSearchEvent(null));

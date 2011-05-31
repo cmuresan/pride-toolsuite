@@ -104,8 +104,7 @@ public class MzDataTabPane extends DataAccessControllerPane {
         MzDataSelectionPane mzSelectionPane = new MzDataSelectionPane(controller, this);
 
         // Display peak list or chromatogram
-        MzGraphViewPane mzViewPane = null;
-        mzViewPane = new MzGraphViewPane(controller);
+        MzGraphViewPane mzViewPane = new MzGraphViewPane(controller);
         mzViewPane.setPreferredSize(new Dimension(400, 500));
         mzSelectionPane.addPropertyChangeListener(mzViewPane);
 

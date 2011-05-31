@@ -82,7 +82,7 @@ public class DataAccessMonitor extends PropertyChangeHelper {
             oldControllers = new ArrayList<DataAccessController>(controllers);
             controllers.add(index, replacement);
             controllers.remove(original);
-            if (foregroundController.equals(original)) {
+            if (foregroundController == null || foregroundController.equals(original)) {
                 setForegroundDataAccessController(replacement);
             }
             original.close();

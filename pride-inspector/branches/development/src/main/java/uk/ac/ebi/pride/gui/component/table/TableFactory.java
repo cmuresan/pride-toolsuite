@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table;
 
+import org.jdesktop.swingx.table.DefaultTableColumnModelExt;
+import org.jdesktop.swingx.table.TableColumnExt;
 import uk.ac.ebi.pride.data.core.SearchEngine;
 import uk.ac.ebi.pride.gui.component.table.listener.HyperLinkCellMouseClickListener;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
@@ -10,6 +12,7 @@ import uk.ac.ebi.pride.gui.url.PTMHyperLinkGenerator;
 import uk.ac.ebi.pride.gui.url.ProteinAccHyperLinkGenerator;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 
 /**
@@ -26,7 +29,7 @@ public class TableFactory {
      * @return JTable   spectrum table
      */
     public static JTable createSpectrumTable() {
-        return new DefaultPrideTable(new SpectrumTableModel());
+        return new DefaultPrideTable(new SpectrumTableModel(), new DefaultTableColumnModelExt());
     }
 
     /**
@@ -35,7 +38,7 @@ public class TableFactory {
      * @return JTable   chromatogram table
      */
     public static JTable createChromatogramTable() {
-        return new DefaultPrideTable(new ChromatogramTableModel());
+        return new DefaultPrideTable(new ChromatogramTableModel(), new DefaultTableColumnModelExt());
     }
 
     /**
@@ -45,21 +48,19 @@ public class TableFactory {
      */
     public static JTable createIdentificationTable() {
         ProteinTableModel identTableModel = new ProteinTableModel();
-        ShowHideTableColumnModel columnModel = new ShowHideTableColumnModel();
+        DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable table = new DefaultPrideTable(identTableModel, columnModel);
 
-        // hide the protein id column
-        table.setColumnModel(columnModel);
-        TableColumn proteinIdColumn = table.getColumn(ProteinTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
-        columnModel.setColumnVisible(proteinIdColumn, false);
+        TableColumnExt proteinIdColumn = (TableColumnExt)table.getColumn(ProteinTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
+        proteinIdColumn.setVisible(false);
 
-        TableColumn proteinNameColumn = table.getColumn(ProteinTableModel.TableHeader.PROTEIN_NAME.getHeader());
+        TableColumnExt proteinNameColumn = (TableColumnExt) table.getColumn(ProteinTableModel.TableHeader.PROTEIN_NAME.getHeader());
         // set protein name width
         int protNameColumnNum = proteinNameColumn.getModelIndex();
         table.getColumnModel().getColumn(protNameColumnNum).setPreferredWidth(200);
 
         // hide the protein name column
-        columnModel.setColumnVisible(proteinNameColumn, false);
+        proteinNameColumn.setVisible(false);
 
         // add hyper link click listener
         String protAccColumnHeader = ProteinTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
@@ -83,7 +84,7 @@ public class TableFactory {
     public static JTable createPeptideTable(SearchEngine se, boolean ptmIcon) {
 
         PeptideTableModel peptideTableModel = new PeptideTableModel(se);
-        ShowHideTableColumnModel columnModel = new ShowHideTableColumnModel();
+        DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable table = new DefaultPrideTable(peptideTableModel, columnModel);
 
         // peptide sequence column renderer
@@ -91,24 +92,24 @@ public class TableFactory {
         peptideColumn.setCellRenderer(new PeptideSequenceCellRenderer(ptmIcon));
 
         // hide modified peptide sequence
-        TableColumn peptideSeqColumn = table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_MASS_COLUMN.getHeader());
-        columnModel.setColumnVisible(peptideSeqColumn, false);
+        TableColumnExt peptideSeqColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_MASS_COLUMN.getHeader());
+        peptideSeqColumn.setVisible(false);
 
         // hide protein id column
-        TableColumn proteinIdColumn = table.getColumn(PeptideTableModel.TableHeader.IDENTIFICATION_ID_COLUMN.getHeader());
-        columnModel.setColumnVisible(proteinIdColumn, false);
+        TableColumnExt proteinIdColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.IDENTIFICATION_ID_COLUMN.getHeader());
+        proteinIdColumn.setVisible(false);
 
         // hide peptide id column
-        TableColumn peptideIdColumn = table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_ID_COLUMN.getHeader());
-        columnModel.setColumnVisible(peptideIdColumn, false);
+        TableColumnExt peptideIdColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_ID_COLUMN.getHeader());
+        peptideIdColumn.setVisible(false);
 
         // set protein name column width
-        TableColumn proteinNameColumn = table.getColumn(PeptideTableModel.TableHeader.PROTEIN_NAME.getHeader());
+        TableColumnExt proteinNameColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PROTEIN_NAME.getHeader());
         int protNameColumnNum = proteinNameColumn.getModelIndex();
         table.getColumnModel().getColumn(protNameColumnNum).setPreferredWidth(200);
 
         // hide the protein name column
-        columnModel.setColumnVisible(proteinNameColumn, false);
+        proteinNameColumn.setVisible(false);
 
         // add hyper link click listener
         String protAccColumnHeader = PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
@@ -116,7 +117,7 @@ public class TableFactory {
         table.addMouseListener(new HyperLinkCellMouseClickListener(table, protAccColumnHeader, new ProteinAccHyperLinkGenerator()));
 
         // ptm accession hyperlink
-        TableColumn protAcc = table.getColumn(PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
+        TableColumnExt protAcc = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
         protAcc.setCellRenderer(new HyperLinkCellRenderer());
 
         // set peptide column width
@@ -134,7 +135,8 @@ public class TableFactory {
      */
     public static JTable createPTMTable() {
         PTMTableModel tableModel = new PTMTableModel();
-        DefaultPrideTable table = new DefaultPrideTable(tableModel);
+        DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
+        DefaultPrideTable table = new DefaultPrideTable(tableModel, columnModel);
 
         // add hyper link click listener
         String modAccColumnHeader = PTMTableModel.TableHeader.PTM_ACCESSION.getHeader();
@@ -142,7 +144,7 @@ public class TableFactory {
         table.addMouseListener(new HyperLinkCellMouseClickListener(table, modAccColumnHeader, new PTMHyperLinkGenerator()));
 
         // ptm accession hyperlink
-        TableColumn ptmColumn = table.getColumn(PTMTableModel.TableHeader.PTM_ACCESSION.getHeader());
+        TableColumnExt ptmColumn = (TableColumnExt)table.getColumn(PTMTableModel.TableHeader.PTM_ACCESSION.getHeader());
         ptmColumn.setCellRenderer(new HyperLinkCellRenderer());
 
         return table;

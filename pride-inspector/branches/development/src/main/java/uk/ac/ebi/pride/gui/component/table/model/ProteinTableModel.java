@@ -19,7 +19,7 @@ public class ProteinTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("", "Row Number"),
+        ROW_NUMBER_COLUMN("Row", "Row Number"),
         PROTEIN_ACCESSION_COLUMN("Submitted Protein Accession", "Submitted Protein Accession From Source"),
         MAPPED_PROTEIN_ACCESSION_COLUMN("Mapped Protein Accession", "Pride Mapped Protein Accession"),
         PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),

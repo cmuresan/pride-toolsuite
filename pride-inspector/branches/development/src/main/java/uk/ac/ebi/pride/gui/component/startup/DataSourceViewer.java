@@ -326,7 +326,6 @@ public class DataSourceViewer extends JPanel {
         public void valueChanged(ListSelectionEvent e) {
             // get row number and column number
             int row = sourceTable.getSelectedRow();
-            System.out.println(row);
             if (row >= 0) {
                 int col = sourceTable.getSelectedColumn();
 

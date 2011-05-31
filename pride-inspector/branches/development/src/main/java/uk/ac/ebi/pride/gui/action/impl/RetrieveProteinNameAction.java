@@ -1,8 +1,9 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
+import org.jdesktop.swingx.table.TableColumnExt;
+import org.jdesktop.swingx.table.TableColumnModelExt;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.action.PrideAction;
-import uk.ac.ebi.pride.gui.component.table.model.ShowHideTableColumnModel;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveProteinNameTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
@@ -13,9 +14,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,12 +58,16 @@ public class RetrieveProteinNameAction extends PrideAction {
     public void actionPerformed(ActionEvent e) {
         // set protein names column enabled
         TableColumnModel columnModel = table.getColumnModel();
-        if (columnModel instanceof ShowHideTableColumnModel) {
+        if (columnModel instanceof TableColumnModelExt) {
             // show protein name column
-            ShowHideTableColumnModel showHideColModel = (ShowHideTableColumnModel) columnModel;
-            int protColIndex = showHideColModel.getColumnIndex(protNameColHeader, false);
-            TableColumn proteinIdColumn = showHideColModel.getColumn(protColIndex, false);
-            showHideColModel.setColumnVisible(proteinIdColumn, true);
+            TableColumnModelExt showHideColModel = (TableColumnModelExt) columnModel;
+            List<TableColumn> columns = showHideColModel.getColumns(true);
+            for (TableColumn column : columns) {
+                if (protNameColHeader.equals(column.getHeaderValue())) {
+                    ((TableColumnExt) column).setVisible(true);
+                    break;
+                }
+            }
 
             // get protein accessions
             Set<String> accs = getMappedProteinAccs();
@@ -96,7 +99,8 @@ public class RetrieveProteinNameAction extends PrideAction {
 
     /**
      * Start and run a new protein name retrieve task
-     * @param mappedProteinAcces    a collection of mapped protein accessions.
+     *
+     * @param mappedProteinAcces a collection of mapped protein accessions.
      */
     private void runRetrieveProteinNameTask(Collection<String> mappedProteinAcces) {
 

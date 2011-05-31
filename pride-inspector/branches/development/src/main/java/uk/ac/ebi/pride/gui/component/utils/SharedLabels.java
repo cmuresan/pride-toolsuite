@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.gui.component;
+package uk.ac.ebi.pride.gui.component.utils;
 
 /**
  * Created by IntelliJ IDEA.

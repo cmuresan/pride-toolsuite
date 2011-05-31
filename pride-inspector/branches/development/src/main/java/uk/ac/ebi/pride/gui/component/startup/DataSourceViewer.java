@@ -1,11 +1,14 @@
 package uk.ac.ebi.pride.gui.component.startup;
 
+import org.bushe.swing.event.annotation.AnnotationProcessor;
+import org.bushe.swing.event.annotation.EventSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.access.DataAccessMonitor;
+import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
+import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -17,8 +20,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.ImageObserver;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 
 /**
@@ -29,7 +30,7 @@ import java.util.Collection;
  * Date: 26-Feb-2010
  * Time: 10:42:08
  */
-public class DataSourceViewer extends JPanel implements PropertyChangeListener {
+public class DataSourceViewer extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(DataSourceViewer.class);
 
     /**
@@ -51,11 +52,11 @@ public class DataSourceViewer extends JPanel implements PropertyChangeListener {
      * Constructor
      */
     public DataSourceViewer() {
+        // enable annotation
+        AnnotationProcessor.process(this);
+
         // pride inspector context
         context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
-
-        // add property change listener 
-        context.addPropertyChangeListenerToDataAccessMonitor(this);
 
         // set up the main pane
         this.setLayout(new BorderLayout());
@@ -110,29 +111,49 @@ public class DataSourceViewer extends JPanel implements PropertyChangeListener {
 
     /**
      * This is triggered when data access controller is added/removed
-     *
-     * @param evt property change event
      */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        String evtName = evt.getPropertyName();
-        if (DataAccessMonitor.NEW_FOREGROUND_DATA_SOURCE_PROP.equals(evtName)) {
-            // get the new foreground data access controller
-            DataAccessController controller = (DataAccessController) evt.getNewValue();
+    @EventSubscriber(eventClass = ForegroundDataSourceEvent.class)
+    public void onForeGroundDataSourceEvent(ForegroundDataSourceEvent evt) {
+        // get the new foreground data access controller
+        DataAccessController controller = (DataAccessController) evt.getNewForegroundDataSource();
 
-            if (controller != null) {
-                // set the data source browser to visible
-                context.setDataSourceBrowserVisible(true);
+        if (controller != null) {
+            // set the data source browser to visible
+            // todo: is this the best way
+            context.setLeftControlPaneVisible(true);
 
-                // highlight the selected foreground data source
-                int rowNum = sourceTableModel.getRowIndex(controller);
+            // highlight the selected foreground data source
+            final int rowNum = sourceTableModel.getRowIndex(controller);
+
+            if (SwingUtilities.isEventDispatchThread()) {
                 sourceTable.changeSelection(rowNum, sourceTableModel.getColumnIndex(TableHeader.DATA_SOURCE_COLUMN), false, false);
+            } else {
+                Runnable eventDispatcher = new Runnable() {
+                    public void run() {
+                        sourceTable.changeSelection(rowNum, sourceTableModel.getColumnIndex(TableHeader.DATA_SOURCE_COLUMN), false, false);
+                    }
+                };
+                EventQueue.invokeLater(eventDispatcher);
             }
         }
 
         // update the table with the new entries
         sourceTable.revalidate();
         sourceTable.repaint();
+    }
+
+    @EventSubscriber(eventClass = DatabaseSearchEvent.class)
+    public void onDatabaseSearchEvent(DatabaseSearchEvent evt) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            sourceTable.clearSelection();
+        } else {
+            Runnable eventDispatcher = new Runnable() {
+                public void run() {
+                    sourceTable.clearSelection();
+                }
+            };
+            EventQueue.invokeLater(eventDispatcher);
+        }
     }
 
     /**
@@ -305,15 +326,20 @@ public class DataSourceViewer extends JPanel implements PropertyChangeListener {
         public void valueChanged(ListSelectionEvent e) {
             // get row number and column number
             int row = sourceTable.getSelectedRow();
-            int col = sourceTable.getSelectedColumn();
+            System.out.println(row);
+            if (row >= 0) {
+                int col = sourceTable.getSelectedColumn();
 
-            // get column name
-            String colName = sourceTable.getColumnName(col);
-            DataAccessController controller = context.getControllers().get(row);
-            if (colName.equals(TableHeader.DATA_SOURCE_COLUMN.getHeader()) && !context.isForegroundDataAccessController(controller)) {
-                // close foreground data access controller
-                logger.debug("Set foreground data access controller: {}", controller.getName());
-                context.setForegroundDataAccessController(controller);
+                // get column name
+                String colName = sourceTable.getColumnName(col);
+                DataAccessController controller = context.getControllers().get(row);
+                if (colName.equals(TableHeader.DATA_SOURCE_COLUMN.getHeader()) && !context.isForegroundDataAccessController(controller)) {
+                    // close foreground data access controller
+                    logger.debug("Set foreground data access controller: {}", controller.getName());
+                    context.setForegroundDataAccessController(controller);
+                }
+            } else {
+                context.setForegroundDataAccessController(null);
             }
         }
     }

@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.gui.component.metadata;
 
 import uk.ac.ebi.pride.data.core.Parameter;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
-import uk.ac.ebi.pride.gui.component.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
 import uk.ac.ebi.pride.gui.url.HyperLinkFollower;
 
 import javax.swing.*;

@@ -14,8 +14,8 @@ import java.awt.*;
 /**
  * @author User #2
  */
-public class DatabaseSearchTabPane extends JPanel {
-    public DatabaseSearchTabPane() {
+public class DatabaseSearchPane extends JPanel {
+    public DatabaseSearchPane() {
         initComponents();
     }
 

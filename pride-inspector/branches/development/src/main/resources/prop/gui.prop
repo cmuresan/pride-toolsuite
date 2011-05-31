@@ -1,11 +1,13 @@
-open.file.title=Open File...
+open.file.title=Open File(s)
 open.file.tooltip=Open mzML or Pride XML Files
 open.file.icon.small=icon/16x16/open_file.gif
+open.file.icon.medium=icon/32x32/open_file.png
 open.file.icon.large=icon/48x48/open_file.png
 
 open.database.title=Connect PRIDE Database
 open.database.tooltip=Connect to PRIDE Public Database
 open.database.icon.small=icon/16x16/open_database.gif
+open.database.icon.medium=icon/32x32/connect_database.png
 open.database.icon.large=icon/48x48/connect_database.png
 
 close.source.title=Close
@@ -18,11 +20,13 @@ close.source.disable.icon.small=icon/16x16/delete_disable.gif
 reviewer.download.title=Private Download
 reviewer.download.tooltip=Private download
 reviewer.download.icon.small=icon/16x16/reviewer_download.png
+reviewer.download.icon.medium=icon/32x32/reviewer_download.png
 reviewer.download.icon.large=icon/48x48/reviewer_download.png
 
 help.title=PRIDE Inspector Help
 help.tooltip=Open PRIDE Inspector Help Document
 help.icon.large=icon/48x48/help.png
+help.icon.medium=icon/32x32/help.png
 help.icon.small=icon/16x16/help.gif
 help.main.set=help/MainHelp.hs
 
@@ -69,6 +73,10 @@ experiment.tree.viewer.node.small.icon=icon/16x16/experiment_tree_node_blue.png
 experiment.tree.viewer.root.node.small.icon=icon/16x16/open_database.gif
 experiment.tree.viewer.find.node.small.icon=icon/16x16/find_experiment.png
 experiment.tree.viewer.tooltip=List of experiments
+
+summary.report.viewer.small.icon=icon/16x16/experiment_tree_enable.gif
+summary.report.viewer.title=Summary Report
+summary.report.viewer.tooltip=Summary report on selected experiment
 
 navigation.expand.small.icon=icon/16x16/navigation_expand.gif
 navigation.collapse.small.icon=icon/16x16/navigation_collapse.gif

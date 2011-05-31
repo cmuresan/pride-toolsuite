@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
+import org.bushe.swing.event.annotation.AnnotationProcessor;
+import org.bushe.swing.event.annotation.EventSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -9,6 +11,7 @@ import uk.ac.ebi.pride.gui.access.DataAccessMonitor;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
+import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 import uk.ac.ebi.pride.gui.task.impl.ExportIdentificationPeptideTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
@@ -19,9 +22,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 
-import static uk.ac.ebi.pride.gui.component.SharedLabels.DOI;
-import static uk.ac.ebi.pride.gui.component.SharedLabels.DOT;
-import static uk.ac.ebi.pride.gui.component.SharedLabels.TAB_SEP_FILE;
+import static uk.ac.ebi.pride.gui.component.utils.SharedLabels.DOT;
+import static uk.ac.ebi.pride.gui.component.utils.SharedLabels.TAB_SEP_FILE;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,23 +31,23 @@ import static uk.ac.ebi.pride.gui.component.SharedLabels.TAB_SEP_FILE;
  * Date: 01-Sep-2010
  * Time: 15:35:05
  */
-public class ExportIdentificationPeptideAction extends PrideAction implements PropertyChangeListener {
+public class ExportIdentificationPeptideAction extends PrideAction {
     private static final Logger logger = LoggerFactory.getLogger(ExportIdentificationPeptideAction.class);
-    private static final String FILE_EXTENSION = ".tsv";
     private static final String FILE_NAME = "protein_peptide";
 
-    private final PrideInspectorContext context;
 
     public ExportIdentificationPeptideAction(String name, Icon icon) {
         super(name, icon);
-        // register this action as property listener to database access monitor
-        context = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
-        context.addPropertyChangeListenerToDataAccessMonitor(this);
+
+        // enable annotation
+        AnnotationProcessor.process(this);
+        // enable component
         this.setEnabled(false);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        PrideInspectorContext context = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
         DataAccessController controller = context.getForegroundDataAccessController();
         String defaultFileName = controller.getName().split("\\" + DOT)[0] + "_" + FILE_NAME;
         SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Export Identifications and Peptides", defaultFileName, false, TAB_SEP_FILE);
@@ -63,14 +65,11 @@ public class ExportIdentificationPeptideAction extends PrideAction implements Pr
         }
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        String evtName = evt.getPropertyName();
+    @EventSubscriber(eventClass = ForegroundDataSourceEvent.class)
+    public void onForegroundDataSourceEvent(ForegroundDataSourceEvent evt) {
         try {
-            if (DataAccessMonitor.NEW_FOREGROUND_DATA_SOURCE_PROP.equals(evtName)) {
-                DataAccessController controller = context.getForegroundDataAccessController();
-                this.setEnabled(controller != null && controller.hasIdentification());
-            }
+            DataAccessController controller = (DataAccessController) evt.getNewForegroundDataSource();
+            this.setEnabled(controller != null && controller.hasIdentification());
         } catch (DataAccessException e) {
             logger.error("Failed to check data access controller", e);
         }

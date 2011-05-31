@@ -5,7 +5,6 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.pride.gui.component.SharedLabels;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static uk.ac.ebi.pride.gui.component.SharedLabels.TAB;
+import static uk.ac.ebi.pride.gui.component.utils.SharedLabels.TAB;
 
 public class ProteinNameFetcher {
     private Logger logger = LoggerFactory.getLogger(ProteinNameFetcher.class);

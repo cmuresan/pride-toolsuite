@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.component.SharedLabels;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
 import java.io.File;
@@ -14,9 +13,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 
-import static uk.ac.ebi.pride.gui.component.SharedLabels.*;
-import static uk.ac.ebi.pride.gui.component.SharedLabels.LINE_SEPARATOR;
-import static uk.ac.ebi.pride.gui.component.SharedLabels.TAB;
+import static uk.ac.ebi.pride.gui.component.utils.SharedLabels.LINE_SEPARATOR;
+import static uk.ac.ebi.pride.gui.component.utils.SharedLabels.TAB;
 
 /**
  * Created by IntelliJ IDEA.

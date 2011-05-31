@@ -246,8 +246,6 @@ public class PrideInspector extends Desktop {
         String closeAllDesc = context.getProperty("close.all.soruce.title");
         PrideAction closeAction = new CloseControllerAction(closeDesc, null);
         PrideAction closeAllAction = new CloseAllControllersAction(closeAllDesc, null);
-        context.addPropertyChangeListenerToDataAccessMonitor((PropertyChangeListener) closeAction);
-        context.addPropertyChangeListenerToDataAccessMonitor((PropertyChangeListener) closeAllAction);
 
         // try pride xml sample
         String openPrideXmlExampleDesc = context.getProperty("open.pride.xml.example.title");
@@ -296,7 +294,6 @@ public class PrideInspector extends Desktop {
         //export
         String exportDesc = context.getProperty("export.title");
         PrideAction exportAction = new ExportSpectrumAction(exportDesc, null);
-        context.addPropertyChangeListenerToDataAccessMonitor((PropertyChangeListener) exportAction);
 
         // export identification
         String exportIdentDesc = context.getProperty("export.identification.title");

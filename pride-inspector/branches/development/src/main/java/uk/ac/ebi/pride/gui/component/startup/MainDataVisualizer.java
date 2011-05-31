@@ -60,11 +60,10 @@ public class MainDataVisualizer extends JPanel implements PropertyChangeListener
     private void addComponents() {
 
         // data source browser
-        DataSourceBrowser dataSourceBrowser = new DataSourceBrowser();
-        context.setDataSourceBrowser(dataSourceBrowser);
+        LeftControlPane dataSourceBrowser = new LeftControlPane();
 
         // central pane
-        DataContentBrowser dataContentBrowser = new DataContentBrowser();
+        CentralContentPane dataContentBrowser = new CentralContentPane();
 
         // the main display area
         mainDisplayPane = new SideToolBarPanel(dataContentBrowser, SideToolBarPanel.WEST);
@@ -90,7 +89,7 @@ public class MainDataVisualizer extends JPanel implements PropertyChangeListener
     public void propertyChange(PropertyChangeEvent evt) {
         String evtName = evt.getPropertyName();
 
-        if (PrideInspectorContext.DATA_SOURCE_BROWSER_VISIBILITY.equals(evtName)) {
+        if (PrideInspectorContext.LEFT_CONTROL_PANE_VISIBILITY.equals(evtName)) {
             // set the visibility of data source browser
             logger.info("Data source browser's visibility has changed to: {}", evt.getNewValue());
             String dataSourceDesc = context.getProperty("data.source.title");

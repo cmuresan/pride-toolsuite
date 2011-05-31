@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.component.SharedLabels;
 import uk.ac.ebi.pride.gui.component.table.TableRowDataRetriever;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
@@ -18,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static uk.ac.ebi.pride.gui.component.SharedLabels.COMMA;
-import static uk.ac.ebi.pride.gui.component.SharedLabels.LINE_SEPARATOR;
-import static uk.ac.ebi.pride.gui.component.SharedLabels.TAB;
+import static uk.ac.ebi.pride.gui.component.utils.SharedLabels.COMMA;
+import static uk.ac.ebi.pride.gui.component.utils.SharedLabels.LINE_SEPARATOR;
+import static uk.ac.ebi.pride.gui.component.utils.SharedLabels.TAB;
 
 /**
  * Task to export peptide related information.

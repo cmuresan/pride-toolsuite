@@ -10,7 +10,7 @@ import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.mzgraph.MzGraphViewPane;
-import uk.ac.ebi.pride.gui.component.startup.DataContentDisplayPane;
+import uk.ac.ebi.pride.gui.component.startup.DataAccessControllerContentPane;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 
 import javax.swing.*;
@@ -135,8 +135,8 @@ public class MzDataTabPane extends DataAccessControllerPane {
      * @param icon icon to show
      */
     private void showIcon(Icon icon) {
-        if (parentComponent != null && parentComponent instanceof DataContentDisplayPane && icon != null) {
-            DataContentDisplayPane contentPane = (DataContentDisplayPane) parentComponent;
+        if (parentComponent != null && parentComponent instanceof DataAccessControllerContentPane && icon != null) {
+            DataAccessControllerContentPane contentPane = (DataAccessControllerContentPane) parentComponent;
             contentPane.setTabIcon(contentPane.getMzDataTabIndex(), icon);
         }
     }

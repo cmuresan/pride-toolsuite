@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Experiment;
 import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.component.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
 import java.io.File;

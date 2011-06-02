@@ -1,9 +1,6 @@
 package uk.ac.ebi.pride.gui.component.db;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.border.*;
-
+import org.bushe.swing.event.EventBus;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 import org.jdesktop.swingx.JXTable;
@@ -11,16 +8,26 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
+import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
+
+import javax.help.CSH;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
     private static final String PANE_TITLE = "Search Database";
+    private static final Color BACKGROUND_COLOUR = Color.white;
 
     private JLabel searchLabel;
     private JComboBox categoryComboBox;
     private JComboBox criteriaComboBox;
     private JTextField searchTextField;
     private JButton searchButton;
+    private JCheckBox searchResultCheckBox;
     private JXTable searchResultTable;
     private JPanel resultSummaryPanel;
     private JButton closeButton;
@@ -32,9 +39,9 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
     }
 
     protected void setupMainPane() {
-        this.setBackground(Color.white);
+        this.setBackground(BACKGROUND_COLOUR);
         this.setLayout(new BorderLayout());
-        this.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.lightGray));
+        this.setBorder(BorderFactory.createLineBorder(Color.gray));
         this.setTitle(PANE_TITLE);
 
         // set the final icon
@@ -47,6 +54,8 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
 
 
     protected void addComponents() {
+        JPanel container = new JPanel();
+        JPanel helpButtonPanel = new JPanel();
         JPanel panel1 = new JPanel();
         JPanel panel2 = new JPanel();
         JPanel panel3 = new JPanel();
@@ -55,23 +64,42 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
         criteriaComboBox = new JComboBox();
         searchTextField = new JTextField();
         searchButton = new JButton();
+        searchResultCheckBox = new JCheckBox();
         JPanel panel4 = new JPanel();
         JScrollPane scrollPane1 = new JScrollPane();
         searchResultTable = new JXTable();
         resultSummaryPanel = new JPanel();
         JLabel searchResultLabel = new JLabel();
         closeButton = new JButton();
+        // help button
+        Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
+        JButton helpButton = GUIUtilities.createLabelLikeButton(helpIcon, null);
+
+        //======== container panel ==========
+        container.setLayout(new BorderLayout());
+        container.setOpaque(false);
+
+        //======== help button panel ========
+        helpButtonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        helpButtonPanel.setOpaque(false);
+
+        //-------- help button -----------
+        helpButton.setToolTipText("Help on " + PANE_TITLE);
+        CSH.setHelpIDString(helpButton, "help.browse.mzgraph");
+        helpButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
+        helpButtonPanel.add(helpButton);
+        helpButtonPanel.setPreferredSize(new Dimension(200, 25));
+        container.add(helpButtonPanel, BorderLayout.NORTH);
+        add(helpButtonPanel, BorderLayout.NORTH);
 
         //======== panel1 ========
         {
             panel1.setBorder(null);
-            panel1.setBackground(Color.white);
             panel1.setOpaque(false);
             panel1.setLayout(new FlowLayout());
 
             //======== panel2 ========
             {
-                panel2.setBackground(Color.white);
                 panel2.setOpaque(false);
 
                 //======== panel3 ========
@@ -92,6 +120,10 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                     searchButton.setText("Search");
                     searchButton.setOpaque(false);
 
+                    //---- searchResultCheckBox ----
+                    searchResultCheckBox.setText("Search within results");
+                    searchResultCheckBox.setOpaque(false);
+
                     GroupLayout panel3Layout = new GroupLayout(panel3);
                     panel3.setLayout(panel3Layout);
                     panel3Layout.setHorizontalGroup(
@@ -101,25 +133,31 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                                             .add(searchLabel)
                                             .addPreferredGap(LayoutStyle.RELATED)
                                             .add(categoryComboBox, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(LayoutStyle.UNRELATED)
-                                            .add(criteriaComboBox, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
                                             .add(12, 12, 12)
+                                            .add(criteriaComboBox, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.RELATED)
                                             .add(searchTextField, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(LayoutStyle.RELATED)
                                             .add(searchButton)
-                                            .addContainerGap(11, Short.MAX_VALUE))
+                                            .addContainerGap())
+                                    .add(GroupLayout.TRAILING, panel3Layout.createSequentialGroup()
+                                            .addContainerGap(451, Short.MAX_VALUE)
+                                            .add(searchResultCheckBox, GroupLayout.PREFERRED_SIZE, 141, GroupLayout.PREFERRED_SIZE)
+                                            .addContainerGap())
                     );
                     panel3Layout.setVerticalGroup(
                             panel3Layout.createParallelGroup()
                                     .add(GroupLayout.TRAILING, panel3Layout.createSequentialGroup()
-                                            .addContainerGap(16, Short.MAX_VALUE)
+                                            .addContainerGap()
                                             .add(panel3Layout.createParallelGroup(GroupLayout.BASELINE)
+                                                    .add(searchButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .add(searchTextField)
+                                                    .add(categoryComboBox)
                                                     .add(searchLabel)
-                                                    .add(categoryComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                    .add(searchTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                    .add(searchButton)
-                                                    .add(criteriaComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                            .add(19, 19, 19))
+                                                    .add(criteriaComboBox))
+                                            .add(9, 9, 9)
+                                            .add(searchResultCheckBox)
+                                            .addContainerGap())
                     );
                 }
 
@@ -129,24 +167,23 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                         panel2Layout.createParallelGroup()
                                 .add(panel2Layout.createSequentialGroup()
                                         .addContainerGap()
-                                        .add(panel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addContainerGap())
+                                        .add(panel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
                 panel2Layout.setVerticalGroup(
                         panel2Layout.createParallelGroup()
                                 .add(panel2Layout.createSequentialGroup()
-                                        .add(20, 20, 20)
-                                        .add(panel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .add(0, 0, 0))
+                                        .addContainerGap(12, Short.MAX_VALUE)
+                                        .add(panel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 );
             }
             panel1.add(panel2);
         }
-        add(panel1, BorderLayout.NORTH);
+        container.add(panel1, BorderLayout.NORTH);
 
         //======== panel4 ========
         {
-            panel4.setBackground(Color.white);
+            panel4.setBackground(BACKGROUND_COLOUR);
 
             //======== scrollPane1 ========
             {
@@ -162,7 +199,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
 
             //======== resultSummaryPanel ========
             {
-                resultSummaryPanel.setBackground(Color.white);
+                resultSummaryPanel.setBackground(BACKGROUND_COLOUR);
                 resultSummaryPanel.setOpaque(false);
                 resultSummaryPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
                 resultSummaryPanel.add(searchResultLabel);
@@ -170,6 +207,12 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
 
             //---- closeButton ----
             closeButton.setText("Close");
+            closeButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    EventBus.publish(new DatabaseSearchEvent<Void>(null, DatabaseSearchEvent.Status.HIDE));
+                }
+            });
 
             GroupLayout panel4Layout = new GroupLayout(panel4);
             panel4.setLayout(panel4Layout);
@@ -198,7 +241,8 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                                     .add(13, 13, 13))
             );
         }
-        add(panel4, BorderLayout.CENTER);
+        container.add(panel4, BorderLayout.CENTER);
+        add(container, BorderLayout.CENTER);
     }
 }
 

@@ -9,14 +9,51 @@ import org.bushe.swing.event.AbstractEventServiceEvent;
  * Date: 27/05/11
  * Time: 15:03
  */
-public class DatabaseSearchEvent extends AbstractEventServiceEvent{
+public class DatabaseSearchEvent<T> extends AbstractEventServiceEvent{
+    public static enum Status {SHOW,
+                               START,
+                               HEADER,
+                               RESULT,
+                               COMPLETE,
+                               HIDE}
+
+    private Status status;
+    private T result;
+
+    public DatabaseSearchEvent(Status status) {
+        this(null, status, null);
+    }
+
+    public DatabaseSearchEvent(Object source, Status status) {
+        this(source, status, null);
+    }
 
     /**
      * Default constructor
      *
      * @param source the source of the event
+     * @param status status of the event
+     * @param result search result
      */
-    public DatabaseSearchEvent(Object source) {
+    public DatabaseSearchEvent(Object source, Status status, T result) {
         super(source);
+        setStatus(status);
+        setResult(result);
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public T getResult() {
+        return result;
+    }
+
+    public void setResult(T result) {
+        this.result = result;
     }
 }

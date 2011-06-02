@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
+import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.impl.MzMLControllerImpl;
@@ -10,6 +11,7 @@ import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
+import uk.ac.ebi.pride.gui.event.CentralContentPaneLockEvent;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.impl.OpenFileTask;

@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.access;
 import org.bushe.swing.event.EventBus;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
+import uk.ac.ebi.pride.gui.event.CentralContentPaneLockEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.RemoveDataSourceEvent;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
@@ -102,7 +103,16 @@ public class DataAccessMonitor extends PropertyChangeHelper {
         foregroundController = controller;
         newController = controller;
 
-        EventBus.publish(new ForegroundDataSourceEvent<DataAccessController>(this, oldController, newController));
+        ForegroundDataSourceEvent.Status status = ForegroundDataSourceEvent.Status.DATA;
+        if (newController instanceof EmptyDataAccessController) {
+            status = ForegroundDataSourceEvent.Status.DUMMY;
+        } else if (oldController instanceof EmptyDataAccessController) {
+            status = ForegroundDataSourceEvent.Status.DUMMY_TO_DATA;
+        } else if (newController == null) {
+            status = ForegroundDataSourceEvent.Status.EMPTY;
+        }
+
+        EventBus.publish(new ForegroundDataSourceEvent<DataAccessController>(this, status, oldController, newController));
     }
 
     public synchronized DataAccessController getForegroundDataAccessController() {

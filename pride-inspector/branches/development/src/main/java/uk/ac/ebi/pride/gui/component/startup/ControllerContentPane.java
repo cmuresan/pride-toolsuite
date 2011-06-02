@@ -28,8 +28,8 @@ import java.util.Collection;
  * Date: 29-Jul-2010
  * Time: 14:07:59
  */
-public class DataAccessControllerContentPane extends DataAccessControllerPane {
-    private static final Logger logger = LoggerFactory.getLogger(DataAccessControllerContentPane.class);
+public class ControllerContentPane extends DataAccessControllerPane {
+    private static final Logger logger = LoggerFactory.getLogger(ControllerContentPane.class);
 
     private JTabbedPane contentTabPane;
     private MetaDataTabPane metaDataTabPane;
@@ -49,7 +49,7 @@ public class DataAccessControllerContentPane extends DataAccessControllerPane {
      */
     private int indexCount = 0;
 
-    public DataAccessControllerContentPane(DataAccessController controller) {
+    public ControllerContentPane(DataAccessController controller) {
         super(controller);
     }
 
@@ -73,6 +73,7 @@ public class DataAccessControllerContentPane extends DataAccessControllerPane {
             retrieveIdentificationData();
         } else {
             JPanel panel = new PrideInspectorLoadingPanel();
+            this.setBorder(BorderFactory.createLineBorder(Color.lightGray));
             this.add(panel, BorderLayout.CENTER);
         }
     }

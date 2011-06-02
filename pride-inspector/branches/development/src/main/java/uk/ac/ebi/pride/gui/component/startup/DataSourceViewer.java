@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.component.startup;
 
+import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventSubscriber;
 import org.slf4j.Logger;
@@ -7,8 +8,9 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
+import uk.ac.ebi.pride.gui.event.CentralContentPaneLockEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
+import uk.ac.ebi.pride.gui.utils.EDTUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -55,17 +57,22 @@ public class DataSourceViewer extends JPanel {
         // enable annotation
         AnnotationProcessor.process(this);
 
+        // setup main panel
+        setupMainPane();
+
+        // set up the rest of components
+        addComponents();
+    }
+
+    private void setupMainPane() {
         // pride inspector context
         context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
 
         // set up the main pane
         this.setLayout(new BorderLayout());
-
-        // set up the rest of components
-        initialize();
     }
 
-    private void initialize() {
+    private void addComponents() {
 
         JPanel panel = new JPanel();
         panel.setBackground(Color.white);
@@ -111,13 +118,25 @@ public class DataSourceViewer extends JPanel {
 
     /**
      * This is triggered when data access controller is added/removed
+     *
+     * @param evt foreground data source event
      */
     @EventSubscriber(eventClass = ForegroundDataSourceEvent.class)
     public void onForeGroundDataSourceEvent(ForegroundDataSourceEvent evt) {
-        // get the new foreground data access controller
-        DataAccessController controller = (DataAccessController) evt.getNewForegroundDataSource();
+        Runnable code;
 
-        if (controller != null) {
+        if (ForegroundDataSourceEvent.Status.EMPTY.equals(evt.getStatus())) {
+            // clear all selection
+            code = new Runnable() {
+                @Override
+                public void run() {
+                    sourceTable.clearSelection();
+                }
+            };
+        } else {
+            // get the new foreground data access controller
+            DataAccessController controller = (DataAccessController) evt.getNewForegroundDataSource();
+
             // set the data source browser to visible
             // todo: is this the best way
             context.setLeftControlPaneVisible(true);
@@ -125,35 +144,21 @@ public class DataSourceViewer extends JPanel {
             // highlight the selected foreground data source
             final int rowNum = sourceTableModel.getRowIndex(controller);
 
-            if (SwingUtilities.isEventDispatchThread()) {
-                sourceTable.changeSelection(rowNum, sourceTableModel.getColumnIndex(TableHeader.DATA_SOURCE_COLUMN), false, false);
-            } else {
-                Runnable eventDispatcher = new Runnable() {
-                    public void run() {
-                        sourceTable.changeSelection(rowNum, sourceTableModel.getColumnIndex(TableHeader.DATA_SOURCE_COLUMN), false, false);
-                    }
-                };
-                EventQueue.invokeLater(eventDispatcher);
-            }
+            code = new Runnable() {
+
+                @Override
+                public void run() {
+                    sourceTable.changeSelection(rowNum, sourceTableModel.getColumnIndex(TableHeader.DATA_SOURCE_COLUMN), false, false);
+                }
+            };
         }
+
+        // run the code on EDT
+        EDTUtils.invokeLater(code);
 
         // update the table with the new entries
         sourceTable.revalidate();
         sourceTable.repaint();
-    }
-
-    @EventSubscriber(eventClass = DatabaseSearchEvent.class)
-    public void onDatabaseSearchEvent(DatabaseSearchEvent evt) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            sourceTable.clearSelection();
-        } else {
-            Runnable eventDispatcher = new Runnable() {
-                public void run() {
-                    sourceTable.clearSelection();
-                }
-            };
-            EventQueue.invokeLater(eventDispatcher);
-        }
     }
 
     /**
@@ -337,8 +342,6 @@ public class DataSourceViewer extends JPanel {
                     logger.debug("Set foreground data access controller: {}", controller.getName());
                     context.setForegroundDataAccessController(controller);
                 }
-            } else {
-                context.setForegroundDataAccessController(null);
             }
         }
     }

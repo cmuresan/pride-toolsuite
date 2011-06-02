@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.component.startup;
 
+import org.jdesktop.layout.*;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
@@ -8,6 +9,10 @@ import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 
 import javax.swing.*;
+import javax.swing.GroupLayout;
+import javax.swing.LayoutStyle;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.List;
 
@@ -38,43 +43,173 @@ public class LeftControlPane extends JPanel {
     }
 
     private void addComponents() {
+        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+        // Generated using JFormDesigner non-commercial license
+        splitPane2 = new JSplitPane();
+        panel2 = new JPanel();
+        dataSourceLabel = new JLabel();
+        dataSourcePanel = new JPanel();
+        panel3 = new JPanel();
+        summaryLabel = new JLabel();
+        summaryPanel = new JPanel();
+        launchMenuPanel = new JPanel();
+
+        //======== this ========
+
+        //======== splitPane2 ========
+        {
+            splitPane2.setOrientation(JSplitPane.VERTICAL_SPLIT);
+            splitPane2.setResizeWeight(0.6);
+            splitPane2.setContinuousLayout(true);
+            splitPane2.setDividerSize(1);
+
+            //======== panel2 ========
+            {
+
+                //---- dataSourceLabel ----
+                dataSourceLabel.setText("Data Source");
+                dataSourceLabel.setBorder(new EmptyBorder(3, 0, 0, 0));
+
+                //======== dataSourcePanel ========
+                {
+                    dataSourcePanel.setBackground(Color.white);
+                    dataSourcePanel.setBorder(new LineBorder(Color.black));
+                    dataSourcePanel.setForeground(Color.lightGray);
+                    dataSourcePanel.setLayout(new BorderLayout());
+                }
+
+                org.jdesktop.layout.GroupLayout panel2Layout = new org.jdesktop.layout.GroupLayout(panel2);
+                panel2.setLayout(panel2Layout);
+                panel2Layout.setHorizontalGroup(
+                    panel2Layout.createParallelGroup()
+                        .add(org.jdesktop.layout.GroupLayout.TRAILING, panel2Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .add(panel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                .add(org.jdesktop.layout.GroupLayout.LEADING, dataSourcePanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                                .add(org.jdesktop.layout.GroupLayout.LEADING, dataSourceLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE))
+                            .addContainerGap())
+                );
+                panel2Layout.setVerticalGroup(
+                    panel2Layout.createParallelGroup()
+                        .add(panel2Layout.createSequentialGroup()
+                            .add(dataSourceLabel)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(dataSourcePanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+                            .addContainerGap())
+                );
+            }
+            splitPane2.setTopComponent(panel2);
+
+            //======== panel3 ========
+            {
+
+                //---- summaryLabel ----
+                summaryLabel.setText("Summary Report");
+                summaryLabel.setBorder(new EmptyBorder(3, 0, 0, 0));
+
+                //======== summaryPanel ========
+                {
+                    summaryPanel.setBackground(Color.white);
+                    summaryPanel.setBorder(new LineBorder(Color.black));
+                    summaryPanel.setForeground(Color.lightGray);
+                    summaryPanel.setLayout(new BorderLayout());
+                }
+
+                org.jdesktop.layout.GroupLayout panel3Layout = new org.jdesktop.layout.GroupLayout(panel3);
+                panel3.setLayout(panel3Layout);
+                panel3Layout.setHorizontalGroup(
+                    panel3Layout.createParallelGroup()
+                        .add(panel3Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .add(panel3Layout.createParallelGroup()
+                                .add(org.jdesktop.layout.GroupLayout.TRAILING, summaryPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                                .add(org.jdesktop.layout.GroupLayout.TRAILING, summaryLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE))
+                            .addContainerGap())
+                );
+                panel3Layout.setVerticalGroup(
+                    panel3Layout.createParallelGroup()
+                        .add(panel3Layout.createSequentialGroup()
+                            .add(summaryLabel)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(summaryPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                            .addContainerGap())
+                );
+            }
+            splitPane2.setBottomComponent(panel3);
+        }
+
+        //======== launchMenuPanel ========
+        {
+            launchMenuPanel.setBackground(Color.white);
+            launchMenuPanel.setBorder(new LineBorder(Color.black));
+            launchMenuPanel.setForeground(Color.lightGray);
+            launchMenuPanel.setLayout(new BorderLayout());
+        }
+
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup()
+                .add(splitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .add(launchMenuPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                    .add(6, 6, 6))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup()
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .add(launchMenuPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                    .add(splitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE))
+        );
+        // JFormDesigner - End of component initialization  //GEN-END:initComponents
+
+        addSubComponents();
+    }
+
+    private void addSubComponents() {
         // data source viewer
         DataSourceViewer dataSourceViewer = new DataSourceViewer();
         JScrollPane dataSourceScrollPane = new JScrollPane(dataSourceViewer, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        dataSourceScrollPane.setBorder(BorderFactory.createEmptyBorder());
+        dataSourcePanel.add(dataSourceViewer, BorderLayout.CENTER);
 
         // get display related details
         Icon dataSourceViewerIcon = GUIUtilities.loadIcon(context.getProperty("data.source.viewer.small.icon"));
         String dataSourceTitle = context.getProperty("data.source.viewer.title");
         String dataSourceToolTip = context.getProperty("data.source.viewer.tooltip");
-
-        // add a tab
-        JTabbedPane dataSourceTabPane = new JTabbedPane();
-        dataSourceTabPane.setPreferredSize(new Dimension(200, 200));
-        dataSourceTabPane.addTab(dataSourceTitle, dataSourceViewerIcon, dataSourceScrollPane, dataSourceToolTip);
+        dataSourceLabel.setIcon(dataSourceViewerIcon);
+        dataSourceLabel.setText(dataSourceTitle);
+        dataSourceLabel.setToolTipText(dataSourceToolTip);
 
         // experiment tree viewer
         SummaryReportViewer summaryReportViewer = new SummaryReportViewer();
+        summaryPanel.add(summaryReportViewer, BorderLayout.CENTER);
 
         // get display related details
         Icon sumReportViewerIcon = GUIUtilities.loadIcon(context.getProperty("summary.report.viewer.small.icon"));
         String sumReportTitle = context.getProperty("summary.report.viewer.title");
         String sumReportToolTip = context.getProperty("summary.report.viewer.tooltip");
-
-        // add a tab
-        JTabbedPane summaryReportTabPane = new JTabbedPane();
-        summaryReportTabPane.setPreferredSize(new Dimension(200, 200));
-        summaryReportTabPane.addTab(sumReportTitle, sumReportViewerIcon, summaryReportViewer, sumReportToolTip);
+        summaryLabel.setIcon(sumReportViewerIcon);
+        summaryLabel.setText(sumReportTitle);
+        summaryLabel.setToolTipText(sumReportToolTip);
 
         // launch menu viewer
         LaunchMenuViewer launchMenuViewer = new LaunchMenuViewer();
+        launchMenuPanel.add(launchMenuViewer, BorderLayout.CENTER);
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, dataSourceTabPane, summaryReportTabPane);
-        splitPane.setOneTouchExpandable(false);
-        splitPane.setBorder(null);
-        splitPane.setDividerSize(0);
-        splitPane.setResizeWeight(0.5);
-        this.add(splitPane, BorderLayout.CENTER);
-        this.add(launchMenuViewer, BorderLayout.SOUTH);
     }
+
+    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JSplitPane splitPane2;
+    private JPanel panel2;
+    private JLabel dataSourceLabel;
+    private JPanel dataSourcePanel;
+    private JPanel panel3;
+    private JLabel summaryLabel;
+    private JPanel summaryPanel;
+    private JPanel launchMenuPanel;
+    // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

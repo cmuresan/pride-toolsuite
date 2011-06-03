@@ -100,6 +100,7 @@ public class CentralContentPane extends JPanel {
                     ForegroundDataSourceEvent.Status.DATA.equals(evt.getStatus())) {
                 ControllerContentPane dataContentPane = getControllerContentPane(controller);
                 setContentPane(dataContentPane);
+                setLocked(false);
             }
         } else {
             if (ForegroundDataSourceEvent.Status.EMPTY.equals(evt.getStatus())) {
@@ -108,6 +109,7 @@ public class CentralContentPane extends JPanel {
                 ControllerContentPane dataContentPane = getControllerContentPane(controller);
                 setContentPane(dataContentPane);
             }
+            setLocked(false);
         }
     }
 

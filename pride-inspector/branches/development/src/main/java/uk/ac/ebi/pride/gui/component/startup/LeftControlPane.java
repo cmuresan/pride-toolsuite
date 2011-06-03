@@ -173,7 +173,8 @@ public class LeftControlPane extends JPanel {
         // data source viewer
         DataSourceViewer dataSourceViewer = new DataSourceViewer();
         JScrollPane dataSourceScrollPane = new JScrollPane(dataSourceViewer, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        dataSourcePanel.add(dataSourceViewer, BorderLayout.CENTER);
+        dataSourceScrollPane.setBorder(null);
+        dataSourcePanel.add(dataSourceScrollPane, BorderLayout.CENTER);
 
         // get display related details
         Icon dataSourceViewerIcon = GUIUtilities.loadIcon(context.getProperty("data.source.viewer.small.icon"));
@@ -185,7 +186,9 @@ public class LeftControlPane extends JPanel {
 
         // experiment tree viewer
         SummaryReportViewer summaryReportViewer = new SummaryReportViewer();
-        summaryPanel.add(summaryReportViewer, BorderLayout.CENTER);
+        JScrollPane summaryReportScrollPane = new JScrollPane(summaryReportViewer, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        summaryReportScrollPane.setBorder(null);
+        summaryPanel.add(summaryReportScrollPane, BorderLayout.CENTER);
 
         // get display related details
         Icon sumReportViewerIcon = GUIUtilities.loadIcon(context.getProperty("summary.report.viewer.small.icon"));

@@ -1,21 +1,33 @@
 package uk.ac.ebi.pride.gui.component.db;
 
 import org.bushe.swing.event.EventBus;
+import org.bushe.swing.event.annotation.AnnotationProcessor;
+import org.bushe.swing.event.annotation.EventSubscriber;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
-import org.jdesktop.swingx.JXTable;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
+import uk.ac.ebi.pride.gui.component.table.TableFactory;
+import uk.ac.ebi.pride.gui.component.table.model.DatabaseSearchTableModel;
 import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
+import uk.ac.ebi.pride.gui.search.Criteria;
+import uk.ac.ebi.pride.gui.search.SearchEntry;
+import uk.ac.ebi.pride.gui.task.impl.OpenPrideDatabaseTask;
+import uk.ac.ebi.pride.gui.task.impl.SearchDatabaseTask;
+import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
+import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.help.CSH;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 
 public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
@@ -28,14 +40,20 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
     private JTextField searchTextField;
     private JButton searchButton;
     private JCheckBox searchResultCheckBox;
-    private JXTable searchResultTable;
+    private JTable searchResultTable;
     private JPanel resultSummaryPanel;
     private JButton closeButton;
+    private JButton openSelectedButton;
+    private JLabel searchResultLabel;
+
+    private int resultCount = 0;
 
     private PrideInspectorContext context;
 
     public DatabaseSearchPane(JComponent parentComp) {
         super(null, parentComp);
+        // enable annotation
+        AnnotationProcessor.process(this);
     }
 
     protected void setupMainPane() {
@@ -60,17 +78,19 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
         JPanel panel2 = new JPanel();
         JPanel panel3 = new JPanel();
         searchLabel = new JLabel();
-        categoryComboBox = new JComboBox();
-        criteriaComboBox = new JComboBox();
+        categoryComboBox = new JComboBox(new FieldComboBoxModel());
+        criteriaComboBox = new JComboBox(Criteria.toArray());
         searchTextField = new JTextField();
         searchButton = new JButton();
         searchResultCheckBox = new JCheckBox();
         JPanel panel4 = new JPanel();
         JScrollPane scrollPane1 = new JScrollPane();
-        searchResultTable = new JXTable();
+        searchResultTable = TableFactory.createDatabaseSearchTable();
         resultSummaryPanel = new JPanel();
-        JLabel searchResultLabel = new JLabel();
+        searchResultLabel = new JLabel();
         closeButton = new JButton();
+        openSelectedButton = new JButton();
+
         // help button
         Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
         JButton helpButton = GUIUtilities.createLabelLikeButton(helpIcon, null);
@@ -114,15 +134,27 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                     categoryComboBox.setOpaque(false);
 
                     //---- criteriaComboBox ----
+                    criteriaComboBox.setSelectedIndex(0);
+                    criteriaComboBox.setEditable(false);
                     criteriaComboBox.setOpaque(false);
+
+                    //---- searchTextField ----
+                    searchTextField.addKeyListener(new SearchKeyListener());
 
                     //---- searchButton ----
                     searchButton.setText("Search");
                     searchButton.setOpaque(false);
+                    searchButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            search();
+                        }
+                    });
 
                     //---- searchResultCheckBox ----
                     searchResultCheckBox.setText("Search within results");
                     searchResultCheckBox.setOpaque(false);
+                    searchResultCheckBox.setEnabled(false);
 
                     GroupLayout panel3Layout = new GroupLayout(panel3);
                     panel3.setLayout(panel3Layout);
@@ -134,7 +166,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                                             .addPreferredGap(LayoutStyle.RELATED)
                                             .add(categoryComboBox, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
                                             .add(12, 12, 12)
-                                            .add(criteriaComboBox, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
+                                            .add(criteriaComboBox, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(LayoutStyle.RELATED)
                                             .add(searchTextField, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(LayoutStyle.RELATED)
@@ -185,12 +217,15 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
         {
             panel4.setBackground(BACKGROUND_COLOUR);
 
+            //-------- searchResultLabel -----------
+            searchResultLabel.setFont(searchResultLabel.getFont().deriveFont(Font.BOLD));
+
             //======== scrollPane1 ========
             {
                 scrollPane1.setOpaque(false);
+                scrollPane1.setBorder(BorderFactory.createLineBorder(Color.black));
 
                 //---- searchResultTable ----
-                searchResultTable.setColumnControlVisible(true);
                 searchResultTable.setBorder(null);
                 searchResultTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 searchResultTable.setFillsViewportHeight(true);
@@ -214,6 +249,10 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                 }
             });
 
+            //---- openSelectedButton ----
+            openSelectedButton.setText("Open selected");
+            openSelectedButton.addActionListener(new OpenSelectionListener(searchResultTable));
+
             GroupLayout panel4Layout = new GroupLayout(panel4);
             panel4.setLayout(panel4Layout);
             panel4Layout.setHorizontalGroup(
@@ -221,28 +260,155 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                             .add(panel4Layout.createSequentialGroup()
                                     .addContainerGap()
                                     .add(panel4Layout.createParallelGroup()
-                                            .add(panel4Layout.createSequentialGroup()
-                                                    .add(panel4Layout.createParallelGroup(GroupLayout.TRAILING)
-                                                            .add(GroupLayout.LEADING, scrollPane1, GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
-                                                            .add(resultSummaryPanel, GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE))
-                                                    .addContainerGap())
                                             .add(GroupLayout.TRAILING, panel4Layout.createSequentialGroup()
+                                                    .add(openSelectedButton, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
+                                                    .add(18, 18, 18)
                                                     .add(closeButton, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
-                                                    .add(20, 20, 20))))
+                                                    .add(20, 20, 20))
+                                            .add(GroupLayout.TRAILING, panel4Layout.createSequentialGroup()
+                                                    .add(panel4Layout.createParallelGroup(GroupLayout.TRAILING)
+                                                            .add(resultSummaryPanel, GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+                                                            .add(scrollPane1, GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE))
+                                                    .addContainerGap())))
             );
             panel4Layout.setVerticalGroup(
                     panel4Layout.createParallelGroup()
                             .add(panel4Layout.createSequentialGroup()
                                     .add(resultSummaryPanel, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(LayoutStyle.RELATED)
-                                    .add(scrollPane1, GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
+                                    .add(scrollPane1, GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
                                     .addPreferredGap(LayoutStyle.RELATED)
-                                    .add(closeButton)
+                                    .add(panel4Layout.createParallelGroup(GroupLayout.BASELINE)
+                                            .add(closeButton)
+                                            .add(openSelectedButton))
                                     .add(13, 13, 13))
             );
         }
         container.add(panel4, BorderLayout.CENTER);
         add(container, BorderLayout.CENTER);
+    }
+
+
+    @EventSubscriber(eventClass = DatabaseSearchEvent.class)
+    public void onDatabaseSearchResultEvent(DatabaseSearchEvent evt) {
+        switch (evt.getStatus()) {
+            case START:
+                Icon icon = GUIUtilities.loadIcon(context.getProperty("loading.small.icon"));
+                searchResultLabel.setIcon(icon);
+                break;
+            case COMPLETE:
+                searchResultLabel.setIcon(null);
+                break;
+            case RESULT:
+                // enable search result check box
+                if (!searchResultCheckBox.isEnabled()) {
+                    searchResultCheckBox.setEnabled(true);
+                }
+
+                // update search result label
+                java.util.List<java.util.List<String>> results = (java.util.List<java.util.List<String>>) evt.getResult();
+                resultCount += results.size();
+                searchResultLabel.setText(resultCount + " results found");
+                break;
+        }
+    }
+
+    private void search() {
+        // reset the search result count
+        resultCount = 0;
+
+        // check the status of the search result check box
+        boolean searchWithinResults = searchResultCheckBox.isSelected();
+
+        // clear the content in search result table
+        DatabaseSearchTableModel tableModel = (DatabaseSearchTableModel) searchResultTable.getModel();
+        // get the existing content of the table if to search within the resutls
+        java.util.List<java.util.List<String>> contents = null;
+        java.util.List<String> headers = null;
+        if (searchWithinResults) {
+            contents = tableModel.getAllContent();
+            headers = tableModel.getAllHeaders();
+        }
+        tableModel.removeAllRows();
+
+        // get search entry
+        String field = categoryComboBox.getSelectedItem().toString();
+        String criteria = criteriaComboBox.getSelectedItem().toString();
+        Criteria c = Criteria.getCriteria(criteria);
+        String term = searchTextField.getText().trim();
+        SearchEntry searchEntry = new SearchEntry(field, c, term);
+
+        SearchDatabaseTask task = null;
+        if (searchWithinResults) {
+            // search within the existing results
+            task = new SearchDatabaseTask(searchEntry, headers, contents);
+        } else {
+            task = new SearchDatabaseTask(searchEntry);
+        }
+        task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
+        context.addTask(task);
+    }
+
+
+    /**
+     * Key listener to trigger a search action
+     */
+    private class SearchKeyListener implements KeyListener {
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+            if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+                search();
+            }
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+        }
+    }
+
+    /**
+     * Action listener for open selection button
+     */
+    private class OpenSelectionListener implements ActionListener {
+
+        private JTable table;
+
+        private OpenSelectionListener(JTable table) {
+            this.table = table;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            TableModel tableModel = table.getModel();
+            int rowCnt = tableModel.getRowCount();
+            int colCnt = tableModel.getColumnCount();
+            int selectColIndex = -1;
+            int viewColIndex = -1;
+            for (int i = 0; i < colCnt; i++) {
+                if (DatabaseSearchTableModel.TableHeader.SELECTED.getHeader().equals(tableModel.getColumnName(i))) {
+                    selectColIndex = i;
+                } else if (DatabaseSearchTableModel.TableHeader.VIEW.getHeader().equals(tableModel.getColumnName(i))) {
+                    viewColIndex = i;
+                }
+            }
+
+            // open selected experiments
+            if (selectColIndex >= 0) {
+                for (int i = 0; i < rowCnt; i++) {
+                    if ((Boolean) tableModel.getValueAt(i, selectColIndex)) {
+                        Comparable accession = (Comparable) tableModel.getValueAt(i, viewColIndex);
+                        OpenPrideDatabaseTask task = new OpenPrideDatabaseTask(accession);
+                        task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
+                        context.addTask(task);
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -27,4 +27,23 @@ public enum Criteria {
     public String getTerm() {
         return term;
     }
+
+    public static String[] toArray() {
+        Criteria[] criterias = Criteria.values();
+        String[] values = new String[criterias.length];
+        for (int i = 0; i < criterias.length; i++) {
+            Criteria criteria = criterias[i];
+            values[i] = criteria.getTerm();
+        }
+        return values;
+    }
+
+    public static Criteria getCriteria(String criteria) {
+        for (Criteria value : values()) {
+            if (value.getTerm().equals(criteria)) {
+                return value;
+            }
+        }
+        return null;
+    }
 }

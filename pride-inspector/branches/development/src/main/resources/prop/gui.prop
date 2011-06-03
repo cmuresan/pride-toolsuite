@@ -58,6 +58,8 @@ property.small.icon=icon/16x16/property.png
 property.title=Property
 property.tooltip=Display Spectrum Properties
 
+loading.small.icon=icon/16x16/loading.gif
+
 file.source.small.icon=icon/16x16/xml_file.gif
 file.source.loading.small.icon=icon/16x16/kit_loading.gif
 database.source.small.icon=icon/16x16/open_database.gif

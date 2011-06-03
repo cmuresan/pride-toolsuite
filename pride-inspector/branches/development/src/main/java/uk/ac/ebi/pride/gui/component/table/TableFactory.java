@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener
 import uk.ac.ebi.pride.gui.component.table.model.*;
 import uk.ac.ebi.pride.gui.component.table.renderer.HyperLinkCellRenderer;
 import uk.ac.ebi.pride.gui.component.table.renderer.PeptideSequenceCellRenderer;
+import uk.ac.ebi.pride.gui.component.table.renderer.ViewExperimentRenderer;
 import uk.ac.ebi.pride.gui.url.PTMHyperLinkGenerator;
 import uk.ac.ebi.pride.gui.url.ProteinAccHyperLinkGenerator;
 
@@ -88,7 +89,7 @@ public class TableFactory {
         DefaultPrideTable table = new DefaultPrideTable(peptideTableModel, columnModel);
 
         // peptide sequence column renderer
-        TableColumn peptideColumn = table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_COLUMN.getHeader());
+        TableColumnExt peptideColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_COLUMN.getHeader());
         peptideColumn.setCellRenderer(new PeptideSequenceCellRenderer(ptmIcon));
 
         // hide modified peptide sequence
@@ -146,6 +147,24 @@ public class TableFactory {
         // ptm accession hyperlink
         TableColumnExt ptmColumn = (TableColumnExt)table.getColumn(PTMTableModel.TableHeader.PTM_ACCESSION.getHeader());
         ptmColumn.setCellRenderer(new HyperLinkCellRenderer());
+
+        return table;
+    }
+
+    /**
+     * Build a table to display database search summaries.
+     *
+     * @return  JTable  database search table
+     */
+    public static JTable createDatabaseSearchTable() {
+        DatabaseSearchTableModel tableModel = new DatabaseSearchTableModel();
+        DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
+        DefaultPrideTable table = new DefaultPrideTable(tableModel, columnModel);
+
+        // set view experiment cell renderer
+        ViewExperimentRenderer renderer = new ViewExperimentRenderer();
+        TableColumnExt viewColumn = (TableColumnExt) table.getColumn(DatabaseSearchTableModel.TableHeader.VIEW.getHeader());
+        viewColumn.setCellRenderer(new HyperLinkCellRenderer());
 
         return table;
     }

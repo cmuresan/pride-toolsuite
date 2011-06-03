@@ -94,7 +94,7 @@ public class PeptideTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
         if (TableContentType.PEPTIDE.equals(type)) {
             List<Object> content = new ArrayList<Object>();
             // add row number
-            content.add(this.getRowCount() + 1);
+            content.add(rowCnt + 1);
             // add the rest content
             content.addAll(newData.getValue());
             this.addRow(content);

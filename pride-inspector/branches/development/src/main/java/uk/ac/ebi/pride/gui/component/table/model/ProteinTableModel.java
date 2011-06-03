@@ -62,7 +62,7 @@ public class ProteinTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
         if (TableContentType.IDENTIFICATION.equals(type)) {
             List<Object> content = new ArrayList<Object>();
             // row number
-            content.add(this.getRowCount() + 1);
+            content.add(rowCnt + 1);
             content.addAll(newData.getValue());
             contents.add(content);
             fireTableRowsInserted(rowCnt, rowCnt);

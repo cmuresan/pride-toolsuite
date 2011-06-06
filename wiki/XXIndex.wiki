@@ -95,4 +95,7 @@ Please send us your feedback, including error reports, improvement suggestions, 
 ----
 == Source Code ==
 
+The source code for this project can be found in the PSI-dev SourceForge SVN repository:
+http://psidev.svn.sourceforge.net/svnroot/psidev/psi/tools/xxindex/trunk
+
 [XXIndex top of page]

@@ -59,7 +59,11 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
                 writer.println("BEGIN IONS");
                 writer.println("TITLE=" + spectrumId);
                 Spectrum spectrum = controller.getSpectrumById(spectrumId);
+                // precursor m/z
                 writer.println("PEPMASS=" + controller.getPrecursorMz(spectrumId));
+                // precursor charge
+                int charge = controller.getPrecursorCharge(spectrumId);
+                writer.println("CHARGE=" + charge + (charge >= 0 ? "+" : "-"));
                 //get both arrays
                 double[] mzBinaryArray = spectrum.getMzBinaryDataArray().getDoubleArray();
                 double[] intensityArray = spectrum.getIntensityBinaryDataArray().getDoubleArray();

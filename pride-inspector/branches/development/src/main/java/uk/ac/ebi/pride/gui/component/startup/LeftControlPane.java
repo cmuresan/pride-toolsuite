@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.gui.component.startup;
 
 import org.jdesktop.layout.*;
+import org.jdesktop.swingx.border.DropShadowBorder;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
@@ -73,7 +74,7 @@ public class LeftControlPane extends JPanel {
                 //======== dataSourcePanel ========
                 {
                     dataSourcePanel.setBackground(Color.white);
-                    dataSourcePanel.setBorder(new LineBorder(Color.black));
+                    //dataSourcePanel.setBorder(new DropShadowBorder(Color.darkGray, 5));
                     dataSourcePanel.setForeground(Color.lightGray);
                     dataSourcePanel.setLayout(new BorderLayout());
                 }
@@ -110,7 +111,7 @@ public class LeftControlPane extends JPanel {
                 //======== summaryPanel ========
                 {
                     summaryPanel.setBackground(Color.white);
-                    summaryPanel.setBorder(new LineBorder(Color.black));
+//                    summaryPanel.setBorder(new LineBorder(Color.black));
                     summaryPanel.setForeground(Color.lightGray);
                     summaryPanel.setLayout(new BorderLayout());
                 }
@@ -141,7 +142,7 @@ public class LeftControlPane extends JPanel {
         //======== launchMenuPanel ========
         {
             launchMenuPanel.setBackground(Color.white);
-            launchMenuPanel.setBorder(new LineBorder(Color.black));
+            //launchMenuPanel.setBorder(new DropShadowBorder());
             launchMenuPanel.setForeground(Color.lightGray);
             launchMenuPanel.setLayout(new BorderLayout());
         }
@@ -173,7 +174,7 @@ public class LeftControlPane extends JPanel {
         // data source viewer
         DataSourceViewer dataSourceViewer = new DataSourceViewer();
         JScrollPane dataSourceScrollPane = new JScrollPane(dataSourceViewer, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        dataSourceScrollPane.setBorder(null);
+        dataSourceScrollPane.setBorder(new DropShadowBorder(Color.DARK_GRAY, 5));
         dataSourcePanel.add(dataSourceScrollPane, BorderLayout.CENTER);
 
         // get display related details
@@ -187,7 +188,7 @@ public class LeftControlPane extends JPanel {
         // experiment tree viewer
         SummaryReportViewer summaryReportViewer = new SummaryReportViewer();
         JScrollPane summaryReportScrollPane = new JScrollPane(summaryReportViewer, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        summaryReportScrollPane.setBorder(null);
+        summaryReportScrollPane.setBorder(new DropShadowBorder(Color.DARK_GRAY, 5));
         summaryPanel.add(summaryReportScrollPane, BorderLayout.CENTER);
 
         // get display related details
@@ -200,6 +201,7 @@ public class LeftControlPane extends JPanel {
 
         // launch menu viewer
         LaunchMenuViewer launchMenuViewer = new LaunchMenuViewer();
+        launchMenuViewer.setBorder(new DropShadowBorder(Color.DARK_GRAY, 5));
         launchMenuPanel.add(launchMenuViewer, BorderLayout.CENTER);
 
     }

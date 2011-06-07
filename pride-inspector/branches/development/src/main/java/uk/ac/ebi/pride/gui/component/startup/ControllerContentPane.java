@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.component.startup;
 
+import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -11,8 +12,10 @@ import uk.ac.ebi.pride.gui.component.metadata.MetaDataTabPane;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
 import uk.ac.ebi.pride.gui.component.protein.ProteinTabPane;
+import uk.ac.ebi.pride.gui.component.report.ReportMessage;
 import uk.ac.ebi.pride.gui.component.table.model.ProgressiveUpdateTableModel;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
+import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveIdentAndPeptideTableTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
@@ -88,15 +91,48 @@ public class ControllerContentPane extends DataAccessControllerPane {
             if (!categories.isEmpty()) {
                 if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)
                         || categories.contains(DataAccessController.ContentCategory.CHROMATOGRAM)) {
-                    contentTabPane.setEnabledAt(mzDataTabIndex, controller.hasSpectrum() || controller.hasChromatogram());
+                    boolean hasSpectrum = controller.hasSpectrum();
+                    boolean hasChromatogram = controller.hasChromatogram();
+
+                    contentTabPane.setEnabledAt(mzDataTabIndex, hasSpectrum || hasChromatogram);
+
+                    // check spectrum
+                    if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)) {
+                        if (hasSpectrum) {
+                            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Spectra found", "This data source contains spectra")));
+                        } else {
+                            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Spectra not found", "This data source does not contain spectra")));
+                        }
+                    }
+
+                    // check chromatogram
+                    if (categories.contains(DataAccessController.ContentCategory.CHROMATOGRAM)) {
+                        if (hasSpectrum) {
+                            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Chromatograms found", "This data source contains Chromatograms")));
+                        } else {
+                            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Chromatograms not found", "This data source does not contain Chromatograms")));
+                        }
+                    }
                 }
 
                 if (categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
-                    contentTabPane.setEnabledAt(proteinTabIndex, controller.hasIdentification());
+                    boolean hasProtein = controller.hasIdentification();
+                    contentTabPane.setEnabledAt(proteinTabIndex, hasProtein);
+                    if (hasProtein) {
+                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Protein identifications found", "This data source contains protein identifications")));
+                    } else {
+                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Protein identifications not found", "This data source does not contain protein identifications")));
+                    }
                 }
 
                 if (categories.contains(DataAccessController.ContentCategory.PEPTIDE)) {
-                    contentTabPane.setEnabledAt(peptideTabIndex, controller.hasPeptide());
+                    boolean hasPeptide = controller.hasPeptide();
+                    contentTabPane.setEnabledAt(peptideTabIndex, hasPeptide);
+                    if (hasPeptide) {
+                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Peptides found", "This data source contains peptides")));
+                    } else {
+                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Peptides not found", "This data source does not contain peptides")));
+                    }
                 }
 
                 if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)

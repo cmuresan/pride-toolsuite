@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.cache.CachedMap;
 import uk.ac.ebi.pride.gui.access.DataAccessMonitor;
 import uk.ac.ebi.pride.gui.component.db.DatabaseSearchPane;
+import uk.ac.ebi.pride.gui.component.report.ReportListModel;
 import uk.ac.ebi.pride.gui.component.startup.WelcomePane;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.task.TaskManager;
@@ -65,6 +66,11 @@ public class PrideInspectorContext extends DesktopContext {
     private Map<String, String> proteinNameTracker;
 
     /**
+     * Tracking all the summary report in a list model for each database access controller
+     */
+    private Map<DataAccessController, ListModel> summaryReportTracker;
+
+    /**
      * The main help set for PRIDE Inspector
      */
     private HelpSet mainHelpSet;
@@ -101,6 +107,9 @@ public class PrideInspectorContext extends DesktopContext {
 
         // protein name tracker
         this.proteinNameTracker = Collections.synchronizedMap(new CachedMap<String, String>(DEFAULT_PROTEIN_NAME_TRACKER_SIZE));
+
+        // summary report tracker
+        this.summaryReportTracker = Collections.synchronizedMap(new HashMap<DataAccessController, ListModel>());
 
         // by default the data source browser is invisible
         this.leftControlPaneVisible = false;
@@ -206,19 +215,24 @@ public class PrideInspectorContext extends DesktopContext {
             taskMgr.cancelTasksByOwner(controller);
         }
 
-        // remove data access controller
-        dataAccessMonitor.removeDataAccessController(controller);
 
         // remove gui component associated with this data access controller
         removeDataContentPane(controller);
+
+        // remove summary report
+        summaryReportTracker.remove(controller);
+
+        // remove data access controller
+        dataAccessMonitor.removeDataAccessController(controller);
+
     }
 
     /**
      * Replace one data access controller with another.
      *
-     * @param original  original data access controller
-     * @param replacement   replacement data access controller
-     * @param cancelTasks   whether to cancel the tasks associated with this controller
+     * @param original    original data access controller
+     * @param replacement replacement data access controller
+     * @param cancelTasks whether to cancel the tasks associated with this controller
      */
     public final synchronized void replaceDataAccessController(DataAccessController original, DataAccessController replacement, boolean cancelTasks) {
         if (cancelTasks) {
@@ -227,11 +241,17 @@ public class PrideInspectorContext extends DesktopContext {
             taskMgr.cancelTasksByOwner(original);
         }
 
-        // replace
-        dataAccessMonitor.replaceDataAccessController(original, replacement);
-
         // remove gui component
         removeDataContentPane(original);
+
+        // remove summary report for the original data access controller
+        summaryReportTracker.remove(original);
+
+        // add new summary report for the new data access controller
+        getSummaryReportModel(replacement);
+
+        // replace
+        dataAccessMonitor.replaceDataAccessController(original, replacement);
     }
 
     /**
@@ -242,6 +262,9 @@ public class PrideInspectorContext extends DesktopContext {
      * @param controller data access controller
      */
     public final synchronized void addDataAccessController(DataAccessController controller) {
+        // initialize summary report model
+        getSummaryReportModel(controller);
+
         dataAccessMonitor.addDataAccessController(controller);
     }
 
@@ -374,5 +397,21 @@ public class PrideInspectorContext extends DesktopContext {
      */
     public void setOpenFilePath(String openFilePath) {
         this.openFilePath = openFilePath;
+    }
+
+    /**
+     * Get the summary report model for a given data access controller
+     *
+     * @param controller    data access controller
+     * @return  ListModel   summary report model
+     */
+    public ListModel getSummaryReportModel(DataAccessController controller) {
+        ListModel model = summaryReportTracker.get(controller);
+        if (model == null) {
+            model = new ReportListModel(controller);
+        }
+        summaryReportTracker.put(controller, model);
+
+        return model;
     }
 }

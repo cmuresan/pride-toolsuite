@@ -36,7 +36,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
      * Note: this does not automatically mean they must have them.
      */
     public enum ContentCategory {
-        SPECTRUM, CHROMATOGRAM, PROTEIN, PEPTIDE
+        SPECTRUM, CHROMATOGRAM, PROTEIN, PEPTIDE, SAMPLE, PROTOCOL, SOFTWARE, INSTRUMENT, DATA_PROCESSING
     }
 
     /**

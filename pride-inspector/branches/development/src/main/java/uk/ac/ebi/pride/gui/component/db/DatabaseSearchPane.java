@@ -227,7 +227,6 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
 
                 //---- searchResultTable ----
                 searchResultTable.setBorder(null);
-                searchResultTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 searchResultTable.setFillsViewportHeight(true);
                 scrollPane1.setViewportView(searchResultTable);
             }
@@ -338,7 +337,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
         String term = searchTextField.getText().trim();
         SearchEntry searchEntry = new SearchEntry(field, c, term);
 
-        SearchDatabaseTask task = null;
+        SearchDatabaseTask task;
         if (searchWithinResults) {
             // search within the existing results
             task = new SearchDatabaseTask(searchEntry, headers, contents);

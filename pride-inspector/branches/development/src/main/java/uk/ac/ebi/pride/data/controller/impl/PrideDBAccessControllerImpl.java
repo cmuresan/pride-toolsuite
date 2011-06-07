@@ -89,7 +89,14 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         this.setType(Type.DATABASE);
 
         // set the content categories
-        this.setContentCategories(ContentCategory.SPECTRUM, ContentCategory.PROTEIN, ContentCategory.PEPTIDE);
+        this.setContentCategories(ContentCategory.SPECTRUM,
+                                  ContentCategory.PROTEIN,
+                                  ContentCategory.PEPTIDE,
+                                  ContentCategory.SAMPLE,
+                                  ContentCategory.PROTOCOL,
+                                  ContentCategory.INSTRUMENT,
+                                  ContentCategory.SOFTWARE,
+                                  ContentCategory.DATA_PROCESSING);
 
         // set the foreground experiment acc
         if (experimentAcc != null) {

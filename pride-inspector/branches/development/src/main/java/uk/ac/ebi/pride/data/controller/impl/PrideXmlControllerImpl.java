@@ -52,7 +52,14 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         // set the type
         this.setType(Type.XML_FILE);
         // set the content categories
-        this.setContentCategories(ContentCategory.SPECTRUM, ContentCategory.PROTEIN, ContentCategory.PEPTIDE);
+        this.setContentCategories(ContentCategory.SPECTRUM,
+                                  ContentCategory.PROTEIN,
+                                  ContentCategory.PEPTIDE,
+                                  ContentCategory.SAMPLE,
+                                  ContentCategory.PROTOCOL,
+                                  ContentCategory.INSTRUMENT,
+                                  ContentCategory.SOFTWARE,
+                                  ContentCategory.DATA_PROCESSING);
         // set cache builder
         setCacheBuilder(new PrideXmlCacheBuilder(this));
         // populate cache

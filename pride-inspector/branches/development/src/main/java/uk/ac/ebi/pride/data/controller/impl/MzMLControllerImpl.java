@@ -62,7 +62,13 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         // set the type
         this.setType(Type.XML_FILE);
         // set the content categories
-        this.setContentCategories(ContentCategory.SPECTRUM, ContentCategory.CHROMATOGRAM);
+                // set the content categories
+        this.setContentCategories(ContentCategory.SPECTRUM,
+                                  ContentCategory.CHROMATOGRAM,
+                                  ContentCategory.SAMPLE,
+                                  ContentCategory.INSTRUMENT,
+                                  ContentCategory.SOFTWARE,
+                                  ContentCategory.DATA_PROCESSING);
         // create cache builder
         setCacheBuilder(new MzMLCacheBuilder(this));
         // populate cache

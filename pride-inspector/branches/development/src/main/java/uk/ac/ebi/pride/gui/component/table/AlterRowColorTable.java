@@ -16,7 +16,7 @@ import java.util.Vector;
  * Time: 10:02:32
  */
 public class AlterRowColorTable extends JXTable {
-    private Color alterRowColor = new Color(246, 246, 248);
+    private Color alterRowColor = new Color(214, 241, 249);
     /**
      * Selection background
      */

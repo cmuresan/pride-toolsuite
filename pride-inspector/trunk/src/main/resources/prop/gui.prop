@@ -1,4 +1,4 @@
-open.file.title=Open File...
+open.file.title=Open File/Files...
 open.file.tooltip=Open mzML or Pride XML Files
 open.file.icon.small=icon/16x16/open_file.gif
 open.file.icon.large=icon/48x48/open_file.png
@@ -236,6 +236,7 @@ invalid.experiment.accession=<html>\n\
                               This could due to the following reasons\n\
                               <ul>\n\
                                 <li>These experiments are not available in PRIDE public instance yet</li>\n\
+                                <li>These experiments are private and are not accessible at the moment</li>\n\
                                 <li>These experiments are too big to open</li>\n\
                               </ul>\n\
                               </html>\n\

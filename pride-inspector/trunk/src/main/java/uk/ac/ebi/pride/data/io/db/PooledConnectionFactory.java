@@ -34,14 +34,8 @@ public class PooledConnectionFactory {
             String schema = getActiveSchema();
             logger.info("Using PRIDE public active schema: " + schema);
 
-            if (schema != null) {
-                // create a new connection pool
-                setupConnectionPool(schema);
-            } else {
-                String msg = "Failed to get a valid active DB schema.";
-                logger.error(msg);
-                throw new IllegalStateException(msg);
-            }
+            // create a new connection pool
+            setupConnectionPool(schema);
 
         } catch (PropertyVetoException e) {
             String msg = "Error while creating database pool";
@@ -58,41 +52,49 @@ public class PooledConnectionFactory {
         connectionPool.setDriverClass(context.getProperty("pride.database.driver"));
         String databaseURL = context.getProperty("pride.database.protocol") + ':'
                 + context.getProperty("pride.database.subprotocol") +
-                ':' + context.getProperty("pride.database.alias") + "/" + schema;
+                ':' + context.getProperty("pride.database.alias");
+
+        // assign schema if it is not null
+        if (schema != null) {
+            databaseURL += "/" + schema;
+        }
 
         connectionPool.setJdbcUrl(databaseURL);
         connectionPool.setUser(context.getProperty("pride.database.user"));
         connectionPool.setPassword(context.getProperty("pride.database.password"));
     }
 
-    private String getActiveSchema(){
+    private String getActiveSchema() {
         String schema = null;
 
-        // get connection to the master database
-        Connection connection = null;
-        PreparedStatement stmt = null;
-        ResultSet resultSet = null;
-        try {
-            Class.forName(context.getProperty("pride.database.driver"));
-            String databaseURL = context.getProperty("pride.database.protocol") + ':'
-                    + context.getProperty("pride.database.subprotocol") + ':'
-                    + context.getProperty("pride.database.alias") + "/"
-                    + context.getProperty("pride.database.master.schema");
-            connection = DriverManager.getConnection(
-                    databaseURL ,
-                    context.getProperty("pride.database.user"),
-                    context.getProperty("pride.database.password"));
-            stmt = connection.prepareStatement("select schema_name from active_schema");
-            resultSet = stmt.executeQuery();
-            if (resultSet.next()) {
-                schema = resultSet.getString("schema_name");
+        String masterSchema = context.getProperty("pride.database.master.schema");
+        if (!masterSchema.contains("${")) {
+            // get connection to the master database
+            Connection connection = null;
+            PreparedStatement stmt = null;
+            ResultSet resultSet = null;
+            try {
+                Class.forName(context.getProperty("pride.database.driver"));
+                String databaseURL = context.getProperty("pride.database.protocol") + ':'
+                        + context.getProperty("pride.database.subprotocol") + ':'
+                        + context.getProperty("pride.database.alias") + "/"
+                        + masterSchema;
+                connection = DriverManager.getConnection(
+                        databaseURL,
+                        context.getProperty("pride.database.user"),
+                        context.getProperty("pride.database.password"));
+                stmt = connection.prepareStatement("select schema_name from active_schema");
+                resultSet = stmt.executeQuery();
+                if (resultSet.next()) {
+                    schema = resultSet.getString("schema_name");
+                }
+            } catch (SQLException e) {
+                logger.error("Failed to get active DB schema.", e);
+            } catch (ClassNotFoundException e) {
+                logger.error("Fail to load database driver class: " + context.getProperty("pride.database.driver"));
+            } finally {
+                DBUtilities.releaseResources(connection, stmt, resultSet);
             }
-        } catch (SQLException e) {
-            logger.error("Failed to get active DB schema.", e);
-        } catch (ClassNotFoundException e) {
-            logger.error("Fail to load database driver class: " + context.getProperty("pride.database.driver"));
-        } finally {
-            DBUtilities.releaseResources(connection, stmt, resultSet);
         }
 
         return schema;

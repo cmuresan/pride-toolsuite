@@ -16,11 +16,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Created by IntelliJ IDEA.
- * User: dani
+ * Task to export to MGF file format
+ *
+ * User: dani, rwang
  * Date: 18-Oct-2010
  * Time: 10:46:54
- * To change this template use File | Settings | File Templates.
  */
 public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
     private static final Logger logger = LoggerFactory.getLogger(ExportSpectrumDescTask.class);
@@ -57,18 +57,54 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
 
         try {
             writer = new PrintWriter(new FileWriter(new File(outputFilePath)));
-            // title: COM
             Experiment exp = (Experiment) controller.getMetaData();
+
+            //------- Comment section -------
+
+            // data source
+            if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
+                writer.println("# Data source: " + ((File)controller.getSource()).getAbsolutePath());
+            } else if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
+                writer.println("# Data source: pride public mysql instance");
+            }
+
+            // accession if exist
+            String acc = exp.getAccession();
+            if (acc != null) {
+                writer.println("# PRIDE accession: " + acc);
+            }
+
+            // number of spectrum
+            if (controller.hasSpectrum()) {
+                writer.println("# Number of spectra: " + controller.getNumberOfSpectra());
+            }
+
+            // number of protein identifications
+            if (controller.hasIdentification()) {
+                writer.println("# Number of protein identifications: " + controller.getNumberOfIdentifications());
+            }
+
+            // number of peptides
+            if (controller.hasPeptide()) {
+                writer.println("# Number of peptides: " + controller.getNumberOfPeptides());
+            }
+
+            //------- MGF content section -------
+
+            // title: COM
             String title = exp.getTitle();
             if (title != null) {
                 writer.println("COM=" + title);
             }
-            // taxonomy: TAXONOMY
+
             for (Comparable spectrumId : controller.getSpectrumIds()) {
                 writer.println("BEGIN IONS");
                 writer.println("TITLE=" + spectrumId);
                 Spectrum spectrum = controller.getSpectrumById(spectrumId);
                 writer.println("PEPMASS=" + controller.getPrecursorMz(spectrumId));
+                // precursor charge
+                int charge = controller.getPrecursorCharge(spectrumId);
+                writer.println("CHARGE=" + charge + (charge >= 0 ? "+" : "-"));
                 //get both arrays
                 double[] mzBinaryArray = spectrum.getMzBinaryDataArray().getDoubleArray();
                 double[] intensityArray = spectrum.getIntensityBinaryDataArray().getDoubleArray();
@@ -85,7 +121,6 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
                 writer.flush();
             }
             writer.flush();
-
         } catch (DataAccessException e2) {
             String msg = "Failed to retrieve data from data source";
             logger.error(msg, e2);

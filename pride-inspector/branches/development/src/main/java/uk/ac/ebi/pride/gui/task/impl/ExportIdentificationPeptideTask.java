@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
+import uk.ac.ebi.pride.data.core.Experiment;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
@@ -56,6 +57,39 @@ public class ExportIdentificationPeptideTask extends AbstractDataAccessTask<Void
 
         try {
             writer = new PrintWriter(new FileWriter(new File(outputFilePath)));
+
+            Experiment exp = (Experiment) controller.getMetaData();
+
+            //------- Comment section -------
+
+            // data source
+            if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
+                writer.println("# Data source: " + ((File)controller.getSource()).getAbsolutePath());
+            } else if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
+                writer.println("# Data source: pride public mysql instance");
+            }
+
+            // accession if exist
+            String acc = exp.getAccession();
+            if (acc != null) {
+                writer.println("# PRIDE accession: " + acc);
+            }
+
+            // number of spectrum
+            if (controller.hasSpectrum()) {
+                writer.println("# Number of spectra: " + controller.getNumberOfSpectra());
+            }
+
+            // number of protein identifications
+            if (controller.hasIdentification()) {
+                writer.println("# Number of protein identifications: " + controller.getNumberOfIdentifications());
+            }
+
+            // number of peptides
+            if (controller.hasPeptide()) {
+                writer.println("# Number of peptides: " + controller.getNumberOfPeptides());
+            }
+
             Collection<Comparable> identIds = controller.getIdentificationIds();
             for (Comparable identId : identIds) {
                 String accession = controller.getProteinAccession(identId);

@@ -164,7 +164,7 @@ public class TableFactory {
         // set view experiment cell renderer
         ViewExperimentRenderer renderer = new ViewExperimentRenderer();
         TableColumnExt viewColumn = (TableColumnExt) table.getColumn(DatabaseSearchTableModel.TableHeader.VIEW.getHeader());
-        viewColumn.setCellRenderer(new HyperLinkCellRenderer());
+        viewColumn.setCellRenderer(renderer);
 
         return table;
     }

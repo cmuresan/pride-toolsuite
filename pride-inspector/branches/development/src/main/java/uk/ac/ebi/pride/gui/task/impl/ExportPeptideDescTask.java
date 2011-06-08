@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
+import uk.ac.ebi.pride.data.core.Experiment;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.table.TableRowDataRetriever;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
@@ -62,6 +63,38 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
 
         try {
             writer = new PrintWriter(new FileWriter(new File(outputFilePath)));
+            Experiment exp = (Experiment) controller.getMetaData();
+
+            //------- Comment section -------
+
+            // data source
+            if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
+                writer.println("# Data source: " + ((File)controller.getSource()).getAbsolutePath());
+            } else if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
+                writer.println("# Data source: pride public mysql instance");
+            }
+
+            // accession if exist
+            String acc = exp.getAccession();
+            if (acc != null) {
+                writer.println("# PRIDE accession: " + acc);
+            }
+
+            // number of spectrum
+            if (controller.hasSpectrum()) {
+                writer.println("# Number of spectra: " + controller.getNumberOfSpectra());
+            }
+
+            // number of protein identifications
+            if (controller.hasIdentification()) {
+                writer.println("# Number of protein identifications: " + controller.getNumberOfIdentifications());
+            }
+
+            // number of peptides
+            if (controller.hasPeptide()) {
+                writer.println("# Number of peptides: " + controller.getNumberOfPeptides());
+            }
+
             // in order to get a list of headers for export
             // first, we need to create an instance of PeptideTableModel
             PeptideTableModel pepTableModel = new PeptideTableModel(controller.getSearchEngine());
@@ -80,7 +113,7 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
             for (int i = 1; i < numOfCols; i++) {
                 if (!skipIndexes.contains(i)) {
                     header.append(pepTableModel.getColumnName(i));
-                    header.append(COMMA);
+                    header.append(TAB);
                 }
             }
             writer.println(header.toString());

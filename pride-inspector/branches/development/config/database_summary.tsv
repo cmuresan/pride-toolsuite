@@ -1721,8 +1721,7 @@ PRIDE Experiment Accession	Experiment Title	Experiment Short Label	Taxonomy Term
 1851	HFL_HeQianLabBIRM_YingWT_IEF_Dig_RPLC_LCQ	HFL_HeQianLabBIRM_YingWT_IEF_Dig_RPLC_LCQ	Homo sapiens (Human)	9606	liver	BTO:0000759
 1852	HFL_HeQianLabBIRM_YingWT_IEF_Dig_RPLC_LCQ	HFL_HeQianLabBIRM_YingWT_IEF_Dig_RPLC_LCQ	Homo sapiens (Human)	9606	liver	BTO:0000759
 1853	HFL_HeQianLabBIRM_WangJL_Dig_IMAC_RPLC_QTOF	HFL_HeQianLabBIRM_WangJL_Dig_IMAC_RPLC_QTOF	Homo sapiens (Human)	9606	liver	BTO:0000759
-	Acid Mine Drainage Proteogenomic Study 					
-1854	Peptide-resolved analysis of recombination in an AMD community	recombination in an AMD community	Leptospirillum	179		
+1854	Peptide-resolved analysis of recombination in an AMD community	recombination in an AMD community	Leptospirillum	179
 1855	Peptide-resolved analysis of recombination in an AMD community	recombination in an AMD community	Leptospirillum	179		
 1856	Peptide-resolved analysis of recombination in an AMD community	recombination in an AMD community	Leptospirillum	179		
 1857	Peptide-resolved analysis of recombination in an AMD community	recombination in an AMD community	Leptospirillum	179		
@@ -1978,10 +1977,7 @@ PRIDE Experiment Accession	Experiment Title	Experiment Short Label	Taxonomy Term
 1869	Neurospora crassa proteome	"PSF1 export, experiment ID: 34"	Neurospora crassa	5141		
 1870	Ustilago maydis proteome	"PSF1 export, experiment ID: 35"	Ustilago maydis (Smut fungus)	5270		
 1871	Yarrowia lipolytica proteome	"PSF1 export, experiment ID: 33"	Yarrowia lipolytica (Candida lipolytica)	4952		
-Saccharomyces cerevisiae (Baker's yeast)	            upregulated when Saccharomyces cerevisiae is starved of amino acids (e.g. histidine)	1872	4932			
-Candida albicans (Yeast)	            upregulated when Candida albicans is starved of amino acids (e.g. histidine)	1874	5476			
-Candida glabrata (Yeast) (Torulopsis glabrata)	            virulence which may be associated with changes in the proteome	1876	5478			
-2031	"72 HPF, Replicate 1, fraction 2"	ZEBRAFISH - 72 AND 120 HPF	Danio rerio (Zebrafish) (Brachydanio rerio)	7955		
+2031    "72 HPF, Replicate 1, fraction 2"	ZEBRAFISH - 72 AND 120 HPF	Danio rerio (Zebrafish) (Brachydanio rerio)	7955
 2032	"72 HPF, Replicate 1, fraction 3"	ZEBRAFISH - 72 AND 120 HPF	Danio rerio (Zebrafish) (Brachydanio rerio)	7955		
 2033	"72 HPF, Replicate 1, fraction 4"	ZEBRAFISH - 72 AND 120 HPF	Danio rerio (Zebrafish) (Brachydanio rerio)	7955		
 2034	"72 HPF, Replicate 1, fraction 5"	ZEBRAFISH - 72 AND 120 HPF	Danio rerio (Zebrafish) (Brachydanio rerio)	7955		

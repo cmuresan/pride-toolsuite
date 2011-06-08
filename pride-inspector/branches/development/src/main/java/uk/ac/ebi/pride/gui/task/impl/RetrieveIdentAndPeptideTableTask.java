@@ -126,7 +126,7 @@ public class RetrieveIdentAndPeptideTableTask extends AbstractDataAccessTask<Voi
             }
 
             if (missingSpectrumLinks > 0) {
-                EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Missing spectra [" + missingSpectrumLinks + "]", "The number of peptides without spectrum links")));
+                EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.WARNING, "Missing spectra [" + missingSpectrumLinks + "]", "The number of peptides without spectrum links")));
             }
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve protein and peptide related data";

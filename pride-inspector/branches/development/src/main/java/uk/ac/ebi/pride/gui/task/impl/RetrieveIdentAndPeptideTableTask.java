@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
+import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
@@ -10,8 +11,10 @@ import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
+import uk.ac.ebi.pride.gui.component.report.ReportMessage;
 import uk.ac.ebi.pride.gui.component.table.TableRowDataRetriever;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
+import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 
 import java.util.Collection;
 import java.util.List;
@@ -89,6 +92,8 @@ public class RetrieveIdentAndPeptideTableTask extends AbstractDataAccessTask<Voi
     protected Void runDataAccess() throws Exception {
         try {
             Collection<Comparable> identIds = controller.getIdentificationIds();
+            // count stores the number of peptides without any spectrum
+            int missingSpectrumLinks = 0;
 
             int identSize = identIds.size();
             if (start >= 0 && start < identSize && size > 0) {
@@ -110,11 +115,18 @@ public class RetrieveIdentAndPeptideTableTask extends AbstractDataAccessTask<Voi
                         for (Comparable peptideId : ids) {
                             List<Object> peptideContent = TableRowDataRetriever.getPeptideTableRow(controller, identId, peptideId);
                             publish(new Tuple<TableContentType, List<Object>>(TableContentType.PEPTIDE, peptideContent));
+                            if (controller.getPeptideSpectrumId(identId, peptideId) == null) {
+                                missingSpectrumLinks++;
+                            }
                         }
                     }
 
                     checkInterruption();
                 }
+            }
+
+            if (missingSpectrumLinks > 0) {
+                EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Missing spectra [" + missingSpectrumLinks + "]", "The number of peptides without spectrum links")));
             }
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve protein and peptide related data";

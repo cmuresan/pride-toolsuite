@@ -1,14 +1,21 @@
 package uk.ac.ebi.pride.gui.component.peptide;
 
+import org.bushe.swing.event.ContainerEventServiceFinder;
+import org.bushe.swing.event.EventService;
+import org.bushe.swing.event.EventSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
+import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.PTMTableModel;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
+import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
+import uk.ac.ebi.pride.gui.event.subscriber.PeptideEventSubscriber;
+import uk.ac.ebi.pride.gui.task.TaskEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,11 +28,14 @@ import java.beans.PropertyChangeEvent;
  * Date: 09-Sep-2010
  * Time: 08:37:03
  */
-public class PeptidePTMPane extends DataAccessControllerPane<Spectrum, Void> {
+public class PeptidePTMPane extends DataAccessControllerPane<Peptide, Void> implements EventBusSubscribable {
     private static final Logger logger = LoggerFactory.getLogger(PeptidePTMPane.class);
 
     private static final String PTM_TABLE_DESC = "PTM Details";
+
     private JTable ptmTable;
+
+    private PeptideEventSubscriber peptideEventSubscriber;
 
     public PeptidePTMPane(DataAccessController controller) {
         super(controller);
@@ -41,7 +51,7 @@ public class PeptidePTMPane extends DataAccessControllerPane<Spectrum, Void> {
 
     @Override
     protected void addComponents() {
-                // add descriptive panel
+        // add descriptive panel
         JPanel metaDataPanel = new JPanel();
         metaDataPanel.setOpaque(false);
         metaDataPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -59,28 +69,26 @@ public class PeptidePTMPane extends DataAccessControllerPane<Spectrum, Void> {
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        String evtName = evt.getPropertyName();
+    public void subscribeToEventBus() {
+        EventService eventBus = ContainerEventServiceFinder.getEventService(this);
+        peptideEventSubscriber = new PeptideEventSubscriber(controller, this);
+        eventBus.subscribe(PeptideEvent.class, peptideEventSubscriber);
+    }
 
-        if (DataAccessController.PEPTIDE_TYPE.equals(evtName)) {
-            logger.debug("New peptide selected for PTM table");
-            // table model
-            PTMTableModel ptmTableModel = (PTMTableModel)ptmTable.getModel();
-            // reset the sorting behavior
-            ptmTable.setRowSorter(new NumberTableRowSorter(ptmTableModel));
-            // delete all rows
-            ptmTableModel.removeAllRows();
-            // get peptide
-            Peptide peptide = (Peptide) evt.getNewValue();
-            Spectrum spectrum = null;
-            if (peptide != null) {
-                ptmTableModel.addData(peptide);
-                spectrum = peptide.getSpectrum();
-                if (spectrum != null) {
-                    spectrum.setPeptide(peptide);
-                }
-            }
-            this.firePropertyChange(DataAccessController.MZGRAPH_TYPE, "", spectrum);
+    @Override
+    public void succeed(TaskEvent<Peptide> peptideTaskEvent) {
+        Peptide peptide = peptideTaskEvent.getValue();
+
+        logger.debug("New peptide selected for PTM table");
+        // table model
+        PTMTableModel ptmTableModel = (PTMTableModel) ptmTable.getModel();
+        // reset the sorting behavior
+        ptmTable.setRowSorter(new NumberTableRowSorter(ptmTableModel));
+        // delete all rows
+        ptmTableModel.removeAllRows();
+        // get peptide
+        if (peptide != null) {
+            ptmTableModel.addData(peptide);
         }
     }
 }

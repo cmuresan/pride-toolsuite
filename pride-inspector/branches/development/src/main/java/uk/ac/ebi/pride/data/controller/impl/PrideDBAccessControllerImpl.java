@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.chart.controller.PrideChartSummaryData;
 import uk.ac.ebi.pride.chart.graphics.implementation.PrideChart;
 import uk.ac.ebi.pride.chart.graphics.implementation.PrideChartFactory;
+import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
@@ -31,7 +32,7 @@ import java.util.*;
 /**
  * DataAccessController to access pride public instance.
  * <p/>
- * User: dani
+ * User: dani, rwang
  * Date: 13-Apr-2010
  * Time: 14:32:25
  */
@@ -90,13 +91,13 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
         // set the content categories
         this.setContentCategories(ContentCategory.SPECTRUM,
-                                  ContentCategory.PROTEIN,
-                                  ContentCategory.PEPTIDE,
-                                  ContentCategory.SAMPLE,
-                                  ContentCategory.PROTOCOL,
-                                  ContentCategory.INSTRUMENT,
-                                  ContentCategory.SOFTWARE,
-                                  ContentCategory.DATA_PROCESSING);
+                ContentCategory.PROTEIN,
+                ContentCategory.PEPTIDE,
+                ContentCategory.SAMPLE,
+                ContentCategory.PROTOCOL,
+                ContentCategory.INSTRUMENT,
+                ContentCategory.SOFTWARE,
+                ContentCategory.DATA_PROCESSING);
 
         // set the foreground experiment acc
         if (experimentAcc != null) {
@@ -1214,23 +1215,32 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
 
     @Override
-    public Peptide getPeptide(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public Peptide getPeptideById(Comparable identId, Comparable peptideId, boolean useCache) throws DataAccessException {
 
-        String sequence = (String) cache.get(CacheCategory.PEPTIDE_SEQUENCE, peptideId);
-        logger.debug("getPeptide(identId, peptideId): ID[{}] : Sequence[{}]", new Object[]{peptideId, sequence});
-        Integer start = (Integer) cache.get(CacheCategory.PEPTIDE_START, peptideId);
-        Integer end = (Integer) cache.get(CacheCategory.PEPTIDE_END, peptideId);
-        int pid = Integer.parseInt(peptideId.toString());
-        ParamGroup params = new ParamGroup(getCvParams(null, "pride_peptide_param", pid), getUserParams(null, "pride_peptide_param", pid));
-        List<Modification> modifications = this.getPTMs(identId, peptideId);
-        List<FragmentIon> fragmentIons = getFragmentIons(null, pid);
-        Spectrum spectrum = null;
-        Comparable specId = this.getPeptideSpectrumId(identId, peptideId);
-        if (specId != null) {
-            spectrum = getSpectrumById(specId);
+        Peptide peptide = super.getPeptideById(identId, peptideId, useCache);
+        if (peptide == null) {
+            //todo: check whether to use cache
+            String sequence = (String) cache.get(CacheCategory.PEPTIDE_SEQUENCE, peptideId);
+            logger.debug("getPeptideById(identId, peptideId): ID[{}] : Sequence[{}]", new Object[]{peptideId, sequence});
+            Integer start = (Integer) cache.get(CacheCategory.PEPTIDE_START, peptideId);
+            Integer end = (Integer) cache.get(CacheCategory.PEPTIDE_END, peptideId);
+            int pid = Integer.parseInt(peptideId.toString());
+            ParamGroup params = new ParamGroup(getCvParams(null, "pride_peptide_param", pid), getUserParams(null, "pride_peptide_param", pid));
+            List<Modification> modifications = this.getPTMs(identId, peptideId);
+            List<FragmentIon> fragmentIons = getFragmentIons(null, pid);
+            Spectrum spectrum = null;
+            Comparable specId = this.getPeptideSpectrumId(identId, peptideId);
+            if (specId != null) {
+                spectrum = getSpectrumById(specId);
+            }
+            peptide = new Peptide(params, sequence, start, end, modifications, fragmentIons, spectrum);
+
+            if (useCache) {
+                cache.store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, peptideId), peptide);
+            }
         }
 
-        return new Peptide(params, sequence, start, end, modifications, fragmentIons, spectrum);
+        return peptide;
     }
 
     @Override
@@ -1439,9 +1449,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             }
             rs.close();
 
-            if(!map.isEmpty())
+            if (!map.isEmpty())
                 for (Integer id : PrideChartFactory.getChartOrder())
-                    if(map.containsKey(id)) list.add(map.get(id));
+                    if (map.containsKey(id)) list.add(map.get(id));
 
         } catch (Exception e) {
             String errMsg = "Charts intermediate data could not be retrieved from database";

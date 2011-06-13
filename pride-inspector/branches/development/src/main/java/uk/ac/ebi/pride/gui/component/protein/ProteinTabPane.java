@@ -2,23 +2,20 @@ package uk.ac.ebi.pride.gui.component.protein;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.bushe.swing.event.EventSubscriber;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.MzGraph;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.PrideInspector;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
+import uk.ac.ebi.pride.gui.component.PrideInspectorTabPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
-import uk.ac.ebi.pride.gui.component.mzgraph.MzGraphViewPane;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
+import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 
 import javax.swing.*;
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
 
 /**
  * IdentTabPane displays protein identification and peptide related information.
@@ -29,7 +26,7 @@ import java.beans.PropertyChangeEvent;
  * Date: 01-Mar-2010
  * Time: 16:23:02
  */
-public class ProteinTabPane extends DataAccessControllerPane {
+public class ProteinTabPane extends PrideInspectorTabPane {
 
     private static final Logger logger = Logger.getLogger(MzDataTabPane.class.getName());
 
@@ -68,7 +65,12 @@ public class ProteinTabPane extends DataAccessControllerPane {
     /**
      * visualize mzgraph
      */
-    private MzGraphViewPane mzViewPane;
+    private ProteinVizPane vizTabPane;
+
+    /**
+     * Subscribe to expand protein panel event
+     */
+    private ExpandProteinPanelSubscriber expandProteinPanelSubscriber;
 
     /**
      * Constructor
@@ -85,7 +87,11 @@ public class ProteinTabPane extends DataAccessControllerPane {
      */
     @Override
     protected void setupMainPane() {
-        PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
+        // add event subscriber
+        expandProteinPanelSubscriber = new ExpandProteinPanelSubscriber();
+        getContainerEventService().subscribe(ExpandPanelEvent.class, expandProteinPanelSubscriber);
+
+        // layout
         this.setLayout(new BorderLayout());
 
         // set the title for the panel
@@ -97,26 +103,26 @@ public class ProteinTabPane extends DataAccessControllerPane {
         } catch (DataAccessException dex) {
             String msg = String.format("%s failed on : %s", this, dex);
             logger.log(Level.ERROR, msg, dex);
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         }
 
         // set the final icon
-        this.setIcon(GUIUtilities.loadIcon(context.getProperty("identification.tab.icon.small")));
+        this.setIcon(GUIUtilities.loadIcon(appContext.getProperty("identification.tab.icon.small")));
 
         // set the loading icon
-        this.setLoadingIcon(GUIUtilities.loadIcon(context.getProperty("identification.tab.loading.icon.small")));
+        this.setLoadingIcon(GUIUtilities.loadIcon(appContext.getProperty("identification.tab.loading.icon.small")));
     }
 
     /**
      * Add the rest components
      */
     @Override
-    public void populate() {
+    protected void addComponents() {
         // create the inner split pane
         innerPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         innerPane.setBorder(BorderFactory.createEmptyBorder());
         innerPane.setOneTouchExpandable(false);
-        innerPane.setDividerSize(0);
+        innerPane.setDividerSize(DIVIDER_SIZE);
         innerPane.setResizeWeight(INNER_SPLIT_PANE_RESIZE_WEIGHT);
 
         // create the outer split pane
@@ -128,23 +134,23 @@ public class ProteinTabPane extends DataAccessControllerPane {
 
         // protein identification selection pane
         identPane = new ProteinSelectionPane(controller);
-        identPane.addPropertyChangeListener(this);
         outerPane.setTopComponent(identPane);
 
         // peptide selection pane
         peptidePane = new PeptideSelectionPane(controller);
-        identPane.addPropertyChangeListener(peptidePane);
         innerPane.setTopComponent(peptidePane);
 
-        // Spectrum view pane
-        mzViewPane = new MzGraphViewPane(controller);
-        mzViewPane.setVisible(false);
-        peptidePane.addPropertyChangeListener(mzViewPane);
-        peptidePane.addPropertyChangeListener(this);
-        innerPane.setBottomComponent(mzViewPane);
+        // visualization tab pane
+        vizTabPane = new ProteinVizPane(controller);
+
+        innerPane.setBottomComponent(vizTabPane);
         outerPane.setBottomComponent(innerPane);
 
         this.add(outerPane, BorderLayout.CENTER);
+
+        // subscribe to event bus
+        peptidePane.subscribeToEventBus();
+        vizTabPane.subscribeToEventBus();
     }
 
     /**
@@ -163,40 +169,6 @@ public class ProteinTabPane extends DataAccessControllerPane {
      */
     public PeptideSelectionPane getPeptidePane() {
         return peptidePane;
-    }
-
-    /**
-     * Triggered when a new mzgraph has been selected, it
-     * sets the visibility of the mzViewPane
-     *
-     * @param evt property change event
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (DataAccessController.MZGRAPH_TYPE.equals(evt.getPropertyName())) {
-            // set the visibility of the mzViewPane
-            MzGraph mzGraph = (MzGraph) evt.getNewValue();
-            if (mzGraph == null || mzGraph.getBinaryDataArrays() == null) {
-                mzViewPane.setVisible(false);
-                innerPane.setDividerSize(0);
-            } else {
-                mzViewPane.setVisible(true);
-                innerPane.setDividerSize(DIVIDER_SIZE);
-            }
-
-            // reset to preferred size
-            outerPane.resetToPreferredSizes();
-        } else if (ProteinSelectionPane.EXPAND_PROTEIN_PANEL.equals(evt.getPropertyName())) {
-            boolean visible = innerPane.isVisible();
-            if (visible) {
-                innerPane.setVisible(false);
-                outerPane.setDividerSize(0);
-            } else {
-                innerPane.setVisible(true);
-                outerPane.setDividerSize(DIVIDER_SIZE);
-            }
-            outerPane.resetToPreferredSizes();
-        }
     }
 
     @Override
@@ -218,6 +190,20 @@ public class ProteinTabPane extends DataAccessControllerPane {
         if (parentComponent != null && parentComponent instanceof ControllerContentPane && icon != null) {
             ControllerContentPane contentPane = (ControllerContentPane) parentComponent;
             contentPane.setTabIcon(contentPane.getProteinTabIndex(), icon);
+        }
+    }
+
+    /**
+     * Event handler for expanding protein panel
+     */
+    private class ExpandProteinPanelSubscriber implements EventSubscriber<ExpandPanelEvent> {
+
+        @Override
+        public void onEvent(ExpandPanelEvent event) {
+            boolean visible = innerPane.isVisible();
+            innerPane.setVisible(!visible);
+            outerPane.setDividerSize(visible ? 0 : DIVIDER_SIZE);
+            outerPane.resetToPreferredSizes();
         }
     }
 }

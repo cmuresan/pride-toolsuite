@@ -52,7 +52,7 @@ public interface PeptideDataAccess {
      * @return Peptide  peptide.
      * @throws DataAccessException data access exception.
      */
-    public Peptide getPeptide(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public Peptide getPeptideById(Comparable identId, Comparable peptideId) throws DataAccessException;
 
     /**
      * This method is to get a list of redundant peptide sequences

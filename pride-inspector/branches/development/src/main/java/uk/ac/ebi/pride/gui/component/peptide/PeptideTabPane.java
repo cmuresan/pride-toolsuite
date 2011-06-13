@@ -2,25 +2,20 @@ package uk.ac.ebi.pride.gui.component.peptide;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.bushe.swing.event.EventSubscriber;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.Modification;
-import uk.ac.ebi.pride.data.core.MzGraph;
-import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.PrideInspector;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
+import uk.ac.ebi.pride.gui.component.PrideInspectorTabPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
-import uk.ac.ebi.pride.gui.component.mzgraph.MzGraphViewPane;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
+import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 
 import javax.swing.*;
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
 
 /**
  * PeptideTabPane provides a peptide centric view to all peptides in one experiment.
@@ -29,7 +24,7 @@ import java.beans.PropertyChangeEvent;
  * Date: 03-Sep-2010
  * Time: 10:46:06
  */
-public class PeptideTabPane extends DataAccessControllerPane {
+public class PeptideTabPane extends PrideInspectorTabPane {
 
     private static final Logger logger = Logger.getLogger(MzDataTabPane.class.getName());
 
@@ -55,7 +50,7 @@ public class PeptideTabPane extends DataAccessControllerPane {
      */
     private JSplitPane innerSplitPane;
     /**
-     * Outer split pane contains inner split pane and mzViewPane
+     * Outer split pane contains inner split pane and spectrumViewPane
      */
     private JSplitPane outterSplitPane;
     /**
@@ -67,14 +62,13 @@ public class PeptideTabPane extends DataAccessControllerPane {
      */
     private PeptidePTMPane peptidePTMPane;
     /**
-     * mzgraph view pane
+     * Visualize spectrum and protein sequence
      */
-    private MzGraphViewPane mzViewPane;
-
+    private PeptideVizPane vizTabPane;
     /**
-     * Indicate whether the top panel has been expanded
+     * Subscribe to expand peptide panel
      */
-    private boolean topPanelExpanded = false;
+    private ExpandPeptidePanelSubscriber expandPeptidePanelSubscriber;
 
     /**
      * Constructor
@@ -91,7 +85,9 @@ public class PeptideTabPane extends DataAccessControllerPane {
      */
     @Override
     protected void setupMainPane() {
-        PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
+        // add event subscriber
+        expandPeptidePanelSubscriber = new ExpandPeptidePanelSubscriber();
+        getContainerEventService().subscribe(ExpandPanelEvent.class, expandPeptidePanelSubscriber);
 
         // set properties for IdentTabPane
         this.setLayout(new BorderLayout());
@@ -103,27 +99,26 @@ public class PeptideTabPane extends DataAccessControllerPane {
         } catch (DataAccessException dex) {
             String msg = String.format("%s failed on : %s", this, dex);
             logger.log(Level.ERROR, msg, dex);
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         }
 
         // set the final icon
-        this.setIcon(GUIUtilities.loadIcon(context.getProperty("peptide.tab.icon.small")));
+        this.setIcon(GUIUtilities.loadIcon(appContext.getProperty("peptide.tab.icon.small")));
 
         // set the loading icon
-        this.setLoadingIcon(GUIUtilities.loadIcon(context.getProperty("peptide.tab.loading.icon.small")));
+        this.setLoadingIcon(GUIUtilities.loadIcon(appContext.getProperty("peptide.tab.loading.icon.small")));
     }
 
     /**
      * Add the rest of components
      */
     @Override
-    public void populate() {
+    protected void addComponents() {
         // inner split pane
         innerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         innerSplitPane.setBorder(BorderFactory.createEmptyBorder());
         innerSplitPane.setOneTouchExpandable(false);
         innerSplitPane.setDividerSize(DIVIDER_SIZE);
-        innerSplitPane.setDividerSize(0);
         innerSplitPane.setResizeWeight(INNER_SPLIT_PANE_RESIZE_WEIGHT);
 
         // outer split pane
@@ -139,20 +134,20 @@ public class PeptideTabPane extends DataAccessControllerPane {
         // peptide selection pane
         peptidePTMPane = new PeptidePTMPane(controller);
         peptidePTMPane.setMinimumSize(new Dimension(200, 150));
-        peptideDescPane.addPropertyChangeListener(peptidePTMPane);
         innerSplitPane.setTopComponent(peptidePTMPane);
 
 
         // Spectrum view pane
-        mzViewPane = new MzGraphViewPane(controller);
-        mzViewPane.setVisible(false);
-        peptidePTMPane.addPropertyChangeListener(mzViewPane);
+        vizTabPane = new PeptideVizPane(controller);
 
-        peptideDescPane.addPropertyChangeListener(this);
-        innerSplitPane.setBottomComponent(mzViewPane);
+        innerSplitPane.setBottomComponent(vizTabPane);
         outterSplitPane.setBottomComponent(innerSplitPane);
 
         this.add(outterSplitPane, BorderLayout.CENTER);
+
+        // subscribe to local event bus
+        peptidePTMPane.subscribeToEventBus();
+        vizTabPane.subscribeToEventBus();
     }
 
     /**
@@ -162,71 +157,6 @@ public class PeptideTabPane extends DataAccessControllerPane {
      */
     public PeptideDescriptionPane getPeptidePane() {
         return peptideDescPane;
-    }
-
-    /**
-     * Triggered when a new peptide has been selected
-     * It sets the visibility of both the ptm pane and mz view pane
-     *
-     * @param evt property change event
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        super.propertyChange(evt);
-        String evtName = evt.getPropertyName();
-
-        if (DataAccessController.PEPTIDE_TYPE.equals(evtName)) {
-            // set the visibility of the peptidePTMPane
-            Peptide peptide = (Peptide) evt.getNewValue();
-            if (peptide != null) {
-                java.util.List<Modification> mods = peptide.getModifications();
-                boolean peptidePTMPaneVisibility = (mods != null && !mods.isEmpty());
-                setPeptidePTMPaneVisibility(peptidePTMPaneVisibility);
-
-                // set the visibility of the mzGraph pane
-                MzGraph mzGraph = peptide.getSpectrum();
-                boolean mzGraphPaneVisibility = (mzGraph != null && mzGraph.getBinaryDataArrays() != null);
-                setMzGraphPaneVisibility(mzGraphPaneVisibility);
-
-                if (!topPanelExpanded) {
-                    setInnerPaneVisibility(peptidePTMPaneVisibility || mzGraphPaneVisibility);
-                    innerSplitPane.setDividerSize(peptidePTMPaneVisibility && mzGraphPaneVisibility ? DIVIDER_SIZE : 0);
-                }
-            } else {
-                setPeptidePTMPaneVisibility(false);
-                setMzGraphPaneVisibility(false);
-                setInnerPaneVisibility(false);
-            }
-        } else if (PeptideDescriptionPane.EXPAND_PEPTIDE_PANEl.equals(evt.getPropertyName())) {
-            topPanelExpanded = !topPanelExpanded;
-            setInnerPaneVisibility(!topPanelExpanded);
-        }
-    }
-
-    /**
-     * Set the visibility of the ptm pane
-     *
-     * @param visibility true is visible
-     */
-    private void setPeptidePTMPaneVisibility(boolean visibility) {
-        peptidePTMPane.setVisible(visibility);
-        outterSplitPane.resetToPreferredSizes();
-    }
-
-    private void setInnerPaneVisibility(boolean visibility) {
-        innerSplitPane.setVisible(visibility);
-        outterSplitPane.setDividerSize(visibility ? DIVIDER_SIZE : 0);
-        outterSplitPane.resetToPreferredSizes();
-    }
-
-    /**
-     * Set the visibility of the mzgraph pane
-     *
-     * @param visibility true is visible
-     */
-    private void setMzGraphPaneVisibility(boolean visibility) {
-        mzViewPane.setVisible(visibility);
-        outterSplitPane.resetToPreferredSizes();
     }
 
     @Override
@@ -248,6 +178,20 @@ public class PeptideTabPane extends DataAccessControllerPane {
         if (parentComponent != null && parentComponent instanceof ControllerContentPane && icon != null) {
             ControllerContentPane contentPane = (ControllerContentPane) parentComponent;
             contentPane.setTabIcon(contentPane.getPeptideTabIndex(), icon);
+        }
+    }
+
+    /**
+     * Event handler for expanding protein panel
+     */
+    private class ExpandPeptidePanelSubscriber implements EventSubscriber<ExpandPanelEvent> {
+
+        @Override
+        public void onEvent(ExpandPanelEvent event) {
+            boolean visible = innerSplitPane.isVisible();
+            innerSplitPane.setVisible(!visible);
+            outterSplitPane.setDividerSize(visible ? 0 : DIVIDER_SIZE);
+            outterSplitPane.resetToPreferredSizes();
         }
     }
 }

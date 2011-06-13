@@ -213,6 +213,9 @@ public class TableRowDataRetriever {
         // protein name
         content.add(null);
 
+        // sequence coverage
+        content.add(null);
+
         // Score
         double score = controller.getIdentificationScore(identId);
         content.add(score == -1 ? null : score);

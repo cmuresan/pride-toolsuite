@@ -259,5 +259,13 @@ report.item.error.icon.small=icon/16x16/report_error.png
 report.item.warning.icon.small=icon/16x16/report_warning.png
 report.item.plain.icon.small=icon/16x16/report_plain.png
 
+# spectrum and protein sequence tab details
+spectrum.tab.title=Spectrum
+spectrum.tab.tooltip=Spectrum for selected peptide
+spectrum.tab.icon.small=icon/16x16/report_success.png
+protein.sequence.tab.title=Sequence Coverage
+protein.sequence.tab.tooltip=Protein sequence converage for selected protein
+protein.sequence.tab.icon.small=icon/16x16/report_success.png
+
            
 

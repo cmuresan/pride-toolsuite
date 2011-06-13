@@ -16,6 +16,7 @@ public enum CacheCategory {
     SPECTRUM(CachedMap.class, 10), // Map<Spectrum id, Spectrum>
     CHROMATOGRAM(CachedMap.class, 10), // Map<Chromatogram id, Chromatogram>
     IDENTIFICATION(CachedMap.class, 10), // Map<Identification id, Identification>
+    PEPTIDE (CachedMap.class, 10), // Map<Tuple<Comparable, Comparable>, Peptide>
     EXPERIMENT_ACC(ArrayList.class, null), // List<Experiement Accession>
     SPECTRUM_ID(ArrayList.class, null), // List<Spectrum id>
     CHROMATOGRAM_ID(ArrayList.class, null), // List<Chromatogram id>

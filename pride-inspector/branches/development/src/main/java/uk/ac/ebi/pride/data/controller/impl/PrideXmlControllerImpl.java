@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.data.controller.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
@@ -53,13 +54,13 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         this.setType(Type.XML_FILE);
         // set the content categories
         this.setContentCategories(ContentCategory.SPECTRUM,
-                                  ContentCategory.PROTEIN,
-                                  ContentCategory.PEPTIDE,
-                                  ContentCategory.SAMPLE,
-                                  ContentCategory.PROTOCOL,
-                                  ContentCategory.INSTRUMENT,
-                                  ContentCategory.SOFTWARE,
-                                  ContentCategory.DATA_PROCESSING);
+                ContentCategory.PROTEIN,
+                ContentCategory.PEPTIDE,
+                ContentCategory.SAMPLE,
+                ContentCategory.PROTOCOL,
+                ContentCategory.INSTRUMENT,
+                ContentCategory.SOFTWARE,
+                ContentCategory.DATA_PROCESSING);
         // set cache builder
         setCacheBuilder(new PrideXmlCacheBuilder(this));
         // populate cache
@@ -358,7 +359,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @throws DataAccessException data access exception
      */
     @Override
-    Identification getIdentificationById(Comparable id, boolean useCache) throws DataAccessException {
+    public Identification getIdentificationById(Comparable id, boolean useCache) throws DataAccessException {
         Identification ident = super.getIdentificationById(id, useCache);
         if (ident == null) {
             logger.debug("Get new identification from file: {}", id);
@@ -381,6 +382,36 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
             }
         }
         return ident;
+    }
+
+
+    /**
+     * Get peptide using a given identification id and a given peptide index
+     *
+     * @param identId   identification id
+     * @param index peptide index
+     * @param useCache  whether to use cache
+     * @return Peptide  peptide
+     * @throws DataAccessException  exception while getting peptide
+     */
+    @Override
+    public Peptide getPeptideById(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
+        Peptide peptide = super.getPeptideById(identId, index, useCache);
+        if (peptide == null) {
+            logger.debug("Get new peptide from file: {}-{}", identId, index);
+            peptide = PrideXmlTransformer.transformPeptide(reader.getPeptide(identId.toString(), Integer.parseInt(index.toString())));
+            if (useCache && peptide != null) {
+                // store peptide
+                cache.store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, index), peptide);
+                // store precursor charge and m/z
+                Spectrum spectrum = peptide.getSpectrum();
+                if (spectrum != null) {
+                    cache.store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
+                    cache.store(CacheCategory.PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+                }
+            }
+        }
+        return peptide;
     }
 
     /**

@@ -71,7 +71,6 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         super(source);
         this.mode = mode;
         this.cache = new CacheAccessor();
-        this.cache = new CacheAccessor();
     }
 
     /**
@@ -505,6 +504,30 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return ids;
     }
 
+    @Override
+    public Peptide getPeptideById(Comparable identId, Comparable index) throws DataAccessException {
+        return getPeptideById(identId, index, true);
+    }
+
+    public Peptide getPeptideById(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
+        Peptide pep = null;
+
+        if (useCache) {
+            // check whether the identification exist in the cache already
+            Identification ident = (Identification)cache.get(CacheCategory.IDENTIFICATION, identId);
+            if (ident != null) {
+                int indexInt = Integer.parseInt(index.toString());
+                List<Peptide> peptides = ident.getPeptides();
+                if (indexInt >=0  && indexInt < peptides.size()) {
+                    pep = peptides.get(indexInt);
+                }
+            } else {
+                pep = (Peptide) cache.get(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, index));
+            }
+        }
+
+        return pep;
+    }
 
     /**
      * Get peptide sequences using identification id.

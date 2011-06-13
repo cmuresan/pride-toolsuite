@@ -1,14 +1,16 @@
 package uk.ac.ebi.pride.gui.component.protein;
 
+import org.bushe.swing.event.ContainerEventServiceFinder;
+import org.bushe.swing.event.EventService;
+import org.bushe.swing.event.EventSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Modification;
 import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.data.core.Spectrum;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
+import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
@@ -17,10 +19,10 @@ import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.ProgressiveUpdateTableModel;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
+import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
+import uk.ac.ebi.pride.gui.event.container.ProteinIdentificationEvent;
 import uk.ac.ebi.pride.gui.task.Task;
-import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideTableTask;
-import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
@@ -28,7 +30,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ import java.util.Map;
  * Date: 16-Apr-2010
  * Time: 11:26:45
  */
-public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void> {
+public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void> implements EventBusSubscribable{
     private static final Logger logger = LoggerFactory.getLogger(PeptideSelectionPane.class);
 
     /**
@@ -61,9 +62,9 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
     private JLabel ptmLabel;
 
     /**
-     * a reference to pride inspector context
+     * Subscriber for event bus on protein selection event
      */
-    private PrideInspectorContext context;
+    private SelectProteinIdentSubscriber proteinIdentSubscriber;
 
     /**
      * Constructor
@@ -79,8 +80,6 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
      */
     @Override
     protected void setupMainPane() {
-        // store a reference to desktop context
-        context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
         // set layout
         this.setLayout(new BorderLayout());
         this.setBackground(Color.white);
@@ -115,7 +114,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
         } catch (DataAccessException e) {
             String msg = "Failed to retrieve search engine details";
             logger.error(msg, e);
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
         }
 
         // add row selection listener
@@ -135,40 +134,26 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
         this.add(scrollPane, BorderLayout.CENTER);
     }
 
-    /**
-     * Get the spectrum from selected peptide, then assign the peptide to the spectrum
-     * notify the property listeners with this spectrum, in this case, it is the mzgraph viewer.
-     *
-     * @param peptideTaskEvent task event
-     */
     @Override
-    public void succeed(TaskEvent<Peptide> peptideTaskEvent) {
-        Peptide peptide = peptideTaskEvent.getValue();
-        Spectrum spectrum = null;
-        if (peptide != null) {
-            // get spectrum
-            spectrum = peptide.getSpectrum();
-            if (spectrum != null) {
-                // reassign peptide, this is for fragmented ions and modifications
-                spectrum.setPeptide(peptide);
-            }
-        }
+    public void subscribeToEventBus() {
+        // get local event bus
+        EventService eventBus = ContainerEventServiceFinder.getEventService(this);
 
-        this.firePropertyChange(DataAccessController.MZGRAPH_TYPE, "", spectrum);
+        // subscriber
+        proteinIdentSubscriber = new SelectProteinIdentSubscriber();
+
+        // subscribeToEventBus
+        eventBus.subscribe(ProteinIdentificationEvent.class, proteinIdentSubscriber);
     }
 
     /**
-     * Triggered when a new identification has been selected.
-     *
-     * @param evt change event
+     * Listen to the event when a new protein identification has been selected
      */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void propertyChange(PropertyChangeEvent evt) {
+    private class SelectProteinIdentSubscriber implements EventSubscriber<ProteinIdentificationEvent> {
 
-        if (DataAccessController.IDENTIFICATION_ID.equals(evt.getPropertyName())) {
-
-            Comparable identId = (Comparable) evt.getNewValue();
+        @Override
+        public void onEvent(ProteinIdentificationEvent event) {
+            Comparable identId = event.getIdentificationId();
             logger.debug("Identification has been selected: {}", identId);
 
             // update ptm label
@@ -187,115 +172,115 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
             // update peptide table
             updateTable(tableModel, identId);
         }
-    }
 
-    /**
-     * Update PTM summary label
-     *
-     * @param identId identification id
-     */
-    private void updatePTMLabel(Comparable identId) {
-        try {
-            // generate the ptm label string
-            String ptmValues = generateModString(identId);
+        /**
+         * Update PTM summary label
+         *
+         * @param identId identification id
+         */
+        private void updatePTMLabel(Comparable identId) {
+            try {
+                // generate the ptm label string
+                String ptmValues = generateModString(identId);
 
-            // set the string to label
-            if ("".equals(ptmValues)) {
-                ptmLabel.setText(PTM_LABEL + "NONE</html>");
-            } else {
-                ptmLabel.setText(PTM_LABEL + ptmValues + "</html>");
+                // set the string to label
+                if ("".equals(ptmValues)) {
+                    ptmLabel.setText(PTM_LABEL + "NONE</html>");
+                } else {
+                    ptmLabel.setText(PTM_LABEL + ptmValues + "</html>");
+                }
+            } catch (DataAccessException e) {
+                String msg = "Failed to generated PTM summary label";
+                logger.error(msg, e);
+                appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
             }
-        } catch (DataAccessException e) {
-            String msg = "Failed to generated PTM summary label";
-            logger.error(msg, e);
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
         }
-    }
 
-    /**
-     * Cancel ongoing table update task
-     *
-     * @param tableModel peptide table model
-     */
-    private void cancelOngoingTableUpdates(ProgressiveUpdateTableModel tableModel) {
-        // stop any running retrieving task
-        java.util.List<Task> existingTask = context.getTask(tableModel);
-        for (Task task : existingTask) {
-            context.cancelTask(task, true);
+        /**
+         * Cancel ongoing table update task
+         *
+         * @param tableModel peptide table model
+         */
+        private void cancelOngoingTableUpdates(ProgressiveUpdateTableModel tableModel) {
+            // stop any running retrieving task
+            java.util.List<Task> existingTask = appContext.getTask(tableModel);
+            for (Task task : existingTask) {
+                appContext.cancelTask(task, true);
+            }
         }
-    }
 
-    /**
-     * Fire up a peptide table update table in the background.
-     *
-     * @param tableModel peptide table model
-     * @param identId    identification id
-     */
-    @SuppressWarnings("unchecked")
-    private void updateTable(ProgressiveUpdateTableModel tableModel, Comparable identId) {
-        try {
-            RetrievePeptideTableTask retrieveTask = new RetrievePeptideTableTask(this.getController(), identId);
-            retrieveTask.addTaskListener(tableModel);
-            retrieveTask.setGUIBlocker(new DefaultGUIBlocker(retrieveTask, GUIBlocker.Scope.NONE, null));
-            context.addTask(retrieveTask);
-        } catch (DataAccessException e) {
-            String msg = "Failed to retrieve information for peptide table";
-            logger.error(msg, e);
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
+        /**
+         * Fire up a peptide table update table in the background.
+         *
+         * @param tableModel peptide table model
+         * @param identId    identification id
+         */
+        @SuppressWarnings("unchecked")
+        private void updateTable(ProgressiveUpdateTableModel tableModel, Comparable identId) {
+            try {
+                RetrievePeptideTableTask retrieveTask = new RetrievePeptideTableTask(PeptideSelectionPane.this.getController(), identId);
+                retrieveTask.addTaskListener(tableModel);
+                retrieveTask.setGUIBlocker(new DefaultGUIBlocker(retrieveTask, GUIBlocker.Scope.NONE, null));
+                appContext.addTask(retrieveTask);
+            } catch (DataAccessException e) {
+                String msg = "Failed to retrieve information for peptide table";
+                logger.error(msg, e);
+                appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
+            }
         }
-    }
 
-    /**
-     * Generate PTM summary string, it gathers all the unique amino acids with the same modification.
-     *
-     * @param identId identificaiton id
-     * @return String   ptm summary string in the format of [amin acids - monoisotopic weight]
-     * @throws DataAccessException data access exception
-     */
-    private String generateModString(Comparable identId) throws DataAccessException {
-        String modStr = "";
-        Map<String, Map<String, Double>> modMap = new HashMap<String, Map<String, Double>>();
-        Collection<Comparable> peptideIds = controller.getPeptideIds(identId);
-        if (peptideIds != null) {
-            for (Comparable peptideId : peptideIds) {
-                String seq = controller.getPeptideSequence(identId, peptideId);
-                Collection<Modification> mods = controller.getPTMs(identId, peptideId);
-                for (Modification mod : mods) {
-                    // get accession
-                    String accession = mod.getAccession();
-                    Map<String, Double> aminoAcidMap = modMap.get(accession);
-                    if (aminoAcidMap == null) {
-                        aminoAcidMap = new HashMap<String, Double>();
-                        modMap.put(accession, aminoAcidMap);
-                    }
-                    // get the amino acid according to the location
-                    int location = mod.getLocation();
-                    location = location == 0 ? 1 : (location == accession.length() + 1 ? location - 1 : location);
-                    if (location > 0 && location <= seq.length()) {
-                        String aminoAcid = String.valueOf(seq.charAt(location - 1));
-                        // get delta mass (monoisotopic)
-                        double massDelta = -1;
-                        java.util.List<Double> massDeltas = mod.getMonoMassDeltas();
-                        if (massDeltas != null && !massDeltas.isEmpty()) {
-                            massDelta = mod.getMonoMassDeltas().get(0);
+        /**
+         * Generate PTM summary string, it gathers all the unique amino acids with the same modification.
+         *
+         * @param identId identificaiton id
+         * @return String   ptm summary string in the format of [amin acids - monoisotopic weight]
+         * @throws DataAccessException data access exception
+         */
+        private String generateModString(Comparable identId) throws DataAccessException {
+            String modStr = "";
+            Map<String, Map<String, Double>> modMap = new HashMap<String, Map<String, Double>>();
+            Collection<Comparable> peptideIds = controller.getPeptideIds(identId);
+            if (peptideIds != null) {
+                for (Comparable peptideId : peptideIds) {
+                    String seq = controller.getPeptideSequence(identId, peptideId);
+                    Collection<Modification> mods = controller.getPTMs(identId, peptideId);
+                    for (Modification mod : mods) {
+                        // get accession
+                        String accession = mod.getAccession();
+                        Map<String, Double> aminoAcidMap = modMap.get(accession);
+                        if (aminoAcidMap == null) {
+                            aminoAcidMap = new HashMap<String, Double>();
+                            modMap.put(accession, aminoAcidMap);
                         }
-                        aminoAcidMap.put(aminoAcid, massDelta);
+                        // get the amino acid according to the location
+                        int location = mod.getLocation();
+                        location = location == 0 ? 1 : (location == accession.length() + 1 ? location - 1 : location);
+                        if (location > 0 && location <= seq.length()) {
+                            String aminoAcid = String.valueOf(seq.charAt(location - 1));
+                            // get delta mass (monoisotopic)
+                            double massDelta = -1;
+                            java.util.List<Double> massDeltas = mod.getMonoMassDeltas();
+                            if (massDeltas != null && !massDeltas.isEmpty()) {
+                                massDelta = mod.getMonoMassDeltas().get(0);
+                            }
+                            aminoAcidMap.put(aminoAcid, massDelta);
+                        }
                     }
                 }
             }
-        }
 
-        DecimalFormat formatter = new DecimalFormat("#.####");
-        for (Map<String, Double> aminoAcidMap : modMap.values()) {
-            StringBuilder aminoAcids = new StringBuilder();
-            double massDelta = -1;
-            for (Map.Entry<String, Double> aminoAcidEntry : aminoAcidMap.entrySet()) {
-                aminoAcids.append(aminoAcidEntry.getKey());
-                massDelta = aminoAcidEntry.getValue();
+            DecimalFormat formatter = new DecimalFormat("#.####");
+            for (Map<String, Double> aminoAcidMap : modMap.values()) {
+                StringBuilder aminoAcids = new StringBuilder();
+                double massDelta = -1;
+                for (Map.Entry<String, Double> aminoAcidEntry : aminoAcidMap.entrySet()) {
+                    aminoAcids.append(aminoAcidEntry.getKey());
+                    massDelta = aminoAcidEntry.getValue();
+                }
+                modStr += "[" + aminoAcids.toString() + " - " + (massDelta == -1 ? " Unknown" : formatter.format(massDelta)) + "] ";
             }
-            modStr += "[" + aminoAcids.toString() + " - " + (massDelta == -1 ? " Unknown" : formatter.format(massDelta)) + "] ";
+            return modStr;
         }
-        return modStr;
     }
 
     /**
@@ -329,11 +314,9 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
                         Comparable peptideId = (Comparable) tableModel.getValueAt(modelRowIndex, peptideColNum);
 
                         if (peptideId != null && identId != null) {
-                            Task newTask = new RetrievePeptideTask(controller, identId, peptideId);
-                            newTask.addTaskListener(PeptideSelectionPane.this);
-                            newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-                            // add task listeners
-                            uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(newTask);
+                            // publish the event to local event bus
+                            EventService eventBus = ContainerEventServiceFinder.getEventService(PeptideSelectionPane.this);
+                            eventBus.publish(new PeptideEvent(PeptideSelectionPane.this, controller, identId, peptideId));
                         }
                     }
                 }

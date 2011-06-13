@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.gui.component.protein;
 
+import org.bushe.swing.event.ContainerEventServiceFinder;
+import org.bushe.swing.event.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
@@ -11,11 +13,14 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.impl.RetrieveProteinNameAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
+import uk.ac.ebi.pride.gui.component.PrideInspectorTabPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
+import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
+import uk.ac.ebi.pride.gui.event.container.ProteinIdentificationEvent;
 
 import javax.help.CSH;
 import javax.swing.*;
@@ -34,20 +39,14 @@ import java.util.List;
  * Date: 16-Apr-2010
  * Time: 10:20:51
  */
-public class ProteinSelectionPane extends DataAccessControllerPane<Identification, Tuple<TableContentType, List<Object>>> implements ActionListener {
+public class ProteinSelectionPane extends DataAccessControllerPane {
 
     private static final Logger logger = LoggerFactory.getLogger(ProteinTabPane.class.getName());
 
-    public static final String EXPAND_PROTEIN_PANEL = "EXPAND_PROTEIN_PANEL";
     /**
      * table for display the identifications
      */
     private JTable identTable;
-
-    /**
-     * reference to inspector context
-     */
-    private PrideInspectorContext context;
 
     /**
      * Constructor
@@ -62,7 +61,6 @@ public class ProteinSelectionPane extends DataAccessControllerPane<Identificatio
      */
     @Override
     protected void setupMainPane() {
-        context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
         // set layout
         this.setLayout(new BorderLayout());
         this.setBackground(Color.white);
@@ -148,7 +146,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane<Identificatio
         } catch (DataAccessException e) {
             String msg = "Failed to build meta data pane for identifications";
             logger.error(msg, e);
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
         }
         return metaDataPanel;
     }
@@ -167,7 +165,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane<Identificatio
         JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
         loadAllProteinNameButton.setForeground(Color.blue);
 
-        Icon loadProteinNameIcon = GUIUtilities.loadIcon(context.getProperty("load.protein.name.small.icon"));
+        Icon loadProteinNameIcon = GUIUtilities.loadIcon(appContext.getProperty("load.protein.name.small.icon"));
         String proteinNameColHeader = ProteinTableModel.TableHeader.PROTEIN_NAME.getHeader();
         String proteinAccColHeader = ProteinTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
         loadAllProteinNameButton.setAction(new RetrieveProteinNameAction(identTable, proteinNameColHeader, proteinAccColHeader, controller,
@@ -178,21 +176,27 @@ public class ProteinSelectionPane extends DataAccessControllerPane<Identificatio
         toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
 
         // expand button
-        Icon expandIcon = GUIUtilities.loadIcon(context.getProperty("expand.table.icon.small"));
+        Icon expandIcon = GUIUtilities.loadIcon(appContext.getProperty("expand.table.icon.small"));
         JButton expandButton = GUIUtilities.createLabelLikeButton(expandIcon, null);
         expandButton.setToolTipText("Expand");
-        expandButton.setActionCommand(EXPAND_PROTEIN_PANEL);
-        expandButton.addActionListener(this);
+        expandButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EventService eventBus = ContainerEventServiceFinder.getEventService(ProteinSelectionPane.this);
+                eventBus.publish(new ExpandPanelEvent(ProteinSelectionPane.this, ProteinSelectionPane.this));
+            }
+        });
+
         toolBar.add(expandButton);
 
         // Help button
         // load icon
-        Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
+        Icon helpIcon = GUIUtilities.loadIcon(appContext.getProperty("help.icon.small"));
         JButton helpButton = GUIUtilities.createLabelLikeButton(helpIcon, null);
         helpButton.setToolTipText("Help");
         helpButton.setForeground(Color.blue);
         CSH.setHelpIDString(helpButton, "help.browse.protein");
-        helpButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
+        helpButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
         toolBar.add(helpButton);
 
         return toolBar;
@@ -205,14 +209,6 @@ public class ProteinSelectionPane extends DataAccessControllerPane<Identificatio
      */
     public JTable getIdentificationTable() {
         return identTable;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        String evtCmd = e.getActionCommand();
-        if (evtCmd.equals(EXPAND_PROTEIN_PANEL)) {
-            firePropertyChange(EXPAND_PROTEIN_PANEL, false, true);
-        }
     }
 
 
@@ -238,8 +234,10 @@ public class ProteinSelectionPane extends DataAccessControllerPane<Identificatio
                     ProteinTableModel tableModel = (ProteinTableModel)identTable.getModel();
                     // fire a property change event with selected identification id
                     int columnNum = tableModel.getColumnIndex(ProteinTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
-                    ProteinSelectionPane.this.firePropertyChange(DataAccessController.IDENTIFICATION_ID, null,
-                                                            tableModel.getValueAt(table.convertRowIndexToModel(rowNum), columnNum));
+                    Comparable identId = (Comparable)tableModel.getValueAt(table.convertRowIndexToModel(rowNum), columnNum);
+                    // publish the event to local event bus
+                    EventService eventBus = ContainerEventServiceFinder.getEventService(ProteinSelectionPane.this);
+                    eventBus.publish(new ProteinIdentificationEvent(ProteinSelectionPane.this, controller, identId));
                 }
             }
         }

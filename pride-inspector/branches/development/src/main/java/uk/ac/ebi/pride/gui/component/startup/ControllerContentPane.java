@@ -167,7 +167,6 @@ public class ControllerContentPane extends DataAccessControllerPane {
                 proteinTabPane = new ProteinTabPane(controller, this);
                 proteinTabIndex = indexCount++;
                 contentTabPane.insertTab(proteinTabPane.getTitle(), proteinTabPane.getIcon(), proteinTabPane, proteinTabPane.getTitle(), proteinTabIndex);
-                proteinTabPane.populate();
             }
 
             // peptide data tab

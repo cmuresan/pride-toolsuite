@@ -1,5 +1,8 @@
 package uk.ac.ebi.pride.gui.component.mzdata;
 
+import org.bushe.swing.event.ContainerEventServiceFinder;
+import org.bushe.swing.event.EventService;
+import org.bushe.swing.event.EventSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -11,12 +14,14 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.impl.ExportSpectrumAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
+import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.ChromatogramTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.ProgressiveUpdateTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.SpectrumTableModel;
+import uk.ac.ebi.pride.gui.event.container.*;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
@@ -50,14 +55,8 @@ import java.awt.event.ActionListener;
  * Date: 03-Mar-2010
  * Time: 14:55:11
  */
-public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void> implements ActionListener {
+public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void> implements EventBusSubscribable {
     private static final Logger logger = LoggerFactory.getLogger(MzDataTabPane.class.getName());
-    /**
-     * Action commands
-     */
-    private static final String LOAD_NEXT = "Load Next";
-    private static final String LOAD_ALL = "Load All";
-    private static final String EXPORT = "EXPORT";
     /**
      * Tab index for spectrum table
      */
@@ -82,10 +81,6 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
      * Chromatogram table
      */
     private JTable chromaTable;
-    /**
-     * Reference to pride inspector context
-     */
-    private PrideInspectorContext context;
     /**
      * the number of entries to read for each iteration of the paging
      */
@@ -112,6 +107,11 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
      * Export button
      */
     private JButton exportButton;
+    /**
+     * Subscribe to export spectrum detail event
+     */
+    private ExportSpectrumDetailEventSubscriber exportEventSubscriber;
+    private LoadBatchEventSubscriber loadBatchSubscriber;
 
     /**
      * Constructor
@@ -128,8 +128,7 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
      */
     @Override
     protected void setupMainPane() {
-        context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
-        defaultOffset = Integer.parseInt(context.getProperty("mzdata.batch.load.size"));
+        defaultOffset = Integer.parseInt(appContext.getProperty("mzdata.batch.load.size"));
         this.setLayout(new BorderLayout());
         this.setBackground(Color.white);
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -155,7 +154,7 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
         spectrumTable = TableFactory.createSpectrumTable();
 
         // add selection listener
-        spectrumTable.getSelectionModel().addListSelectionListener(new MzDataListSelectionListener(spectrumTable, Spectrum.class));
+        spectrumTable.getSelectionModel().addListSelectionListener(new MzDataListSelectionListener(spectrumTable));
 
         // add to scroll pane
         JScrollPane spectrumScrollPane = new JScrollPane(spectrumTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -166,7 +165,7 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
         chromaTable = TableFactory.createChromatogramTable();
 
         // add selection listener
-        chromaTable.getSelectionModel().addListSelectionListener(new MzDataListSelectionListener(chromaTable, Chromatogram.class));
+        chromaTable.getSelectionModel().addListSelectionListener(new MzDataListSelectionListener(chromaTable));
 
         // add to scroll pane
         JScrollPane chromaScrollPane = new JScrollPane(chromaTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -197,7 +196,7 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
         } catch (DataAccessException e) {
             String msg = "Error while creating mzData count label";
             logger.error(msg);
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
         }
         labelPanel.add(countLabel, BorderLayout.WEST);
 
@@ -209,13 +208,18 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
 
         // load next button
         // load icon
-        Icon loadNextIcon = GUIUtilities.loadIcon(context.getProperty("load.next.mzdata.small.icon"));
-        loadNextButton = GUIUtilities.createLabelLikeButton(loadNextIcon, context.getProperty("load.next.mzdata.title"));
-        loadNextButton.setToolTipText(context.getProperty("load.next.mzdata.tooltip"));
+        Icon loadNextIcon = GUIUtilities.loadIcon(appContext.getProperty("load.next.mzdata.small.icon"));
+        loadNextButton = GUIUtilities.createLabelLikeButton(loadNextIcon, appContext.getProperty("load.next.mzdata.title"));
+        loadNextButton.setToolTipText(appContext.getProperty("load.next.mzdata.tooltip"));
         loadNextButton.setForeground(Color.blue);
         // set action command
-        loadNextButton.setActionCommand(LOAD_NEXT);
-        loadNextButton.addActionListener(this);
+        loadNextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EventService eventBus = ContainerEventServiceFinder.getEventService(MzDataSelectionPane.this);
+                eventBus.publish(new LoadBatchEvent(this, LoadBatchEvent.Type.NEXT));
+            }
+        });
 
         toolBar.add(loadNextButton);
 
@@ -224,31 +228,42 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
 
         // load all button
         // load icon
-        Icon loadAllIcon = GUIUtilities.loadIcon(context.getProperty("load.all.mzdata.small.icon"));
-        loadAllButton = GUIUtilities.createLabelLikeButton(loadAllIcon, context.getProperty("load.all.mzdata.title"));
-        loadAllButton.setToolTipText(context.getProperty("load.all.mzdata.tooltip"));
+        Icon loadAllIcon = GUIUtilities.loadIcon(appContext.getProperty("load.all.mzdata.small.icon"));
+        loadAllButton = GUIUtilities.createLabelLikeButton(loadAllIcon, appContext.getProperty("load.all.mzdata.title"));
+        loadAllButton.setToolTipText(appContext.getProperty("load.all.mzdata.tooltip"));
         loadAllButton.setForeground(Color.blue);
 
         // set action command
-        loadAllButton.setActionCommand(LOAD_ALL);
-        loadAllButton.addActionListener(this);
+        loadAllButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EventService eventBus = ContainerEventServiceFinder.getEventService(MzDataSelectionPane.this);
+                eventBus.publish(new LoadBatchEvent(this, LoadBatchEvent.Type.ALL));
+            }
+        });
 
         toolBar.add(loadAllButton);
         // add gap
         toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
 
         // export button
-        Icon exportIcon = GUIUtilities.loadIcon(context.getProperty("export.enabled.small.icon"));
-        Icon disabledExportIcon = GUIUtilities.loadIcon(context.getProperty("export.disabled.small.icon"));
+        Icon exportIcon = GUIUtilities.loadIcon(appContext.getProperty("export.enabled.small.icon"));
+        Icon disabledExportIcon = GUIUtilities.loadIcon(appContext.getProperty("export.disabled.small.icon"));
 
         exportButton = GUIUtilities.createLabelLikeButton(exportIcon, "Export");
         exportButton.setDisabledIcon(disabledExportIcon);
-        exportButton.setToolTipText(context.getProperty("export.tooltip"));
+        exportButton.setToolTipText(appContext.getProperty("export.tooltip"));
         exportButton.setForeground(Color.blue);
 
         // set action command
-        exportButton.setActionCommand(EXPORT);
-        exportButton.addActionListener(this);
+        exportButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EventService eventBus = ContainerEventServiceFinder.getEventService(MzDataSelectionPane.this);
+                eventBus.publish(new ExportSpectrumDetailEvent(this));
+            }
+        });
 
         toolBar.add(exportButton);
         // add gap
@@ -256,12 +271,12 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
 
         // Help button
         // load icon
-        Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
+        Icon helpIcon = GUIUtilities.loadIcon(appContext.getProperty("help.icon.small"));
         JButton helpButton = GUIUtilities.createLabelLikeButton(helpIcon, null);
         helpButton.setToolTipText("Help");
         helpButton.setForeground(Color.blue);
         CSH.setHelpIDString(helpButton, "help.browse.mzgraph");
-        helpButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
+        helpButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
         toolBar.add(helpButton);
 
         labelPanel.add(toolBar, BorderLayout.EAST);
@@ -343,46 +358,63 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
 
             // start running the task
             retrieveTask.setGUIBlocker(new DefaultGUIBlocker(retrieveTask, GUIBlocker.Scope.NONE, null));
-            context.addTask(retrieveTask);
+            appContext.addTask(retrieveTask);
+        }
+    }
+
+    @Override
+    public void subscribeToEventBus() {
+        // get local event bus
+        EventService eventBus = ContainerEventServiceFinder.getEventService(this);
+
+        // subscriber
+        exportEventSubscriber = new ExportSpectrumDetailEventSubscriber();
+        loadBatchSubscriber = new LoadBatchEventSubscriber();
+
+        // subscribeToEventBus
+        eventBus.subscribe(ExportSpectrumDetailEvent.class, exportEventSubscriber);
+        eventBus.subscribe(LoadBatchEvent.class, loadBatchSubscriber);
+    }
+
+    /**
+     * Capture export spectrum details event
+     */
+    private class ExportSpectrumDetailEventSubscriber implements EventSubscriber<ExportSpectrumDetailEvent> {
+
+        @Override
+        public void onEvent(ExportSpectrumDetailEvent event) {
+            ExportSpectrumAction exportAction = new ExportSpectrumAction(null, null);
+            exportAction.actionPerformed(null);
         }
     }
 
     /**
-     * Triggered when load all button has been clicked.
-     *
-     * @param e action event
+     * Capture load next/all batch event
      */
-    @Override
-    public void actionPerformed(ActionEvent e) {
+    private class LoadBatchEventSubscriber implements EventSubscriber<LoadBatchEvent> {
 
-        String actionCmd = e.getActionCommand();
-        int offset = defaultOffset;
+        @Override
+        public void onEvent(LoadBatchEvent event) {
+            int offset = defaultOffset;
 
-        //
-        int index = tabPane.getSelectedIndex();
-        try {
-            if (index == SPECTRUM_TAB_INDEX) {
-                if (LOAD_ALL.equals(actionCmd) || LOAD_NEXT.equals(actionCmd)) {
+            //
+            int index = tabPane.getSelectedIndex();
+            try {
+                if (index == SPECTRUM_TAB_INDEX) {
                     int numOfSpectra = controller.getNumberOfSpectra();
                     // set offset
-                    if (LOAD_ALL.equals(actionCmd)) {
+                    if (LoadBatchEvent.Type.ALL.equals(event.getType())) {
                         offset = numOfSpectra - startForSpec;
                     }
                     // get table model
                     if (startForSpec < numOfSpectra && numOfSpectra > spectrumTable.getRowCount()) {
                         updateTable((SpectrumTableModel) spectrumTable.getModel(), Spectrum.class, offset);
                     }
-                } else if (EXPORT.equals(actionCmd)) {
-                    ExportSpectrumAction exportAction = new ExportSpectrumAction(null, null);
-                    exportAction.actionPerformed(e);
-                }
-
-            } else {
-                if (LOAD_ALL.equals(actionCmd) || LOAD_NEXT.equals(actionCmd)) {
+                } else {
                     int numOfChromas = controller.getNumberOfChromatograms();
 
                     // set offset
-                    if (LOAD_ALL.equals(actionCmd)) {
+                    if (LoadBatchEvent.Type.ALL.equals(event.getType())) {
                         offset = numOfChromas - startForChroma;
                     }
 
@@ -390,22 +422,12 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
                         updateTable((ChromatogramTableModel) chromaTable.getModel(), Chromatogram.class, offset);
                     }
                 }
+            } catch (DataAccessException ex) {
+                String msg = "Failed to get the number of spectra";
+                logger.error(msg, ex);
+                appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, ex));
             }
-        } catch (DataAccessException ex) {
-            String msg = "Failed to get the number of spectra";
-            logger.error(msg, ex);
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, ex));
         }
-    }
-
-    /**
-     * forward the retrieved mzgraph to mzgraph pane
-     *
-     * @param mzGraphTaskEvent mzGraph task event
-     */
-    @Override
-    public void succeed(TaskEvent<MzGraph> mzGraphTaskEvent) {
-        this.firePropertyChange(DataAccessController.MZGRAPH_TYPE, "", mzGraphTaskEvent.getValue());
     }
 
     /**
@@ -413,11 +435,9 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
      */
     private class MzDataListSelectionListener implements ListSelectionListener {
 
-        private Class classType = null;
         private JTable table = null;
 
-        public MzDataListSelectionListener(JTable table, Class classType) {
-            this.classType = classType;
+        public MzDataListSelectionListener(JTable table) {
             this.table = table;
         }
 
@@ -433,24 +453,20 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
                     // get table model
                     TableModel tableModel = table.getModel();
 
+                    // local event bus
+                    EventService eventBus = ContainerEventServiceFinder.getEventService(MzDataSelectionPane.this);
+
                     // get the column number for mzgraph id
-                    int columnNum = 0;
+                    int columnNum;
                     if (tableModel instanceof SpectrumTableModel) {
                         columnNum = ((SpectrumTableModel) tableModel).getColumnIndex(SpectrumTableModel.TableHeader.SPECTRUM_ID_COLUMN.getHeader());
+                        Comparable id = (Comparable) table.getValueAt(rowNum, columnNum);
+                        eventBus.publish(new SpectrumEvent(this, controller, id));
                     } else if (tableModel instanceof ChromatogramTableModel) {
                         columnNum = ((ChromatogramTableModel) tableModel).getColumnIndex(ChromatogramTableModel.TableHeader.CHROMATOGRAM_ID_COLUMN.getHeader());
+                        Comparable id = (Comparable) table.getValueAt(rowNum, columnNum);
+                        eventBus.publish(new ChromatogramEvent(this, controller, id));
                     }
-
-                    // get the mzgraph id
-                    Comparable id = (Comparable) table.getValueAt(rowNum, columnNum);
-
-                    // start a new task to retrieve the mzgraph
-                    Task newTask = new UpdateForegroundEntryTask(MzDataSelectionPane.this.getController(), classType, id);
-                    newTask.addTaskListener(MzDataSelectionPane.this);
-                    newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-
-                    // add task to task manager
-                    uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(newTask);
                 }
             }
         }
@@ -463,16 +479,23 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
 
         @Override
         public void stateChanged(ChangeEvent e) {
-            DataAccessController controller = MzDataSelectionPane.this.getController();
             JTabbedPane pane = (JTabbedPane) e.getSource();
+
+            // local event bus
+            EventService eventBus = ContainerEventServiceFinder.getEventService(MzDataSelectionPane.this);
+
             switch (pane.getSelectedIndex()) {
                 case 0:
-                    MzDataSelectionPane.this.firePropertyChange(DataAccessController.MZGRAPH_TYPE, null, controller.getForegroundSpectrum());
+                    Spectrum spectrum = controller.getForegroundSpectrum();
+                    Comparable spectrumId = spectrum == null ? null : spectrum.getId();
+                    eventBus.publish(new SpectrumEvent(this, controller, spectrumId));
                     exportButton.setEnabled(true);
                     exportButton.setForeground(Color.blue);
                     break;
                 case 1:
-                    MzDataSelectionPane.this.firePropertyChange(DataAccessController.MZGRAPH_TYPE, null, controller.getForegroundChromatogram());
+                    Chromatogram chroma = controller.getForegroundChromatogram();
+                    Comparable chromaId = chroma == null ? null : chroma.getId();
+                    eventBus.publish(new ChromatogramEvent(this, controller, chromaId));
                     exportButton.setEnabled(false);
                     exportButton.setForeground(Color.gray);
                     break;

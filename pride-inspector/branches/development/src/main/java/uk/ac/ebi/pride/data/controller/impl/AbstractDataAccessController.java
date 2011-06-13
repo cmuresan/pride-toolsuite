@@ -526,7 +526,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     @Override
-    public Peptide getPeptide(Comparable id, Comparable index) throws DataAccessException {
+    public Peptide getPeptideById(Comparable id, Comparable index) throws DataAccessException {
         Peptide peptide = null;
         Identification ident = getIdentificationById(id);
         if (ident != null) {

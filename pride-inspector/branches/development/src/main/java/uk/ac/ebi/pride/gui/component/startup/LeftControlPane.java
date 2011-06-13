@@ -187,9 +187,8 @@ public class LeftControlPane extends JPanel {
 
         // experiment tree viewer
         SummaryReportViewer summaryReportViewer = new SummaryReportViewer();
-        JScrollPane summaryReportScrollPane = new JScrollPane(summaryReportViewer, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        summaryReportScrollPane.setBorder(new DropShadowBorder(Color.DARK_GRAY, 5));
-        summaryPanel.add(summaryReportScrollPane, BorderLayout.CENTER);
+        summaryReportViewer.setBorder(new DropShadowBorder(Color.DARK_GRAY, 5));
+        summaryPanel.add(summaryReportViewer, BorderLayout.CENTER);
 
         // get display related details
         Icon sumReportViewerIcon = GUIUtilities.loadIcon(context.getProperty("summary.report.viewer.small.icon"));

@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.gui.component.peptide;
 
+import org.bushe.swing.event.ContainerEventServiceFinder;
+import org.bushe.swing.event.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -9,10 +11,14 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.impl.RetrieveProteinNameAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
+import uk.ac.ebi.pride.gui.component.PrideInspectorTabPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
+import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
+import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
+import uk.ac.ebi.pride.gui.event.container.ProteinIdentificationEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideTask;
@@ -34,19 +40,13 @@ import java.awt.event.ActionListener;
  * Date: 03-Sep-2010
  * Time: 11:53:51
  */
-public class PeptideDescriptionPane extends DataAccessControllerPane<Peptide, Void> implements ActionListener {
+public class PeptideDescriptionPane extends DataAccessControllerPane {
     private static final Logger logger = LoggerFactory.getLogger(PeptideDescriptionPane.class);
 
-    public static final String EXPAND_PEPTIDE_PANEl = "EXPAND_PEPTIDE_PANEl";
     /**
      * peptide details table
      */
     private JTable pepTable;
-
-    /**
-     * reference to context
-     */
-    private PrideInspectorContext context;
 
     /**
      * Constructor
@@ -62,8 +62,6 @@ public class PeptideDescriptionPane extends DataAccessControllerPane<Peptide, Vo
      */
     @Override
     protected void setupMainPane() {
-        context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
-
         // set layout
         this.setLayout(new BorderLayout());
         this.setBackground(Color.white);
@@ -81,7 +79,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane<Peptide, Vo
         } catch (DataAccessException e) {
             String msg = "Failed to retrieve search engine details";
             logger.error(msg, e);
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
         }
 
         // meta data panel
@@ -138,7 +136,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane<Peptide, Vo
         JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
         loadAllProteinNameButton.setForeground(Color.blue);
 
-        Icon loadProteinNameIcon = GUIUtilities.loadIcon(context.getProperty("load.protein.name.small.icon"));
+        Icon loadProteinNameIcon = GUIUtilities.loadIcon(appContext.getProperty("load.protein.name.small.icon"));
         String proteinNameColHeader = PeptideTableModel.TableHeader.PROTEIN_NAME.getHeader();
         String proteinAccColHeader = PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
         loadAllProteinNameButton.setAction(new RetrieveProteinNameAction(pepTable, proteinNameColHeader, proteinAccColHeader, controller,
@@ -150,20 +148,25 @@ public class PeptideDescriptionPane extends DataAccessControllerPane<Peptide, Vo
         toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
 
         // expand button
-        Icon expandIcon = GUIUtilities.loadIcon(context.getProperty("expand.table.icon.small"));
+        Icon expandIcon = GUIUtilities.loadIcon(appContext.getProperty("expand.table.icon.small"));
         JButton expandButton = GUIUtilities.createLabelLikeButton(expandIcon, null);
         expandButton.setToolTipText("Expand");
-        expandButton.setActionCommand(EXPAND_PEPTIDE_PANEl);
-        expandButton.addActionListener(this);
+        expandButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EventService eventBus = ContainerEventServiceFinder.getEventService(PeptideDescriptionPane.this);
+                eventBus.publish(new ExpandPanelEvent(PeptideDescriptionPane.this, PeptideDescriptionPane.this));
+            }
+        });
         toolBar.add(expandButton);
 
         // Help button
         // load icon
-        Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
+        Icon helpIcon = GUIUtilities.loadIcon(appContext.getProperty("help.icon.small"));
         JButton helpButton = GUIUtilities.createLabelLikeButton(helpIcon, null);
         helpButton.setToolTipText("Help");
         CSH.setHelpIDString(helpButton, "help.browse.peptide");
-        helpButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
+        helpButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
         toolBar.add(helpButton);
 
         return toolBar;
@@ -176,24 +179,6 @@ public class PeptideDescriptionPane extends DataAccessControllerPane<Peptide, Vo
      */
     public JTable getPeptideTable() {
         return pepTable;
-    }
-
-    /**
-     * This method is called after the RetrieveEntryTask has finished.
-     *
-     * @param peptideTaskEvent task event which contains a spectrum.
-     */
-    @Override
-    public void succeed(TaskEvent<Peptide> peptideTaskEvent) {
-        this.firePropertyChange(DataAccessController.PEPTIDE_TYPE, "", peptideTaskEvent.getValue());
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        String evtCmd = e.getActionCommand();
-        if (evtCmd.equals(EXPAND_PEPTIDE_PANEl)) {
-            firePropertyChange(EXPAND_PEPTIDE_PANEl, false, true);
-        }
     }
 
     /**
@@ -228,11 +213,9 @@ public class PeptideDescriptionPane extends DataAccessControllerPane<Peptide, Vo
 
                     // fire a background task to retrieve peptide
                     if (peptideId != null && identId != null) {
-                        Task newTask = new RetrievePeptideTask(controller, identId, peptideId);
-                        newTask.addTaskListener(PeptideDescriptionPane.this);
-                        newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-                        // add task listeners
-                        uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(newTask);
+                        // publish the event to local event bus
+                        EventService eventBus = ContainerEventServiceFinder.getEventService(PeptideDescriptionPane.this);
+                        eventBus.publish(new PeptideEvent(PeptideDescriptionPane.this, controller, identId, peptideId));
                     }
                 }
             }

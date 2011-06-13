@@ -7,9 +7,12 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
+import uk.ac.ebi.pride.gui.component.PrideInspectorTabPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
+import uk.ac.ebi.pride.gui.component.mzgraph.ChromatogramViewPane;
 import uk.ac.ebi.pride.gui.component.mzgraph.MzGraphViewPane;
+import uk.ac.ebi.pride.gui.component.mzgraph.SpectrumViewPane;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 
@@ -23,7 +26,7 @@ import java.awt.*;
  * Date: 01-Mar-2010
  * Time: 15:08:48
  */
-public class MzDataTabPane extends DataAccessControllerPane {
+public class MzDataTabPane extends PrideInspectorTabPane {
 
     private static final Logger logger = Logger.getLogger(MzDataTabPane.class.getName());
 
@@ -41,11 +44,6 @@ public class MzDataTabPane extends DataAccessControllerPane {
     private static final String CHROMATOGRAM_TITLE = "Chromatogram";
 
     /**
-     * Reference to Desktop context
-     */
-    private PrideInspectorContext context;
-
-    /**
      * Constructor
      *
      * @param controller data access controller
@@ -59,8 +57,6 @@ public class MzDataTabPane extends DataAccessControllerPane {
      * Setup the main display pane and set the title
      */
     protected void setupMainPane() {
-        context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
-
         this.setLayout(new BorderLayout());
 
         // Tab Pane title
@@ -85,37 +81,40 @@ public class MzDataTabPane extends DataAccessControllerPane {
         } catch (DataAccessException dex) {
             String msg = String.format("%s failed on : %s", this, dex);
             logger.log(Level.ERROR, msg, dex);
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
 
         }
         // set the final icon
-        this.setIcon(GUIUtilities.loadIcon(context.getProperty("mzdata.tab.icon.small")));
+        this.setIcon(GUIUtilities.loadIcon(appContext.getProperty("mzdata.tab.icon.small")));
 
         // set the loading icon
-        this.setLoadingIcon(GUIUtilities.loadIcon(context.getProperty("mzdata.tab.loading.icon.small")));
+        this.setLoadingIcon(GUIUtilities.loadIcon(appContext.getProperty("mzdata.tab.loading.icon.small")));
     }
 
     /**
      * Add mzdata selection pane and mzgraph pane
      */
     @Override
-    public void populate() {
+    protected void addComponents() {
         // Selection pane to select different spectra or chromatogram
         MzDataSelectionPane mzSelectionPane = new MzDataSelectionPane(controller, this);
 
         // Display peak list or chromatogram
-        MzGraphViewPane mzViewPane = new MzGraphViewPane(controller);
-        mzViewPane.setPreferredSize(new Dimension(400, 500));
-        mzSelectionPane.addPropertyChangeListener(mzViewPane);
+        MzDataVizPane mzDataVizPane = new MzDataVizPane(controller);
+        mzDataVizPane.setPreferredSize(new Dimension(400, 500));
 
         // add components to split pane
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, mzViewPane, mzSelectionPane);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, mzDataVizPane, mzSelectionPane);
         splitPane.setBorder(BorderFactory.createEmptyBorder());
         splitPane.setResizeWeight(SPLIT_PANE_RESIZE_WEIGHT);
         splitPane.setOneTouchExpandable(false);
         splitPane.setDividerSize(2);
 
         this.add(splitPane, BorderLayout.CENTER);
+
+        // event bus
+        mzSelectionPane.subscribeToEventBus();
+        mzDataVizPane.subscribeToEventBus();
     }
 
     @Override

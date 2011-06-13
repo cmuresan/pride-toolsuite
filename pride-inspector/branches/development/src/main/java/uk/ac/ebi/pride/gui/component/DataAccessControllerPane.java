@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.gui.component;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.gui.PrideInspectorContext;
+import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 
@@ -34,6 +36,11 @@ public abstract class DataAccessControllerPane<T, V> extends JPanel
     /** A reference to parent component */
     protected JComponent parentComponent;
 
+    /**
+     * reference to application context
+     */
+    protected PrideInspectorContext appContext;
+
     /** Title for the panel*/
     private String title = null;
 
@@ -55,6 +62,7 @@ public abstract class DataAccessControllerPane<T, V> extends JPanel
         this.controller = controller;
         this.parentComponent = parentComponent;
         this.title = title;
+        this.appContext = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
         setupMainPane();
         addComponents();
     }
@@ -74,6 +82,14 @@ public abstract class DataAccessControllerPane<T, V> extends JPanel
      */
     public void setParentComponent(JComponent parentComponent) {
         this.parentComponent = parentComponent;
+    }
+
+    /**
+     * Get application context
+     * @return  PrideInspectorContext   application context
+     */
+    public PrideInspectorContext getAppContext() {
+        return appContext;
     }
 
     public String getTitle() {

@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.gui.component.sequence;
 
-import java.util.ArrayList;
-
 /**
  * Created by IntelliJ IDEA.
  * User: rwang
@@ -10,16 +8,25 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class Protein {
+    /**
+     * Human readable name for the protein
+     */
     private String name;
+    /**
+     * Protein accession
+     */
     private String accession;
-    private String sequenceSource;
+    /**
+     * Source of the protein details
+     */
+    private String source;
+    /**
+     * Protein sequence
+     */
     private String sequenceString;
 
-    public Protein(String sequence) {
-        if (sequence == null || sequence.length() <= 0) {
-            throw new IllegalArgumentException("Input protein sequence can not be NULL or sequenceString length can not zero");
-        }
-        this.sequenceString = sequence.toUpperCase();
+    public Protein(String accession) {
+        this.accession = accession;
     }
 
     public String getName() {
@@ -38,20 +45,23 @@ public class Protein {
         this.accession = accession;
     }
 
-    public String getSequenceSource() {
-        return sequenceSource;
+    public String getSource() {
+        return source;
     }
 
-    public void setSequenceSource(String sequenceSource) {
-        this.sequenceSource = sequenceSource;
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public String getSequenceString() {
         return sequenceString;
     }
 
-    public void setSequenceString(String sequenceString) {
-        this.sequenceString = sequenceString;
+    public void setSequenceString(String sequence) {
+        if (sequence == null || sequence.length() <= 0) {
+            throw new IllegalArgumentException("Input protein sequence can not be NULL or sequenceString length can not zero");
+        }
+        this.sequenceString = sequence.toUpperCase();
     }
 
     public String getSubSequenceString(int start, int stop) {

@@ -6,6 +6,8 @@ import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.ac.ebi.pride.gui.component.sequence.Protein;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,13 +28,15 @@ public class ProteinNameFetcher {
     private final String ESUMMARY_QUERY_STRING = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=protein&id=%s";
     // query string for the NCBI esearch tool
     private final String ESEARCH_QUERY_STRING = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=protein&term=%s";
+    // query string to fetch the protein sequence from NCBI
+    private final String EFETCH_FORMAT_STRING = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=protein&id=%s&rettype=fasta&tool=pride_inspector";
 
     // query string to get uniprot names
-    private final String UNIPROT_ACC_QUERY_STRING = "http://www.uniprot.org/uniprot/?query=accession:%s&format=tab&columns=protein%%20names";
-    private final String UNIPROT_ENTRY_NAME_QUERY_STRING = "http://www.uniprot.org/uniprot/?query=mnemonic:%s&format=tab&columns=protein%%20names";
+    private final String UNIPROT_ACC_QUERY_STRING = "http://www.uniprot.org/uniprot/?query=accession:%s&format=tab&columns=protein%%20names,sequence";
+    private final String UNIPROT_ENTRY_NAME_QUERY_STRING = "http://www.uniprot.org/uniprot/?query=mnemonic:%s&format=tab&columns=protein%%20names,sequence";
     private final String UNIPROT_ENTRY_QUERY_STRING = "http://www.uniprot.org/uniprot/%s";
     private final String UNIPROT_ACC_CONVERSION_QUERY_STRING = "http://www.uniprot.org/uniprot/?query=%s&format=tab&columns=id,reviewed"; // TODO: change to get the protein names right away
-    private final String UNIPROT_FOREIGN_NAME_QUERY_STRING = "http://www.uniprot.org/uniprot/?query=%s&format=tab&columns=protein%%20names,reviewed";
+    private final String UNIPROT_FOREIGN_DETAILS_QUERY_STRING = "http://www.uniprot.org/uniprot/?query=%s&format=tab&columns=protein%%20names,reviewed,sequence";
 
     // query string to get the fasta file for an ipi entry
     private final String IPI_FASTA_QUERY_STRING = "http://www.ebi.ac.uk/cgi-bin/dbfetch?db=IPI&id=%s&format=fasta&style=raw";
@@ -41,57 +45,60 @@ public class ProteinNameFetcher {
     // TODO: in case this class should be used in a multi-thread environment, this member variable should be changed to static + concurrentHashMap
 
     /**
-     * Returns protein name for given accession.
-     *
-     * @param accession protein accession
-     * @return String   protein name
+     * Returns various details for the given protein (f.e. name,
+     * sequence).
+     * @param accession The protein's accession.
+     * @return A Protein object containing the additional information.
      * @throws Exception error when retrieving protein accession
      */
-    public String getProteinName(String accession) throws Exception {
+    public Protein getProteinDetails(String accession) throws Exception {
         //logger.debug("Getting protein name for " + accession);
         // uniprot
         if (ProteinAccessionPattern.isSwissprotAccession(accession) || ProteinAccessionPattern.isSwissprotEntryName(accession)) {
             String[] parts = accession.split("-");
-            return getUniprotName(parts[0]);
+            return getUniprotDetails(parts[0]);
         }
 
         // uniparc
         if (ProteinAccessionPattern.isUniparcAccession(accession)) {
-            return getUniprotName(accession);
+            return getUniprotDetails(accession);
         }
 
         // IPI
         if (ProteinAccessionPattern.isIPIAccession(accession)) {
-            return getIpiName(accession);
+            return getIpiDetails(accession);
         }
 
         // ENSEMBL
         if (ProteinAccessionPattern.isEnsemblAccession(accession)) {
-            return getEnsemblName(accession);
+            return getEnsemblDetails(accession);
         }
 
         // NCBI
         if (ProteinAccessionPattern.isRefseqAccession(accession)) {
             String ncbiId = getNcbiId(accession);
-            return getNcbiName(ncbiId);
+            Protein p = getNcbiDetails(ncbiId);
+            p.setAccession(accession);
+            
+            return p;
         }
 
         // GI
         if (ProteinAccessionPattern.isGIAccession(accession)) {
-            return getNcbiName(accession);
+            return getNcbiDetails(accession);
         }
 
         return null;
     }
 
     /**
-     * Returns the name for the given IPI identifier.
+     * Returns the details for the given IPI identifier.
      *
      * @param accession The IPI accession to get the name for.
-     * @return The protein's name.
+     * @return A Protein object containing the protein's details.
      * @throws Exception
      */
-    private String getIpiName(String accession) throws Exception {
+    private Protein getIpiDetails(String accession) throws Exception {
         // make sure it's an IPI accession
         if (!accession.startsWith("IPI"))
             throw new Exception("Malformatted IPI accession");
@@ -100,22 +107,35 @@ public class ProteinNameFetcher {
         String fasta = getPage(String.format(IPI_FASTA_QUERY_STRING, accession));
 
         // only use the first line
-        fasta = fasta.substring(0, fasta.indexOf('\n'));
+        String header = fasta.substring(0, fasta.indexOf('\n'));
+        
+        // get the sequence
+        String sequence = fasta.substring(fasta.indexOf('\n') + 1);
+        // remove all whitespaces
+        sequence = sequence.replaceAll("\\s", "");
 
         // extract the protein name
         Pattern pat = Pattern.compile("IPI[\\d\\.]+ (.*)$");
 
-        Matcher matcher = pat.matcher(fasta);
+        Matcher matcher = pat.matcher(header);
 
         // make sure it matches
         if (!matcher.find())
             throw new Exception("Unexpected fasta format encountered");
 
-        return matcher.group(1);
+        String name = matcher.group(1);
+        
+        // create the protein object
+        Protein protein = new Protein(accession);
+        protein.setName(name);
+        protein.setSequenceString(sequence);
+        protein.setSource("IPI");
+        
+        return protein;
     }
 
     /**
-     * Returns the name for the given ENSEMBL accession. This function
+     * Returns the details for the given ENSEMBL accession. This function
      * currently is a hack since it converts the given accession
      * to a UniProt accession and just returns the first fitting name.
      *
@@ -123,17 +143,17 @@ public class ProteinNameFetcher {
      * @return The protein's name.
      * @throws Exception
      */
-    private String getEnsemblName(String accession) throws Exception {
+    private Protein getEnsemblDetails(String accession) throws Exception {
         // make sure it's an ENSEMBL accession
         if (!accession.startsWith("ENS"))
             throw new Exception("Malformatted ENSEMBL accession");
 
         // try get the uniprot name for the given accession
-        return getForeignUniprotName(accession);
+        return getForeignUniprotDetails(accession);
     }
 
     /**
-     * Uses the UniProt query function to get the name for the given accession.
+     * Uses the UniProt query function to get the details for the given accession.
      * The accession must not be an UniProt accession. Otherwise unexpected results
      * will be returned. In case there are more hits for the given accession the
      * first reviewed entry is returned. If there is no reviewed entry among the hits
@@ -143,9 +163,9 @@ public class ProteinNameFetcher {
      * @return The protein's name.
      * @throws Exception
      */
-    private String getForeignUniprotName(String accession) throws Exception {
+    private Protein getForeignUniprotDetails(String accession) throws Exception {
         // get the page
-        String page = getPage(String.format(UNIPROT_FOREIGN_NAME_QUERY_STRING, accession));
+        String page = getPage(String.format(UNIPROT_FOREIGN_DETAILS_QUERY_STRING, accession));
 
         // split the page into lines
         String[] lines = page.split("\n");
@@ -155,14 +175,25 @@ public class ProteinNameFetcher {
             throw new Exception("No UniProt accession available for " + accession);
 
         // separate the reviewed and non-reviewed hits
-        ArrayList<String> swissprot = new ArrayList<String>();
-        ArrayList<String> trembl = new ArrayList<String>();
+        ArrayList<Protein> swissprot = new ArrayList<Protein>();
+        ArrayList<Protein> trembl = new ArrayList<Protein>();
 
         for (int i = 1; i < lines.length; i++) {
-            if (lines[i].contains("unreviewed"))
-                trembl.add(lines[i].substring(0, lines[i].indexOf(TAB)));
+        	String fields[] = lines[i].split("\t");
+        	
+        	if (fields.length != 3)
+        		continue;
+        	
+        	// create the protein
+        	Protein protein = new Protein(accession);
+        	protein.setName(fields[0].trim());
+        	protein.setSequenceString(fields[2].replaceAll("\\s", ""));
+        	
+            if (lines[i].contains("unreviewed")) {
+            	trembl.add(protein);
+            }
             else
-                swissprot.add(lines[i].substring(0, lines[i].indexOf(TAB)));
+                swissprot.add(protein);
         }
 
         // return the first swissprot name if there is one, otherwise the first trembl name
@@ -212,15 +243,15 @@ public class ProteinNameFetcher {
     }
 
     /**
-     * Retrieves the protein name from UniProt from the
-     * given UniProt accession. Returns null in case no
-     * name was retrieved.
+     * Retrieves the protein details from UniProt from the
+     * given UniProt accession. Returns null in case nothing
+     * was retrieved.
      *
      * @param accession The UniProt accession.
-     * @return The protein's name or null if the accession doesn't exist
+     * @return A Protein object containing the protein's details or null if the accession doesn't exist
      * @throws Exception In case something went wrong
      */
-    private String getUniprotName(String accession) throws Exception {
+    private Protein getUniprotDetails(String accession) throws Exception {
         // This call is not required, thus disabled
         //accession = getCurrentUniprotAccession(accession);
 
@@ -236,9 +267,21 @@ public class ProteinNameFetcher {
         if (page.equals("") || lines.length < 2) {
             return null;
         }
+        
+        String[] fields = lines[1].split("\t");
+        
+        if (fields.length != 2)
+        	return null;
+        
+        String sequence = fields[1];
+        sequence = sequence.replaceAll("\\s", "");
+        
+        Protein protein = new Protein(accession);
+        protein.setName(fields[0].trim());
+        protein.setSequenceString(sequence);
 
         // return the first name, that should be sufficient
-        return lines[1].trim();
+        return protein;
     }
 
     /**
@@ -278,13 +321,13 @@ public class ProteinNameFetcher {
     }
 
     /**
-     * Returns the name for the given NCBI protein.
+     * Returns the details for the given NCBI protein.
      *
      * @param accession The accession of the protein to get the name for.
-     * @return The protein's name
+     * @return A protein object containing the protein's details.
      * @throws Exception Thrown if something goes wrong.
      */
-    private String getNcbiName(String accession) throws Exception {
+    private Protein getNcbiDetails(String accession) throws Exception {
         // get the id for the accession
         String ncbiId = getNcbiId(accession);
 
@@ -307,12 +350,23 @@ public class ProteinNameFetcher {
         name = name.replace("AltName: ", "(");
         name = name.replace("; Short=", ", ");
         name = name.replace(";", ")");
-
+        
         // remove the first )
         if (name.contains(")"))
             name = name.substring(0, name.indexOf(')')) + name.substring(name.indexOf(')') + 1);
+        
+        // get the sequence
+        String fasta = getPage(String.format(EFETCH_FORMAT_STRING, ncbiId));
+        
+        String sequence = fasta.substring(fasta.indexOf('\n') + 1);
+        sequence = sequence.replaceAll("\\s", "");
 
-        return name;
+        // create the protein
+        Protein p = new Protein(accession);
+        p.setName(name);
+        p.setSequenceString(sequence);
+
+        return p;
     }
 
     /**

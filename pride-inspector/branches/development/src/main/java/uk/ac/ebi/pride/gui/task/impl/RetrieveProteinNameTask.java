@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
+import uk.ac.ebi.pride.gui.component.sequence.Protein;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.utils.ProteinNameFetcher;
@@ -97,8 +98,8 @@ public class RetrieveProteinNameTask extends TaskAdapter<Void, Tuple<TableConten
                         name = UNKNOWN_PROTEIN_NAME;
                         if (hasInternet) {
                             try {
-                                name = fetcher.getProteinName(acc);
-                                name = name == null ? UNKNOWN_PROTEIN_NAME : name;
+                            	Protein p = fetcher.getProteinDetails(acc);
+                                name = (p != null) ? p.getName() : UNKNOWN_PROTEIN_NAME;
                             } catch (Exception e) {
                                 // ignored
                             }

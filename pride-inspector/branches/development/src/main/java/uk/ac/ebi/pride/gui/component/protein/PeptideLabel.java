@@ -11,7 +11,8 @@ import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 
 /**
- * Created by IntelliJ IDEA.
+ * PeptideLabel visualize peptide sequence and ptms
+ *
  * User: rwang
  * Date: 16-Aug-2010
  * Time: 12:28:56
@@ -39,7 +40,7 @@ public class PeptideLabel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g2 = (Graphics2D) g.create();
         int offset = 0;
         if (drawIcon && hasModification(peptide)) {
             g2.drawImage(expandIcon.getImage(), 0, 3,this);
@@ -49,6 +50,7 @@ public class PeptideLabel extends JPanel {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.drawString(ptmString.getIterator(), offset, 15);
+        g2.dispose();
     }
 
     private boolean hasModification(Peptide peptide) {

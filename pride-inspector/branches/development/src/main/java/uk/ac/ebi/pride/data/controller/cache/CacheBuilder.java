@@ -10,7 +10,7 @@ package uk.ac.ebi.pride.data.controller.cache;
 public interface CacheBuilder {
     /**
      * initialize the cache, it should clear the previous cache first,
-     * then build the new cache.
+     * then createAttributedSequence the new cache.
      *
      * @throws Exception exception while populating the cache
      */

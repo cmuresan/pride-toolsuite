@@ -74,15 +74,15 @@ public class PrideInspector extends Desktop {
         storeCmdLineArgs(args);
         // load all properties
         loadProperties();
-        // build the main frame
+        // createAttributedSequence the main frame
         buildMainFrame();
-        // build menu bar
+        // createAttributedSequence menu bar
         buildMenuToolBar();
-        // build the bottom bar
+        // createAttributedSequence the bottom bar
         buildStatusBar();
         // set default logging
         setDefaultLogging();
-        // build the main display area
+        // createAttributedSequence the main display area
         buildMainDisplay();
     }
 

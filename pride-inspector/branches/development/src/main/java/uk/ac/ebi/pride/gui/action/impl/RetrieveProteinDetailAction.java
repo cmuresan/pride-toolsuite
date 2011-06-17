@@ -5,7 +5,7 @@ import org.jdesktop.swingx.table.TableColumnModelExt;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.task.TaskListener;
-import uk.ac.ebi.pride.gui.task.impl.RetrieveProteinNameTask;
+import uk.ac.ebi.pride.gui.task.impl.RetrieveProteinDetailTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * Date: 09-Oct-2010
  * Time: 18:02:21
  */
-public class RetrieveProteinNameAction extends PrideAction {
+public class RetrieveProteinDetailAction extends PrideAction {
     /**
      * JTable where protein name will be displayed
      */
@@ -42,11 +42,11 @@ public class RetrieveProteinNameAction extends PrideAction {
      */
     private DataAccessController controller;
 
-    public RetrieveProteinNameAction(JTable table,
-                                     String protNameColHeader,
-                                     String protAccColHeader,
-                                     DataAccessController controller,
-                                     Icon icon, String title) {
+    public RetrieveProteinDetailAction(JTable table,
+                                       String protNameColHeader,
+                                       String protAccColHeader,
+                                       DataAccessController controller,
+                                       Icon icon, String title) {
         super(title, icon);
         this.table = table;
         this.protNameColHeader = protNameColHeader;
@@ -105,7 +105,7 @@ public class RetrieveProteinNameAction extends PrideAction {
     private void runRetrieveProteinNameTask(Collection<String> mappedProteinAcces) {
 
         // create a task to retrieve protein name
-        RetrieveProteinNameTask task = new RetrieveProteinNameTask(mappedProteinAcces);
+        RetrieveProteinDetailTask task = new RetrieveProteinDetailTask(mappedProteinAcces);
 
         // set task name, indicates which data access controller it is from
         task.setName(task.getName() + " (" + controller.getName() + ")");

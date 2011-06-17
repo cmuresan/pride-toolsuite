@@ -4,21 +4,16 @@ import org.bushe.swing.event.ContainerEventServiceFinder;
 import org.bushe.swing.event.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.Identification;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.action.impl.RetrieveProteinNameAction;
+import uk.ac.ebi.pride.gui.action.impl.RetrieveProteinDetailAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
-import uk.ac.ebi.pride.gui.component.PrideInspectorTabPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
 import uk.ac.ebi.pride.gui.event.container.ProteinIdentificationEvent;
 
@@ -30,7 +25,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * IdentificationSelectionPane displays identification related details in a table.
@@ -75,7 +69,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
         // create identification table
         identTable = TableFactory.createIdentificationTable();
 
-        // build header panel
+        // createAttributedSequence header panel
         JPanel headerPanel = buildHeaderPane();
         this.add(headerPanel, BorderLayout.NORTH);
 
@@ -144,7 +138,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
             JLabel engineLabel = new JLabel("<html><b>Search Database</b>: " + database + "</html>");
             metaDataPanel.add(engineLabel);
         } catch (DataAccessException e) {
-            String msg = "Failed to build meta data pane for identifications";
+            String msg = "Failed to createAttributedSequence meta data pane for identifications";
             logger.error(msg, e);
             appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
         }
@@ -165,11 +159,11 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
         JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
         loadAllProteinNameButton.setForeground(Color.blue);
 
-        Icon loadProteinNameIcon = GUIUtilities.loadIcon(appContext.getProperty("load.protein.name.small.icon"));
+        Icon loadProteinNameIcon = GUIUtilities.loadIcon(appContext.getProperty("load.protein.detail.small.icon"));
         String proteinNameColHeader = ProteinTableModel.TableHeader.PROTEIN_NAME.getHeader();
         String proteinAccColHeader = ProteinTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
-        loadAllProteinNameButton.setAction(new RetrieveProteinNameAction(identTable, proteinNameColHeader, proteinAccColHeader, controller,
-                                                            loadProteinNameIcon, "Download Protein Names"));
+        loadAllProteinNameButton.setAction(new RetrieveProteinDetailAction(identTable, proteinNameColHeader, proteinAccColHeader, controller,
+                                                            loadProteinNameIcon, appContext.getProperty("load.protein.detail.title")));
         toolBar.add(loadAllProteinNameButton);
 
         // add gap

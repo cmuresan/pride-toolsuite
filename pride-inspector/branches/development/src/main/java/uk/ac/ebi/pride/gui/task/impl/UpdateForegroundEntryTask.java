@@ -28,7 +28,7 @@ public class UpdateForegroundEntryTask<T> extends AbstractDataAccessTask<T, Void
 
     @Override
     @SuppressWarnings("unchecked")
-    protected T runDataAccess() throws Exception {
+    protected T retrieve() throws Exception {
         Object result = null;
         if (Experiment.class.equals(classType)) {
             controller.setForegroundExperimentAcc(id);

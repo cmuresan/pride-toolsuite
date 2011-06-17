@@ -6,24 +6,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.action.impl.RetrieveProteinNameAction;
+import uk.ac.ebi.pride.gui.action.impl.RetrieveProteinDetailAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
-import uk.ac.ebi.pride.gui.component.PrideInspectorTabPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
-import uk.ac.ebi.pride.gui.event.container.ProteinIdentificationEvent;
-import uk.ac.ebi.pride.gui.task.Task;
-import uk.ac.ebi.pride.gui.task.TaskEvent;
-import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.help.CSH;
 import javax.swing.*;
@@ -136,11 +127,11 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
         JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
         loadAllProteinNameButton.setForeground(Color.blue);
 
-        Icon loadProteinNameIcon = GUIUtilities.loadIcon(appContext.getProperty("load.protein.name.small.icon"));
+        Icon loadProteinDetailIcon = GUIUtilities.loadIcon(appContext.getProperty("load.protein.detail.small.icon"));
         String proteinNameColHeader = PeptideTableModel.TableHeader.PROTEIN_NAME.getHeader();
         String proteinAccColHeader = PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
-        loadAllProteinNameButton.setAction(new RetrieveProteinNameAction(pepTable, proteinNameColHeader, proteinAccColHeader, controller,
-                loadProteinNameIcon, "Download Protein Names"));
+        loadAllProteinNameButton.setAction(new RetrieveProteinDetailAction(pepTable, proteinNameColHeader, proteinAccColHeader, controller,
+                loadProteinDetailIcon, appContext.getProperty("load.protein.detail.title")));
 
         toolBar.add(loadAllProteinNameButton);
 

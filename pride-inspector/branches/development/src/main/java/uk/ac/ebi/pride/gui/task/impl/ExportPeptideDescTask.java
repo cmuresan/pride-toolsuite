@@ -58,7 +58,7 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
     }
 
     @Override
-    protected Void runDataAccess() throws Exception {
+    protected Void retrieve() throws Exception {
         PrintWriter writer = null;
 
         try {

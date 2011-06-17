@@ -19,10 +19,14 @@ public abstract class AbstractDataAccessTask<K, V> extends TaskAdapter<K, V> {
 
     /** data access controller used in this task */
     protected DataAccessController controller;
+    /**
+     * application context
+      */
+    protected PrideInspectorContext appContext;
 
     protected AbstractDataAccessTask(DataAccessController controller) {
         this.controller = controller;
-        
+        this.appContext = (PrideInspectorContext)uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
         // add controller as property change listener to the task
         this.addOwner(controller);
     }
@@ -36,10 +40,11 @@ public abstract class AbstractDataAccessTask<K, V> extends TaskAdapter<K, V> {
     @Override
     protected K doInBackground() throws Exception {
         try {
-            return runDataAccess();
+            return retrieve();
         } catch (OutOfMemoryError ex) {
-            PrideInspectorContext context = (PrideInspectorContext)uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
-            GUIUtilities.error(Desktop.getInstance().getMainComponent(), context.getProperty("out.of.memory.message"), context.getProperty("out.of.memory.title"));
+            GUIUtilities.error(Desktop.getInstance().getMainComponent(),
+                                appContext.getProperty("out.of.memory.message"),
+                                appContext.getProperty("out.of.memory.title"));
         }
 
         return null;
@@ -51,7 +56,7 @@ public abstract class AbstractDataAccessTask<K, V> extends TaskAdapter<K, V> {
      * @return K    task result
      * @throws Exception    task exception
      */
-    protected abstract K runDataAccess() throws Exception;
+    protected abstract K retrieve() throws Exception;
 
 
     /**

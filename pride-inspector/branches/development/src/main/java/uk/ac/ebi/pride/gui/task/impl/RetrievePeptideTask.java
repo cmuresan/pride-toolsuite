@@ -33,15 +33,14 @@ public class RetrievePeptideTask extends AbstractDataAccessTask<Peptide, String>
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Peptide runDataAccess() throws Exception {
+    protected Peptide retrieve() throws Exception {
         Peptide peptide = null;
         try {
             peptide = controller.getPeptideById(identId, peptideId);
         } catch(DataAccessException dex) {
             String msg = "Failed to retrieve peptide";
             logger.error(msg, dex);
-            PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         }
         return peptide;
     }

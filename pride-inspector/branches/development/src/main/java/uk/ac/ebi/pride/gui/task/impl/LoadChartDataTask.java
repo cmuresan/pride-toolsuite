@@ -29,15 +29,14 @@ public class LoadChartDataTask extends AbstractDataAccessTask<List<PrideChartMan
     }
 
     @Override
-    protected List<PrideChartManager> runDataAccess() throws Exception {
+    protected List<PrideChartManager> retrieve() throws Exception {
         List<PrideChartManager> charts = null;
         try {
             charts = controller.getChartData();
         } catch (DataAccessException ex) {
-            PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
             String msg = "Failed to get summary charts";
             logger.error(msg, ex);
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, ex));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, ex));
         }
         return charts;
     }

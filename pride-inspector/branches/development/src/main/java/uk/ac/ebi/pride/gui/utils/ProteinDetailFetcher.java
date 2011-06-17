@@ -21,8 +21,8 @@ import java.util.regex.Pattern;
 
 import static uk.ac.ebi.pride.gui.component.utils.SharedLabels.TAB;
 
-public class ProteinNameFetcher {
-    private Logger logger = LoggerFactory.getLogger(ProteinNameFetcher.class);
+public class ProteinDetailFetcher {
+    private Logger logger = LoggerFactory.getLogger(ProteinDetailFetcher.class);
 
     // query string for the NCBI esummary tool
     private final String ESUMMARY_QUERY_STRING = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=protein&id=%s";

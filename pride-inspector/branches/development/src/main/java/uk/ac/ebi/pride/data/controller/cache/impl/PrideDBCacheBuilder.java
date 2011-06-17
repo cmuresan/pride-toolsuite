@@ -315,7 +315,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             DBUtilities.releaseResources(connection, st, rs);
         }
 
-        // build cache
+        // createAttributedSequence cache
         cache.storeInBatch(CacheCategory.PRECURSOR_CHARGE, charges);
         cache.storeInBatch(CacheCategory.PRECURSOR_MZ, mzs);
         cache.storeInBatch(CacheCategory.PRECURSOR_INTENSITY, intensities);

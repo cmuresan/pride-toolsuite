@@ -130,6 +130,7 @@ public class CentralContentPane extends JPanel {
 
     @EventSubscriber(eventClass = DatabaseSearchEvent.class)
     public void onDatabaseSearchEvent(DatabaseSearchEvent evt) {
+        // todo: why this is called many times?
         logger.debug("Database search pane is to be displayed");
 
         if (DatabaseSearchEvent.Status.SHOW.equals(evt.getStatus())) {

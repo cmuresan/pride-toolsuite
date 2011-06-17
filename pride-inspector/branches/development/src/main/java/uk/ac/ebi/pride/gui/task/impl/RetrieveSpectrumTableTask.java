@@ -86,7 +86,7 @@ public class RetrieveSpectrumTableTask extends AbstractDataAccessTask<Void, Tupl
     }
 
     @Override
-    protected Void runDataAccess() throws Exception {
+    protected Void retrieve() throws Exception {
         try {
             Collection<Comparable> specIds = controller.getSpectrumIds();
 
@@ -130,8 +130,7 @@ public class RetrieveSpectrumTableTask extends AbstractDataAccessTask<Void, Tupl
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve spectrum related data";
             logger.error(msg, dex);
-            PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         } catch (InterruptedException ex) {
             logger.warn("Spectrum table update has been cancelled");
         }

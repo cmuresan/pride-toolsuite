@@ -36,7 +36,7 @@ public enum TableContentType {
      */
     REVIEW,
     /**
-     * Protein Name
+     * Protein details
      */
-    PROTEIN_NAME
+    PROTEIN_DETAILS
 }

@@ -89,7 +89,7 @@ public class RetrievePeptideTableTask extends AbstractDataAccessTask<Void, Tuple
     }
 
     @Override
-    protected Void runDataAccess() throws Exception {
+    protected Void retrieve() throws Exception {
         try {
             Collection<Comparable> identIds = controller.getIdentificationIds();
 
@@ -118,8 +118,7 @@ public class RetrievePeptideTableTask extends AbstractDataAccessTask<Void, Tuple
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve peptide related data";
             logger.error(msg, dex);
-            PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         } catch (InterruptedException e) {
             logger.warn("Peptide table update has been cancelled");
         }

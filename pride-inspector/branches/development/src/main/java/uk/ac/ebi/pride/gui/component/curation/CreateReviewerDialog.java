@@ -32,7 +32,7 @@ public class CreateReviewerDialog extends ExperimentUpdateDialog{
         int fromAccInt = Integer.parseInt(getFromAccession());
         int toAccInt = Integer.parseInt(getToAccession());
 
-        // build a new update task
+        // createAttributedSequence a new update task
         CreateReviewerTask newTask = new CreateReviewerTask(fromAccInt, toAccInt);
         newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
         // add task listeners

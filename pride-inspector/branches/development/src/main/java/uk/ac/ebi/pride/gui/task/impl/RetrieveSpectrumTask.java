@@ -43,7 +43,7 @@ public class RetrieveSpectrumTask extends AbstractDataAccessTask<Spectrum, Void>
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Spectrum runDataAccess() throws Exception {
+    protected Spectrum retrieve() throws Exception {
         if (spectrumId != null) {
             return getSpectrum(spectrumId);
         } else {
@@ -65,8 +65,7 @@ public class RetrieveSpectrumTask extends AbstractDataAccessTask<Spectrum, Void>
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve data entry from data source";
             logger.error(msg, dex);
-            PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         }
 
         return result;
@@ -86,8 +85,7 @@ public class RetrieveSpectrumTask extends AbstractDataAccessTask<Spectrum, Void>
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve peptide";
             logger.error(msg, dex);
-            PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         }
 
         Spectrum spectrum = null;

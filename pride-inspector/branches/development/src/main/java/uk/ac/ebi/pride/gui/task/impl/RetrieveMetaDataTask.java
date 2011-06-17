@@ -35,15 +35,14 @@ public class RetrieveMetaDataTask extends AbstractDataAccessTask<MetaData, Void>
     }
 
     @Override
-    protected MetaData runDataAccess() throws Exception {
+    protected MetaData retrieve() throws Exception {
         MetaData metaData = null;
         try {
             metaData = controller.getMetaData();
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve meta data from data source";
             logger.error(msg, dex);
-            PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));    
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         }
         return metaData;
     }

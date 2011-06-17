@@ -99,7 +99,7 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
                     "Big File Found",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
-                    null, options, options[1]);
+                    null, options, options[0]);
             toOpen = (n == JOptionPane.YES_OPTION);
         }
 

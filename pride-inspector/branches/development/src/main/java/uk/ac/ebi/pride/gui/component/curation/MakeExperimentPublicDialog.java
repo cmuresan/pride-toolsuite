@@ -54,7 +54,7 @@ public class MakeExperimentPublicDialog extends ExperimentUpdateDialog {
         int fromAccInt = Integer.parseInt(getFromAccession());
         int toAccInt = Integer.parseInt(getToAccession());
 
-        // build a new update task
+        // createAttributedSequence a new update task
         Date date = dateChooser.getDate();
         if (date != null) {
             MakeExperimentPublicTask newTask = new MakeExperimentPublicTask(fromAccInt, toAccInt, dateChooser.getDate());

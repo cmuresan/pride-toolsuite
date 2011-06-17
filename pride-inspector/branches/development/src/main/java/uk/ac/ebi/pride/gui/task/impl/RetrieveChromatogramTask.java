@@ -28,7 +28,7 @@ public class RetrieveChromatogramTask extends AbstractDataAccessTask<Chromatogra
     }
 
     @Override
-    protected Chromatogram runDataAccess() throws Exception {
+    protected Chromatogram retrieve() throws Exception {
         Chromatogram result = null;
 
         try {
@@ -36,8 +36,7 @@ public class RetrieveChromatogramTask extends AbstractDataAccessTask<Chromatogra
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve data entry from data source";
             logger.error(msg, dex);
-            PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         }
 
         return result;

@@ -28,7 +28,7 @@ public class RetrieveIdentificationTask extends AbstractDataAccessTask<Identific
     }
 
     @Override
-    protected Identification runDataAccess() throws Exception {
+    protected Identification retrieve() throws Exception {
         Identification result = null;
 
         try {
@@ -36,8 +36,7 @@ public class RetrieveIdentificationTask extends AbstractDataAccessTask<Identific
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve data entry from data source";
             logger.error(msg, dex);
-            PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         }
 
         return result;

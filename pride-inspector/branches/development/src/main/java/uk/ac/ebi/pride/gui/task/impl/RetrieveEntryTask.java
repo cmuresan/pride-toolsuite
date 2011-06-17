@@ -34,7 +34,7 @@ public class RetrieveEntryTask<T> extends AbstractDataAccessTask<T, String> {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected T runDataAccess() throws Exception {
+    protected T retrieve() throws Exception {
         Object result = null;
 
         try {
@@ -48,8 +48,7 @@ public class RetrieveEntryTask<T> extends AbstractDataAccessTask<T, String> {
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve data entry from data source";
             logger.error(msg, dex);
-            PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         }
 
         return (T) result;

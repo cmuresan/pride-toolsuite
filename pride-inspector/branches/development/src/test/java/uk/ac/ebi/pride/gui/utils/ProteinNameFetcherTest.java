@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.gui.component.sequence.Protein;
 import junit.framework.TestCase;
 
 public class ProteinNameFetcherTest extends TestCase {
-	private ProteinNameFetcher fetcher = new ProteinNameFetcher();
+	private ProteinDetailFetcher fetcher = new ProteinDetailFetcher();
 
 	protected void setUp() throws Exception {
 		super.setUp();

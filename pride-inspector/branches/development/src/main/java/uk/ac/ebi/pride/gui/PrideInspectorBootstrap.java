@@ -33,7 +33,7 @@ public class PrideInspectorBootstrap {
         String maxMem = bootstrapProps.getProperty("pride.inspector.max.memory");
 
 
-        // build the command
+        // createAttributedSequence the command
         StringBuilder cmdBuffer = new StringBuilder();
         cmdBuffer.append("java -cp ");
         if (isWindowsPlatform()) {

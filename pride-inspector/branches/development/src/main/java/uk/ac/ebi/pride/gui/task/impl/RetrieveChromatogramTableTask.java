@@ -86,7 +86,7 @@ public class RetrieveChromatogramTableTask extends AbstractDataAccessTask<Void, 
     }
 
     @Override
-    protected Void runDataAccess() throws Exception {
+    protected Void retrieve() throws Exception {
 
         try {
             Collection<Comparable> chromatogramIds = controller.getChromatogramIds();
@@ -113,8 +113,7 @@ public class RetrieveChromatogramTableTask extends AbstractDataAccessTask<Void, 
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve chromatogram related data";
             logger.error(msg, dex);
-            PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));         
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         } catch (InterruptedException e) {
             logger.warn("Chromatogram table update has been cancelled");
         }

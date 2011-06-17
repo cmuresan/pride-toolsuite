@@ -89,7 +89,7 @@ public class RetrieveIdentAndPeptideTableTask extends AbstractDataAccessTask<Voi
     }
 
     @Override
-    protected Void runDataAccess() throws Exception {
+    protected Void retrieve() throws Exception {
         try {
             Collection<Comparable> identIds = controller.getIdentificationIds();
             // count stores the number of peptides without any spectrum
@@ -131,8 +131,7 @@ public class RetrieveIdentAndPeptideTableTask extends AbstractDataAccessTask<Voi
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve protein and peptide related data";
             logger.error(msg, dex);
-            PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-            context.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         } catch (InterruptedException ex) {
             logger.warn("Protein table and peptide table update has been cancelled");
         }

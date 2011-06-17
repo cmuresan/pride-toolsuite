@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.sequence.Protein;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
-import uk.ac.ebi.pride.gui.utils.ProteinNameFetcher;
+import uk.ac.ebi.pride.gui.utils.ProteinDetailFetcher;
 import uk.ac.ebi.pride.util.InternetChecker;
 
 import java.util.ArrayList;
@@ -21,16 +21,13 @@ import java.util.List;
  * Date: 16-Sep-2010
  * Time: 15:53:16
  */
-public class RetrieveProteinNameTask extends TaskAdapter<Void, Tuple<TableContentType, List<Object>>> {
-    private static final Logger logger = LoggerFactory.getLogger(RetrieveProteinNameTask.class);
+public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableContentType, Object>> {
+    private static final Logger logger = LoggerFactory.getLogger(RetrieveProteinDetailTask.class);
 
     private static final String DEFAULT_TASK_NAME = "Downloading protein names";
 
     private static final String DEFAULT_TASK_DESC = "Downloading protein names using web services";
 
-    /**
-     * default protein name when the name is unknown
-     */
     private static final String UNKNOWN_PROTEIN_NAME = "Not Available";
 
     /**
@@ -53,7 +50,7 @@ public class RetrieveProteinNameTask extends TaskAdapter<Void, Tuple<TableConten
      *
      * @param proteinAccs a collection of protein accessions
      */
-    public RetrieveProteinNameTask(Collection<String> proteinAccs) {
+    public RetrieveProteinDetailTask(Collection<String> proteinAccs) {
         if (proteinAccs == null) {
             throw new IllegalArgumentException("Protein accession collection can not be null");
         }
@@ -77,14 +74,13 @@ public class RetrieveProteinNameTask extends TaskAdapter<Void, Tuple<TableConten
         if (!proteinAccessions.isEmpty()) {
             // display loading for all the rows first
             for (String acc : proteinAccessions) {
-                Tuple<String, String> proteinName = new Tuple<String, String>(acc, "Loading...");
-                List<Object> content = new ArrayList<Object>();
-                content.add(proteinName);
-                publish(new Tuple<TableContentType, List<Object>>(TableContentType.PROTEIN_NAME, content));
+                Protein tempProteinDetails = new Protein(acc);
+                tempProteinDetails.setName("Loading...");
+                publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, tempProteinDetails));
             }
 
             // fetcher will query web service to get protein name
-            ProteinNameFetcher fetcher = new ProteinNameFetcher();
+            ProteinDetailFetcher fetcher = new ProteinDetailFetcher();
 
             try {
                 // iterate over each protein
@@ -93,26 +89,27 @@ public class RetrieveProteinNameTask extends TaskAdapter<Void, Tuple<TableConten
                         continue;
                     }
                     // get protein name
-                    String name = context.getProteinName(acc);
-                    if (name == null) {
-                        name = UNKNOWN_PROTEIN_NAME;
-                        if (hasInternet) {
-                            try {
-                            	Protein p = fetcher.getProteinDetails(acc);
-                                name = (p != null) ? p.getName() : UNKNOWN_PROTEIN_NAME;
-                            } catch (Exception e) {
-                                // ignored
-                            }
+                    Protein protDetails = context.getProteinDetails(acc);
+                    if (protDetails == null && hasInternet) {
+                        try {
+                            protDetails = fetcher.getProteinDetails(acc);
+                        } catch (Exception e) {
+                            // ignored
                         }
+
                         // store the checked protein name
-                        context.addProteinName(acc, name);
+                        if (protDetails != null) {
+                            context.addProteinDetails(protDetails);
+                        }
                     }
 
                     // publish the result
-                    Tuple<String, String> proteinName = new Tuple<String, String>(acc, name);
-                    List<Object> content = new ArrayList<Object>();
-                    content.add(proteinName);
-                    publish(new Tuple<TableContentType, List<Object>>(TableContentType.PROTEIN_NAME, content));
+                    if (protDetails == null) {
+                        protDetails = new Protein(acc);
+                        protDetails.setName(UNKNOWN_PROTEIN_NAME);
+                    }
+
+                    publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, protDetails));
 
                     // this is important for cancelling
                     if (Thread.interrupted()) {

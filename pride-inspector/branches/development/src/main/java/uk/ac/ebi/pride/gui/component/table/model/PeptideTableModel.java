@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.component.table.model;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.core.SearchEngine;
 import uk.ac.ebi.pride.engine.SearchEngineType;
+import uk.ac.ebi.pride.gui.component.sequence.Protein;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
  * Date: 14-Apr-2010
  * Time: 15:58:15
  */
-public class PeptideTableModel extends ProgressiveUpdateTableModel<Void, Tuple<TableContentType, List<Object>>> {
+public class PeptideTableModel extends ProgressiveUpdateTableModel<Void, Tuple<TableContentType, Object>> {
 
     /**
      * table column title
@@ -88,7 +89,7 @@ public class PeptideTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
     }
 
     @Override
-    public void addData(Tuple<TableContentType, List<Object>> newData) {
+    public void addData(Tuple<TableContentType, Object> newData) {
         TableContentType type = newData.getKey();
         int rowCnt = this.getRowCount();
         if (TableContentType.PEPTIDE.equals(type)) {
@@ -96,30 +97,26 @@ public class PeptideTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
             // add row number
             content.add(rowCnt + 1);
             // add the rest content
-            content.addAll(newData.getValue());
+            content.addAll((List<String>) newData.getValue());
             this.addRow(content);
             fireTableRowsInserted(rowCnt, rowCnt);
-        } else if (TableContentType.PROTEIN_NAME.equals(type)) {
+        } else if (TableContentType.PROTEIN_DETAILS.equals(type)) {
 
             // get mapped protein accession column index and protein name column index
             int mappedAccIndex = getColumnIndex(TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
             int protNameIndex = getColumnIndex(TableHeader.PROTEIN_NAME.getHeader());
 
             // get forwarded protein name
-            for (Object pair : newData.getValue()) {
-                Tuple<String, String> pnPair = (Tuple<String, String>) pair;
-                String mpAcc = pnPair.getKey();
-                String pName = pnPair.getValue();
-                // iterate over each row, set the protein name
-                for (int row = 0; row < contents.size(); row++) {
-                    List<Object> content = contents.get(row);
-                    if (content.get(mappedAccIndex) == null) {
-                        continue;
-                    }
-                    if (content.get(mappedAccIndex).equals(mpAcc)) {
-                        content.set(protNameIndex, pName);
-                        fireTableCellUpdated(row, protNameIndex);
-                    }
+            Protein protein = (Protein)newData.getValue();
+            // iterate over each row, set the protein name
+            for (int row = 0; row < contents.size(); row++) {
+                List<Object> content = contents.get(row);
+                if (content.get(mappedAccIndex) == null) {
+                    continue;
+                }
+                if (content.get(mappedAccIndex).equals(protein.getName())) {
+                    content.set(protNameIndex, protein.getName());
+                    fireTableCellUpdated(row, protNameIndex);
                 }
             }
         }

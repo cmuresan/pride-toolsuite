@@ -107,7 +107,7 @@ public class AttributedSequenceBuilder {
                 for (int i = start; i <= end; i++) {
                     if (selected) {
                         coverageArr[i] = -1;
-                    } else {
+                    } else if (coverageArr[i] != -1) {
                         coverageArr[i] += 1;
                     }
                 }

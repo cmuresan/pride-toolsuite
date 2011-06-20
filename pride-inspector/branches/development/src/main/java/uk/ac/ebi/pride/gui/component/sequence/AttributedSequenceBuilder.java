@@ -1,11 +1,11 @@
 package uk.ac.ebi.pride.gui.component.sequence;
 
-import uk.ac.ebi.pride.data.Tuple;
-
 import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * This class converts a AnnotatedProtein into a AttributedSequence for drawing
@@ -19,13 +19,14 @@ import java.util.*;
 public class AttributedSequenceBuilder {
     public final static int PROTEIN_SEGMENT_LENGTH = 10;
     public final static String PROTEIN_SEGMENT_GAP = "        ";
-    public final static Color PEPTIDE_BACKGROUND_COLOUR = Color.yellow;
-    public final static Color PEPTIDE_OVERLAP_COLOUR = Color.cyan;
-    public final static Color PEPTIDE_HIGHLIGHT_COLOUR = Color.blue;
-    public final static Color PTM_BACKGROUND_COLOUR = Color.green;
-    public final static Color PTM_HIGHLIGHT_COLOUR = Color.orange;
-
-    private AnnotatedProtein protein;
+    public final static Color PEPTIDE_BACKGROUND_COLOUR = new Color(251, 182, 1, 120);
+    public final static Color PEPTIDE_FOREGROUND_COLOUR = Color.BLACK;
+    public final static Color PEPTIDE_OVERLAP_COLOUR = new Color(251, 182, 1);
+    public final static Color PEPTIDE_HIGHLIGHT_COLOUR = Color.yellow;
+    public final static Color PTM_BACKGROUND_COLOUR = new Color(40, 175, 99);
+    public final static Color PTM_HIGHLIGHT_COLOUR = Color.yellow.darker();
+    private final static Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 16);
+    private final static Color DEFAULT_FOREGROUND = Color.GRAY;
 
     /**
      * This method is responsible for create a formatted and styled protein sequence
@@ -51,14 +52,11 @@ public class AttributedSequenceBuilder {
                 formattedSequence = new AttributedString(gappedSequence);
 
                 // set overall font
-                Font font = new Font("Tahoma", Font.PLAIN, 14);
-                formattedSequence.addAttribute(TextAttribute.FONT, font);
+                formattedSequence.addAttribute(TextAttribute.FONT, DEFAULT_FONT);
+                formattedSequence.addAttribute(TextAttribute.FOREGROUND, DEFAULT_FOREGROUND);
 
                 // color code peptides
-
-
-                // color code ptm
-
+                addPeptideAnnotations(protein, formattedSequence);
             }
         }
         return formattedSequence;
@@ -67,7 +65,7 @@ public class AttributedSequenceBuilder {
     /**
      * Add peptide annotation to the attributed protein sequence
      *
-     * @param protein   annotated protein
+     * @param protein           annotated protein
      * @param formattedSequence formmated protein sequence
      */
     private static void addPeptideAnnotations(AnnotatedProtein protein, AttributedString formattedSequence) {
@@ -77,10 +75,10 @@ public class AttributedSequenceBuilder {
 
             // remove invalid peptide
             Iterator<PeptideAnnotation> peptideIter = peptides.iterator();
-            while(peptideIter.hasNext()) {
+            while (peptideIter.hasNext()) {
                 PeptideAnnotation peptideAnnotation = peptideIter.next();
                 if (!protein.isValidPeptideAnnotation(peptideAnnotation)) {
-                    peptides.remove(peptideAnnotation);
+                    peptideIter.remove();
                 } else {
                     numOfValidPeptides++;
                 }
@@ -94,26 +92,82 @@ public class AttributedSequenceBuilder {
             uniquePeptides.addAll(peptides);
             protein.setNumOfUniquePeptides(uniquePeptides.size());
 
-            // peptide coverage map
-            // contains start and stop position, and whether it is an overlapping sequence
-            Map<Tuple<Integer, Integer>, Boolean> coverageMap = new LinkedHashMap<Tuple<Integer, Integer>, Boolean>();
+            // peptide coverage array
+            // it is the length of the protein sequence, and contains the count of sequence coverage for each position
+            int length = protein.getSequenceString().trim().length();
+            int[] coverageArr = new int[length];
+            int[] ptmArr = new int[length];
             for (PeptideAnnotation uniquePeptide : uniquePeptides) {
+                int start = uniquePeptide.getStart() - 1;
+                int end = uniquePeptide.getEnd() - 1;
+                int peptideLen = end - start + 1;
+                boolean selected = uniquePeptide.equals(protein.getSelectedAnnotation());
 
+                // iterate peptide
+                for (int i = start; i <= end; i++) {
+                    if (selected) {
+                        coverageArr[i] = -1;
+                    } else {
+                        coverageArr[i] += 1;
+                    }
+                }
+
+                // ptms
+                java.util.List<PTMAnnotation> ptms = uniquePeptide.getPtmAnnotations();
+                for (PTMAnnotation ptm : ptms) {
+                    int location = ptm.getLocation();
+                    if (location >= 0) {
+                        if (location > 0 && location <= peptideLen) {
+                            location -= 1;
+                        } else if (location == peptideLen + 1) {
+                            location -= 2;
+                        }
+
+                        if (selected) {
+                            ptmArr[start + location] = -1;
+                        } else {
+                            ptmArr[start + location] = 1;
+                        }
+                    }
+                }
+            }
+
+            // colour code the peptide positions
+            int numOfAminoAcidCovered = 0;
+            for (int i = 0; i < coverageArr.length; i++) {
+                int count = coverageArr[i];
+                int index = mapIndex(i);
+                if (count != 0) {
+                    if (count == 1) {
+                        formattedSequence.addAttribute(TextAttribute.BACKGROUND, PEPTIDE_BACKGROUND_COLOUR, index, index + 1);
+                    } else if (count > 1) {
+                        formattedSequence.addAttribute(TextAttribute.BACKGROUND, PEPTIDE_OVERLAP_COLOUR, index, index + 1);
+                    } else if (count < 0) {
+                        formattedSequence.addAttribute(TextAttribute.BACKGROUND, PEPTIDE_HIGHLIGHT_COLOUR, index, index + 1);
+                    }
+                    formattedSequence.addAttribute(TextAttribute.FOREGROUND, PEPTIDE_FOREGROUND_COLOUR, index, index + 1);
+                    numOfAminoAcidCovered++;
+                }
+            }
+            // set number of amino acid being covered
+            protein.setNumOfAminoAcidCovered(numOfAminoAcidCovered);
+
+
+            // colour code the ptm positions
+            for (int i = 0; i < ptmArr.length; i++) {
+                int count = ptmArr[i];
+                int index = mapIndex(i);
+
+                switch (count) {
+                    case 1:
+                        formattedSequence.addAttribute(TextAttribute.BACKGROUND, PTM_BACKGROUND_COLOUR, index, index + 1);
+                        break;
+                    case -1:
+                        formattedSequence.addAttribute(TextAttribute.BACKGROUND, PTM_HIGHLIGHT_COLOUR, index, index + 1);
+                        break;
+                }
             }
         }
-    }
-
-    private static boolean isOverlapping(Tuple<Integer, Integer> c1, Tuple<Integer, Integer> c2) {
-        boolean overlapping = false;
-
-        Tuple<Integer, Integer> cs, ce;
-
-        if (c1.getKey() > c2.getKey()) {
-        } else {
-
-        }
-
-        return overlapping;
     }
 
     /**
@@ -143,8 +197,6 @@ public class AttributedSequenceBuilder {
      */
     private static int mapIndex(int index) {
         // todo: is this the best implementation?
-        // change to zero based
-        index = index - 1;
         return ((index - index % PROTEIN_SEGMENT_LENGTH) / PROTEIN_SEGMENT_LENGTH) * PROTEIN_SEGMENT_GAP.length() + index;
     }
 }

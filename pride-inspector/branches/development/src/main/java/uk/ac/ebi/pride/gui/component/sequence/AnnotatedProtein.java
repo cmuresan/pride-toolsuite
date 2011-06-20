@@ -2,9 +2,9 @@ package uk.ac.ebi.pride.gui.component.sequence;
 
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 
+import java.awt.font.TextAttribute;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Protein sequence with its optional annotations
@@ -28,9 +28,9 @@ public class AnnotatedProtein extends Protein {
      */
     private int numOfUniquePeptides = -1;
     /**
-     * protein sequence coverage by peptide
+     * the number of amino acids covered
      */
-    private double sequenceCoverage = -1;
+    private int numOfAminoAcidCovered = -1;
 
     /**
      * Create an annotable protein from an existing protein
@@ -93,6 +93,9 @@ public class AnnotatedProtein extends Protein {
     }
 
     public int getNumOfValidPeptides() {
+        if (numOfValidPeptides == -1) {
+            populateCoverage();
+        }
         return numOfValidPeptides;
     }
 
@@ -101,6 +104,9 @@ public class AnnotatedProtein extends Protein {
     }
 
     public int getNumOfUniquePeptides() {
+        if (numOfUniquePeptides == -1) {
+            populateCoverage();
+        }
         return numOfUniquePeptides;
     }
 
@@ -108,16 +114,72 @@ public class AnnotatedProtein extends Protein {
         this.numOfUniquePeptides = numOfUniquePeptides;
     }
 
-    public double getSequenceCoverage() {
-        if (sequenceCoverage == -1) {
-
-            double coverage = 0;
-            for (PeptideAnnotation annotation : annotations) {
-                // todo: to implement
-            }
+    public float getSequenceCoverage() {
+        if (numOfAminoAcidCovered == -1) {
+            populateCoverage();
         }
+        return Float.parseFloat(numOfAminoAcidCovered + "") / (getSequenceString().length());
+    }
 
-        return sequenceCoverage;
+    public int getNumOfAminoAcidCovered() {
+        if (numOfAminoAcidCovered == -1) {
+            populateCoverage();
+        }
+        return numOfAminoAcidCovered;
+    }
+
+    private void populateCoverage() {
+        java.util.List<PeptideAnnotation> peptides = this.getAnnotations();
+        if (peptides.size() > 0) {
+            int numOfValidPeptides = 0;
+
+            // remove invalid peptide
+            Iterator<PeptideAnnotation> peptideIter = peptides.iterator();
+            while (peptideIter.hasNext()) {
+                PeptideAnnotation peptideAnnotation = peptideIter.next();
+                if (!this.isValidPeptideAnnotation(peptideAnnotation)) {
+                    peptideIter.remove();
+                } else {
+                    numOfValidPeptides++;
+                }
+            }
+
+            // set number of Valid peptides
+            setNumOfValidPeptides(numOfValidPeptides);
+
+            // keep only unique peptides
+            Set<PeptideAnnotation> uniquePeptides = new LinkedHashSet<PeptideAnnotation>();
+            uniquePeptides.addAll(peptides);
+            setNumOfUniquePeptides(uniquePeptides.size());
+
+            // peptide coverage array
+            // it is the length of the protein sequence, and contains the count of sequence coverage for each position
+            int length = getSequenceString().trim().length();
+            int[] coverageArr = new int[length];
+            for (PeptideAnnotation uniquePeptide : uniquePeptides) {
+                int start = uniquePeptide.getStart() - 1;
+                int end = uniquePeptide.getEnd() - 1;
+
+                // iterate peptide
+                for (int i = start; i <= end; i++) {
+                    coverageArr[i] += 1;
+                }
+            }
+
+            // colour code the peptide positions
+            int numOfAminoAcidCovered = 0;
+            for (int count : coverageArr) {
+                if (count != 0) {
+                    numOfAminoAcidCovered++;
+                }
+            }
+            // set number of amino acid being covered
+            setNumOfAminoAcidCovered(numOfAminoAcidCovered);
+        }
+    }
+
+    public void setNumOfAminoAcidCovered(int numOfAminoAcidCovered) {
+        this.numOfAminoAcidCovered = numOfAminoAcidCovered;
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {

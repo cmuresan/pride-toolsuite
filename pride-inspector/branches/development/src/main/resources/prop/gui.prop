@@ -267,6 +267,8 @@ spectrum.tab.icon.small=icon/16x16/report_success.png
 protein.sequence.tab.title=Sequence Coverage
 protein.sequence.tab.tooltip=Protein sequence converage for selected protein
 protein.sequence.tab.icon.small=icon/16x16/report_success.png
+protein.sequence.missing.icon.small=icon/32x32/warning.png
+protein.sequence.missing.title = Protein sequence is not currently available, you can download it by clicking on Download Protein Details above
 
            
 

@@ -75,7 +75,6 @@ public class RetrieveSelectedPeptideAnnotation extends AbstractDataAccessTask<Vo
      */
     private void addPTMAnnotations(Comparable id, PeptideAnnotation peptide) throws DataAccessException {
         Collection<Modification> ptms = controller.getPTMs(identId, id);
-        List<PTMAnnotation> ptmAnnotations = new ArrayList<PTMAnnotation>();
         for (Modification ptm : ptms) {
             PTMAnnotation ptmAnnotation = new PTMAnnotation();
 
@@ -87,9 +86,7 @@ public class RetrieveSelectedPeptideAnnotation extends AbstractDataAccessTask<Vo
             ptmAnnotation.setAvgMassDeltas(ptm.getAvgMassDeltas());
             ptmAnnotation.setMonoMassDeltas(ptm.getMonoMassDeltas());
 
-            ptmAnnotations.add(ptmAnnotation);
+            peptide.addPtmAnnotation(ptmAnnotation);
         }
-        // add ptm annotations to peptide annotation
-        peptide.setPtmAnnotations(ptmAnnotations);
     }
 }

@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.component.sequence;
 
+import org.apache.xerces.impl.xpath.regex.Match;
 import org.bushe.swing.event.ContainerEventServiceFinder;
 import org.bushe.swing.event.EventService;
 import org.bushe.swing.event.EventSubscriber;
@@ -7,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
@@ -17,6 +19,7 @@ import uk.ac.ebi.pride.gui.task.impl.RetrieveSelectedPeptideAnnotation;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
@@ -24,6 +27,7 @@ import java.awt.font.TextLayout;
 import java.beans.PropertyChangeEvent;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 
@@ -38,6 +42,10 @@ import static uk.ac.ebi.pride.gui.component.sequence.AttributedSequenceBuilder.*
  */
 public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProtein, Void> implements EventBusSubscribable {
     private final static Logger logger = LoggerFactory.getLogger(ProteinSequencePane.class);
+    private final static int TOP_MARGIN = 20;
+    private final static int BOTTOM_MARGIN = 20;
+    private final static int LEFT_MARGIN = 20;
+    private final static int RIGHT_MARGIN = 20;
     /**
      * property indicates a change of protein model
      */
@@ -127,14 +135,12 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        AnnotatedProtein protein = new AnnotatedProtein("Test");
-        protein.setSequenceString("ABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPYABCPY");
 
         // create a new graphics 2D
         Graphics2D g2 = (Graphics2D) g.create();
 
         // get formatted protein sequence string
-        AttributedString sequence = AttributedSequenceBuilder.build(protein);
+        AttributedString sequence = AttributedSequenceBuilder.build(proteinModel);
 
         // rendering hits
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -161,10 +167,8 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         int width = viewport.getWidth();
 
         // spacing within the panel
-        int margin = 20;
-        int yMargin = 20;
-        int leftMargin = margin;
-        int rightMargin = width - margin;
+        int yMargin = drawProteinMetaData(g2) + 10;
+        int rightMargin = width - RIGHT_MARGIN;
 
         // line spacing
         int lineSpacing = 20;
@@ -188,7 +192,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         int textPosIndex = proteinSegLength;
 
         while (measurer.getPosition() < sequenceIter.getEndIndex()) {
-            float xPos = leftMargin;
+            float xPos = LEFT_MARGIN;
             // line contains text already
             boolean lineContainText = false;
             boolean lineComplete = false;
@@ -243,7 +247,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         }
 
         // set a margin gap at the bottom of the panel
-        setPreferredSize(new Dimension(width, yPos + yMargin));
+        setPreferredSize(new Dimension(width, yPos + BOTTOM_MARGIN));
         revalidate();
     }
 
@@ -253,7 +257,78 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
      * @param g2 graphics 2D
      */
     private void drawMissingProteinSequence(Graphics2D g2) {
-        // todo: draw warning message
+        int yPos = drawProteinMetaData(g2) + 5;
+
+        // increase font size
+        Font font = g2.getFont().deriveFont(15f).deriveFont(Font.BOLD);
+        g2.setFont(font);
+        g2.setColor(Color.gray);
+
+        //draw icon
+        ImageIcon icon = (ImageIcon)GUIUtilities.loadIcon(appContext.getProperty("protein.sequence.missing.icon.small"));
+        Image iconImage = icon.getImage();
+        g2.drawImage(iconImage, LEFT_MARGIN, yPos, null);
+
+        // draw warning message
+        String msg = appContext.getProperty("protein.sequence.missing.title");
+        g2.drawString(msg, iconImage.getWidth(null) + 30, yPos + iconImage.getHeight(null)/2 + 5);
+    }
+
+    private int drawProteinMetaData(Graphics2D g2) {
+        Graphics2D ng2 = (Graphics2D)g2.create();
+        Font font = ng2.getFont().deriveFont(Font.BOLD);
+        ng2.setFont(font);
+
+        // starting position
+        int xPos = LEFT_MARGIN;
+        int yPos = TOP_MARGIN;
+        FontMetrics fontMetrics = ng2.getFontMetrics();
+        int lineSpace = fontMetrics.getMaxAscent() + fontMetrics.getMaxDescent() + 5;
+
+        if (proteinModel != null) {
+            // draw accession
+            String accession = proteinModel.getAccession();
+            if (accession != null) {
+                ng2.drawString("Accession: " + accession, xPos, yPos);
+                yPos += lineSpace;
+            }
+            // draw protein name if any
+            String name = proteinModel.getName();
+            if (name != null && !"".equals(name.trim())) {
+                ng2.drawString("Name: " + name, xPos, yPos);
+                yPos += lineSpace;
+            }
+            // draw peptide counts
+            int totalPeptides = proteinModel.getAnnotations().size();
+            if (totalPeptides > 0) {
+                // number of valid peptides
+                int validPeptides = proteinModel.getNumOfValidPeptides();
+                if (validPeptides >= 0) {
+                    String msg = validPeptides + "/" + totalPeptides + " valid peptides";
+                    ng2.drawString(msg, xPos, yPos);
+                    xPos += fontMetrics.stringWidth(msg) ;
+                }
+
+                // number of unique peptides
+                int uniquePeptides = proteinModel.getNumOfUniquePeptides();
+                if (uniquePeptides >= 0) {
+                    String msg = (xPos > LEFT_MARGIN ? ", " : "") + uniquePeptides + "/" + totalPeptides + " unique peptides";
+                    ng2.drawString(msg, xPos, yPos);
+                    xPos += fontMetrics.stringWidth(msg);
+                }
+
+                // draw sequence coverage
+                int aminoAcidCoverage = proteinModel.getNumOfAminoAcidCovered();
+                int sequenceLen = proteinModel.getSequenceString().length();
+                String seqCoverage= NumberFormat.getInstance().format(proteinModel.getSequenceCoverage() * 100);
+                String msg = (xPos > LEFT_MARGIN ? ", " : "") + aminoAcidCoverage + "/" + sequenceLen + " amino acids (" + seqCoverage + "% coverage)";
+                ng2.drawString(msg, xPos, yPos);
+                xPos += fontMetrics.stringWidth(msg);
+            }
+
+            ng2.dispose();
+        }
+        return yPos;
     }
 
     @Override
@@ -286,12 +361,12 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
             logger.debug("Peptide selected: Ident {} - Peptide {}", identId, peptideId);
 
             Task task;
-            if (proteinModel != null && proteinId.equals(identId)) {
+            if (proteinModel != null && proteinId != null && proteinId.equals(identId)) {
                 logger.debug("New peptide selection on protein sequence");
                 task = new RetrieveSelectedPeptideAnnotation(controller, proteinModel, identId, peptideId);
-
             } else {
                 logger.debug("New protein sequence will be shown");
+                proteinId = identId;
                 task = new RetrieveProteinDetailModel(controller, identId, peptideId);
                 task.addTaskListener(ProteinSequencePane.this);
             }

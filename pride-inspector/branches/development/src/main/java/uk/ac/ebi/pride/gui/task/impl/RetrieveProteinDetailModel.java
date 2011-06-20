@@ -58,7 +58,7 @@ public class RetrieveProteinDetailModel extends AbstractDataAccessTask<Annotated
 
             if (proteinDetails != null) {
                 // create a new annotated protein
-                protein = new AnnotatedProtein(protein);
+                protein = new AnnotatedProtein(proteinDetails);
                 // get peptide annotations
                 addPeptideAnnotations(protein);
             }
@@ -123,7 +123,6 @@ public class RetrieveProteinDetailModel extends AbstractDataAccessTask<Annotated
      */
     private void addPTMAnnotations(Comparable id, PeptideAnnotation peptide) throws DataAccessException {
         Collection<Modification> ptms = controller.getPTMs(identId, id);
-        List<PTMAnnotation> ptmAnnotations = new ArrayList<PTMAnnotation>();
         for (Modification ptm : ptms) {
             PTMAnnotation ptmAnnotation = new PTMAnnotation();
 
@@ -135,9 +134,7 @@ public class RetrieveProteinDetailModel extends AbstractDataAccessTask<Annotated
             ptmAnnotation.setAvgMassDeltas(ptm.getAvgMassDeltas());
             ptmAnnotation.setMonoMassDeltas(ptm.getMonoMassDeltas());
 
-            ptmAnnotations.add(ptmAnnotation);
+            peptide.addPtmAnnotation(ptmAnnotation);
         }
-        // add ptm annotations to peptide annotation
-        peptide.setPtmAnnotations(ptmAnnotations);
     }
 }

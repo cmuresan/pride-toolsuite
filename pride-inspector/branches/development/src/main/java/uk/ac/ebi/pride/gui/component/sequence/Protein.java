@@ -71,8 +71,8 @@ public class Protein implements Serializable {
     }
 
     public String getSubSequenceString(int start, int stop) {
-        if (sequenceString != null && sequenceString.length() <= stop && start >= 1 && start <= stop) {
-            return this.sequenceString.substring(start, stop);
+        if (sequenceString != null && sequenceString.length() >= stop && start >= 1 && start <= stop) {
+            return this.sequenceString.substring(start - 1, stop);
         } else {
             return null;
         }

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class PeptideAnnotation {
 
-    private int start, end;
+    private int start = -1, end = -1;
     /**
      * peptide sequence
      */
@@ -20,7 +20,11 @@ public class PeptideAnnotation {
     /**
      * optional, ptm annotations
      */
-    private List<PTMAnnotation> ptmAnnotations;
+    private final List<PTMAnnotation> ptmAnnotations;
+
+    public PeptideAnnotation() {
+        ptmAnnotations = new ArrayList<PTMAnnotation>();
+    }
 
     public int getStart() {
         return start;
@@ -47,11 +51,15 @@ public class PeptideAnnotation {
     }
 
     public List<PTMAnnotation> getPtmAnnotations() {
-        return ptmAnnotations;
+        return new ArrayList<PTMAnnotation>(ptmAnnotations);
     }
 
-    public void setPtmAnnotations(List<PTMAnnotation> ptmAnnotations) {
-        this.ptmAnnotations = new ArrayList<PTMAnnotation>(ptmAnnotations);
+    public void addPtmAnnotation(PTMAnnotation ptm) {
+        ptmAnnotations.add(ptm);
+    }
+
+    public void removePtmAnnotation(PTMAnnotation ptm) {
+        ptmAnnotations.remove(ptm);
     }
 
     @Override

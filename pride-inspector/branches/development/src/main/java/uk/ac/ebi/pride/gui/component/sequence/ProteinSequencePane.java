@@ -44,8 +44,8 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
     private final static Logger logger = LoggerFactory.getLogger(ProteinSequencePane.class);
     private final static int TOP_MARGIN = 20;
     private final static int BOTTOM_MARGIN = 20;
-    private final static int LEFT_MARGIN = 20;
-    private final static int RIGHT_MARGIN = 20;
+    private final static int LEFT_MARGIN = 70;
+    private final static int RIGHT_MARGIN = 70;
     /**
      * property indicates a change of protein model
      */
@@ -192,6 +192,8 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         int textPosIndex = proteinSegLength;
         // the length of each line
         int lineLengthIndex = -1;
+        // the width of each line
+        float lineWidth = -1;
         // tracking the position of previous line end
         int previousLineEndPosition = 0;
 
@@ -219,10 +221,6 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                 } else {
                     // line finished
                     lineComplete = true;
-                    if (lineLengthIndex == -1) {
-                        lineLengthIndex = measurer.getPosition();
-                    }
-                    previousLineEndPosition = measurer.getPosition();
                 }
 
                 lineContainText = true;
@@ -236,6 +234,16 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                 if (measurer.getPosition() == sequenceIter.getEndIndex()
                         || (measurer.getPosition() - previousLineEndPosition) == lineLengthIndex) {
                     lineComplete = true;
+                }
+
+                if (lineComplete) {
+                    if (lineLengthIndex == -1) {
+                        lineLengthIndex = measurer.getPosition();
+                    }
+
+                    if (lineWidth == -1) {
+                        lineWidth  = xPos;
+                    }
                     previousLineEndPosition = measurer.getPosition();
                 }
             }
@@ -255,6 +263,14 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                 Float nextPosition = entry.getValue();
                 nextLayout.draw(g2, nextPosition, yPos);
             }
+
+            // draw amino acid count number
+            g2.setFont(AttributedSequenceBuilder.DEFAULT_FONT.deriveFont(Font.ITALIC));
+            g2.setColor(AttributedSequenceBuilder.DEFAULT_FOREGROUND);
+
+            int mod = measurer.getPosition()%proteinSegLength;
+            int count = ((measurer.getPosition() - mod)/proteinSegLength)*PROTEIN_SEGMENT_LENGTH + mod;
+            g2.drawString(count + "", lineWidth - 30, yPos);
         }
 
         // set a margin gap at the bottom of the panel

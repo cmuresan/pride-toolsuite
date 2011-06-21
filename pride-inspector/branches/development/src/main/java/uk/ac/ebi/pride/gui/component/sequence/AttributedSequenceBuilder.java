@@ -25,8 +25,8 @@ public class AttributedSequenceBuilder {
     public final static Color PEPTIDE_HIGHLIGHT_COLOUR = Color.yellow;
     public final static Color PTM_BACKGROUND_COLOUR = new Color(40, 175, 99);
     public final static Color PTM_HIGHLIGHT_COLOUR = Color.yellow.darker();
-    private final static Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 16);
-    private final static Color DEFAULT_FOREGROUND = Color.GRAY;
+    public final static Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 16);
+    public final static Color DEFAULT_FOREGROUND = Color.GRAY;
 
     /**
      * This method is responsible for create a formatted and styled protein sequence

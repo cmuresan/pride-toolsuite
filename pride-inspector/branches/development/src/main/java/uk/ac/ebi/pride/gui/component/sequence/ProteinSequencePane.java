@@ -186,10 +186,14 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         int yPos = yMargin;
 
         // calculate each protein sequence segment's length
-        int proteinSegLength = PROTEIN_SEGMENT_LENGTH + PROTEIN_SEGMENT_LENGTH - 1 + PROTEIN_SEGMENT_GAP.length();
+        int proteinSegLength = PROTEIN_SEGMENT_LENGTH + PROTEIN_SEGMENT_GAP.length();
 
         // index of formatted protein sequence
         int textPosIndex = proteinSegLength;
+        // the length of each line
+        int lineLengthIndex = -1;
+        // tracking the position of previous line end
+        int previousLineEndPosition = 0;
 
         while (measurer.getPosition() < sequenceIter.getEndIndex()) {
             float xPos = LEFT_MARGIN;
@@ -199,6 +203,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
 
             // stores all the text layout to be drawn and their starting horizontal position
             List<Tuple<TextLayout, Float>> layouts = new ArrayList<Tuple<TextLayout, Float>>();
+
 
             while (!lineComplete) {
                 float wrappingWidth = rightMargin - xPos;
@@ -214,6 +219,10 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                 } else {
                     // line finished
                     lineComplete = true;
+                    if (lineLengthIndex == -1) {
+                        lineLengthIndex = measurer.getPosition();
+                    }
+                    previousLineEndPosition = measurer.getPosition();
                 }
 
                 lineContainText = true;
@@ -224,8 +233,10 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                 }
 
                 // check whether reached the end of sequence
-                if (measurer.getPosition() == sequenceIter.getEndIndex()) {
+                if (measurer.getPosition() == sequenceIter.getEndIndex()
+                        || (measurer.getPosition() - previousLineEndPosition) == lineLengthIndex) {
                     lineComplete = true;
+                    previousLineEndPosition = measurer.getPosition();
                 }
             }
 
@@ -289,15 +300,24 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
             // draw accession
             String accession = proteinModel.getAccession();
             if (accession != null) {
-                ng2.drawString("Accession: " + accession, xPos, yPos);
-                yPos += lineSpace;
+                String msg = "Accession: " + accession;
+                ng2.drawString(msg, xPos, yPos);
+                xPos += fontMetrics.stringWidth(msg);
             }
             // draw protein name if any
             String name = proteinModel.getName();
             if (name != null && !"".equals(name.trim())) {
-                ng2.drawString("Name: " + name, xPos, yPos);
-                yPos += lineSpace;
+                String msg = (xPos > LEFT_MARGIN ? ", " : "") + "Name: " + name;
+                ng2.drawString(msg, xPos, yPos);
             }
+
+            // move to the next line
+            yPos += lineSpace;
+            xPos = LEFT_MARGIN;
+
+            // highlight this peptide section
+            ng2.setColor(new Color(40, 175, 99));
+
             // draw peptide counts
             int totalPeptides = proteinModel.getAnnotations().size();
             if (totalPeptides > 0) {

@@ -19,7 +19,7 @@ import java.util.Set;
 public class AttributedSequenceBuilder {
     public final static int PROTEIN_SEGMENT_LENGTH = 10;
     public final static String PROTEIN_SEGMENT_GAP = "        ";
-    public final static Color PEPTIDE_BACKGROUND_COLOUR = new Color(251, 182, 1, 120);
+    public final static Color PEPTIDE_BACKGROUND_COLOUR = new Color(251, 182, 1, 100);
     public final static Color PEPTIDE_FOREGROUND_COLOUR = Color.BLACK;
     public final static Color PEPTIDE_OVERLAP_COLOUR = new Color(251, 182, 1);
     public final static Color PEPTIDE_HIGHLIGHT_COLOUR = Color.yellow;

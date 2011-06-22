@@ -52,6 +52,9 @@ public class TableRowDataRetriever {
         // Protein name
         content.add(null);
 
+        // valid peptide
+//        content.add();
+
         // precursor charge
         Comparable specId = controller.getPeptideSpectrumId(identId, peptideId);
         if (specId != null) {

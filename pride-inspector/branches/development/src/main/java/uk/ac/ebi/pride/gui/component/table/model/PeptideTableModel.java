@@ -27,6 +27,7 @@ public class PeptideTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
         PROTEIN_ACCESSION_COLUMN("Submitted Protein Accession", "Submitted Protein Accession From Source"),
         MAPPED_PROTEIN_ACCESSION_COLUMN("Mapped Protein Accession", "Pride Mapped Protein Accession"),
         PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
+//        VALID_PEPTIDE ("Valid Peptide", "Validate Peptide Sequence In Protein Sequence"),
         PRECURSOR_CHARGE_COLUMN("Precursor Charge", "Precursor Charge"),
         DELTA_MASS_COLUMN("Delta m/z", "Delta m/z [Experimental m/z - Theoretical m/z]"),
         PRECURSOR_MZ_COLUMN("Precursor m/z", "Precursor m/z"),

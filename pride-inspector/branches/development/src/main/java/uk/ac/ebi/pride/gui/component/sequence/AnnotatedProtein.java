@@ -57,8 +57,7 @@ public class AnnotatedProtein extends Protein {
      * @return boolean true means valid
      */
     public boolean isValidPeptideAnnotation(PeptideAnnotation annotation) {
-        String subSequence = getSubSequenceString(annotation.getStart(), annotation.getEnd());
-        return subSequence != null && subSequence.equals(annotation.getSequence());
+        return hasSubSequenceString(annotation.getSequence(), annotation.getStart(), annotation.getEnd());
     }
 
     public void addAnnotation(PeptideAnnotation annotation) {

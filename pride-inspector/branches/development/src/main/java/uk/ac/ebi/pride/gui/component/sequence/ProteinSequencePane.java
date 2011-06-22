@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.gui.component.sequence;
 
-import org.apache.xerces.impl.xpath.regex.Match;
 import org.bushe.swing.event.ContainerEventServiceFinder;
 import org.bushe.swing.event.EventService;
 import org.bushe.swing.event.EventSubscriber;
@@ -42,7 +41,7 @@ import static uk.ac.ebi.pride.gui.component.sequence.AttributedSequenceBuilder.*
  */
 public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProtein, Void> implements EventBusSubscribable {
     private final static Logger logger = LoggerFactory.getLogger(ProteinSequencePane.class);
-    private final static int TOP_MARGIN = 20;
+    private final static int TOP_MARGIN = 40;
     private final static int BOTTOM_MARGIN = 20;
     private final static int LEFT_MARGIN = 70;
     private final static int RIGHT_MARGIN = 70;
@@ -270,7 +269,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
 
             int mod = measurer.getPosition()%proteinSegLength;
             int count = ((measurer.getPosition() - mod)/proteinSegLength)*PROTEIN_SEGMENT_LENGTH + mod;
-            g2.drawString(count + "", lineWidth - 30, yPos);
+            g2.drawString(count + "", LEFT_MARGIN + lineWidth - 40, yPos);
         }
 
         // set a margin gap at the bottom of the panel
@@ -298,12 +297,12 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
 
         // draw warning message
         String msg = appContext.getProperty("protein.sequence.missing.title");
-        g2.drawString(msg, iconImage.getWidth(null) + 30, yPos + iconImage.getHeight(null)/2 + 5);
+        g2.drawString(msg, iconImage.getWidth(null) + LEFT_MARGIN, yPos + iconImage.getHeight(null)/2 + 5);
     }
 
     private int drawProteinMetaData(Graphics2D g2) {
         Graphics2D ng2 = (Graphics2D)g2.create();
-        Font font = ng2.getFont().deriveFont(Font.BOLD);
+        Font font = ng2.getFont().deriveFont(Font.BOLD, 12f);
         ng2.setFont(font);
 
         // starting position
@@ -331,8 +330,8 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
             yPos += lineSpace;
             xPos = LEFT_MARGIN;
 
-            // highlight this peptide section
-            ng2.setColor(new Color(40, 175, 99));
+//            // highlight this peptide section
+//            ng2.setColor(new Color(40, 175, 99));
 
             // draw peptide counts
             int totalPeptides = proteinModel.getAnnotations().size();
@@ -340,7 +339,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                 // number of valid peptides
                 int validPeptides = proteinModel.getNumOfValidPeptides();
                 if (validPeptides >= 0) {
-                    String msg = validPeptides + "/" + totalPeptides + " valid peptides";
+                    String msg = validPeptides + "/" + totalPeptides + " peptides present";
                     ng2.drawString(msg, xPos, yPos);
                     xPos += fontMetrics.stringWidth(msg) ;
                 }
@@ -348,7 +347,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                 // number of unique peptides
                 int uniquePeptides = proteinModel.getNumOfUniquePeptides();
                 if (uniquePeptides >= 0) {
-                    String msg = (xPos > LEFT_MARGIN ? ", " : "") + uniquePeptides + "/" + totalPeptides + " unique peptides";
+                    String msg = (xPos > LEFT_MARGIN ? ", " : "") + uniquePeptides + "/" + totalPeptides + " distinct peptides";
                     ng2.drawString(msg, xPos, yPos);
                     xPos += fontMetrics.stringWidth(msg);
                 }

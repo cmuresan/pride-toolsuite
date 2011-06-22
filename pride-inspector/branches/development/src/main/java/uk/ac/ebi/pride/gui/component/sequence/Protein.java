@@ -29,6 +29,11 @@ public class Protein implements Serializable {
      */
     private String sequenceString = null;
 
+    /**
+     * Indicate whether the protein accession is still active from the original source
+     */
+    private boolean active = true;
+
 
     public Protein(String accession) {
         if (accession == null || "".equals(accession.trim())) {
@@ -70,6 +75,14 @@ public class Protein implements Serializable {
         this.sequenceString = sequence == null ? sequence : sequence.toUpperCase();
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public String getSubSequenceString(int start, int stop) {
         if (sequenceString != null && sequenceString.length() >= stop && start >= 1 && start <= stop) {
             return this.sequenceString.substring(start - 1, stop);
@@ -78,8 +91,18 @@ public class Protein implements Serializable {
         }
     }
 
+    /**
+     * To check whether a given sequence is a sub sequence of the protein
+     * @param subSeq    given sequence
+     * @param start start position
+     * @param stop  stop position
+     * @return  boolean true means exist
+     */
     public boolean hasSubSequenceString(String subSeq, int start, int stop) {
-        // todo: to be implemented
+        if (subSeq != null) {
+            String targetSeq = getSubSequenceString(start, stop);
+            return targetSeq.equals(subSeq.toUpperCase());
+        }
         return false;
     }
 

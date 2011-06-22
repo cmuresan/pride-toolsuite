@@ -14,7 +14,7 @@ public class PTMAnnotation {
     /**
      * modification ontology accession
      */
-    private String accession;
+    private String accession = null;
     /**
      *  modification location with a peptide
      */
@@ -39,6 +39,18 @@ public class PTMAnnotation {
      * a list of ModAvgDelta
      */
     private List<Double> avgMassDeltas = null;
+
+    public PTMAnnotation() {
+        this(null, -1, null, null, null);
+    }
+
+    public PTMAnnotation(String accession, int location, String name, String modDatabase, String modDatabaseVersion) {
+        this.accession = accession;
+        this.location = location;
+        this.name = name;
+        this.modDatabase = modDatabase;
+        this.modDatabaseVersion = modDatabaseVersion;
+    }
 
     public String getAccession() {
         return accession;

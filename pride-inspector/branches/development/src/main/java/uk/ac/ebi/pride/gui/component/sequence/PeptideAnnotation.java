@@ -23,7 +23,14 @@ public class PeptideAnnotation {
     private final List<PTMAnnotation> ptmAnnotations;
 
     public PeptideAnnotation() {
-        ptmAnnotations = new ArrayList<PTMAnnotation>();
+        this(null, -1 , -1);
+    }
+
+    public PeptideAnnotation(String sequence, int start, int end) {
+        this.start = start;
+        this.end = end;
+        this.sequence = sequence;
+        this.ptmAnnotations = new ArrayList<PTMAnnotation>();
     }
 
     public int getStart() {

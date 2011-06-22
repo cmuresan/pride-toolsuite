@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.util.NumberUtilities;
 import uk.ac.ebi.pride.util.RegExUtilities;
 
@@ -26,45 +26,45 @@ public class MetaDataHelper {
         Collection<Parameter> params = new ArrayList<Parameter>();
 
         // id
-        addUserParam(params, SharedLabels.ID, metaData.getId());
+        addUserParam(params, Constants.ID, metaData.getId());
 
         // accession
-        addUserParam(params, SharedLabels.ACCESSION, metaData.getAccession());
+        addUserParam(params, Constants.ACCESSION, metaData.getAccession());
 
         // version
-        addUserParam(params, SharedLabels.VERSION, metaData.getVersion());
+        addUserParam(params, Constants.VERSION, metaData.getVersion());
 
         // add experiment related meta data
         if (metaData instanceof Experiment) {
-            addUserParam(params, SharedLabels.TITLE, ((Experiment) metaData).getTitle());
-            addUserParam(params, SharedLabels.SHORT_LABEL, ((Experiment) metaData).getShortLabel());
-            addUserParam(params, SharedLabels.CREATION_DATE, ((Experiment) metaData).getCreationDate());
-            addUserParam(params, SharedLabels.PUBLIC_DATE, ((Experiment) metaData).getPublicDate());
+            addUserParam(params, Constants.TITLE, ((Experiment) metaData).getTitle());
+            addUserParam(params, Constants.SHORT_LABEL, ((Experiment) metaData).getShortLabel());
+            addUserParam(params, Constants.CREATION_DATE, ((Experiment) metaData).getCreationDate());
+            addUserParam(params, Constants.PUBLIC_DATE, ((Experiment) metaData).getPublicDate());
         }
 
         // additional parameters
-        addParamGroup(params, metaData, SharedLabels.EMPTY);
+        addParamGroup(params, metaData, Constants.EMPTY);
 
         return params;
     }
 
     public static Collection<Parameter> getParamGroup(ParamGroup paramGroup) {
         Collection<Parameter> params = new ArrayList<Parameter>();
-        addParamGroup(params, paramGroup, SharedLabels.EMPTY);
+        addParamGroup(params, paramGroup, Constants.EMPTY);
         return params;
     }
 
     public static Collection<Parameter> getSourceFile(SourceFile sourceFile) {
         Collection<Parameter> params = new ArrayList<Parameter>();
         // id
-        addUserParam(params, SharedLabels.ID, sourceFile.getId());
+        addUserParam(params, Constants.ID, sourceFile.getId());
         // name
-        addUserParam(params, SharedLabels.NAME, sourceFile.getName());
+        addUserParam(params, Constants.NAME, sourceFile.getName());
         // path
-        addUserParam(params, SharedLabels.PATH, sourceFile.getPath());
+        addUserParam(params, Constants.PATH, sourceFile.getPath());
 
         // additional parameters
-        addParamGroup(params, sourceFile, SharedLabels.EMPTY);
+        addParamGroup(params, sourceFile, Constants.EMPTY);
         return params;
     }
 
@@ -72,11 +72,11 @@ public class MetaDataHelper {
         Collection<Parameter> params = new ArrayList<Parameter>();
 
         // id
-        addUserParam(params, SharedLabels.ID, sample.getId());
+        addUserParam(params, Constants.ID, sample.getId());
         // name
-        addUserParam(params, SharedLabels.NAME, sample.getName());
+        addUserParam(params, Constants.NAME, sample.getName());
         // additional parameters
-        addParamGroup(params, sample, SharedLabels.EMPTY);
+        addParamGroup(params, sample, Constants.EMPTY);
 
         return params;
     }
@@ -98,11 +98,11 @@ public class MetaDataHelper {
     public static Collection<Parameter> getSoftware(Software software) {
         Collection<Parameter> params = new ArrayList<Parameter>();
         // id
-        addUserParam(params, SharedLabels.ID, software.getId());
+        addUserParam(params, Constants.ID, software.getId());
         // name
-        addUserParam(params, SharedLabels.VERSION, software.getVersion());
+        addUserParam(params, Constants.VERSION, software.getVersion());
         // additional parameters
-        addParamGroup(params, software, SharedLabels.EMPTY);
+        addParamGroup(params, software, Constants.EMPTY);
 
         return params;
     }
@@ -110,12 +110,12 @@ public class MetaDataHelper {
     public static Collection<Parameter> getScanSetting(ScanSetting scanSetting) {
         Collection<Parameter> params = new ArrayList<Parameter>();
         // id
-        addUserParam(params, SharedLabels.ID, scanSetting.getId());
+        addUserParam(params, Constants.ID, scanSetting.getId());
         // source file id
         List<SourceFile> sourceFiles = scanSetting.getSourceFile();
         if (sourceFiles != null) {
             for (SourceFile sourceFile : sourceFiles) {
-                addUserParam(params, SharedLabels.SOURCE_FILE_ID, sourceFile.getId());
+                addUserParam(params, Constants.SOURCE_FILE_ID, sourceFile.getId());
             }
         }
 
@@ -123,13 +123,13 @@ public class MetaDataHelper {
         List<ParamGroup> targets = scanSetting.getTargets();
         if (targets != null) {
             for (int i = 0; i < targets.size(); i++) {
-                String prefix = SharedLabels.TARGET + " " + (i + 1) + " - ";
+                String prefix = Constants.TARGET + " " + (i + 1) + " - ";
                 addParamGroup(params, targets.get(i), prefix);
             }
         }
 
         // additional parameters
-        addParamGroup(params, scanSetting, SharedLabels.EMPTY);
+        addParamGroup(params, scanSetting, Constants.EMPTY);
 
         return params;
     }
@@ -137,22 +137,22 @@ public class MetaDataHelper {
     public static Collection<Parameter> getInstrumentConfiguration(InstrumentConfiguration instrument) {
         Collection<Parameter> params = new ArrayList<Parameter>();
         // id
-        addUserParam(params, SharedLabels.ID, instrument.getId());
+        addUserParam(params, Constants.ID, instrument.getId());
         // scan settings
         ScanSetting scanSetting = instrument.getScanSetting();
         if (scanSetting != null) {
-            addUserParam(params, SharedLabels.SCAN_SETTING_ID, scanSetting.getId());
+            addUserParam(params, Constants.SCAN_SETTING_ID, scanSetting.getId());
         }
         // software
         Software software = instrument.getSoftware();
         if (software != null) {
-            addUserParam(params, SharedLabels.SOFTWARE_ID, software.getId());
+            addUserParam(params, Constants.SOFTWARE_ID, software.getId());
         }
         // source
         // source order
         InstrumentComponent source = instrument.getSource();
         if (source != null) {
-            String sourcePrefix = SharedLabels.SOURCE + " - ";
+            String sourcePrefix = Constants.SOURCE + " - ";
             //addUserParam(params, sourcePrefix + SharedLabels.ORDER, source.getOrder());
             addParamGroup(params, source, sourcePrefix);
         }
@@ -160,7 +160,7 @@ public class MetaDataHelper {
         // analyzer
         InstrumentComponent analyzer = instrument.getAnalyzer();
         if (analyzer != null) {
-            String analyzerPrefix = SharedLabels.ANALYZER + " - ";
+            String analyzerPrefix = Constants.ANALYZER + " - ";
             //addUserParam(params, analyzerPrefix + SharedLabels.ORDER, analyzer.getOrder());
             addParamGroup(params, analyzer, analyzerPrefix);
         }
@@ -168,13 +168,13 @@ public class MetaDataHelper {
         // source
         InstrumentComponent detector = instrument.getDetector();
         if (detector != null) {
-            String detectorPrefix = SharedLabels.DETECTOR + " - ";
+            String detectorPrefix = Constants.DETECTOR + " - ";
             //addUserParam(params, detectorPrefix + SharedLabels.ORDER, detector.getOrder());
             addParamGroup(params, detector, detectorPrefix);
         }
 
         // additional parameters
-        addParamGroup(params, instrument, SharedLabels.EMPTY);
+        addParamGroup(params, instrument, Constants.EMPTY);
 
         return params;
     }
@@ -182,20 +182,20 @@ public class MetaDataHelper {
     public static Collection<Parameter> getDataProcessing(DataProcessing dataProc) {
         Collection<Parameter> params = new ArrayList<Parameter>();
         // id
-        addUserParam(params, SharedLabels.ID, dataProc.getId());
+        addUserParam(params, Constants.ID, dataProc.getId());
 
         // processing methods
         List<ProcessingMethod> proMethods = dataProc.getProcessingMethods();
         if (proMethods != null) {
             for (int i = 0; i < proMethods.size(); i++) {
-                String prefix = SharedLabels.PROCESSING_METHOD + " " + (i + 1) + " - ";
+                String prefix = Constants.PROCESSING_METHOD + " " + (i + 1) + " - ";
                 ProcessingMethod proMethod = proMethods.get(i);
                 // order
                 //addUserParam(params, prefix + SharedLabels.ORDER, proMethod.getOrder());
                 // software
                 Software software = proMethod.getSoftware();
                 if (software != null) {
-                    addUserParam(params, prefix + SharedLabels.SOFTWARE_ID, software.getId());
+                    addUserParam(params, prefix + Constants.SOFTWARE_ID, software.getId());
                 }
                 // param group
                 addParamGroup(params, proMethod, prefix);
@@ -208,20 +208,20 @@ public class MetaDataHelper {
         Collection<Parameter> params = new ArrayList<Parameter>();
 
         // id
-        addUserParam(params, SharedLabels.ID, protocol.getId());
+        addUserParam(params, Constants.ID, protocol.getId());
         // name
-        addUserParam(params, SharedLabels.NAME, protocol.getName());
+        addUserParam(params, Constants.NAME, protocol.getName());
         // protocol steps
         List<ParamGroup> steps = protocol.getProtocolSteps();
         if (steps != null) {
             for (int i = 0; i < steps.size(); i++) {
-                String prefix = SharedLabels.PROTOCOL_STEP + " " + (i + 1) + " - ";
+                String prefix = Constants.PROTOCOL_STEP + " " + (i + 1) + " - ";
                 ParamGroup step = steps.get(i);
                 addParamGroup(params, step, prefix);
             }
         }
         // additaional param
-        addParamGroup(params, protocol, SharedLabels.EMPTY);
+        addParamGroup(params, protocol, Constants.EMPTY);
 
         return params;
     }
@@ -230,7 +230,7 @@ public class MetaDataHelper {
         Collection<Parameter> params = new ArrayList<Parameter>();
 
         // full reference
-        addUserParam(params, SharedLabels.FULL_REFERENCE, reference.getFullReference());
+        addUserParam(params, Constants.FULL_REFERENCE, reference.getFullReference());
         // make a copy of the param group
         ParamGroup customParams = new ParamGroup();
         List<CvParam> originalCvParams = reference.getCvParams();
@@ -265,7 +265,7 @@ public class MetaDataHelper {
 
             if (acc != null || !NumberUtilities.isNumber(acc)) {
                 String hyperLink = "<html><head></head><body><a href='http://www.ncbi.nlm.nih.gov/pubmed/" + acc + "'>" + acc + "</a></body></html>";
-                CvParam newCvParam = new CvParam(acc, SharedLabels.PUBMED, pubmedCvParam.getCvLookupID(),
+                CvParam newCvParam = new CvParam(acc, Constants.PUBMED, pubmedCvParam.getCvLookupID(),
                         hyperLink, pubmedCvParam.getUnitAcc(), pubmedCvParam.getUnitName(), pubmedCvParam.getUnitCVLookupID());
                 params.add(newCvParam);
             }
@@ -282,14 +282,14 @@ public class MetaDataHelper {
 
             if (doi != null) {
                 String hyperLink = "<html><head></head><body><a href='http://dx.doi.org/" + doi + "'>" + doi + "</a></body></html>";
-                CvParam newCvParam = new CvParam(doi, SharedLabels.DOI, doiCvParam.getCvLookupID(),
+                CvParam newCvParam = new CvParam(doi, Constants.DOI, doiCvParam.getCvLookupID(),
                         hyperLink, doiCvParam.getUnitAcc(), doiCvParam.getUnitName(), doiCvParam.getUnitCVLookupID());
                 params.add(newCvParam);
             }
         }
 
         // additional parameters
-        addParamGroup(params, customParams, SharedLabels.EMPTY);
+        addParamGroup(params, customParams, Constants.EMPTY);
 
         return params;
     }
@@ -304,7 +304,7 @@ public class MetaDataHelper {
 
                     if (value == null || "".equals(value.trim())) {
                         value = name;
-                        name = prefix + SharedLabels.PARAMETER;
+                        name = prefix + Constants.PARAMETER;
                     } else {
                         name = prefix + name;
                     }

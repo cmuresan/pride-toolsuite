@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.access.DataAccessMonitor;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
@@ -18,12 +17,10 @@ import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 
-import static uk.ac.ebi.pride.gui.component.utils.SharedLabels.DOT;
-import static uk.ac.ebi.pride.gui.component.utils.SharedLabels.TAB_SEP_FILE;
+import static uk.ac.ebi.pride.gui.component.utils.Constants.DOT;
+import static uk.ac.ebi.pride.gui.component.utils.Constants.TAB_SEP_FILE;
 
 /**
  * Export spectrum description

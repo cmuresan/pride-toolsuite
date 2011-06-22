@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.gui.component.metadata;
 
 import uk.ac.ebi.pride.data.core.Parameter;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
-import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.url.HyperLinkFollower;
 
 import javax.swing.*;
@@ -48,7 +48,7 @@ public class MetaDataViewer extends JPanel {
             String value = param.getValue();
             if (value == null || "".equals(value.trim())) {
                 value = name;
-                name = SharedLabels.PARAMETER;
+                name = Constants.PARAMETER;
             }
             // add name label
             name = name.substring(0, 1).toUpperCase() + name.substring(1, name.length());

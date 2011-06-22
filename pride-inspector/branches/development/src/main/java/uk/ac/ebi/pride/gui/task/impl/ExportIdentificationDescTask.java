@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Experiment;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.component.table.TableRowDataRetriever;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
@@ -92,9 +92,9 @@ public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, V
                 writer.println("# Number of peptides: " + controller.getNumberOfPeptides());
             }
 
-            writer.println("Submitted Protein Accession" + SharedLabels.TAB + "Mapped Protein Accession" + SharedLabels.TAB + "Protein Name" + SharedLabels.TAB +
-                            "Score" + SharedLabels.TAB + "Threshold" + SharedLabels.TAB + "Number of peptides" + SharedLabels.TAB +
-                            "Number of distinct peptides" + SharedLabels.TAB + "Number of PTMs");
+            writer.println("Submitted Protein Accession" + Constants.TAB + "Mapped Protein Accession" + Constants.TAB + "Protein Name" + Constants.TAB +
+                            "Score" + Constants.TAB + "Threshold" + Constants.TAB + "Number of peptides" + Constants.TAB +
+                            "Number of distinct peptides" + Constants.TAB + "Number of PTMs");
             Collection<Comparable> identIds = controller.getIdentificationIds();
             for (Comparable identId : identIds) {
                 // a row of data
@@ -105,11 +105,11 @@ public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, V
                 for (int i = 0; i < content.size() - 1; i++) {
                     Object entry = content.get(i);
                     writer.print(entry == null ? "" : entry.toString());
-                    writer.print(SharedLabels.TAB);
+                    writer.print(Constants.TAB);
                 }
 
                 // line break
-                writer.print(SharedLabels.LINE_SEPARATOR);
+                writer.print(Constants.LINE_SEPARATOR);
 
                 // this is important for cancelling
                 if (Thread.interrupted()) {

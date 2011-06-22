@@ -90,4 +90,9 @@ public class AlterRowColorTable extends JXTable {
     public void setOmitColumn(int omitColumn) {
         this.omitColumn = omitColumn;
     }
+
+    @Override
+    public Color getSelectionBackground() {
+        return SELECTION_BACKGROUND;
+    }
 }

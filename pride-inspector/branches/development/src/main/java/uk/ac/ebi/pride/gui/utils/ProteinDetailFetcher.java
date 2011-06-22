@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static uk.ac.ebi.pride.gui.component.utils.SharedLabels.TAB;
+import static uk.ac.ebi.pride.gui.component.utils.Constants.TAB;
 
 public class ProteinDetailFetcher {
     private Logger logger = LoggerFactory.getLogger(ProteinDetailFetcher.class);

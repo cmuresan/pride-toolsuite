@@ -3,6 +3,8 @@ package uk.ac.ebi.pride.gui.component.sequence;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Object to store protein related details
@@ -99,11 +101,41 @@ public class Protein implements Serializable {
      * @return  boolean true means exist
      */
     public boolean hasSubSequenceString(String subSeq, int start, int stop) {
-        if (subSeq != null) {
-            String targetSeq = getSubSequenceString(start, stop);
-            return targetSeq.equals(subSeq.toUpperCase());
+        String targetSeq = getSubSequenceString(start, stop);
+        return targetSeq != null && subSeq != null && targetSeq.equals(subSeq.toUpperCase());
+    }
+
+    /**
+     * To check whether a given sequence is a sub sequence of the protein
+     * @param subSeq    given sequence
+     * @return  boolean true means exist
+     */
+    public boolean hasSubSequenceString(String subSeq) {
+        return sequenceString != null && subSeq != null && sequenceString.contains(subSeq);
+    }
+
+
+    /**
+     * Search a given sub sequence within the protein sequence
+     * return a set of starting positions which matches the given sub sequence
+     *
+     * @param subSeq    given sub sequence
+     * @return  Set<Integer>    starting positions
+     */
+    public Set<Integer> searchStartingPosition(String subSeq) {
+        Set<Integer> pos = new HashSet<Integer>();
+
+        if (sequenceString != null && subSeq != null) {
+            int previousIndex = -1;
+            int index = -1;
+
+            while((index = (previousIndex == -1 ? sequenceString.indexOf(subSeq) : sequenceString.indexOf(subSeq, previousIndex + 1))) > -1) {
+                pos.add(index);
+                previousIndex = index;
+            }
         }
-        return false;
+
+        return pos;
     }
 
     @Override

@@ -29,7 +29,7 @@ public class PeptideAnnotation {
     public PeptideAnnotation(String sequence, int start, int end) {
         this.start = start;
         this.end = end;
-        this.sequence = sequence;
+        this.sequence = sequence == null ? null : sequence.toUpperCase();
         this.ptmAnnotations = new ArrayList<PTMAnnotation>();
     }
 

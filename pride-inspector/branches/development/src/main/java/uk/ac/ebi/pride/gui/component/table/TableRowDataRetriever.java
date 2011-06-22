@@ -5,6 +5,10 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Modification;
 import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.data.core.PeptideScore;
+import uk.ac.ebi.pride.gui.PrideInspectorContext;
+import uk.ac.ebi.pride.gui.component.sequence.Protein;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
+import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.mol.MoleculeUtilities;
 import uk.ac.ebi.pride.util.NumberUtilities;
 import uk.ac.ebi.pride.util.ProteinAccessionResolver;
@@ -40,6 +44,11 @@ public class TableRowDataRetriever {
         String sequence = controller.getPeptideSequence(identId, peptideId);
         content.add(new Peptide(null, sequence, 0, 0, mods, null, null));
 
+        // start and end position
+        int start = controller.getPeptideSequenceStart(identId, peptideId);
+        int end = controller.getPeptideSequenceEnd(identId, peptideId);
+
+
         // Original Protein Accession
         String protAcc = controller.getProteinAccession(identId);
         String protAccVersion = controller.getProteinAccessionVersion(identId);
@@ -47,13 +56,28 @@ public class TableRowDataRetriever {
         content.add(protAcc);
 
         // Mapped Protein Accession
-        content.add(ProteinAccessionResolver.resolve(protAcc, protAccVersion, database));
+        String mappedProtAcc = ProteinAccessionResolver.resolve(protAcc, protAccVersion, database);
+        content.add(mappedProtAcc);
+
+        // app context
+        PrideInspectorContext appContext = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
+        Protein protein = appContext.getProteinDetails(mappedProtAcc);
 
         // Protein name
-        content.add(null);
+        content.add(protein == null ? null : protein.getName());
 
-        // valid peptide
-//        content.add();
+        // peptide present
+        if (protein == null || protein.getSequenceString() == null) {
+            content.add(Constants.UNKNOWN);
+        } else {
+            if (protein.hasSubSequenceString(sequence, start, end)) {
+                content.add(Constants.STRICT_FIT);
+            } else if (protein.hasSubSequenceString(sequence)) {
+                content.add(Constants.FIT);
+            } else {
+                content.add(Constants.NOT_FIT);
+            }
+        }
 
         // precursor charge
         Comparable specId = controller.getPeptideSpectrumId(identId, peptideId);
@@ -172,11 +196,9 @@ public class TableRowDataRetriever {
         content.add(sequence.length());
 
         // Start
-        int start = controller.getPeptideSequenceStart(identId, peptideId);
         content.add(start == -1 ? null : start);
 
         // End
-        int end = controller.getPeptideSequenceEnd(identId, peptideId);
         content.add(end == -1 ? null : end);
 
         // Spectrum reference

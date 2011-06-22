@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.component.mzgraph;
 
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,14 +19,14 @@ public class PropertyPaneModelHelper {
         addGeneralProperties(paneModel, spec);
         DataProcessing dataProc = spec.getDataProcessing();
         if (dataProc != null) {
-            addDataProcessings(paneModel, dataProc, SharedLabels.DATA_PROCESSING, SharedLabels.PROCESSING_METHOD);
+            addDataProcessings(paneModel, dataProc, Constants.DATA_PROCESSING, Constants.PROCESSING_METHOD);
         }
 
         // spectrum specific
         // source file
         SourceFile sourceFile = spec.getSourceFile();
         if (sourceFile != null) {
-            addSourceFile(paneModel, sourceFile, SharedLabels.SOURCE_FILE, SharedLabels.SOURCE_FILE);
+            addSourceFile(paneModel, sourceFile, Constants.SOURCE_FILE, Constants.SOURCE_FILE);
         }
         // scan list
         ScanList scanList = spec.getScanList();
@@ -51,20 +51,20 @@ public class PropertyPaneModelHelper {
         addGeneralProperties(paneModel, chroma);
         DataProcessing dataProc = chroma.getDataProcessing();
         if (dataProc != null) {
-            addDataProcessings(paneModel, dataProc, SharedLabels.DATA_PROCESSING, SharedLabels.PROCESSING_METHOD);
+            addDataProcessings(paneModel, dataProc, Constants.DATA_PROCESSING, Constants.PROCESSING_METHOD);
         }
     }
 
 
     private static void addGeneralProperties(PropertyPaneModel paneModel, MzGraph mzGraph)  {
         // id
-        appendParamEntry(paneModel, SharedLabels.ID, mzGraph.getId().toString(), SharedLabels.GENERAL, SharedLabels.GENERAL);
+        appendParamEntry(paneModel, Constants.ID, mzGraph.getId().toString(), Constants.GENERAL, Constants.GENERAL);
         // index
-        appendParamEntry(paneModel, SharedLabels.INDEX, mzGraph.getIndex()+"", SharedLabels.GENERAL, SharedLabels.GENERAL);
+        appendParamEntry(paneModel, Constants.INDEX, mzGraph.getIndex()+"", Constants.GENERAL, Constants.GENERAL);
         // defaultArrayLength
-        appendParamEntry(paneModel, SharedLabels.DEFAULT_ARR_LEN, mzGraph.getDefaultArrayLength()+"", SharedLabels.GENERAL, SharedLabels.GENERAL);
+        appendParamEntry(paneModel, Constants.DEFAULT_ARR_LEN, mzGraph.getDefaultArrayLength()+"", Constants.GENERAL, Constants.GENERAL);
         // additional parameters
-        appendParamGroup(paneModel, mzGraph, SharedLabels.GENERAL, SharedLabels.GENERAL);
+        appendParamGroup(paneModel, mzGraph, Constants.GENERAL, Constants.GENERAL);
     }
 
     private static void addDataProcessings(PropertyPaneModel paneModel, DataProcessing dataProc,
@@ -76,15 +76,15 @@ public class PropertyPaneModelHelper {
             String subCategoryTitle = subCategory + " " + i;
 
             // order
-            appendParamEntry(paneModel, SharedLabels.ORDER, proMethod.getOrder()+"", category, subCategoryTitle);
+            appendParamEntry(paneModel, Constants.ORDER, proMethod.getOrder()+"", category, subCategoryTitle);
             
             // software
             Software software = proMethod.getSoftware();
             if (software != null) {
                 // software id
-                appendParamEntry(paneModel, SharedLabels.SOFTWARE_ID, software.getId(), category, subCategoryTitle);
+                appendParamEntry(paneModel, Constants.SOFTWARE_ID, software.getId(), category, subCategoryTitle);
                 // software version
-                appendParamEntry(paneModel, SharedLabels.SOFTWARE_VERSION, software.getVersion(), category, subCategoryTitle);
+                appendParamEntry(paneModel, Constants.SOFTWARE_VERSION, software.getVersion(), category, subCategoryTitle);
                 // software param group
                 appendParamGroup(paneModel, software, category, subCategoryTitle);
             }
@@ -97,11 +97,11 @@ public class PropertyPaneModelHelper {
     private static void addSourceFile(PropertyPaneModel paneModel, SourceFile sourceFile,
                                       String category, String subcategory) {
         // id
-        appendParamEntry(paneModel, SharedLabels.SOURCE_FILE_ID, sourceFile.getId(), category, subcategory);
+        appendParamEntry(paneModel, Constants.SOURCE_FILE_ID, sourceFile.getId(), category, subcategory);
         // name
-        appendParamEntry(paneModel, SharedLabels.SOURCE_FILE_NAME, sourceFile.getName(), category, subcategory);
+        appendParamEntry(paneModel, Constants.SOURCE_FILE_NAME, sourceFile.getName(), category, subcategory);
         // path
-        appendParamEntry(paneModel, SharedLabels.SOURCE_FILE_PATH, sourceFile.getPath(), category, subcategory);
+        appendParamEntry(paneModel, Constants.SOURCE_FILE_PATH, sourceFile.getPath(), category, subcategory);
         // additional params
         appendParamGroup(paneModel, sourceFile, category, subcategory);
     }
@@ -111,18 +111,18 @@ public class PropertyPaneModelHelper {
         List<Scan> scans = scanList.getScans();
         for (int i = 0; i < scans.size(); i++) {
             Scan scan = scans.get(i);
-            String category = SharedLabels.SCAN + " [" + (i+1) + "]";
+            String category = Constants.SCAN + " [" + (i+1) + "]";
             // general
-            appendParamGroup(paneModel, scanList, category, SharedLabels.GENERAL);
+            appendParamGroup(paneModel, scanList, category, Constants.GENERAL);
             // external spectrum reference
-            appendParamEntry(paneModel, SharedLabels.EXTERNAL_SPECTRUM_REF, scan.getExternalSpecRef(), category, SharedLabels.GENERAL);
+            appendParamEntry(paneModel, Constants.EXTERNAL_SPECTRUM_REF, scan.getExternalSpecRef(), category, Constants.GENERAL);
             // spectrum reference
-            appendParamEntry(paneModel, SharedLabels.SPECTRUM_ID, scan.getSpectrumRef(), category, SharedLabels.GENERAL);
+            appendParamEntry(paneModel, Constants.SPECTRUM_ID, scan.getSpectrumRef(), category, Constants.GENERAL);
 
             // source file
             SourceFile sourceFile = scan.getSourceFile();
             if (sourceFile != null) {
-                addSourceFile(paneModel, sourceFile, category, SharedLabels.SOURCE_FILE);
+                addSourceFile(paneModel, sourceFile, category, Constants.SOURCE_FILE);
             }
             // instrument
             // ToDo: not instrument details yet
@@ -130,7 +130,7 @@ public class PropertyPaneModelHelper {
             List<ParamGroup> scanWins = scan.getScanWindows();
             if (scanWins != null) {
                 for(int j = 0; j < scanWins.size(); j++) {
-                    String subCategory = SharedLabels.SCAN_WINDOW + " [" + (j+1) +"]";
+                    String subCategory = Constants.SCAN_WINDOW + " [" + (j+1) +"]";
                     appendParamGroup(paneModel, scanWins.get(j), category, subCategory);
                 }
             }
@@ -140,29 +140,29 @@ public class PropertyPaneModelHelper {
     private static void addPrecursors(PropertyPaneModel paneModel, List<Precursor> precursors) {
         for(int i = 0; i < precursors.size(); i++) {
             Precursor precursor = precursors.get(i);
-            String category = SharedLabels.PRECURSOR + " [" + (i+1) + "]";
+            String category = Constants.PRECURSOR + " [" + (i+1) + "]";
             // general info
             Spectrum spectrum = precursor.getSpectrum();
             if (spectrum != null) {
-                appendParamEntry(paneModel, SharedLabels.SPECTRUM_ID, spectrum.getId().toString(), category, SharedLabels.GENERAL);
+                appendParamEntry(paneModel, Constants.SPECTRUM_ID, spectrum.getId().toString(), category, Constants.GENERAL);
             }
             // external spectrum id
-            appendParamEntry(paneModel, SharedLabels.EXTERNAL_SPECTRUM_REF, precursor.getExternalSpectrumID(), category, SharedLabels.GENERAL);
+            appendParamEntry(paneModel, Constants.EXTERNAL_SPECTRUM_REF, precursor.getExternalSpectrumID(), category, Constants.GENERAL);
             // source file
             SourceFile sourceFile = precursor.getSourceFile();
             if (sourceFile != null) {
-                addSourceFile(paneModel, sourceFile, category, SharedLabels.SOURCE_FILE);
+                addSourceFile(paneModel, sourceFile, category, Constants.SOURCE_FILE);
             }
             // isolation window
             ParamGroup isoWin = precursor.getIsolationWindow();
             if (isoWin != null) {
-                appendParamGroup(paneModel, isoWin, category, SharedLabels.ISOLATION_WINDOW);
+                appendParamGroup(paneModel, isoWin, category, Constants.ISOLATION_WINDOW);
             }
             // selected ions
             List<ParamGroup> selectedIons = precursor.getSelectedIons();
             if (selectedIons != null) {
                 for (int j = 0; j < selectedIons.size(); j++) {
-                    String subCategory = SharedLabels.SELECTED_ION + " [" + (j+1) + "]";
+                    String subCategory = Constants.SELECTED_ION + " [" + (j+1) + "]";
                     appendParamGroup(paneModel, selectedIons.get(j), category, subCategory);
                 }
             }
@@ -170,14 +170,14 @@ public class PropertyPaneModelHelper {
             // activation
             ParamGroup act = precursor.getActivation();
             if (act !=  null) {
-                appendParamGroup(paneModel, act, category, SharedLabels.ACTIVATION);
+                appendParamGroup(paneModel, act, category, Constants.ACTIVATION);
             }
         }
     }
 
     private static void addProducts(PropertyPaneModel paneModel, List<ParamGroup> products) {
         for (ParamGroup product : products) {
-            appendParamGroup(paneModel, product, SharedLabels.PRODUCTS, SharedLabels.PRODUCT);
+            appendParamGroup(paneModel, product, Constants.PRODUCTS, Constants.PRODUCT);
         }
     }
 

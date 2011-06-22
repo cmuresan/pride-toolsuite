@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Experiment;
 import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
 import java.io.File;
@@ -110,9 +110,9 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
                 double[] intensityArray = spectrum.getIntensityBinaryDataArray().getDoubleArray();
 
                 for (int i = 0; i < mzBinaryArray.length; i++) {
-                    writer.println(mzBinaryArray[i] + SharedLabels.TAB + intensityArray[i]);
+                    writer.println(mzBinaryArray[i] + Constants.TAB + intensityArray[i]);
                 }
-                writer.println("END IONS" + SharedLabels.LINE_SEPARATOR);
+                writer.println("END IONS" + Constants.LINE_SEPARATOR);
 
                 // this is important for cancelling
                 if (Thread.interrupted()) {

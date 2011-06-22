@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Experiment;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
 import java.io.File;
@@ -95,7 +95,7 @@ public class ExportIdentificationPeptideTask extends AbstractDataAccessTask<Void
                 String accession = controller.getProteinAccession(identId);
                 Collection<String> sequences = controller.getPeptideSequences(identId);
                 for (String sequence : sequences) {
-                    writer.println(accession + SharedLabels.TAB + sequence);
+                    writer.println(accession + Constants.TAB + sequence);
                 }
                 writer.flush();
 

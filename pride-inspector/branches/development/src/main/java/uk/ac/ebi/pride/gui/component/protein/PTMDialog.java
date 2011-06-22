@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.PTMTableModel;
@@ -93,7 +93,7 @@ public class PTMDialog extends JDialog implements ActionListener {
 
         if (EXPORT_ACTION.equals(command)) {
             PrideInspectorContext context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
-            SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select Path Save To", "ptm", false, SharedLabels.TAB_SEP_FILE);
+            SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select Path Save To", "ptm", false, Constants.TAB_SEP_FILE);
             ofd.setMultiSelectionEnabled(false);
             int result = ofd.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
@@ -111,7 +111,7 @@ public class PTMDialog extends JDialog implements ActionListener {
                             Object val = tableModel.getValueAt(i, j);
                             writer.print(val !=  null ? val.toString() : "");
                             if (j < colCnt -1) {
-                                writer.print(SharedLabels.TAB);
+                                writer.print(Constants.TAB);
                             }
                         }
                         writer.println();

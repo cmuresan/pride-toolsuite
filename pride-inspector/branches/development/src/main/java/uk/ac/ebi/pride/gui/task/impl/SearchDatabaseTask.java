@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.gui.task.impl;
 import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
 import uk.ac.ebi.pride.gui.event.ThrowableEvent;
 import uk.ac.ebi.pride.gui.search.SearchEntry;
@@ -151,7 +151,7 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
         while ((line = reader.readLine()) != null) {
             line = line.trim();
             if (!"".equals(line)) {
-                String[] parts = line.split(SharedLabels.TAB);
+                String[] parts = line.split(Constants.TAB);
                 headers = new ArrayList<String>(Arrays.asList(parts));
                 EventBus.publish(new DatabaseSearchEvent<List<String>>(null, DatabaseSearchEvent.Status.HEADER, Arrays.asList(parts)));
                 break;
@@ -184,7 +184,7 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
         String line;
         while ((line = reader.readLine()) != null) {
             if (!"".equals(line)) {
-                String[] parts = line.split(SharedLabels.TAB, -1);
+                String[] parts = line.split(Constants.TAB, -1);
                 if (!toFilter || finder.search(Arrays.asList(parts))) {
                     content.add(new ArrayList<String>(Arrays.asList(parts)));
                     cnt++;

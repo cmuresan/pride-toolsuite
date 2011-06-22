@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.gui.component.mzgraph;
 
 import uk.ac.ebi.pride.data.core.Parameter;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
-import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -48,7 +48,7 @@ public class PropertyTable extends JTable {
             String value = param.getValue();
             if (value == null || "".equals(value.trim())) {
                 value = name;
-                name = SharedLabels.PARAMETER;
+                name = Constants.PARAMETER;
             }
             if (columnIndex == 0) {
                 result = name;

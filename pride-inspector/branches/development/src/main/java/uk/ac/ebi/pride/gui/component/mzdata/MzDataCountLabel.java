@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.component.mzdata;
 
 import uk.ac.ebi.pride.data.Tuple;
-import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
@@ -18,7 +18,7 @@ import java.util.List;
  * Time: 13:56:27
  */
 public class MzDataCountLabel extends JLabel
-        implements TaskListener<Void, Tuple<TableContentType, List<Object>>>, SharedLabels {
+        implements TaskListener<Void, Tuple<TableContentType, List<Object>>>, Constants {
 
     /** the message format for the label */
     private MessageFormat displayFormat;

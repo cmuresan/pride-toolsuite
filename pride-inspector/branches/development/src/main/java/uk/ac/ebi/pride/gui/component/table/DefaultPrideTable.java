@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table;
 
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.component.utils.SharedLabels;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.component.table.listener.EntryUpdateSelectionListener;
 import uk.ac.ebi.pride.gui.component.table.model.ListTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.SpectrumTableModel;
@@ -260,11 +260,11 @@ public class DefaultPrideTable extends AlterRowColorTable implements ActionListe
                             // append the value to string builder
                             strBuilder.append(str);
                             if (j < colCnt - 1) {
-                                strBuilder.append(SharedLabels.TAB);
+                                strBuilder.append(Constants.TAB);
                             }
                         }
                     }
-                    strBuilder.append(SharedLabels.LINE_SEPARATOR);
+                    strBuilder.append(Constants.LINE_SEPARATOR);
                 }
             }
         }

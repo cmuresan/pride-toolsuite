@@ -7,13 +7,13 @@ import uk.ac.ebi.pride.gui.component.table.listener.HyperLinkCellMouseClickListe
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.component.table.model.*;
 import uk.ac.ebi.pride.gui.component.table.renderer.HyperLinkCellRenderer;
+import uk.ac.ebi.pride.gui.component.table.renderer.PeptidePresentCellRenderer;
 import uk.ac.ebi.pride.gui.component.table.renderer.PeptideSequenceCellRenderer;
 import uk.ac.ebi.pride.gui.component.table.renderer.ViewExperimentRenderer;
 import uk.ac.ebi.pride.gui.url.PTMHyperLinkGenerator;
 import uk.ac.ebi.pride.gui.url.ProteinAccHyperLinkGenerator;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 
 /**
@@ -92,6 +92,10 @@ public class TableFactory {
         TableColumnExt peptideColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_COLUMN.getHeader());
         peptideColumn.setCellRenderer(new PeptideSequenceCellRenderer(ptmIcon));
 
+        // peptide sequence present in protein sequence
+        TableColumnExt peptidePresentColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
+        peptidePresentColumn.setCellRenderer(new PeptidePresentCellRenderer());
+
         // hide modified peptide sequence
         TableColumnExt peptideSeqColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_MASS_COLUMN.getHeader());
         peptideSeqColumn.setVisible(false);
@@ -124,7 +128,6 @@ public class TableFactory {
         // set peptide column width
         int rowColumnNum = peptideColumn.getModelIndex();
         table.getColumnModel().getColumn(rowColumnNum).setPreferredWidth(200);
-
 
         return table;
     }

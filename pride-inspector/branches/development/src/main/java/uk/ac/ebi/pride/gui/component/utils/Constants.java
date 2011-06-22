@@ -1,12 +1,18 @@
 package uk.ac.ebi.pride.gui.component.utils;
 
+import java.awt.*;
+
 /**
- * Created by IntelliJ IDEA.
+ * Constants shared by all classes
+ * <p/>
  * User: rwang
  * Date: 25-May-2010
  * Time: 14:09:16
  */
-public interface SharedLabels {
+public interface Constants {
+    /**
+     * Labels
+     */
     public static final String GENERAL = "General";
     public static final String SPECTRUM = "Spectrum";
     public static final String CHROMATOGRAM = "Chromatogram";
@@ -65,4 +71,23 @@ public interface SharedLabels {
     public static final String GZIPPED_FILE = ".gz";
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static final String NOT_AVAILABLE = "Not Available";
+    public static final String UNKNOWN = "Unknown";
+    public static final String FIT = "Fuzzy Fit";
+    public static final String NOT_FIT = "Not Fit";
+    public static final String STRICT_FIT = "Fit";
+    public final static String OVERLAP = "Overlap";
+    public final static String PTM = "PTM";
+    public final static String SELECTED = "Selected";
+
+    /**
+     * Colours
+     */
+    public static final Color PTM_BACKGROUND_COLOUR = new Color(215, 39, 41, 100);
+    public static final Color PTM_HIGHLIGHT_COLOUR = Color.yellow.darker();
+    public final static Color STRICT_FIT_PEPTIDE_BACKGROUND_COLOUR = new Color(40, 175, 99, 100);
+
+    public final static Color FIT_PEPTIDE_BACKGROUND_COLOUR = new Color(251, 182, 1, 100);
+    public final static Color PEPTIDE_OVERLAP_COLOUR = new Color(40, 175, 99);
+    public final static Color PEPTIDE_HIGHLIGHT_COLOUR = Color.yellow;
 }

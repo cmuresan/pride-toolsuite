@@ -10,6 +10,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
@@ -41,10 +42,13 @@ import static uk.ac.ebi.pride.gui.component.sequence.AttributedSequenceBuilder.*
  */
 public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProtein, Void> implements EventBusSubscribable {
     private final static Logger logger = LoggerFactory.getLogger(ProteinSequencePane.class);
-    private final static int TOP_MARGIN = 40;
+    private final static int TOP_MARGIN = 5;
     private final static int BOTTOM_MARGIN = 20;
     private final static int LEFT_MARGIN = 70;
     private final static int RIGHT_MARGIN = 70;
+    private final static int ROW_GAP = 15;
+    private final static int COLUMN_GAP = 10;
+
     /**
      * property indicates a change of protein model
      */
@@ -138,6 +142,11 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         // create a new graphics 2D
         Graphics2D g2 = (Graphics2D) g.create();
 
+//        AnnotatedProtein protein = new AnnotatedProtein("11111");
+//        protein.setSequenceString("aaaaaaaaaaaaaaaaaataaaaaaaaaaaaaaaaataaaaaaaaaaaaaaaaaaaataaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+//        PeptideAnnotation pn = new PeptideAnnotation("at", 100, 200);
+//        protein.addAnnotation(pn);
+
         // get formatted protein sequence string
         AttributedString sequence = AttributedSequenceBuilder.build(proteinModel);
 
@@ -146,9 +155,9 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         if (sequence != null) {
-            drawProteinSequence(g2, sequence);
+            drawProteinSequence(g2, sequence, proteinModel);
         } else {
-            drawMissingProteinSequence(g2);
+            drawMissingProteinSequence(g2, proteinModel);
         }
 
         // dispose graphics 2D
@@ -161,12 +170,13 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
      * @param g2       graphics 2D
      * @param sequence formatted protein sequence
      */
-    private void drawProteinSequence(Graphics2D g2, AttributedString sequence) {
+    private void drawProteinSequence(Graphics2D g2, AttributedString sequence, AnnotatedProtein protein) {
         Container viewport = getParent();
         int width = viewport.getWidth();
 
         // spacing within the panel
-        int yMargin = drawProteinMetaData(g2) + 10;
+        int yMargin = drawLegend(g2, TOP_MARGIN) + ROW_GAP;
+        yMargin = drawProteinMetaData(g2, protein, yMargin) + ROW_GAP;
         int rightMargin = width - RIGHT_MARGIN;
 
         // line spacing
@@ -277,13 +287,83 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         revalidate();
     }
 
+    private int drawLegend(Graphics2D g2, int y) {
+        Graphics2D ng2 = (Graphics2D) g2.create();
+        ng2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        ng2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+        int startXPos = getWidth() - RIGHT_MARGIN + 40;
+        int xPos = startXPos - 5;
+        int yPos = y;
+
+        // draw overlap
+        xPos = drawLegendText(Constants.OVERLAP, ng2, xPos, yPos);
+        xPos = drawLegendIcon(Constants.PEPTIDE_OVERLAP_COLOUR, ng2, xPos - COLUMN_GAP, yPos);
+        xPos -= 2*COLUMN_GAP;
+        // draw fit
+        xPos = drawLegendText(Constants.FIT, ng2, xPos, yPos);
+        xPos = drawLegendIcon(Constants.FIT_PEPTIDE_BACKGROUND_COLOUR, ng2, xPos - COLUMN_GAP, yPos);
+        xPos -= 2*COLUMN_GAP;
+        // draw strict fit
+        xPos = drawLegendText(Constants.STRICT_FIT, ng2, xPos, yPos);
+        xPos = drawLegendIcon(Constants.STRICT_FIT_PEPTIDE_BACKGROUND_COLOUR, ng2, xPos - COLUMN_GAP, yPos);
+        xPos -= 2*COLUMN_GAP;
+        // draw PTM
+        xPos = drawLegendText(Constants.PTM, ng2, xPos, yPos);
+        xPos = drawLegendIcon(Constants.PTM_BACKGROUND_COLOUR, ng2, xPos - COLUMN_GAP, yPos);
+        xPos -= 2*COLUMN_GAP;
+        // draw selected
+        xPos = drawLegendText(Constants.SELECTED, ng2, xPos, yPos);
+        xPos = drawLegendIcon(Constants.PEPTIDE_HIGHLIGHT_COLOUR, ng2, xPos - COLUMN_GAP, yPos);
+        // draw rounded rectangle
+        ng2.setColor(Color.gray);
+        ng2.drawRoundRect(xPos - 5, yPos, startXPos - xPos + 5, ng2.getFontMetrics().getHeight() + 5, 5, 5);
+
+        ng2.dispose();
+
+        return yPos + 20;
+    }
+
+    private int drawLegendIcon(Color iconColour, Graphics2D g2, int xPos, int yPos) {
+        int w = 10;
+        int x = xPos - w;
+        int y = yPos + w/2;
+
+        g2.setColor(iconColour);
+        g2.fillRect(x, y, w, w);
+
+        return x;
+    }
+
+    private int drawLegendText(String text, Graphics2D g2, int xPos, int yPos) {
+        // font metrix
+        FontMetrics fontMetrics = g2.getFontMetrics();
+
+        int x = xPos;
+        int y = yPos;
+
+        // text width
+        int w = fontMetrics.stringWidth(text);
+        x -= w;
+        int h = fontMetrics.getHeight();
+        y += h;
+
+        // set color
+        g2.setColor(Color.black);
+
+        // draw text
+        g2.drawString(text, x, y);
+
+        return x;
+    }
+
     /**
      * This method is called when a protein sequence is missing, a warning messge will be shown
      *
      * @param g2 graphics 2D
      */
-    private void drawMissingProteinSequence(Graphics2D g2) {
-        int yPos = drawProteinMetaData(g2) + 5;
+    private void drawMissingProteinSequence(Graphics2D g2, AnnotatedProtein protein) {
+        int yPos = drawProteinMetaData(g2, protein, TOP_MARGIN) + ROW_GAP;
 
         // increase font size
         Font font = g2.getFont().deriveFont(15f).deriveFont(Font.BOLD);
@@ -300,27 +380,30 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         g2.drawString(msg, iconImage.getWidth(null) + LEFT_MARGIN, yPos + iconImage.getHeight(null)/2 + 5);
     }
 
-    private int drawProteinMetaData(Graphics2D g2) {
+    private int drawProteinMetaData(Graphics2D g2, AnnotatedProtein protein, int y) {
         Graphics2D ng2 = (Graphics2D)g2.create();
+        ng2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        ng2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
         Font font = ng2.getFont().deriveFont(Font.BOLD, 12f);
         ng2.setFont(font);
 
         // starting position
         int xPos = LEFT_MARGIN;
-        int yPos = TOP_MARGIN;
+        int yPos = y;
         FontMetrics fontMetrics = ng2.getFontMetrics();
         int lineSpace = fontMetrics.getMaxAscent() + fontMetrics.getMaxDescent() + 5;
 
-        if (proteinModel != null) {
+        if (protein != null) {
             // draw accession
-            String accession = proteinModel.getAccession();
+            String accession = protein.getAccession();
             if (accession != null) {
                 String msg = "Accession: " + accession;
                 ng2.drawString(msg, xPos, yPos);
                 xPos += fontMetrics.stringWidth(msg);
             }
             // draw protein name if any
-            String name = proteinModel.getName();
+            String name = protein.getName();
             if (name != null && !"".equals(name.trim())) {
                 String msg = (xPos > LEFT_MARGIN ? ", " : "") + "Name: " + name;
                 ng2.drawString(msg, xPos, yPos);
@@ -334,10 +417,10 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
 //            ng2.setColor(new Color(40, 175, 99));
 
             // draw peptide counts
-            int totalPeptides = proteinModel.getAnnotations().size();
+            int totalPeptides = protein.getAnnotations().size();
             if (totalPeptides > 0) {
                 // number of valid peptides
-                int validPeptides = proteinModel.getNumOfValidPeptides();
+                int validPeptides = protein.getNumOfValidPeptides();
                 if (validPeptides >= 0) {
                     String msg = validPeptides + "/" + totalPeptides + " peptides present";
                     ng2.drawString(msg, xPos, yPos);
@@ -345,7 +428,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                 }
 
                 // number of unique peptides
-                int uniquePeptides = proteinModel.getNumOfUniquePeptides();
+                int uniquePeptides = protein.getNumOfUniquePeptides();
                 if (uniquePeptides >= 0) {
                     String msg = (xPos > LEFT_MARGIN ? ", " : "") + uniquePeptides + "/" + totalPeptides + " distinct peptides";
                     ng2.drawString(msg, xPos, yPos);
@@ -353,9 +436,9 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                 }
 
                 // draw sequence coverage
-                int aminoAcidCoverage = proteinModel.getNumOfAminoAcidCovered();
-                int sequenceLen = proteinModel.getSequenceString().length();
-                String seqCoverage= NumberFormat.getInstance().format(proteinModel.getSequenceCoverage() * 100);
+                int aminoAcidCoverage = protein.getNumOfAminoAcidCovered();
+                int sequenceLen = protein.getSequenceString().length();
+                String seqCoverage= NumberFormat.getInstance().format(protein.getSequenceCoverage() * 100);
                 String msg = (xPos > LEFT_MARGIN ? ", " : "") + aminoAcidCoverage + "/" + sequenceLen + " amino acids (" + seqCoverage + "% coverage)";
                 ng2.drawString(msg, xPos, yPos);
                 xPos += fontMetrics.stringWidth(msg);

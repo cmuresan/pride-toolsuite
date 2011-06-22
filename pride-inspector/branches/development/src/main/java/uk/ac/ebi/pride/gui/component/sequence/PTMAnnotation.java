@@ -44,7 +44,8 @@ public class PTMAnnotation {
         this(null, -1, null, null, null);
     }
 
-    public PTMAnnotation(String accession, int location, String name, String modDatabase, String modDatabaseVersion) {
+    public PTMAnnotation(String accession, int location, String name,
+                         String modDatabase, String modDatabaseVersion) {
         this.accession = accession;
         this.location = location;
         this.name = name;

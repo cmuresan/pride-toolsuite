@@ -57,6 +57,16 @@ public class AnnotatedProtein extends Protein {
      * @return boolean true means valid
      */
     public boolean isValidPeptideAnnotation(PeptideAnnotation annotation) {
+        return hasSubSequenceString(annotation.getSequence());
+    }
+
+    /**
+     * Check whether a peptide is strictly valid based both the sequence and the location
+     *
+     * @param annotation peptide annotation
+     * @return boolean true means valid
+     */
+    public boolean isStrictValidPeptideAnnotation(PeptideAnnotation annotation) {
         return hasSubSequenceString(annotation.getSequence(), annotation.getStart(), annotation.getEnd());
     }
 
@@ -113,6 +123,10 @@ public class AnnotatedProtein extends Protein {
         this.numOfUniquePeptides = numOfUniquePeptides;
     }
 
+    public Set<Integer> searchStartingPosition(PeptideAnnotation annotation) {
+        return searchStartingPosition(annotation.getSequence());
+    }
+
     public float getSequenceCoverage() {
         if (numOfAminoAcidCovered == -1) {
             populateCoverage();
@@ -156,12 +170,23 @@ public class AnnotatedProtein extends Protein {
             int length = getSequenceString().trim().length();
             int[] coverageArr = new int[length];
             for (PeptideAnnotation uniquePeptide : uniquePeptides) {
-                int start = uniquePeptide.getStart() - 1;
-                int end = uniquePeptide.getEnd() - 1;
+                Set<Integer> startingPos = new HashSet<Integer>();
+                boolean strictValidPeptideAnnotation = isStrictValidPeptideAnnotation(uniquePeptide);
+                if (strictValidPeptideAnnotation) {
+                    startingPos.add(uniquePeptide.getStart() - 1);
+                } else {
+                    startingPos.addAll(searchStartingPosition(uniquePeptide));
+                }
 
-                // iterate peptide
-                for (int i = start; i <= end; i++) {
-                    coverageArr[i] += 1;
+                for (Integer start : startingPos) {
+                    // if the position does match
+                    int peptideLen = uniquePeptide.getSequence().length();
+                    int end = start + peptideLen - 1;
+
+                    // iterate peptide
+                    for (int i = start; i <= end; i++) {
+                        coverageArr[i] += 1;
+                    }
                 }
             }
 
@@ -172,6 +197,7 @@ public class AnnotatedProtein extends Protein {
                     numOfAminoAcidCovered++;
                 }
             }
+
             // set number of amino acid being covered
             setNumOfAminoAcidCovered(numOfAminoAcidCovered);
         }

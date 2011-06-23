@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.ac.ebi.pride.gui.component.sequence.Protein;
+import uk.ac.ebi.pride.model.implementation.core.GelImpl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,8 +15,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,11 +36,15 @@ public class ProteinDetailFetcher {
 
     // query string to get uniprot names
     private final String UNIPROT_ACC_QUERY_STRING = "http://www.uniprot.org/uniprot/?query=accession:%s&format=tab&columns=protein%%20names,sequence";
+    private final String UNIPROT_MULT_ACC_QUERY_STRING = "http://www.uniprot.org/uniprot/?query=%s&format=tab&columns=id,protein%%20names,sequence,reviewed,entry%%20name";
     private final String UNIPROT_ENTRY_NAME_QUERY_STRING = "http://www.uniprot.org/uniprot/?query=mnemonic:%s&format=tab&columns=protein%%20names,sequence";
     private final String UNIPROT_ENTRY_QUERY_STRING = "http://www.uniprot.org/uniprot/%s";
     private final String UNIPROT_ACC_CONVERSION_QUERY_STRING = "http://www.uniprot.org/uniprot/?query=%s&format=tab&columns=id,reviewed"; // TODO: change to get the protein names right away
     private final String UNIPROT_FOREIGN_DETAILS_QUERY_STRING = "http://www.uniprot.org/uniprot/?query=%s&format=tab&columns=protein%%20names,reviewed,sequence";
-
+    // query strings to map accessions using the UniProt mapping service
+    private final String UP_MAPPING_ENSEMBL = "http://www.uniprot.org/mapping/?from=ENSEMBL_PRO_ID&to=ACC&query=%s&format=tab";
+    
+    private enum AccessionType{UNIPROT_ACC, UNIPROT_ID, UNIPARC, IPI, REFSEQ, ENSEMBL, GI, UNKNOWN};
     // query string to get the fasta file for an ipi entry
     private final String IPI_FASTA_QUERY_STRING = "http://www.ebi.ac.uk/cgi-bin/dbfetch?db=IPI&id=%s&format=fasta&style=raw";
 
@@ -89,6 +96,267 @@ public class ProteinDetailFetcher {
         }
 
         return null;
+    }
+    
+    /**
+     * Returns the (guessed) accession type for the passed
+     * accession. In case the accession is not recognized
+     * UNKNOWN is returned.
+     * @param accession The accession to guess the type for.
+     * @return The accession's type.
+     */
+    private AccessionType getAccessionType(String accession) {
+    	// swissprot accession
+    	if (ProteinAccessionPattern.isSwissprotAccession(accession))
+            return AccessionType.UNIPROT_ACC;
+    	
+    	if (ProteinAccessionPattern.isSwissprotEntryName(accession))
+    		return AccessionType.UNIPROT_ID;
+
+        // uniparc
+        if (ProteinAccessionPattern.isUniparcAccession(accession))
+            return AccessionType.UNIPARC;
+
+        // IPI
+        if (ProteinAccessionPattern.isIPIAccession(accession))
+        	return AccessionType.IPI;
+
+        // ENSEMBL
+        if (ProteinAccessionPattern.isEnsemblAccession(accession))
+        	return AccessionType.ENSEMBL;
+
+        // NCBI
+        if (ProteinAccessionPattern.isRefseqAccession(accession))
+        	return AccessionType.REFSEQ;
+
+        // GI
+        if (ProteinAccessionPattern.isGIAccession(accession))
+        	return AccessionType.GI;
+        
+        return AccessionType.UNKNOWN;
+    }
+    
+    /**
+     * Returns various details for the given protein (f.e. name,
+     * sequence).
+     * @param accession The protein's accession.
+     * @return A Protein object containing the additional information.
+     * @throws Exception error when retrieving protein accession
+     */
+    public HashMap<String, Protein> getProteinDetails(Collection<String> accessions) throws Exception {
+    	// sort the passed accessions into Lists based on the (guessed) identifier system
+    	HashMap<AccessionType, ArrayList<String>> sortedAccessions = new HashMap<AccessionType, ArrayList<String>>();
+    	
+    	for (String accession : accessions) {
+    		// get the accessions type
+    		AccessionType accType = getAccessionType(accession);
+    		
+    		// put the accession in the respective ArrayList
+    		if (!sortedAccessions.containsKey(accType))
+    			sortedAccessions.put(accType, new ArrayList<String>());
+    		
+    		sortedAccessions.get(accType).add(accession);
+    	}
+    	
+    	// map the accessions
+    	HashMap<String, Protein> proteins = new HashMap<String, Protein>();
+    	for (AccessionType accType : sortedAccessions.keySet()) {
+    		switch(accType) {
+    			case UNIPROT_ACC:
+    				proteins.putAll(getUniProtDetails(sortedAccessions.get(accType)));
+    				break;
+    			case UNIPROT_ID:
+    				proteins.putAll(getUniProtDetails(sortedAccessions.get(accType)));
+    				break;
+    			case IPI:
+    				proteins.putAll(getIpiDetails(sortedAccessions.get(accType)));
+    				break;
+    			case ENSEMBL:
+    				proteins.putAll(getEnsemblDetails(sortedAccessions.get(accType)));
+    				break;
+    			case GI:
+    				proteins.putAll(getNcbiDetails(sortedAccessions.get(accType), true));
+    				break;
+    			case REFSEQ:
+    				proteins.putAll(getNcbiDetails(sortedAccessions.get(accType), false));
+    				break;
+    		}
+    	}
+    	
+        return proteins;
+    }
+    
+    /**
+     * Returns the details for the given identifiers in
+     * a HashMap with the identifier's key or GI number as key and a Protein
+     * object holding the details as value.
+     *
+     * @param accession The accession to get the details for.
+     * @return A Protein object containing the protein's details.
+     * @throws Exception
+     */
+    private HashMap<String, Protein> getNcbiDetails(Collection<String> accessions, boolean useGiNumber) throws Exception {
+    	// create the query string
+    	String query = "";
+    	
+    	for (String accession : accessions)
+    		query += ((query.length() > 0) ? "," : "") + accession;
+    	
+    	// get the IPI fasta entry
+        String fastas = getPage(String.format(EFETCH_FORMAT_STRING, query));
+        String[] lines = fastas.split("\n");
+        
+        // parse the fasta entries
+        String fasta = "";
+        
+        HashMap<String, Protein> proteins = new HashMap<String, Protein>();
+        
+        for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+        	String line = lines[lineIndex];
+        	
+        	// process the current fasta
+        	if (fasta.length() > 0 && line.startsWith(">")) {
+        		Protein protein = convertNcbiFastaToProtein(fasta, useGiNumber);
+                proteins.put(protein.getAccession(), protein);
+                
+                fasta = "";
+        	}
+        	
+        	fasta += line + "\n";
+        }
+        
+        if (!"".equals(fasta)) {
+        	Protein protein = convertNcbiFastaToProtein(fasta, useGiNumber);
+            proteins.put(protein.getAccession(), protein);
+        }
+        
+        return proteins;
+    }
+    
+    /**
+     * Converts an NCBI gi fasta entry to a Protein object.
+     * @param fasta The fasta to convert.
+     * @param useGi Indicates whether the GI number or the source accession should be set as the Protein's accession.
+     * @return Protein
+     * @throws Exception
+     */
+    private Protein convertNcbiFastaToProtein(String fasta, boolean useGi) throws Exception {
+    	// only use the first line
+        String header = fasta.substring(0, fasta.indexOf('\n'));
+        
+        // get the sequence
+        String sequence = fasta.substring(fasta.indexOf('\n') + 1);
+        // remove all whitespaces
+        sequence = sequence.replaceAll("\\s", "");
+
+        // extract the protein name
+        Pattern pat = Pattern.compile(">[^|]+\\|([^|]+)\\|([^|]+)\\|([^|]+)\\|(.*)");
+
+        Matcher matcher = pat.matcher(header);
+
+        // make sure it matches
+        if (!matcher.find())
+            throw new Exception("Unexpected fasta format encountered");
+
+        String gi = matcher.group(1);
+        String source = matcher.group(2);
+        String accession = matcher.group(3);
+        String name = matcher.group(4).trim();
+        
+        if ("ref".equals(source))
+        	source = "RefSeq";
+        
+        // create the protein object
+        Protein protein = new Protein((useGi) ? gi : accession);
+        protein.setName(name);
+        protein.setSequenceString(sequence);
+        protein.setSource(useGi ? "NCBI gi" : source);
+        
+        return protein;
+    }
+    
+    /**
+     * Returns the details for the given IPI identifiers in
+     * a HashMap with the IPI identifier as key and a Protein
+     * object holding the details as value.
+     *
+     * @param accession The IPI accession to get the name for.
+     * @return A Protein object containing the protein's details.
+     * @throws Exception
+     */
+    private HashMap<String, Protein> getIpiDetails(Collection<String> accessions) throws Exception {
+    	// create the query string
+    	String query = "";
+    	
+    	for (String accession : accessions)
+    		query += ((query.length() > 0) ? "," : "") + accession;
+    	
+    	// get the IPI fasta entry
+        String fastas = getPage(String.format(IPI_FASTA_QUERY_STRING, query));
+        String[] lines = fastas.split("\n");
+        
+        // parse the fasta entries
+        String fasta = "";
+        
+        HashMap<String, Protein> proteins = new HashMap<String, Protein>();
+        
+        for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+        	String line = lines[lineIndex];
+        	
+        	// process the current fasta
+        	if (fasta.length() > 0 && line.startsWith(">")) {
+        		Protein protein = convertIPIFastaToProtein(fasta);
+                proteins.put(protein.getAccession().substring(0, 11), protein);
+                
+                fasta = "";
+        	}
+        	
+        	fasta += line + "\n";
+        }
+        
+        if (!"".equals(fasta)) {
+        	Protein protein = convertIPIFastaToProtein(fasta);
+            proteins.put(protein.getAccession().substring(0, 11), protein);
+        }
+        	
+        
+        return proteins;
+    }
+    
+    /**
+     * Converts an IPI fasta entry to a Protein object.
+     * @param fasta
+     * @return
+     * @throws Exception
+     */
+    private Protein convertIPIFastaToProtein(String fasta) throws Exception {
+    	// only use the first line
+        String header = fasta.substring(0, fasta.indexOf('\n'));
+        
+        // get the sequence
+        String sequence = fasta.substring(fasta.indexOf('\n') + 1);
+        // remove all whitespaces
+        sequence = sequence.replaceAll("\\s", "");
+
+        // extract the protein name
+        Pattern pat = Pattern.compile("(IPI[\\d\\.]+) (.*)$");
+
+        Matcher matcher = pat.matcher(header);
+
+        // make sure it matches
+        if (!matcher.find())
+            throw new Exception("Unexpected fasta format encountered");
+
+        String accession = matcher.group(1);
+        String name = matcher.group(2);
+        
+        // create the protein object
+        Protein protein = new Protein(accession);
+        protein.setName(name);
+        protein.setSequenceString(sequence);
+        protein.setSource("IPI");
+        
+        return protein;
     }
 
     /**
@@ -202,6 +470,69 @@ public class ProteinDetailFetcher {
         else
             return trembl.get(0);
     }
+    
+    /**
+     * Returns the details for the given Ensembl identifiers in
+     * a HashMap with the Ensembl identifier as key and a Protein
+     * object holding the details as value. Uses the UniProt
+     * mapping service to map ensembl entries to UniProt accessions.
+     * Then the call is passed on to getUniProtDetails.
+     *
+     * @param accession The Ensembl accession to get the name for.
+     * @return A Protein object containing the protein's details.
+     * @throws Exception
+     */
+    private HashMap<String, Protein> getEnsemblDetails(Collection<String> accessions) throws Exception {
+    	// use the uniprot mapping service to convert the ensembl accessions
+    	String query = "";
+    	
+    	for (String acc : accessions)
+    		query += (query.length() > 0 ? "," : "") + acc;
+    	
+    	// map the accessions
+    	String page = getPage(String.format(UP_MAPPING_ENSEMBL, query));
+    	String[] lines = page.split("\n");
+    	
+    	HashMap<String, String> uniprotToEnsemblMapping = new HashMap<String, String>();
+    	HashMap<String, Integer> fieldMapping = new HashMap<String, Integer>();
+    	
+    	for (int i = 0; i < lines.length; i++) {
+    		String[] fields = lines[i].split("\t");
+    		
+    		if (i == 0) {
+    			for (int j = 0; j < fields.length; j++)
+    				fieldMapping.put(fields[j], j);
+    			
+    			// make sure the required fields are there
+    			if (!fieldMapping.containsKey("To") || !fieldMapping.containsKey("From"))
+    				throw new Exception("Unexpected response retrieved from UniProt mapping service.");
+    			
+    			continue;
+    		}
+    		
+    		// save the mapping
+    		uniprotToEnsemblMapping.put(fields[fieldMapping.get("To")], fields[fieldMapping.get("From")]);
+    	}
+    	
+    	// get the UniProt mappings
+    	Map<String, Protein> proteins = getUniProtDetails(uniprotToEnsemblMapping.keySet());
+    	
+    	// create a new HashMap changing the UniProt accessions to ENSEMBL accessions
+    	HashMap<String, Protein> ensemblProteins = new HashMap<String, Protein>();
+    	
+    	for (Protein p : proteins.values()) {
+    		String ensemblAcc = uniprotToEnsemblMapping.get(p.getAccession());
+    		
+    		if (ensemblAcc == null)
+    			continue;
+    		
+    		p.setAccession(ensemblAcc);
+    		
+    		ensemblProteins.put(ensemblAcc, p);
+    	}
+    	
+    	return ensemblProteins;
+    }
 
     /**
      * Uses the UniProt page to convert the given accession into a
@@ -282,6 +613,83 @@ public class ProteinDetailFetcher {
 
         // return the first name, that should be sufficient
         return protein;
+    }
+    
+    /**
+     * Retrieves the protein details from UniProt from the
+     * given UniProt accessions. Returns null in case nothing
+     * was retrieved. <br />
+     * <b>Warning:</b> The function first tries to retrieve the protein details
+     * expecting them to be accessions. Only if no results are retrieved that way
+     * a second request is send interpreting the passed strings as ids. In case
+     * accessions and ids are mixed, only the proteins identified through accessions
+     * will be returned.
+     * @param accession The UniProt accessions of the proteins.
+     * @return A Collection of Protein objects containing the proteins' details or null if the accession doesn't exist
+     * @throws Exception In case something went wrong
+     */
+    private Map<String, Protein> getUniProtDetails(Collection<String> accessions) throws Exception {
+    	// build the query string for the accessions
+    	String query = "";
+    	Boolean usingAccession = true;
+    	
+    	for (String accession : accessions)
+    		query += ((query.length() > 1) ? "%20or%20" : "") + "accession:" + accession;
+    	
+    	String url = String.format(UNIPROT_MULT_ACC_QUERY_STRING, query);
+    	
+    	// get the page
+        String page = getPage(url);
+        if ("".equals(page.trim())) {
+        	// try with uniprot ids
+        	usingAccession = false;
+            page = getPage(String.format(UNIPROT_MULT_ACC_QUERY_STRING, query.replace("accession:", "mnemonic:")));
+        }
+
+        String[] lines = page.split("\n");
+
+        // if there's only one line or the page was empty no protein names were retrieved
+        if (page.equals("") || lines.length < 2) {
+            return null;
+        }
+        
+        HashMap<String, Integer> fieldIndex = new HashMap<String, Integer>();
+        HashMap<String, Protein> proteins = new HashMap<String, Protein>();
+        
+        // create the retrieved proteins
+        for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+        	 String[] fields = lines[lineIndex].split("\t");
+        	// if it's the first line build the field index
+        	if (lineIndex == 0) {
+        		for (int i = 0; i < fields.length; i++)
+        			fieldIndex.put(fields[i], i);
+        		
+        		// make sure the required fields were found
+        		if (!fieldIndex.containsKey("Accession") || !fieldIndex.containsKey("Protein names") ||
+        			!fieldIndex.containsKey("Sequence") || !fieldIndex.containsKey("Status") ||
+        			!fieldIndex.containsKey("Entry name"))
+        			throw new Exception("Unexpected UniProt response retrieved.");
+        		
+        		continue;
+        	}
+        	
+        	// create the protein object
+        	Protein p = new Protein(fields[fieldIndex.get("Accession")]);
+        	p.setName(fields[fieldIndex.get("Protein names")]);
+        	p.setSource((fields[fieldIndex.get("Status")].equals("reviewed")) ? "UniProt/Swiss-Prot" : "UniProt/TrEMBL");
+        	
+        	String sequence = fields[fieldIndex.get("Sequence")];
+        	sequence = sequence.replaceAll("\\s", "");
+        	
+        	// TODO: check for inactive proteins (? how to react to inactive proteins)
+        	
+        	p.setSequenceString(sequence);
+        	
+        	proteins.put((usingAccession) ? fields[fieldIndex.get("Accession")] : fields[fieldIndex.get("Entry name")], p);
+        }
+        
+        // return the proteins
+        return proteins;
     }
 
     /**
@@ -399,7 +807,8 @@ public class ProteinDetailFetcher {
             throw new Exception("Failed to retrieve id list for " + accession);
 
         // get all the items
-        List<Element> idElements = idList.getChildren("Id");
+        @SuppressWarnings("unchecked")
+		List<Element> idElements = idList.getChildren("Id");
 
         // initialize the return variable
         String ids[] = new String[idElements.size()];
@@ -430,8 +839,6 @@ public class ProteinDetailFetcher {
      * @throws Exception Thrown in case something went wrong.
      */
     private HashMap<String, String> getNcbiProperties(String ncbiId) throws Exception {
-        // TODO: add retries
-
         // create the url
         URL url = new URL(String.format(ESUMMARY_QUERY_STRING, ncbiId));
 
@@ -451,7 +858,8 @@ public class ProteinDetailFetcher {
             throw new Exception("Failed to retrieve xml summary for " + ncbiId);
 
         // get all the items
-        List<Element> items = docSum.getChildren("Item");
+        @SuppressWarnings("unchecked")
+		List<Element> items = docSum.getChildren("Item");
 
         // initialize the return variable
         HashMap<String, String> properties = new HashMap<String, String>();

@@ -97,7 +97,7 @@ public class ProteinNameFetcherTest extends TestCase {
 	}
 	
 	@Test
-	public void testGetUniProtDetailsCollection() {
+	public void testGetProtDetailsCollection() {
 		ArrayList<String> accessions = new ArrayList<String>(3);
 		accessions.add("P12345");
 		accessions.add("P12346");

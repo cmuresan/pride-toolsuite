@@ -12,4 +12,19 @@
            maxElementsOnDisk = "10000"
            overflowToDisk="true">
     </cache>
+
+    <cache name="sequenceCoverageCache"
+           eternal="true"
+           maxElementsInMemory = "5000"
+           maxElementsOnDisk = "100000"
+           overflowToDisk="true">
+    </cache>
+
+    <cache name="peptideFitCache"
+           eternal="true"
+           maxElementsInMemory = "5000"
+           maxElementsOnDisk = "500000"
+           overflowToDisk="true">
+    </cache>
+
 </ehcache>

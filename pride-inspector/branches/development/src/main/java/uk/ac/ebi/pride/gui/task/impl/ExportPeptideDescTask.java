@@ -96,13 +96,13 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
 
             // in order to get a list of headers for export
             // first, we need to create an instance of PeptideTableModel
-            PeptideTableModel pepTableModel = new PeptideTableModel(controller.getSearchEngine());
+            PeptideTableModel pepTableModel = new PeptideTableModel(controller.getSearchEngine(), controller);
             // a list of columns to be skipped
             List<Integer> skipIndexes = new ArrayList<Integer>();
             // skip identification id
-            skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID_COLUMN.getHeader()));
+            skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader()));
             // skip peptide id
-            skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID_COLUMN.getHeader()));
+            skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader()));
             // get number of columns in peptide table model
             int numOfCols = pepTableModel.getColumnCount();
             // iterate over each column to construct the header

@@ -1,10 +1,17 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
+import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.component.sequence.Protein;
+import uk.ac.ebi.pride.gui.desktop.Desktop;
+import uk.ac.ebi.pride.gui.task.Task;
+import uk.ac.ebi.pride.gui.task.impl.RetrieveSequenceCoverageTask;
+import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
+import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * IdentificationTableModel stores all information to be displayed in the identification table.
@@ -49,6 +56,19 @@ public class ProteinTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
         }
     }
 
+    /**
+     * the data access controller related to this model
+     */
+    private DataAccessController controller;
+
+    public ProteinTableModel() {
+        this(null);
+    }
+
+    public ProteinTableModel(DataAccessController controller) {
+        this.controller = controller;
+    }
+
     @Override
     public void initializeTableModel() {
         TableHeader[] headers = TableHeader.values();
@@ -60,32 +80,97 @@ public class ProteinTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
     @Override
     public void addData(Tuple<TableContentType, Object> newData) {
         TableContentType type = newData.getKey();
-        int rowCnt = this.getRowCount();
+
         if (TableContentType.IDENTIFICATION.equals(type)) {
-            List<Object> content = new ArrayList<Object>();
-            // row number
-            content.add(rowCnt + 1);
-            content.addAll((List<Object>) newData.getValue());
-            contents.add(content);
-            fireTableRowsInserted(rowCnt, rowCnt);
+            addIdentificationData(newData.getValue());
         } else if (TableContentType.PROTEIN_DETAILS.equals(type)) {
+            addProteinDetailData(newData.getValue());
+        } else if (TableContentType.PROTEIN_SEQUENCE_COVERAGE.equals(type)) {
+            addSequenceCoverageData(newData.getValue());
+        }
+    }
 
-            // get mapped protein accession column index and protein name column index
-            int mappedAccIndex = getColumnIndex(TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
-            int protNameIndex = getColumnIndex(TableHeader.PROTEIN_NAME.getHeader());
+    /**
+     * Add identification detail for each row
+     *
+     * @param newData identification detail
+     */
+    private void addIdentificationData(Object newData) {
+        List<Object> content = new ArrayList<Object>();
+        int rowCnt = this.getRowCount();
+        // row number
+        content.add(rowCnt + 1);
+        content.addAll((List<Object>) newData);
+        contents.add(content);
+        fireTableRowsInserted(rowCnt, rowCnt);
+    }
 
-            // get forwarded protein name
-            Protein protein = (Protein)newData.getValue();
-            // iterate over each row, set the protein name
-            for (int row = 0; row < contents.size(); row++) {
-                List<Object> content = contents.get(row);
-                if (content.get(mappedAccIndex) == null) {
-                    continue;
+    /**
+     * Add protein detail data
+     *
+     * @param newData protein detail map
+     */
+    private void addProteinDetailData(Object newData) {
+        // column index for mapped protein accession column
+        int mappedAccIndex = getColumnIndex(TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
+        // column index for protein name
+        int identNameIndex = getColumnIndex(TableHeader.PROTEIN_NAME.getHeader());
+        // column index for protein identification id
+        int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
+
+        // get a map of protein accession to protein details
+        Map<String, Protein> proteins = (Map<String, Protein>) newData;
+        // A list of protein identification id which can get sequence coverage
+        List<Comparable> identIds = new ArrayList<Comparable>();
+
+        // iterate over each row, set the protein name
+        for (int row = 0; row < contents.size(); row++) {
+            List<Object> content = contents.get(row);
+            Object mappedAcc = content.get(mappedAccIndex);
+            if (mappedAcc != null) {
+                Protein protein = proteins.get(mappedAcc);
+                if (protein != null) {
+                    // set protein name
+                    content.set(identNameIndex, protein.getName());
+                    // add protein identification id to the list
+                    identIds.add((Comparable) content.get(identIdIndex));
+                    // notify a row change
+                    fireTableRowsUpdated(row, row);
                 }
-                if (content.get(mappedAccIndex).equals(protein.getAccession())) {
-                    content.set(protNameIndex, protein.getName());
-                    fireTableCellUpdated(row, protNameIndex);
-                }
+            }
+        }
+
+        // retrieve protein sequence coverages
+        Task task = new RetrieveSequenceCoverageTask(identIds, controller);
+        task.addTaskListener(this);
+        task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
+        Desktop.getInstance().getDesktopContext().addTask(task);
+    }
+
+    /**
+     * Add protein sequence coverages
+     *
+     * @param newData sequence coverage map
+     */
+    private void addSequenceCoverageData(Object newData) {
+        // column index for protein identification id
+        int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
+        // column index for protein sequence coverage
+        int coverageIndex = getColumnIndex(TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader());
+
+        // map contains sequence coverage
+        Map<Comparable, Double> coverageMap = (Map<Comparable, Double>) newData;
+
+        // iterate over each row, set the protein name
+        for (int row = 0; row < contents.size(); row++) {
+            List<Object> content = contents.get(row);
+            Object identId = content.get(identIdIndex);
+            Double coverage = coverageMap.get(identId);
+            if (coverage != null) {
+                // set protein name
+                content.set(coverageIndex, coverage);
+                // notify a row change
+                fireTableCellUpdated(row, coverageIndex);
             }
         }
     }

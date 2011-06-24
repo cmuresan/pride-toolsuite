@@ -20,12 +20,15 @@ import uk.ac.ebi.pride.data.core.Sample;
 import uk.ac.ebi.pride.data.core.Software;
 import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.data.io.file.MzMLUnmarshallerAdaptor;
+import uk.ac.ebi.pride.data.utils.MD5Utils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,6 +80,22 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
     public MzMLUnmarshallerAdaptor getUnmarshaller() {
         return unmarshaller;
+    }
+
+    @Override
+    public String getUid() {
+        String uid = super.getUid();
+        if (uid == null) {
+            // create a new UUID
+            File file = (File) this.getSource();
+            try {
+                uid = MD5Utils.generateHash(file.getAbsolutePath());
+            } catch (NoSuchAlgorithmException e) {
+                String msg = "Failed to generate unique id for mzML file";
+                logger.error(msg, e);
+            }
+        }
+        return uid;
     }
 
     public MetaData getMetaData() throws DataAccessException {

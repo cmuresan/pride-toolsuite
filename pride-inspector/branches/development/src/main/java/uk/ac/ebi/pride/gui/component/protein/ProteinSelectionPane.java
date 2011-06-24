@@ -8,7 +8,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.action.impl.RetrieveProteinDetailAction;
+import uk.ac.ebi.pride.gui.action.impl.RetrieveExtraProteinDetailAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
@@ -67,7 +67,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
     @Override
     protected void addComponents() {
         // create identification table
-        identTable = TableFactory.createIdentificationTable();
+        identTable = TableFactory.createIdentificationTable(controller);
 
         // createAttributedSequence header panel
         JPanel headerPanel = buildHeaderPane();
@@ -159,11 +159,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
         JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
         loadAllProteinNameButton.setForeground(Color.blue);
 
-        Icon loadProteinNameIcon = GUIUtilities.loadIcon(appContext.getProperty("load.protein.detail.small.icon"));
-        String proteinNameColHeader = ProteinTableModel.TableHeader.PROTEIN_NAME.getHeader();
-        String proteinAccColHeader = ProteinTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
-        loadAllProteinNameButton.setAction(new RetrieveProteinDetailAction(identTable, proteinNameColHeader, proteinAccColHeader, controller,
-                                                            loadProteinNameIcon, appContext.getProperty("load.protein.detail.title")));
+        loadAllProteinNameButton.setAction(new RetrieveExtraProteinDetailAction(identTable, controller));
         toolBar.add(loadAllProteinNameButton);
 
         // add gap

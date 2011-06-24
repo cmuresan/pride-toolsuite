@@ -14,7 +14,7 @@ import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
-import uk.ac.ebi.pride.gui.task.impl.RetrieveProteinDetailModel;
+import uk.ac.ebi.pride.gui.task.impl.RetrieveProteinDetailModelTask;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveSelectedPeptideAnnotation;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
@@ -27,6 +27,7 @@ import java.awt.font.TextLayout;
 import java.beans.PropertyChangeEvent;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
@@ -287,6 +288,13 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         revalidate();
     }
 
+    /**
+     * Draw the legend for protein sequence veiwer
+     *
+     * @param g2    Graphics 2d
+     * @param y starting vertical position
+     * @return  int stop vertical position
+     */
     private int drawLegend(Graphics2D g2, int y) {
         Graphics2D ng2 = (Graphics2D) g2.create();
         ng2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -438,8 +446,12 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                 // draw sequence coverage
                 int aminoAcidCoverage = protein.getNumOfAminoAcidCovered();
                 int sequenceLen = protein.getSequenceString().length();
-                String seqCoverage= NumberFormat.getInstance().format(protein.getSequenceCoverage() * 100);
-                String msg = (xPos > LEFT_MARGIN ? ", " : "") + aminoAcidCoverage + "/" + sequenceLen + " amino acids (" + seqCoverage + "% coverage)";
+                // formatter
+                DecimalFormat format = new DecimalFormat("##.#%");
+                // text to display
+                String percentage = format.format(protein.getSequenceCoverage());
+
+                String msg = (xPos > LEFT_MARGIN ? ", " : "") + aminoAcidCoverage + "/" + sequenceLen + " amino acids (" + percentage + " coverage)";
                 ng2.drawString(msg, xPos, yPos);
                 xPos += fontMetrics.stringWidth(msg);
             }
@@ -485,7 +497,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
             } else {
                 logger.debug("New protein sequence will be shown");
                 proteinId = identId;
-                task = new RetrieveProteinDetailModel(controller, identId, peptideId);
+                task = new RetrieveProteinDetailModelTask(controller, identId, peptideId);
                 task.addTaskListener(ProteinSequencePane.this);
             }
 

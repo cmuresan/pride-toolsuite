@@ -38,5 +38,14 @@ public enum TableContentType {
     /**
      * Protein details
      */
-    PROTEIN_DETAILS
+    PROTEIN_DETAILS,
+    /**
+     * Protein sequence coverage
+     */
+    PROTEIN_SEQUENCE_COVERAGE,
+
+    /**
+     * whether peptide fit the protein sequence
+     */
+    PEPTIDE_FIT
 }

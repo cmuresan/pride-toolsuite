@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.component.table.renderer;
 
+import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
 import uk.ac.ebi.pride.gui.component.utils.Constants;
 
 import javax.swing.*;
@@ -13,22 +14,19 @@ import java.awt.*;
  * Date: 22/06/11
  * Time: 10:33
  */
-public class PeptidePresentCellRenderer implements TableCellRenderer {
+public class PeptideFitCellRenderer implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        return new HighlightLabel(value.toString(), table, isSelected);
+        return new HighlightLabel(value, isSelected);
     }
 
     private class HighlightLabel extends JPanel {
-        private String text;
-        private JTable table;
+        private Integer state;
         private boolean isSelected;
 
-        private HighlightLabel(String text, JTable table, boolean isSelected) {
-            this.text = text;
-            this.table = table;
+        private HighlightLabel(Object state, boolean isSelected) {
+            this.state = state == null ? PeptideFitState.UNKNOWN : (Integer) state;
             this.isSelected = isSelected;
-            this.setLayout(new BorderLayout());
         }
 
         @Override
@@ -46,16 +44,31 @@ public class PeptidePresentCellRenderer implements TableCellRenderer {
             // paint a background
             Color background = null;
 
+            // text to display
+            String text;
+
+            switch (state) {
+                case PeptideFitState.NOT_FIT:
+                    background = Constants.NOT_FIT_PEPTIDE_BACKGROUND_COLOUR;
+                    text = Constants.NOT_FIT;
+                    break;
+                case PeptideFitState.FIT:
+                    background = Constants.FIT_PEPTIDE_BACKGROUND_COLOUR;
+                    text = Constants.FIT;
+                    break;
+                case PeptideFitState.STRICT_FIT:
+                    background = Constants.STRICT_FIT_PEPTIDE_BACKGROUND_COLOUR;
+                    text = Constants.STRICT_FIT;
+                    break;
+                default:
+                    text = Constants.UNKNOWN;
+                    break;
+
+            }
+
+            // highlight selected
             if (isSelected) {
                 background = Constants.PEPTIDE_HIGHLIGHT_COLOUR;
-            } else {
-                if (Constants.NOT_FIT.equals(text)) {
-                    background = new Color(215, 39, 41, 100);
-                } else if (Constants.FIT.equals(text)) {
-                    background = Constants.FIT_PEPTIDE_BACKGROUND_COLOUR;
-                } else if (Constants.STRICT_FIT.equals(text)) {
-                    background = Constants.STRICT_FIT_PEPTIDE_BACKGROUND_COLOUR;
-                }
             }
 
             if (background != null) {

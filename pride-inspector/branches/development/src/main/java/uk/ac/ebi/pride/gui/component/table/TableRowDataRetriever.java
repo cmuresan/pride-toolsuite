@@ -5,7 +5,9 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Modification;
 import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.data.core.PeptideScore;
+import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
+import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
 import uk.ac.ebi.pride.gui.component.sequence.Protein;
 import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
@@ -59,23 +61,26 @@ public class TableRowDataRetriever {
         String mappedProtAcc = ProteinAccessionResolver.resolve(protAcc, protAccVersion, database);
         content.add(mappedProtAcc);
 
-        // app context
-        PrideInspectorContext appContext = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
-        Protein protein = appContext.getProteinDetails(mappedProtAcc);
+        // get protein details
+        Protein protein = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
 
         // Protein name
         content.add(protein == null ? null : protein.getName());
 
+        // sequence coverage
+        Double coverage = PrideInspectorCacheManager.getInstance().getSequenceCoverage(controller.getUid(), identId);
+        content.add(coverage);
+
         // peptide present
         if (protein == null || protein.getSequenceString() == null) {
-            content.add(Constants.UNKNOWN);
+            content.add(PeptideFitState.UNKNOWN);
         } else {
             if (protein.hasSubSequenceString(sequence, start, end)) {
-                content.add(Constants.STRICT_FIT);
+                content.add(PeptideFitState.STRICT_FIT);
             } else if (protein.hasSubSequenceString(sequence)) {
-                content.add(Constants.FIT);
+                content.add(PeptideFitState.FIT);
             } else {
-                content.add(Constants.NOT_FIT);
+                content.add(PeptideFitState.NOT_FIT);
             }
         }
 

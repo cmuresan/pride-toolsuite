@@ -2,14 +2,12 @@ package uk.ac.ebi.pride.gui.component.table;
 
 import org.jdesktop.swingx.table.DefaultTableColumnModelExt;
 import org.jdesktop.swingx.table.TableColumnExt;
+import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.SearchEngine;
 import uk.ac.ebi.pride.gui.component.table.listener.HyperLinkCellMouseClickListener;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.component.table.model.*;
-import uk.ac.ebi.pride.gui.component.table.renderer.HyperLinkCellRenderer;
-import uk.ac.ebi.pride.gui.component.table.renderer.PeptidePresentCellRenderer;
-import uk.ac.ebi.pride.gui.component.table.renderer.PeptideSequenceCellRenderer;
-import uk.ac.ebi.pride.gui.component.table.renderer.ViewExperimentRenderer;
+import uk.ac.ebi.pride.gui.component.table.renderer.*;
 import uk.ac.ebi.pride.gui.url.PTMHyperLinkGenerator;
 import uk.ac.ebi.pride.gui.url.ProteinAccHyperLinkGenerator;
 
@@ -47,8 +45,8 @@ public class TableFactory {
      *
      * @return JTable   identification table
      */
-    public static JTable createIdentificationTable() {
-        ProteinTableModel identTableModel = new ProteinTableModel();
+    public static JTable createIdentificationTable(DataAccessController controller) {
+        ProteinTableModel identTableModel = new ProteinTableModel(controller);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable table = new DefaultPrideTable(identTableModel, columnModel);
 
@@ -62,6 +60,11 @@ public class TableFactory {
 
         // hide the protein name column
         proteinNameColumn.setVisible(false);
+
+        // sequence coverage column
+        TableColumnExt seqCoverageColumn = (TableColumnExt) table.getColumn(ProteinTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader());
+        seqCoverageColumn.setCellRenderer(new SequenceCoverageRenderer());
+        seqCoverageColumn.setVisible(false);
 
         // add hyper link click listener
         String protAccColumnHeader = ProteinTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
@@ -82,9 +85,9 @@ public class TableFactory {
      * @param ptmIcon   whether to display open ptm dialog icon
      * @return JTable   peptide table
      */
-    public static JTable createPeptideTable(SearchEngine se, boolean ptmIcon) {
+    public static JTable createPeptideTable(SearchEngine se, DataAccessController controller, boolean ptmIcon) {
 
-        PeptideTableModel peptideTableModel = new PeptideTableModel(se);
+        PeptideTableModel peptideTableModel = new PeptideTableModel(se, controller);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable table = new DefaultPrideTable(peptideTableModel, columnModel);
 
@@ -93,19 +96,19 @@ public class TableFactory {
         peptideColumn.setCellRenderer(new PeptideSequenceCellRenderer(ptmIcon));
 
         // peptide sequence present in protein sequence
-        TableColumnExt peptidePresentColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
-        peptidePresentColumn.setCellRenderer(new PeptidePresentCellRenderer());
+        TableColumnExt peptideFitColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
+        peptideFitColumn.setCellRenderer(new PeptideFitCellRenderer());
 
         // hide modified peptide sequence
         TableColumnExt peptideSeqColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_MASS_COLUMN.getHeader());
         peptideSeqColumn.setVisible(false);
 
         // hide protein id column
-        TableColumnExt proteinIdColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.IDENTIFICATION_ID_COLUMN.getHeader());
+        TableColumnExt proteinIdColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
         proteinIdColumn.setVisible(false);
 
         // hide peptide id column
-        TableColumnExt peptideIdColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_ID_COLUMN.getHeader());
+        TableColumnExt peptideIdColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
         peptideIdColumn.setVisible(false);
 
         // set protein name column width
@@ -115,6 +118,11 @@ public class TableFactory {
 
         // hide the protein name column
         proteinNameColumn.setVisible(false);
+
+        // sequence coverage column
+        TableColumnExt coverageColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader());
+        coverageColumn.setCellRenderer(new SequenceCoverageRenderer());
+        coverageColumn.setVisible(false);
 
         // add hyper link click listener
         String protAccColumnHeader = PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();

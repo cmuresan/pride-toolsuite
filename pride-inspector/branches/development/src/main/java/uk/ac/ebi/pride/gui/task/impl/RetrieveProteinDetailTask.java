@@ -3,16 +3,16 @@ package uk.ac.ebi.pride.gui.task.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
+import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.sequence.Protein;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.utils.ProteinDetailFetcher;
 import uk.ac.ebi.pride.util.InternetChecker;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Retrieve protein name for a given set of proteins
@@ -24,11 +24,9 @@ import java.util.List;
 public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableContentType, Object>> {
     private static final Logger logger = LoggerFactory.getLogger(RetrieveProteinDetailTask.class);
 
-    private static final String DEFAULT_TASK_NAME = "Downloading protein names";
+    private static final String DEFAULT_TASK_NAME = "Downloading protein details";
 
-    private static final String DEFAULT_TASK_DESC = "Downloading protein names using web services";
-
-    private static final String UNKNOWN_PROTEIN_NAME = "Not Available";
+    private static final String DEFAULT_TASK_DESC = "Downloading protein details using web services";
 
     /**
      * a collection of protein accessions to be retrieved
@@ -39,11 +37,6 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
      * whether it has internet
      */
     private boolean hasInternet;
-
-    /**
-     * Reference to pride inspector context
-     */
-    private PrideInspectorContext context;
 
     /**
      * Constructor
@@ -63,9 +56,6 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
 
         // check whether the internet is available
         this.hasInternet = InternetChecker.check();
-
-        // store a reference to desktop context
-        context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
     }
 
     @Override
@@ -73,11 +63,13 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
 
         if (!proteinAccessions.isEmpty()) {
             // display loading for all the rows first
+            Map<String, Protein> tempProteinDetailsMap = new HashMap<String, Protein>();
             for (String acc : proteinAccessions) {
                 Protein tempProteinDetails = new Protein(acc);
                 tempProteinDetails.setName("Loading...");
-                publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, tempProteinDetails));
+                tempProteinDetailsMap.put(acc, tempProteinDetails);
             }
+            publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, tempProteinDetailsMap));
 
             // fetcher will query web service to get protein name
             ProteinDetailFetcher fetcher = new ProteinDetailFetcher();
@@ -89,7 +81,7 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
                         continue;
                     }
                     // get protein name
-                    Protein protDetails = context.getProteinDetails(acc);
+                    Protein protDetails = PrideInspectorCacheManager.getInstance().getProteinDetails(acc);
                     if (protDetails == null && hasInternet) {
                         try {
                             protDetails = fetcher.getProteinDetails(acc);
@@ -99,17 +91,21 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
 
                         // store the checked protein name
                         if (protDetails != null) {
-                            context.addProteinDetails(protDetails);
+                            PrideInspectorCacheManager.getInstance().addProteinDetails(protDetails);
                         }
                     }
 
                     // publish the result
                     if (protDetails == null) {
                         protDetails = new Protein(acc);
-                        protDetails.setName(UNKNOWN_PROTEIN_NAME);
+                        protDetails.setName(Constants.NOT_AVAILABLE);
                     }
 
-                    publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, protDetails));
+                    // temporary implementation until the batch downloading ready
+                    Map<String, Protein> proteins = new HashMap<String, Protein> ();
+                    proteins.put(protDetails.getAccession(), protDetails);
+
+                    publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, proteins));
 
                     // this is important for cancelling
                     if (Thread.interrupted()) {

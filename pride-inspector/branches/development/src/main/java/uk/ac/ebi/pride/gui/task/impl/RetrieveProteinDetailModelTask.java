@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Modification;
+import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
@@ -13,9 +14,7 @@ import uk.ac.ebi.pride.gui.component.sequence.PeptideAnnotation;
 import uk.ac.ebi.pride.gui.component.sequence.Protein;
 import uk.ac.ebi.pride.util.ProteinAccessionResolver;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Retrieve protein detail object, this is mainly used to visualize protein sequence
@@ -24,8 +23,8 @@ import java.util.List;
  * Date: 14/06/11
  * Time: 15:08
  */
-public class RetrieveProteinDetailModel extends AbstractDataAccessTask<AnnotatedProtein, Void> {
-    private static final Logger logger = LoggerFactory.getLogger(RetrieveProteinDetailModel.class);
+public class RetrieveProteinDetailModelTask extends AbstractDataAccessTask<AnnotatedProtein, Void> {
+    private static final Logger logger = LoggerFactory.getLogger(RetrieveProteinDetailModelTask.class);
     /**
      * protein identification id
      */
@@ -42,9 +41,9 @@ public class RetrieveProteinDetailModel extends AbstractDataAccessTask<Annotated
      * @param identId    protein identification id
      * @param peptideId  peptide identification id
      */
-    public RetrieveProteinDetailModel(DataAccessController controller,
-                                      Comparable identId,
-                                      Comparable peptideId) {
+    public RetrieveProteinDetailModelTask(DataAccessController controller,
+                                          Comparable identId,
+                                          Comparable peptideId) {
         super(controller);
         this.identId = identId;
         this.peptideId = peptideId;
@@ -84,7 +83,7 @@ public class RetrieveProteinDetailModel extends AbstractDataAccessTask<Annotated
         String resolvedProtAcc = ProteinAccessionResolver.resolve(protAcc, protAccVersion, database);
 
         // get protein details
-        return appContext.getProteinDetails(resolvedProtAcc);
+        return PrideInspectorCacheManager.getInstance().getProteinDetails(resolvedProtAcc);
     }
 
     /**

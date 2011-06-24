@@ -26,15 +26,6 @@ public class AttributedSequenceBuilder {
     public final static Color DEFAULT_FOREGROUND = Color.GRAY;
     public final static Color PEPTIDE_FOREGROUND_COLOUR = Color.BLACK;
 
-
-    private final static int SELECTED = -1;
-    private final static int NO_FIT = 0;
-    private final static int STRICT_FIT = 1;
-    private final static int FIT = 2;
-    private final static int OVERLAP = 3;
-    private final static int SELECTED_PTM = -1;
-    private final static int PTM = 1;
-
     /**
      * This method is responsible for create a formatted and styled protein sequence
      * <p/>
@@ -123,18 +114,18 @@ public class AttributedSequenceBuilder {
                     for (int i = start; i <= end; i++) {
                         if (selected) {
                             // selected
-                            coverageArr[i] = SELECTED;
-                        } else if (coverageArr[i] != SELECTED) {
+                            coverageArr[i] = PeptideFitState.SELECTED;
+                        } else if (coverageArr[i] != PeptideFitState.SELECTED) {
                             // not selected
                             switch (coverageArr[i]) {
-                                case STRICT_FIT:
-                                    coverageArr[i] = OVERLAP;
+                                case PeptideFitState.STRICT_FIT:
+                                    coverageArr[i] = PeptideFitState.OVERLAP;
                                     break;
-                                case FIT:
-                                    coverageArr[i] = OVERLAP;
+                                case PeptideFitState.FIT:
+                                    coverageArr[i] = PeptideFitState.OVERLAP;
                                     break;
-                                case NO_FIT:
-                                    coverageArr[i] = strictValidPeptideAnnotation ? STRICT_FIT : FIT;
+                                case PeptideFitState.NOT_FIT:
+                                    coverageArr[i] = strictValidPeptideAnnotation ? PeptideFitState.STRICT_FIT : PeptideFitState.FIT;
                                     break;
                             }
                         }
@@ -151,7 +142,7 @@ public class AttributedSequenceBuilder {
                                 location -= 2;
                             }
 
-                            ptmArr[start + location] = selected ? SELECTED_PTM : PTM;
+                            ptmArr[start + location] = selected ? PTMFitState.SELECTED : PTMFitState.FIT;
                         }
                     }
                 }
@@ -162,7 +153,7 @@ public class AttributedSequenceBuilder {
             for (int i = 0; i < coverageArr.length; i++) {
                 int count = coverageArr[i];
                 int index = mapIndex(i);
-                if (count != NO_FIT) {
+                if (count != PeptideFitState.NOT_FIT) {
                     numOfAminoAcidCovered++;
                 }
                 addAminoAcidAttributes(formattedSequence, index, count);
@@ -185,19 +176,19 @@ public class AttributedSequenceBuilder {
      */
     private static void addAminoAcidAttributes(AttributedString formattedSequence, int index, int type) {
         switch (type) {
-            case SELECTED :
+            case PeptideFitState.SELECTED :
                 formattedSequence.addAttribute(TextAttribute.BACKGROUND, Constants.PEPTIDE_HIGHLIGHT_COLOUR, index, index + 1);
                 formattedSequence.addAttribute(TextAttribute.FOREGROUND, PEPTIDE_FOREGROUND_COLOUR, index, index + 1);
                 break;
-            case STRICT_FIT :
+            case PeptideFitState.STRICT_FIT :
                 formattedSequence.addAttribute(TextAttribute.BACKGROUND, Constants.STRICT_FIT_PEPTIDE_BACKGROUND_COLOUR, index, index + 1);
                 formattedSequence.addAttribute(TextAttribute.FOREGROUND, PEPTIDE_FOREGROUND_COLOUR, index, index + 1);
                 break;
-            case FIT :
+            case PeptideFitState.FIT :
                 formattedSequence.addAttribute(TextAttribute.BACKGROUND, Constants.FIT_PEPTIDE_BACKGROUND_COLOUR, index, index + 1);
                 formattedSequence.addAttribute(TextAttribute.FOREGROUND, PEPTIDE_FOREGROUND_COLOUR, index, index + 1);
                 break;
-            case OVERLAP :
+            case PeptideFitState.OVERLAP :
                 formattedSequence.addAttribute(TextAttribute.BACKGROUND, Constants.PEPTIDE_OVERLAP_COLOUR, index, index + 1);
                 formattedSequence.addAttribute(TextAttribute.FOREGROUND, PEPTIDE_FOREGROUND_COLOUR, index, index + 1);
                 break;
@@ -218,10 +209,10 @@ public class AttributedSequenceBuilder {
             int index = mapIndex(i);
 
             switch (count) {
-                case PTM:
+                case PTMFitState.FIT:
                     formattedSequence.addAttribute(TextAttribute.BACKGROUND, Constants.PTM_BACKGROUND_COLOUR, index, index + 1);
                     break;
-                case SELECTED_PTM:
+                case PTMFitState.SELECTED:
                     formattedSequence.addAttribute(TextAttribute.BACKGROUND, Constants.PTM_HIGHLIGHT_COLOUR, index, index + 1);
                     break;
             }

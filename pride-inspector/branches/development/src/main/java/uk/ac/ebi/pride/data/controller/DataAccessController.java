@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.gui.utils.PropertyChangeHandler;
 
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  * DataAccessController is an aggregate interface for data access.
@@ -49,6 +50,18 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     public static final String DATA_SOURCE_CLOSED = "dataSourceClosed";
 
     /** ========================================= Description section =========================================*/
+
+    /**
+     * Get the unique id represent the uniqueness of the data source
+     *
+      * @return String    uid
+     */
+    public String getUid();
+
+    /**
+     * Set a unique id
+     */
+    public void setUid(String uid);
 
     /**
      * Get the display name for this controller, for GUI

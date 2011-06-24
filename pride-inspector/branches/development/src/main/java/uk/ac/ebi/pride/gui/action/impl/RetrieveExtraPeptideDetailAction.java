@@ -3,7 +3,11 @@ package uk.ac.ebi.pride.gui.action.impl;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.table.TableColumnModelExt;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.action.PrideAction;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
+import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveProteinDetailTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
@@ -11,70 +15,77 @@ import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * Retrieve additional peptide details
+ *
  * User: rwang
- * Date: 09-Oct-2010
- * Time: 18:02:21
+ * Date: 23/06/11
+ * Time: 17:02
  */
-public class RetrieveProteinDetailAction extends PrideAction {
+public class RetrieveExtraPeptideDetailAction extends PrideAction{
     /**
      * JTable where protein name will be displayed
      */
     private JTable table;
 
     /**
-     * the column name for protein name
-     */
-    private String protNameColHeader;
-
-    /**
-     * the column name for protein accession
-     */
-    private String protAccColHeader;
-    /**
      * data access controller
      */
     private DataAccessController controller;
 
-    public RetrieveProteinDetailAction(JTable table,
-                                       String protNameColHeader,
-                                       String protAccColHeader,
-                                       DataAccessController controller,
-                                       Icon icon, String title) {
-        super(title, icon);
+    /**
+     * Constructor
+     * @param table protein table
+     * @param controller    data access controller
+     */
+    public RetrieveExtraPeptideDetailAction(JTable table,
+                                            DataAccessController controller) {
+        super(Desktop.getInstance().getDesktopContext().getProperty("load.protein.detail.title"),
+              GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("load.protein.detail.small.icon")));
         this.table = table;
-        this.protNameColHeader = protNameColHeader;
-        this.protAccColHeader = protAccColHeader;
         this.controller = controller;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // set protein names column enabled
-        TableColumnModel columnModel = table.getColumnModel();
-        if (columnModel instanceof TableColumnModelExt) {
-            // show protein name column
-            TableColumnModelExt showHideColModel = (TableColumnModelExt) columnModel;
-            List<TableColumn> columns = showHideColModel.getColumns(true);
-            for (TableColumn column : columns) {
-                if (protNameColHeader.equals(column.getHeaderValue())) {
-                    ((TableColumnExt) column).setVisible(true);
-                    break;
-                }
+        // set hidden protein details columns visible
+        setColumnVisible();
+        // start retrieval task
+        startRetrieval();
+    }
+
+    /**
+     * Set hidden columns visible
+     * such as: protein name and protein sequence coverage
+     */
+    private void setColumnVisible() {
+        TableColumnModelExt showHideColModel = (TableColumnModelExt) table.getColumnModel();
+        List<TableColumn> columns = showHideColModel.getColumns(true);
+        for (TableColumn column : columns) {
+            if (PeptideTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(column.getHeaderValue()) ||
+                    PeptideTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(column.getHeaderValue()) ||
+                    PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader().equals(column.getHeaderValue())) {
+                ((TableColumnExt) column).setVisible(true);
             }
-
-            // get protein accessions
-            Set<String> accs = getMappedProteinAccs();
-
-            // start a new task to retrieve protein names
-            runRetrieveProteinNameTask(accs);
         }
+    }
+
+    /**
+     * Start the task to retrieve protein details
+     */
+    private void startRetrieval() {
+        // get protein accessions
+        Set<String> accs = getMappedProteinAccs();
+
+        // start a new task to retrieve protein names
+        runRetrieveProteinNameTask(accs);
     }
 
     /**
@@ -86,7 +97,7 @@ public class RetrieveProteinDetailAction extends PrideAction {
         Set<String> accs = new LinkedHashSet<String>();
 
         int rowCount = table.getRowCount();
-        int column = table.getColumnModel().getColumnIndex(protAccColHeader);
+        int column = table.getColumnModel().getColumnIndex(PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
         for (int row = 0; row < rowCount; row++) {
             Object val = table.getValueAt(row, column);
             if (val != null) {
@@ -123,6 +134,6 @@ public class RetrieveProteinDetailAction extends PrideAction {
         task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
 
         // add task to task manager without notify
-        uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(task);
+        Desktop.getInstance().getDesktopContext().addTask(task);
     }
 }

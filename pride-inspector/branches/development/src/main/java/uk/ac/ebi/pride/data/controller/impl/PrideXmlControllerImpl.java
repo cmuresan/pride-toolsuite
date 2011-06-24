@@ -9,13 +9,16 @@ import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.cache.impl.PrideXmlCacheBuilder;
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.utils.MD5Utils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.jaxb.xml.PrideXmlReader;
 
 import java.io.*;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,6 +74,22 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
 
     public PrideXmlReader getReader() {
         return reader;
+    }
+
+    @Override
+    public String getUid() {
+        String uid = super.getUid();
+        if (uid == null) {
+            // create a new UUID
+            File file = (File) this.getSource();
+            try {
+                uid = MD5Utils.generateHash(file.getAbsolutePath());
+            } catch (NoSuchAlgorithmException e) {
+                String msg = "Failed to generate unique id for mzML file";
+                logger.error(msg, e);
+            }
+        }
+        return uid;
     }
 
     /**
@@ -388,11 +407,11 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
     /**
      * Get peptide using a given identification id and a given peptide index
      *
-     * @param identId   identification id
-     * @param index peptide index
-     * @param useCache  whether to use cache
+     * @param identId  identification id
+     * @param index    peptide index
+     * @param useCache whether to use cache
      * @return Peptide  peptide
-     * @throws DataAccessException  exception while getting peptide
+     * @throws DataAccessException exception while getting peptide
      */
     @Override
     public Peptide getPeptideById(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {

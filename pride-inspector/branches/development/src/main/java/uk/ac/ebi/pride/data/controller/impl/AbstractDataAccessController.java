@@ -25,6 +25,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         implements DataAccessController {
     private static final Logger logger = LoggerFactory.getLogger(AbstractDataAccessController.class);
 
+    private String uid = null;
     private String name = null;
     private String description = null;
     private Type type = null;
@@ -44,6 +45,16 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         setSource(source);
         // initialize content categories
         categories = new HashSet<ContentCategory>();
+    }
+
+    @Override
+    public String getUid() {
+        return uid;
+    }
+
+    @Override
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     @Override

@@ -110,7 +110,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
 
         // create identification table
         try {
-            pepTable = TableFactory.createPeptideTable(controller.getSearchEngine(), true);
+            pepTable = TableFactory.createPeptideTable(controller.getSearchEngine(), controller, true);
         } catch (DataAccessException e) {
             String msg = "Failed to retrieve search engine details";
             logger.error(msg, e);
@@ -304,8 +304,8 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
                     // get table model
                     PeptideTableModel tableModel = (PeptideTableModel) table.getModel();
                     // get identification and peptide column
-                    int identColNum = tableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID_COLUMN.getHeader());
-                    int peptideColNum = tableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID_COLUMN.getHeader());
+                    int identColNum = tableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
+                    int peptideColNum = tableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
 
                     // get identification and peptide id
                     if (table.getRowCount() > 0) {

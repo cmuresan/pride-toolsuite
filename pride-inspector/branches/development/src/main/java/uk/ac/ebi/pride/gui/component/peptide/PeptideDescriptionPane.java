@@ -2,17 +2,19 @@ package uk.ac.ebi.pride.gui.component.peptide;
 
 import org.bushe.swing.event.ContainerEventServiceFinder;
 import org.bushe.swing.event.EventService;
+import org.jdesktop.swingx.table.TableColumnExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.action.impl.RetrieveProteinDetailAction;
+import uk.ac.ebi.pride.gui.action.impl.RetrieveExtraPeptideDetailAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
+import uk.ac.ebi.pride.gui.component.table.renderer.PeptideFitCellRenderer;
 import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 
@@ -66,7 +68,10 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
     protected void addComponents() {
         // create identification table
         try {
-            pepTable = TableFactory.createPeptideTable(controller.getSearchEngine(), false);
+            pepTable = TableFactory.createPeptideTable(controller.getSearchEngine(), controller, false);
+            TableColumnExt peptideFitColumn = (TableColumnExt) pepTable.getColumn(PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
+            peptideFitColumn.setCellRenderer(new PeptideFitCellRenderer());
+            peptideFitColumn.setVisible(false);
         } catch (DataAccessException e) {
             String msg = "Failed to retrieve search engine details";
             logger.error(msg, e);
@@ -127,11 +132,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
         JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
         loadAllProteinNameButton.setForeground(Color.blue);
 
-        Icon loadProteinDetailIcon = GUIUtilities.loadIcon(appContext.getProperty("load.protein.detail.small.icon"));
-        String proteinNameColHeader = PeptideTableModel.TableHeader.PROTEIN_NAME.getHeader();
-        String proteinAccColHeader = PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
-        loadAllProteinNameButton.setAction(new RetrieveProteinDetailAction(pepTable, proteinNameColHeader, proteinAccColHeader, controller,
-                loadProteinDetailIcon, appContext.getProperty("load.protein.detail.title")));
+        loadAllProteinNameButton.setAction(new RetrieveExtraPeptideDetailAction(pepTable, controller));
 
         toolBar.add(loadAllProteinNameButton);
 
@@ -194,8 +195,8 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
                     PeptideTableModel pepTableModel = (PeptideTableModel) pepTable.getModel();
 
                     // get spectrum reference column
-                    int identColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID_COLUMN.getHeader());
-                    int peptideColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID_COLUMN.getHeader());
+                    int identColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
+                    int peptideColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
 
                     // get spectrum id
                     int modelRowIndex = pepTable.convertRowIndexToModel(rowNum);

@@ -1,18 +1,11 @@
 package uk.ac.ebi.pride.gui;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.hibernate.EhCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.controller.cache.CachedMap;
 import uk.ac.ebi.pride.gui.access.DataAccessMonitor;
 import uk.ac.ebi.pride.gui.component.db.DatabaseSearchPane;
 import uk.ac.ebi.pride.gui.component.report.ReportListModel;
-import uk.ac.ebi.pride.gui.component.sequence.Protein;
 import uk.ac.ebi.pride.gui.component.startup.WelcomePane;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.task.TaskManager;
@@ -22,10 +15,7 @@ import javax.help.HelpSet;
 import javax.help.HelpSetException;
 import javax.swing.*;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Overall context of the GUI, this object should only have one instance per application.
@@ -59,11 +49,6 @@ public class PrideInspectorContext extends DesktopContext {
      * data source browser visibility
      */
     private boolean leftControlPaneVisible;
-
-    /**
-     * Protein name tracker
-     */
-    private Ehcache proteinNameTracker;
 
     /**
      * Tracking all the summary report in a list model for each database access controller
@@ -104,12 +89,6 @@ public class PrideInspectorContext extends DesktopContext {
 
         // data content pane cache
         this.dataContentPaneCache = Collections.synchronizedMap(new HashMap<DataAccessController, JComponent>());
-
-        // get cache manager
-        CacheManager cacheManager = CacheManager.getInstance();
-
-        // protein name tracker
-        this.proteinNameTracker = cacheManager.addCacheIfAbsent("proteinDetailsCache");
 
         // summary report tracker
         this.summaryReportTracker = Collections.synchronizedMap(new HashMap<DataAccessController, ListModel>());
@@ -304,36 +283,6 @@ public class PrideInspectorContext extends DesktopContext {
      */
     public final void removeDataContentPane(DataAccessController controller) {
         dataContentPaneCache.remove(controller);
-    }
-
-    /**
-     * Get protein name
-     *
-     * @param protAcc protein accession
-     * @return Protein    protein object which contains protein name ,protein sequence and etc
-     */
-    public final Protein getProteinDetails(String protAcc) {
-        Element element = proteinNameTracker.get(protAcc);
-        Object val = null;
-        if (element != null) {
-            val= element.getObjectValue();
-        }
-        return val == null ? null : (Protein)val;
-    }
-
-    /**
-     * Store protein name and protein accession
-     * This is for saving tasks from retrieving the protein names many times
-     *
-     * @param protein  protein details object
-     */
-    public final void addProteinDetails(Protein protein) {
-        if (protein == null) {
-            String msg = "Protein details cannot be null";
-            logger.error(msg);
-            throw new IllegalArgumentException(msg);
-        }
-        proteinNameTracker.put(new Element(protein.getAccession(), protein));
     }
 
     /**

@@ -127,11 +127,11 @@ public class AnnotatedProtein extends Protein {
         return searchStartingPosition(annotation.getSequence());
     }
 
-    public float getSequenceCoverage() {
+    public double getSequenceCoverage() {
         if (numOfAminoAcidCovered == -1) {
             populateCoverage();
         }
-        return Float.parseFloat(numOfAminoAcidCovered + "") / (getSequenceString().length());
+        return Double.parseDouble(numOfAminoAcidCovered + "") / (getSequenceString().length());
     }
 
     public int getNumOfAminoAcidCovered() {

@@ -17,12 +17,16 @@ import uk.ac.ebi.pride.data.io.db.DBUtilities;
 import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
+import uk.ac.ebi.pride.data.utils.MD5Utils;
 import uk.ac.ebi.pride.gui.component.chart.PrideChartManager;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.term.CvTermReference;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.ByteOrder;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -109,6 +113,23 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
         // populate cache
         populateCache();
+    }
+
+    @Override
+    public String getUid() {
+        String uid = super.getUid();
+        if (uid == null) {
+            // create a new unique id
+            Comparable acc = getForegroundExperimentAcc();
+            String msg = "PRIDE public mysql instance accession: " + (acc == null ? Constants.NOT_AVAILABLE : acc);
+            try {
+                uid = MD5Utils.generateHash(msg);
+            } catch (NoSuchAlgorithmException e) {
+                String err = "Failed to generate unique id for mzML file";
+                logger.error(err, e);
+            }
+        }
+        return uid;
     }
 
     private List<CvParam> getCvParams(Connection connection, String table_name, int parent_element_id) throws DataAccessException {

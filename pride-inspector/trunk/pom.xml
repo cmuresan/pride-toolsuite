@@ -23,6 +23,7 @@
     </organization>
 
     <developers>
+
         <developer>
             <id>rwang</id>
             <name>Rui Wang</name>
@@ -131,7 +132,7 @@
         <dependency>
             <groupId>uk.ac.ebi.pride.util</groupId>
             <artifactId>pride-utilities</artifactId>
-            <version>0.1.3</version>
+            <version>0.1.6</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.pride.curation</groupId>

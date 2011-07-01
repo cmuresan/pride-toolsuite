@@ -9,6 +9,8 @@ import uk.ac.ebi.pride.data.Triple;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.gui.component.sequence.Protein;
 
+import java.util.Collection;
+
 /**
  * Cache manager manages all the cache
  * <p/>
@@ -77,7 +79,7 @@ public class PrideInspectorCacheManager {
     }
 
     /**
-     * Store protein name and protein accession
+     * Store protein details
      * This is for saving tasks from retrieving the protein names many times
      *
      * @param protein protein details object
@@ -89,6 +91,23 @@ public class PrideInspectorCacheManager {
             throw new IllegalArgumentException(msg);
         }
         proteinNameCache.put(new Element(protein.getAccession(), protein));
+    }
+
+    /**
+     * Store a collection of protein details
+      * @param proteins a collection of proteins
+     */
+    public void addProteinDetails(Collection<Protein> proteins) {
+        if (proteins == null) {
+            String msg = "Collection of proteins cannot be null";
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
+        }
+
+        // add protein details
+        for (Protein protein : proteins) {
+            proteinNameCache.put(new Element(protein.getAccession(), protein));
+        }
     }
 
 

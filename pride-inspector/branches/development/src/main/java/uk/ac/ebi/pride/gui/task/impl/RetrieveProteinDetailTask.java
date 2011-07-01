@@ -74,6 +74,15 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
             // fetcher will query web service to get protein name
             ProteinDetailFetcher fetcher = new ProteinDetailFetcher();
 
+            // accession buffer
+            Set<String> accBuffer = new HashSet<String>();
+
+            // buffer size
+            int maxBufferSize = 20;
+
+            // protein map
+            Map<String, Protein> proteins = new HashMap<String, Protein>();
+
             try {
                 // iterate over each protein
                 for (String acc : proteinAccessions) {
@@ -82,35 +91,45 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
                     }
                     // get protein name
                     Protein protDetails = PrideInspectorCacheManager.getInstance().getProteinDetails(acc);
-                    if (protDetails == null && hasInternet) {
-                        try {
-                            protDetails = fetcher.getProteinDetails(acc);
-                        } catch (Exception e) {
-                            // ignored
-                        }
-
-                        // store the checked protein name
-                        if (protDetails != null) {
-                            PrideInspectorCacheManager.getInstance().addProteinDetails(protDetails);
-                        }
+                    if (protDetails != null) {
+                        proteins.put(acc, protDetails);
+                        continue;
                     }
 
-                    // publish the result
-                    if (protDetails == null) {
-                        protDetails = new Protein(acc);
-                        protDetails.setName(Constants.NOT_AVAILABLE);
+                    if (hasInternet) {
+                        accBuffer.add(acc);
+                        if (accBuffer.size() == maxBufferSize) {
+                            // fetch protein details
+                            Map<String, Protein> results = fetcher.getProteinDetails(accBuffer);
+                            // add the missing one
+                            for (String c : accBuffer) {
+                                if (!results.containsKey(c)) {
+                                    Protein p = new Protein(c);
+                                    p.setName(Constants.NOT_AVAILABLE);
+                                    results.put(c, p);
+                                }
+                            }
+                            // add results to cache
+                            PrideInspectorCacheManager.getInstance().addProteinDetails(results.values());
+                            // add results to protein map
+                            proteins.putAll(results);
+                            // public results
+                            publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, proteins));
+                            // clear protein map
+                            proteins = new HashMap<String, Protein>();
+                            // clear accession buffer
+                            accBuffer.clear();
+                        }
                     }
-
-                    // temporary implementation until the batch downloading ready
-                    Map<String, Protein> proteins = new HashMap<String, Protein> ();
-                    proteins.put(protDetails.getAccession(), protDetails);
-
-                    publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, proteins));
 
                     // this is important for cancelling
                     if (Thread.interrupted()) {
                         throw new InterruptedException();
                     }
+                }
+
+                if (!proteins.isEmpty()) {
+                    publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, proteins));
                 }
             } catch (InterruptedException e) {
                 logger.warn("Protein name download has been cancelled");

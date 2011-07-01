@@ -72,13 +72,16 @@ public class AttributedSequenceBuilder {
             int numOfValidPeptides = 0;
 
             // remove invalid peptide
-            Iterator<PeptideAnnotation> peptideIter = peptides.iterator();
-            while (peptideIter.hasNext()) {
-                PeptideAnnotation peptideAnnotation = peptideIter.next();
-                if (!protein.isValidPeptideAnnotation(peptideAnnotation)) {
-                    peptideIter.remove();
-                } else {
-                    numOfValidPeptides++;
+            String sequence = protein.getSequenceString();
+            if (sequence != null && !"".equals(sequence)) {
+                Iterator<PeptideAnnotation> peptideIter = peptides.iterator();
+                while (peptideIter.hasNext()) {
+                    PeptideAnnotation peptideAnnotation = peptideIter.next();
+                    if (!protein.isValidPeptideAnnotation(peptideAnnotation)) {
+                        peptideIter.remove();
+                    } else {
+                        numOfValidPeptides++;
+                    }
                 }
             }
 
@@ -171,24 +174,24 @@ public class AttributedSequenceBuilder {
      * Add text attributes for one amino acid
      *
      * @param formattedSequence attributed string
-     * @param index index of the amino acid
-     * @param type  type of the amino acid
+     * @param index             index of the amino acid
+     * @param type              type of the amino acid
      */
     private static void addAminoAcidAttributes(AttributedString formattedSequence, int index, int type) {
         switch (type) {
-            case PeptideFitState.SELECTED :
+            case PeptideFitState.SELECTED:
                 formattedSequence.addAttribute(TextAttribute.BACKGROUND, Constants.PEPTIDE_HIGHLIGHT_COLOUR, index, index + 1);
                 formattedSequence.addAttribute(TextAttribute.FOREGROUND, PEPTIDE_FOREGROUND_COLOUR, index, index + 1);
                 break;
-            case PeptideFitState.STRICT_FIT :
+            case PeptideFitState.STRICT_FIT:
                 formattedSequence.addAttribute(TextAttribute.BACKGROUND, Constants.STRICT_FIT_PEPTIDE_BACKGROUND_COLOUR, index, index + 1);
                 formattedSequence.addAttribute(TextAttribute.FOREGROUND, PEPTIDE_FOREGROUND_COLOUR, index, index + 1);
                 break;
-            case PeptideFitState.FIT :
+            case PeptideFitState.FIT:
                 formattedSequence.addAttribute(TextAttribute.BACKGROUND, Constants.FIT_PEPTIDE_BACKGROUND_COLOUR, index, index + 1);
                 formattedSequence.addAttribute(TextAttribute.FOREGROUND, PEPTIDE_FOREGROUND_COLOUR, index, index + 1);
                 break;
-            case PeptideFitState.OVERLAP :
+            case PeptideFitState.OVERLAP:
                 formattedSequence.addAttribute(TextAttribute.BACKGROUND, Constants.PEPTIDE_OVERLAP_COLOUR, index, index + 1);
                 formattedSequence.addAttribute(TextAttribute.FOREGROUND, PEPTIDE_FOREGROUND_COLOUR, index, index + 1);
                 break;
@@ -201,7 +204,7 @@ public class AttributedSequenceBuilder {
      * Add text attributes for ptms
      *
      * @param formattedSequence attributed string
-     * @param ptmArr    ptm array contains ptm information
+     * @param ptmArr            ptm array contains ptm information
      */
     private static void addPTMAttributes(AttributedString formattedSequence, int[] ptmArr) {
         for (int i = 0; i < ptmArr.length; i++) {

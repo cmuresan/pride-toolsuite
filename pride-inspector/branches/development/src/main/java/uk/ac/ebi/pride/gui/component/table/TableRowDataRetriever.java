@@ -72,7 +72,7 @@ public class TableRowDataRetriever {
         content.add(coverage);
 
         // peptide present
-        if (protein == null || protein.getSequenceString() == null) {
+        if (protein == null || protein.getSequenceString() == null || "".equals(protein.getSequenceString())) {
             content.add(PeptideFitState.UNKNOWN);
         } else {
             if (protein.hasSubSequenceString(sequence, start, end)) {

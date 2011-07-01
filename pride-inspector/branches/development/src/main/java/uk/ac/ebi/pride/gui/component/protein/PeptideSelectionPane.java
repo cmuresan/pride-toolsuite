@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.component.protein;
 import org.bushe.swing.event.ContainerEventServiceFinder;
 import org.bushe.swing.event.EventService;
 import org.bushe.swing.event.EventSubscriber;
+import org.jdesktop.swingx.table.TableColumnExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -18,6 +19,7 @@ import uk.ac.ebi.pride.gui.component.table.listener.PeptideCellMouseClickListene
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.ProgressiveUpdateTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 import uk.ac.ebi.pride.gui.event.container.ProteinIdentificationEvent;
@@ -49,12 +51,16 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
      * the title for ptm label
      */
     private final static String PTM_LABEL = "<html><b>PTM</b>: ";
-    private final static String PEPTIDE_TABLE_DESC = "<html><b>Peptide Details</b></html>";
+    private final static String PEPTIDE_TABLE_DESC = "Peptide Details";
 
     /**
      * peptide table for peptide related details
      */
     private JTable pepTable;
+    /**
+     * Peptide table label also displays the selected protein accession
+     */
+    private JLabel tableLabel;
 
     /**
      * PTM label display an overview of the PTMs
@@ -97,7 +103,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
         metaDataPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         // table label
-        JLabel tableLabel = new JLabel(PEPTIDE_TABLE_DESC);
+        tableLabel = new JLabel("<html><b>" + PEPTIDE_TABLE_DESC + "</b></html>");
         metaDataPanel.add(tableLabel);
 
         // rigid area
@@ -111,6 +117,12 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
         // create identification table
         try {
             pepTable = TableFactory.createPeptideTable(controller.getSearchEngine(), controller, true);
+            // hide protein accession column
+            TableColumnExt proteinAccCol = (TableColumnExt)pepTable.getColumn(PeptideTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader());
+            proteinAccCol.setVisible(false);
+            // hide mapped protein accession column
+            TableColumnExt proteinMappedCol = (TableColumnExt)pepTable.getColumn(PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
+            proteinMappedCol.setVisible(false);
         } catch (DataAccessException e) {
             String msg = "Failed to retrieve search engine details";
             logger.error(msg, e);
@@ -156,6 +168,8 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
             Comparable identId = event.getIdentificationId();
             logger.debug("Identification has been selected: {}", identId);
 
+            updateProteinLabel(identId);
+
             // update ptm label
             updatePTMLabel(identId);
 
@@ -171,6 +185,21 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
 
             // update peptide table
             updateTable(tableModel, identId);
+        }
+
+        private void updateProteinLabel(Comparable identId) {
+            if (identId == null) {
+                tableLabel.setText("<html><b>" + PEPTIDE_TABLE_DESC + "</b></html>");
+            } else {
+                String acc = null;
+                try {
+                    acc = controller.getProteinAccession(identId);
+                } catch (DataAccessException e) {
+                    String msg = "Failed to get protein accession";
+                    logger.error(msg);
+                }
+                tableLabel.setText("<html><b>" + PEPTIDE_TABLE_DESC + "</b> [" + acc  + "]</html>");
+            }
         }
 
         /**

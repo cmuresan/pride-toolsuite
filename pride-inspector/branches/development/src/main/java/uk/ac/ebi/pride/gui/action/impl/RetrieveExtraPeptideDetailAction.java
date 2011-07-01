@@ -17,19 +17,16 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Retrieve additional peptide details
- *
+ * <p/>
  * User: rwang
  * Date: 23/06/11
  * Time: 17:02
  */
-public class RetrieveExtraPeptideDetailAction extends PrideAction{
+public class RetrieveExtraPeptideDetailAction extends PrideAction {
     /**
      * JTable where protein name will be displayed
      */
@@ -42,13 +39,14 @@ public class RetrieveExtraPeptideDetailAction extends PrideAction{
 
     /**
      * Constructor
-     * @param table protein table
-     * @param controller    data access controller
+     *
+     * @param table      protein table
+     * @param controller data access controller
      */
     public RetrieveExtraPeptideDetailAction(JTable table,
                                             DataAccessController controller) {
         super(Desktop.getInstance().getDesktopContext().getProperty("load.protein.detail.title"),
-              GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("load.protein.detail.small.icon")));
+                GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("load.protein.detail.small.icon")));
         this.table = table;
         this.controller = controller;
     }
@@ -98,9 +96,16 @@ public class RetrieveExtraPeptideDetailAction extends PrideAction{
 
         int rowCount = table.getRowCount();
         int column = table.getColumnModel().getColumnIndex(PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
+        int selectedRow = table.getSelectedRow();
+        // add selected row first
+        Object selectedVal = table.getValueAt(selectedRow, column);
+        if (selectedVal != null) {
+            accs.add((String)selectedVal);
+        }
+        // add the rest
         for (int row = 0; row < rowCount; row++) {
             Object val = table.getValueAt(row, column);
-            if (val != null) {
+            if (val != null && row != selectedRow) {
                 accs.add((String) val);
             }
         }

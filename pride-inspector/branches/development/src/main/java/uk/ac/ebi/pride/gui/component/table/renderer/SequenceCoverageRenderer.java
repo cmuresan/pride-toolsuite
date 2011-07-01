@@ -44,7 +44,7 @@ public class SequenceCoverageRenderer implements TableCellRenderer {
             // formatter
             DecimalFormat format = new DecimalFormat("##.#%");
             // text to display
-            String percentage = value == null ? "" : format.format(Double.parseDouble(value.toString()));
+            String percentage = (value == null || Double.parseDouble(value.toString()) == -1) ? "" : format.format(Double.parseDouble(value.toString()));
 
 
             // paint text

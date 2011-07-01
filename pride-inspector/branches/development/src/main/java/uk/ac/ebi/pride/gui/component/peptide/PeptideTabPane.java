@@ -35,15 +35,15 @@ public class PeptideTabPane extends PrideInspectorTabPane {
     /**
      * resize weight for inner split pane
      */
-    private static final double INNER_SPLIT_PANE_RESIZE_WEIGHT = 0.6;
+    private static final double INNER_SPLIT_PANE_RESIZE_WEIGHT = 0.5;
     /**
      * resize weight for outer split pane
      */
-    private static final double OUTER_SPLIT_PANE_RESIZE_WEIGHT = 0.6;
+    private static final double OUTER_SPLIT_PANE_RESIZE_WEIGHT = 0.7;
     /**
      * the size of the divider for split pane
      */
-    private static final int DIVIDER_SIZE = 2;
+    private static final int DIVIDER_SIZE = 5;
 
     /**
      * Inner split pane contains peptideDescPane and peptidePTMPane
@@ -125,6 +125,7 @@ public class PeptideTabPane extends PrideInspectorTabPane {
         outterSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         outterSplitPane.setBorder(BorderFactory.createEmptyBorder());
         outterSplitPane.setOneTouchExpandable(false);
+        outterSplitPane.setDividerSize(DIVIDER_SIZE);
         outterSplitPane.setResizeWeight(OUTER_SPLIT_PANE_RESIZE_WEIGHT);
 
         // protein identification selection pane
@@ -139,7 +140,7 @@ public class PeptideTabPane extends PrideInspectorTabPane {
 
         // Spectrum view pane
         vizTabPane = new PeptideVizPane(controller);
-
+        vizTabPane.setMinimumSize(new Dimension(200, 200));
         innerSplitPane.setBottomComponent(vizTabPane);
         outterSplitPane.setBottomComponent(innerSplitPane);
 

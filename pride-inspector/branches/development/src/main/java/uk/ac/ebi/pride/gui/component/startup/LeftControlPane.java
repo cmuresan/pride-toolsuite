@@ -60,9 +60,10 @@ public class LeftControlPane extends JPanel {
         //======== splitPane2 ========
         {
             splitPane2.setOrientation(JSplitPane.VERTICAL_SPLIT);
-            splitPane2.setResizeWeight(0.6);
+            splitPane2.setBorder(BorderFactory.createEmptyBorder());
+            splitPane2.setResizeWeight(0.5);
             splitPane2.setContinuousLayout(true);
-            splitPane2.setDividerSize(1);
+            splitPane2.setDividerSize(5);
 
             //======== panel2 ========
             {
@@ -73,9 +74,9 @@ public class LeftControlPane extends JPanel {
 
                 //======== dataSourcePanel ========
                 {
-                    dataSourcePanel.setBackground(Color.white);
+//                    dataSourcePanel.setBackground(Color.white);
                     //dataSourcePanel.setBorder(new DropShadowBorder(Color.darkGray, 5));
-                    dataSourcePanel.setForeground(Color.lightGray);
+//                    dataSourcePanel.setForeground(Color.lightGray);
                     dataSourcePanel.setLayout(new BorderLayout());
                 }
 

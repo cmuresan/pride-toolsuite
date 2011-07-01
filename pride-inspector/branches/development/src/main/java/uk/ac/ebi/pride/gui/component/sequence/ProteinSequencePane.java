@@ -252,7 +252,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                     }
 
                     if (lineWidth == -1) {
-                        lineWidth  = xPos;
+                        lineWidth = xPos;
                     }
                     previousLineEndPosition = measurer.getPosition();
                 }
@@ -278,8 +278,8 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
             g2.setFont(AttributedSequenceBuilder.DEFAULT_FONT.deriveFont(Font.ITALIC));
             g2.setColor(AttributedSequenceBuilder.DEFAULT_FOREGROUND);
 
-            int mod = measurer.getPosition()%proteinSegLength;
-            int count = ((measurer.getPosition() - mod)/proteinSegLength)*PROTEIN_SEGMENT_LENGTH + mod;
+            int mod = measurer.getPosition() % proteinSegLength;
+            int count = ((measurer.getPosition() - mod) / proteinSegLength) * PROTEIN_SEGMENT_LENGTH + mod;
             g2.drawString(count + "", LEFT_MARGIN + lineWidth - 40, yPos);
         }
 
@@ -291,9 +291,9 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
     /**
      * Draw the legend for protein sequence veiwer
      *
-     * @param g2    Graphics 2d
-     * @param y starting vertical position
-     * @return  int stop vertical position
+     * @param g2 Graphics 2d
+     * @param y  starting vertical position
+     * @return int stop vertical position
      */
     private int drawLegend(Graphics2D g2, int y) {
         Graphics2D ng2 = (Graphics2D) g2.create();
@@ -307,19 +307,19 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         // draw overlap
         xPos = drawLegendText(Constants.OVERLAP, ng2, xPos, yPos);
         xPos = drawLegendIcon(Constants.PEPTIDE_OVERLAP_COLOUR, ng2, xPos - COLUMN_GAP, yPos);
-        xPos -= 2*COLUMN_GAP;
+        xPos -= 2 * COLUMN_GAP;
         // draw fit
         xPos = drawLegendText(Constants.FIT, ng2, xPos, yPos);
         xPos = drawLegendIcon(Constants.FIT_PEPTIDE_BACKGROUND_COLOUR, ng2, xPos - COLUMN_GAP, yPos);
-        xPos -= 2*COLUMN_GAP;
+        xPos -= 2 * COLUMN_GAP;
         // draw strict fit
         xPos = drawLegendText(Constants.STRICT_FIT, ng2, xPos, yPos);
         xPos = drawLegendIcon(Constants.STRICT_FIT_PEPTIDE_BACKGROUND_COLOUR, ng2, xPos - COLUMN_GAP, yPos);
-        xPos -= 2*COLUMN_GAP;
+        xPos -= 2 * COLUMN_GAP;
         // draw PTM
         xPos = drawLegendText(Constants.PTM, ng2, xPos, yPos);
         xPos = drawLegendIcon(Constants.PTM_BACKGROUND_COLOUR, ng2, xPos - COLUMN_GAP, yPos);
-        xPos -= 2*COLUMN_GAP;
+        xPos -= 2 * COLUMN_GAP;
         // draw selected
         xPos = drawLegendText(Constants.SELECTED, ng2, xPos, yPos);
         xPos = drawLegendIcon(Constants.PEPTIDE_HIGHLIGHT_COLOUR, ng2, xPos - COLUMN_GAP, yPos);
@@ -335,7 +335,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
     private int drawLegendIcon(Color iconColour, Graphics2D g2, int xPos, int yPos) {
         int w = 10;
         int x = xPos - w;
-        int y = yPos + w/2;
+        int y = yPos + w / 2;
 
         g2.setColor(iconColour);
         g2.fillRect(x, y, w, w);
@@ -371,7 +371,8 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
      * @param g2 graphics 2D
      */
     private void drawMissingProteinSequence(Graphics2D g2, AnnotatedProtein protein) {
-        int yPos = drawProteinMetaData(g2, protein, TOP_MARGIN) + ROW_GAP;
+        int yPos = drawLegend(g2, TOP_MARGIN) + ROW_GAP;
+        yPos = drawProteinMetaData(g2, protein, yPos) + ROW_GAP;
 
         // increase font size
         Font font = g2.getFont().deriveFont(15f).deriveFont(Font.BOLD);
@@ -379,17 +380,17 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         g2.setColor(Color.gray);
 
         //draw icon
-        ImageIcon icon = (ImageIcon)GUIUtilities.loadIcon(appContext.getProperty("protein.sequence.missing.icon.small"));
+        ImageIcon icon = (ImageIcon) GUIUtilities.loadIcon(appContext.getProperty("protein.sequence.missing.icon.small"));
         Image iconImage = icon.getImage();
         g2.drawImage(iconImage, LEFT_MARGIN, yPos, null);
 
         // draw warning message
         String msg = appContext.getProperty("protein.sequence.missing.title");
-        g2.drawString(msg, iconImage.getWidth(null) + LEFT_MARGIN, yPos + iconImage.getHeight(null)/2 + 5);
+        g2.drawString(msg, iconImage.getWidth(null) + LEFT_MARGIN, yPos + iconImage.getHeight(null) / 2 + 5);
     }
 
     private int drawProteinMetaData(Graphics2D g2, AnnotatedProtein protein, int y) {
-        Graphics2D ng2 = (Graphics2D)g2.create();
+        Graphics2D ng2 = (Graphics2D) g2.create();
         ng2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         ng2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
@@ -427,31 +428,42 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
             // draw peptide counts
             int totalPeptides = protein.getAnnotations().size();
             if (totalPeptides > 0) {
+                // total number of peptides
+                int numOfPeptides = protein.getNumOfPeptides();
                 // number of valid peptides
                 int validPeptides = protein.getNumOfValidPeptides();
-                if (validPeptides >= 0) {
-                    String msg = validPeptides + "/" + totalPeptides + " peptides present";
-                    ng2.drawString(msg, xPos, yPos);
-                    xPos += fontMetrics.stringWidth(msg) ;
-                }
-
                 // number of unique peptides
                 int uniquePeptides = protein.getNumOfUniquePeptides();
-                if (uniquePeptides >= 0) {
-                    String msg = (xPos > LEFT_MARGIN ? ", " : "") + uniquePeptides + "/" + totalPeptides + " distinct peptides";
-                    ng2.drawString(msg, xPos, yPos);
-                    xPos += fontMetrics.stringWidth(msg);
+
+                String msg = numOfPeptides + " peptides";
+                if (validPeptides >= 0 || uniquePeptides >= 0) {
+                    msg += " (";
+                    if (validPeptides >= 0) {
+                        msg += validPeptides + " matched";
+                    }
+
+
+                    if (uniquePeptides >= 0) {
+                        msg += (msg.endsWith("(") ? "" : ", ") + uniquePeptides + " distinct";
+                    }
+                    msg += ")";
                 }
+
+                ng2.drawString(msg, xPos, yPos);
+                xPos += fontMetrics.stringWidth(msg);
 
                 // draw sequence coverage
                 int aminoAcidCoverage = protein.getNumOfAminoAcidCovered();
+                aminoAcidCoverage = aminoAcidCoverage == -1 ? 0 : aminoAcidCoverage;
                 int sequenceLen = protein.getSequenceString().length();
                 // formatter
                 DecimalFormat format = new DecimalFormat("##.#%");
                 // text to display
-                String percentage = format.format(protein.getSequenceCoverage());
+                double coverage = protein.getSequenceCoverage();
+                coverage = coverage == -1 ? 0 : coverage;
+                String percentage = format.format(coverage);
 
-                String msg = (xPos > LEFT_MARGIN ? ", " : "") + aminoAcidCoverage + "/" + sequenceLen + " amino acids (" + percentage + " coverage)";
+                msg = (xPos > LEFT_MARGIN ? ", " : "") + aminoAcidCoverage + "/" + sequenceLen + " amino acids (" + percentage + " coverage)";
                 ng2.drawString(msg, xPos, yPos);
                 xPos += fontMetrics.stringWidth(msg);
             }

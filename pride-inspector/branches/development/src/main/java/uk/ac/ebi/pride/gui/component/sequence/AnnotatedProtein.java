@@ -101,6 +101,15 @@ public class AnnotatedProtein extends Protein {
         propertyChangeHelper.firePropertyChange(PEPTIDE_SELECTION_PROP, oldPeptide, newPeptide);
     }
 
+    /**
+     * get the total number of peptides
+     *
+     * @return int number of peptides
+     */
+    public int getNumOfPeptides() {
+        return annotations.size();
+    }
+
     public int getNumOfValidPeptides() {
         if (numOfValidPeptides == -1) {
             populateCoverage();
@@ -128,13 +137,25 @@ public class AnnotatedProtein extends Protein {
     }
 
     public double getSequenceCoverage() {
+
+        String sequence = getSequenceString();
+        if (sequence == null || sequence.length() == 0) {
+            return -1;
+        }
+
         if (numOfAminoAcidCovered == -1) {
             populateCoverage();
         }
-        return Double.parseDouble(numOfAminoAcidCovered + "") / (getSequenceString().length());
+
+        return Double.parseDouble(numOfAminoAcidCovered + "") / sequence.length();
     }
 
     public int getNumOfAminoAcidCovered() {
+        String sequence = getSequenceString();
+        if (sequence == null || sequence.length() == 0) {
+            return -1;
+        }
+
         if (numOfAminoAcidCovered == -1) {
             populateCoverage();
         }
@@ -147,13 +168,16 @@ public class AnnotatedProtein extends Protein {
             int numOfValidPeptides = 0;
 
             // remove invalid peptide
-            Iterator<PeptideAnnotation> peptideIter = peptides.iterator();
-            while (peptideIter.hasNext()) {
-                PeptideAnnotation peptideAnnotation = peptideIter.next();
-                if (!this.isValidPeptideAnnotation(peptideAnnotation)) {
-                    peptideIter.remove();
-                } else {
-                    numOfValidPeptides++;
+            String sequence = this.getSequenceString();
+            if (sequence != null && !"".equals(sequence)) {
+                Iterator<PeptideAnnotation> peptideIter = peptides.iterator();
+                while (peptideIter.hasNext()) {
+                    PeptideAnnotation peptideAnnotation = peptideIter.next();
+                    if (!this.isValidPeptideAnnotation(peptideAnnotation)) {
+                        peptideIter.remove();
+                    } else {
+                        numOfValidPeptides++;
+                    }
                 }
             }
 

@@ -672,7 +672,7 @@ public class ProteinDetailFetcher {
         		
         		continue;
         	}
-        	
+
         	if (fields.length < 1)
         		continue;
         	

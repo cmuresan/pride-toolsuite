@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * SearchFinder will a collection of string for matches
- *
+ * <p/>
  * User: rwang
  * Date: 02/06/11
  * Time: 12:03
@@ -23,13 +23,10 @@ public class SearchFinder {
     /**
      * search a collection of values
      *
-     * @param values    a list of values to search
-     * @return  boolean true means match
+     * @param values a list of values to search
+     * @return boolean true means match
      */
     public boolean search(List<String> values) {
-        if (values.size() != headers.size()) {
-            throw new IllegalArgumentException("The size of input values must be the same as the number of headers: " + values.size());
-        }
 
         boolean found = false;
         // get the search field
@@ -41,14 +38,16 @@ public class SearchFinder {
 
         // find whether the search field exists in the header list
         int index = headers.indexOf(field);
-        if (index >=0 ) {
+        if (index >= 0) {
             // search a field
-            String value = values.get(index);
-            found = searchField(value.toLowerCase(), term.toLowerCase(), criteria);
+            if (index < values.size()) {
+                String value = values.get(index);
+                found = searchField(value.toLowerCase(), term.toLowerCase(), criteria);
+            }
         } else {
             // search the whole fields
             for (String value : values) {
-                if (found = searchField(value.toLowerCase(), term.toLowerCase(), criteria)){
+                if (found = searchField(value.toLowerCase(), term.toLowerCase(), criteria)) {
                     break;
                 }
             }
@@ -60,10 +59,10 @@ public class SearchFinder {
     /**
      * Search the value of one field
      *
-     * @param fieldValue    value of the field
-     * @param term  search term
-     * @param criteria  criteria to be used
-     * @return  boolean true means match
+     * @param fieldValue value of the field
+     * @param term       search term
+     * @param criteria   criteria to be used
+     * @return boolean true means match
      */
     public boolean searchField(String fieldValue, String term, Criteria criteria) {
         boolean found = false;

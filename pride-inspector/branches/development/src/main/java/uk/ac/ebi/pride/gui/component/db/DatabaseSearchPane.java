@@ -108,7 +108,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
         CSH.setHelpIDString(helpButton, "help.browse.mzgraph");
         helpButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
         helpButtonPanel.add(helpButton);
-        helpButtonPanel.setPreferredSize(new Dimension(200, 25));
+        helpButtonPanel.setPreferredSize(new Dimension(200, 30));
         container.add(helpButtonPanel, BorderLayout.NORTH);
         add(helpButtonPanel, BorderLayout.NORTH);
 
@@ -174,7 +174,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                                             .addContainerGap())
                                     .add(GroupLayout.TRAILING, panel3Layout.createSequentialGroup()
                                             .addContainerGap(451, Short.MAX_VALUE)
-                                            .add(searchResultCheckBox, GroupLayout.PREFERRED_SIZE, 141, GroupLayout.PREFERRED_SIZE)
+                                            .add(searchResultCheckBox, GroupLayout.PREFERRED_SIZE, 180, GroupLayout.PREFERRED_SIZE)
                                             .addContainerGap())
                     );
                     panel3Layout.setVerticalGroup(
@@ -260,7 +260,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                                     .addContainerGap()
                                     .add(panel4Layout.createParallelGroup()
                                             .add(GroupLayout.TRAILING, panel4Layout.createSequentialGroup()
-                                                    .add(openSelectedButton, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
+                                                    .add(openSelectedButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
                                                     .add(18, 18, 18)
                                                     .add(closeButton, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
                                                     .add(20, 20, 20))

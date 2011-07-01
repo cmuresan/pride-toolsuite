@@ -4,6 +4,7 @@ import org.jdesktop.swingx.table.DefaultTableColumnModelExt;
 import org.jdesktop.swingx.table.TableColumnExt;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.SearchEngine;
+import uk.ac.ebi.pride.gui.component.table.editor.ButtonEditor;
 import uk.ac.ebi.pride.gui.component.table.listener.HyperLinkCellMouseClickListener;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.component.table.model.*;
@@ -173,9 +174,12 @@ public class TableFactory {
         DefaultPrideTable table = new DefaultPrideTable(tableModel, columnModel);
 
         // set view experiment cell renderer
-        ViewExperimentRenderer renderer = new ViewExperimentRenderer();
+        String label = "View";
+        ButtonRenderer renderer = new ButtonRenderer(label);
+        ButtonEditor editor = new ButtonEditor(new JCheckBox(), label);
         TableColumnExt viewColumn = (TableColumnExt) table.getColumn(DatabaseSearchTableModel.TableHeader.VIEW.getHeader());
         viewColumn.setCellRenderer(renderer);
+        viewColumn.setCellEditor(editor);
 
         return table;
     }

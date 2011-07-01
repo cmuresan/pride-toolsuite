@@ -161,4 +161,25 @@ public class ProteinNameFetcherTest extends TestCase {
 			fail(e.getMessage());
 		}
 	}
+	
+	@Test
+	public void testMergedUniprotAccessions() {
+		ArrayList<String> accessions = new ArrayList<String>(3);
+		accessions.add("O88541");
+		
+		try {
+			Map<String, Protein> proteins = fetcher.getProteinDetails(accessions);
+			
+			assertEquals(2, proteins.size());
+			Protein p = proteins.get("O88541");
+			assertNotNull(p);
+			assertEquals("P24368", p.getAccession());
+			assertEquals("Peptidyl-prolyl cis-trans isomerase B (PPIase B) (EC 5.2.1.8) (CYP-S1) (Cyclophilin B) (Rotamase B) (S-cyclophilin) (SCYLP)", p.getName());
+			assertEquals("MLRLSERNMKVLFAAALIVGSVVFLLLPGPSVANDKKKGPKVTVKVYFDFQIGDEPVGRVTFGLFGKTVPKTVDNFVALATGEKGFGYKNSKFHRVIKDFMIQGGDFTRGDGTGGKSIYGERFPDENFKLKHYGPGWVSMANAGKDTNGSQFFITTVKTSWLDGKHVVFGKVLEGMDVVRKVENTKTDSRDKPLKDVIIVDCGKIEVEKPFAIAKE", p.getSequenceString());
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
 }

@@ -15,7 +15,7 @@
 *_July 1. 2011:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.0.6] is now available:*
  * This version contains a number of bug fixes from the last version.
 
-*_March 15. 2010:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.0.4] is now available:*
+*_March 15. 2011:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.0.4] is now available:*
  * This version is a major update, it contains a number of bug fixes from the last version (version 1.0.3). 
 
 *_October 26. 2010:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector 0.7] is now available:*

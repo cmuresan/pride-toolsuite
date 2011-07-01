@@ -673,19 +673,35 @@ public class ProteinDetailFetcher {
         		continue;
         	}
         	
-        	// create the protein object
-        	Protein p = new Protein(fields[fieldIndex.get("Accession")]);
-        	p.setName(fields[fieldIndex.get("Protein names")]);
-        	p.setSource((fields[fieldIndex.get("Status")].equals("reviewed")) ? "UniProt/Swiss-Prot" : "UniProt/TrEMBL");
+        	if (fields.length < 1)
+        		continue;
         	
-        	String sequence = fields[fieldIndex.get("Sequence")];
-        	sequence = sequence.replaceAll("\\s", "");
-        	
-        	// TODO: check for inactive proteins (? how to react to inactive proteins)
-        	
-        	p.setSequenceString(sequence);
-        	
-        	proteins.put((usingAccession) ? fields[fieldIndex.get("Accession")] : fields[fieldIndex.get("Entry name")], p);
+        	// check if the protein was demerged
+        	if (fields[1].startsWith("Merged into")) {
+        		// extract the new accession
+        		String newAccession = fields[1].substring(12, 18);
+        		// get the protein
+        		proteins.put(fields[0], proteins.get(newAccession));
+        	}
+        	else {
+        		// make sure the line is in the expected format
+            	if (fields.length != fieldIndex.size())
+            		throw new Exception("Unexpected UniProt answer retrieved. Line has a different number of fields than defined in the header: <" + lines[lineIndex] + ">");
+            	
+            	// create the protein object
+            	Protein p = new Protein(fields[fieldIndex.get("Accession")]);
+            	p.setName(fields[fieldIndex.get("Protein names")]);
+            	p.setSource((fields[fieldIndex.get("Status")].equals("reviewed")) ? "UniProt/Swiss-Prot" : "UniProt/TrEMBL");
+            	
+            	String sequence = fields[fieldIndex.get("Sequence")];
+            	sequence = sequence.replaceAll("\\s", "");
+            	
+            	// TODO: check for inactive proteins (? how to react to inactive proteins)
+            	
+            	p.setSequenceString(sequence);
+            	
+            	proteins.put((usingAccession) ? fields[fieldIndex.get("Accession")] : fields[fieldIndex.get("Entry name")], p);
+        	}
         }
         
         // return the proteins

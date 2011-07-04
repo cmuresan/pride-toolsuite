@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  */
 public class PrideXmlControllerImpl extends CachedDataAccessController {
     private static final Logger logger = LoggerFactory.getLogger(PrideXmlControllerImpl.class);
-    private static final Pattern prideXmlHeaderPattern = Pattern.compile("^<\\?xml [^>]*>\\s*<ExperimentCollection [^>]*>", Pattern.MULTILINE);
+    private static final Pattern prideXmlHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<ExperimentCollection [^>]*>", Pattern.MULTILINE);
 
     private PrideXmlReader reader = null;
 

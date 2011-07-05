@@ -188,7 +188,7 @@ load.protein.detail.small.icon=icon/16x16/load_next.png
 load.protein.detail.title=Download Protein Details
 
 # icons for different tabs
-loading.large.icon=icon/96x96/loading_text.gif
+loading.large.icon=icon/64x64/loading.gif
 general.tab.icon.small=icon/16x16/general.png
 general.tab.loading.icon.small=icon/16x16/general_loading.gif
 identification.tab.icon.small=icon/16x16/view.png

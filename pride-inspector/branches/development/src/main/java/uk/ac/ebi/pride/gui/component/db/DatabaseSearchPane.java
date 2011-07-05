@@ -30,6 +30,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 
+/**
+ * DatabaseSearchPane is the main panel contains a search box and a search result table
+ *
+ * All the search actions for the PRIDE public instance is done through this panel
+ *
+ */
 public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
     private static final String PANE_TITLE = "Search Database";
     private static final Color BACKGROUND_COLOUR = Color.white;
@@ -48,8 +54,6 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
 
     private int resultCount = 0;
 
-    private PrideInspectorContext context;
-
     public DatabaseSearchPane(JComponent parentComp) {
         super(null, parentComp);
         // enable annotation
@@ -63,11 +67,10 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
         this.setTitle(PANE_TITLE);
 
         // set the final icon
-        context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-        this.setIcon(GUIUtilities.loadIcon(context.getProperty("database.search.tab.icon.small")));
+        this.setIcon(GUIUtilities.loadIcon(appContext.getProperty("database.search.tab.icon.small")));
 
         // set the loading icon
-        this.setLoadingIcon(GUIUtilities.loadIcon(context.getProperty("database.search.loading.icon.small")));
+        this.setLoadingIcon(GUIUtilities.loadIcon(appContext.getProperty("database.search.loading.icon.small")));
     }
 
 
@@ -92,7 +95,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
         openSelectedButton = new JButton();
 
         // help button
-        Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
+        Icon helpIcon = GUIUtilities.loadIcon(appContext.getProperty("help.icon.small"));
         JButton helpButton = GUIUtilities.createLabelLikeButton(helpIcon, null);
 
         //======== container panel ==========
@@ -106,7 +109,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
         //-------- help button -----------
         helpButton.setToolTipText("Help on " + PANE_TITLE);
         CSH.setHelpIDString(helpButton, "help.browse.mzgraph");
-        helpButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
+        helpButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
         helpButtonPanel.add(helpButton);
         helpButtonPanel.setPreferredSize(new Dimension(200, 30));
         container.add(helpButtonPanel, BorderLayout.NORTH);
@@ -292,7 +295,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
     public void onDatabaseSearchResultEvent(DatabaseSearchEvent evt) {
         switch (evt.getStatus()) {
             case START:
-                Icon icon = GUIUtilities.loadIcon(context.getProperty("loading.small.icon"));
+                Icon icon = GUIUtilities.loadIcon(appContext.getProperty("loading.small.icon"));
                 searchResultLabel.setIcon(icon);
                 break;
             case COMPLETE:
@@ -345,7 +348,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
             task = new SearchDatabaseTask(searchEntry);
         }
         task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-        context.addTask(task);
+        appContext.addTask(task);
     }
 
 
@@ -403,7 +406,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                         Comparable accession = (Comparable) tableModel.getValueAt(i, viewColIndex);
                         OpenPrideDatabaseTask task = new OpenPrideDatabaseTask(accession);
                         task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-                        context.addTask(task);
+                        appContext.addTask(task);
                     }
                 }
             }

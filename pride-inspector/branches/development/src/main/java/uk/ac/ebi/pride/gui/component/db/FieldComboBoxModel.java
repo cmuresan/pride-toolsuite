@@ -8,11 +8,11 @@ import javax.swing.*;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * Data model for the search field combo box, provides a list of fields
+ *
  * User: rwang
  * Date: 02/06/11
  * Time: 15:03
- * To change this template use File | Settings | File Templates.
  */
 public class FieldComboBoxModel extends DefaultComboBoxModel{
 

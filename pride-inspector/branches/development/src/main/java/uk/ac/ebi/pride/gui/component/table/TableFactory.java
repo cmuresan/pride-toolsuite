@@ -44,6 +44,7 @@ public class TableFactory {
     /**
      * Build a table to display identification related details.
      *
+     * @param controller    data access controller
      * @return JTable   identification table
      */
     public static JTable createIdentificationTable(DataAccessController controller) {
@@ -83,6 +84,7 @@ public class TableFactory {
      * Build a table to display peptide related details.
      *
      * @param se    search engine
+     * @param controller    data access controller
      * @return JTable   peptide table
      */
     public static JTable createPeptideTable(SearchEngine se, DataAccessController controller) {
@@ -173,9 +175,8 @@ public class TableFactory {
         DefaultPrideTable table = new DefaultPrideTable(tableModel, columnModel);
 
         // set view experiment cell renderer
-        String label = "View";
         TableColumnExt viewColumn = (TableColumnExt) table.getColumn(DatabaseSearchTableModel.TableHeader.VIEW.getHeader());
-        viewColumn.setCellRenderer(new ButtonRenderer(label));
+        viewColumn.setCellRenderer(new ButtonRenderer("View"));
 
         return table;
     }

@@ -40,7 +40,7 @@ public class SummaryReportViewer extends JPanel{
         JScrollPane scrollPane = new JScrollPane(null,
                                                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                                                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setBorder(null);
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.gray));
         container = new ReportList();
         // cell renderer
         ReportListRenderer renderer = new ReportListRenderer();

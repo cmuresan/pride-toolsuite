@@ -70,6 +70,8 @@ public class DataSourceViewer extends JPanel {
 
         // set up the main pane
         this.setLayout(new BorderLayout());
+        // border
+        this.setBorder(BorderFactory.createLineBorder(Color.gray));
     }
 
     private void addComponents() {

@@ -2,17 +2,23 @@ package uk.ac.ebi.pride.gui.component.table.editor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 28/06/2011
  * Time: 14:32
- * To change this template use File | Settings | File Templates.
  */
 public class ButtonEditor extends DefaultCellEditor {
     private JButton button;
     private String text;
+    private boolean isPushed;
+
+    public ButtonEditor() {
+        this(new JCheckBox(), null);
+    }
 
     public ButtonEditor(JCheckBox checkBox, String text) {
         super(checkBox);
@@ -20,24 +26,50 @@ public class ButtonEditor extends DefaultCellEditor {
         this.text = text;
         this.button.setOpaque(true);
         // add action listener
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                fireEditingStopped();
+            }
+        });
     }
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         if (isSelected) {
-            button.setForeground(table.getSelectionForeground());
+            button.setForeground(Color.red);
             button.setBackground(table.getSelectionBackground());
         } else {
             button.setForeground(table.getForeground());
             button.setBackground(table.getBackground());
         }
 
-        if (text ==  null) {
-            button.setText((value == null) ? "" : value.toString());
-        } else {
-            button.setText(text);
+        if (text == null && value != null) {
+            text = value.toString();
         }
 
+        button.setText(text);
+        isPushed = true;
+
         return button;
+    }
+
+    @Override
+    public Object getCellEditorValue() {
+        if (isPushed) {
+            System.out.println("pushed");
+        }
+        isPushed = false;
+        return new String(text);
+    }
+
+    @Override
+    public boolean stopCellEditing() {
+        isPushed = false;
+        return super.stopCellEditing();
+    }
+
+    @Override
+    protected void fireEditingStopped() {
+        super.fireEditingStopped();
     }
 }

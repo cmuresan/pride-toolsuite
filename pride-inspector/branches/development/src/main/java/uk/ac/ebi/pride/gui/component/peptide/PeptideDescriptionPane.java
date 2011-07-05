@@ -68,7 +68,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
     protected void addComponents() {
         // create identification table
         try {
-            pepTable = TableFactory.createPeptideTable(controller.getSearchEngine(), controller, false);
+            pepTable = TableFactory.createPeptideTable(controller.getSearchEngine(), controller);
             TableColumnExt peptideFitColumn = (TableColumnExt) pepTable.getColumn(PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
             peptideFitColumn.setCellRenderer(new PeptideFitCellRenderer());
             peptideFitColumn.setVisible(false);

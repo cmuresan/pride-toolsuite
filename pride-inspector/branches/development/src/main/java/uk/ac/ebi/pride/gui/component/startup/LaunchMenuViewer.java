@@ -33,6 +33,7 @@ public class LaunchMenuViewer extends JPanel {
     public void addComponents() {
         // create a scroll pane
         JPanel container = new JPanel();
+        container.setBorder(BorderFactory.createLineBorder(Color.gray));
         container.setBackground(Color.white);
         container.setLayout(new GridLayout(4, 1));
 

@@ -42,8 +42,8 @@ public class PrideInspectorLoadingPanel extends PrideInspectorPanel {
         JLabel label = new JLabel();
         label.setOpaque(false);
         label.setIcon(loadingIcon);
-        label.setText("  Loading...");
-        label.setFont(label.getFont().deriveFont(20f));
+        label.setText(context.getProperty("loading.title"));
+        label.setFont(label.getFont().deriveFont(18f));
         panel.add(label, c);
         this.add(panel, c);
         this.setBackground(Color.white);

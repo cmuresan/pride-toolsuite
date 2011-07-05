@@ -19,22 +19,13 @@ import java.text.AttributedString;
  */
 public class PeptideLabel extends JPanel {
     private static final Color PTM_COLOR = new Color(255, 0, 0, 150);
-    private ImageIcon expandIcon;
-    private Peptide peptide;
+    public final static Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.PLAIN, 16);
+    public final static Font DEFAULT_FONT_BOLD = new Font(Font.MONOSPACED, Font.BOLD, 16);
     private AttributedString ptmString;
-    private boolean drawIcon;
 
-    public PeptideLabel(Peptide peptide, boolean drawIcon) {
-        this.peptide = peptide;
-        this.drawIcon = drawIcon;
+    public PeptideLabel(Peptide peptide) {
         ptmString = getPTMString(peptide);
         this.setOpaque(true);
-        DesktopContext context = uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
-        expandIcon = (ImageIcon) GUIUtilities.loadIcon(context.getProperty("ptm.expand.small.icon"));
-    }
-
-    public Peptide getPeptide() {
-        return peptide;
     }
 
     @Override
@@ -42,26 +33,17 @@ public class PeptideLabel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
         int offset = 0;
-        if (drawIcon && hasModification(peptide)) {
-            g2.drawImage(expandIcon.getImage(), 0, 3,this);
-            offset = 20;
-        }
-
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.drawString(ptmString.getIterator(), offset, 15);
         g2.dispose();
     }
 
-    private boolean hasModification(Peptide peptide) {
-        java.util.List<Modification> mods = peptide.getModifications();
-        return mods != null && !mods.isEmpty();
-    }
-
     private AttributedString getPTMString(Peptide peptide) {
         String sequence = peptide.getSequence();
         java.util.List<Modification> mods = peptide.getModifications();
         AttributedString str = new AttributedString(sequence);
+        str.addAttribute(TextAttribute.FONT, DEFAULT_FONT);
         if (mods != null) {
             int seqLength = sequence.length();
             for (Modification mod : mods) {
@@ -69,6 +51,7 @@ public class PeptideLabel extends JPanel {
                 location = location == 0 ? 1 : location;
                 if (seqLength + 1 > location && location > 0) {
                     str.addAttribute(TextAttribute.FOREGROUND, PTM_COLOR, location - 1, location);
+                    str.addAttribute(TextAttribute.FONT, DEFAULT_FONT_BOLD, location - 1, location);
                 }
             }
         }

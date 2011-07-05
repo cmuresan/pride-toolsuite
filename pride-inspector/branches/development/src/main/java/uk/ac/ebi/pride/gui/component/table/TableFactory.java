@@ -83,10 +83,9 @@ public class TableFactory {
      * Build a table to display peptide related details.
      *
      * @param se    search engine
-     * @param ptmIcon   whether to display open ptm dialog icon
      * @return JTable   peptide table
      */
-    public static JTable createPeptideTable(SearchEngine se, DataAccessController controller, boolean ptmIcon) {
+    public static JTable createPeptideTable(SearchEngine se, DataAccessController controller) {
 
         PeptideTableModel peptideTableModel = new PeptideTableModel(se, controller);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
@@ -94,7 +93,7 @@ public class TableFactory {
 
         // peptide sequence column renderer
         TableColumnExt peptideColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_COLUMN.getHeader());
-        peptideColumn.setCellRenderer(new PeptideSequenceCellRenderer(ptmIcon));
+        peptideColumn.setCellRenderer(new PeptideSequenceCellRenderer());
 
         // peptide sequence present in protein sequence
         TableColumnExt peptideFitColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
@@ -175,11 +174,8 @@ public class TableFactory {
 
         // set view experiment cell renderer
         String label = "View";
-        ButtonRenderer renderer = new ButtonRenderer(label);
-        ButtonEditor editor = new ButtonEditor(new JCheckBox(), label);
         TableColumnExt viewColumn = (TableColumnExt) table.getColumn(DatabaseSearchTableModel.TableHeader.VIEW.getHeader());
-        viewColumn.setCellRenderer(renderer);
-        viewColumn.setCellEditor(editor);
+        viewColumn.setCellRenderer(new ButtonRenderer(label));
 
         return table;
     }

@@ -91,4 +91,10 @@ public interface Constants {
     public final static Color PEPTIDE_OVERLAP_COLOUR = new Color(40, 175, 99);
     public final static Color PEPTIDE_HIGHLIGHT_COLOUR = Color.yellow;
     public final static Color NOT_FIT_PEPTIDE_BACKGROUND_COLOUR = new Color(215, 39, 41, 100);
+
+    /** color for tables */
+    public static final Color ALTER_ROW_COLOUR = new Color(214, 241, 249);
+    public static final Color ROW_SELECTION_BACKGROUD = new Color(193, 210, 238);
+    public static final Color ROW_SELECTION_FOREGROUND = Color.black;
+
 }

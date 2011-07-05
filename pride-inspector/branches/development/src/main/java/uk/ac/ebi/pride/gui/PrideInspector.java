@@ -27,12 +27,10 @@ import javax.jnlp.SingleInstanceService;
 import javax.jnlp.UnavailableServiceException;
 import javax.swing.*;
 import java.awt.*;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * This is the main class to call to run PRIDE GUI
@@ -197,7 +195,11 @@ public class PrideInspector extends Desktop {
         ImageIcon icon = GUIUtilities.loadImageIcon(context.getProperty("pride.inspector.logo.medium.icon"));
         mainFrame.setIconImage(icon.getImage());
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
+//            UIManager.setLookAndFeel("com.jtattoo.plaf.smart.SmartLookAndFeel");
+//            SubstanceLookAndFeel.setSkin(new ModerateSkin());  best alternative
+
         } catch (Exception e) {
             logger.error("Failed to set the look and feel", e);
         }

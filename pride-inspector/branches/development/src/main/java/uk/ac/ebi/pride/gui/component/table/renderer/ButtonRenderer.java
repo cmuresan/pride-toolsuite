@@ -17,27 +17,27 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
 
     private String text;
 
+    public ButtonRenderer() {
+        this(null);
+    }
+
     public ButtonRenderer(String text) {
         this.text = text;
-        setOpaque(true);
+        this.setOpaque(true);
     }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                    boolean hasFocus, int row, int column) {
         if (isSelected) {
-            setForeground(table.getSelectionForeground());
-            setBackground(table.getSelectionBackground());
+            this.setForeground(Color.red);
+            this.setBackground(Color.red);
         } else {
-            setForeground(table.getForeground());
-            setBackground(UIManager.getColor("Button.background"));
+            this.setForeground(Color.red);
+            this.setBackground(Color.red);
         }
 
-        if (text ==  null) {
-            this.setText((value == null) ? "" : value.toString());
-        } else {
-            this.setText(text);
-        }
+        this.setText(text == null ? value.toString() : text);
 
         return this;
     }

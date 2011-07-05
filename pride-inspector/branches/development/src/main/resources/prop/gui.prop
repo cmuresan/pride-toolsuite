@@ -83,7 +83,7 @@ summary.report.viewer.tooltip=Summary report on selected experiment
 navigation.expand.small.icon=icon/16x16/navigation_expand.gif
 navigation.collapse.small.icon=icon/16x16/navigation_collapse.gif
 
-ptm.expand.small.icon=icon/16x16/expand_ptm.png
+open.ptm.small.icon=icon/16x16/view.png
 expand.table.icon.small=icon/16x16/chart_zoom_in.png
 
 export.enabled.small.icon=icon/16x16/export_enable.gif

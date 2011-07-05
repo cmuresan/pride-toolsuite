@@ -1,8 +1,10 @@
 package uk.ac.ebi.pride.gui.component.table.listener;
 
+import org.jdesktop.swingx.table.TableColumnExt;
 import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.component.protein.PTMDialog;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -11,7 +13,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * Created by IntelliJ IDEA.
+ * Mouse listener to show PTM dialog
+ *
  * User: rwang
  * Date: 16-Aug-2010
  * Time: 10:56:50
@@ -32,7 +35,8 @@ public class PeptideCellMouseClickListener extends MouseAdapter {
         String header = table.getColumnName(col);
         if (header.equals(columnHeader)) {
             TableModel tableModel = table.getModel();
-            Object val = tableModel.getValueAt(table.convertRowIndexToModel(row), table.convertColumnIndexToModel(col));
+            TableColumnExt column = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_COLUMN.getHeader());
+            Object val = tableModel.getValueAt(table.convertRowIndexToModel(row), column.getModelIndex());
             if (val != null && val instanceof Peptide) {
                 Peptide peptide = (Peptide) val;
                 if (peptide.hasModification()) {

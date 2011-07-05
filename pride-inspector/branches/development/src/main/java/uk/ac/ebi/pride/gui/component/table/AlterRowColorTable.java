@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table;
 
 import org.jdesktop.swingx.JXTable;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -10,22 +11,15 @@ import java.awt.*;
 import java.util.Vector;
 
 /**
- * Created by IntelliJ IDEA.
+ * Table with altering colours for each row
+ *
  * User: rwang
  * Date: 22-Aug-2010
  * Time: 10:02:32
  */
 public class AlterRowColorTable extends JXTable {
-    private Color alterRowColor = new Color(214, 241, 249);
-    /**
-     * Selection background
-     */
-    private static final Color SELECTION_BACKGROUND = new Color(193, 210, 238);
-    /**
-     * Selection foreground
-     */
-    private static final Color SELECTION_FOREGROUND = Color.black;
 
+    private Color alterRowColor = Constants.ALTER_ROW_COLOUR;
 
     private int omitColumn = -1;
 
@@ -64,15 +58,15 @@ public class AlterRowColorTable extends JXTable {
             c.setForeground(UIManager.getColor("Table.foreground"));
         } else {
             if (omitColumn < 0 || column != omitColumn) {
-                c.setBackground(SELECTION_BACKGROUND);
-                c.setForeground(SELECTION_FOREGROUND);
+                c.setBackground(Constants.ROW_SELECTION_BACKGROUD);
+                c.setForeground(Constants.ROW_SELECTION_FOREGROUND);
             }
         }
         return c;
     }
 
     private Color colorForRow(int row) {
-        return (row % 2 == 0) ? alterRowColor : getBackground();
+        return (row % 2 == 0) ? Constants.ALTER_ROW_COLOUR : getBackground();
     }
 
     public Color getAlterRowColor() {
@@ -93,6 +87,6 @@ public class AlterRowColorTable extends JXTable {
 
     @Override
     public Color getSelectionBackground() {
-        return SELECTION_BACKGROUND;
+        return Constants.ROW_SELECTION_BACKGROUD;
     }
 }

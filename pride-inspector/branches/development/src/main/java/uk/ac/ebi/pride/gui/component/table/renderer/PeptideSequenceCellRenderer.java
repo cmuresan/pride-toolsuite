@@ -9,17 +9,12 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Cell renderer for peptide sequence  with PTMs
  * User: rwang
  * Date: 27-Jul-2010
  * Time: 11:42:21
  */
 public class PeptideSequenceCellRenderer implements TableCellRenderer {
-    private boolean drawIcon;
-
-    public PeptideSequenceCellRenderer(boolean drawIcon) {
-        this.drawIcon = drawIcon;
-    }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -29,7 +24,7 @@ public class PeptideSequenceCellRenderer implements TableCellRenderer {
         if (value != null && value instanceof Peptide) {
 
             Peptide peptide = (Peptide) value;
-            label = new PeptideLabel(peptide, drawIcon);
+            label = new PeptideLabel(peptide);
             // get the modifications
             java.util.List<Modification> mods = peptide.getModifications();
             // set the ptm string

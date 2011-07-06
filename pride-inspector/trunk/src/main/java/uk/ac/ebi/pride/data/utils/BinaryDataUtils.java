@@ -4,8 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.term.CvTermReference;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 /**
  * This class need to be deleted in the future.
@@ -91,5 +96,55 @@ public class BinaryDataUtils {
         }
 
         return numOfByte;
+    }
+
+    public static byte[] decompress(byte[] compressedData) {
+        byte[] decompressedData;
+
+        // using a ByteArrayOutputStream to not having to define the result array size beforehand
+        Inflater decompressor = new Inflater();
+        decompressor.setInput(compressedData);
+        // Create an expandable byte array to hold the decompressed data
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(compressedData.length);
+        byte[] buf = new byte[1024];
+        while (!decompressor.finished()) {
+            try {
+                int count = decompressor.inflate(buf);
+                bos.write(buf, 0, count);
+            } catch (DataFormatException e) {
+                throw new IllegalStateException("Encountered wrong data format " +
+                        "while trying to decompress binary data!", e);
+            }
+        }
+        try {
+            bos.close();
+        } catch (IOException e) {
+            logger.error("Error while closing byte array output stream");
+        }
+        // Get the decompressed data
+        decompressedData = bos.toByteArray();
+
+        if (decompressedData == null) {
+            throw new IllegalStateException("Decompression of binary data prodeuced no result (null)!");
+        }
+        return decompressedData;
+    }
+
+    public static byte[] compress(byte[] uncompressedData) {
+        byte[] data;// Decompress the data
+
+        // create a temporary byte array big enough to hold the compressed data
+        // with the worst compression (the length of the initial (uncompressed) data)
+        byte[] temp = new byte[uncompressedData.length];
+        // compress
+        Deflater compresser = new Deflater();
+        compresser.setInput(uncompressedData);
+        compresser.finish();
+        int cdl = compresser.deflate(temp);
+        // create a new array with the size of the compressed data (cdl)
+        data = new byte[cdl];
+        System.arraycopy(temp, 0, data, 0, cdl);
+
+        return data;
     }
 }

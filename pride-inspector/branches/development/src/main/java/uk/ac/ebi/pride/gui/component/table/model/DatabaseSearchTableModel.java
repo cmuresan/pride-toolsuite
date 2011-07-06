@@ -5,6 +5,7 @@ import org.bushe.swing.event.annotation.EventSubscriber;
 import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -135,7 +136,6 @@ public class DatabaseSearchTableModel extends ListTableModel<List<String>> {
             for (String header : headers) {
                 addColumn(header, header);
             }
-            fireTableStructureChanged();
         }
     }
 }

@@ -5,12 +5,12 @@ import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventSubscriber;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
+import org.jdesktop.swingx.table.TableColumnExt;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.PrideInspector;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.DatabaseSearchTableModel;
+import uk.ac.ebi.pride.gui.component.table.renderer.IconRenderer;
 import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
 import uk.ac.ebi.pride.gui.search.Criteria;
 import uk.ac.ebi.pride.gui.search.SearchEntry;
@@ -32,9 +32,8 @@ import java.awt.event.KeyListener;
 
 /**
  * DatabaseSearchPane is the main panel contains a search box and a search result table
- *
+ * <p/>
  * All the search actions for the PRIDE public instance is done through this panel
- *
  */
 public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
     private static final String PANE_TITLE = "Search Database";
@@ -229,6 +228,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                 scrollPane1.setBorder(BorderFactory.createLineBorder(Color.black));
 
                 //---- searchResultTable ----
+                // set view experiment cell renderer
                 searchResultTable.setBorder(null);
                 searchResultTable.setFillsViewportHeight(true);
                 scrollPane1.setViewportView(searchResultTable);

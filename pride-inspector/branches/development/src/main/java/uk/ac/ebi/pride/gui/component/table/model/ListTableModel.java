@@ -42,7 +42,7 @@ public abstract class ListTableModel<T> extends AbstractTableModel {
      */
     public void addColumn(String columnName, String toolTip) {
         columnNames.put(columnName, toolTip);
-        //Todo: add notification
+        fireTableStructureChanged();
     }
 
     /**

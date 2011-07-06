@@ -80,6 +80,9 @@ public interface Constants {
     public final static String PTM = "PTM";
     public final static String SELECTED = "Selected";
 
+    public final static String VIEW = "View";
+
+
     /**
      * Colours
      */

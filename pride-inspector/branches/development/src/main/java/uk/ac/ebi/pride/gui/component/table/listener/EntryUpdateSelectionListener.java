@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table.listener;
 
+import uk.ac.ebi.pride.gui.utils.EDTUtils;
+
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -21,21 +23,17 @@ public class EntryUpdateSelectionListener implements TableModelListener {
 
     public void tableChanged(TableModelEvent e) {
         int firstRow = e.getFirstRow();
-        if (firstRow == 0) {
-            if (SwingUtilities.isEventDispatchThread()) {
-                setDefaultRowSelection();
-            } else {
-                Runnable eventDispatcher = new Runnable() {
-                    public void run() {
-                        setDefaultRowSelection();
-                    }
-                };
-                EventQueue.invokeLater(eventDispatcher);
-            }
-        }
-    }
+        int selectedRow = table.getSelectedRow();
+        // if first row exists and no previously selected row
+        if (firstRow == 0 && selectedRow < 0) {
+            Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    table.getSelectionModel().setSelectionInterval(0, 0);
+                }
+            };
 
-    private void setDefaultRowSelection() {
-        table.getSelectionModel().setSelectionInterval(0, 0);
+            EDTUtils.invokeLater(run);
+        }
     }
 }

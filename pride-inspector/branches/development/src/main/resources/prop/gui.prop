@@ -257,6 +257,9 @@ invalid.experiment.accession=<html>\n\
 # download warning icon
 download.warning.icon.small=icon/16x16/warning.png
 
+# open experiment icon
+open.experiment.icon.small = icon/16x16/view.png
+
 # report summary icon
 report.item.success.icon.small=icon/16x16/report_success.png
 report.item.error.icon.small=icon/16x16/report_error.png

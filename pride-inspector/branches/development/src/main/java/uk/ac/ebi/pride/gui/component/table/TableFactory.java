@@ -4,11 +4,14 @@ import org.jdesktop.swingx.table.DefaultTableColumnModelExt;
 import org.jdesktop.swingx.table.TableColumnExt;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.SearchEngine;
-import uk.ac.ebi.pride.gui.component.table.editor.ButtonEditor;
+import uk.ac.ebi.pride.gui.GUIUtilities;
+import uk.ac.ebi.pride.gui.component.table.listener.DynamicColumnListener;
 import uk.ac.ebi.pride.gui.component.table.listener.HyperLinkCellMouseClickListener;
+import uk.ac.ebi.pride.gui.component.table.listener.OpenExperimentMouseListener;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.component.table.model.*;
 import uk.ac.ebi.pride.gui.component.table.renderer.*;
+import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.url.PTMHyperLinkGenerator;
 import uk.ac.ebi.pride.gui.url.ProteinAccHyperLinkGenerator;
 
@@ -44,7 +47,7 @@ public class TableFactory {
     /**
      * Build a table to display identification related details.
      *
-     * @param controller    data access controller
+     * @param controller data access controller
      * @return JTable   identification table
      */
     public static JTable createIdentificationTable(DataAccessController controller) {
@@ -52,7 +55,7 @@ public class TableFactory {
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable table = new DefaultPrideTable(identTableModel, columnModel);
 
-        TableColumnExt proteinIdColumn = (TableColumnExt)table.getColumn(ProteinTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
+        TableColumnExt proteinIdColumn = (TableColumnExt) table.getColumn(ProteinTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
         proteinIdColumn.setVisible(false);
 
         TableColumnExt proteinNameColumn = (TableColumnExt) table.getColumn(ProteinTableModel.TableHeader.PROTEIN_NAME.getHeader());
@@ -83,8 +86,8 @@ public class TableFactory {
     /**
      * Build a table to display peptide related details.
      *
-     * @param se    search engine
-     * @param controller    data access controller
+     * @param se         search engine
+     * @param controller data access controller
      * @return JTable   peptide table
      */
     public static JTable createPeptideTable(SearchEngine se, DataAccessController controller) {
@@ -94,27 +97,27 @@ public class TableFactory {
         DefaultPrideTable table = new DefaultPrideTable(peptideTableModel, columnModel);
 
         // peptide sequence column renderer
-        TableColumnExt peptideColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_COLUMN.getHeader());
+        TableColumnExt peptideColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_COLUMN.getHeader());
         peptideColumn.setCellRenderer(new PeptideSequenceCellRenderer());
 
         // peptide sequence present in protein sequence
-        TableColumnExt peptideFitColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
+        TableColumnExt peptideFitColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
         peptideFitColumn.setCellRenderer(new PeptideFitCellRenderer());
 
         // hide modified peptide sequence
-        TableColumnExt peptideSeqColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_MASS_COLUMN.getHeader());
+        TableColumnExt peptideSeqColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_MASS_COLUMN.getHeader());
         peptideSeqColumn.setVisible(false);
 
         // hide protein id column
-        TableColumnExt proteinIdColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
+        TableColumnExt proteinIdColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
         proteinIdColumn.setVisible(false);
 
         // hide peptide id column
-        TableColumnExt peptideIdColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
+        TableColumnExt peptideIdColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
         peptideIdColumn.setVisible(false);
 
         // set protein name column width
-        TableColumnExt proteinNameColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PROTEIN_NAME.getHeader());
+        TableColumnExt proteinNameColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PROTEIN_NAME.getHeader());
         int protNameColumnNum = proteinNameColumn.getModelIndex();
         table.getColumnModel().getColumn(protNameColumnNum).setPreferredWidth(200);
 
@@ -122,7 +125,7 @@ public class TableFactory {
         proteinNameColumn.setVisible(false);
 
         // sequence coverage column
-        TableColumnExt coverageColumn = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader());
+        TableColumnExt coverageColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader());
         coverageColumn.setCellRenderer(new SequenceCoverageRenderer());
         coverageColumn.setVisible(false);
 
@@ -132,7 +135,7 @@ public class TableFactory {
         table.addMouseListener(new HyperLinkCellMouseClickListener(table, protAccColumnHeader, new ProteinAccHyperLinkGenerator()));
 
         // ptm accession hyperlink
-        TableColumnExt protAcc = (TableColumnExt)table.getColumn(PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
+        TableColumnExt protAcc = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
         protAcc.setCellRenderer(new HyperLinkCellRenderer());
 
         // set peptide column width
@@ -158,7 +161,7 @@ public class TableFactory {
         table.addMouseListener(new HyperLinkCellMouseClickListener(table, modAccColumnHeader, new PTMHyperLinkGenerator()));
 
         // ptm accession hyperlink
-        TableColumnExt ptmColumn = (TableColumnExt)table.getColumn(PTMTableModel.TableHeader.PTM_ACCESSION.getHeader());
+        TableColumnExt ptmColumn = (TableColumnExt) table.getColumn(PTMTableModel.TableHeader.PTM_ACCESSION.getHeader());
         ptmColumn.setCellRenderer(new HyperLinkCellRenderer());
 
         return table;
@@ -167,17 +170,36 @@ public class TableFactory {
     /**
      * Build a table to display database search summaries.
      *
-     * @return  JTable  database search table
+     * @return JTable  database search table
      */
     public static JTable createDatabaseSearchTable() {
         DatabaseSearchTableModel tableModel = new DatabaseSearchTableModel();
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
-        DefaultPrideTable table = new DefaultPrideTable(tableModel, columnModel);
+        DefaultPrideTable searchTable = new DefaultPrideTable(tableModel, columnModel);
+        searchTable.setAutoCreateColumnsFromModel(false);
+        // add table model change listener
+        tableModel.addTableModelListener(new DynamicColumnListener(searchTable));
 
-        // set view experiment cell renderer
-        TableColumnExt viewColumn = (TableColumnExt) table.getColumn(DatabaseSearchTableModel.TableHeader.VIEW.getHeader());
-        viewColumn.setCellRenderer(new ButtonRenderer("View"));
+        // selection column
+        String selectColumnHeader = DatabaseSearchTableModel.TableHeader.SELECTED.getHeader();
+        TableColumnExt selectColumn = (TableColumnExt)searchTable.getColumn(selectColumnHeader);
+        int selectColumnNum = selectColumn.getModelIndex();
+        searchTable.getColumnModel().getColumn(selectColumnNum).setMaxWidth(50);
 
-        return table;
+        // add cell renderer to view column
+        String viewColumnHeader = DatabaseSearchTableModel.TableHeader.VIEW.getHeader();
+        TableColumnExt viewColumn = (TableColumnExt) searchTable.getColumn(viewColumnHeader);
+        viewColumn.setCellRenderer(new ButtonRenderer(Constants.VIEW));
+        int viewColumnNum = viewColumn.getModelIndex();
+        searchTable.getColumnModel().getColumn(viewColumnNum).setMaxWidth(50);
+
+
+        // add mouse motion listener
+        searchTable.addMouseMotionListener(new TableCellMouseMotionListener(searchTable, viewColumnHeader, selectColumnHeader));
+        searchTable.addMouseListener(new OpenExperimentMouseListener(searchTable, viewColumnHeader));
+
+
+
+        return searchTable;
     }
 }

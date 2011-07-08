@@ -19,7 +19,7 @@ public class GraphicsUtils {
      *
      * @param image given image
      * @param size  size of shadow
-     * @return  BufferedImage   new image with drop shadows
+     * @return BufferedImage   new image with drop shadows
      */
     public static BufferedImage createDropShadow(BufferedImage image, int size) {
         BufferedImage shadow = new BufferedImage(image.getWidth() + 4 * size, image.getHeight() + 4 * size, BufferedImage.TYPE_INT_ARGB);
@@ -45,9 +45,9 @@ public class GraphicsUtils {
     /**
      * Create an gaussian blur filter
      *
-     * @param radius    radius of the filter
-     * @param horizontal    whether it is horizontal blur
-     * @return  ConvolveOp  filter
+     * @param radius     radius of the filter
+     * @param horizontal whether it is horizontal blur
+     * @return ConvolveOp  filter
      */
     public static ConvolveOp getGaussianBlurFilter(int radius,
                                                    boolean horizontal) {

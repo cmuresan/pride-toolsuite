@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.gui.component;
 
+import org.bushe.swing.event.EventService;
+
 /**
  * Implement this interface to subscribe to local event bus
  *
@@ -11,6 +13,7 @@ public interface EventBusSubscribable {
 
     /**
      * Subscribe to event bus
+     * @param eventBus  event buses to subscribe to
      */
-    public void subscribeToEventBus();
+    public void subscribeToEventBus(EventService eventBus);
 }

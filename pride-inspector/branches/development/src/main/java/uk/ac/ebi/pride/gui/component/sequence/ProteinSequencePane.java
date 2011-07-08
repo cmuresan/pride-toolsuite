@@ -474,8 +474,10 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
     }
 
     @Override
-    public void subscribeToEventBus() {
-        EventService eventBus = ContainerEventServiceFinder.getEventService(this);
+    public void subscribeToEventBus(EventService eventBus) {
+        if (eventBus == null) {
+            eventBus = ContainerEventServiceFinder.getEventService(this);
+        }
 
         // create subscriber
         peptideEventSubscriber = new PeptideEventSubscriber();

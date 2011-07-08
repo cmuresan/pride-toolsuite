@@ -57,7 +57,6 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
     protected void setupMainPane() {
         // set layout
         this.setLayout(new BorderLayout());
-        this.setBackground(Color.white);
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
 

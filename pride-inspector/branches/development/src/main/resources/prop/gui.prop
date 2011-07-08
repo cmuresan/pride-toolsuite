@@ -4,7 +4,7 @@ open.file.icon.small=icon/16x16/open_file.gif
 open.file.icon.medium=icon/32x32/open_file.png
 open.file.icon.large=icon/48x48/open_file.png
 
-open.database.title=Connect PRIDE Database
+open.database.title=Connect PRIDE
 open.database.tooltip=Connect to PRIDE Public Database
 open.database.icon.small=icon/16x16/open_database.gif
 open.database.icon.medium=icon/32x32/connect_database.png
@@ -23,7 +23,7 @@ reviewer.download.icon.small=icon/16x16/reviewer_download.png
 reviewer.download.icon.medium=icon/32x32/reviewer_download.png
 reviewer.download.icon.large=icon/48x48/reviewer_download.png
 
-help.title=PRIDE Inspector Help
+help.title=Help
 help.tooltip=Open PRIDE Inspector Help Document
 help.icon.large=icon/48x48/help.png
 help.icon.medium=icon/32x32/help.png

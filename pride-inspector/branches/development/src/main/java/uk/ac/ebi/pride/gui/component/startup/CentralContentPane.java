@@ -58,7 +58,7 @@ public class CentralContentPane extends JPanel {
      * Setup the main pane
      */
     private void setupMainPane() {
-        this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        this.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
         this.setLayout(new BorderLayout());
         this.setForeground(Color.white);
 

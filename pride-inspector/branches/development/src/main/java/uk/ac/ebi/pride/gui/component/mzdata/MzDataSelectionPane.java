@@ -130,7 +130,6 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
     protected void setupMainPane() {
         defaultOffset = Integer.parseInt(appContext.getProperty("mzdata.batch.load.size"));
         this.setLayout(new BorderLayout());
-        this.setBackground(Color.white);
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
 
@@ -145,7 +144,6 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
 
         // create selection pane
         tabPane = new JTabbedPane();
-        tabPane.setBorder(BorderFactory.createEmptyBorder());
 
         // add tab change listener
         tabPane.addChangeListener(new MzDataTabChangeListener());
@@ -363,9 +361,11 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
     }
 
     @Override
-    public void subscribeToEventBus() {
+    public void subscribeToEventBus(EventService eventBus) {
         // get local event bus
-        EventService eventBus = ContainerEventServiceFinder.getEventService(this);
+        if (eventBus == null) {
+            eventBus = ContainerEventServiceFinder.getEventService(this);
+        }
 
         // subscriber
         exportEventSubscriber = new ExportSpectrumDetailEventSubscriber();

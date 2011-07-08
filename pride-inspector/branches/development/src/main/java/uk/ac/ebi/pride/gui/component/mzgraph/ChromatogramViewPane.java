@@ -28,7 +28,7 @@ import java.io.File;
 
 /**
  * Visualize chromatogram
- *
+ * <p/>
  * User: rwang
  * Date: 10/06/11
  * Time: 14:42
@@ -79,15 +79,17 @@ public class ChromatogramViewPane extends DataAccessControllerPane<Chromatogram,
     /**
      * Subscribe to local event bus
      */
-    public void subscribeToEventBus() {
+    public void subscribeToEventBus(EventService eventBus) {
         // get local event bus
-        EventService eventBus = ContainerEventServiceFinder.getEventService(this);
+        if (eventBus == null) {
+            eventBus = ContainerEventServiceFinder.getEventService(this);
+        }
 
         // subscriber
         peptideSubscriber = new SelectChromatogramSubscriber();
 
         // subscribeToEventBus
-        eventBus.subscribe(PeptideEvent.class, peptideSubscriber);
+        eventBus.subscribe(ChromatogramEvent.class, peptideSubscriber);
     }
 
     @Override
@@ -112,11 +114,13 @@ public class ChromatogramViewPane extends DataAccessControllerPane<Chromatogram,
         public void onEvent(ChromatogramEvent event) {
             Comparable chromaId = event.getChromatogramId();
 
-            Task newTask = new RetrieveChromatogramTask(controller, chromaId);
-            newTask.addTaskListener(ChromatogramViewPane.this);
-            newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-            // add task listeners
-            appContext.addTask(newTask);
+            if (chromaId != null) {
+                Task newTask = new RetrieveChromatogramTask(controller, chromaId);
+                newTask.addTaskListener(ChromatogramViewPane.this);
+                newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
+                // add task listeners
+                appContext.addTask(newTask);
+            }
         }
     }
 }

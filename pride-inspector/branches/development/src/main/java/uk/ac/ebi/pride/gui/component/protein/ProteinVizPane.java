@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.component.protein;
 
+import org.bushe.swing.event.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -40,7 +41,6 @@ public class ProteinVizPane extends DataAccessControllerPane implements EventBus
     protected void setupMainPane() {
         // set layout
         this.setLayout(new BorderLayout());
-        this.setBackground(BACKGROUND_COLOUR);
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
 
@@ -80,11 +80,11 @@ public class ProteinVizPane extends DataAccessControllerPane implements EventBus
     }
 
     @Override
-    public void subscribeToEventBus() {
+    public void subscribeToEventBus(EventService eventBus) {
         if (spectrumViewPane != null) {
-            spectrumViewPane.subscribeToEventBus();
+            spectrumViewPane.subscribeToEventBus(null);
         }
-        proteinSequencePane.subscribeToEventBus();
+        proteinSequencePane.subscribeToEventBus(null);
     }
 
 }

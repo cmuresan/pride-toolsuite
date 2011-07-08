@@ -77,16 +77,18 @@ public class MzDataVizPane extends DataAccessControllerPane implements EventBusS
     }
 
     @Override
-    public void subscribeToEventBus() {
+    public void subscribeToEventBus(EventService eventBus) {
+        if (eventBus == null) {
+            eventBus = ContainerEventServiceFinder.getEventService(this);
+        }
+
         if (spectrumViewPane != null) {
-            spectrumViewPane.subscribeToEventBus();
+            spectrumViewPane.subscribeToEventBus(eventBus);
         }
 
         if (chromaViewPane != null) {
-            chromaViewPane.subscribeToEventBus();
+            chromaViewPane.subscribeToEventBus(eventBus);
         }
-
-        EventService eventBus = ContainerEventServiceFinder.getEventService(this);
 
         // spectrum subscribe
         spectrumEventSubscriber = new SpectrumEventSubscriber();

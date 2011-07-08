@@ -55,43 +55,59 @@ public class PrideInspectorLoadingPanel extends PrideInspectorPanel {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
+            paintDropShadow(g);
+            paintWindow(g);
+        }
+
+        private void paintDropShadow(Graphics g) {
+            // size
+            int xPos = 10;
+            int yPos = 10;
+            int width = getWidth() - 10;
+            int height = getHeight() - 10;
+
             // create a picture with an alpha channel
-            BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
             // draw rectangle
             Graphics2D g2 = image.createGraphics();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            // size
-            int xPos = 5;
-            int yPos = 5;
-            int width = getWidth() - 10;
-            int height = getHeight() - 10;
+            // set color
+            g2.setColor(Color.gray);
 
-            Composite oldComposite = g2.getComposite();
-
-            // the drop shadow is 50% transparent
-            g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-            g2.setColor(Color.black);
-
-            // offset
-            g2.translate(3, 3);
-            g2.fillRoundRect(xPos, yPos, width, height, 30, 30);
-
-            // reset
-            g2.translate(-3, -3);
-            g2.setComposite(oldComposite);
-
-            g2.setColor(Color.white);
-            g2.fillRoundRect(xPos, yPos, width, height, 30, 30);
+            g2.fillRoundRect(0, 0, width, height, 30, 30);
 
             g2.dispose();
 
             image = GraphicsUtils.getGaussianBlurFilter(3, true).filter(image, null);
             image = GraphicsUtils.getGaussianBlurFilter(3, false).filter(image, null);
 
-            // draw image
-            g.drawImage(image, 0, 0, null);
+            g.drawImage(image, xPos, yPos, null);
+        }
+
+        private void paintWindow(Graphics g) {
+            // size
+            int xPos = 7;
+            int yPos = 7;
+            int width = getWidth() - 10;
+            int height = getHeight() - 10;
+
+            // create a picture with an alpha channel
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+            // draw rectangle
+            Graphics2D g2 = image.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g2.setColor(Color.white);
+            g2.fillRoundRect(0, 0, width, height, 30, 30);
+            g2.setColor(Color.gray);
+            g2.drawRoundRect(0, 0, width, height, 30, 30);
+
+            g2.dispose();
+
+            g.drawImage(image, xPos, yPos, null);
         }
     }
 

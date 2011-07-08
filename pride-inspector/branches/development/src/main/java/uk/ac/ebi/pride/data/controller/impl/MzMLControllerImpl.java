@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
  */
 public class MzMLControllerImpl extends CachedDataAccessController {
     private static final Logger logger = LoggerFactory.getLogger(MzMLControllerImpl.class);
-    private static Pattern mzMLHeaderPattern = Pattern.compile("<\\?xml [^>]*>\\s*<mzML xmlns=.*", Pattern.MULTILINE);
+    private static Pattern mzMLHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<(mzML)|(indexedmzML) xmlns=.*", Pattern.MULTILINE);
 
     private MzMLUnmarshallerAdaptor unmarshaller = null;
 

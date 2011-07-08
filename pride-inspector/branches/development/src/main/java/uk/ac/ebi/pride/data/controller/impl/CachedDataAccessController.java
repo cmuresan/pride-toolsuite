@@ -253,7 +253,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @return Chromatogram chromatogram object
      * @throws DataAccessException data access exception
      */
-    Chromatogram getChromatogramById(Comparable id, boolean useCache) throws DataAccessException {
+    public Chromatogram getChromatogramById(Comparable id, boolean useCache) throws DataAccessException {
         return useCache ? (Chromatogram) cache.get(CacheCategory.CHROMATOGRAM, id) : null;
     }
 

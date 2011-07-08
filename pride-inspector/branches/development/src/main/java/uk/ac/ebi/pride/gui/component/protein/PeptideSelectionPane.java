@@ -89,7 +89,6 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
     protected void setupMainPane() {
         // set layout
         this.setLayout(new BorderLayout());
-        this.setBackground(Color.white);
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
 
@@ -153,9 +152,11 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
     }
 
     @Override
-    public void subscribeToEventBus() {
+    public void subscribeToEventBus(EventService eventBus) {
         // get local event bus
-        EventService eventBus = ContainerEventServiceFinder.getEventService(this);
+        if (eventBus == null) {
+            eventBus = ContainerEventServiceFinder.getEventService(this);
+        }
 
         // subscriber
         proteinIdentSubscriber = new SelectProteinIdentSubscriber();

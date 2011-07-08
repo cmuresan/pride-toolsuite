@@ -147,8 +147,8 @@ public class PeptideTabPane extends PrideInspectorTabPane {
         this.add(outterSplitPane, BorderLayout.CENTER);
 
         // subscribe to local event bus
-        peptidePTMPane.subscribeToEventBus();
-        vizTabPane.subscribeToEventBus();
+        peptidePTMPane.subscribeToEventBus(null);
+        vizTabPane.subscribeToEventBus(null);
     }
 
     /**

@@ -45,7 +45,7 @@ public class ProteinTabPane extends PrideInspectorTabPane {
     /**
      * the size of the divider for split pane
      */
-    private static final int DIVIDER_SIZE = 2;
+    private static final int DIVIDER_SIZE = 5;
     /**
      * Inner split pane contains peptide panel and mzgraph view pane
      */
@@ -149,8 +149,8 @@ public class ProteinTabPane extends PrideInspectorTabPane {
         this.add(outerPane, BorderLayout.CENTER);
 
         // subscribe to event bus
-        peptidePane.subscribeToEventBus();
-        vizTabPane.subscribeToEventBus();
+        peptidePane.subscribeToEventBus(null);
+        vizTabPane.subscribeToEventBus(null);
     }
 
     /**

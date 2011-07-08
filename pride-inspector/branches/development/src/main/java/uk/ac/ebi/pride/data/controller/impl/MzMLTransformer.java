@@ -168,12 +168,19 @@ public class MzMLTransformer {
             ParamGroup paramGroup = transformParamGroup(oldBinaryArr);
 
             CvTermReference binaryDataType = null;
+            boolean isCompressed = false;
             List<CvParam> cvParams = paramGroup.getCvParams();
             for (CvParam cvParam : cvParams) {
                 String acc = cvParam.getAccession();
                 if (CvTermReference.isChild(CvTermReference.BINARY_DATA_TYPE.getAccession(), acc)) {
                     binaryDataType = CvTermReference.getCvRefByAccession(acc);
+                } else if (CvTermReference.ZLIB_COMPRESSION.getAccession().equals(acc)) {
+                    isCompressed = true;
                 }
+            }
+
+            if (isCompressed) {
+                binary = BinaryDataUtils.decompress(binary);
             }
 
             double[] binaryDoubleArr = BinaryDataUtils.toDoubleArray(binary, binaryDataType, ByteOrder.LITTLE_ENDIAN);

@@ -95,9 +95,11 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
     /**
      * Subscribe to local event bus
      */
-    public void subscribeToEventBus() {
+    public void subscribeToEventBus(EventService eventBus) {
         // get local event bus
-        EventService eventBus = ContainerEventServiceFinder.getEventService(this);
+        if (eventBus == null) {
+            eventBus = ContainerEventServiceFinder.getEventService(this);
+        }
 
         // subscriber
         spectrumSubscriber = new PeptideSpectrumEventSubscriber(controller, this);

@@ -45,7 +45,6 @@ public class PeptidePTMPane extends DataAccessControllerPane<Peptide, Void> impl
     protected void setupMainPane() {
         // set layout
         this.setLayout(new BorderLayout());
-        this.setBackground(Color.white);
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
 
@@ -69,8 +68,10 @@ public class PeptidePTMPane extends DataAccessControllerPane<Peptide, Void> impl
     }
 
     @Override
-    public void subscribeToEventBus() {
-        EventService eventBus = ContainerEventServiceFinder.getEventService(this);
+    public void subscribeToEventBus(EventService eventBus) {
+        if (eventBus == null) {
+            eventBus = ContainerEventServiceFinder.getEventService(this);
+        }
         peptideEventSubscriber = new PeptideEventSubscriber(controller, this);
         eventBus.subscribe(PeptideEvent.class, peptideEventSubscriber);
     }

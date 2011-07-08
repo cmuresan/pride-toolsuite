@@ -108,13 +108,13 @@ public class MzDataTabPane extends PrideInspectorTabPane {
         splitPane.setBorder(BorderFactory.createEmptyBorder());
         splitPane.setResizeWeight(SPLIT_PANE_RESIZE_WEIGHT);
         splitPane.setOneTouchExpandable(false);
-        splitPane.setDividerSize(2);
+        splitPane.setDividerSize(5);
 
         this.add(splitPane, BorderLayout.CENTER);
 
         // event bus
-        mzSelectionPane.subscribeToEventBus();
-        mzDataVizPane.subscribeToEventBus();
+        mzSelectionPane.subscribeToEventBus(null);
+        mzDataVizPane.subscribeToEventBus(null);
     }
 
     @Override

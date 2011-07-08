@@ -43,7 +43,7 @@ public class DynamicColumnListener implements TableModelListener {
                 // new column index
                 int newColIndex = model.getColumnCount() - 1;
                 // create a new column based on the last column
-                TableColumn column = table instanceof JXTable ? new TableColumn(newColIndex) : new TableColumnExt(newColIndex);
+                TableColumn column = table instanceof JXTable ? new TableColumnExt(newColIndex) : new TableColumn(newColIndex);
                 column.setHeaderValue(model.getColumnName(newColIndex));
 
                 // add the new column

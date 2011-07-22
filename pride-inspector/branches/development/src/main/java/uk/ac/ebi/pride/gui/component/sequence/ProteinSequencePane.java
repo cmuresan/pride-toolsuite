@@ -144,11 +144,6 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         // create a new graphics 2D
         Graphics2D g2 = (Graphics2D) g.create();
 
-//        AnnotatedProtein protein = new AnnotatedProtein("11111");
-//        protein.setSequenceString("aaaaaaaaaaaaaaaaaataaaaaaaaaaaaaaaaataaaaaaaaaaaaaaaaaaaataaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-//        PeptideAnnotation pn = new PeptideAnnotation("at", 100, 200);
-//        protein.addAnnotation(pn);
-
         // get formatted protein sequence string
         AttributedString sequence = AttributedSequenceBuilder.build(proteinModel);
 
@@ -372,13 +367,12 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
      * @param g2 graphics 2D
      */
     private void drawMissingProteinSequence(Graphics2D g2, AnnotatedProtein protein) {
-        int yPos = drawLegend(g2, TOP_MARGIN) + ROW_GAP;
-        yPos = drawProteinMetaData(g2, protein, yPos) + ROW_GAP;
+        int yPos = getHeight()/2 - 20;
 
         // increase font size
         Font font = g2.getFont().deriveFont(15f).deriveFont(Font.BOLD);
         g2.setFont(font);
-        g2.setColor(Color.gray);
+//        g2.setColor(Color.gray);
 
         //draw icon
         ImageIcon icon = (ImageIcon) GUIUtilities.loadIcon(appContext.getProperty("protein.sequence.missing.icon.small"));

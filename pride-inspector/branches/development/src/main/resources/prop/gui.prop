@@ -173,7 +173,7 @@ puzzle.bulletin.icon.medium=icon/48x48/puzzle.png
 puzzle.bulletin.icon.small=icon/16x16/puzzle.png
 
 # pride logo
-pride.main.large.logo=logo/pride-logo-transparent-gray.png
+pride.main.large.logo=logo/pride-colour-logo.jpg
 
 # icon for load spectra and chromatogram
 load.all.mzdata.title=Load All
@@ -272,7 +272,7 @@ spectrum.tab.tooltip=Spectrum for selected peptide
 protein.sequence.tab.title=Sequence
 protein.sequence.tab.tooltip=Protein sequence converage for selected protein
 protein.sequence.missing.icon.small=icon/32x32/warning.png
-protein.sequence.missing.title = Protein sequence is not currently available, you can download it by clicking on Download Protein Details above
+protein.sequence.missing.title = Protein sequence is not currently available, you can download it by clicking "Download Protein Details" above
 
 # internet connection
 internet.connection.warning.short.message=Internet Connection Required

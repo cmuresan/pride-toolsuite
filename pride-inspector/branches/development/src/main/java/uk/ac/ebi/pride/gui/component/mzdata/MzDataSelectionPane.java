@@ -130,7 +130,7 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
     protected void setupMainPane() {
         defaultOffset = Integer.parseInt(appContext.getProperty("mzdata.batch.load.size"));
         this.setLayout(new BorderLayout());
-        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
     }
 
     /**

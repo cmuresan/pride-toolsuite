@@ -4,7 +4,7 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.SearchEngine;
 import uk.ac.ebi.pride.engine.SearchEngineType;
-import uk.ac.ebi.pride.gui.component.sequence.Protein;
+import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideFitTask;
@@ -12,6 +12,7 @@ import uk.ac.ebi.pride.gui.task.impl.RetrieveSequenceCoverageTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.term.CvTermReference;
+import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +32,11 @@ public class PeptideTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
      */
     public enum TableHeader {
         ROW_NUMBER_COLUMN("Row", "Row Number"),
-        PEPTIDE_PTM_COLUMN("Peptide Sequence", "Peptide Sequence"),
-        PROTEIN_ACCESSION_COLUMN("Submitted Protein Accession", "Submitted Protein Accession From Source"),
-        MAPPED_PROTEIN_ACCESSION_COLUMN("Mapped Protein Accession", "Pride Mapped Protein Accession"),
+        PEPTIDE_PTM_COLUMN("Peptide", "Peptide Sequence"),
+        PROTEIN_ACCESSION_COLUMN("Submitted", "Submitted Protein Accession From Source"),
+        MAPPED_PROTEIN_ACCESSION_COLUMN("Mapped", "Pride Mapped Protein Accession"),
         PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
+        PROTEIN_STATUS("Protein Status", "Status Of The Protein Accession"),
         PROTEIN_SEQUENCE_COVERAGE("Sequence Coverage", "Protein Sequence Coverage"),
         PEPTIDE_FIT("Fit In Sequence", "Peptide Sequence Fit In Protein Sequence"),
         PRECURSOR_CHARGE_COLUMN("Precursor Charge", "Precursor Charge"),
@@ -142,6 +144,8 @@ public class PeptideTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
         int mappedAccIndex = getColumnIndex(TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
         // column index for protein name
         int identNameIndex = getColumnIndex(TableHeader.PROTEIN_NAME.getHeader());
+        // column index for protein status
+        int identStatusIndex = getColumnIndex(TableHeader.PROTEIN_STATUS.getHeader());
         // column index for protein identification id
         int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
         // column index for peptide id
@@ -161,8 +165,11 @@ public class PeptideTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
             if (mappedAcc != null) {
                 Protein protein = proteins.get(mappedAcc);
                 if (protein != null) {
+                    AnnotatedProtein annotatedProtein = new AnnotatedProtein(protein);
                     // set protein name
-                    content.set(identNameIndex, protein.getName());
+                    content.set(identNameIndex, annotatedProtein.getName());
+                    // set protein status
+                    content.set(identStatusIndex, annotatedProtein.getStatus().name());
                     // add protein identification id to the list
                     Comparable identId = (Comparable) content.get(identIdIndex);
                     identIds.add(identId);

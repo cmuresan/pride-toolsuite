@@ -66,6 +66,10 @@ public class TableFactory {
         // hide the protein name column
         proteinNameColumn.setVisible(false);
 
+        // protein status column
+        TableColumnExt proteinStatusColumn = (TableColumnExt) table.getColumn(ProteinTableModel.TableHeader.PROTEIN_STATUS.getHeader());
+        proteinStatusColumn.setVisible(false);
+
         // sequence coverage column
         TableColumnExt seqCoverageColumn = (TableColumnExt) table.getColumn(ProteinTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader());
         seqCoverageColumn.setCellRenderer(new SequenceCoverageRenderer());
@@ -123,6 +127,10 @@ public class TableFactory {
 
         // hide the protein name column
         proteinNameColumn.setVisible(false);
+
+        // protein status column
+        TableColumnExt proteinStatusColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PROTEIN_STATUS.getHeader());
+        proteinStatusColumn.setVisible(false);
 
         // sequence coverage column
         TableColumnExt coverageColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader());

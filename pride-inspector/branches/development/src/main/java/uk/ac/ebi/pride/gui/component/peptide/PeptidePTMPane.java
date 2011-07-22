@@ -31,7 +31,7 @@ import java.beans.PropertyChangeEvent;
 public class PeptidePTMPane extends DataAccessControllerPane<Peptide, Void> implements EventBusSubscribable {
     private static final Logger logger = LoggerFactory.getLogger(PeptidePTMPane.class);
 
-    private static final String PTM_TABLE_DESC = "PTM Details";
+    private static final String PTM_TABLE_DESC = "PTM";
 
     private JTable ptmTable;
 
@@ -45,7 +45,7 @@ public class PeptidePTMPane extends DataAccessControllerPane<Peptide, Void> impl
     protected void setupMainPane() {
         // set layout
         this.setLayout(new BorderLayout());
-        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
     }
 
     @Override

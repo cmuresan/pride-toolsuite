@@ -57,7 +57,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
     protected void setupMainPane() {
         // set layout
         this.setLayout(new BorderLayout());
-        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
     }
 
     /**
@@ -116,7 +116,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
         metaDataPanel.setOpaque(false);
 
         // table label
-        JLabel label = new JLabel("<html><b>Peptide Details</b></html>");
+        JLabel label = new JLabel("<html><b>Peptide</b></html>");
         metaDataPanel.add(label);
 
         return metaDataPanel;

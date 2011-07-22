@@ -18,6 +18,7 @@ public interface QuantDataAccess {
 
     /**
      * Get quantitative method type
+     * @return
      */
     public String getQuantitativeMethod();
 

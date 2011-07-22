@@ -5,8 +5,8 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideAnnotation;
-import uk.ac.ebi.pride.gui.component.sequence.Protein;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
+import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 import uk.ac.ebi.pride.util.ProteinAccessionResolver;
 
 import java.util.*;

@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.gui.component.sequence;
 
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
+import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
-import java.awt.font.TextAttribute;
 import java.beans.PropertyChangeListener;
 import java.util.*;
 
@@ -39,9 +39,47 @@ public class AnnotatedProtein extends Protein {
      */
     public AnnotatedProtein(Protein protein) {
         this(protein.getAccession());
-        setName(protein.getName());
-        setSource(protein.getSource());
-        setSequenceString(protein.getSequenceString());
+        String name = protein.getName();
+        STATUS status = protein.getStatus();
+        List<Protein> replacements = protein.getReplacingProteins();
+        switch (status) {
+            case ACTIVE:
+                setName(name);
+                setSequenceString(protein.getSequenceString());
+                break;
+            case CHANGED:
+                if (replacements != null && replacements.size() > 0) {
+                    Protein replacement = replacements.get(0);
+                    setName(replacement.getName());
+                    setSequenceString(replacement.getSequenceString());
+                }
+                break;
+            case MERGED:
+                if (replacements != null && replacements.size() > 0) {
+                    Protein replacement = replacements.get(0);
+                    setName(replacement.getName());
+                    setSequenceString(replacement.getSequenceString());
+                }
+                break;
+            case DEMERGED:
+                setName(name);
+                break;
+            case UNKNOWN:
+                setName(name);
+                break;
+            case DELETED:
+                setName(name);
+                break;
+            case ERROR:
+                break;
+
+        }
+
+        setStatus(status);
+
+        for (PROPERTY property : PROPERTY.values()) {
+            setProperty(property, protein.getProperty(property));
+        }
     }
 
     public AnnotatedProtein(String accession) {
@@ -191,7 +229,7 @@ public class AnnotatedProtein extends Protein {
 
             // peptide coverage array
             // it is the length of the protein sequence, and contains the count of sequence coverage for each position
-            int length = getSequenceString().trim().length();
+            int length = sequence == null ? 0 : sequence.length();
             int[] coverageArr = new int[length];
             for (PeptideAnnotation uniquePeptide : uniquePeptides) {
                 Set<Integer> startingPos = new HashSet<Integer>();

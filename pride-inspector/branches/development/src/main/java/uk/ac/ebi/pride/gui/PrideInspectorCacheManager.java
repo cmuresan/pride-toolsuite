@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Triple;
 import uk.ac.ebi.pride.data.Tuple;
-import uk.ac.ebi.pride.gui.component.sequence.Protein;
+import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import java.util.Collection;
 

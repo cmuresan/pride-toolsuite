@@ -18,6 +18,7 @@ import uk.ac.ebi.pride.gui.task.impl.RetrieveProteinDetailModelTask;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveSelectedPeptideAnnotation;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import javax.swing.*;
 import java.awt.*;
@@ -455,7 +456,8 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                 // draw sequence coverage
                 int aminoAcidCoverage = protein.getNumOfAminoAcidCovered();
                 aminoAcidCoverage = aminoAcidCoverage == -1 ? 0 : aminoAcidCoverage;
-                int sequenceLen = protein.getSequenceString().length();
+                String sequence = protein.getSequenceString();
+                int sequenceLen = sequence == null ? 0 : sequence.length();
                 // formatter
                 DecimalFormat format = new DecimalFormat("##.#%");
                 // text to display

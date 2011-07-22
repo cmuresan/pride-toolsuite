@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveProteinDetailTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.util.InternetChecker;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -55,10 +56,16 @@ public class RetrieveExtraProteinDetailAction extends PrideAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // set hidden protein details columns visible
-        setColumnVisible();
-        // start retrieval task
-        startRetrieval();
+        if (InternetChecker.check()) {
+            // set hidden protein details columns visible
+            setColumnVisible();
+            // start retrieval task
+            startRetrieval();
+        } else {
+            String msg = Desktop.getInstance().getDesktopContext().getProperty("internet.connection.warning.message");
+            String shortMsg = Desktop.getInstance().getDesktopContext().getProperty("internet.connection.warning.short.message");
+            JOptionPane.showMessageDialog(Desktop.getInstance().getMainComponent(), msg, shortMsg, JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     /**
@@ -70,6 +77,7 @@ public class RetrieveExtraProteinDetailAction extends PrideAction {
         List<TableColumn> columns = showHideColModel.getColumns(true);
         for (TableColumn column : columns) {
             if (ProteinTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(column.getHeaderValue()) ||
+                    ProteinTableModel.TableHeader.PROTEIN_STATUS.getHeader().equals(column.getHeaderValue()) ||
                     ProteinTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(column.getHeaderValue())) {
                 ((TableColumnExt) column).setVisible(true);
             }

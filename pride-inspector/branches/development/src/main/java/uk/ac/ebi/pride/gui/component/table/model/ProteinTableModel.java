@@ -2,12 +2,13 @@ package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.gui.component.sequence.Protein;
+import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveSequenceCoverageTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +29,10 @@ public class ProteinTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
      */
     public enum TableHeader {
         ROW_NUMBER_COLUMN("Row", "Row Number"),
-        PROTEIN_ACCESSION_COLUMN("Submitted Protein Accession", "Submitted Protein Accession From Source"),
-        MAPPED_PROTEIN_ACCESSION_COLUMN("Mapped Protein Accession", "Pride Mapped Protein Accession"),
+        PROTEIN_ACCESSION_COLUMN("Submitted", "Submitted Protein Accession From Source"),
+        MAPPED_PROTEIN_ACCESSION_COLUMN("Mapped", "Pride Mapped Protein Accession"),
         PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
+        PROTEIN_STATUS("Protein Status", "Status Of The Protein Accession"),
         PROTEIN_SEQUENCE_COVERAGE("Sequence Coverage", "Protein Sequence Coverage"),
         IDENTIFICATION_SCORE_COLUMN("Score", "PRIDE Protein Score"),
         IDENTIFICATION_THRESHOLD_COLUMN("Threshold", "PRIDE Protein Threshold"),
@@ -115,6 +117,8 @@ public class ProteinTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
         int mappedAccIndex = getColumnIndex(TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
         // column index for protein name
         int identNameIndex = getColumnIndex(TableHeader.PROTEIN_NAME.getHeader());
+        // column index for protein status
+        int identStatusIndex = getColumnIndex(TableHeader.PROTEIN_STATUS.getHeader());
         // column index for protein identification id
         int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
 
@@ -130,8 +134,11 @@ public class ProteinTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
             if (mappedAcc != null) {
                 Protein protein = proteins.get(mappedAcc);
                 if (protein != null) {
+                    protein = new AnnotatedProtein(proteins.get(mappedAcc));
                     // set protein name
                     content.set(identNameIndex, protein.getName());
+                    // set protein status
+                    content.set(identStatusIndex, protein.getStatus().name());
                     // add protein identification id to the list
                     identIds.add((Comparable) content.get(identIdIndex));
                     // notify a row change

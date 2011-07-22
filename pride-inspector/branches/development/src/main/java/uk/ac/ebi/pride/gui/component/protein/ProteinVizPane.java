@@ -41,7 +41,7 @@ public class ProteinVizPane extends DataAccessControllerPane implements EventBus
     protected void setupMainPane() {
         // set layout
         this.setLayout(new BorderLayout());
-        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
     }
 
     @Override
@@ -57,8 +57,7 @@ public class ProteinVizPane extends DataAccessControllerPane implements EventBus
             if (controller.hasSpectrum()) {
                 // Spectrum view pane
                 spectrumViewPane = new SpectrumViewPane(controller);
-                Icon mzViewIcon = GUIUtilities.loadIcon(appContext.getProperty("spectrum.tab.icon.small"));
-                tabbedPane.insertTab(appContext.getProperty("spectrum.tab.title"), mzViewIcon,
+                tabbedPane.insertTab(appContext.getProperty("spectrum.tab.title"), null,
                         spectrumViewPane, appContext.getProperty("spectrum.tab.tooltip"), tabIndex);
                 tabIndex++;
             }
@@ -72,8 +71,7 @@ public class ProteinVizPane extends DataAccessControllerPane implements EventBus
         proteinSequencePane = new ProteinSequencePane(controller);
         JScrollPane scrollPane = new JScrollPane(proteinSequencePane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBackground(BACKGROUND_COLOUR);
-        Icon protSeqIcon = GUIUtilities.loadIcon(appContext.getProperty("protein.sequence.tab.icon.small"));
-        tabbedPane.insertTab(appContext.getProperty("protein.sequence.tab.title"), protSeqIcon,
+        tabbedPane.insertTab(appContext.getProperty("protein.sequence.tab.title"), null,
                 scrollPane, appContext.getProperty("protein.sequence.tab.tooltip"), tabIndex);
 
         this.add(tabbedPane, BorderLayout.CENTER);

@@ -69,7 +69,7 @@ public class LeftControlPane extends JPanel {
             {
 
                 //---- dataSourceLabel ----
-                dataSourceLabel.setText("Data Source");
+                dataSourceLabel.setText("Experiments");
                 dataSourceLabel.setBorder(new EmptyBorder(3, 0, 0, 0));
 
                 //======== dataSourcePanel ========
@@ -106,7 +106,7 @@ public class LeftControlPane extends JPanel {
             {
 
                 //---- summaryLabel ----
-                summaryLabel.setText("Summary Report");
+                summaryLabel.setText("Experiment Summary");
                 summaryLabel.setBorder(new EmptyBorder(3, 0, 0, 0));
 
                 //======== summaryPanel ========

@@ -2,18 +2,15 @@ package uk.ac.ebi.pride.gui.task.impl;
 
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
+import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
-import uk.ac.ebi.pride.gui.component.sequence.Protein;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
-import uk.ac.ebi.pride.gui.component.utils.Constants;
-import uk.ac.ebi.pride.gui.task.Task;
+import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 import uk.ac.ebi.pride.util.ProteinAccessionResolver;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,6 +48,9 @@ public class RetrievePeptideFitTask extends AbstractDataAccessTask<Void, Tuple<T
 
                         // get protein details
                         Protein protein = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
+                        if (protein != null) {
+                            protein = new AnnotatedProtein(protein);
+                        }
 
                         // get peptide sequence
                         String sequence = controller.getPeptideSequence(identId, peptideId);
@@ -60,7 +60,7 @@ public class RetrievePeptideFitTask extends AbstractDataAccessTask<Void, Tuple<T
                         int end = controller.getPeptideSequenceEnd(identId, peptideId);
 
                         // peptide present
-                        if (protein == null || sequence == null) {
+                        if (protein == null || sequence == null || protein.getSequenceString() ==  null) {
                             state = PeptideFitState.UNKNOWN;
                         } else {
                             if (protein.hasSubSequenceString(sequence, start, end)) {

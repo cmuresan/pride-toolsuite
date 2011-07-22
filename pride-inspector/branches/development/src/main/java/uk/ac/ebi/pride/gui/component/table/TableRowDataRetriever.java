@@ -6,16 +6,17 @@ import uk.ac.ebi.pride.data.core.Modification;
 import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.data.core.PeptideScore;
 import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
+import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
-import uk.ac.ebi.pride.gui.component.sequence.Protein;
-import uk.ac.ebi.pride.gui.component.utils.Constants;
-import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.mol.MoleculeUtilities;
+import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 import uk.ac.ebi.pride.util.NumberUtilities;
 import uk.ac.ebi.pride.util.ProteinAccessionResolver;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <code>TableRowDataRetriever </code> provides methods for retrieving row data for tables.
@@ -63,9 +64,15 @@ public class TableRowDataRetriever {
 
         // get protein details
         Protein protein = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
+        if (protein != null) {
+            protein = new AnnotatedProtein(protein);
+        }
 
         // Protein name
         content.add(protein == null ? null : protein.getName());
+
+        // protein status
+        content.add(protein == null ? null : protein.getStatus().name());
 
         // sequence coverage
         Double coverage = PrideInspectorCacheManager.getInstance().getSequenceCoverage(controller.getUid(), identId);
@@ -241,6 +248,9 @@ public class TableRowDataRetriever {
         content.add(resolvedProtAcc);
 
         // protein name
+        content.add(null);
+
+        // protein status
         content.add(null);
 
         // sequence coverage

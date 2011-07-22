@@ -57,7 +57,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
     protected void setupMainPane() {
         // set layout
         this.setLayout(new BorderLayout());
-        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
     }
 
     /**
@@ -111,7 +111,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
         metaDataPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         try {
             // protein table label
-            JLabel tableLabel =  new JLabel("<html><b>Protein Details</b></html>");
+            JLabel tableLabel =  new JLabel("<html><b>Protein</b></html>");
             metaDataPanel.add(tableLabel);
             metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 

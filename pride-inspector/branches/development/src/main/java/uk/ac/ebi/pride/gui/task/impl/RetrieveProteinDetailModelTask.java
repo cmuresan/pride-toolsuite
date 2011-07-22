@@ -11,7 +11,7 @@ import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PTMAnnotation;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideAnnotation;
-import uk.ac.ebi.pride.gui.component.sequence.Protein;
+import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 import uk.ac.ebi.pride.util.ProteinAccessionResolver;
 
 import java.util.Collection;

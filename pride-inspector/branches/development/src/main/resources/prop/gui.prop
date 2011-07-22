@@ -50,7 +50,7 @@ exit.title=Exit
 open.pride.xml.example.title=Open PRIDE XML Sample
 open.mzml.example.title=Open mzML Sample
 
-data.source.title=Data Sources
+data.source.title=Experiments
 data.source.small.icon=icon/16x16/data_source.gif
 data.source.tooltip=Display data sources
 
@@ -65,9 +65,9 @@ file.source.loading.small.icon=icon/16x16/kit_loading.gif
 database.source.small.icon=icon/16x16/open_database.gif
 database.source.loading.small.icon=icon/16x16/kit_loading.gif
 
-data.source.viewer.title=Data Sources
+data.source.viewer.title=Experiments
 data.source.viewer.small.icon=icon/16x16/data_source.gif
-data.source.viewer.tooltip=Opened data sources
+data.source.viewer.tooltip=Opened Experiments
 
 experiment.tree.viewer.title=Experiments
 experiment.tree.viewer.small.icon=icon/16x16/experiment_tree_enable.gif
@@ -77,7 +77,7 @@ experiment.tree.viewer.find.node.small.icon=icon/16x16/find_experiment.png
 experiment.tree.viewer.tooltip=List of experiments
 
 summary.report.viewer.small.icon=icon/16x16/experiment_tree_enable.gif
-summary.report.viewer.title=Summary Report
+summary.report.viewer.title=Experiment Summary
 summary.report.viewer.tooltip=Summary report on selected experiment
 
 navigation.expand.small.icon=icon/16x16/navigation_expand.gif
@@ -269,12 +269,14 @@ report.item.plain.icon.small=icon/16x16/report_plain.png
 # spectrum and protein sequence tab details
 spectrum.tab.title=Spectrum
 spectrum.tab.tooltip=Spectrum for selected peptide
-spectrum.tab.icon.small=icon/16x16/report_success.png
-protein.sequence.tab.title=Sequence Coverage
+protein.sequence.tab.title=Sequence
 protein.sequence.tab.tooltip=Protein sequence converage for selected protein
-protein.sequence.tab.icon.small=icon/16x16/report_success.png
 protein.sequence.missing.icon.small=icon/32x32/warning.png
 protein.sequence.missing.title = Protein sequence is not currently available, you can download it by clicking on Download Protein Details above
+
+# internet connection
+internet.connection.warning.short.message=Internet Connection Required
+internet.connection.warning.message = <html><b>Please check whether you have Internet connection</b></html>
 
            
 

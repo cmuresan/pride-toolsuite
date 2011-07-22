@@ -4,12 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.component.sequence.Protein;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
-import uk.ac.ebi.pride.gui.utils.ProteinDetailFetcher;
+import uk.ac.ebi.pride.tools.protein_details_fetcher.ProteinDetailFetcher;
+import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 import uk.ac.ebi.pride.util.InternetChecker;
 
 import java.util.*;
@@ -34,9 +33,10 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
     private Collection<String> proteinAccessions;
 
     /**
-     * whether it has internet
+     * Fetcher to download protein details
      */
-    private boolean hasInternet;
+    private ProteinDetailFetcher fetcher;
+
 
     /**
      * Constructor
@@ -52,27 +52,16 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
         this.setName(DEFAULT_TASK_NAME);
         this.setDescription(DEFAULT_TASK_DESC);
 
-        this.proteinAccessions = proteinAccs;
+        this.proteinAccessions = new HashSet<String>(proteinAccs);
 
-        // check whether the internet is available
-        this.hasInternet = InternetChecker.check();
+        this.fetcher = new ProteinDetailFetcher();
     }
 
     @Override
     protected Void doInBackground() throws Exception {
 
         if (!proteinAccessions.isEmpty()) {
-            // display loading for all the rows first
-            Map<String, Protein> tempProteinDetailsMap = new HashMap<String, Protein>();
-            for (String acc : proteinAccessions) {
-                Protein tempProteinDetails = new Protein(acc);
-                tempProteinDetails.setName("Loading...");
-                tempProteinDetailsMap.put(acc, tempProteinDetails);
-            }
-            publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, tempProteinDetailsMap));
-
-            // fetcher will query web service to get protein name
-            ProteinDetailFetcher fetcher = new ProteinDetailFetcher();
+            showLoadingMessages();
 
             // accession buffer
             Set<String> accBuffer = new HashSet<String>();
@@ -89,37 +78,20 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
                     if (acc == null) {
                         continue;
                     }
-                    // get protein name
+                    // get existing protein details
                     Protein protDetails = PrideInspectorCacheManager.getInstance().getProteinDetails(acc);
                     if (protDetails != null) {
                         proteins.put(acc, protDetails);
                         continue;
                     }
 
-                    if (hasInternet) {
-                        accBuffer.add(acc);
-                        if (accBuffer.size() == maxBufferSize) {
-                            // fetch protein details
-                            Map<String, Protein> results = fetcher.getProteinDetails(accBuffer);
-                            // add the missing one
-                            for (String c : accBuffer) {
-                                if (!results.containsKey(c)) {
-                                    Protein p = new Protein(c);
-                                    p.setName(Constants.NOT_AVAILABLE);
-                                    results.put(c, p);
-                                }
-                            }
-                            // add results to cache
-                            PrideInspectorCacheManager.getInstance().addProteinDetails(results.values());
-                            // add results to protein map
-                            proteins.putAll(results);
-                            // public results
-                            publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, proteins));
-                            // clear protein map
-                            proteins = new HashMap<String, Protein>();
-                            // clear accession buffer
-                            accBuffer.clear();
-                        }
+                    accBuffer.add(acc);
+                    if (accBuffer.size() == maxBufferSize) {
+                        // fetch and publish protein details
+                        fetchAndPublish(accBuffer, proteins);
+
+                        // clear protein map
+                        proteins = new HashMap<String, Protein>();
                     }
 
                     // this is important for cancelling
@@ -128,8 +100,8 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
                     }
                 }
 
-                if (!proteins.isEmpty()) {
-                    publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, proteins));
+                if (!accBuffer.isEmpty()) {
+                    fetchAndPublish(accBuffer, proteins);
                 }
             } catch (InterruptedException e) {
                 logger.warn("Protein name download has been cancelled");
@@ -137,5 +109,42 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
         }
 
         return null;
+    }
+
+
+    /**
+     * Show loading messages
+     */
+    private void showLoadingMessages() {
+        // display loading for all the rows first
+        Map<String, Protein> tempProteinDetailsMap = new HashMap<String, Protein>();
+        for (String acc : proteinAccessions) {
+            Protein tempProteinDetails = new Protein(acc);
+            tempProteinDetails.setName("Loading...");
+            tempProteinDetailsMap.put(acc, tempProteinDetails);
+            tempProteinDetails.setStatus(Protein.STATUS.UNKNOWN);
+        }
+        publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, tempProteinDetailsMap));
+    }
+
+
+    /**
+     * Fetch then publish
+     *
+     * @param accs  protein accessions
+     * @param proteins  protein map
+     * @throws Exception    exception while fetching the protein
+     */
+    private void fetchAndPublish(Set<String> accs, Map<String, Protein> proteins) throws Exception {
+        // fetch protein details
+        Map<String, Protein> results = fetcher.getProteinDetails(accs);
+        // add results to cache
+        PrideInspectorCacheManager.getInstance().addProteinDetails(results.values());
+        // add results to protein map
+        proteins.putAll(results);
+        // public results
+        publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, proteins));
+        // clear accession buffer
+        accs.clear();
     }
 }

@@ -32,7 +32,7 @@ import java.util.Collection;
 public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> {
     private static final Logger logger = LoggerFactory.getLogger(MetaDataTabPane.class);
 
-    private static final String PANE_TITLE = "Experiment Details";
+    private static final String PANE_TITLE = "Overview";
     private static final String GENERAL = "General";
     private static final String FILE_CONTENET = "File Content";
     private static final String SOURCE_FILE = "Source File";

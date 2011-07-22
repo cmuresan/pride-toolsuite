@@ -52,7 +52,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
      * the title for ptm label
      */
     private final static String PTM_LABEL = "<html><b>PTM</b>: ";
-    private final static String PEPTIDE_TABLE_DESC = "Peptide Details";
+    private final static String PEPTIDE_TABLE_DESC = "Peptide";
 
     /**
      * peptide table for peptide related details
@@ -89,7 +89,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
     protected void setupMainPane() {
         // set layout
         this.setLayout(new BorderLayout());
-        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
     }
 
     /**

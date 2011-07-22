@@ -47,7 +47,6 @@ public class PrideInspector extends Desktop {
 
     private JFrame mainFrame;
     private JMenuBar menuBar;
-    private JToolBar toolBar;
     private StatusBar statusBar;
     private MainDataVisualizer visualizer;
     private SingleInstanceService sis;
@@ -373,41 +372,6 @@ public class PrideInspector extends Desktop {
 
         // add menus
         mainFrame.setJMenuBar(menuBar);
-
-//        // tool bar
-//        toolBar = new JToolBar();
-//
-//        // open file
-//        JButton openFileButton = new JButton();
-//        openFileButton.setAction(openFileAction);
-//        openFileButton.setText("");
-//        openFileButton.setToolTipText(openFileTooltip);
-//        openFileButton.setFocusable(false);
-//        toolBar.add(openFileButton);
-//        // open database
-//        JButton openDbButton = new JButton();
-//        openDbButton.setAction(openDbAction);
-//        openDbButton.setText("");
-//        openDbButton.setToolTipText(openDbTooltip);
-//        openDbButton.setFocusable(false);
-//        toolBar.add(openDbButton);
-//        // open reviewer download
-//        JButton openReviewerButton = new JButton();
-//        openReviewerButton.setAction(openReviewerAction);
-//        openReviewerButton.setText("");
-//        openReviewerButton.setToolTipText(openReviewerTooltip);
-//        openReviewerButton.setFocusable(false);
-//        toolBar.add(openReviewerButton);
-//        // separator
-//        toolBar.addSeparator();
-//        // help
-//        JButton helpButton = new JButton(helpIcon);
-//        helpButton.setAction(helpAction);
-//        helpButton.setText("");
-//        helpButton.setToolTipText(helpTooltip);
-//        helpButton.setFocusable(false);
-//        toolBar.add(helpButton);
-//        mainFrame.getContentPane().add(toolBar, BorderLayout.PAGE_START);
     }
 
     @Override
@@ -438,10 +402,6 @@ public class PrideInspector extends Desktop {
 
     public JMenuBar getMenuBar() {
         return menuBar;
-    }
-
-    public JToolBar getToolBar() {
-        return toolBar;
     }
 
     public StatusBar getStatusBar() {

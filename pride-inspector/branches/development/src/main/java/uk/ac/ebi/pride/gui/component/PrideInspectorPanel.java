@@ -24,7 +24,7 @@ public class PrideInspectorPanel extends JPanel {
         g2.setComposite(newComposite);
         ImageIcon logoIcon = (ImageIcon) GUIUtilities.loadIcon(context.getProperty("pride.main.large.logo"));
         Dimension d = this.getSize();
-        g2.drawImage(logoIcon.getImage(), (int) (d.getWidth() - logoIcon.getIconWidth()), (int) (d.getHeight() - logoIcon.getIconHeight()), null);
+        g2.drawImage(logoIcon.getImage(), (int) (d.getWidth() - logoIcon.getIconWidth() - 20), (int) (d.getHeight() - logoIcon.getIconHeight() - 20), null);
         g2.setComposite(oldComposite);
     }
 }

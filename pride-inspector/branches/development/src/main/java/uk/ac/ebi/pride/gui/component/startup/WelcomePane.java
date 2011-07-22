@@ -34,11 +34,6 @@ import java.util.List;
 public class WelcomePane extends JPanel implements TaskListener<Object, Object> {
 
     /**
-     * welcome message displayed by the tab
-     */
-    private static final String WELCOME_MESSAGE = "Welcome";
-
-    /**
      * Quick start label title
      */
     private static final String QUICK_START = "Quick Start";
@@ -79,11 +74,6 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
     private static final String FEED_BACK = "Feedback";
 
     /**
-     * Incoming message
-     */
-    public static final String INCOMING_MESSAGES = "Message Board";
-
-    /**
      * PRIDE xml sample
      */
     private static final String PRIDE_XML_SAMPLE = "PRIDE XML";
@@ -116,7 +106,6 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
      */
     private static final Color BUTTON_FONT_COLOR = new Color(0, 60, 200, 200);
 
-    private MessageBoard messageBoard;
 
     /**
      * pride inspector context
@@ -145,9 +134,6 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
      * Add the rest components
      */
     private void addComponents() {
-        // tab pane which contains the welcome pane
-        JTabbedPane tabPane = new JTabbedPane();
-
         // quick start panel
         JPanel quickStartPanel = createQuickStartPane();
 
@@ -197,10 +183,9 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
 
         // scroll pane for screen size
         JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        tabPane.addTab(WELCOME_MESSAGE, scrollPane);
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.gray));
 
-        this.add(tabPane, BorderLayout.CENTER);
+        this.add(scrollPane, BorderLayout.CENTER);
         
         // check for update
         checkForUpdate();

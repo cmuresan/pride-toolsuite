@@ -33,7 +33,7 @@ public class PrideInspectorLoadingPanel extends PrideInspectorPanel {
         c.gridy = 1;
         c.fill = GridBagConstraints.NONE;
 
-        JPanel panel = new RectPanel();
+        JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         panel.setBackground(Color.white);
         panel.setPreferredSize(new Dimension(350, 150));

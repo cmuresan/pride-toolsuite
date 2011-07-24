@@ -70,6 +70,7 @@ public class ProteinVizPane extends DataAccessControllerPane implements EventBus
         // protein sequence pane
         proteinSequencePane = new ProteinSequencePane(controller);
         JScrollPane scrollPane = new JScrollPane(proteinSequencePane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setBackground(BACKGROUND_COLOUR);
         tabbedPane.insertTab(appContext.getProperty("protein.sequence.tab.title"), null,
                 scrollPane, appContext.getProperty("protein.sequence.tab.tooltip"), tabIndex);

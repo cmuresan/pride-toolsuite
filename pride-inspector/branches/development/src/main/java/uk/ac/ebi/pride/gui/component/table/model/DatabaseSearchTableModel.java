@@ -20,7 +20,7 @@ public class DatabaseSearchTableModel extends ListTableModel<List<String>> {
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("Row", "Row Number"),
+        ROW_NUMBER_COLUMN("#", "Row Number"),
         SELECTED("Selected", "Selected experiment"),
         VIEW("View", "View experiment");
 

@@ -82,22 +82,27 @@ public interface Constants {
 
     public final static String VIEW = "View";
 
+    public final static String PUBMED_URL_PERFIX = "http://www.ncbi.nlm.nih.gov/pubmed/";
+
+    public final static String DOI_URL_PREFIX = "http://dx.doi.org/";
+
+    public static final String OLS_URL_PREFIX = "http://www.ebi.ac.uk/ontology-lookup/?termId=";
 
     /**
      * Colours
      */
     public static final Color PTM_BACKGROUND_COLOUR = new Color(215, 39, 41, 100);
     public static final Color PTM_HIGHLIGHT_COLOUR = Color.yellow.darker();
-    public final static Color STRICT_FIT_PEPTIDE_BACKGROUND_COLOUR = new Color(40, 175, 99, 100);
 
+    public final static Color STRICT_FIT_PEPTIDE_BACKGROUND_COLOUR = new Color(40, 175, 99, 100);
     public final static Color FIT_PEPTIDE_BACKGROUND_COLOUR = new Color(251, 182, 1, 100);
     public final static Color PEPTIDE_OVERLAP_COLOUR = new Color(40, 175, 99);
     public final static Color PEPTIDE_HIGHLIGHT_COLOUR = Color.yellow;
-    public final static Color NOT_FIT_PEPTIDE_BACKGROUND_COLOUR = new Color(215, 39, 41, 100);
 
+
+    public final static Color NOT_FIT_PEPTIDE_BACKGROUND_COLOUR = new Color(215, 39, 41, 100);
     /** color for tables */
     public static final Color ALTER_ROW_COLOUR = new Color(214, 241, 249);
     public static final Color ROW_SELECTION_BACKGROUD = new Color(193, 210, 238);
     public static final Color ROW_SELECTION_FOREGROUND = Color.black;
-
 }

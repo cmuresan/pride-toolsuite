@@ -17,7 +17,7 @@ public class PTMTableModel extends ProgressiveUpdateTableModel<Void, Peptide> {
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("Row", "Row Number"),
+        ROW_NUMBER_COLUMN("#", "Row Number"),
         PTM_ACCESSION("Accession", "PTM Accession"),
         PTM_NAME("Name", "PTM Name"),
         PTM_LOCATION("Location", "Modified location"),

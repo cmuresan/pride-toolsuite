@@ -18,7 +18,7 @@ public class ChromatogramTableModel extends ProgressiveUpdateTableModel<Void, Tu
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("Row", "Row Number"),
+        ROW_NUMBER_COLUMN("#", "Row Number"),
         CHROMATOGRAM_ID_COLUMN("Chromatogram ID", "Chromatogram ID");
 
         private final String header;
@@ -52,7 +52,7 @@ public class ChromatogramTableModel extends ProgressiveUpdateTableModel<Void, Tu
         int rowCnt = this.getRowCount();
         if (TableContentType.CHROMATOGRAM.equals(type)) {
             List<Object> content = new ArrayList<Object>();
-            content.add(this.getRowCount() + 1);
+            content.add(rowCnt + 1);
             content.addAll(newData.getValue());
             this.addRow(content);
             fireTableRowsInserted(rowCnt, rowCnt);

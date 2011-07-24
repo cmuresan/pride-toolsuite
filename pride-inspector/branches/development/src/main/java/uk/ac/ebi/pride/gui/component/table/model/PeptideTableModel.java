@@ -31,7 +31,7 @@ public class PeptideTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("Row", "Row Number"),
+        ROW_NUMBER_COLUMN("#", "Row Number"),
         PEPTIDE_PTM_COLUMN("Peptide", "Peptide Sequence"),
         PROTEIN_ACCESSION_COLUMN("Submitted", "Submitted Protein Accession From Source"),
         MAPPED_PROTEIN_ACCESSION_COLUMN("Mapped", "Pride Mapped Protein Accession"),

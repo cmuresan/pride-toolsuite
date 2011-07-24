@@ -3,8 +3,10 @@ package uk.ac.ebi.pride.gui.component.table;
 import org.jdesktop.swingx.table.DefaultTableColumnModelExt;
 import org.jdesktop.swingx.table.TableColumnExt;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.core.ParamGroup;
+import uk.ac.ebi.pride.data.core.Parameter;
+import uk.ac.ebi.pride.data.core.Reference;
 import uk.ac.ebi.pride.data.core.SearchEngine;
-import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.table.listener.DynamicColumnListener;
 import uk.ac.ebi.pride.gui.component.table.listener.HyperLinkCellMouseClickListener;
 import uk.ac.ebi.pride.gui.component.table.listener.OpenExperimentMouseListener;
@@ -12,11 +14,12 @@ import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener
 import uk.ac.ebi.pride.gui.component.table.model.*;
 import uk.ac.ebi.pride.gui.component.table.renderer.*;
 import uk.ac.ebi.pride.gui.component.utils.Constants;
-import uk.ac.ebi.pride.gui.url.PTMHyperLinkGenerator;
-import uk.ac.ebi.pride.gui.url.ProteinAccHyperLinkGenerator;
+import uk.ac.ebi.pride.gui.url.*;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * TableFactory can be used to different type of tables.
@@ -206,8 +209,112 @@ public class TableFactory {
         searchTable.addMouseMotionListener(new TableCellMouseMotionListener(searchTable, viewColumnHeader, selectColumnHeader));
         searchTable.addMouseListener(new OpenExperimentMouseListener(searchTable, viewColumnHeader));
 
-
-
         return searchTable;
+    }
+
+    /**
+     * Create a table to show a list of references
+     * @param references    a list of input references
+     * @return  JTable  reference table
+     */
+    public static JTable createReferenceTable(Collection<Reference> references) {
+        ReferenceTableModel tableModel = new ReferenceTableModel(references);
+        DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
+        DefaultPrideTable referenceTable = new DefaultPrideTable(tableModel, columnModel);
+
+        // pubmed
+        String pubMedColumnHeader = ReferenceTableModel.TableHeader.PUBMED.getHeader();
+        TableColumnExt pubMedColumn = (TableColumnExt) referenceTable.getColumn(pubMedColumnHeader);
+        pubMedColumn.setCellRenderer(new HyperLinkCellRenderer());
+        int pubMedColumnNum = pubMedColumn.getModelIndex();
+        referenceTable.getColumnModel().getColumn(pubMedColumnNum).setMaxWidth(100);
+
+        // doi
+        String doiColumnHeader = ReferenceTableModel.TableHeader.DOI.getHeader();
+        TableColumnExt doiColumn = (TableColumnExt) referenceTable.getColumn(doiColumnHeader);
+        doiColumn.setCellRenderer(new HyperLinkCellRenderer());
+        int doiColumnNum = doiColumn.getModelIndex();
+        referenceTable.getColumnModel().getColumn(doiColumnNum).setMaxWidth(100);
+
+        // add mouse motion listener
+        referenceTable.addMouseMotionListener(new TableCellMouseMotionListener(referenceTable, pubMedColumnHeader, doiColumnHeader));
+        referenceTable.addMouseListener(new HyperLinkCellMouseClickListener(referenceTable, pubMedColumnHeader, new PrefixedHyperLinkGenerator(Constants.PUBMED_URL_PERFIX)));
+        referenceTable.addMouseListener(new HyperLinkCellMouseClickListener(referenceTable, doiColumnHeader, new DOIHyperLinkGenerator(Constants.DOI_URL_PREFIX)));
+
+        return referenceTable;
+    }
+
+    /**
+     * Create a table for showing a list of param groups
+     * @param paramGroups   given list of param groups
+     * @return  JTable  param table
+     */
+    public static JTable createParamTable(List<ParamGroup> paramGroups) {
+        ParamTableModel paramTableModel = new ParamTableModel(paramGroups);
+        return createParamTable(paramTableModel);
+    }
+
+    /**
+     * Create a table for showing a ParamGroup
+    * @param paramGroup    given ParamGroup
+    * @return  JTable  param table
+     */
+    public static JTable createParamTable(ParamGroup paramGroup) {
+        ParamTableModel paramTableModel = new ParamTableModel(paramGroup);
+        return createParamTable(paramTableModel);
+    }
+
+    /**
+     * Create a table for showing a collection parameters
+     * @param parameters    a collection of parameters
+     * @return  JTable  param table
+     */
+    public static JTable createParamTable(Collection<Parameter> parameters) {
+        ParamTableModel paramTableModel = new ParamTableModel(parameters);
+        return createParamTable(paramTableModel);
+    }
+
+
+    /**
+     * Create a table for showing a ParamTableModel
+     * @param paramTableModel   given param table model
+     * @return  JTable  param table
+     */
+    private static JTable createParamTable(ParamTableModel paramTableModel) {
+        DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
+        DefaultPrideTable paramTable = new DefaultPrideTable(paramTableModel, columnModel);
+
+        // hyperlink ontology accessions
+        String accColumnHeader = ParamTableModel.TableHeader.ACCESSION.getHeader();
+        TableColumnExt accColumn = (TableColumnExt) paramTable.getColumn(accColumnHeader);
+        accColumn.setCellRenderer(new HyperLinkCellRenderer());
+
+        // add mouse motion listener
+        paramTable.addMouseMotionListener(new TableCellMouseMotionListener(paramTable, accColumnHeader));
+        paramTable.addMouseListener(new HyperLinkCellMouseClickListener(paramTable, accColumnHeader, new PrefixedHyperLinkGenerator(Constants.OLS_URL_PREFIX)));
+
+        return paramTable;
+    }
+
+    /**
+     * Create a table for showing contacts
+     * @param contacts  given list of contacts
+     * @return  JTable  contact table
+     */
+    public static JTable createContactTable(Collection<ParamGroup> contacts) {
+        ContactTableModel tableModel = new ContactTableModel(contacts);
+        DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
+        DefaultPrideTable contactTable = new DefaultPrideTable(tableModel, columnModel);
+
+        // hyperlink contact emails
+        String infoColumnHeader = ContactTableModel.TableHeader.INFORMATION.getHeader();
+        TableColumnExt infoColumn = (TableColumnExt) contactTable.getColumn(infoColumnHeader);
+        infoColumn.setCellRenderer(new HyperLinkCellRenderer());
+
+        // add mouse motion listener
+        contactTable.addMouseMotionListener(new TableCellMouseMotionListener(contactTable, infoColumnHeader));
+        contactTable.addMouseListener(new HyperLinkCellMouseClickListener(contactTable, infoColumnHeader, new EmailHyperLinkGenerator()));
+
+        return contactTable;
     }
 }

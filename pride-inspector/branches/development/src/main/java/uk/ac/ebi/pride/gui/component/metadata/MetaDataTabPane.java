@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
 import org.bushe.swing.event.EventBus;
+import org.jdesktop.swingx.border.DropShadowBorder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -15,10 +16,14 @@ import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveMetaDataTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
+import uk.ac.ebi.pride.gui.utils.EDTUtils;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 /**
@@ -29,11 +34,14 @@ import java.util.Collection;
  * Date: 05-Mar-2010
  * Time: 15:12:07
  */
-public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> {
+public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> implements ActionListener {
     private static final Logger logger = LoggerFactory.getLogger(MetaDataTabPane.class);
 
+    private static final String GENERAL = "Experiment General";
+    private static final String SAMPLE_PROTOCOL = "Sample & Protocol";
+    private static final String INSTRUMENT_SOFTWARE = "Instrument & Processing";
+
     private static final String PANE_TITLE = "Overview";
-    private static final String GENERAL = "General";
     private static final String FILE_CONTENET = "File Content";
     private static final String SOURCE_FILE = "Source File";
     private static final String CONTACT = "Contact";
@@ -46,6 +54,10 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> {
     private static final String REFERENCE = "Reference";
 
     private JPanel metaDataContainer;
+    private JPanel metaDataControlBar;
+    private JPanel generalMetadataPanel;
+    private JPanel sampleProtocolMetadataPanel;
+    private JPanel instrumentProcMetadataPanel;
     private PrideInspectorContext context;
 
     public MetaDataTabPane(DataAccessController controller, JComponent component) {
@@ -79,63 +91,46 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> {
 
     @Override
     public void succeed(TaskEvent<MetaData> metaDataTaskEvent) {
-        MetaData metaData = metaDataTaskEvent.getValue();
+        final MetaData metaData = metaDataTaskEvent.getValue();
 
-        // init container
-        createContainer();
+        Runnable run = new Runnable() {
 
-        // reference
-        addReferences(metaData);
+            @Override
+            public void run() {
+                // init container
+                createContainer();
 
-        // contact
-        FileDescription fileDesc = metaData.getFileDescription();
-        if (fileDesc != null) {
-            // contacts
-            addContacts(fileDesc);
+                // create meta data panels
+                createMetaDataPanels(metaData);
+
+                // tool bar
+                createToolbar();
+
+                // add to scroll pane
+                JScrollPane scrollPane = new JScrollPane(metaDataContainer,
+                        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                scrollPane.setBorder(BorderFactory.createEmptyBorder());
+                MetaDataTabPane.this.add(scrollPane, BorderLayout.CENTER);
+
+                // set vertical scroll bar's speed
+                scrollPane.getVerticalScrollBar().setUnitIncrement(100);
+            }
+        };
+
+        try {
+            EDTUtils.invokeAndWait(run);
+        } catch (InvocationTargetException e) {
+            String msg = "Failed to create meta data panels";
+            logger.error(msg, e);
+
+        } catch (InterruptedException e) {
+            String msg = "Failed to create meta data panels";
+            logger.error(msg, e);
         }
-
-        // general info
-        addGeneralContentPane(metaData);
-
-        // samples
-        addSamples(metaData);
-
-        // protocol
-        addProtocol(metaData);
-
-        // instruments
-        addInstrumentConfigurations(metaData);
-
-        // scan settings
-        addScanSettings(metaData);
-
-        // data processings
-        addDataProcessings(metaData);
-
-        // softwares
-        addSoftwares(metaData);
-
-        // file content
-        if (fileDesc != null) {
-            // file content
-            addFileContent(fileDesc);
-            // source Files
-            addSourceFiles(fileDesc);
-        }
-
-        // add to scroll pane
-        JScrollPane scrollPane = new JScrollPane(metaDataContainer,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        this.add(scrollPane, BorderLayout.CENTER);
-
-        // set vertical scroll bar's speed
-        scrollPane.getVerticalScrollBar().setUnitIncrement(100);
     }
 
     // called when a background task finished to reset the icon
-
     @Override
     public void finished(TaskEvent<Void> event) {
         showIcon(getIcon());
@@ -165,11 +160,65 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> {
         context.addTask(retrieveTask);
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String cmd = e.getActionCommand();
+        metaDataContainer.removeAll();
+        metaDataContainer.add(metaDataControlBar, BorderLayout.NORTH);
+        if (GENERAL.equals(cmd)) {
+            metaDataContainer.add(generalMetadataPanel, BorderLayout.CENTER);
+        } else if (SAMPLE_PROTOCOL.equals(cmd)) {
+            metaDataContainer.add(sampleProtocolMetadataPanel, BorderLayout.CENTER);
+        } else if (INSTRUMENT_SOFTWARE.equals(cmd)) {
+            metaDataContainer.add(instrumentProcMetadataPanel, BorderLayout.CENTER);
+        }
+        metaDataContainer.revalidate();
+        metaDataContainer.repaint();
+    }
+
     private void createContainer() {
         metaDataContainer = new JPanel();
-        metaDataContainer.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        metaDataContainer.setLayout(new BorderLayout());
         metaDataContainer.setBackground(Color.white);
-        metaDataContainer.setLayout(new BoxLayout(metaDataContainer, BoxLayout.Y_AXIS));
+    }
+
+
+    private void createToolbar() {
+        metaDataControlBar = new JPanel();
+        metaDataControlBar.setBackground(Color.white);
+        metaDataControlBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.gray));
+        metaDataControlBar.setLayout(new FlowLayout(FlowLayout.CENTER));
+        ButtonGroup buttonGroup = new ButtonGroup();
+        JToggleButton generalButton = new JToggleButton(GENERAL);
+        generalButton.setActionCommand(GENERAL);
+        generalButton.setPreferredSize(new Dimension(180, 20));
+        JToggleButton proSamButton = new JToggleButton(SAMPLE_PROTOCOL);
+        proSamButton.setActionCommand(SAMPLE_PROTOCOL);
+        proSamButton.setPreferredSize(new Dimension(180, 20));
+        JToggleButton insSofButton = new JToggleButton(INSTRUMENT_SOFTWARE);
+        insSofButton.setActionCommand(INSTRUMENT_SOFTWARE);
+        insSofButton.setPreferredSize(new Dimension(180, 20));
+        generalButton.addActionListener(this);
+        proSamButton.addActionListener(this);
+        insSofButton.addActionListener(this);
+        buttonGroup.add(generalButton);
+        buttonGroup.add(proSamButton);
+        buttonGroup.add(insSofButton);
+        metaDataControlBar.add(generalButton);
+        metaDataControlBar.add(proSamButton);
+        metaDataControlBar.add(insSofButton);
+        metaDataContainer.add(metaDataControlBar, BorderLayout.NORTH);
+
+        // set default selection
+        generalButton.setSelected(true);
+    }
+
+    private void createMetaDataPanels(MetaData metaData) {
+        generalMetadataPanel = new GeneralMetadataPanel(metaData);
+        sampleProtocolMetadataPanel = new SampleProtocolMetadataPanel(metaData);
+        instrumentProcMetadataPanel = new InstrumentProcessingMetadataPanel(metaData);
+        // set default panel
+        metaDataContainer.add(generalMetadataPanel, BorderLayout.CENTER);
     }
 
     private void addGeneralContentPane(MetaData metaData) {
@@ -315,4 +364,5 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> {
         metaDataContainer.add(cPane);
         metaDataContainer.add(Box.createRigidArea(new Dimension(0, 10)));
     }
+
 }

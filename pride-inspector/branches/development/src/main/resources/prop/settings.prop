@@ -18,10 +18,6 @@ pride.inspector.website=http://code.google.com/p/pride-toolsuite
 # the size of each mzdata batch load
 mzdata.batch.load.size=100
 
-# threshold for starting calculating pride chart
-# this is the number of spectra
-chart.spectra.threshold = 25000
-
 # threshold for file size (in M)
 # this will trigger a warning message if the file is bigger
 open.file.threshold = 500

@@ -154,9 +154,8 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
     private void showWarningMessage(String msg, boolean launchButton) {
         this.setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel(new BorderLayout());
-
         JPanel msgPanel = new JPanel();
+        msgPanel.setPreferredSize(new Dimension(500, 40));
         msgPanel.setBackground(Color.white);
         msgPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.gray));
         msgPanel.setLayout(new BoxLayout(msgPanel, BoxLayout.LINE_AXIS));
@@ -166,7 +165,7 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
         // warning message label
         JLabel msgLabel = new JLabel(GUIUtilities.loadIcon(viewerContext.getProperty("chart.warning.icon.small")));
         msgLabel.setText(msg);
-        msgLabel.setPreferredSize(new Dimension(800, 25));
+//        msgLabel.setPreferredSize(new Dimension(800, 25));
         msgPanel.add(msgLabel);
 
         // add a glue to fill the empty space
@@ -188,8 +187,7 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
 
         msgPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
-        panel.add(msgPanel, BorderLayout.NORTH);
-        this.add(panel, BorderLayout.NORTH);
+        this.add(msgPanel, BorderLayout.NORTH);
 
         if (!launchButton) {
             JPanel loadingPanel = new PrideInspectorLoadingPanel();
@@ -204,18 +202,12 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
     @Override
     public void populate() {
         removeAll();
-        try {
-            //get spectra threshold
-            int threshold = Integer.parseInt(viewerContext.getProperty("chart.spectra.threshold"));
-            if (DataAccessController.Type.DATABASE.equals(controller.getType())
-                    || controller.getNumberOfSpectra() < threshold) {
-                createPrideCharts();
-            } else {
-                String msg = viewerContext.getProperty("chart.warning.message");
-                showWarningMessage(msg, true);
-            }
-        } catch (DataAccessException e) {
-            logger.error("Failed to get the number of spectra", e);
+        //get spectra threshold
+        if (DataAccessController.Type.DATABASE.equals(controller.getType())) {
+            createPrideCharts();
+        } else {
+            String msg = viewerContext.getProperty("chart.warning.message");
+            showWarningMessage(msg, true);
         }
     }
 

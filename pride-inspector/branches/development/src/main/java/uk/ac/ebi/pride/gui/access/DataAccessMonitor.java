@@ -59,7 +59,7 @@ public class DataAccessMonitor extends PropertyChangeHelper {
             // get the next available controller's index
             int nextIndex = controllers.size() - 1 > index ? index : index - 1;
             controllers.remove(controller);
-            if (foregroundController.equals(controller)) {
+            if (foregroundController != null && foregroundController.equals(controller)) {
                 setForegroundDataAccessController(nextIndex >= 0 ? controllers.get(nextIndex) : null);
             }
             controller.close();

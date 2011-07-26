@@ -139,7 +139,7 @@ public class PeptideTabPane extends PrideInspectorTabPane {
 
 
         // Spectrum view pane
-        vizTabPane = new PeptideVizPane(controller);
+        vizTabPane = new PeptideVizPane(controller, this);
         vizTabPane.setMinimumSize(new Dimension(200, 200));
         innerSplitPane.setBottomComponent(vizTabPane);
         outterSplitPane.setBottomComponent(innerSplitPane);

@@ -121,6 +121,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
             Object type = identId == null ? "Unknown" : controller.getIdentificationType(identId);
             type = type == null ? "Unknown" : type;
             JLabel identLabel = new JLabel("<html><b>Type</b>: " + type + "</html>");
+            identLabel.setToolTipText(type.toString());
             metaDataPanel.add(identLabel);
             metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
@@ -128,14 +129,19 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
             Object engine = identId == null ? "Unknown" : controller.getSearchEngine().getOriginalTitle();
             engine = engine == null ? "Unknown" : engine;
             JLabel dbLabel = new JLabel("<html><b>Search Engine</b>: " + engine + "</htlm>");
+            dbLabel.setToolTipText(engine.toString());
             metaDataPanel.add(dbLabel);
             metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
             // search database
             Object database = identId == null ? "Unknown" : controller.getSearchDatabase(identId);
             database = database == null ? "Unknown" : database;
-            JLabel engineLabel = new JLabel("<html><b>Search Database</b>: " + database + "</html>");
+            JLabel engineLabel = new JLabel("<html><b>Search Database</b>: </html>");
+            JLabel engineValLabel = new JLabel(database.toString());
+            engineValLabel.setPreferredSize(new Dimension(200, 15));
+            engineValLabel.setToolTipText(database.toString());
             metaDataPanel.add(engineLabel);
+            metaDataPanel.add(engineValLabel);
         } catch (DataAccessException e) {
             String msg = "Failed to createAttributedSequence meta data pane for identifications";
             logger.error(msg, e);

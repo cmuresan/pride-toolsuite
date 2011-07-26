@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
+import uk.ac.ebi.pride.gui.action.impl.RetrieveExtraProteinDetailAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
@@ -33,8 +34,8 @@ public class ProteinVizPane extends DataAccessControllerPane implements EventBus
     private SpectrumViewPane spectrumViewPane;
     private ProteinSequencePane proteinSequencePane;
 
-    public ProteinVizPane(DataAccessController controller) {
-        super(controller);
+    public ProteinVizPane(DataAccessController controller, JComponent parentComponent) {
+        super(controller, parentComponent);
     }
 
     @Override
@@ -68,7 +69,12 @@ public class ProteinVizPane extends DataAccessControllerPane implements EventBus
         }
 
         // protein sequence pane
-        proteinSequencePane = new ProteinSequencePane(controller);
+        Action action = null;
+        if (parentComponent !=  null && parentComponent instanceof ProteinTabPane) {
+            JTable identTable = ((ProteinTabPane) parentComponent).getIdentificationPane().getIdentificationTable();
+            action = new RetrieveExtraProteinDetailAction(identTable, controller);
+        }
+        proteinSequencePane = new ProteinSequencePane(controller, action);
         JScrollPane scrollPane = new JScrollPane(proteinSequencePane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setBackground(BACKGROUND_COLOUR);
@@ -85,5 +91,4 @@ public class ProteinVizPane extends DataAccessControllerPane implements EventBus
         }
         proteinSequencePane.subscribeToEventBus(null);
     }
-
 }

@@ -9,6 +9,7 @@ import uk.ac.ebi.pride.data.core.ProcessingMethod;
 
 import javax.sound.midi.Instrument;
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 /*
  * Created by JFormDesigner on Sun Jul 24 22:11:06 BST 2011
@@ -66,9 +67,11 @@ public class InstrumentProcessingMetadataPanel extends JPanel {
 
         //---- instrumentLabel ----
         instrumentLabel.setText("Instrument Configurations");
+        instrumentLabel.setFont(instrumentLabel.getFont().deriveFont(instrumentLabel.getFont().getStyle() | Font.BOLD));
 
         //---- dataProcLabel ----
         dataProcLabel.setText("Data Processings");
+        dataProcLabel.setFont(dataProcLabel.getFont().deriveFont(dataProcLabel.getFont().getStyle() | Font.BOLD));
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);

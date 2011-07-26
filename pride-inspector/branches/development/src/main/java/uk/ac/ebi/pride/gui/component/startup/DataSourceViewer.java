@@ -18,6 +18,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -82,7 +83,7 @@ public class DataSourceViewer extends JPanel {
 
         // create data source table with data access model
         sourceTableModel = new DataAccessTableModel();
-        sourceTable = new JTable(sourceTableModel);
+        sourceTable = new DataAccessTable(sourceTableModel);
 
         // set renderer for data source column
         TableColumn sourceCol = sourceTable.getColumn(TableHeader.DATA_SOURCE_COLUMN.getHeader());
@@ -188,6 +189,35 @@ public class DataSourceViewer extends JPanel {
     }
 
     /**
+     * Data access table to show experiment name as tooltip
+     */
+    private class DataAccessTable extends JTable {
+
+        private DataAccessTable(TableModel dm) {
+            super(dm);
+        }
+
+        @Override
+        public String getToolTipText(MouseEvent event) {
+            String tooltip;
+
+            Point p = event.getPoint();
+            int rowIndex = rowAtPoint(p);
+            int colIndex = columnAtPoint(p);
+            int realColIndex = convertColumnIndexToModel(colIndex);
+            if (realColIndex == 0) {
+                TableModel model = getModel();
+                tooltip = model.getValueAt(rowIndex, colIndex).toString();
+            } else {
+                tooltip = super.getToolTipText(event);
+            }
+
+            System.out.println("tooltip");
+            return tooltip;
+        }
+    }
+
+    /**
      * DataAccessTableModel tracks data sources stored in DataAccessMonitor
      * <p/>
      * It uses DataAccessMonitor as a background data model, and it also use
@@ -236,6 +266,8 @@ public class DataSourceViewer extends JPanel {
             java.util.List<DataAccessController> controllers = context.getControllers();
             return controllers.indexOf(controller);
         }
+
+
     }
 
     /**

@@ -42,16 +42,6 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
     private static final String INSTRUMENT_SOFTWARE = "Instrument & Processing";
 
     private static final String PANE_TITLE = "Overview";
-    private static final String FILE_CONTENET = "File Content";
-    private static final String SOURCE_FILE = "Source File";
-    private static final String CONTACT = "Contact";
-    private static final String SAMPLE = "Sample";
-    private static final String SOFTWARE = "Software";
-    private static final String SCAN_SETTING = "Scan Setting";
-    private static final String INSTRUMENT_CONFIG = "Instrument Configuration";
-    private static final String DATA_PROCESSING = "Data Processing";
-    private static final String PROTOCOL = "Protocol";
-    private static final String REFERENCE = "Reference";
 
     private JPanel metaDataContainer;
     private JPanel metaDataControlBar;
@@ -191,13 +181,13 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
         ButtonGroup buttonGroup = new ButtonGroup();
         JToggleButton generalButton = new JToggleButton(GENERAL);
         generalButton.setActionCommand(GENERAL);
-        generalButton.setPreferredSize(new Dimension(180, 20));
+        generalButton.setPreferredSize(new Dimension(180, 25));
         JToggleButton proSamButton = new JToggleButton(SAMPLE_PROTOCOL);
         proSamButton.setActionCommand(SAMPLE_PROTOCOL);
-        proSamButton.setPreferredSize(new Dimension(180, 20));
+        proSamButton.setPreferredSize(new Dimension(180, 25));
         JToggleButton insSofButton = new JToggleButton(INSTRUMENT_SOFTWARE);
         insSofButton.setActionCommand(INSTRUMENT_SOFTWARE);
-        insSofButton.setPreferredSize(new Dimension(180, 20));
+        insSofButton.setPreferredSize(new Dimension(180, 25));
         generalButton.addActionListener(this);
         proSamButton.addActionListener(this);
         insSofButton.addActionListener(this);
@@ -219,150 +209,6 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
         instrumentProcMetadataPanel = new InstrumentProcessingMetadataPanel(metaData);
         // set default panel
         metaDataContainer.add(generalMetadataPanel, BorderLayout.CENTER);
-    }
-
-    private void addGeneralContentPane(MetaData metaData) {
-        Collection<Parameter> generalContent = MetaDataHelper.getGeneralContent(metaData);
-        addCollapsablePane(GENERAL, generalContent);
-    }
-
-    private void addFileContent(FileDescription fileDesc) {
-        ParamGroup fileContent = fileDesc.getFileContent();
-        if (fileContent != null) {
-            Collection<Parameter> params = MetaDataHelper.getParamGroup(fileContent);
-            addCollapsablePane(FILE_CONTENET, params);
-        }
-    }
-
-    private void addSourceFiles(FileDescription fileDesc) {
-        java.util.List<SourceFile> sourceFiles = fileDesc.getSourceFiles();
-        if (sourceFiles != null) {
-            for (SourceFile sourceFile : sourceFiles) {
-                Collection<Parameter> params = MetaDataHelper.getSourceFile(sourceFile);
-                addCollapsablePane(SOURCE_FILE, params);
-            }
-        }
-
-    }
-
-    private void addContacts(FileDescription fileDesc) {
-        java.util.List<ParamGroup> contacts = fileDesc.getContacts();
-        if (contacts != null && contacts.size() > 0) {
-            for (ParamGroup contact : contacts) {
-                Collection<Parameter> params = MetaDataHelper.getContact(contact);
-                addCollapsablePane(CONTACT, params);
-            }
-
-            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Contacts found", "Contacts have been found")));
-        }
-    }
-
-    private void addSamples(MetaData metaData) {
-        java.util.List<Sample> samples = metaData.getSamples();
-
-        if (samples != null && samples.size() > 0) {
-            for (Sample sample : samples) {
-                Collection<Parameter> params = MetaDataHelper.getSample(sample);
-                addCollapsablePane(SAMPLE, params);
-            }
-
-            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Sample found", samples.size() + " samples have been found")));
-        } else if (controller.getContentCategories().contains(DataAccessController.ContentCategory.SAMPLE)) {
-            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "No samples", "No sample details have been found")));
-        }
-    }
-
-    private void addSoftwares(MetaData metaData) {
-        java.util.List<Software> softwares = metaData.getSoftwares();
-
-        if (softwares != null && softwares.size() > 0) {
-            for (Software software : softwares) {
-                Collection<Parameter> params = MetaDataHelper.getSoftware(software);
-                addCollapsablePane(SOFTWARE, params);
-            }
-
-            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Software found", "Software details have been found")));
-        } else if (controller.getContentCategories().contains(DataAccessController.ContentCategory.SOFTWARE)) {
-            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "No software", "No software details have been found")));
-        }
-    }
-
-    private void addScanSettings(MetaData metaData) {
-        java.util.List<ScanSetting> scanSettings = metaData.getScanSettings();
-
-        if (scanSettings != null && scanSettings.size() > 0) {
-            for (ScanSetting scanSetting : scanSettings) {
-                Collection<Parameter> params = MetaDataHelper.getScanSetting(scanSetting);
-                addCollapsablePane(SCAN_SETTING, params);
-            }
-            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Scan settings found", "Scan settings have been found")));
-        }
-    }
-
-    private void addInstrumentConfigurations(MetaData metaData) {
-        java.util.List<InstrumentConfiguration> instruments = metaData.getInstrumentConfigurations();
-
-        if (instruments != null && instruments.size() > 0) {
-            for (InstrumentConfiguration instrument : instruments) {
-                Collection<Parameter> params = MetaDataHelper.getInstrumentConfiguration(instrument);
-                addCollapsablePane(INSTRUMENT_CONFIG, params);
-            }
-
-            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Instrument found", "Instrument details have been found")));
-        } else if (controller.getContentCategories().contains(DataAccessController.ContentCategory.INSTRUMENT)) {
-            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "No instruments", "No instrument settings have been found")));
-        }
-    }
-
-    private void addDataProcessings(MetaData metaData) {
-        java.util.List<DataProcessing> dataProcs = metaData.getDataProcessings();
-
-        if (dataProcs != null && dataProcs.size() > 0) {
-            for (DataProcessing dataProc : dataProcs) {
-                Collection<Parameter> params = MetaDataHelper.getDataProcessing(dataProc);
-                addCollapsablePane(DATA_PROCESSING, params);
-            }
-
-            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Data processing found", "Data processing details have been found")));
-        } else if (controller.getContentCategories().contains(DataAccessController.ContentCategory.DATA_PROCESSING)) {
-            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "No data processing", "No data processing have been found")));
-        }
-    }
-
-    private void addProtocol(MetaData metaData) {
-        if (metaData instanceof Experiment) {
-            Protocol protocol = ((Experiment) metaData).getProtocol();
-
-            if (protocol != null) {
-                Collection<Parameter> params = MetaDataHelper.getProtocol(protocol);
-                addCollapsablePane(PROTOCOL, params);
-                EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Protocol found", "Protocol has been found")));
-            } else if (controller.getContentCategories().contains(DataAccessController.ContentCategory.DATA_PROCESSING)) {
-                EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "No protocol", "No protocol has been found")));
-            }
-        }
-    }
-
-    private void addReferences(MetaData metaData) {
-        if (metaData instanceof Experiment) {
-            java.util.List<Reference> references = ((Experiment) metaData).getReferences();
-
-            if (references != null && references.size() > 0) {
-                for (Reference reference : references) {
-                    Collection<Parameter> params = MetaDataHelper.getReference(reference);
-                    addCollapsablePane(REFERENCE, params);
-                }
-                EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Reference found", "References have been found")));
-            }
-        }
-    }
-
-    private void addCollapsablePane(String title, Collection<Parameter> params) {
-        CollapsiblePane cPane = new CollapsiblePane(title);
-        JPanel contentPane = new MetaDataViewer(params);
-        cPane.setContentComponent(contentPane);
-        metaDataContainer.add(cPane);
-        metaDataContainer.add(Box.createRigidArea(new Dimension(0, 10)));
     }
 
 }

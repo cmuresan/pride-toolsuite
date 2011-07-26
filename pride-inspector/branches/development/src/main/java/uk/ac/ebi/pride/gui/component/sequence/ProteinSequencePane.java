@@ -10,6 +10,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
+import uk.ac.ebi.pride.gui.component.PrideInspectorLoadingPanel;
 import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 import uk.ac.ebi.pride.gui.task.Task;
@@ -22,6 +23,8 @@ import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextLayout;
@@ -67,9 +70,19 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
      * Subscribe peptide event
      */
     private PeptideEventSubscriber peptideEventSubscriber;
+    /**
+     * Action to download protein details
+     */
+    private Action downloadProteinAction;
 
     public ProteinSequencePane(DataAccessController controller) {
+        this(controller, null);
+    }
+
+    public ProteinSequencePane(DataAccessController controller, Action downloadProteinAction) {
         super(controller);
+        this.downloadProteinAction = downloadProteinAction;
+        this.setLayout(new BorderLayout());
         this.addPropertyChangeListener(this);
     }
 
@@ -128,13 +141,66 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String propName = evt.getPropertyName();
-        if (MODEL_PROP.equals(propName)) {
-            revalidate();
-            repaint();
-        } else if (AnnotatedProtein.PEPTIDE_SELECTION_PROP.equals(propName)) {
+        if (MODEL_PROP.equals(propName) || AnnotatedProtein.PEPTIDE_SELECTION_PROP.equals(propName)) {
+            this.removeAll();
+            if (proteinModel == null) {
+                if (downloadProteinAction != null) {
+                    // protein sequence is not downloaded
+                    String msg = appContext.getProperty("protein.sequence.missing.title");
+                    JPanel panel = createWarningPanel(msg, true);
+                    this.add(panel, BorderLayout.NORTH);
+                }
+            } else if (proteinModel.getSequenceString() == null) {
+                // protein sequence can not be download
+                String msg = appContext.getProperty("protein.sequence.unavailable.title") +
+                        ", " + proteinModel.getAccession() + " is " + proteinModel.getStatus().toString();
+                JPanel panel = createWarningPanel(msg, false);
+                this.add(panel, BorderLayout.NORTH);
+            }
             revalidate();
             repaint();
         }
+    }
+
+    /**
+     * Show warning message panel
+     *
+     * @param msg          Warning message
+     * @param launchButton whether to include a launch button
+     * @return JPanel   warning message panel
+     */
+    private JPanel createWarningPanel(String msg, boolean launchButton) {
+        JPanel msgPanel = new JPanel();
+        msgPanel.setPreferredSize(new Dimension(500, 40));
+        msgPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.gray));
+        msgPanel.setLayout(new BoxLayout(msgPanel, BoxLayout.LINE_AXIS));
+
+        msgPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+
+        // warning message label
+        JLabel msgLabel = new JLabel(GUIUtilities.loadIcon(appContext.getProperty("protein.sequence.missing.icon.small")));
+        msgLabel.setFont(msgLabel.getFont().deriveFont(Font.BOLD));
+        msgLabel.setText(msg);
+        msgPanel.add(msgLabel);
+
+        // add a glue to fill the empty space
+        msgPanel.add(Box.createHorizontalGlue());
+
+        if (launchButton) {
+            // button to start calculate charts
+            JButton computeButton = new JButton(downloadProteinAction);
+            computeButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ProteinSequencePane.this.removeAll();
+                }
+            });
+            msgPanel.add(computeButton);
+        }
+
+        msgPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+
+        return msgPanel;
     }
 
     @Override
@@ -153,8 +219,6 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
 
         if (sequence != null) {
             drawProteinSequence(g2, sequence, proteinModel);
-        } else {
-            drawMissingProteinSequence(g2, proteinModel);
         }
 
         // dispose graphics 2D
@@ -359,29 +423,6 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         g2.drawString(text, x, y);
 
         return x;
-    }
-
-    /**
-     * This method is called when a protein sequence is missing, a warning messge will be shown
-     *
-     * @param g2 graphics 2D
-     */
-    private void drawMissingProteinSequence(Graphics2D g2, AnnotatedProtein protein) {
-        int yPos = getHeight()/2 - 20;
-
-        // increase font size
-        Font font = g2.getFont().deriveFont(15f).deriveFont(Font.BOLD);
-        g2.setFont(font);
-//        g2.setColor(Color.gray);
-
-        //draw icon
-        ImageIcon icon = (ImageIcon) GUIUtilities.loadIcon(appContext.getProperty("protein.sequence.missing.icon.small"));
-        Image iconImage = icon.getImage();
-        g2.drawImage(iconImage, LEFT_MARGIN, yPos, null);
-
-        // draw warning message
-        String msg = appContext.getProperty("protein.sequence.missing.title");
-        g2.drawString(msg, iconImage.getWidth(null) + LEFT_MARGIN, yPos + iconImage.getHeight(null) / 2 + 5);
     }
 
     private int drawProteinMetaData(Graphics2D g2, AnnotatedProtein protein, int y) {

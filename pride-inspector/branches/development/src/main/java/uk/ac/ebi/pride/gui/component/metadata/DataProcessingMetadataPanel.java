@@ -26,8 +26,12 @@ public class DataProcessingMetadataPanel extends JPanel {
     private void populateComponents(ProcessingMethod method) {
         // software name
         softwareNameField = new JTextField();
+        softwareNameField.setEditable(false);
+
         // software version
         softwareVersionField = new JTextField();
+        softwareVersionField.setEditable(false);
+
         // software
         Software software = method.getSoftware();
         if (software != null) {
@@ -40,6 +44,7 @@ public class DataProcessingMetadataPanel extends JPanel {
                 softwareVersionField.setText(version);
             }
         }
+
         // processing methods
         dataProcTable = TableFactory.createParamTable(method);
     }

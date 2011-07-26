@@ -141,7 +141,7 @@ public class ProteinTabPane extends PrideInspectorTabPane {
         innerPane.setTopComponent(peptidePane);
 
         // visualization tab pane
-        vizTabPane = new ProteinVizPane(controller);
+        vizTabPane = new ProteinVizPane(controller, this);
         vizTabPane.setMinimumSize(new Dimension(200, 200));
         innerPane.setBottomComponent(vizTabPane);
         outerPane.setBottomComponent(innerPane);

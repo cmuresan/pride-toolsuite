@@ -47,8 +47,8 @@ about.title=About PRIDE Inspector
 exit.title=Exit
 
 # try samples
-open.pride.xml.example.title=Open PRIDE XML Sample
-open.mzml.example.title=Open mzML Sample
+open.pride.xml.example.title=PRIDE XML
+open.mzml.example.title=mzML
 
 data.source.title=Experiments
 data.source.small.icon=icon/16x16/data_source.gif
@@ -271,8 +271,9 @@ spectrum.tab.title=Spectrum
 spectrum.tab.tooltip=Spectrum for selected peptide
 protein.sequence.tab.title=Sequence
 protein.sequence.tab.tooltip=Protein sequence converage for selected protein
-protein.sequence.missing.icon.small=icon/32x32/warning.png
-protein.sequence.missing.title = Protein sequence is not currently available, you can download it by clicking "Download Protein Details" above
+protein.sequence.missing.icon.small=icon/16x16/warning.png
+protein.sequence.missing.title = Protein sequences are not currently available, would you like to download them now?
+protein.sequence.unavailable.title = Protein sequence is not available
 
 # internet connection
 internet.connection.warning.short.message=Internet Connection Required

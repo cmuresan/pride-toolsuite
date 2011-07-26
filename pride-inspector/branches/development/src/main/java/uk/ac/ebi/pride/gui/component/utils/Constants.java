@@ -74,7 +74,7 @@ public interface Constants {
     public static final String NOT_AVAILABLE = "Not Available";
     public static final String UNKNOWN = "Unknown";
     public static final String FIT = "Fuzzy Fit";
-    public static final String NOT_FIT = "Not Fit";
+    public static final String NOT_FIT = "No Fit";
     public static final String STRICT_FIT = "Fit";
     public final static String OVERLAP = "Overlap";
     public final static String PTM = "PTM";

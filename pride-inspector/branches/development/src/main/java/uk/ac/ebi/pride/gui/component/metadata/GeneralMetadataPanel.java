@@ -1,16 +1,14 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
-import com.sun.tools.javac.util.Name;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
-import uk.ac.ebi.pride.gui.component.table.model.ReferenceTableModel;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 /*
  * Created by JFormDesigner on Sat Jul 23 08:30:00 BST 2011

@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
+import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
+import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.CentralContentPaneLockEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 import uk.ac.ebi.pride.gui.utils.EDTUtils;
@@ -84,6 +86,7 @@ public class DataSourceViewer extends JPanel {
         // create data source table with data access model
         sourceTableModel = new DataAccessTableModel();
         sourceTable = new DataAccessTable(sourceTableModel);
+        sourceTable.addMouseMotionListener(new TableCellMouseMotionListener(sourceTable, TableHeader.DATA_SOURCE_COLUMN.getHeader()));
 
         // set renderer for data source column
         TableColumn sourceCol = sourceTable.getColumn(TableHeader.DATA_SOURCE_COLUMN.getHeader());
@@ -139,10 +142,6 @@ public class DataSourceViewer extends JPanel {
         } else {
             // get the new foreground data access controller
             DataAccessController controller = (DataAccessController) evt.getNewForegroundDataSource();
-//
-//            // set the data source browser to visible
-//            // todo: is this the best way
-//            context.setLeftControlPaneVisible(true);
 
             // highlight the selected foreground data source
             final int rowNum = sourceTableModel.getRowIndex(controller);
@@ -160,6 +159,13 @@ public class DataSourceViewer extends JPanel {
         EDTUtils.invokeLater(code);
 
         // update the table with the new entries
+        sourceTable.revalidate();
+        sourceTable.repaint();
+    }
+
+
+    @EventSubscriber(eventClass =  AddDataSourceEvent.class)
+    public void onAddDataSourceEvent(AddDataSourceEvent evt) {
         sourceTable.revalidate();
         sourceTable.repaint();
     }
@@ -265,8 +271,6 @@ public class DataSourceViewer extends JPanel {
             java.util.List<DataAccessController> controllers = context.getControllers();
             return controllers.indexOf(controller);
         }
-
-
     }
 
     /**

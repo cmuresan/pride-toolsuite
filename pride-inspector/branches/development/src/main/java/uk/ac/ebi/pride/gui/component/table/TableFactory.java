@@ -191,12 +191,6 @@ public class TableFactory {
         // add table model change listener
         tableModel.addTableModelListener(new DynamicColumnListener(searchTable));
 
-        // selection column
-        String selectColumnHeader = DatabaseSearchTableModel.TableHeader.SELECTED.getHeader();
-        TableColumnExt selectColumn = (TableColumnExt)searchTable.getColumn(selectColumnHeader);
-        int selectColumnNum = selectColumn.getModelIndex();
-        searchTable.getColumnModel().getColumn(selectColumnNum).setMaxWidth(50);
-
         // add cell renderer to view column
         String viewColumnHeader = DatabaseSearchTableModel.TableHeader.VIEW.getHeader();
         TableColumnExt viewColumn = (TableColumnExt) searchTable.getColumn(viewColumnHeader);
@@ -206,7 +200,7 @@ public class TableFactory {
 
 
         // add mouse motion listener
-        searchTable.addMouseMotionListener(new TableCellMouseMotionListener(searchTable, viewColumnHeader, selectColumnHeader));
+        searchTable.addMouseMotionListener(new TableCellMouseMotionListener(searchTable, viewColumnHeader));
         searchTable.addMouseListener(new OpenExperimentMouseListener(searchTable, viewColumnHeader));
 
         return searchTable;

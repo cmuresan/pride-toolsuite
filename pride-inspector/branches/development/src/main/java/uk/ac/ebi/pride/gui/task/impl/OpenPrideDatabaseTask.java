@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
+import net.sf.ehcache.hibernate.regions.EhcacheTransactionalDataRegion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -12,6 +13,9 @@ import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
+import uk.ac.ebi.pride.gui.utils.EDTUtils;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Open a connection to pride database
@@ -117,16 +121,18 @@ public class OpenPrideDatabaseTask extends TaskAdapter<DataAccessController, Voi
      * This method is called if the experiment is already open, then the experiment will be
      * bring to the foreground.
      *
-     * @param acc experiment acc.
      */
-    private void openExistingDataAccessController(Comparable acc) {
-        java.util.List<DataAccessController> controllers = context.getControllers();
-        for (DataAccessController controller : controllers) {
-            if (DataAccessController.Type.DATABASE.equals(controller.getType()) &&
-                    controller.getForegroundExperimentAcc().equals(acc)) {
-                context.setForegroundDataAccessController(controller);
+    private void openExistingDataAccessController(final Comparable acc) throws InvocationTargetException, InterruptedException {
+        Runnable code = new Runnable() {
+
+            @Override
+            public void run() {
+                // show warning message
+                GUIUtilities.warn(Desktop.getInstance().getMainComponent(), "Experiment " + acc.toString() +
+                        " is already opened", context.getProperty("open.existing.experiment.title"));
             }
-        }
+        };
+        EDTUtils.invokeAndWait(code);
     }
 
     /**
@@ -143,7 +149,7 @@ public class OpenPrideDatabaseTask extends TaskAdapter<DataAccessController, Voi
                 dummy.setType(DataAccessController.Type.DATABASE);
                 // add a closure hook
                 this.addOwner(dummy);
-                context.addDataAccessController(dummy);
+                context.addDataAccessController(dummy, false);
             }
 
             //connect to database

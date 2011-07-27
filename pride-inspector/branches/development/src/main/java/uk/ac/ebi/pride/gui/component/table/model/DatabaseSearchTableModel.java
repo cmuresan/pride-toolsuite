@@ -21,7 +21,6 @@ public class DatabaseSearchTableModel extends ListTableModel<List<String>> {
      */
     public enum TableHeader {
         ROW_NUMBER_COLUMN("#", "Row Number"),
-        SELECTED("Selected", "Selected experiment"),
         VIEW("View", "View experiment");
 
         private final String header;
@@ -59,28 +58,11 @@ public class DatabaseSearchTableModel extends ListTableModel<List<String>> {
         // row number
         int rowCnt = this.getRowCount();
         content.add(rowCnt + 1);
-        content.add(new Boolean(false));
         content.add(newData.get(0));
         content.addAll(newData);
         contents.add(content);
 
         fireTableRowsInserted(rowCnt, rowCnt);
-    }
-
-    @Override
-    public Class<?> getColumnClass(int columnIndex) {
-        String columnName = getColumnName(columnIndex);
-        if (columnName.equals(TableHeader.SELECTED.getHeader())) {
-            return Boolean.class;
-        } else {
-            return super.getColumnClass(columnIndex);
-        }
-    }
-
-    @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-        int index = getColumnIndex(TableHeader.SELECTED.getHeader());
-        return index == columnIndex;
     }
 
     @Override
@@ -96,7 +78,7 @@ public class DatabaseSearchTableModel extends ListTableModel<List<String>> {
      * Get all the values of search results
      * Note: the result excludes the the row number, selection column and view column
      *
-     * @return  List<List<Object>>  all the actual values in the table
+     * @return List<List<Object>>  all the actual values in the table
      */
     public List<List<String>> getAllContent() {
         List<List<String>> results = new ArrayList<List<String>>();
@@ -113,7 +95,7 @@ public class DatabaseSearchTableModel extends ListTableModel<List<String>> {
     /**
      * Get all the headers of the table without the row number, selection column and view column
      *
-     * @return  List<String>    a list of headers
+     * @return List<String>    a list of headers
      */
     public List<String> getAllHeaders() {
         List<String> headers = new ArrayList<String>();

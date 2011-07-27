@@ -244,10 +244,22 @@ public class PrideInspectorContext extends DesktopContext {
      * @param controller data access controller
      */
     public final synchronized void addDataAccessController(DataAccessController controller) {
+        addDataAccessController(controller, true);
+    }
+
+    /**
+     * Add a new data access controller, and set it foreground status
+     * @param controller    data access controller
+     * @param foreground    foreground status
+     */
+    public final synchronized void addDataAccessController(DataAccessController controller, boolean foreground) {
         // initialize summary report model
         getSummaryReportModel(controller);
 
-        dataAccessMonitor.addDataAccessController(controller);
+        // set left control panel to visible
+        setLeftControlPaneVisible(true);
+
+        dataAccessMonitor.addDataAccessController(controller, foreground);
     }
 
     /**

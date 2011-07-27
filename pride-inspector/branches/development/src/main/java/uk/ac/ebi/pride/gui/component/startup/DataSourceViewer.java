@@ -125,7 +125,7 @@ public class DataSourceViewer extends JPanel {
      * @param evt foreground data source event
      */
     @EventSubscriber(eventClass = ForegroundDataSourceEvent.class)
-    public void onForeGroundDataSourceEvent(ForegroundDataSourceEvent evt) {
+    public void onForegroundDataSourceEvent(ForegroundDataSourceEvent evt) {
         Runnable code;
 
         if (ForegroundDataSourceEvent.Status.EMPTY.equals(evt.getStatus())) {
@@ -139,10 +139,10 @@ public class DataSourceViewer extends JPanel {
         } else {
             // get the new foreground data access controller
             DataAccessController controller = (DataAccessController) evt.getNewForegroundDataSource();
-
-            // set the data source browser to visible
-            // todo: is this the best way
-            context.setLeftControlPaneVisible(true);
+//
+//            // set the data source browser to visible
+//            // todo: is this the best way
+//            context.setLeftControlPaneVisible(true);
 
             // highlight the selected foreground data source
             final int rowNum = sourceTableModel.getRowIndex(controller);
@@ -212,7 +212,6 @@ public class DataSourceViewer extends JPanel {
                 tooltip = super.getToolTipText(event);
             }
 
-            System.out.println("tooltip");
             return tooltip;
         }
     }

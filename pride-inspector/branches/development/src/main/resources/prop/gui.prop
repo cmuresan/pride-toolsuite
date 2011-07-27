@@ -279,5 +279,8 @@ protein.sequence.unavailable.title = Protein sequence is not available
 internet.connection.warning.short.message=Internet Connection Required
 internet.connection.warning.message = <html><b>Please check whether you have Internet connection</b></html>
 
+# warning message when opening an existing pride experiment
+open.existing.experiment.title = Experiment Already Opened
+
            
 

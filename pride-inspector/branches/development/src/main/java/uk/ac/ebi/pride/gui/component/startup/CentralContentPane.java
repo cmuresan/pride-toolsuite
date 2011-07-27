@@ -70,13 +70,13 @@ public class CentralContentPane extends JPanel {
      * Add the welcome pane
      */
     private void addComponents() {
-        getWelcomePane();
+        showWelcomePane();
     }
 
     /**
      * Open welcome pane
      */
-    private void getWelcomePane() {
+    private void showWelcomePane() {
         OpenWelcomePaneTask task = new OpenWelcomePaneTask();
         task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
         inspectorContext.addTask(task);
@@ -92,32 +92,22 @@ public class CentralContentPane extends JPanel {
         logger.debug("A new foreground data access controller has been selected");
         // add new tabs
         DataAccessController controller = (DataAccessController) evt.getNewForegroundDataSource();
-        // handle existing tab pane
-        if (isLocked()) {
-            // 1. open file
-            // 2. select an experiment
-            if (ForegroundDataSourceEvent.Status.DUMMY.equals(evt.getStatus()) ||
-                    ForegroundDataSourceEvent.Status.DATA.equals(evt.getStatus())) {
-                ControllerContentPane dataContentPane = getControllerContentPane(controller);
-                setContentPane(dataContentPane);
-                setLocked(false);
+
+        if (ForegroundDataSourceEvent.Status.EMPTY.equals(evt.getStatus())) {
+            if (!isLocked()) {
+                showWelcomePane();
             }
         } else {
-            if (ForegroundDataSourceEvent.Status.EMPTY.equals(evt.getStatus())) {
-                getWelcomePane();
-            } else {
-                ControllerContentPane dataContentPane = getControllerContentPane(controller);
-                setContentPane(dataContentPane);
-            }
-            setLocked(false);
+            ControllerContentPane dataContentPane = getControllerContentPane(controller);
+            setContentPane(dataContentPane);
         }
     }
 
     /**
      * Create an new controllerContentPane is non-exist.
      *
-     * @param controller    data access controller
-     * @return  ControllerContentPane   content pane
+     * @param controller data access controller
+     * @return ControllerContentPane   content pane
      */
     private ControllerContentPane getControllerContentPane(DataAccessController controller) {
         ControllerContentPane dataContentPane = (ControllerContentPane) inspectorContext.getDataContentPane(controller);
@@ -142,7 +132,7 @@ public class CentralContentPane extends JPanel {
             inspectorContext.setForegroundDataAccessController(null);
         } else if (DatabaseSearchEvent.Status.HIDE.equals(evt.getStatus())) {
             // hide database search pane
-            getWelcomePane();
+            showWelcomePane();
         }
     }
 

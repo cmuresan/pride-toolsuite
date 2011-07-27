@@ -36,7 +36,21 @@ public class DataAccessMonitor extends PropertyChangeHelper {
         this.controllers = Collections.synchronizedList(new ArrayList<DataAccessController>());
     }
 
+
+    /**
+     * Add a new data access controller and set it as the foreground controller
+     * @param controller    new data access controller
+     */
     public synchronized void addDataAccessController(DataAccessController controller) {
+        addDataAccessController(controller, true);
+    }
+
+    /**
+     * Add a new data access controller
+     * @param controller    new data access controller
+     * @param foreground    true will set this data access controller to foreground
+     */
+    public synchronized void addDataAccessController(DataAccessController controller, boolean foreground) {
         // new controller should always be added to the end of the list
         List<DataAccessController> oldControllers, newControllers;
 
@@ -45,9 +59,10 @@ public class DataAccessMonitor extends PropertyChangeHelper {
             controllers.add(controller);
             newControllers = new ArrayList<DataAccessController>(controllers);
             EventBus.publish(new AddDataSourceEvent<DataAccessController>(this, oldControllers, newControllers));
-            setForegroundDataAccessController(controller);
+            if (foreground) {
+                setForegroundDataAccessController(controller);
+            }
         }
-
     }
 
     public synchronized void removeDataAccessController(DataAccessController controller) {
@@ -83,7 +98,7 @@ public class DataAccessMonitor extends PropertyChangeHelper {
             oldControllers = new ArrayList<DataAccessController>(controllers);
             controllers.add(index, replacement);
             controllers.remove(original);
-            if (foregroundController == null || foregroundController.equals(original)) {
+            if (foregroundController != null && foregroundController.equals(original)) {
                 setForegroundDataAccessController(replacement);
             }
             original.close();

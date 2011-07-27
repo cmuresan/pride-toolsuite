@@ -48,7 +48,6 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
     private JTable searchResultTable;
     private JPanel resultSummaryPanel;
     private JButton closeButton;
-    private JButton openSelectedButton;
     private JLabel searchResultLabel;
 
     private int resultCount = 0;
@@ -91,7 +90,6 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
         resultSummaryPanel = new JPanel();
         searchResultLabel = new JLabel();
         closeButton = new JButton();
-        openSelectedButton = new JButton();
 
         // help button
         Icon helpIcon = GUIUtilities.loadIcon(appContext.getProperty("help.icon.small"));
@@ -251,10 +249,6 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                 }
             });
 
-            //---- openSelectedButton ----
-            openSelectedButton.setText("Open selected");
-            openSelectedButton.addActionListener(new OpenSelectionListener(searchResultTable));
-
             GroupLayout panel4Layout = new GroupLayout(panel4);
             panel4.setLayout(panel4Layout);
             panel4Layout.setHorizontalGroup(
@@ -263,8 +257,6 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                                     .addContainerGap()
                                     .add(panel4Layout.createParallelGroup()
                                             .add(GroupLayout.TRAILING, panel4Layout.createSequentialGroup()
-                                                    .add(openSelectedButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
-                                                    .add(18, 18, 18)
                                                     .add(closeButton, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
                                                     .add(20, 20, 20))
                                             .add(GroupLayout.TRAILING, panel4Layout.createSequentialGroup()
@@ -281,8 +273,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                                     .add(scrollPane1, GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
                                     .addPreferredGap(LayoutStyle.RELATED)
                                     .add(panel4Layout.createParallelGroup(GroupLayout.BASELINE)
-                                            .add(closeButton)
-                                            .add(openSelectedButton))
+                                            .add(closeButton))
                                     .add(13, 13, 13))
             );
         }
@@ -324,7 +315,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
 
         // clear the content in search result table
         DatabaseSearchTableModel tableModel = (DatabaseSearchTableModel) searchResultTable.getModel();
-        // get the existing content of the table if to search within the resutls
+        // get the existing content of the table if to search within the results
         java.util.List<java.util.List<String>> contents = null;
         java.util.List<String> headers = null;
         if (searchWithinResults) {
@@ -370,46 +361,6 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
 
         @Override
         public void keyReleased(KeyEvent e) {
-        }
-    }
-
-    /**
-     * Action listener for open selection button
-     */
-    private class OpenSelectionListener implements ActionListener {
-
-        private JTable table;
-
-        private OpenSelectionListener(JTable table) {
-            this.table = table;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            TableModel tableModel = table.getModel();
-            int rowCnt = tableModel.getRowCount();
-            int colCnt = tableModel.getColumnCount();
-            int selectColIndex = -1;
-            int viewColIndex = -1;
-            for (int i = 0; i < colCnt; i++) {
-                if (DatabaseSearchTableModel.TableHeader.SELECTED.getHeader().equals(tableModel.getColumnName(i))) {
-                    selectColIndex = i;
-                } else if (DatabaseSearchTableModel.TableHeader.VIEW.getHeader().equals(tableModel.getColumnName(i))) {
-                    viewColIndex = i;
-                }
-            }
-
-            // open selected experiments
-            if (selectColIndex >= 0) {
-                for (int i = 0; i < rowCnt; i++) {
-                    if ((Boolean) tableModel.getValueAt(i, selectColIndex)) {
-                        Comparable accession = (Comparable) tableModel.getValueAt(i, viewColIndex);
-                        OpenPrideDatabaseTask task = new OpenPrideDatabaseTask(accession);
-                        task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-                        appContext.addTask(task);
-                    }
-                }
-            }
         }
     }
 }

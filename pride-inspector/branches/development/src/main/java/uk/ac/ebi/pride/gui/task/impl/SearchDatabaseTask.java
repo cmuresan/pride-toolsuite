@@ -97,9 +97,7 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
             }
         }
 
-        if (content.size() > 0) {
-            EventBus.publish(new DatabaseSearchEvent<List<List<String>>>(null, DatabaseSearchEvent.Status.RESULT, content));
-        }
+        EventBus.publish(new DatabaseSearchEvent<List<List<String>>>(null, DatabaseSearchEvent.Status.RESULT, content));
     }
 
     /**
@@ -197,8 +195,6 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
             }
         }
 
-        if (content.size() > 0) {
-            EventBus.publish(new DatabaseSearchEvent<List<List<String>>>(null, DatabaseSearchEvent.Status.RESULT, content));
-        }
+        EventBus.publish(new DatabaseSearchEvent<List<List<String>>>(null, DatabaseSearchEvent.Status.RESULT, content));
     }
 }

@@ -10,8 +10,8 @@ import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
 import uk.ac.ebi.pride.mol.MoleculeUtilities;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
+import uk.ac.ebi.pride.tools.utils.AccessionResolver;
 import uk.ac.ebi.pride.util.NumberUtilities;
-import uk.ac.ebi.pride.util.ProteinAccessionResolver;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -59,7 +59,8 @@ public class TableRowDataRetriever {
         content.add(protAcc);
 
         // Mapped Protein Accession
-        String mappedProtAcc = ProteinAccessionResolver.resolve(protAcc, protAccVersion, database);
+        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database);
+        String mappedProtAcc = resolver.isValidAccession()? resolver.getAccession() : null;
         content.add(mappedProtAcc);
 
         // get protein details
@@ -244,8 +245,9 @@ public class TableRowDataRetriever {
         content.add(protAcc);
 
         // Mapped Protein Accession
-        String resolvedProtAcc = ProteinAccessionResolver.resolve(protAcc, protAccVersion, database);
-        content.add(resolvedProtAcc);
+        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database);
+        String mappedProtAcc = resolver.isValidAccession()? resolver.getAccession() : null;
+        content.add(mappedProtAcc);
 
         // protein name
         content.add(null);

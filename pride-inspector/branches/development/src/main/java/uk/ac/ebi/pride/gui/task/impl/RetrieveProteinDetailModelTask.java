@@ -12,7 +12,7 @@ import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PTMAnnotation;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideAnnotation;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
-import uk.ac.ebi.pride.util.ProteinAccessionResolver;
+import uk.ac.ebi.pride.tools.utils.AccessionResolver;
 
 import java.util.Collection;
 
@@ -80,10 +80,11 @@ public class RetrieveProteinDetailModelTask extends AbstractDataAccessTask<Annot
         String protAcc = controller.getProteinAccession(identId);
         String protAccVersion = controller.getProteinAccessionVersion(identId);
         String database = controller.getSearchDatabase(identId);
-        String resolvedProtAcc = ProteinAccessionResolver.resolve(protAcc, protAccVersion, database);
+        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database);
+        String mappedProtAcc = resolver.isValidAccession()? resolver.getAccession() : null;
 
         // get protein details
-        return PrideInspectorCacheManager.getInstance().getProteinDetails(resolvedProtAcc);
+        return PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
     }
 
     /**

@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideAnnotation;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
-import uk.ac.ebi.pride.util.ProteinAccessionResolver;
+import uk.ac.ebi.pride.tools.utils.AccessionResolver;
 
 import java.util.*;
 
@@ -39,7 +39,8 @@ public class RetrieveSequenceCoverageTask extends AbstractDataAccessTask<Void, T
                 String database = controller.getSearchDatabase(identId);
 
                 // Mapped Protein Accession
-                String mappedProtAcc = ProteinAccessionResolver.resolve(accession, accessionVersion, database);
+                AccessionResolver resolver = new AccessionResolver(accession, accessionVersion, database);
+                String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
 
                 // get protein details
                 Protein protein = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);

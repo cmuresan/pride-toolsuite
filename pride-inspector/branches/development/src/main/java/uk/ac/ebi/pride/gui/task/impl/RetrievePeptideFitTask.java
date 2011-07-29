@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
-import uk.ac.ebi.pride.util.ProteinAccessionResolver;
+import uk.ac.ebi.pride.tools.utils.AccessionResolver;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,7 +44,8 @@ public class RetrievePeptideFitTask extends AbstractDataAccessTask<Void, Tuple<T
                         String database = controller.getSearchDatabase(identId);
 
                         // Mapped Protein Accession
-                        String mappedProtAcc = ProteinAccessionResolver.resolve(protAcc, protAccVersion, database);
+                        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database);
+                        String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
 
                         // get protein details
                         Protein protein = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
@@ -60,7 +61,7 @@ public class RetrievePeptideFitTask extends AbstractDataAccessTask<Void, Tuple<T
                         int end = controller.getPeptideSequenceEnd(identId, peptideId);
 
                         // peptide present
-                        if (protein == null || sequence == null || protein.getSequenceString() ==  null) {
+                        if (protein == null || sequence == null || protein.getSequenceString() == null) {
                             state = PeptideFitState.UNKNOWN;
                         } else {
                             if (protein.hasSubSequenceString(sequence, start, end)) {

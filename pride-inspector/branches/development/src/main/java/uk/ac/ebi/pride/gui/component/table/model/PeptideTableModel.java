@@ -49,6 +49,7 @@ public class PeptideTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
         PEPTIDE_SEQUENCE_LENGTH_COLUMN("Length", "Length"),
         SEQUENCE_START_COLUMN("Start", "Start Position"),
         SEQUENCE_END_COLUMN("Stop", "Stop Position"),
+        THEORITICAL_ISOELECTRIC_POINT_COLUMN("pI", "Theoritical isoelectric point"),
         SPECTRUM_ID("Spectrum", "Spectrum Reference"),
         IDENTIFICATION_ID("Identification ID", "Identification ID"),
         PEPTIDE_ID("Peptide ID", "Peptide ID");

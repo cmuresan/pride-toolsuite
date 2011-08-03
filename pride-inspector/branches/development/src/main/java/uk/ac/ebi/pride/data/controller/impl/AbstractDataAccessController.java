@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
+import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 
@@ -918,6 +919,56 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
             }
         }
         firePropertyChange(FOREGROUND_IDENTIFICATION_CHANGED, oldIdent, newIdent);
+    }
+
+    @Override
+    public boolean hasQuantData() throws DataAccessException{
+        return false;
+    }
+
+    @Override
+    public List<QuantCvTermReference> getQuantMethods() throws DataAccessException{
+        return Collections.emptyList();
+    }
+
+    @Override
+    public int getNumberOfReagents() throws DataAccessException{
+        return 0;
+    }
+
+    @Override
+    public Map<QuantCvTermReference, QuantCvTermReference> getSubSampleToReagentMapping() throws DataAccessException{
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public QuantCvTermReference getIdentQuantUnit() throws DataAccessException{
+        return null;
+    }
+
+    @Override
+    public QuantCvTermReference getPeptideQuantUnit() throws DataAccessException{
+        return null;
+    }
+
+    @Override
+    public boolean hasIdentQuantData() throws DataAccessException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean hasPeptideQuantData() throws DataAccessException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Quantification getIdentQuantData(Comparable identId) throws DataAccessException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Quantification getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

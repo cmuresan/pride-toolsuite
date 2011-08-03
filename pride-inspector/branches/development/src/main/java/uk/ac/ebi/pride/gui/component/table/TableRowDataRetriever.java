@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Modification;
 import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.data.core.PeptideScore;
+import uk.ac.ebi.pride.data.utils.IsoelectricPointUtils;
 import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
@@ -213,6 +214,9 @@ public class TableRowDataRetriever {
 
         // End
         content.add(end == -1 ? null : end);
+
+        // Theoritical isoelectric point
+        content.add(IsoelectricPointUtils.calculate(sequence));
 
         // Spectrum reference
         content.add(specId);

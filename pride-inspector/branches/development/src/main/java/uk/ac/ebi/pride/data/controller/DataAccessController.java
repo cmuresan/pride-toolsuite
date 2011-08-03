@@ -18,7 +18,7 @@ import java.util.UUID;
  * Time: 14:25:49
  */
 public interface DataAccessController extends MzGraphDataAccess, ProteinDataAccess,
-                                              TrackDataAccess, PeptideDataAccess,
+                                              TrackDataAccess, PeptideDataAccess, QuantDataAccess,
                                               CacheAccess, ChartAccess, PropertyChangeHandler,
                                               PropertyChangeListener {
     /**
@@ -37,7 +37,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
      * Note: this does not automatically mean they must have them.
      */
     public enum ContentCategory {
-        SPECTRUM, CHROMATOGRAM, PROTEIN, PEPTIDE, SAMPLE, PROTOCOL, SOFTWARE, INSTRUMENT, DATA_PROCESSING
+        SPECTRUM, CHROMATOGRAM, PROTEIN, PEPTIDE, QUANTIFICATION, SAMPLE, PROTOCOL, SOFTWARE, INSTRUMENT, DATA_PROCESSING
     }
 
     /**

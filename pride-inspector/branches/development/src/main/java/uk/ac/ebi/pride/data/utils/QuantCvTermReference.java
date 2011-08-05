@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.utils;
 
+import uk.ac.ebi.pride.data.core.CvParam;
+
 /**
  * Holds the cvParams to report quantitative information
  * in PRIDE XML files.
@@ -133,167 +135,192 @@ public enum QuantCvTermReference {
         return parentAccession;
     }
 
-//    public static CvParam getProteinIntensityParam(int subsample, String value) {
-//        if (subsample == 1)
-//            return INTENSITY_SUBSAMPLE1.getParam(value);
-//        if (subsample == 2)
-//            return INTENSITY_SUBSAMPLE2.getParam(value);
-//        if (subsample == 3)
-//            return INTENSITY_SUBSAMPLE3.getParam(value);
-//        if (subsample == 4)
-//            return INTENSITY_SUBSAMPLE4.getParam(value);
-//        if (subsample == 5)
-//            return INTENSITY_SUBSAMPLE5.getParam(value);
-//        if (subsample == 6)
-//            return INTENSITY_SUBSAMPLE6.getParam(value);
-//        if (subsample == 7)
-//            return INTENSITY_SUBSAMPLE7.getParam(value);
-//        if (subsample == 8)
-//            return INTENSITY_SUBSAMPLE8.getParam(value);
-//
-//        return null;
-//    }
-//
-//    public static CvParam getProteinIntensityStdParam(int subsample, String value) {
-//        if (subsample == 1)
-//            return INTENSITY_STD_SUBSAMPLE1.getParam(value);
-//        if (subsample == 2)
-//            return INTENSITY_STD_SUBSAMPLE2.getParam(value);
-//        if (subsample == 3)
-//            return INTENSITY_STD_SUBSAMPLE3.getParam(value);
-//        if (subsample == 4)
-//            return INTENSITY_STD_SUBSAMPLE4.getParam(value);
-//        if (subsample == 5)
-//            return INTENSITY_STD_SUBSAMPLE5.getParam(value);
-//        if (subsample == 6)
-//            return INTENSITY_STD_SUBSAMPLE6.getParam(value);
-//        if (subsample == 7)
-//            return INTENSITY_STD_SUBSAMPLE7.getParam(value);
-//        if (subsample == 8)
-//            return INTENSITY_STD_SUBSAMPLE8.getParam(value);
-//
-//        return null;
-//    }
-//
-//    public static CvParam getProteinIntensityStdErrParam(int subsample, String value) {
-//        if (subsample == 1)
-//            return INTENSITY_STD_ERR_SUBSAMPLE1.getParam(value);
-//        if (subsample == 2)
-//            return INTENSITY_STD_ERR_SUBSAMPLE2.getParam(value);
-//        if (subsample == 3)
-//            return INTENSITY_STD_ERR_SUBSAMPLE3.getParam(value);
-//        if (subsample == 4)
-//            return INTENSITY_STD_ERR_SUBSAMPLE4.getParam(value);
-//        if (subsample == 5)
-//            return INTENSITY_STD_ERR_SUBSAMPLE5.getParam(value);
-//        if (subsample == 6)
-//            return INTENSITY_STD_ERR_SUBSAMPLE6.getParam(value);
-//        if (subsample == 7)
-//            return INTENSITY_STD_ERR_SUBSAMPLE7.getParam(value);
-//        if (subsample == 8)
-//            return INTENSITY_STD_ERR_SUBSAMPLE8.getParam(value);
-//
-//        return null;
-//    }
-//
-//    public static CvParam getPeptideIntensityParam(int subsample, String value) {
-//        if (subsample == 1)
-//            return INTENSITY_SUBSAMPLE1.getParam(value);
-//        if (subsample == 2)
-//            return INTENSITY_SUBSAMPLE2.getParam(value);
-//        if (subsample == 3)
-//            return INTENSITY_SUBSAMPLE3.getParam(value);
-//        if (subsample == 4)
-//            return INTENSITY_SUBSAMPLE4.getParam(value);
-//        if (subsample == 5)
-//            return INTENSITY_SUBSAMPLE5.getParam(value);
-//        if (subsample == 6)
-//            return INTENSITY_SUBSAMPLE6.getParam(value);
-//        if (subsample == 7)
-//            return INTENSITY_SUBSAMPLE7.getParam(value);
-//        if (subsample == 8)
-//            return INTENSITY_SUBSAMPLE8.getParam(value);
-//
-//        return null;
-//    }
-//
-//    public static CvParam getPeptideIntensityStdParam(int subsample, String value) {
-//        if (subsample == 1)
-//            return INTENSITY_STD_SUBSAMPLE1.getParam(value);
-//        if (subsample == 2)
-//            return INTENSITY_STD_SUBSAMPLE2.getParam(value);
-//        if (subsample == 3)
-//            return INTENSITY_STD_SUBSAMPLE3.getParam(value);
-//        if (subsample == 4)
-//            return INTENSITY_STD_SUBSAMPLE4.getParam(value);
-//        if (subsample == 5)
-//            return INTENSITY_STD_SUBSAMPLE5.getParam(value);
-//        if (subsample == 6)
-//            return INTENSITY_STD_SUBSAMPLE6.getParam(value);
-//        if (subsample == 7)
-//            return INTENSITY_STD_SUBSAMPLE7.getParam(value);
-//        if (subsample == 8)
-//            return INTENSITY_STD_SUBSAMPLE8.getParam(value);
-//
-//        return null;
-//    }
-//
-//    public static CvParam getPeptideIntensityStdErrParam(int subsample, String value) {
-//        if (subsample == 1)
-//            return INTENSITY_STD_ERR_SUBSAMPLE1.getParam(value);
-//        if (subsample == 2)
-//            return INTENSITY_STD_ERR_SUBSAMPLE2.getParam(value);
-//        if (subsample == 3)
-//            return INTENSITY_STD_ERR_SUBSAMPLE3.getParam(value);
-//        if (subsample == 4)
-//            return INTENSITY_STD_ERR_SUBSAMPLE4.getParam(value);
-//        if (subsample == 5)
-//            return INTENSITY_STD_ERR_SUBSAMPLE5.getParam(value);
-//        if (subsample == 6)
-//            return INTENSITY_STD_ERR_SUBSAMPLE6.getParam(value);
-//        if (subsample == 7)
-//            return INTENSITY_STD_ERR_SUBSAMPLE7.getParam(value);
-//        if (subsample == 8)
-//            return INTENSITY_STD_ERR_SUBSAMPLE8.getParam(value);
-//
-//        return null;
-//    }
-//
-//    public static CvParam getSubsampleDescription(int subsample, String value) {
-//        if (subsample == 1)
-//            return SUBSAMPLE1_DESCRIPTION.getParam(value);
-//        if (subsample == 2)
-//            return SUBSAMPLE2_DESCRIPTION.getParam(value);
-//        if (subsample == 3)
-//            return SUBSAMPLE3_DESCRIPTION.getParam(value);
-//        if (subsample == 4)
-//            return SUBSAMPLE4_DESCRIPTION.getParam(value);
-//        if (subsample == 5)
-//            return SUBSAMPLE5_DESCRIPTION.getParam(value);
-//        if (subsample == 6)
-//            return SUBSAMPLE6_DESCRIPTION.getParam(value);
-//        if (subsample == 7)
-//            return SUBSAMPLE7_DESCRIPTION.getParam(value);
-//        if (subsample == 8)
-//            return SUBSAMPLE8_DESCRIPTION.getParam(value);
-//
-//        return null;
-//    }
-//
-//    /**
-//     * Checks whether the passed accession describes a
-//     * QuantificationCvParam.
-//     *
-//     * @param accession A cvParam's accession.
-//     * @return Boolean indicating whether the accession belongs to a quantification parameter.
-//     */
-//    public static boolean isAQuantificationParam(String accession) {
-//        for (QuantitationCvParams p : values()) {
-//            if (p.getAccession().equals(accession))
-//                return true;
-//        }
-//
-//        return false;
-//    }
+    public static boolean isIsotopeLabellingMethodParam(CvParam cvParam) {
+        String accession = cvParam.getAccession();
+        return ITRAQ_QUANTIFIED.getAccession().equals(accession) ||
+                TMT_QUANTIFIED.getAccession().equals(accession) ||
+                O18_QUANTIFIED.getAccession().equals(accession) ||
+                AQUA_QUANTIFIED.getAccession().equals(accession) ||
+                ICAT_QUANTIFIED.getAccession().equals(accession) ||
+                ICPL_QUANTIFIED.getAccession().equals(accession) ||
+                SILAC_QUANTIFIED.getAccession().equals(accession);
+    }
+
+    public static QuantCvTermReference getIsotopeLabellingMethodParam(CvParam cvParam) {
+        String accession = cvParam.getAccession();
+        if (ITRAQ_QUANTIFIED.getAccession().equals(accession)) {
+            return ITRAQ_QUANTIFIED;
+        } else if (TMT_QUANTIFIED.getAccession().equals(accession)) {
+            return TMT_QUANTIFIED;
+        } else if (O18_QUANTIFIED.getAccession().equals(accession)) {
+            return O18_QUANTIFIED;
+        } else if (AQUA_QUANTIFIED.getAccession().equals(accession)) {
+            return AQUA_QUANTIFIED;
+        } else if (ICAT_QUANTIFIED.getAccession().equals(accession)) {
+            return ICAT_QUANTIFIED;
+        } else if (ICPL_QUANTIFIED.getAccession().equals(accession)) {
+            return ICPL_QUANTIFIED;
+        } else if (SILAC_QUANTIFIED.getAccession().equals(accession)) {
+            return SILAC_QUANTIFIED;
+        }
+        return null;
+    }
+
+    public static boolean isIntensityParam(CvParam cvParam) {
+        String accession = cvParam.getAccession();
+        return INTENSITY_SUBSAMPLE1.getAccession().equals(accession) ||
+                INTENSITY_SUBSAMPLE2.getAccession().equals(accession) ||
+                INTENSITY_SUBSAMPLE3.getAccession().equals(accession) ||
+                INTENSITY_SUBSAMPLE4.getAccession().equals(accession) ||
+                INTENSITY_SUBSAMPLE5.getAccession().equals(accession) ||
+                INTENSITY_SUBSAMPLE6.getAccession().equals(accession) ||
+                INTENSITY_SUBSAMPLE7.getAccession().equals(accession) ||
+                INTENSITY_SUBSAMPLE8.getAccession().equals(accession);
+    }
+
+    public static int getIntensityParamIndex(CvParam cvParam) {
+        String accession = cvParam.getAccession();
+        if (INTENSITY_SUBSAMPLE1.getAccession().equals(accession)) {
+            return 1;
+        } else if (INTENSITY_SUBSAMPLE2.getAccession().equals(accession)) {
+            return 2;
+        } else if (INTENSITY_SUBSAMPLE3.getAccession().equals(accession)) {
+            return 3;
+        } else if (INTENSITY_SUBSAMPLE4.getAccession().equals(accession)) {
+            return 4;
+        } else if (INTENSITY_SUBSAMPLE5.getAccession().equals(accession)) {
+            return 5;
+        } else if (INTENSITY_SUBSAMPLE6.getAccession().equals(accession)) {
+            return 6;
+        } else if (INTENSITY_SUBSAMPLE7.getAccession().equals(accession)) {
+            return 7;
+        } else if (INTENSITY_SUBSAMPLE8.getAccession().equals(accession)) {
+            return 8;
+        }
+
+        return -1;
+    }
+
+    public static boolean isStandardDeviationParam(CvParam cvParam) {
+        String accession = cvParam.getAccession();
+        return INTENSITY_STD_SUBSAMPLE1.getAccession().equals(accession) ||
+                INTENSITY_STD_SUBSAMPLE2.getAccession().equals(accession) ||
+                INTENSITY_STD_SUBSAMPLE3.getAccession().equals(accession) ||
+                INTENSITY_STD_SUBSAMPLE4.getAccession().equals(accession) ||
+                INTENSITY_STD_SUBSAMPLE5.getAccession().equals(accession) ||
+                INTENSITY_STD_SUBSAMPLE6.getAccession().equals(accession) ||
+                INTENSITY_STD_SUBSAMPLE7.getAccession().equals(accession) ||
+                INTENSITY_STD_SUBSAMPLE8.getAccession().equals(accession);
+    }
+
+    public static int getStandardDeviationParamIndex(CvParam cvParam) {
+        String accession = cvParam.getAccession();
+        if (INTENSITY_STD_SUBSAMPLE1.getAccession().equals(accession)) {
+            return 1;
+        } else if (INTENSITY_STD_SUBSAMPLE2.getAccession().equals(accession)) {
+            return 2;
+        } else if (INTENSITY_STD_SUBSAMPLE3.getAccession().equals(accession)) {
+            return 3;
+        } else if (INTENSITY_STD_SUBSAMPLE4.getAccession().equals(accession)) {
+            return 4;
+        } else if (INTENSITY_STD_SUBSAMPLE5.getAccession().equals(accession)) {
+            return 5;
+        } else if (INTENSITY_STD_SUBSAMPLE6.getAccession().equals(accession)) {
+            return 6;
+        } else if (INTENSITY_STD_SUBSAMPLE7.getAccession().equals(accession)) {
+            return 7;
+        } else if (INTENSITY_STD_SUBSAMPLE8.getAccession().equals(accession)) {
+            return 8;
+        }
+
+        return -1;
+    }
+
+    public static boolean isStandardErrorParam(CvParam cvParam) {
+        String accession = cvParam.getAccession();
+        return INTENSITY_STD_ERR_SUBSAMPLE1.getAccession().equals(accession) ||
+                INTENSITY_STD_ERR_SUBSAMPLE2.getAccession().equals(accession) ||
+                INTENSITY_STD_ERR_SUBSAMPLE3.getAccession().equals(accession) ||
+                INTENSITY_STD_ERR_SUBSAMPLE4.getAccession().equals(accession) ||
+                INTENSITY_STD_ERR_SUBSAMPLE5.getAccession().equals(accession) ||
+                INTENSITY_STD_ERR_SUBSAMPLE6.getAccession().equals(accession) ||
+                INTENSITY_STD_ERR_SUBSAMPLE7.getAccession().equals(accession) ||
+                INTENSITY_STD_ERR_SUBSAMPLE8.getAccession().equals(accession);
+    }
+
+    public static int getStandardErrorParamIndex(CvParam cvParam) {
+        String accession = cvParam.getAccession();
+        if (INTENSITY_STD_ERR_SUBSAMPLE1.getAccession().equals(accession)) {
+            return 1;
+        } else if (INTENSITY_STD_ERR_SUBSAMPLE2.getAccession().equals(accession)) {
+            return 2;
+        } else if (INTENSITY_STD_ERR_SUBSAMPLE3.getAccession().equals(accession)) {
+            return 3;
+        } else if (INTENSITY_STD_ERR_SUBSAMPLE4.getAccession().equals(accession)) {
+            return 4;
+        } else if (INTENSITY_STD_ERR_SUBSAMPLE5.getAccession().equals(accession)) {
+            return 5;
+        } else if (INTENSITY_STD_ERR_SUBSAMPLE6.getAccession().equals(accession)) {
+            return 6;
+        } else if (INTENSITY_STD_ERR_SUBSAMPLE7.getAccession().equals(accession)) {
+            return 7;
+        } else if (INTENSITY_STD_ERR_SUBSAMPLE8.getAccession().equals(accession)) {
+            return 8;
+        }
+
+        return -1;
+    }
+
+    public static boolean isLabelFreeMethod(CvParam cvParam) {
+        String accession = cvParam.getAccession();
+        return EMPAI_VALUE.getAccession().equals(accession) ||
+            TIC_VALUE.getAccession().equals(accession);
+    }
+
+    public static QuantCvTermReference getLabelFreeMethod(CvParam cvParam) {
+        String accession = cvParam.getAccession();
+
+        if (EMPAI_VALUE.getAccession().equals(accession)) {
+            return EMPAI_VALUE;
+        } else if (TIC_VALUE.getAccession().equals(accession)) {
+            return TIC_VALUE;
+        }
+
+        return null;
+    }
+
+    public static boolean isUnit(CvParam cvParam) {
+        String accession = cvParam.getAccession();
+        return UNIT_RATIO.getAccession().equals(accession) || UNIT_COPIES_PER_CELL.getAccession().equals(accession);
+    }
+
+    public static QuantCvTermReference getUnit(CvParam cvParam) {
+        String accession = cvParam.getAccession();
+
+        if (UNIT_RATIO.getAccession().equals(accession)) {
+            return UNIT_RATIO;
+        } else if (UNIT_COPIES_PER_CELL.getAccession().equals(accession)) {
+            return UNIT_COPIES_PER_CELL;
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Checks whether the passed accession describes a
+     * QuantificationCvParam.
+     *
+     * @param accession A cvParam's accession.
+     * @return Boolean indicating whether the accession belongs to a quantification parameter.
+     */
+    public static boolean isAQuantificationParam(String accession) {
+        for (QuantCvTermReference p : values()) {
+            if (p.getAccession().equals(accession))
+                return true;
+        }
+
+        return false;
+    }
 }
 

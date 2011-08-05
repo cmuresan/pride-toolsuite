@@ -962,12 +962,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     @Override
-    public Quantification getIdentQuantData(Comparable identId) throws DataAccessException {
+    public Quantitation getIdentQuantData(Comparable identId) throws DataAccessException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Quantification getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

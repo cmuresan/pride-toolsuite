@@ -1,8 +1,7 @@
 package uk.ac.ebi.pride.data.controller.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.Quantification;
+import uk.ac.ebi.pride.data.core.Quantitation;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 
 import java.util.Collection;
@@ -80,7 +79,7 @@ public interface QuantDataAccess {
      * @return  Quantification   quantitative data
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException  error while getting the data from source
      */
-    public Quantification getIdentQuantData(Comparable identId) throws DataAccessException ;
+    public Quantitation getIdentQuantData(Comparable identId) throws DataAccessException ;
 
     /**
      * Get quantitative data related to a given peptide
@@ -90,5 +89,5 @@ public interface QuantDataAccess {
      * @return  Quantification   quantitative data
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException  error while getting the data from source
      */
-    public Quantification getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException ;
+    public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException ;
 }

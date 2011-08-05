@@ -96,10 +96,12 @@ public class CentralContentPane extends JPanel {
         if (ForegroundDataSourceEvent.Status.EMPTY.equals(evt.getStatus())) {
             if (!isLocked()) {
                 showWelcomePane();
+                setLocked(false);
             }
         } else {
             ControllerContentPane dataContentPane = getControllerContentPane(controller);
             setContentPane(dataContentPane);
+            setLocked(false);
         }
     }
 

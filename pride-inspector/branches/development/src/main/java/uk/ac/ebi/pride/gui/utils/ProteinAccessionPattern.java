@@ -24,10 +24,15 @@ public enum ProteinAccessionPattern {
     FLYBASE(Pattern.compile("FB[a-z,A-Z]{2}[\\d]{7}"),
             new MessageFormat("http://flybase.bio.indiana.edu/cgi-bin/uniq.html?species=Dmel&field=all&db=fbgn&caller=quicksearch&context={0}")),
     /**
-     * IPI accession
+     * IPI accession without version
      */
-    IPI(Pattern.compile("IPI.+"),
-            new MessageFormat("http://srs.ebi.ac.uk/srsbin/cgi-bin/wgetz?-e+IPI:{0}")),
+    IPI_WITHOUT_VERSION(Pattern.compile("IPI[^\\.]+"),
+            new MessageFormat("http://srs.ebi.ac.uk/srsbin/cgi-bin/wgetz?-e+[IPI-acc:{0}]")),
+    /**
+     * IPI accession with version
+     */
+    IPI_WITH_VERSION(Pattern.compile("IPI[\\d]+.[\\d]?"),
+            new MessageFormat("http://srs.ebi.ac.uk/srsbin/cgi-bin/wgetz?-e+[IPI:{0}]")),
     /**
      * RefSeq accession numbers can be distinguished from GenBank accessions by their distinct prefix format of
      * 2 characters followed by an underscore character ('_'). For example, a RefSeq protein accession is NP_015325.
@@ -142,13 +147,22 @@ public enum ProteinAccessionPattern {
     }
 
     /**
-     * Check whether it is a IPI accession
+     * Check whether it is a IPI accession without version
      *
      * @param acc protein accession
      * @return boolean true if it's a IPI accession
      */
-    public static boolean isIPIAccession(String acc) {
-        return isMatchAccession(IPI.getIdPattern(), acc);
+    public static boolean isIPIAccessionWithoutVersion(String acc) {
+        return isMatchAccession(IPI_WITHOUT_VERSION.getIdPattern(), acc);
+    }
+
+    /**
+     * check whether it is an IPI accession with version number
+     * @param acc   protein accession
+     * @return  boolean true if it's a IPI accession
+     */
+    public static boolean isIPIAccessionWithVersion(String acc) {
+        return isMatchAccession(IPI_WITH_VERSION.getIdPattern(), acc);
     }
 
     /**

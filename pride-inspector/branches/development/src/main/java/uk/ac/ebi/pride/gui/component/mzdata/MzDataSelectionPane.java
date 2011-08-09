@@ -379,7 +379,7 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
     /**
      * Capture export spectrum details event
      */
-    private class ExportSpectrumDetailEventSubscriber implements EventSubscriber<ExportSpectrumDetailEvent> {
+    private static class ExportSpectrumDetailEventSubscriber implements EventSubscriber<ExportSpectrumDetailEvent> {
 
         @Override
         public void onEvent(ExportSpectrumDetailEvent event) {

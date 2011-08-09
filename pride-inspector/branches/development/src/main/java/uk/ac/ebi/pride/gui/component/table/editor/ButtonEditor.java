@@ -55,11 +55,8 @@ public class ButtonEditor extends DefaultCellEditor {
 
     @Override
     public Object getCellEditorValue() {
-        if (isPushed) {
-            System.out.println("pushed");
-        }
         isPushed = false;
-        return new String(text);
+        return text;
     }
 
     @Override

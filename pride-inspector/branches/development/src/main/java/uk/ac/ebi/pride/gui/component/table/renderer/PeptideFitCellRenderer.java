@@ -20,7 +20,7 @@ public class PeptideFitCellRenderer implements TableCellRenderer {
         return new HighlightLabel(value, isSelected);
     }
 
-    private class HighlightLabel extends JPanel {
+    private static class HighlightLabel extends JPanel {
         private Integer state;
         private boolean isSelected;
 

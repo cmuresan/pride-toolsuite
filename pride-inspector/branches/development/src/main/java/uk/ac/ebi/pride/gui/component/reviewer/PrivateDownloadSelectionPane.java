@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.gui.component.reviewer;
 
 import org.jdesktop.swingx.JXTable;
+import sun.security.provider.SystemSigner;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.component.dialog.TaskDialog;
@@ -67,7 +68,12 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
         this.parent = parent;
         this.toDispose = toDispose;
         this.currentUserName = username;
-        this.currentPassWord = password;
+        if (password == null) {
+            this.currentPassWord = null;
+        } else {
+            this.currentPassWord = new char[password.length];
+            System.arraycopy(password, 0, currentPassWord, 0, password.length);
+        }
         this.context = (PrideInspectorContext)uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
 
         // setup the main GUI components
@@ -87,7 +93,12 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
     }
 
     public void setCurrentPassWord(char[] currentPassWord) {
-        this.currentPassWord = currentPassWord;
+        if (currentPassWord == null) {
+            this.currentPassWord = null;
+        } else {
+            this.currentPassWord = new char[currentPassWord.length];
+            System.arraycopy(currentPassWord, 0, currentPassWord, 0, currentPassWord.length);
+        }
     }
 
     public void addExperimentMetaData(List<Map<String, String>> metadata) {

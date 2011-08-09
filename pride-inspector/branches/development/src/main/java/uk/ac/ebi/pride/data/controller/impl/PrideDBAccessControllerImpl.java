@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.data.controller.impl;
 
+import com.sun.xml.internal.ws.api.addressing.WSEndpointReference;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
+import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.component.chart.PrideChartManager;
 import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.term.CvTermReference;
@@ -56,8 +58,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     private final static int PROCESSING_METHOD_ORDER = 1;
     private final static String DATA_PROCESSING_ID = "dataprocessing1";
     private final static String PROTOCOL_ID = "protocol1";
-
-    private List<Software> softwares;
 
     public PrideDBAccessControllerImpl() throws DataAccessException {
         this(DEFAULT_ACCESS_MODE, null);
@@ -101,7 +101,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 ContentCategory.PROTOCOL,
                 ContentCategory.INSTRUMENT,
                 ContentCategory.SOFTWARE,
-                ContentCategory.DATA_PROCESSING);
+                ContentCategory.DATA_PROCESSING,
+                ContentCategory.QUANTIFICATION);
 
         // set the foreground experiment acc
         if (experimentAcc != null) {
@@ -254,68 +255,79 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     @Override
     public FileDescription getFileDescription() throws DataAccessException {
+        MetaData metaData = super.getMetaData();
 
-        List<CvParam> cvParams = new ArrayList<CvParam>();
-        CvTermReference cvTerm = CvTermReference.MASS_SPECTRUM;
-        CvParam cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), null, null, null, null);
-        cvParams.add(cvParam);
-        ParamGroup fileContent = new ParamGroup(cvParams, null);
+        if (metaData == null) {
+            List<CvParam> cvParams = new ArrayList<CvParam>();
+            CvTermReference cvTerm = CvTermReference.MASS_SPECTRUM;
+            CvParam cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), null, null, null, null);
+            cvParams.add(cvParam);
+            ParamGroup fileContent = new ParamGroup(cvParams, null);
 
-        Connection connection = null;
-        List<SourceFile> sourceFiles = null;
-        List<ParamGroup> contacts = null;
-        try {
-            logger.debug("Getting file description");
-            connection = PooledConnectionFactory.getConnection();
-            sourceFiles = getSourceFiles(connection);
-            contacts = getContacts(connection);
-        } catch (SQLException e) {
-            logger.error("Failed to query file description", e);
-        } finally {
-            DBUtilities.releaseResources(connection, null, null);
+            Connection connection = null;
+            List<SourceFile> sourceFiles = null;
+            List<ParamGroup> contacts = null;
+            try {
+                logger.debug("Getting file description");
+                connection = PooledConnectionFactory.getConnection();
+                sourceFiles = getSourceFiles(connection);
+                contacts = getContacts(connection);
+            } catch (SQLException e) {
+                logger.error("Failed to query file description", e);
+            } finally {
+                DBUtilities.releaseResources(connection, null, null);
+            }
+
+            return new FileDescription(fileContent, sourceFiles, contacts);
+        } else {
+            return metaData.getFileDescription();
         }
-
-        return new FileDescription(fileContent, sourceFiles, contacts);
     }
 
     @Override
     public List<Sample> getSamples() throws DataAccessException {
-        List<Sample> samples = new ArrayList<Sample>();
+        MetaData metaData = super.getMetaData();
 
-        List<CvParam> cvParam;
-        List<UserParam> userParam;
+        if (metaData == null) {
+            List<Sample> samples = new ArrayList<Sample>();
 
-        Connection connection = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
+            List<CvParam> cvParam;
+            List<UserParam> userParam;
 
-        try {
-            logger.debug("Getting samples");
-            connection = PooledConnectionFactory.getConnection();
-            st = connection.prepareStatement("SELECT mz_data_id, sample_name FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
-            st.setString(1, foregroundExperimentAcc.toString());
-            rs = st.executeQuery();
-            while (rs.next()) {
-                int mz_data_id = rs.getInt("mz_data_id");
-                String sample_name = rs.getString("sample_name");
-                userParam = getUserParams(connection, "mzdata_sample_param", mz_data_id);
-                cvParam = getCvParams(connection, "mzdata_sample_param", mz_data_id);
-                samples.add(new Sample(SAMPLE_ID, sample_name, new ParamGroup(cvParam, userParam)));
+            Connection connection = null;
+            PreparedStatement st = null;
+            ResultSet rs = null;
+
+            try {
+                logger.debug("Getting samples");
+                connection = PooledConnectionFactory.getConnection();
+                st = connection.prepareStatement("SELECT mz_data_id, sample_name FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
+                st.setString(1, foregroundExperimentAcc.toString());
+                rs = st.executeQuery();
+                while (rs.next()) {
+                    int mz_data_id = rs.getInt("mz_data_id");
+                    String sample_name = rs.getString("sample_name");
+                    userParam = getUserParams(connection, "mzdata_sample_param", mz_data_id);
+                    cvParam = getCvParams(connection, "mzdata_sample_param", mz_data_id);
+                    samples.add(new Sample(SAMPLE_ID, sample_name, new ParamGroup(cvParam, userParam)));
+                }
+            } catch (SQLException e) {
+                logger.error("Failed to query samples", e);
+            } finally {
+                DBUtilities.releaseResources(connection, st, rs);
             }
-        } catch (SQLException e) {
-            logger.error("Failed to query samples", e);
-        } finally {
-            DBUtilities.releaseResources(connection, st, rs);
+            return samples;
+        } else {
+            return metaData.getSamples();
         }
-
-        return samples;
-
     }
 
     @Override
     public List<Software> getSoftware() throws DataAccessException {
-        if (softwares == null) {
-            softwares = new ArrayList<Software>();
+        MetaData metaData = super.getMetaData();
+
+        if (metaData == null) {
+            List<Software> softwares = new ArrayList<Software>();
 
             Connection connection = null;
             PreparedStatement st = null;
@@ -338,14 +350,16 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     }
                     softwares.add(new Software(rs.getString("software_name"), rs.getString("software_version"), new ParamGroup(cvParams, userParams)));
                 }
+
             } catch (SQLException e) {
                 logger.error("Failed to query software", e);
             } finally {
                 DBUtilities.releaseResources(connection, st, rs);
             }
+            return softwares;
+        } else {
+            return metaData.getSoftwares();
         }
-
-        return softwares;
     }
 
     private List<ParamGroup> getAnalyzerList(Connection connection, int mz_data_id) throws DataAccessException {
@@ -380,94 +394,104 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     @Override
     public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
-        List<InstrumentConfiguration> instrumentConfigurations = new ArrayList<InstrumentConfiguration>();
-        //get software
-        Software software = null;
-        if (getSoftware().size() > 0) {
-            software = getSoftware().get(0);
-        }
+        MetaData metaData = super.getMetaData();
 
-        Connection connection = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try {
-            logger.debug("Getting instrument");
-            connection = PooledConnectionFactory.getConnection();
-            st = connection.prepareStatement("SELECT instrument_name, mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
-            st.setString(1, foregroundExperimentAcc.toString());
-            rs = st.executeQuery();
-            while (rs.next()) {
-                int mz_data_id = rs.getInt("mz_data_id");
-                //instrument params
-                // ParamGroup params = new ParamGroup(getCvParams("mzdata_instrument_param", mz_data_id), getUserParams("mzdata_instrument_param", mz_data_id));
-                ParamGroup params = new ParamGroup();
-                CvTermReference cvTerm = CvTermReference.INSTRUMENT_MODEL;
-                params.addCvParam(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
-                        rs.getString("instrument_name"), null, null, null));
-                // create instrument components
-                //create source
-                //create source object
-                int sourceOrder = 1;
-                InstrumentComponent source = new InstrumentComponent(sourceOrder, new ParamGroup(getCvParams(connection, "mzdata_instrument_source_param", mz_data_id), getUserParams(connection, "mzdata_instrument_source_param", mz_data_id)));
-                //create detector
-                int detectorOrder = getAnalyzerList(connection, mz_data_id).size() + 2;
-                InstrumentComponent detector = new InstrumentComponent(detectorOrder, new ParamGroup(getCvParams(connection, "mzdata_instrument_detector_param", mz_data_id), getUserParams(connection, "mzdata_instrument_detector_param", mz_data_id)));
-                //create analyzer
-                List<ParamGroup> analyzers = getAnalyzerList(connection, mz_data_id);
-                int orderCnt = 2;
-                for (ParamGroup analyzer : analyzers) {
-                    InstrumentComponent analyzerInstrument = new InstrumentComponent(orderCnt, analyzer);
-                    instrumentConfigurations.add(new InstrumentConfiguration(rs.getString("instrument_name"), null, software, source, analyzerInstrument, detector, params));
-                    orderCnt++;
-                }
+        if (metaData == null) {
+            List<InstrumentConfiguration> instrumentConfigurations = new ArrayList<InstrumentConfiguration>();
+            //get software
+            Software software = null;
+            if (getSoftware().size() > 0) {
+                software = getSoftware().get(0);
             }
-        } catch (SQLException e) {
-            logger.error("Failed to query instrument configuration", e);
-        } finally {
-            DBUtilities.releaseResources(connection, st, rs);
-        }
 
-        return instrumentConfigurations;
+            Connection connection = null;
+            PreparedStatement st = null;
+            ResultSet rs = null;
+            try {
+                logger.debug("Getting instrument");
+                connection = PooledConnectionFactory.getConnection();
+                st = connection.prepareStatement("SELECT instrument_name, mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
+                st.setString(1, foregroundExperimentAcc.toString());
+                rs = st.executeQuery();
+                while (rs.next()) {
+                    int mz_data_id = rs.getInt("mz_data_id");
+                    //instrument params
+                    // ParamGroup params = new ParamGroup(getCvParams("mzdata_instrument_param", mz_data_id), getUserParams("mzdata_instrument_param", mz_data_id));
+                    ParamGroup params = new ParamGroup();
+                    CvTermReference cvTerm = CvTermReference.INSTRUMENT_MODEL;
+                    params.addCvParam(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
+                            rs.getString("instrument_name"), null, null, null));
+                    // create instrument components
+                    //create source
+                    //create source object
+                    int sourceOrder = 1;
+                    InstrumentComponent source = new InstrumentComponent(sourceOrder, new ParamGroup(getCvParams(connection, "mzdata_instrument_source_param", mz_data_id), getUserParams(connection, "mzdata_instrument_source_param", mz_data_id)));
+                    //create detector
+                    int detectorOrder = getAnalyzerList(connection, mz_data_id).size() + 2;
+                    InstrumentComponent detector = new InstrumentComponent(detectorOrder, new ParamGroup(getCvParams(connection, "mzdata_instrument_detector_param", mz_data_id), getUserParams(connection, "mzdata_instrument_detector_param", mz_data_id)));
+                    //create analyzer
+                    List<ParamGroup> analyzers = getAnalyzerList(connection, mz_data_id);
+                    int orderCnt = 2;
+                    for (ParamGroup analyzer : analyzers) {
+                        InstrumentComponent analyzerInstrument = new InstrumentComponent(orderCnt, analyzer);
+                        instrumentConfigurations.add(new InstrumentConfiguration(rs.getString("instrument_name"), null, software, source, analyzerInstrument, detector, params));
+                        orderCnt++;
+                    }
+                }
+            } catch (SQLException e) {
+                logger.error("Failed to query instrument configuration", e);
+            } finally {
+                DBUtilities.releaseResources(connection, st, rs);
+            }
+            return instrumentConfigurations;
+        } else {
+            return metaData.getInstrumentConfigurations();
+        }
     }
 
     @Override
     public List<DataProcessing> getDataProcessings() throws DataAccessException {
-        List<CvParam> cvParams;
-        List<UserParam> userParams;
-        List<ProcessingMethod> procMethods = new ArrayList<ProcessingMethod>();
-        List<DataProcessing> dataProcessings = new ArrayList<DataProcessing>();
-        Software software = null;
-        if (getSoftware().size() > 0) {
-            software = getSoftware().get(0);
-        }
+        MetaData metaData = super.getMetaData();
 
-        Connection connection = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        if (metaData == null) {
+            List<CvParam> cvParams;
+            List<UserParam> userParams;
+            List<ProcessingMethod> procMethods = new ArrayList<ProcessingMethod>();
+            List<DataProcessing> dataProcessings = new ArrayList<DataProcessing>();
+            Software software = null;
+            if (getSoftware().size() > 0) {
+                software = getSoftware().get(0);
+            }
 
-        try {
-            logger.debug("Getting data processings");
-            connection = PooledConnectionFactory.getConnection();
-            st = connection.prepareStatement("SELECT mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
-            st.setString(1, foregroundExperimentAcc.toString());
-            rs = st.executeQuery();
-            while (rs.next()) {
-                int mz_data_id = rs.getInt("mz_data_id");
-                userParams = getUserParams(connection, "mzdata_processing_method_param", mz_data_id);
-                cvParams = getCvParams(connection, "mzdata_processing_method_param", mz_data_id);
-                ParamGroup params = new ParamGroup(cvParams, userParams);
+            Connection connection = null;
+            PreparedStatement st = null;
+            ResultSet rs = null;
+
+            try {
+                logger.debug("Getting data processings");
+                connection = PooledConnectionFactory.getConnection();
+                st = connection.prepareStatement("SELECT mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
+                st.setString(1, foregroundExperimentAcc.toString());
+                rs = st.executeQuery();
+                while (rs.next()) {
+                    int mz_data_id = rs.getInt("mz_data_id");
+                    userParams = getUserParams(connection, "mzdata_processing_method_param", mz_data_id);
+                    cvParams = getCvParams(connection, "mzdata_processing_method_param", mz_data_id);
+                    ParamGroup params = new ParamGroup(cvParams, userParams);
 //                CvTermReference cvTerm = CvTermReference.CONVERSION_TO_MZML;
 //                params.addCvParam(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), null, null, null, null));
-                procMethods.add(new ProcessingMethod(PROCESSING_METHOD_ORDER, software, params));
-                dataProcessings.add(new DataProcessing(DATA_PROCESSING_ID, procMethods));
+                    procMethods.add(new ProcessingMethod(PROCESSING_METHOD_ORDER, software, params));
+                    dataProcessings.add(new DataProcessing(DATA_PROCESSING_ID, procMethods));
+                }
+            } catch (SQLException e) {
+                logger.error("Failed to query data processings", e);
+            } finally {
+                DBUtilities.releaseResources(connection, st, rs);
             }
-        } catch (SQLException e) {
-            logger.error("Failed to query data processings", e);
-        } finally {
-            DBUtilities.releaseResources(connection, st, rs);
+            return dataProcessings;
+        } else {
+            return metaData.getDataProcessings();
         }
-
-        return dataProcessings;
     }
 
     //for a given experimentId, will return the protocol_steps_id sorted by index
@@ -496,6 +520,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     private Protocol getProtocol(Connection connection) throws DataAccessException {
+
         List<Integer> protocol_steps;
         List<UserParam> userParams;
         List<CvParam> cvParams;
@@ -531,6 +556,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     private List<Reference> getReferences(Connection connection) throws DataAccessException {
+
         List<Reference> references = new ArrayList<Reference>();
         List<UserParam> userParams;
         List<CvParam> cvParams;
@@ -548,6 +574,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 cvParams = getCvParams(connection, "pride_reference_param", rs.getInt("pr.reference_id"));
                 references.add(new Reference(rs.getString("reference_line"), new ParamGroup(cvParams, userParams)));
             }
+
         } catch (SQLException e) {
             logger.error("Failed to query references", e);
         } finally {
@@ -557,76 +584,88 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return references;
     }
 
-    private ParamGroup getAdditional(Connection connection) throws DataAccessException {
-        ParamGroup additional = null;
-        List<CvParam> cvParam;
-        List<UserParam> userParam;
+    @Override
+    public ParamGroup getAdditional() throws DataAccessException {
+        MetaData metaData = super.getMetaData();
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        if (metaData == null) {
+            ParamGroup additional = null;
+            List<CvParam> cvParam;
+            List<UserParam> userParam;
 
-        try {
-            st = connection.prepareStatement("SELECT experiment_id FROM pride_experiment WHERE accession= ?");
-            st.setString(1, foregroundExperimentAcc.toString());
-            rs = st.executeQuery();
-            while (rs.next()) {
-                int experiment_id = rs.getInt("experiment_id");
-                userParam = getUserParams(connection, "pride_experiment_param", experiment_id);
-                cvParam = getCvParams(connection, "pride_experiment_param", experiment_id);
-                additional = new ParamGroup(cvParam, userParam);
+            PreparedStatement st = null;
+            ResultSet rs = null;
+            Connection connection = null;
+
+            try {
+                connection = PooledConnectionFactory.getConnection();
+                st = connection.prepareStatement("SELECT experiment_id FROM pride_experiment WHERE accession= ?");
+                st.setString(1, foregroundExperimentAcc.toString());
+                rs = st.executeQuery();
+                while (rs.next()) {
+                    int experiment_id = rs.getInt("experiment_id");
+                    userParam = getUserParams(connection, "pride_experiment_param", experiment_id);
+                    cvParam = getCvParams(connection, "pride_experiment_param", experiment_id);
+                    additional = new ParamGroup(cvParam, userParam);
+                }
+            } catch (SQLException e) {
+                logger.error("Failed to query additional params", e);
+            } finally {
+                DBUtilities.releaseResources(connection, st, rs);
             }
-        } catch (SQLException e) {
-            logger.error("Failed to query additional params", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
+            return additional;
+        } else {
+            return metaData;
         }
-
-        return additional;
     }
 
     @Override
     public MetaData getMetaData() throws DataAccessException {
-        String accession = "";
-        String version = "2.1";
-        String title = "";
-        String shortLabel = "";
+        MetaData metaData = super.getMetaData();
+        if (metaData == null) {
+            String accession = "";
+            String version = "2.1";
+            String title = "";
+            String shortLabel = "";
 
-        Connection connection = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        Experiment experiment = null;
+            Connection connection = null;
+            PreparedStatement st = null;
+            ResultSet rs = null;
 
-        try {
-            logger.debug("Getting meta data");
-            connection = PooledConnectionFactory.getConnection();
-            st = connection.prepareStatement("SELECT pe.title, pe.accession, pe.short_label FROM pride_experiment pe WHERE pe.accession = ?");
-            st.setString(1, foregroundExperimentAcc.toString());
-            rs = st.executeQuery();
-            while (rs.next()) {
-                accession = rs.getString("pe.accession");
-                title = rs.getString("pe.title");
-                shortLabel = rs.getString("pe.short_label");
+            try {
+                logger.debug("Getting meta data");
+                connection = PooledConnectionFactory.getConnection();
+                st = connection.prepareStatement("SELECT pe.title, pe.accession, pe.short_label FROM pride_experiment pe WHERE pe.accession = ?");
+                st.setString(1, foregroundExperimentAcc.toString());
+                rs = st.executeQuery();
+                while (rs.next()) {
+                    accession = rs.getString("pe.accession");
+                    title = rs.getString("pe.title");
+                    shortLabel = rs.getString("pe.short_label");
+                }
+
+                FileDescription fileDesc = getFileDescription();
+                List<Sample> samples = getSamples();
+                List<Software> software = getSoftware();
+                List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
+                List<DataProcessing> dataProcessings = getDataProcessings();
+                ParamGroup additional = getAdditional();
+                Protocol protocol = getProtocol(connection);
+                List<Reference> references = getReferences(connection);
+                metaData = new Experiment(null, accession, version, fileDesc,
+                        samples, software, null, instrumentConfigurations,
+                        dataProcessings, additional, title, shortLabel,
+                        protocol, references, null, null);
+                // store in cache
+                cache.store(CacheCategory.EXPERIMENT_METADATA, metaData);
+            } catch (SQLException e) {
+                logger.error("Failed to query experiment metadata", this, e);
+            } finally {
+                DBUtilities.releaseResources(connection, st, rs);
             }
-
-            FileDescription fileDesc = getFileDescription();
-            List<Sample> samples = getSamples();
-            List<Software> software = getSoftware();
-            List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
-            List<DataProcessing> dataProcessings = getDataProcessings();
-            ParamGroup additional = getAdditional(connection);
-            Protocol protocol = getProtocol(connection);
-            List<Reference> references = getReferences(connection);
-            experiment = new Experiment(null, accession, version, fileDesc,
-                    samples, software, null, instrumentConfigurations,
-                    dataProcessings, additional, title, shortLabel,
-                    protocol, references, null, null);
-        } catch (SQLException e) {
-            logger.error("Failed to query experiment metadata", this, e);
-        } finally {
-            DBUtilities.releaseResources(connection, st, rs);
         }
 
-        return experiment;
+        return metaData;
     }
 
     @Override
@@ -1439,6 +1478,67 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         }
 
         return sum;
+    }
+
+    @Override
+    public QuantCvTermReference getIdentQuantUnit() throws DataAccessException {
+        Collection<Comparable> identIds = getIdentificationIds();
+
+        for (Comparable identId : identIds) {
+            ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.IDENTIFICATION_TO_PARAM, identId);
+            if (paramGroup != null) {
+                List<CvParam> cvParams = paramGroup.getCvParams();
+                for (CvParam cvParam : cvParams) {
+                    if (QuantCvTermReference.isUnit(cvParam)) {
+                        return QuantCvTermReference.getUnit(cvParam);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public QuantCvTermReference getPeptideQuantUnit() throws DataAccessException {
+        Collection<Comparable> identIds = getIdentificationIds();
+
+        for (Comparable identId : identIds) {
+            Collection<Comparable> peptideIds = getPeptideIds(identId);
+            for (Comparable peptideId : peptideIds) {
+                ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
+                if (paramGroup != null) {
+                    List<CvParam> cvParams = paramGroup.getCvParams();
+                    for (CvParam cvParam : cvParams) {
+                        if (QuantCvTermReference.isUnit(cvParam)) {
+                            return QuantCvTermReference.getUnit(cvParam);
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Quantitation getIdentQuantData(Comparable identId) throws DataAccessException {
+        ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.IDENTIFICATION_TO_PARAM, identId);
+
+        if (paramGroup != null) {
+            return new Quantitation(Quantitation.Type.PROTEIN, paramGroup.getCvParams());
+        }
+
+        return null;
+    }
+
+    @Override
+    public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
+        ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
+
+        if (paramGroup != null) {
+            return new Quantitation(Quantitation.Type.PEPTIDE, paramGroup.getCvParams());
+        }
+
+        return null;
     }
 
     @Override

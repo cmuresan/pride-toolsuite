@@ -65,13 +65,13 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         // set the type
         this.setType(Type.XML_FILE);
         // set the content categories
-                // set the content categories
+        // set the content categories
         this.setContentCategories(ContentCategory.SPECTRUM,
-                                  ContentCategory.CHROMATOGRAM,
-                                  ContentCategory.SAMPLE,
-                                  ContentCategory.INSTRUMENT,
-                                  ContentCategory.SOFTWARE,
-                                  ContentCategory.DATA_PROCESSING);
+                ContentCategory.CHROMATOGRAM,
+                ContentCategory.SAMPLE,
+                ContentCategory.INSTRUMENT,
+                ContentCategory.SOFTWARE,
+                ContentCategory.DATA_PROCESSING);
         // create cache builder
         setCacheBuilder(new MzMLCacheBuilder(this));
         // populate cache
@@ -99,28 +99,34 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     }
 
     public MetaData getMetaData() throws DataAccessException {
-        // id , accession and version
-        String id = unmarshaller.getMzMLId();
-        String accession = unmarshaller.getMzMLAccession();
-        String version = unmarshaller.getMzMLVersion();
-        // FileDescription
-        FileDescription fileDesc = getFileDescription();
-        // Sample list
-        List<Sample> samples = getSamples();
-        // Software list
-        List<Software> softwares = getSoftware();
-        // ScanSettings list
-        List<ScanSetting> scanSettings = getScanSettings();
-        // Instrument configuration
-        List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
-        // Data processing list
-        List<DataProcessing> dataProcessings = getDataProcessings();
-        // Param group
-        ParamGroup params = null;
+        MetaData metaData = super.getMetaData();
 
-        return new MetaData(id, accession, version, fileDesc,
-                samples, softwares, scanSettings, instrumentConfigurations,
-                dataProcessings, params);
+        if (metaData == null) {
+            // id , accession and version
+            String id = unmarshaller.getMzMLId();
+            String accession = unmarshaller.getMzMLAccession();
+            String version = unmarshaller.getMzMLVersion();
+            // FileDescription
+            FileDescription fileDesc = getFileDescription();
+            // Sample list
+            List<Sample> samples = getSamples();
+            // Software list
+            List<Software> softwares = getSoftware();
+            // ScanSettings list
+            List<ScanSetting> scanSettings = getScanSettings();
+            // Instrument configuration
+            List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
+            // Data processing list
+            List<DataProcessing> dataProcessings = getDataProcessings();
+            // Param group
+            ParamGroup params = null;
+
+            metaData = new MetaData(id, accession, version, fileDesc,
+                    samples, softwares, scanSettings, instrumentConfigurations,
+                    dataProcessings, params);
+        }
+
+        return metaData;
     }
 
     public List<CVLookup> getCvLookups() throws DataAccessException {
@@ -135,18 +141,25 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
     @Override
     public FileDescription getFileDescription() throws DataAccessException {
-        try {
-            uk.ac.ebi.jmzml.model.mzml.FileDescription
-                    rawFileDesc = unmarshaller.getFileDescription();
-            return MzMLTransformer.transformFileDescription(rawFileDesc);
-        } catch (MzMLUnmarshallerException e) {
-            logger.error("Creating File Description", e);
-            throw new DataAccessException("Exception while trying to read file description", e);
+        MetaData metaData = super.getMetaData();
+
+        if (metaData == null) {
+            try {
+                uk.ac.ebi.jmzml.model.mzml.FileDescription
+                        rawFileDesc = unmarshaller.getFileDescription();
+                return MzMLTransformer.transformFileDescription(rawFileDesc);
+            } catch (MzMLUnmarshallerException e) {
+                logger.error("Creating File Description", e);
+                throw new DataAccessException("Exception while trying to read file description", e);
+            }
+        } else {
+            return metaData.getFileDescription();
         }
     }
 
     @Override
     public ReferenceableParamGroup getReferenceableParamGroup() throws DataAccessException {
+
         try {
             ReferenceableParamGroupList rawRefParamGroup = unmarshaller.getReferenceableParamGroupList();
             return MzMLTransformer.transformReferenceableParamGroupList(rawRefParamGroup);
@@ -158,58 +171,89 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
     @Override
     public List<Sample> getSamples() throws DataAccessException {
-        try {
-            SampleList rawSample = unmarshaller.getSampleList();
-            return MzMLTransformer.transformSampleList(rawSample);
-        } catch (MzMLUnmarshallerException e) {
-            logger.error("Creating Samples", e);
-            throw new DataAccessException("Exception while trying to read smaples", e);
+        MetaData metaData = super.getMetaData();
+
+        if (metaData == null) {
+            try {
+                SampleList rawSample = unmarshaller.getSampleList();
+                return MzMLTransformer.transformSampleList(rawSample);
+            } catch (MzMLUnmarshallerException e) {
+                logger.error("Creating Samples", e);
+                throw new DataAccessException("Exception while trying to read smaples", e);
+            }
+        } else {
+            return metaData.getSamples();
         }
     }
 
     @Override
     public List<Software> getSoftware() throws DataAccessException {
-        try {
-            SoftwareList rawSoftware = unmarshaller.getSoftwareList();
-            return MzMLTransformer.transformSoftwareList(rawSoftware);
-        } catch (MzMLUnmarshallerException e) {
-            logger.error("Creating Software", e);
-            throw new DataAccessException("Exception while trying to read softwares", e);
+        MetaData metaData = super.getMetaData();
+
+        if (metaData == null) {
+            try {
+                SoftwareList rawSoftware = unmarshaller.getSoftwareList();
+                return MzMLTransformer.transformSoftwareList(rawSoftware);
+            } catch (MzMLUnmarshallerException e) {
+                logger.error("Creating Software", e);
+                throw new DataAccessException("Exception while trying to read softwares", e);
+            }
+        } else {
+            return metaData.getSoftwares();
         }
     }
 
     @Override
     public List<ScanSetting> getScanSettings() throws DataAccessException {
-        try {
-            ScanSettingsList rawScanSettingList = unmarshaller.getScanSettingsList();
-            return MzMLTransformer.transformScanSettingList(rawScanSettingList);
-        } catch (MzMLUnmarshallerException e) {
-            logger.error("Creating ScanSettings", e);
-            throw new DataAccessException("Exception while trying to read scan settings list", e);
+        MetaData metaData = super.getMetaData();
+
+        if (metaData == null) {
+            try {
+                ScanSettingsList rawScanSettingList = unmarshaller.getScanSettingsList();
+                return MzMLTransformer.transformScanSettingList(rawScanSettingList);
+            } catch (MzMLUnmarshallerException e) {
+                logger.error("Creating ScanSettings", e);
+                throw new DataAccessException("Exception while trying to read scan settings list", e);
+            }
+        } else {
+            return metaData.getScanSettings();
         }
     }
 
     @Override
     public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
-        try {
-            InstrumentConfigurationList rawInstrumentList = unmarshaller.getInstrumentConfigurationList();
-            return MzMLTransformer.transformInstrumentConfigurationList(rawInstrumentList);
-        } catch (MzMLUnmarshallerException e) {
-            logger.error("Creating Instrument Configurations", e);
-            throw new DataAccessException("Exception while trying to read instrument configuration list", e);
+        MetaData metaData = super.getMetaData();
+
+        if (metaData == null) {
+            try {
+                InstrumentConfigurationList rawInstrumentList = unmarshaller.getInstrumentConfigurationList();
+                return MzMLTransformer.transformInstrumentConfigurationList(rawInstrumentList);
+            } catch (MzMLUnmarshallerException e) {
+                logger.error("Creating Instrument Configurations", e);
+                throw new DataAccessException("Exception while trying to read instrument configuration list", e);
+            }
+        } else {
+            return metaData.getInstrumentConfigurations();
         }
     }
 
     @Override
     public List<DataProcessing> getDataProcessings() throws DataAccessException {
-        try {
-            uk.ac.ebi.jmzml.model.mzml.DataProcessingList
-                    rawDataProcList = unmarshaller.getDataProcessingList();
-            return MzMLTransformer.transformDataProcessingList(rawDataProcList);
-        } catch (MzMLUnmarshallerException e) {
-            logger.error("Creating DataProcessings", e);
-            throw new DataAccessException("Exception while trying to read data processing list", e);
+        MetaData metaData = super.getMetaData();
+
+        if (metaData == null) {
+            try {
+                uk.ac.ebi.jmzml.model.mzml.DataProcessingList
+                        rawDataProcList = unmarshaller.getDataProcessingList();
+                return MzMLTransformer.transformDataProcessingList(rawDataProcList);
+            } catch (MzMLUnmarshallerException e) {
+                logger.error("Creating DataProcessings", e);
+                throw new DataAccessException("Exception while trying to read data processing list", e);
+            }
+        } else {
+            return metaData.getDataProcessings();
         }
+
     }
 
     /**
@@ -274,11 +318,11 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         super.close();
     }
 
-        /**
+    /**
      * Check a file is mzML file
      *
-     * @param file  input file
-     * @return  boolean true means mzML
+     * @param file input file
+     * @return boolean true means mzML
      */
     public static boolean isValidFormat(File file) {
         boolean valid = false;
@@ -290,9 +334,9 @@ public class MzMLControllerImpl extends CachedDataAccessController {
             for (int i = 0; i < 10; i++) {
                 content.append(reader.readLine());
             }
-            
+
             Matcher matcher = mzMLHeaderPattern.matcher(content);
-            
+
             valid = matcher.find();
         } catch (Exception e) {
             logger.error("Failed to read file", e);

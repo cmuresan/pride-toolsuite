@@ -54,7 +54,7 @@ public class PeptideAnnotation {
     }
 
     public void setSequence(String sequence) {
-        this.sequence = sequence == null ? sequence : sequence.toUpperCase();
+        this.sequence = (sequence == null ? sequence : sequence.toUpperCase());
     }
 
     public List<PTMAnnotation> getPtmAnnotations() {

@@ -197,7 +197,7 @@ public class DataSourceViewer extends JPanel {
     /**
      * Data access table to show experiment name as tooltip
      */
-    private class DataAccessTable extends JTable {
+    private static class DataAccessTable extends JTable {
 
         private DataAccessTable(TableModel dm) {
             super(dm);

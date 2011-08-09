@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
 import javax.swing.text.NumberFormatter;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
 
@@ -58,7 +59,6 @@ public class ReviewDownloadTableModel extends ListTableModel<List<Map<String, St
         contents.clear();
         if (data != null && !data.isEmpty()) {
             Collections.sort(data, new MetaDataComparator());
-            NumberFormatter formatter = new NumberFormatter();
             for (Map<String, String> exp : data) {
                 List<Object> content = new ArrayList<Object>();
                 String accession = exp.get("Accession");
@@ -125,7 +125,7 @@ public class ReviewDownloadTableModel extends ListTableModel<List<Map<String, St
         fireTableCellUpdated(rowIndex, columnIndex);
     }
 
-    public static class MetaDataComparator implements Comparator<Map<String, String>> {
+    public static class MetaDataComparator implements Comparator<Map<String, String>>, Serializable {
 
         @Override
         public int compare(Map<String, String> o1, Map<String, String> o2) {

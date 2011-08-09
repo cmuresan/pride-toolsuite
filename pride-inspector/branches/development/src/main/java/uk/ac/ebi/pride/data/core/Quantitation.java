@@ -23,7 +23,7 @@ public class Quantitation {
         PROTEIN, PEPTIDE
     }
 
-    private static final int SUB_SAMPLE_SIZE = 8;
+    public static final int SUB_SAMPLE_SIZE = 8;
 
     /**
      * Label free method results

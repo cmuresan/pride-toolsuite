@@ -88,7 +88,7 @@ public class CollapsiblePane extends JPanel {
         }
     }
 
-    private class GradientColorPanel extends JPanel {
+    private static class GradientColorPanel extends JPanel {
         @Override
         protected void paintComponent(Graphics g) {
             if (!isOpaque()) {

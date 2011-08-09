@@ -39,7 +39,7 @@ public class DownloadExperimentTask extends TaskAdapter<List<Map<String, String>
         this.accessions = accessions;
         this.path = path;
         this.user = usr;
-        this.password = pwd == null ? pwd : Arrays.copyOf(pwd, pwd.length);
+        this.password = (pwd == null ? pwd : Arrays.copyOf(pwd, pwd.length));
         this.toOpenFile = toOpenFile;
 
         String msg = "Downloading PRIDE private experiment";

@@ -118,7 +118,6 @@ public class OpenReviewerConnectionTask extends TaskAdapter<List<Map<String, Str
                 for (Comparable accession : accessions) {
                     accStr += accession.toString() + COMMA_SEPARATOR;
                 }
-                accStr.substring(0, accStr.length());
                 cmd.append(accStr);
             }
             out.write(cmd.toString());

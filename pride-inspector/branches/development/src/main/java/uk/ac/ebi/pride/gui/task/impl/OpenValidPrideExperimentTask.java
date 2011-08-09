@@ -357,7 +357,7 @@ public class OpenValidPrideExperimentTask extends TaskAdapter<Void, Void> implem
     /**
      * Action listener to close a dialog
      */
-    private class CloseListener implements ActionListener {
+    private static class CloseListener implements ActionListener {
         private JDialog dialog;
 
         private CloseListener(JDialog dialog) {

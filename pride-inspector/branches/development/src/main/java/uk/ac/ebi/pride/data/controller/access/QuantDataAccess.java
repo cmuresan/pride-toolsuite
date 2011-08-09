@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.data.controller.access;
 
+import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
+import uk.ac.ebi.pride.data.core.CvParam;
 import uk.ac.ebi.pride.data.core.Quantitation;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 
@@ -25,18 +27,32 @@ public interface QuantDataAccess {
     public boolean hasQuantData() throws DataAccessException;
 
     /**
-     *
-     * @return
-     * @throws DataAccessException
+     * Check whether the experiment contains quantitative data at the protein level
+     * @return  boolean true means quantitative data available
+     * @throws DataAccessException  data access exception
      */
     public boolean hasIdentQuantData() throws DataAccessException;
 
     /**
-     *
-     * @return
-     * @throws DataAccessException
+     * Check whether the experiment contains quantitative data at the peptide level
+     * @return  boolean true means quantitative data available
+     * @throws DataAccessException  data access exception
      */
     public boolean hasPeptideQuantData() throws DataAccessException;
+
+    /**
+     * Check whether the experiment contains quantitative data using label free methods
+     * @return  boolean true means label free methods (e.g. TIC, emPAI) have been used
+     * @throws DataAccessException  data access exception
+     */
+    public boolean hasLabelFreeQuantMethods() throws DataAccessException;
+
+    /**
+     * Check whether the experiment contains quantitative data using isotope labelling methods
+     * @return  boolean true means isotope labelliing methods have been used
+     * @throws DataAccessException  data access exception
+     */
+    public boolean hasIsotopeLabellingQuantMethods() throws DataAccessException;
 
     /**
      * Get quantitative method type
@@ -54,10 +70,10 @@ public interface QuantDataAccess {
 
     /**
      * Get the mapping between sub samples and reagents
-     * @return  Map<QuantCvTermReference, QuantCvTermReference> sample and reagent mappings
+     * @return  Map<CvParam, Tuple<CvParam, CvParam>> sample and reagent mappings, Map<Subsample with Species, Tuple<Subsample desc, Reagent>>
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException  error while getting the data from source
      */
-    public Map<QuantCvTermReference, QuantCvTermReference> getSubSampleToReagentMapping() throws DataAccessException ;
+    public Map<CvParam, Tuple<CvParam, CvParam>> getSampleDesc() throws DataAccessException ;
 
     /**
      * Get the unit for protein identifications

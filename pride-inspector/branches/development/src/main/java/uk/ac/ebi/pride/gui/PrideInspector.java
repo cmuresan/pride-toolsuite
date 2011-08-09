@@ -227,19 +227,16 @@ public class PrideInspector extends Desktop {
         // file open action
         Icon openFileIcon = GUIUtilities.loadIcon(context.getProperty("open.file.icon.small"));
         String openFileDesc = context.getProperty("open.file.title");
-        String openFileTooltip = context.getProperty("open.file.tooltip");
         PrideAction openFileAction = new OpenFileAction(openFileDesc, openFileIcon);
 
         // database open action
         Icon openDbIcon = GUIUtilities.loadIcon(context.getProperty("open.database.icon.small"));
         String openDbDesc = context.getProperty("open.database.title");
-        String openDbTooltip = context.getProperty("open.database.tooltip");
         PrideAction openDbAction = new OpenDatabaseAction(openDbDesc, openDbIcon);
 
         // open reviewer
         Icon openReviewerIcon = GUIUtilities.loadIcon(context.getProperty("reviewer.download.icon.small"));
         String openReviewerDesc = context.getProperty("reviewer.download.title");
-        String openReviewerTooltip = context.getProperty("reviewer.download.tooltip");
         PrideAction openReviewerAction = new OpenReviewAction(openReviewerDesc, openReviewerIcon);
 
         // close
@@ -271,7 +268,6 @@ public class PrideInspector extends Desktop {
         // help
         Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
         String helpDesc = context.getProperty("help.title");
-        String helpTooltip = context.getProperty("help.tooltip");
         PrideAction helpAction = new OpenHelpAction(helpDesc, helpIcon);
 
         // faq

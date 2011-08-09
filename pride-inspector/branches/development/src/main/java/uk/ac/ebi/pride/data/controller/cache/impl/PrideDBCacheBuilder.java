@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.data.controller.cache.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
+import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.impl.PrideDBAccessControllerImpl;
 import uk.ac.ebi.pride.data.core.*;
@@ -55,52 +56,26 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             // check the memory mode
 //            memorySaving = isMemorySavingMode(foregroundExperimentAcc);
             // populate the rest every time the foreground experiment accession has changed.
+            populateMetadataInfo();
             populateSpectrumInfo(foregroundExperimentAcc);
             populateIdentificationInfo(foregroundExperimentAcc);
             populatePrecursorInfo(foregroundExperimentAcc);
             populatePeptideInfo(foregroundExperimentAcc);
             populatePTMInfo(foregroundExperimentAcc);
             populateFragmentIonInfo(foregroundExperimentAcc);
+            populateIdentificationParamInfo(foregroundExperimentAcc);
             populatePeptideParamInfo(foregroundExperimentAcc);
             populateTheRest();
         }
     }
 
-//    /**
-//     * Returns true if the experiment is too big to fit in memory.
-//     * <p/>
-//     * If in memory saving mode, some of the caches is not populated.
-//     *
-//     * @param expAcc    foreground experiment accession
-//     * @return boolean  true means in memory saving mode.
-//     * @throws java.sql.SQLException    exception while querying the database
-//     */
-//    private boolean isMemorySavingMode(Comparable expAcc) throws SQLException{
-//        int specCount = 0;
-//
-//        Connection connection = null;
-//        PreparedStatement st = null;
-//        ResultSet rs = null;
-//
-//        try {
-//            connection = PooledConnectionFactory.getConnection();
-//            // get mz data array id
-//            st = connection.prepareStatement("select count(spectrum_id) cnt from mzdata_spectrum " +
-//                    "join mzdata_mz_data using(mz_data_id) where accession_number=?");
-//            st.setString(1, expAcc.toString());
-//            rs = st.executeQuery();
-//            if (rs.next()) {
-//                specCount = rs.getInt("cnt");
-//            }
-//        } catch (SQLException e) {
-//            logger.error("Querying the number of spectra", e);
-//            throw e;
-//        } finally {
-//            DBUtilities.releaseResources(connection, st, rs);
-//        }
-//
-//        return specCount > 2000000;
-//    }
+
+    private void populateMetadataInfo() throws DataAccessException {
+        logger.info("Initializing experiment metadata");
+        // clear cache
+        cache.clear(CacheCategory.EXPERIMENT_METADATA);
+        controller.getMetaData();
+    }
 
     /**
      * Populate expeirment accessions
@@ -557,6 +532,61 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         // add to cache
         cache.storeInBatch(CacheCategory.NUMBER_OF_FRAGMENT_IONS, numOfIons);
     }
+
+
+    private void populateIdentificationParamInfo(Comparable foregroundExperimentAcc) throws SQLException{
+        logger.info("Initializing protein params");
+
+        // clear cache
+        cache.clear(CacheCategory.IDENTIFICATION_TO_PARAM);
+
+        // map of protein id to params
+        Map<Comparable, ParamGroup> params = new HashMap<Comparable, ParamGroup>();
+
+        Connection connection = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            connection = PooledConnectionFactory.getConnection();
+            st = connection.prepareStatement("SELECT pride_identification_param.* FROM pride_identification_param " +
+                    "join pride_identification on(parent_element_fk=identification_id) " +
+                    "join pride_experiment using(experiment_id)where pride_experiment.accession=?");
+            st.setString(1, foregroundExperimentAcc.toString());
+            rs = st.executeQuery();
+            while (rs.next()) {
+                Comparable peptideId = rs.getString("parent_element_fk");
+                // get or create param list
+                ParamGroup paramGroup = params.get(peptideId);
+                if (paramGroup == null) {
+                    paramGroup =  new ParamGroup();
+                    params.put(peptideId, paramGroup);
+                }
+                // store parameters
+                String cvLabel = rs.getString("cv_label");
+                String name = rs.getString("name");
+                String accession = rs.getString("accession");
+                String value = rs.getString("value");
+                if (cvLabel == null) {
+                    // user param
+                    UserParam newParam = new UserParam(name, accession, value, null, null, null);
+                    paramGroup.addUserParam(newParam);
+                } else {
+                    // cv param
+                    CvParam newParam = new CvParam(accession, name, cvLabel, value, null, null, null);
+                    paramGroup.addCvParam(newParam);
+                }
+            }
+            rs.close();
+        } catch (SQLException e) {
+            logger.error("Querying identification params", e);
+            throw e;
+        } finally {
+            DBUtilities.releaseResources(connection, st, rs);
+        }
+        // add to cache
+        cache.storeInBatch(CacheCategory.IDENTIFICATION_TO_PARAM, params);
+    }
     
     private void populatePeptideParamInfo(Comparable expAcc) throws SQLException {
         logger.info("Initializing peptide params");
@@ -575,7 +605,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             st = connection.prepareStatement("SELECT pride_peptide_param.* FROM pride_peptide_param " +
                     "join pride_peptide on(parent_element_fk=peptide_id) " +
                     "join pride_identification using(identification_id) " +
-                    "join pride_experiment using(experiment_id)where pride_experiment.accession=? group by peptide_id");
+                    "join pride_experiment using(experiment_id)where pride_experiment.accession=?");
             st.setString(1, expAcc.toString());
             rs = st.executeQuery();
             while (rs.next()) {
@@ -603,7 +633,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             }
             rs.close();
         } catch (SQLException e) {
-            logger.error("Querying number of fragment ions", e);
+            logger.error("Querying peptide params", e);
             throw e;
         } finally {
             DBUtilities.releaseResources(connection, st, rs);

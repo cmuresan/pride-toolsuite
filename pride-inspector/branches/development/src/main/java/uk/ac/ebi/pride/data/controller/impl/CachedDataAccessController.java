@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.data.controller.impl;
 
+import com.sun.xml.internal.ws.api.addressing.WSEndpointReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.chart.graphics.implementation.PrideChart;
@@ -164,6 +165,18 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @SuppressWarnings("unchecked")
     public Collection<Comparable> getExperimentAccs() throws DataAccessException {
         return (Collection<Comparable>) cache.get(CacheCategory.EXPERIMENT_ACC);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public MetaData getMetaData() throws DataAccessException {
+        Collection<MetaData> metaDatas = (Collection<MetaData>)cache.get(CacheCategory.EXPERIMENT_METADATA);
+
+        if (metaDatas != null && !metaDatas.isEmpty()) {
+            return CollectionUtils.getElement(metaDatas, 0);
+        }
+
+        return null;
     }
 
     /**

@@ -18,6 +18,7 @@ public enum CacheCategory {
     IDENTIFICATION(CachedMap.class, 10), // Map<Identification id, Identification>
     PEPTIDE (CachedMap.class, 10), // Map<Tuple<Comparable, Comparable>, Peptide>
     EXPERIMENT_ACC(ArrayList.class, null), // List<Experiement Accession>
+    EXPERIMENT_METADATA(ArrayList.class, null), // List<Experiment Metadata>
     SPECTRUM_ID(ArrayList.class, null), // List<Spectrum id>
     CHROMATOGRAM_ID(ArrayList.class, null), // List<Chromatogram id>
     IDENTIFICATION_ID(ArrayList.class, null), // List<Identification id>
@@ -30,6 +31,7 @@ public enum CacheCategory {
     PROTEIN_SEARCH_DATABASE(HashMap.class, null), // Map<Identification id, Protein search database>
     SCORE(HashMap.class, null), // Map<Identification id, Score>
     THRESHOLD(HashMap.class, null), // Map<Identification id, Threshold>
+    IDENTIFICATION_TO_PARAM(HashMap.class, null), // Map<Identification id, ParamGroup>
     IDENTIFICATION_TO_PEPTIDE(HashMap.class, null), // Map<Identification id, List<Peptide id>>
     PEPTIDE_SEQUENCE(HashMap.class, null), // Map<Peptide Id, peptide sequence>
     PEPTIDE_START(HashMap.class, null), // Map<Peptide Id, peptide start location>

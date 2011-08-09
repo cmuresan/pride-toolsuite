@@ -51,23 +51,6 @@ public class PrideXmlControllerImplTest {
     }
 
     @Test
-    public void testGetSourceFiles() throws Exception {
-        List<SourceFile> sourceFiles = prideController.getSourceFiles();
-        assertTrue("There should be only one source file", sourceFiles.size() == 1);
-        assertEquals("Source file name should be MadeUpFile", sourceFiles.get(0).getName(), "MadeUpFile");
-        assertEquals("Source file user param should contains filetype", sourceFiles.get(0).getUserParams().get(0).getValue(), "Text");
-    }
-
-    @Test
-    public void testGetContacts() throws Exception {
-        List<ParamGroup> contacts = prideController.getContacts();
-        assertTrue("There should be only one contact", contacts.size()==1);
-        assertEquals("Contact person's name should be Florian", contacts.get(0).getCvParams().get(0).getValue(), "Florian");
-        assertEquals("Contact organization should be EBI", contacts.get(0).getCvParams().get(1).getValue(), "EBI");
-        assertEquals("Sample user param should be florian@ebi.ac.uk", contacts.get(0).getUserParams().get(0).getValue(), "florian@ebi.ac.uk");
-    }
-
-    @Test
     public void testGetSamples() throws Exception {
         List<Sample> samples = prideController.getSamples();
         assertTrue("There should be only one sample", samples.size() == 1);

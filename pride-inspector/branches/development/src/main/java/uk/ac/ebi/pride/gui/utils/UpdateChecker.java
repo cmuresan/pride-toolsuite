@@ -9,6 +9,7 @@ import uk.ac.ebi.pride.util.InternetChecker;
 
 import javax.swing.*;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -38,6 +39,7 @@ public class UpdateChecker {
             String website = context.getProperty("pride.inspector.website");
             String name = context.getProperty("pride.inspector.name");
             String version = context.getProperty("pride.inspector.version");
+            BufferedReader reader = null;
 
             try {
                 URL url = new URL(website + "/downloads/detail?name=" + name + "-" + version + ".zip");
@@ -47,7 +49,7 @@ public class UpdateChecker {
                     toUpdate = true;
                 } else {
                     // parse the web page
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+                    reader = new BufferedReader(new InputStreamReader(url.openStream()));
                     String line;
                     while ((line = reader.readLine()) != null) {
                         if (line.toLowerCase().contains("label:deprecated")) {
@@ -58,6 +60,14 @@ public class UpdateChecker {
                 }
             } catch (Exception e) {
                 logger.warn("Failed to check for updates", e);
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        logger.warn("Failed to check for updates");
+                    }
+                }
             }
         }
 

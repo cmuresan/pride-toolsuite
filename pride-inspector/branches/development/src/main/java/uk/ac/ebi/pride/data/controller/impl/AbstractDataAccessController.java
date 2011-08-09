@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.data.controller.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
@@ -159,6 +160,11 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     @Override
     public Collection<DataProcessing> getDataProcessings() throws DataAccessException {
         return Collections.emptyList();
+    }
+
+    @Override
+    public ParamGroup getAdditional() throws DataAccessException {
+        return null;
     }
 
     @Override
@@ -493,8 +499,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     /**
      * Get search engine has been used.
      *
-     * @return  SearchEngine    search engine
-     * @throws DataAccessException  data access exception
+     * @return SearchEngine    search engine
+     * @throws DataAccessException data access exception
      */
     @Override
     public SearchEngine getSearchEngine() throws DataAccessException {
@@ -922,53 +928,228 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     @Override
-    public boolean hasQuantData() throws DataAccessException{
+    public boolean hasQuantData() throws DataAccessException {
+        // get the samples
+        Collection<Sample> samples = getSamples();
+        if (samples != null) {
+            // iterate over each sample
+            for (Sample sample : samples) {
+                List<CvParam> cvParams = sample.getCvParams();
+                for (CvParam cvParam : cvParams) {
+                    if (QuantCvTermReference.isQuantitativeParam(cvParam)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
         return false;
     }
 
     @Override
-    public List<QuantCvTermReference> getQuantMethods() throws DataAccessException{
-        return Collections.emptyList();
-    }
-
-    @Override
-    public int getNumberOfReagents() throws DataAccessException{
-        return 0;
-    }
-
-    @Override
-    public Map<QuantCvTermReference, QuantCvTermReference> getSubSampleToReagentMapping() throws DataAccessException{
-        return Collections.emptyMap();
-    }
-
-    @Override
-    public QuantCvTermReference getIdentQuantUnit() throws DataAccessException{
-        return null;
-    }
-
-    @Override
-    public QuantCvTermReference getPeptideQuantUnit() throws DataAccessException{
-        return null;
-    }
-
-    @Override
     public boolean hasIdentQuantData() throws DataAccessException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        Collection<QuantCvTermReference> methods = getQuantMethods();
+
+        for (QuantCvTermReference method : methods) {
+            if (QuantCvTermReference.containsProteinQuantification(method)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
     public boolean hasPeptideQuantData() throws DataAccessException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        Collection<QuantCvTermReference> methods = getQuantMethods();
+
+        for (QuantCvTermReference method : methods) {
+            if (QuantCvTermReference.containsPeptideQuantification(method)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean hasLabelFreeQuantMethods() throws DataAccessException {
+        // get the samples
+        ParamGroup additionals = getAdditional();
+
+        if (additionals != null) {
+            // iterate over each sample
+            List<CvParam> cvParams = additionals.getCvParams();
+            for (CvParam cvParam : cvParams) {
+                if (QuantCvTermReference.isLabelFreeMethod(cvParam)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean hasIsotopeLabellingQuantMethods() throws DataAccessException {
+        // get the samples
+        ParamGroup additionals = getAdditional();
+
+        if (additionals != null) {
+            // iterate over each sample
+            List<CvParam> cvParams = additionals.getCvParams();
+            for (CvParam cvParam : cvParams) {
+                if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public Collection<QuantCvTermReference> getQuantMethods() throws DataAccessException {
+        Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
+
+        // get the samples
+        ParamGroup additionals = getAdditional();
+
+        if (additionals != null) {
+            // iterate over each sample
+            List<CvParam> cvParams = additionals.getCvParams();
+            for (CvParam cvParam : cvParams) {
+                if (QuantCvTermReference.isQuantitativeMethodParam(cvParam)) {
+                    methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
+                }
+            }
+        }
+
+        return methods;
+    }
+
+    @Override
+    public int getNumberOfReagents() throws DataAccessException {
+        int num = 0;
+
+        // get samples
+        Collection<Sample> samples = getSamples();
+
+        if (samples != null) {
+            for (Sample sample : samples) {
+                List<CvParam> cvParams = sample.getCvParams();
+                for (CvParam cvParam : cvParams) {
+                    if (QuantCvTermReference.isReagent(cvParam)) {
+                        num++;
+                    }
+                }
+            }
+        }
+
+        return num;
+    }
+
+    @Override
+    public Map<CvParam, Tuple<CvParam, CvParam>> getSampleDesc() throws DataAccessException {
+        Map<CvParam, Tuple<CvParam, CvParam>> sampleDesc = new HashMap<CvParam, Tuple<CvParam, CvParam>>();
+
+        Collection<Sample> samples = getSamples();
+        if (samples != null && !samples.isEmpty()) {
+            Sample sample = CollectionUtils.getElement(samples, 0);
+            List<CvParam> cvParams = sample.getCvParams();
+            // scan for all the species
+            Map<String, CvParam> subSampleMap = new HashMap<String, CvParam>();
+
+            for (CvParam cvParam : cvParams) {
+                if (cvParam.getCvLookupID().toLowerCase().equals("newt")) {
+                    sampleDesc.put(cvParam, new Tuple<CvParam, CvParam>(null, null));
+                    subSampleMap.put(cvParam.getValue().toLowerCase(), cvParam);
+                }
+            }
+
+            // scan for all the subsample description
+            for (CvParam cvParam : cvParams) {
+                if (QuantCvTermReference.isSubSampleDescription(cvParam)) {
+                    String subSample = cvParam.getName().toLowerCase().replace(" description", "");
+                    CvParam subSampleSpecies = subSampleMap.get(subSample);
+                    Tuple<CvParam, CvParam> desc = sampleDesc.get(subSampleSpecies);
+                    desc.setKey(cvParam);
+                }
+            }
+
+            // scan for all the reagents
+            for (CvParam cvParam : cvParams) {
+                if (QuantCvTermReference.isReagent(cvParam)) {
+                    String subSample = cvParam.getValue().toLowerCase();
+                    CvParam subSampleSpecies = subSampleMap.get(subSample);
+                    Tuple<CvParam, CvParam> desc = sampleDesc.get(subSampleSpecies);
+                    desc.setValue(cvParam);
+                }
+            }
+        }
+
+        return sampleDesc;
+    }
+
+    /**
+     * Note: this method will scan through all the identifications, therefore it needs to be used
+     * together with hasQuantData.
+     *
+     * @return
+     * @throws DataAccessException
+     */
+    @Override
+    public QuantCvTermReference getIdentQuantUnit() throws DataAccessException {
+        Collection<Comparable> identIds = getIdentificationIds();
+
+        for (Comparable identId : identIds) {
+            Identification ident = getIdentificationById(identId);
+            List<CvParam> cvParams = ident.getCvParams();
+            for (CvParam cvParam : cvParams) {
+                if (QuantCvTermReference.isUnit(cvParam)) {
+                    return QuantCvTermReference.getUnit(cvParam);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Note: this method will scan all the peptides, it therefore needs to be used with
+     * hasQuantData()
+     *
+     * @return QuantCvTermReference    unit cv term
+     * @throws DataAccessException data access exception
+     */
+    @Override
+    public QuantCvTermReference getPeptideQuantUnit() throws DataAccessException {
+        Collection<Comparable> identIds = getIdentificationIds();
+
+        for (Comparable identId : identIds) {
+            Collection<Comparable> peptideIds = getPeptideIds(identId);
+            for (Comparable peptideId : peptideIds) {
+                Peptide peptide = getPeptideById(identId, peptideId);
+                List<CvParam> cvParams = peptide.getCvParams();
+                for (CvParam cvParam : cvParams) {
+                    if (QuantCvTermReference.isUnit(cvParam)) {
+                        return QuantCvTermReference.getUnit(cvParam);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     @Override
     public Quantitation getIdentQuantData(Comparable identId) throws DataAccessException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        Identification ident = getIdentificationById(identId);
+        return new Quantitation(Quantitation.Type.PROTEIN, ident.getCvParams());
     }
 
     @Override
     public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        Peptide peptide = getPeptideById(identId, peptideId);
+        return new Quantitation(Quantitation.Type.PEPTIDE, peptide.getCvParams());
     }
 
     @Override

@@ -22,7 +22,7 @@ public class SequenceCoverageRenderer implements TableCellRenderer {
         return new CoverageLabel(value);
     }
 
-    private class CoverageLabel extends JPanel {
+    private static class CoverageLabel extends JPanel {
         private Object value;
 
         private CoverageLabel(Object value) {

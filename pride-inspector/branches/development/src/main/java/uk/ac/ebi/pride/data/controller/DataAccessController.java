@@ -233,6 +233,13 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
      */
     public Collection<DataProcessing> getDataProcessings() throws DataAccessException;
 
+    /**
+     * Get experimental additional params
+     * @return  ParamGroup  experimental additional param
+     * @throws DataAccessException  throw a exception when there is an error accessing the data source
+     */
+    public ParamGroup getAdditional() throws DataAccessException;
+
     //Todo: getDefaultInstrument() from mzML's run element
     //Todo: getDefaultSample() from mzML's run element
     //Todo: getDefaultSpectrumDataProcessing() from mzML's spectrumList element

@@ -49,7 +49,7 @@ public class PrideInspectorLoadingPanel extends PrideInspectorPanel {
         this.setBackground(Color.white);
     }
 
-    private class RectPanel extends JPanel {
+    private static class RectPanel extends JPanel {
 
         @Override
         protected void paintComponent(Graphics g) {

@@ -23,8 +23,6 @@ public class Quantitation {
         PROTEIN, PEPTIDE
     }
 
-    public static final int SUB_SAMPLE_SIZE = 8;
-
     /**
      * Label free method results
      */
@@ -63,6 +61,11 @@ public class Quantitation {
 
     public Quantitation(Type type, List<CvParam> cvParamList) {
         this.type = type;
+        this.isotopeLabellingResults = new Double[QuantitativeSample.MAX_SUB_SAMPLE_SIZE];
+        this.isotopeLabellingDeviations = new Double[QuantitativeSample.MAX_SUB_SAMPLE_SIZE];
+        this.isotopeLabellingErrors = new Double[QuantitativeSample.MAX_SUB_SAMPLE_SIZE];
+        this.labelFreeResults = new HashMap<QuantCvTermReference, Double>();
+
         if (cvParamList != null) {
             init(cvParamList);
         }
@@ -72,27 +75,18 @@ public class Quantitation {
         for (CvParam cvParam : cvParamList) {
             // check intensities
             if (QuantCvTermReference.isIntensityParam(cvParam)) {
-                if (isotopeLabellingResults == null) {
-                    isotopeLabellingResults = new Double[SUB_SAMPLE_SIZE];
-                }
                 int index = QuantCvTermReference.getIntensityParamIndex(cvParam);
-                isotopeLabellingResults[index] = Double.parseDouble(cvParam.getValue());
+                isotopeLabellingResults[index - 1] = Double.parseDouble(cvParam.getValue());
             }
             // check standard deviation
             else if (QuantCvTermReference.isStandardDeviationParam(cvParam)) {
-                if (isotopeLabellingDeviations == null) {
-                    isotopeLabellingDeviations = new Double[SUB_SAMPLE_SIZE];
-                }
                 int index = QuantCvTermReference.getStandardDeviationParamIndex(cvParam);
-                isotopeLabellingDeviations[index] = Double.parseDouble(cvParam.getValue());
+                isotopeLabellingDeviations[index - 1] = Double.parseDouble(cvParam.getValue());
             }
             // check standard error
             else if (QuantCvTermReference.isStandardErrorParam(cvParam)) {
-                if (isotopeLabellingErrors == null) {
-                    isotopeLabellingErrors = new Double[SUB_SAMPLE_SIZE];
-                }
                 int index = QuantCvTermReference.getStandardErrorParamIndex(cvParam);
-                isotopeLabellingErrors[index] = Double.parseDouble(cvParam.getValue());
+                isotopeLabellingErrors[index - 1] = Double.parseDouble(cvParam.getValue());
             }
             // check unit
             else if (QuantCvTermReference.isUnit(cvParam)) {
@@ -104,9 +98,6 @@ public class Quantitation {
             }
             // check label free
             else if (QuantCvTermReference.isLabelFreeMethod(cvParam)) {
-                if (labelFreeResults == null) {
-                    labelFreeResults = new HashMap<QuantCvTermReference, Double>();
-                }
                 QuantCvTermReference method = QuantCvTermReference.getLabelFreeMethod(cvParam);
                 Double value = Double.parseDouble(cvParam.getValue());
                 labelFreeResults.put(method, value);
@@ -137,8 +128,8 @@ public class Quantitation {
      *
      * @return boolean true means label free methods exist
      */
-    public boolean hasLabelFree() {
-        return labelFreeResults != null;
+    public boolean hasLabelFreeMethod() {
+        return (labelFreeResults.size() != 0);
     }
 
     /**
@@ -175,7 +166,7 @@ public class Quantitation {
      *
      * @return boolean true means isotope labelling methods exist
      */
-    public boolean hasIsotopeLabelling() {
+    public boolean hasIsotopeLabellingMethod() {
         return isotopeLabellingMethod != null && isotopeLabellingResults != null;
     }
 
@@ -207,8 +198,8 @@ public class Quantitation {
      * @return CvParam the result of a sub sample
      */
     public Double getIsotopeLabellingResult(int index) {
-        if (isotopeLabellingResults != null && index > 0 && index <= SUB_SAMPLE_SIZE) {
-            return isotopeLabellingResults[index];
+        if (isotopeLabellingResults != null && index > 0 && index <= QuantitativeSample.MAX_SUB_SAMPLE_SIZE) {
+            return isotopeLabellingResults[index - 1];
         }
 
         return null;
@@ -231,8 +222,8 @@ public class Quantitation {
      * @return  Double  standard deviation
      */
     public Double getIsotopeLabellingDeviation(int index) {
-        if (isotopeLabellingDeviations != null && index > 0 && index <= SUB_SAMPLE_SIZE) {
-            return isotopeLabellingDeviations[index];
+        if (isotopeLabellingDeviations != null && index > 0 && index <= QuantitativeSample.MAX_SUB_SAMPLE_SIZE) {
+            return isotopeLabellingDeviations[index - 1];
         }
         return null;
     }
@@ -254,8 +245,8 @@ public class Quantitation {
      * @return  Double  standard error
      */
     public Double getIsotopeLabellingError(int index) {
-        if (isotopeLabellingErrors != null && index > 0 && index <= SUB_SAMPLE_SIZE) {
-            return isotopeLabellingErrors[index];
+        if (isotopeLabellingErrors != null && index > 0 && index <= QuantitativeSample.MAX_SUB_SAMPLE_SIZE) {
+            return isotopeLabellingErrors[index - 1];
         }
         return null;
     }
@@ -267,7 +258,7 @@ public class Quantitation {
      * @return boolean     true means total intensities are present
      */
     public boolean hasTotalIntensities() {
-        return hasIsotopeLabelling() && (getUnit() == null);
+        return hasIsotopeLabellingMethod() && (getUnit() == null);
     }
 
     /**

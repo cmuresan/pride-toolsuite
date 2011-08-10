@@ -1050,40 +1050,30 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     @Override
-    public Map<CvParam, Tuple<CvParam, CvParam>> getSampleDesc() throws DataAccessException {
-        Map<CvParam, Tuple<CvParam, CvParam>> sampleDesc = new HashMap<CvParam, Tuple<CvParam, CvParam>>();
+    public QuantitativeSample getQuantSample() throws DataAccessException {
+        QuantitativeSample sampleDesc = new QuantitativeSample();
 
         Collection<Sample> samples = getSamples();
         if (samples != null && !samples.isEmpty()) {
             Sample sample = CollectionUtils.getElement(samples, 0);
             List<CvParam> cvParams = sample.getCvParams();
             // scan for all the species
-            Map<String, CvParam> subSampleMap = new HashMap<String, CvParam>();
-
             for (CvParam cvParam : cvParams) {
-                if (cvParam.getCvLookupID().toLowerCase().equals("newt")) {
-                    sampleDesc.put(cvParam, new Tuple<CvParam, CvParam>(null, null));
-                    subSampleMap.put(cvParam.getValue().toLowerCase(), cvParam);
-                }
-            }
-
-            // scan for all the subsample description
-            for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isSubSampleDescription(cvParam)) {
-                    String subSample = cvParam.getName().toLowerCase().replace(" description", "");
-                    CvParam subSampleSpecies = subSampleMap.get(subSample);
-                    Tuple<CvParam, CvParam> desc = sampleDesc.get(subSampleSpecies);
-                    desc.setKey(cvParam);
-                }
-            }
-
-            // scan for all the reagents
-            for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isReagent(cvParam)) {
-                    String subSample = cvParam.getValue().toLowerCase();
-                    CvParam subSampleSpecies = subSampleMap.get(subSample);
-                    Tuple<CvParam, CvParam> desc = sampleDesc.get(subSampleSpecies);
-                    desc.setValue(cvParam);
+                String cvLabel = cvParam.getCvLookupID().toLowerCase();
+                if ("newt".equals(cvLabel)) {
+                    sampleDesc.setSpecies(cvParam);
+                } else if ("bto".equals(cvLabel)) {
+                    sampleDesc.setTissue(cvParam);
+                } else if ("cl".equals(cvLabel)) {
+                    sampleDesc.setCellLine(cvParam);
+                } else if ("go".equals(cvLabel)) {
+                    sampleDesc.setGOTerm(cvParam);
+                } else if ("doid".equals(cvLabel)) {
+                    sampleDesc.setDisease(cvParam);
+                } else if (QuantCvTermReference.isSubSampleDescription(cvParam)) {
+                    sampleDesc.setDescription(cvParam);
+                } else if (QuantCvTermReference.isReagent(cvParam)) {
+                    sampleDesc.setReagent(cvParam);
                 }
             }
         }

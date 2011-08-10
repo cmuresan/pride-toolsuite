@@ -1,13 +1,12 @@
 package uk.ac.ebi.pride.data.controller.access;
 
-import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.CvParam;
 import uk.ac.ebi.pride.data.core.Quantitation;
+import uk.ac.ebi.pride.data.core.QuantitativeSample;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 /**
  * QuantDataAccess defines interface for accessing quantitative proteomics data
@@ -70,10 +69,10 @@ public interface QuantDataAccess {
 
     /**
      * Get the mapping between sub samples and reagents
-     * @return  Map<CvParam, Tuple<CvParam, CvParam>> sample and reagent mappings, Map<Subsample with Species, Tuple<Subsample desc, Reagent>>
+     * @return  QuantitativeSample quantitative sample description
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException  error while getting the data from source
      */
-    public Map<CvParam, Tuple<CvParam, CvParam>> getSampleDesc() throws DataAccessException ;
+    public QuantitativeSample getQuantSample() throws DataAccessException ;
 
     /**
      * Get the unit for protein identifications

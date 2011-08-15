@@ -6,11 +6,9 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
-import uk.ac.ebi.pride.gui.PrideInspector;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
-import uk.ac.ebi.pride.gui.component.table.TableRowDataRetriever;
+import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 
 import java.util.Collection;
@@ -103,7 +101,7 @@ public class RetrievePeptideTableTask extends AbstractDataAccessTask<Void, Tuple
                     Collection<Comparable> ids = controller.getPeptideIds(identId);
                     if (ids != null) {
                         for (Comparable peptideId : ids) {
-                            List<Object> content = TableRowDataRetriever.getPeptideTableRow(controller, identId, peptideId);
+                            List<Object> content = TableDataRetriever.getPeptideTableRow(controller, identId, peptideId);
                             publish(new Tuple<TableContentType, List<Object>>(TableContentType.PEPTIDE, content));
                         }
                     }

@@ -12,7 +12,7 @@ import java.util.*;
  * Date: 14-Apr-2010
  * Time: 16:46:32
  */
-public abstract class ProgressiveUpdateTableModel<T, V> extends ListTableModel<V> implements TaskListener<T, V> {
+public abstract class ProgressiveListTableModel<T, V> extends ListTableModel<V> implements TaskListener<T, V> {
 
     @Override
     public void process(TaskEvent<List<V>> listTaskEvent) {

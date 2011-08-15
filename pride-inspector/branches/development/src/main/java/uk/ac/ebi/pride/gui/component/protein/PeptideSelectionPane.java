@@ -19,7 +19,7 @@ import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.listener.PeptideCellMouseClickListener;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.ProgressiveUpdateTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.ProgressiveListTableModel;
 import uk.ac.ebi.pride.gui.component.table.renderer.OpenPTMRenderer;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
@@ -237,7 +237,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
          *
          * @param tableModel peptide table model
          */
-        private void cancelOngoingTableUpdates(ProgressiveUpdateTableModel tableModel) {
+        private void cancelOngoingTableUpdates(ProgressiveListTableModel tableModel) {
             // stop any running retrieving task
             java.util.List<Task> existingTask = appContext.getTask(tableModel);
             for (Task task : existingTask) {
@@ -252,7 +252,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
          * @param identId    identification id
          */
         @SuppressWarnings("unchecked")
-        private void updateTable(ProgressiveUpdateTableModel tableModel, Comparable identId) {
+        private void updateTable(ProgressiveListTableModel tableModel, Comparable identId) {
             try {
                 RetrievePeptideTableTask retrieveTask = new RetrievePeptideTableTask(PeptideSelectionPane.this.getController(), identId);
                 retrieveTask.addTaskListener(tableModel);

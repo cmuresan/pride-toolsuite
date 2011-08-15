@@ -164,7 +164,7 @@ public class DataSourceViewer extends JPanel {
     }
 
 
-    @EventSubscriber(eventClass =  AddDataSourceEvent.class)
+    @EventSubscriber(eventClass = AddDataSourceEvent.class)
     public void onAddDataSourceEvent(AddDataSourceEvent evt) {
         sourceTable.revalidate();
         sourceTable.repaint();
@@ -262,8 +262,11 @@ public class DataSourceViewer extends JPanel {
             // get all data access controllers
             java.util.List<DataAccessController> controllers = context.getControllers();
 
-            // return data access controller if the column is data source column
-            return TableHeader.values()[columnIndex].equals(TableHeader.DATA_SOURCE_COLUMN) ? controllers.get(rowIndex).getName() : null;
+            if (rowIndex >= 0) {
+                // return data access controller if the column is data source column
+                return TableHeader.values()[columnIndex].equals(TableHeader.DATA_SOURCE_COLUMN) ? controllers.get(rowIndex).getName() : null;
+            }
+            return null;
         }
 
         public int getRowIndex(Object controller) {

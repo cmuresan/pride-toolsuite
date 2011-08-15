@@ -11,7 +11,6 @@ import uk.ac.ebi.pride.data.core.Chromatogram;
 import uk.ac.ebi.pride.data.core.MzGraph;
 import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.impl.ExportSpectrumAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
@@ -19,15 +18,13 @@ import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.ChromatogramTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.ProgressiveUpdateTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.ProgressiveListTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.SpectrumTableModel;
 import uk.ac.ebi.pride.gui.event.container.*;
 import uk.ac.ebi.pride.gui.task.Task;
-import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveChromatogramTableTask;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveSpectrumTableTask;
-import uk.ac.ebi.pride.gui.task.impl.UpdateForegroundEntryTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
@@ -331,7 +328,7 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
      * @param offset
      */
     @SuppressWarnings("unchecked")
-    private <T extends MzGraph> void updateTable(ProgressiveUpdateTableModel tableModel, Class<T> classType, int offset) {
+    private <T extends MzGraph> void updateTable(ProgressiveListTableModel tableModel, Class<T> classType, int offset) {
         // create a new task
         Task retrieveTask = null;
         if (Spectrum.class.equals(classType)) {

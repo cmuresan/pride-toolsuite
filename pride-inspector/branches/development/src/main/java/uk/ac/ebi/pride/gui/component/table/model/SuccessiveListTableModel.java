@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 20-Aug-2010
  * Time: 10:34:04
  */
-public abstract class SuccessiveUpdateTableModel<T, V> extends ListTableModel<T> implements TaskListener<T, V> {
+public abstract class SuccessiveListTableModel<T, V> extends ListTableModel<T> implements TaskListener<T, V> {
 
     @Override
     public void succeed(TaskEvent<T> tTaskEvent) {

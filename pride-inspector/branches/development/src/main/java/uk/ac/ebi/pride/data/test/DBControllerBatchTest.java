@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.data.test;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.PrideDBAccessControllerImpl;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
-import uk.ac.ebi.pride.gui.component.table.TableRowDataRetriever;
+import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
 
 import java.util.Collection;
 
@@ -80,11 +80,11 @@ public class DBControllerBatchTest {
                             for (Comparable id : ids) {
                                 controller.getIdentificationById(id);
                                 // read identification details
-                                TableRowDataRetriever.getIdentificationTableRow(controller, id);
+                                TableDataRetriever.getProteinTableRow(controller, id);
                                 // read peptide details
                                 Collection<Comparable> pepIds = controller.getPeptideIds(id);
                                 for (Comparable pepId : pepIds) {
-                                    TableRowDataRetriever.getPeptideTableRow(controller, id, pepId);
+                                    TableDataRetriever.getPeptideTableRow(controller, id, pepId);
                                 }
                                 cnt++;
                                 if (cnt >= 50) {

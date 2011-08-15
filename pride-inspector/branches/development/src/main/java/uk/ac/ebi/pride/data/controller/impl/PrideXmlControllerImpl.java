@@ -63,7 +63,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 ContentCategory.INSTRUMENT,
                 ContentCategory.SOFTWARE,
                 ContentCategory.DATA_PROCESSING,
-                ContentCategory.QUANTIFICATION);
+                ContentCategory.QUANTITATION);
         // set cache builder
         setCacheBuilder(new PrideXmlCacheBuilder(this));
         // populate cache

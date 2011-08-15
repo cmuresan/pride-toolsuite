@@ -12,11 +12,12 @@ import uk.ac.ebi.pride.gui.component.metadata.MetaDataTabPane;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
 import uk.ac.ebi.pride.gui.component.protein.ProteinTabPane;
+import uk.ac.ebi.pride.gui.component.quant.QuantTabPane;
 import uk.ac.ebi.pride.gui.component.report.ReportMessage;
-import uk.ac.ebi.pride.gui.component.table.model.ProgressiveUpdateTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.ProgressiveListTableModel;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
-import uk.ac.ebi.pride.gui.task.impl.RetrieveIdentAndPeptideTableTask;
+import uk.ac.ebi.pride.gui.task.impl.ScanExperimentTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
@@ -39,12 +40,14 @@ public class ControllerContentPane extends DataAccessControllerPane {
     private MzDataTabPane mzDataTab;
     private ProteinTabPane proteinTabPane;
     private PeptideTabPane peptideTabPane;
+    private QuantTabPane quantTabPane;
     private ChartTabPane chartTabPane;
 
     private int metaDataTabIndex;
     private int mzDataTabIndex;
     private int proteinTabIndex;
     private int peptideTabIndex;
+    private int quantTabIndex;
     private int chartTabIndex;
 
     /**
@@ -185,6 +188,18 @@ public class ControllerContentPane extends DataAccessControllerPane {
                 mzDataTab.populate();
             }
 
+            // quant data tabe
+            try {
+                if (categories.contains(DataAccessController.ContentCategory.QUANTITATION) && controller.hasQuantData()) {
+                    quantTabPane = new QuantTabPane(controller, this);
+                    quantTabIndex = indexCount++;
+                    contentTabPane.insertTab(quantTabPane.getTitle(), quantTabPane.getIcon(), quantTabPane, quantTabPane.getTitle(), quantTabIndex);
+                    quantTabPane.populate();
+                }
+            } catch (DataAccessException e) {
+                logger.error("Failed to create quantitative tab pane");
+            }
+
             // chart tab
             if (categories.contains(DataAccessController.ContentCategory.SPECTRUM) || categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
                 chartTabPane = new ChartTabPane(controller, this);
@@ -205,29 +220,25 @@ public class ControllerContentPane extends DataAccessControllerPane {
         if (categories.contains(DataAccessController.ContentCategory.PROTEIN) &&
                 categories.contains(DataAccessController.ContentCategory.PEPTIDE)) {
             DesktopContext context = (uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext());
-            try {
-                RetrieveIdentAndPeptideTableTask retrieveTask = new RetrieveIdentAndPeptideTableTask(controller);
+            ScanExperimentTask retrieveTask = new ScanExperimentTask(controller);
 
-                // register protein tab as a task listener
-                retrieveTask.addTaskListener(proteinTabPane);
+            // register protein tab as a task listener
+            retrieveTask.addTaskListener(proteinTabPane);
 
-                // register protein table model as a task listener
-                JTable identTable = proteinTabPane.getIdentificationPane().getIdentificationTable();
-                retrieveTask.addTaskListener((ProgressiveUpdateTableModel) identTable.getModel());
+            // register protein table model as a task listener
+            JTable identTable = proteinTabPane.getIdentificationPane().getIdentificationTable();
+            retrieveTask.addTaskListener((ProgressiveListTableModel) identTable.getModel());
 
-                // register peptide tab as a task listener
-                retrieveTask.addTaskListener(peptideTabPane);
+            // register peptide tab as a task listener
+            retrieveTask.addTaskListener(peptideTabPane);
 
-                // register peptide table model as a task listener
-                JTable peptideTable = peptideTabPane.getPeptidePane().getPeptideTable();
-                retrieveTask.addTaskListener((ProgressiveUpdateTableModel) peptideTable.getModel());
+            // register peptide table model as a task listener
+            JTable peptideTable = peptideTabPane.getPeptidePane().getPeptideTable();
+            retrieveTask.addTaskListener((ProgressiveListTableModel) peptideTable.getModel());
 
-                // start the task
-                retrieveTask.setGUIBlocker(new DefaultGUIBlocker(retrieveTask, GUIBlocker.Scope.NONE, null));
-                context.addTask(retrieveTask);
-            } catch (DataAccessException e) {
-                logger.error("Failed to retrieve identifications", e);
-            }
+            // start the task
+            retrieveTask.setGUIBlocker(new DefaultGUIBlocker(retrieveTask, GUIBlocker.Scope.NONE, null));
+            context.addTask(retrieveTask);
         }
     }
 

@@ -21,7 +21,7 @@ import java.util.Map;
  * Date: 14-Apr-2010
  * Time: 15:58:04
  */
-public class ProteinTableModel extends ProgressiveUpdateTableModel<Void, Tuple<TableContentType, Object>> {
+public class ProteinTableModel extends ProgressiveListTableModel<Void, Tuple<TableContentType, Object>> {
 
 
     /**
@@ -83,7 +83,7 @@ public class ProteinTableModel extends ProgressiveUpdateTableModel<Void, Tuple<T
     public void addData(Tuple<TableContentType, Object> newData) {
         TableContentType type = newData.getKey();
 
-        if (TableContentType.IDENTIFICATION.equals(type)) {
+        if (TableContentType.PROTEIN.equals(type)) {
             addIdentificationData(newData.getValue());
         } else if (TableContentType.PROTEIN_DETAILS.equals(type)) {
             addProteinDetailData(newData.getValue());

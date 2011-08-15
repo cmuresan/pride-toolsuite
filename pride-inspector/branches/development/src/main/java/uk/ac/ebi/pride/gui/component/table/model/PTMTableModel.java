@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 16-Aug-2010
  * Time: 11:27:12
  */
-public class PTMTableModel extends ProgressiveUpdateTableModel<Void, Peptide> {
+public class PTMTableModel extends ProgressiveListTableModel<Void, Peptide> {
     /**
      * table column title
      */

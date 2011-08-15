@@ -289,16 +289,18 @@ public enum QuantCvTermReference {
     public static boolean isLabelFreeMethod(CvParam cvParam) {
         String accession = cvParam.getAccession();
         return EMPAI_VALUE.getAccession().equals(accession) ||
-               TIC_VALUE.getAccession().equals(accession);
+               EMPAI_QUANTIFIED.getAccession().equals(accession) ||
+               TIC_VALUE.getAccession().equals(accession) ||
+               TIC_QUANTIFIED.getAccession().equals(accession);
     }
 
     public static QuantCvTermReference getLabelFreeMethod(CvParam cvParam) {
         String accession = cvParam.getAccession();
 
-        if (EMPAI_VALUE.getAccession().equals(accession)) {
-            return EMPAI_VALUE;
-        } else if (TIC_VALUE.getAccession().equals(accession)) {
-            return TIC_VALUE;
+        if (EMPAI_VALUE.getAccession().equals(accession) || EMPAI_QUANTIFIED.getAccession().equals(accession)) {
+            return EMPAI_QUANTIFIED;
+        } else if (TIC_VALUE.getAccession().equals(accession) || TIC_QUANTIFIED.getAccession().equals(accession)) {
+            return TIC_QUANTIFIED;
         }
 
         return null;
@@ -403,6 +405,60 @@ public enum QuantCvTermReference {
         return null;
     }
 
+    public static String getReagentShortLabel(CvParam cvParam) {
+        String accession = cvParam.getAccession();
+
+        if (ITRAQ_113_REAGENT.getAccession().equals(accession)) {
+            return "113";
+        } else if (ITRAQ_114_REAGENT.getAccession().equals(accession)) {
+            return "114";
+        } else if (ITRAQ_115_REAGENT.getAccession().equals(accession)) {
+            return "115";
+        } else if (ITRAQ_116_REAGENT.getAccession().equals(accession)) {
+            return "116";
+        } else if (ITRAQ_117_REAGENT.getAccession().equals(accession)) {
+            return "117";
+        } else if (ITRAQ_118_REAGENT.getAccession().equals(accession)) {
+            return "118";
+        } else if (ITRAQ_119_REAGENT.getAccession().equals(accession)) {
+            return "119";
+        } else if (ITRAQ_121_REAGENT.getAccession().equals(accession)) {
+            return "121";
+        } else if (TMT_126_REAGENT.getAccession().equals(accession)) {
+            return "126";
+        } else if (TMT_127_REAGENT.getAccession().equals(accession)) {
+            return "127";
+        } else if (TMT_128_REAGENT.getAccession().equals(accession)) {
+            return "128";
+        } else if (TMT_129_REAGENT.getAccession().equals(accession)) {
+            return "129";
+        } else if (TMT_130_REAGENT.getAccession().equals(accession)) {
+            return "130";
+        } else if (TMT_131_REAGENT.getAccession().equals(accession)) {
+            return "131";
+        } else if (SILAC_HEAVY_REAGENT.getAccession().equals(accession)) {
+            return "Heavy";
+        } else if (SILAC_MEDIUM_REAGENT.getAccession().equals(accession)) {
+            return "Medium";
+        } else if (SILAC_LIGHT_REAGENT.getAccession().equals(accession)) {
+            return "Light";
+        } else if (ICAT_HEAVY_REAGENT.getAccession().equals(accession)) {
+            return "Heavy";
+        } else if (ICAT_LIGHT_REAGENT.getAccession().equals(accession)) {
+            return "Light";
+        } else if (ICPL_0_REAGENT.getAccession().equals(accession)) {
+            return "0";
+        } else if (ICPL_4_REAGENT.getAccession().equals(accession)) {
+            return "4";
+        } else if (ICPL_6_REAGENT.getAccession().equals(accession)) {
+            return "6";
+        } else if (ICPL_10_REAGENT.getAccession().equals(accession)) {
+            return "10";
+        }
+
+        return null;
+    }
+
     public static boolean isSubSampleDescription(CvParam cvParam) {
         String accession = cvParam.getAccession();
 
@@ -437,7 +493,7 @@ public enum QuantCvTermReference {
     /**
      * Checks whether the passed quantification method
      * contains protein quantification values
-     * @return
+     * @return  boolean
      */
     public static boolean containsProteinQuantification(QuantCvTermReference cvTerm) {
     	// all quantification methods can be reported for the protein level.

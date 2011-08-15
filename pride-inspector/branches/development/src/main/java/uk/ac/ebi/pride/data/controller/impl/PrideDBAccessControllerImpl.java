@@ -102,7 +102,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 ContentCategory.INSTRUMENT,
                 ContentCategory.SOFTWARE,
                 ContentCategory.DATA_PROCESSING,
-                ContentCategory.QUANTIFICATION);
+                ContentCategory.QUANTITATION);
 
         // set the foreground experiment acc
         if (experimentAcc != null) {
@@ -1481,46 +1481,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public QuantCvTermReference getIdentQuantUnit() throws DataAccessException {
-        Collection<Comparable> identIds = getIdentificationIds();
-
-        for (Comparable identId : identIds) {
-            ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.IDENTIFICATION_TO_PARAM, identId);
-            if (paramGroup != null) {
-                List<CvParam> cvParams = paramGroup.getCvParams();
-                for (CvParam cvParam : cvParams) {
-                    if (QuantCvTermReference.isUnit(cvParam)) {
-                        return QuantCvTermReference.getUnit(cvParam);
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public QuantCvTermReference getPeptideQuantUnit() throws DataAccessException {
-        Collection<Comparable> identIds = getIdentificationIds();
-
-        for (Comparable identId : identIds) {
-            Collection<Comparable> peptideIds = getPeptideIds(identId);
-            for (Comparable peptideId : peptideIds) {
-                ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
-                if (paramGroup != null) {
-                    List<CvParam> cvParams = paramGroup.getCvParams();
-                    for (CvParam cvParam : cvParams) {
-                        if (QuantCvTermReference.isUnit(cvParam)) {
-                            return QuantCvTermReference.getUnit(cvParam);
-                        }
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Quantitation getIdentQuantData(Comparable identId) throws DataAccessException {
+    public Quantitation getProteinQuantData(Comparable identId) throws DataAccessException {
         ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.IDENTIFICATION_TO_PARAM, identId);
 
         if (paramGroup != null) {

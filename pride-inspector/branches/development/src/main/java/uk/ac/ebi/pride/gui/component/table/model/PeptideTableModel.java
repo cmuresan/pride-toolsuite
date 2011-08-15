@@ -25,7 +25,7 @@ import java.util.Map;
  * Date: 14-Apr-2010
  * Time: 15:58:15
  */
-public class PeptideTableModel extends ProgressiveUpdateTableModel<Void, Tuple<TableContentType, Object>> {
+public class PeptideTableModel extends ProgressiveListTableModel<Void, Tuple<TableContentType, Object>> {
 
     /**
      * table column title

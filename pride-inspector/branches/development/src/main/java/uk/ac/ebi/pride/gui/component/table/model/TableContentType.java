@@ -2,10 +2,10 @@ package uk.ac.ebi.pride.gui.component.table.model;
 
 /**
  * This enum is used to indicate the type of the table content.
- *
+ * <p/>
  * This enum is created for table models to listen to different type incoming data content,
  * and filter out the irrelevant ones.
- *
+ * <p/>
  * User: rwang
  * Date: 14-Sep-2010
  * Time: 11:38:09
@@ -22,7 +22,7 @@ public enum TableContentType {
     /**
      * identification table
      */
-    IDENTIFICATION,
+    PROTEIN,
     /**
      * peptide table
      */
@@ -47,5 +47,21 @@ public enum TableContentType {
     /**
      * whether peptide fit the protein sequence
      */
-    PEPTIDE_FIT
+    PEPTIDE_FIT,
+    /**
+     * Quantitation for protein
+     */
+    PROTEIN_QUANTITATION_HEADER,
+    /**
+     * Quantitation for protein
+     */
+    PROTEIN_QUANTITATION,
+    /**
+     * Quantitation for peptide
+     */
+    PEPTIDE_QUANTITATION_HEADER,
+    /**
+     * Quantitation for peptide
+     */
+    PEPTIDE_QUANTITATION
 }

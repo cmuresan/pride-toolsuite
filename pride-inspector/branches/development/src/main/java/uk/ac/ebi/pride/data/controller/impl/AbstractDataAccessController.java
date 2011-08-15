@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.data.controller.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
@@ -929,25 +928,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     @Override
     public boolean hasQuantData() throws DataAccessException {
-        // get the samples
-        Collection<Sample> samples = getSamples();
-        if (samples != null) {
-            // iterate over each sample
-            for (Sample sample : samples) {
-                List<CvParam> cvParams = sample.getCvParams();
-                for (CvParam cvParam : cvParams) {
-                    if (QuantCvTermReference.isQuantitativeParam(cvParam)) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
+        Collection<QuantCvTermReference> methods = getQuantMethods();
+        return methods.size() > 0;
     }
 
     @Override
-    public boolean hasIdentQuantData() throws DataAccessException {
+    public boolean hasProteinQuantData() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getQuantMethods();
 
         for (QuantCvTermReference method : methods) {
@@ -970,6 +956,16 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         }
 
         return false;
+    }
+
+    @Override
+    public boolean hasProteinTotalIntensities() throws DataAccessException {
+        return getProteinQuantUnit() == null;
+    }
+
+    @Override
+    public boolean hasPeptideTotalIntensities() throws DataAccessException {
+        return getPeptideQuantUnit() == null;
     }
 
     @Override
@@ -1029,24 +1025,179 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     @Override
+    public Collection<QuantCvTermReference> getLabelFreeQuantMethods() throws DataAccessException {
+        Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
+
+        // get the samples
+        ParamGroup additionals = getAdditional();
+
+        if (additionals != null) {
+            // iterate over each sample
+            List<CvParam> cvParams = additionals.getCvParams();
+            for (CvParam cvParam : cvParams) {
+                if (QuantCvTermReference.isLabelFreeMethod(cvParam)) {
+                    methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
+                }
+            }
+        }
+
+        return methods;
+    }
+
+    @Override
+    public Collection<QuantCvTermReference> getProteinLabelFreeQuantMethods() throws DataAccessException {
+        Collection<QuantCvTermReference> methods = getLabelFreeQuantMethods();
+        Collection<QuantCvTermReference> protMethods = new ArrayList<QuantCvTermReference>();
+
+        for (QuantCvTermReference method : methods) {
+            if (QuantCvTermReference.containsProteinQuantification(method)) {
+                protMethods.add(method);
+            }
+        }
+
+        return protMethods;
+    }
+
+    @Override
+    public Collection<QuantCvTermReference> getPeptideLabelFreeQuantMethods() throws DataAccessException {
+        Collection<QuantCvTermReference> methods = getLabelFreeQuantMethods();
+        Collection<QuantCvTermReference> peptideMethods = new ArrayList<QuantCvTermReference>();
+
+        for (QuantCvTermReference method : methods) {
+            if (QuantCvTermReference.containsPeptideQuantification(method)) {
+                peptideMethods.add(method);
+            }
+        }
+
+        return peptideMethods;
+    }
+
+    @Override
+    public Collection<QuantCvTermReference> getIsotopeLabellingQuantMethods() throws DataAccessException {
+        Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
+
+        // get the samples
+        ParamGroup additionals = getAdditional();
+
+        if (additionals != null) {
+            // iterate over each sample
+            List<CvParam> cvParams = additionals.getCvParams();
+            for (CvParam cvParam : cvParams) {
+                if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
+                    methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
+                }
+            }
+        }
+
+        return methods;
+    }
+
+    @Override
+    public Collection<QuantCvTermReference> getProteinIsotopeLabellingQuantMethods() throws DataAccessException {
+        Collection<QuantCvTermReference> methods = getIsotopeLabellingQuantMethods();
+        Collection<QuantCvTermReference> protMethods = new ArrayList<QuantCvTermReference>();
+
+        for (QuantCvTermReference method : methods) {
+            if (QuantCvTermReference.containsProteinQuantification(method)) {
+                protMethods.add(method);
+            }
+        }
+
+        return protMethods;
+    }
+
+    @Override
+    public Collection<QuantCvTermReference> getPeptideIsotopeLabellingQuantMethods() throws DataAccessException {
+        Collection<QuantCvTermReference> methods = getIsotopeLabellingQuantMethods();
+        Collection<QuantCvTermReference> peptideMethods = new ArrayList<QuantCvTermReference>();
+
+        for (QuantCvTermReference method : methods) {
+            if (QuantCvTermReference.containsPeptideQuantification(method)) {
+                peptideMethods.add(method);
+            }
+        }
+
+        return peptideMethods;
+    }
+
+    @Override
     public int getNumberOfReagents() throws DataAccessException {
         int num = 0;
 
-        // get samples
-        Collection<Sample> samples = getSamples();
+        if (hasIsotopeLabellingQuantMethods()) {
+            // get samples
+            Collection<Sample> samples = getSamples();
 
-        if (samples != null) {
-            for (Sample sample : samples) {
-                List<CvParam> cvParams = sample.getCvParams();
-                for (CvParam cvParam : cvParams) {
-                    if (QuantCvTermReference.isReagent(cvParam)) {
-                        num++;
+            if (samples != null) {
+                for (Sample sample : samples) {
+                    List<CvParam> cvParams = sample.getCvParams();
+                    for (CvParam cvParam : cvParams) {
+                        if (QuantCvTermReference.isReagent(cvParam)) {
+                            num++;
+                        }
                     }
                 }
             }
         }
 
         return num;
+    }
+
+    /**
+     * Check the first ten identification/peptide to get the reference sub sample's index
+     *
+     * @return index   reference sub sample index
+     * @throws DataAccessException
+     */
+    @Override
+    public int getReferenceSubSampleIndex() throws DataAccessException {
+        int index = -1;
+
+        if (hasIsotopeLabellingQuantMethods()) {
+            int cnt = 20;
+            if (hasProteinQuantData()) {
+                Collection<Comparable> identIds = getIdentificationIds();
+
+                for (Comparable identId : identIds) {
+                    Quantitation quant = getProteinQuantData(identId);
+                    if (quant.hasTotalIntensities()) {
+                        return index;
+                    } else {
+                        index = quant.getReferenceSubSampleIndex();
+                        if (index > 0) {
+                            break;
+                        }
+                    }
+                    cnt--;
+                    if (cnt == 0) {
+                        break;
+                    }
+                }
+            } else if (hasPeptideQuantData()) {
+                Collection<Comparable> identIds = getIdentificationIds();
+
+                for (Comparable identId : identIds) {
+                    Collection<Comparable> peptideIds = getPeptideIds(identId);
+                    for (Comparable peptideId : peptideIds) {
+                        Quantitation quant = getPeptideQuantData(identId, peptideId);
+                        if (quant.hasTotalIntensities()) {
+                            return index;
+                        } else {
+                            index = quant.getReferenceSubSampleIndex();
+                            if (index > 0) {
+                                break;
+                            }
+                        }
+                    }
+                    cnt --;
+                    if (cnt == 0) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return index;
     }
 
     @Override
@@ -1082,31 +1233,34 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
-     * Note: this method will scan through all the identifications, therefore it needs to be used
-     * together with hasQuantData.
+     * Note: this method will scan through first 10 identifications
      *
      * @return
      * @throws DataAccessException
      */
     @Override
-    public QuantCvTermReference getIdentQuantUnit() throws DataAccessException {
+    public QuantCvTermReference getProteinQuantUnit() throws DataAccessException {
         Collection<Comparable> identIds = getIdentificationIds();
 
+        int cnt = 20;
+
         for (Comparable identId : identIds) {
-            Identification ident = getIdentificationById(identId);
-            List<CvParam> cvParams = ident.getCvParams();
-            for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isUnit(cvParam)) {
-                    return QuantCvTermReference.getUnit(cvParam);
-                }
+            Quantitation quant = getProteinQuantData(identId);
+            QuantCvTermReference unit = quant.getUnit();
+            cnt--;
+            if (unit != null) {
+                return unit;
+            }
+
+            if (cnt == 0) {
+                break;
             }
         }
         return null;
     }
 
     /**
-     * Note: this method will scan all the peptides, it therefore needs to be used with
-     * hasQuantData()
+     * Note: this method will scan all the peptides
      *
      * @return QuantCvTermReference    unit cv term
      * @throws DataAccessException data access exception
@@ -1115,23 +1269,28 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     public QuantCvTermReference getPeptideQuantUnit() throws DataAccessException {
         Collection<Comparable> identIds = getIdentificationIds();
 
+        int cnt = 20;
+
         for (Comparable identId : identIds) {
             Collection<Comparable> peptideIds = getPeptideIds(identId);
             for (Comparable peptideId : peptideIds) {
-                Peptide peptide = getPeptideById(identId, peptideId);
-                List<CvParam> cvParams = peptide.getCvParams();
-                for (CvParam cvParam : cvParams) {
-                    if (QuantCvTermReference.isUnit(cvParam)) {
-                        return QuantCvTermReference.getUnit(cvParam);
-                    }
+                Quantitation quant = getPeptideQuantData(identId, peptideId);
+                QuantCvTermReference unit = quant.getUnit();
+                if (unit != null) {
+                    return unit;
                 }
+            }
+            cnt--;
+
+            if (cnt == 0) {
+                break;
             }
         }
         return null;
     }
 
     @Override
-    public Quantitation getIdentQuantData(Comparable identId) throws DataAccessException {
+    public Quantitation getProteinQuantData(Comparable identId) throws DataAccessException {
         Identification ident = getIdentificationById(identId);
         return new Quantitation(Quantitation.Type.PROTEIN, ident.getCvParams());
     }

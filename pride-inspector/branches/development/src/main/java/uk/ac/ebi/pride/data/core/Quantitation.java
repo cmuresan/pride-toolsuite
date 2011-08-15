@@ -20,9 +20,8 @@ public class Quantitation {
      * The type of the identification;
      */
     public enum Type {
-        PROTEIN, PEPTIDE
+        PROTEIN, PEPTIDE;
     }
-
     /**
      * Label free method results
      */
@@ -58,7 +57,6 @@ public class Quantitation {
      */
     private Type type;
 
-
     public Quantitation(Type type, List<CvParam> cvParamList) {
         this.type = type;
         this.isotopeLabellingResults = new Double[QuantitativeSample.MAX_SUB_SAMPLE_SIZE];
@@ -70,6 +68,7 @@ public class Quantitation {
             init(cvParamList);
         }
     }
+
 
     private void init(List<CvParam> cvParamList) {
         for (CvParam cvParam : cvParamList) {
@@ -150,7 +149,7 @@ public class Quantitation {
      * @param types the types of methods, the result will be ordered according the the input types
      * @return List<CvParam>   label free method results
      */
-    public List<Double> getLabelFreeResults(List<QuantCvTermReference> types) {
+    public List<Double> getLabelFreeResults(Collection<QuantCvTermReference> types) {
         List<Double> results = new ArrayList<Double>();
         if (labelFreeResults != null) {
             for (QuantCvTermReference quantCvTermReference : types) {
@@ -268,5 +267,25 @@ public class Quantitation {
      */
     public QuantCvTermReference getUnit() {
         return unit;
+    }
+
+    /**
+     * Get the index of reference sub sample
+     * @return  int index of a reference sub sample, if two intensities are 1.0, then -1 index is returned, because
+     *              it cannot be decided
+     */
+    public int getReferenceSubSampleIndex() {
+        int index = -1;
+        int cnt = 0;
+
+        for (int i = 0; i < isotopeLabellingResults.length; i++) {
+            Double isotopeLabellingResult = isotopeLabellingResults[i];
+            if (isotopeLabellingResult != null && isotopeLabellingResult == 1.0) {
+                index = i + 1;
+                cnt++;
+            }
+        }
+
+        return cnt == 1 ? index: -1;
     }
 }

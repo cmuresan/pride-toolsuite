@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Experiment;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.component.table.TableRowDataRetriever;
+import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
@@ -124,7 +124,7 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
                     for (Comparable pepId : pepIds) {
 
                         // get row data
-                        List<Object> content = TableRowDataRetriever.getPeptideTableRow(controller, identId, pepId);
+                        List<Object> content = TableDataRetriever.getPeptideTableRow(controller, identId, pepId);
 
                         // output the rest of the results
                         for (int i = 0; i < content.size(); i++) {

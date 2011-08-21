@@ -14,6 +14,7 @@ import java.util.Comparator;
  * Time: 15:15:18
  */
 public class NumberTableRowSorter extends TableRowSorter {
+
     public NumberTableRowSorter(TableModel model) {
         super(model);
         int numOfColumns = model.getColumnCount();

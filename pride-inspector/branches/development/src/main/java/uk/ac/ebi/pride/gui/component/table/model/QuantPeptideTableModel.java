@@ -17,7 +17,7 @@ import java.util.Map;
  * Date: 11/08/2011
  * Time: 13:34
  */
-public class PeptideQuantTableModel extends ProgressiveListTableModel<Void, Tuple<TableContentType, Object>> {
+public class QuantPeptideTableModel extends ProgressiveListTableModel<Void, Tuple<TableContentType, Object>> {
 
     /**
      * table column title
@@ -28,6 +28,9 @@ public class PeptideQuantTableModel extends ProgressiveListTableModel<Void, Tupl
         PROTEIN_ACCESSION_COLUMN("Submitted", "Submitted Protein Accession From Source"),
         MAPPED_PROTEIN_ACCESSION_COLUMN("Mapped", "Pride Mapped Protein Accession"),
         PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
+        PROTEIN_STATUS("Protein Status", "Status Of The Protein Accession"),
+        PROTEIN_SEQUENCE_COVERAGE("Sequence Coverage", "Protein Sequence Coverage"),
+        PEPTIDE_FIT("Fit In Sequence", "Peptide Sequence Fit In Protein Sequence"),
         PRECURSOR_CHARGE_COLUMN("Precursor Charge", "Precursor Charge"),
         DELTA_MASS_COLUMN("Delta m/z", "Delta m/z [Experimental m/z - Theoretical m/z]"),
         PRECURSOR_MZ_COLUMN("Precursor m/z", "Precursor m/z"),
@@ -62,7 +65,7 @@ public class PeptideQuantTableModel extends ProgressiveListTableModel<Void, Tupl
 
     private SearchEngine searchEngine;
 
-    public PeptideQuantTableModel(SearchEngine se) {
+    public QuantPeptideTableModel(SearchEngine se) {
         this.searchEngine = se;
         addAdditionalColumns();
     }

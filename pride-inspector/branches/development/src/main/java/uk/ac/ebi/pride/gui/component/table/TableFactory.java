@@ -1,19 +1,17 @@
 package uk.ac.ebi.pride.gui.component.table;
 
+import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.table.DefaultTableColumnModelExt;
 import org.jdesktop.swingx.table.TableColumnExt;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.core.ParamGroup;
-import uk.ac.ebi.pride.data.core.Parameter;
-import uk.ac.ebi.pride.data.core.Reference;
-import uk.ac.ebi.pride.data.core.SearchEngine;
-import uk.ac.ebi.pride.gui.component.table.listener.DynamicColumnListener;
-import uk.ac.ebi.pride.gui.component.table.listener.HyperLinkCellMouseClickListener;
-import uk.ac.ebi.pride.gui.component.table.listener.OpenExperimentMouseListener;
-import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
+import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.gui.GUIUtilities;
+import uk.ac.ebi.pride.gui.component.table.listener.*;
 import uk.ac.ebi.pride.gui.component.table.model.*;
 import uk.ac.ebi.pride.gui.component.table.renderer.*;
+import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.component.utils.Constants;
+import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.url.*;
 
 import javax.swing.*;
@@ -208,8 +206,9 @@ public class TableFactory {
 
     /**
      * Create a table to show a list of references
-     * @param references    a list of input references
-     * @return  JTable  reference table
+     *
+     * @param references a list of input references
+     * @return JTable  reference table
      */
     public static JTable createReferenceTable(Collection<Reference> references) {
         ReferenceTableModel tableModel = new ReferenceTableModel(references);
@@ -240,8 +239,9 @@ public class TableFactory {
 
     /**
      * Create a table for showing a list of param groups
-     * @param paramGroups   given list of param groups
-     * @return  JTable  param table
+     *
+     * @param paramGroups given list of param groups
+     * @return JTable  param table
      */
     public static JTable createParamTable(List<ParamGroup> paramGroups) {
         ParamTableModel paramTableModel = new ParamTableModel(paramGroups);
@@ -250,8 +250,9 @@ public class TableFactory {
 
     /**
      * Create a table for showing a ParamGroup
-    * @param paramGroup    given ParamGroup
-    * @return  JTable  param table
+     *
+     * @param paramGroup given ParamGroup
+     * @return JTable  param table
      */
     public static JTable createParamTable(ParamGroup paramGroup) {
         ParamTableModel paramTableModel = new ParamTableModel(paramGroup);
@@ -260,8 +261,9 @@ public class TableFactory {
 
     /**
      * Create a table for showing a collection parameters
-     * @param parameters    a collection of parameters
-     * @return  JTable  param table
+     *
+     * @param parameters a collection of parameters
+     * @return JTable  param table
      */
     public static JTable createParamTable(Collection<Parameter> parameters) {
         ParamTableModel paramTableModel = new ParamTableModel(parameters);
@@ -271,8 +273,9 @@ public class TableFactory {
 
     /**
      * Create a table for showing a ParamTableModel
-     * @param paramTableModel   given param table model
-     * @return  JTable  param table
+     *
+     * @param paramTableModel given param table model
+     * @return JTable  param table
      */
     private static JTable createParamTable(ParamTableModel paramTableModel) {
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
@@ -292,8 +295,9 @@ public class TableFactory {
 
     /**
      * Create a table for showing contacts
-     * @param contacts  given list of contacts
-     * @return  JTable  contact table
+     *
+     * @param contacts given list of contacts
+     * @return JTable  contact table
      */
     public static JTable createContactTable(Collection<ParamGroup> contacts) {
         ContactTableModel tableModel = new ContactTableModel(contacts);
@@ -310,5 +314,194 @@ public class TableFactory {
         contactTable.addMouseListener(new HyperLinkCellMouseClickListener(contactTable, infoColumnHeader, new EmailHyperLinkGenerator()));
 
         return contactTable;
+    }
+
+    /**
+     * Create a table for quantitative sample data
+     *
+     * @param sample quantitative sample
+     * @return JTable  Quantitative table
+     */
+    public static JTable createQuantSampleTable(QuantitativeSample sample) {
+        QuantSampleTableModel tableModel = new QuantSampleTableModel(sample);
+        DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
+        return new DefaultPrideTable(tableModel, columnModel);
+    }
+
+    /**
+     * Create a table for protein quantitative data
+     *
+     * @return JTable   protein quantitative table
+     */
+    public static JTable createQuantProteinTable() {
+        QuantProteinTableModel tableModel = new QuantProteinTableModel();
+        DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
+        DefaultPrideTable quantProteinTable = new DefaultPrideTable(tableModel, columnModel);
+        quantProteinTable.setAutoCreateColumnsFromModel(false);
+        // add table model change listener
+        tableModel.addTableModelListener(new BarChartColumnListener(quantProteinTable));
+        // set non editable
+//        quantProteinTable.setEditable(false);
+
+        TableColumnExt compareColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.COMPARE.getHeader());
+        int compareColumnNum = compareColumn.getModelIndex();
+        quantProteinTable.getColumnModel().getColumn(compareColumnNum).setMaxWidth(25);
+
+        // hide mapped protein accession
+        TableColumnExt mappedProtAccColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
+        mappedProtAccColumn.setCellRenderer(new HyperLinkCellRenderer());
+
+        TableColumnExt proteinIdColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
+        proteinIdColumn.setVisible(false);
+
+        // hide the protein name column
+        TableColumnExt proteinNameColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.PROTEIN_NAME.getHeader());
+        proteinNameColumn.setVisible(false);
+
+        // protein status column
+        TableColumnExt proteinStatusColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.PROTEIN_STATUS.getHeader());
+        proteinStatusColumn.setVisible(false);
+
+        // sequence coverage column
+        TableColumnExt seqCoverageColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader());
+        seqCoverageColumn.setCellRenderer(new SequenceCoverageRenderer());
+        seqCoverageColumn.setVisible(false);
+
+        // score
+        TableColumnExt proteinScoreColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.IDENTIFICATION_SCORE_COLUMN.getHeader());
+        proteinScoreColumn.setVisible(false);
+
+        // threshold
+        TableColumnExt proteinThresholdColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.IDENTIFICATION_THRESHOLD_COLUMN.getHeader());
+        proteinThresholdColumn.setVisible(false);
+
+        // number of peptides
+        TableColumnExt numOfPeptideColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.NUMBER_OF_PEPTIDES.getHeader());
+        numOfPeptideColumn.setVisible(false);
+
+        // number of unique peptides
+        TableColumnExt numOfUniquePeptideColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.NUMBER_OF_UNIQUE_PEPTIDES.getHeader());
+        numOfUniquePeptideColumn.setVisible(false);
+
+        // number of ptms
+        TableColumnExt numOfPtmColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.NUMBER_OF_PTMS.getHeader());
+        numOfPtmColumn.setVisible(false);
+
+
+        return quantProteinTable;
+    }
+
+    /**
+     * Create a table for peptide quantitative data
+     *
+     * @param se search engine
+     * @return JTable  peptide table
+     */
+    public static JTable createQuantPeptideTable(SearchEngine se) {
+        QuantPeptideTableModel tableModel = new QuantPeptideTableModel(se);
+        DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
+        DefaultPrideTable quantPeptideTable = new DefaultPrideTable(tableModel, columnModel);
+        quantPeptideTable.setAutoCreateColumnsFromModel(false);
+        // add table model change listener
+        tableModel.addTableModelListener(new BarChartColumnListener(quantPeptideTable));
+
+        // hide protein accession
+        TableColumnExt proteinAccColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader());
+        proteinAccColumn.setVisible(false);
+
+        // hide mapped protein accession
+        TableColumnExt mappedProtAccColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
+        mappedProtAccColumn.setCellRenderer(new HyperLinkCellRenderer());
+        mappedProtAccColumn.setVisible(false);
+
+        // peptide sequence column renderer
+        TableColumnExt peptideColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PEPTIDE_PTM_COLUMN.getHeader());
+        peptideColumn.setCellRenderer(new PeptideSequenceCellRenderer());
+        // set peptide column width
+        int rowColumnNum = peptideColumn.getModelIndex();
+        quantPeptideTable.getColumnModel().getColumn(rowColumnNum).setPreferredWidth(200);
+
+        // hide protein name
+        TableColumnExt proteinNameColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PROTEIN_NAME.getHeader());
+        proteinNameColumn.setVisible(false);
+
+        // hide protein status
+        TableColumnExt proteinStatusColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PROTEIN_STATUS.getHeader());
+        proteinStatusColumn.setVisible(false);
+
+        // hide protein sequence coverage
+        TableColumnExt proteinSeqCoverageColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader());
+        proteinSeqCoverageColumn.setVisible(false);
+
+        // peptide sequence present in protein sequence
+        TableColumnExt peptideFitColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
+        peptideFitColumn.setCellRenderer(new PeptideFitCellRenderer());
+        peptideFitColumn.setVisible(false);
+
+        // precursor charge column
+        TableColumnExt precursorChargeColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PRECURSOR_CHARGE_COLUMN.getHeader());
+        precursorChargeColumn.setVisible(false);
+
+        // delta mass column
+        TableColumnExt deltaMassColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.DELTA_MASS_COLUMN.getHeader());
+        deltaMassColumn.setVisible(false);
+
+        // precursor m/z column
+        TableColumnExt precursorMzColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PRECURSOR_MZ_COLUMN.getHeader());
+        precursorMzColumn.setVisible(false);
+
+        // number of ptms column
+        TableColumnExt ptmsColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PEPTIDE_PTM_NUMBER_COLUMN.getHeader());
+        ptmsColumn.setVisible(false);
+        ImageIcon icon = GUIUtilities.loadImageIcon(Desktop.getInstance().getDesktopContext().getProperty("open.ptm.small.icon"));
+        ptmsColumn.setCellRenderer(new OpenPTMRenderer(icon));
+
+        // hide modified peptide sequence
+        TableColumnExt peptideSeqColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PEPTIDE_PTM_MASS_COLUMN.getHeader());
+        peptideSeqColumn.setVisible(false);
+
+        // hide ptm summary
+        TableColumnExt ptmSummaryColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PEPTIDE_PTM_SUMMARY.getHeader());
+        ptmSummaryColumn.setVisible(false);
+
+        // hide number of fragment ions
+        TableColumnExt fragIonsColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.NUMBER_OF_FRAGMENT_IONS_COLUMN.getHeader());
+        fragIonsColumn.setVisible(false);
+
+        // hide peptide sequence length
+        TableColumnExt seqLengthColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PEPTIDE_SEQUENCE_LENGTH_COLUMN.getHeader());
+        seqLengthColumn.setVisible(false);
+
+        // hide sequence start
+        TableColumnExt sequenceStartColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.SEQUENCE_START_COLUMN.getHeader());
+        sequenceStartColumn.setVisible(false);
+
+        // hide sequence end
+        TableColumnExt sequenceEndColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.SEQUENCE_END_COLUMN.getHeader());
+        sequenceEndColumn.setVisible(false);
+
+        // hide pi point column
+        TableColumnExt piColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.THEORITICAL_ISOELECTRIC_POINT_COLUMN.getHeader());
+        piColumn.setVisible(false);
+
+        // hide spectrum id
+        TableColumnExt spectrumIdColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.SPECTRUM_ID.getHeader());
+        spectrumIdColumn.setVisible(false);
+
+        // hide protein id column
+        TableColumnExt proteinIdColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
+        proteinIdColumn.setVisible(false);
+
+        // hide peptide id column
+        TableColumnExt peptideIdColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
+        peptideIdColumn.setVisible(false);
+
+        // add hyper link click listener
+        String protAccColumnHeader = QuantPeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
+        quantPeptideTable.addMouseMotionListener(new TableCellMouseMotionListener(quantPeptideTable, protAccColumnHeader));
+        quantPeptideTable.addMouseListener(new HyperLinkCellMouseClickListener(quantPeptideTable, protAccColumnHeader, new ProteinAccHyperLinkGenerator()));
+
+
+        return quantPeptideTable;
     }
 }

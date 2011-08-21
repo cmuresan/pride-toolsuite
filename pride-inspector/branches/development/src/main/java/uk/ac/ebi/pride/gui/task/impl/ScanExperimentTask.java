@@ -13,6 +13,7 @@ import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -72,8 +73,11 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
 
                 if (hasQuantData) {
                     // get and publish quantitative data
+                    List<Object> allQuantContent = new ArrayList<Object>();
+                    allQuantContent.addAll(identContent);
                     List<Object> identQuantContent = TableDataRetriever.getProteinQuantTableRow(controller, identId, -1);
-                    publish(new Tuple<TableContentType, List<Object>>(TableContentType.PROTEIN_QUANTITATION, identQuantContent));
+                    allQuantContent.addAll(identQuantContent);
+                    publish(new Tuple<TableContentType, List<Object>>(TableContentType.PROTEIN_QUANTITATION, allQuantContent));
                 }
 
                 // get and publish peptide related details

@@ -48,13 +48,18 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
      */
     private boolean isFirstSpectrum;
     /**
+     * Whether to show the side panel by default
+     */
+    private boolean showSidePanel;
+    /**
      * Subscribe to peptide event
      */
     private PeptideSpectrumEventSubscriber spectrumSubscriber;
     private SpectrumEventSubscriber spectrumSelectSubscriber;
 
-    public SpectrumViewPane(DataAccessController controller) {
+    public SpectrumViewPane(DataAccessController controller, boolean showSidePanel) {
         super(controller);
+        this.showSidePanel = showSidePanel;
     }
 
     @Override
@@ -132,14 +137,14 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
                 spectrumBrowser.setAminoAcidAnnotationParameters(peptide.getSequenceLength(), modifications);
                 java.util.List<IonAnnotation> ions = AnnotationUtils.convertToIonAnnotations(peptide.getFragmentIons());
                 spectrumBrowser.addFragmentIons(ions);
-                if (!ions.isEmpty()) {
+                if (showSidePanel && !ions.isEmpty()) {
                     spectrumBrowser.enableAnnotationControl(true);
                     if (isFirstSpectrum) {
                         spectrumBrowser.setAnnotationControlVisible(true);
                     }
                 }
             } else {
-                if (isFirstSpectrum) {
+                if (isFirstSpectrum && showSidePanel) {
                     SideToolBarPanel sidePane = spectrumBrowser.getSidePane();
                     String actionCmd = appContext.getProperty("property.title");
                     if (!sidePane.isToggled(actionCmd)) {

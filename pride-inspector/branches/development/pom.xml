@@ -214,6 +214,11 @@
             <artifactId>accession-resolver</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>no.uib</groupId>
+            <artifactId>jsparklines</artifactId>
+            <version>0.5.18</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -406,5 +411,11 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>genesis-maven2-repository</id>
+            <name>Genesis maven2 repository</name>
+            <url>http://genesis.UGent.be/maven2</url>
+        </repository>
     </repositories>
+
 </project>

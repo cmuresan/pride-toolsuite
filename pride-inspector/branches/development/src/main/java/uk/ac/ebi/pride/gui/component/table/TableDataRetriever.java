@@ -212,7 +212,8 @@ public class TableDataRetriever {
         content.add(end == -1 ? null : end);
 
         // Theoritical isoelectric point
-        content.add(IsoelectricPointUtils.calculate(sequence));
+//        content.add(IsoelectricPointUtils.calculate(sequence));
+        content.add(null);
 
         // Spectrum reference
         content.add(specId);
@@ -249,14 +250,21 @@ public class TableDataRetriever {
         String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
         content.add(mappedProtAcc);
 
-        // protein name
-        content.add(null);
+        // get protein details
+        Protein protein = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
+        if (protein != null) {
+            protein = new AnnotatedProtein(protein);
+        }
+
+        // Protein name
+        content.add(protein == null ? null : protein.getName());
 
         // protein status
-        content.add(null);
+        content.add(protein == null ? null : protein.getStatus().name());
 
         // sequence coverage
-        content.add(null);
+        Double coverage = PrideInspectorCacheManager.getInstance().getSequenceCoverage(controller.getUid(), identId);
+        content.add(coverage);
 
         // Score
         double score = controller.getIdentificationScore(identId);
@@ -326,7 +334,7 @@ public class TableDataRetriever {
 
         // isotope labelling methods
         if (controller.hasIsotopeLabellingQuantMethods()) {
-            Collection<QuantCvTermReference> methods = isProteinIdent ? controller.getProteinIsotopeLabellingQuantMethods() : controller.getPeptideLabelFreeQuantMethods();
+            Collection<QuantCvTermReference> methods = isProteinIdent ? controller.getProteinIsotopeLabellingQuantMethods() : controller.getPeptideIsotopeLabellingQuantMethods();
             headers.addAll(getIsotopeLabellingMethodHeaders(methods, controller, refSampleIndex, isProteinIdent));
         }
 
@@ -450,8 +458,9 @@ public class TableDataRetriever {
                                                        Comparable identId,
                                                        int referenceSubSampleIndex) throws DataAccessException {
         Quantitation quant = controller.getProteinQuantData(identId);
-        return  getQuantTableRow(controller, quant, referenceSubSampleIndex, true);
+        return getQuantTableRow(controller, quant, referenceSubSampleIndex, true);
     }
+
 
     /**
      * Retrieve a row for peptide quantitative table
@@ -491,7 +500,7 @@ public class TableDataRetriever {
 
         // isotope labelling methods
         if (controller.hasIsotopeLabellingQuantMethods()) {
-            Collection<QuantCvTermReference> methods = isProteinIdent ? controller.getProteinIsotopeLabellingQuantMethods() : controller.getPeptideLabelFreeQuantMethods();
+            Collection<QuantCvTermReference> methods = isProteinIdent ? controller.getProteinIsotopeLabellingQuantMethods() : controller.getPeptideIsotopeLabellingQuantMethods();
             contents.addAll(getIsotopeLabellingQuantData(methods, controller, quant, refSampleIndex, isProteinIdent));
         }
 

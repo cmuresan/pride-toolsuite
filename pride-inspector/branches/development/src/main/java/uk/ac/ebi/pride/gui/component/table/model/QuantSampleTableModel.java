@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
+import uk.ac.ebi.pride.data.core.CvParam;
 import uk.ac.ebi.pride.data.core.QuantitativeSample;
 
 import java.util.ArrayList;
@@ -101,31 +102,38 @@ public class QuantSampleTableModel extends ListTableModel<QuantitativeSample> {
                 content.add(rowCnt + 1);
 
                 if (sample.hasReagent()) {
-                    content.add(sample.getReagent(i));
+                    CvParam cvParam = sample.getReagent(i);
+                    content.add(cvParam == null ? null : cvParam.getName());
                 }
 
                 if (sample.hasSpecies()) {
-                    content.add(sample.getSpecies(i));
+                    CvParam cvParam = sample.getSpecies(i);
+                    content.add(cvParam == null ? null : cvParam.getName());
                 }
 
                 if (sample.hasTissue()) {
-                    content.add(sample.getTissue(i));
+                    CvParam cvParam = sample.getTissue(i);
+                    content.add(cvParam == null ? null : cvParam.getName());
                 }
 
                 if (sample.hasCellLine()) {
-                    content.add(sample.getCellLine(i));
+                    CvParam cvParam = sample.getCellLine(i);
+                    content.add(cvParam == null ? null : cvParam.getName());
                 }
 
                 if (sample.hasGOTerm()) {
-                    content.add(sample.getGOTerm(i));
+                    CvParam cvParam = sample.getGOTerm(i);
+                    content.add(cvParam == null ? null : cvParam.getName());
                 }
 
                 if (sample.hasDisease()) {
-                    content.add(sample.getDisease(i));
+                    CvParam cvParam = sample.getDisease(i);
+                    content.add(cvParam == null ? null : cvParam.getName());
                 }
 
                 if (sample.hasDescription()) {
-                    content.add(sample.getDescription(i));
+                    CvParam cvParam = sample.getDescription(i);
+                    content.add(cvParam == null ? null : cvParam.getValue());
                 }
 
                 this.addRow(content);

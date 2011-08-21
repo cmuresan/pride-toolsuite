@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Triple;
 import uk.ac.ebi.pride.data.Tuple;
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
@@ -16,17 +17,19 @@ import java.util.Map;
  * Date: 11/08/2011
  * Time: 09:17
  */
-public class ProteinQuantTableModel extends ProgressiveListTableModel<Void, Tuple<TableContentType, Object>> {
+public class QuantProteinTableModel extends ProgressiveListTableModel<Void, Tuple<TableContentType, Object>> {
 
     /**
      * table column title
      */
     public enum TableHeader {
         ROW_NUMBER_COLUMN("#", "Row Number"),
-        COMPARE("Compare", "Click to choose the protein you want to compare"),
+        COMPARE("✓", "Click to choose the protein you want to compare"),
         PROTEIN_ACCESSION_COLUMN("Submitted", "Submitted Protein Accession From Source"),
         MAPPED_PROTEIN_ACCESSION_COLUMN("Mapped", "Pride Mapped Protein Accession"),
         PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
+        PROTEIN_STATUS("Protein Status", "Status Of The Protein Accession"),
+        PROTEIN_SEQUENCE_COVERAGE("Sequence Coverage", "Protein Sequence Coverage"),
         IDENTIFICATION_SCORE_COLUMN("Score", "PRIDE Protein Score"),
         IDENTIFICATION_THRESHOLD_COLUMN("Threshold", "PRIDE Protein Threshold"),
         NUMBER_OF_PEPTIDES("# Peptides", "Number of Peptides"),
@@ -56,7 +59,7 @@ public class ProteinQuantTableModel extends ProgressiveListTableModel<Void, Tupl
      */
     Map<Comparable, Integer> identIdToRowNumMapping;
 
-    public ProteinQuantTableModel() {
+    public QuantProteinTableModel() {
         this.identIdToRowNumMapping = new HashMap<Comparable, Integer>();
     }
 
@@ -66,6 +69,24 @@ public class ProteinQuantTableModel extends ProgressiveListTableModel<Void, Tupl
         for (TableHeader header : headers) {
             columnNames.put(header.getHeader(), header.getToolTip());
         }
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        String columnName = getColumnName(columnIndex);
+        if (columnName.equals(TableHeader.COMPARE.getHeader())) {
+            return Boolean.class;
+        } else if (columnName.equals(TableHeader.ROW_NUMBER_COLUMN.getHeader())) {
+            return Integer.class;
+        } else {
+            return super.getColumnClass(columnIndex);
+        }
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        String columnName = getColumnName(columnIndex);
+        return columnName.equals(TableHeader.COMPARE.getHeader()) || super.isCellEditable(rowIndex, columnIndex);
     }
 
     @Override
@@ -91,7 +112,7 @@ public class ProteinQuantTableModel extends ProgressiveListTableModel<Void, Tupl
             columnNames.put(header.getHeader(), header.getToolTip());
         }
 
-        List<String> hs = (List<String>)value;
+        List<String> hs = (List<String>) value;
         for (String h : hs) {
             columnNames.put(h, h);
         }
@@ -106,7 +127,7 @@ public class ProteinQuantTableModel extends ProgressiveListTableModel<Void, Tupl
 
         List<Object> data = (List<Object>) value;
         // get the ident id
-        Comparable identId = (Comparable)data.get(identIdIndex - 2);
+        Comparable identId = (Comparable) data.get(identIdIndex - 2);
         Integer rowNum = identIdToRowNumMapping.get(identId);
         if (rowNum == null) {
             // full row
@@ -118,16 +139,17 @@ public class ProteinQuantTableModel extends ProgressiveListTableModel<Void, Tupl
             content.addAll(data);
             contents.add(content);
             identIdToRowNumMapping.put(identId, rowNum);
+            fireTableRowsInserted(rowNum, rowNum);
         } else {
             List<Object> content = contents.get(rowNum);
-            // remove previous quant data
-            for (int i = compareColIndex + 1; i < content.size(); i++) {
-                content.remove(i);
+            // replace previous quant data
+            int offset = compareColIndex + 1;
+            for (int i = offset; i < content.size(); i++) {
+                content.set(i, data.get(i - offset));
             }
-            // add new quant data
-            content.addAll(data);
+            // notify
+            fireTableRowsUpdated(rowNum, rowNum);
         }
-        fireTableRowsUpdated(rowNum, rowNum);
     }
 
     @SuppressWarnings("unchecked")
@@ -143,7 +165,7 @@ public class ProteinQuantTableModel extends ProgressiveListTableModel<Void, Tupl
         // iterate over each row, set the protein name
         for (int row = 0; row < contents.size(); row++) {
             List<Object> content = contents.get(row);
-            String mappedAcc = (String)content.get(mappedAccIndex);
+            String mappedAcc = (String) content.get(mappedAccIndex);
             if (mappedAcc != null) {
                 Protein protein = proteins.get(mappedAcc);
                 if (protein != null) {

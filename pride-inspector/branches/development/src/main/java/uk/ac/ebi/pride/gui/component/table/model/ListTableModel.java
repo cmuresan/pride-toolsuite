@@ -130,4 +130,15 @@ public abstract class ListTableModel<T> extends AbstractTableModel {
 
         return result;
     }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        if (!contents.isEmpty() && rowIndex >= 0 && columnIndex >= 0) {
+            List<Object> colValues = contents.get(rowIndex);
+            if (colValues != null) {
+                colValues.set(columnIndex, aValue);
+                fireTableCellUpdated(rowIndex, columnIndex);
+            }
+        }
+    }
 }

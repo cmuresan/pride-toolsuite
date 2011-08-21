@@ -37,19 +37,47 @@ public class DynamicColumnListener implements TableModelListener {
             TableModel model = (TableModel) e.getSource();
             int newColumnCounts = model.getColumnCount();
             if (newColumnCounts > columnCounts) {
+
+                for (int i = columnCounts; i < newColumnCounts; i++) {
+                    // create a new column based on the last column
+                    TableColumn column = table instanceof JXTable ? new TableColumnExt(i) : new TableColumn(i);
+                    column.setHeaderValue(model.getColumnName(i));
+
+                    // add the new column
+                    TableColumnModel columnModel = table.getColumnModel();
+                    columnModel.addColumn(column);
+                }
+
                 // set the new column counts
                 columnCounts = newColumnCounts;
-
-                // new column index
-                int newColIndex = model.getColumnCount() - 1;
-                // create a new column based on the last column
-                TableColumn column = table instanceof JXTable ? new TableColumnExt(newColIndex) : new TableColumn(newColIndex);
-                column.setHeaderValue(model.getColumnName(newColIndex));
-
-                // add the new column
-                TableColumnModel columnModel = table.getColumnModel();
-                columnModel.addColumn(column);
+            } else {
+                // reset column names
+                int count = model.getColumnCount();
+                for (int i = 0; i < count; i++) {
+                    int viewColumn = table.convertColumnIndexToView(i);
+                    if (viewColumn >= 0) {
+                        TableColumn column = table.getColumnModel().getColumn(viewColumn);
+                        column.setHeaderValue(model.getColumnName(i));
+                    }
+                }
+                table.getTableHeader().repaint();
             }
         }
+    }
+
+    public JTable getTable() {
+        return table;
+    }
+
+    public void setTable(JTable table) {
+        this.table = table;
+    }
+
+    public int getColumnCounts() {
+        return columnCounts;
+    }
+
+    public void setColumnCounts(int columnCounts) {
+        this.columnCounts = columnCounts;
     }
 }

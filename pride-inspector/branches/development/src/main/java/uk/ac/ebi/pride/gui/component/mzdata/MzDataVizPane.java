@@ -53,7 +53,7 @@ public class MzDataVizPane extends DataAccessControllerPane implements EventBusS
         try {
             if (controller.hasSpectrum()) {
                 // Spectrum view pane
-                spectrumViewPane = new SpectrumViewPane(controller);
+                spectrumViewPane = new SpectrumViewPane(controller, true);
             }
         } catch (DataAccessException e) {
             String msg = "Failed to check the availability of spectrum";

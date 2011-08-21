@@ -185,7 +185,11 @@ load.next.mzdata.small.icon=icon/16x16/load_next.png
 
 #download protein name
 load.protein.detail.small.icon=icon/16x16/load_next.png
-load.protein.detail.title=Download Protein Details
+load.protein.detail.title=Protein Details
+
+# set control sample
+set.control.sample.title=Set Control Sample
+set.control.sample.small.icon=icon/16x16/load_next.png
 
 # icons for different tabs
 loading.large.icon=icon/64x64/loading.gif
@@ -197,6 +201,8 @@ peptide.tab.icon.small=icon/16x16/view.png
 peptide.tab.loading.icon.small=icon/16x16/view_loading.gif
 mzdata.tab.icon.small=icon/16x16/view.png
 mzdata.tab.loading.icon.small=icon/16x16/view_loading.gif
+quantitation.tab.icon.small=icon/16x16/view.png
+quantitation.tab.loading.icon.small=icon/16x16/view_loading.gif
 
 # loading text
 loading.title =  Loading... Please wait

@@ -58,7 +58,7 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
         try {
             if (controller.hasSpectrum()) {
                 // Spectrum view pane
-                spectrumViewPane = new SpectrumViewPane(controller);
+                spectrumViewPane = new SpectrumViewPane(controller, true);
                 tabbedPane.insertTab(appContext.getProperty("spectrum.tab.title"), null,
                         spectrumViewPane, appContext.getProperty("spectrum.tab.tooltip"), tabIndex);
                 tabIndex++;

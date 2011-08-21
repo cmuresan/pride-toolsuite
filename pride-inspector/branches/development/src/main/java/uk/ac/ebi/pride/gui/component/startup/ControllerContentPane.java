@@ -236,6 +236,15 @@ public class ControllerContentPane extends DataAccessControllerPane {
             JTable peptideTable = peptideTabPane.getPeptidePane().getPeptideTable();
             retrieveTask.addTaskListener((ProgressiveListTableModel) peptideTable.getModel());
 
+            // register quantitative tab as a task listener
+            if (quantTabPane != null) {
+                retrieveTask.addTaskListener(quantTabPane);
+
+                // register quantitative protein table model as a task listener
+                JTable quantProteinTable = quantTabPane.getQuantProteinSelectionPane().getQuantProteinTable();
+                retrieveTask.addTaskListener((ProgressiveListTableModel) quantProteinTable.getModel());
+            }
+
             // start the task
             retrieveTask.setGUIBlocker(new DefaultGUIBlocker(retrieveTask, GUIBlocker.Scope.NONE, null));
             context.addTask(retrieveTask);
@@ -303,6 +312,14 @@ public class ControllerContentPane extends DataAccessControllerPane {
     }
 
     /**
+     * Retrun quantitative tab pane
+     * @return  QuantTabPane    quantitative tab pane
+     */
+    public QuantTabPane getQuantTabPane() {
+        return quantTabPane;
+    }
+
+    /**
      * Tab index of the metadata tab
      *
      * @return int tab index
@@ -336,6 +353,14 @@ public class ControllerContentPane extends DataAccessControllerPane {
      */
     public int getPeptideTabIndex() {
         return peptideTabIndex;
+    }
+
+    /**
+     * Tab index of the quantitative tab
+     * @return
+     */
+    public int getQuantTabIndex() {
+        return quantTabIndex;
     }
 
     /**

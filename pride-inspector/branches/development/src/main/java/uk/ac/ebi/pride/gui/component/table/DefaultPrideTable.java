@@ -95,9 +95,6 @@ public class DefaultPrideTable extends AlterRowColorTable implements ActionListe
         // row height
         setRowHeight(20);
 
-//        // selection background
-//        setSelectionBackground(Color.white);
-
         // add entry selection listener, this set the default selection for the table
         tableModel.addTableModelListener(new EntryUpdateSelectionListener(this));
 

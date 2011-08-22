@@ -105,6 +105,15 @@ public class TableFactory {
         TableColumnExt peptideColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_COLUMN.getHeader());
         peptideColumn.setCellRenderer(new PeptideSequenceCellRenderer());
 
+        // delta mass column
+        TableColumnExt deltaMassColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.DELTA_MASS_COLUMN.getHeader());
+        BarChartRenderer renderer = new BarChartRenderer(4, -4, 0);
+        renderer.setWarningVisible(true);
+        deltaMassColumn.setCellRenderer(renderer);
+        // set width
+        int deltaMassColumnNum = deltaMassColumn.getModelIndex();
+        table.getColumnModel().getColumn(deltaMassColumnNum).setPreferredWidth(150);
+
         // peptide sequence present in protein sequence
         TableColumnExt peptideFitColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
         peptideFitColumn.setCellRenderer(new PeptideFitCellRenderer());
@@ -419,7 +428,7 @@ public class TableFactory {
         peptideColumn.setCellRenderer(new PeptideSequenceCellRenderer());
         // set peptide column width
         int rowColumnNum = peptideColumn.getModelIndex();
-        quantPeptideTable.getColumnModel().getColumn(rowColumnNum).setPreferredWidth(200);
+        quantPeptideTable.getColumnModel().getColumn(rowColumnNum).setPreferredWidth(150);
 
         // hide protein name
         TableColumnExt proteinNameColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PROTEIN_NAME.getHeader());
@@ -445,6 +454,13 @@ public class TableFactory {
         // delta mass column
         TableColumnExt deltaMassColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.DELTA_MASS_COLUMN.getHeader());
         deltaMassColumn.setVisible(false);
+        BarChartRenderer renderer = new BarChartRenderer(4, -4, 0);
+        renderer.setWarningVisible(true);
+        deltaMassColumn.setCellRenderer(renderer);
+
+        // set width
+        int deltaMassColumnNum = deltaMassColumn.getModelIndex();
+        quantPeptideTable.getColumnModel().getColumn(deltaMassColumnNum).setPreferredWidth(150);
 
         // precursor m/z column
         TableColumnExt precursorMzColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PRECURSOR_MZ_COLUMN.getHeader());

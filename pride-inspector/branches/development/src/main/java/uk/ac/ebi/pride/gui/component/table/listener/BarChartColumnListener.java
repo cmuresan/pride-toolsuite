@@ -1,14 +1,11 @@
 package uk.ac.ebi.pride.gui.component.table.listener;
 
-import no.uib.jsparklines.renderers.JSparklinesBarChartTableCellRenderer;
-import org.jfree.chart.plot.PlotOrientation;
+import uk.ac.ebi.pride.gui.component.table.renderer.BarChartRenderer;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-import java.awt.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,11 +37,7 @@ public class BarChartColumnListener extends DynamicColumnListener {
                 for (int i = columnCounts; i < newColumnCounts; i++) {
                     String columnName = table.getModel().getColumnName(i);
                     TableColumn column = getTable().getColumn(columnName);
-                    JSparklinesBarChartTableCellRenderer renderer = new JSparklinesBarChartTableCellRenderer(
-                            PlotOrientation.HORIZONTAL,
-                            10.0,
-                            Color.green);
-                    renderer.showNumberAndChart(true, 40);
+                    BarChartRenderer renderer = new BarChartRenderer(2, 0, 1);
                     column.setCellRenderer(renderer);
                 }
 

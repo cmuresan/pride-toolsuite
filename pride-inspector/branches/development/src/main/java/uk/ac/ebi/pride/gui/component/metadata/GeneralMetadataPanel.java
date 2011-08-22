@@ -129,14 +129,21 @@ public class GeneralMetadataPanel extends JPanel {
 
         // additional params
         ParamGroup paramGroup = new ParamGroup();
-        for (CvParam cvParam : metaData.getCvParams()) {
-            // get project name
-            if (!CvTermReference.PROJECT_NAME.getAccession().equals(cvParam.getAccession()) &&
-                    !CvTermReference.EXPERIMENT_DESCRIPTION.getAccession().equals(cvParam.getAccession())) {
-                paramGroup.addCvParam(cvParam);
+        List<CvParam> cvParams = metaData.getCvParams();
+        if (cvParams != null) {
+            for (CvParam cvParam : metaData.getCvParams()) {
+                // get project name
+                if (!CvTermReference.PROJECT_NAME.getAccession().equals(cvParam.getAccession()) &&
+                        !CvTermReference.EXPERIMENT_DESCRIPTION.getAccession().equals(cvParam.getAccession())) {
+                    paramGroup.addCvParam(cvParam);
+                }
             }
         }
-        paramGroup.addUserParams(metaData.getUserParams());
+
+        List<UserParam> userParams = metaData.getUserParams();
+        if (userParams != null) {
+            paramGroup.addUserParams(metaData.getUserParams());
+        }
 
         additionalTable = TableFactory.createParamTable(paramGroup);
     }

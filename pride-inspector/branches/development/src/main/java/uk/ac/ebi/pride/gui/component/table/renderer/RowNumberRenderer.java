@@ -11,25 +11,24 @@ import java.awt.*;
  * Date: 17-Aug-2010
  * Time: 15:33:01
  */
-public class RowNumberRenderer implements TableCellRenderer {
+public class RowNumberRenderer extends JLabel implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        JLabel label = new JLabel();
-        label.setHorizontalAlignment(JLabel.CENTER);
+        this.setHorizontalAlignment(JLabel.CENTER);
 
         JTableHeader header = table.getTableHeader();
         if (header != null) {
-            label.setBackground(header.getBackground());
-            label.setForeground(header.getForeground());
-            label.setFont(header.getFont());
+            this.setBackground(header.getBackground());
+            this.setForeground(header.getForeground());
+            this.setFont(header.getFont());
         }
 
         if (isSelected) {
-            label.setFont(label.getFont().deriveFont(Font.BOLD));
+            this.setFont(this.getFont().deriveFont(Font.BOLD));
         }
 
-        label.setText((value == null) ? "" : value.toString());
+        this.setText((value == null) ? "" : value.toString());
         //label.setBorder(UIManager.getBorder("TableHeader.cellBorder"));
-        return label;
+        return this;
     }
 }

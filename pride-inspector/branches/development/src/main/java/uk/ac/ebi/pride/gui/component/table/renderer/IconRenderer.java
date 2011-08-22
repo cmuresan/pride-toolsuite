@@ -11,15 +11,16 @@ import java.awt.*;
  * Date: 05/07/2011
  * Time: 16:26
  */
-public class IconRenderer implements TableCellRenderer{
+public class IconRenderer extends JLabel implements TableCellRenderer{
     private Icon icon;
 
     public IconRenderer(Icon icon) {
-        this.icon = icon;
+        super(icon);
+        setOpaque(true);
     }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        return new JLabel(icon);
+        return this;
     }
 }

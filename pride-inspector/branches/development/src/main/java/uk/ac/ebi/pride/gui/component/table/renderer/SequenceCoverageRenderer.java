@@ -1,11 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table.renderer;
 
-import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
-import uk.ac.ebi.pride.gui.component.utils.Constants;
-
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.text.DecimalFormat;
 

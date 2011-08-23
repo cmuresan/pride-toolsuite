@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.gui.component.utils;
+package uk.ac.ebi.pride.gui.utils;
 
 import java.awt.*;
 

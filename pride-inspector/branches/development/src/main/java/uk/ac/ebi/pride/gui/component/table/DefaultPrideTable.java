@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table;
 
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.component.utils.Constants;
+import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.component.table.listener.EntryUpdateSelectionListener;
 import uk.ac.ebi.pride.gui.component.table.model.ListTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.SpectrumTableModel;

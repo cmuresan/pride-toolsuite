@@ -107,7 +107,7 @@ chart.icon.tooltips=Chart
 chart.icon.small=icon/16x16/stats.png
 
 chart.warning.icon.small=icon/16x16/warning.png
-chart.warning.message=It may take some time to compute these summary charts for big files, do you want to proceed?
+chart.warning.message=It may take some time to compute these summary charts for big files, do you want to start?
 chart.time.warning.message=Calculating summary charts requires a full file scan, this may take a few minutes, thank you for waiting.
 
 chart_loading.desc=Loading
@@ -189,7 +189,7 @@ load.protein.detail.title=Protein Details
 
 # set control sample
 set.control.sample.title=Set Control Sample
-set.control.sample.small.icon=icon/16x16/load_next.png
+set.control.sample.small.icon=icon/16x16/setting.png
 
 # icons for different tabs
 loading.large.icon=icon/64x64/loading.gif
@@ -287,6 +287,11 @@ internet.connection.warning.message = <html><b>Please check whether you have Int
 
 # warning message when opening an existing pride experiment
 open.existing.experiment.title = Experiment Already Opened
+
+# export quantitative data
+export.quantitative.data.title = Export
+export.quantitative.data.long.title = Export Quantitative Data
+export.quantitative.data.small.icon= icon/16x16/export_enable.gif
 
            
 

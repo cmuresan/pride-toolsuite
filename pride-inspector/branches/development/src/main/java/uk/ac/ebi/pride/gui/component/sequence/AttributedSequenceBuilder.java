@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.gui.component.sequence;
 
-import uk.ac.ebi.pride.gui.component.utils.Constants;
+import uk.ac.ebi.pride.gui.utils.Constants;
 
 import java.awt.*;
 import java.awt.font.TextAttribute;

@@ -5,11 +5,9 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
-import uk.ac.ebi.pride.gui.component.utils.Constants;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.ProteinDetailFetcher;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
-import uk.ac.ebi.pride.util.InternetChecker;
 
 import java.util.*;
 

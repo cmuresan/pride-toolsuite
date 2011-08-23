@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static uk.ac.ebi.pride.gui.component.utils.Constants.LINE_SEPARATOR;
-import static uk.ac.ebi.pride.gui.component.utils.Constants.TAB;
+import static uk.ac.ebi.pride.gui.utils.Constants.LINE_SEPARATOR;
+import static uk.ac.ebi.pride.gui.utils.Constants.TAB;
 
 /**
  * Task to export peptide related information.

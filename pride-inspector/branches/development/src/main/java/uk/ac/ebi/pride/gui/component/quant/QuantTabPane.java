@@ -23,7 +23,7 @@ public class QuantTabPane extends PrideInspectorTabPane {
     /**
      * title
      */
-    private static final String QUANTITATION_TITLE = "Quantitation";
+    private static final String QUANTITATION_TITLE = "Quantification";
     /**
      * resize weight for inner split pane
      */
@@ -183,6 +183,7 @@ public class QuantTabPane extends PrideInspectorTabPane {
         Task task = (Task)event.getSource();
         if (task instanceof ScanExperimentTask) {
             proteinPane.getRefSampleButton().getAction().setEnabled(true);
+            proteinPane.getExportButton().getAction().setEnabled(true);
         }
     }
 

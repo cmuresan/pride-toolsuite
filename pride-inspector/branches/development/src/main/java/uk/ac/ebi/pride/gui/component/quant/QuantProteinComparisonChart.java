@@ -247,11 +247,13 @@ public class QuantProteinComparisonChart extends DataAccessControllerPane implem
     private void removeData(Comparable id) {
         // remove from bar chart
         java.util.List<Comparable> columns = idMapping.get(id);
-        for (Comparable column : columns) {
-            dataset.removeValue(id, column);
+        if (columns != null) {
+            for (Comparable column : columns) {
+                dataset.removeValue(id, column);
+            }
+            // remove mapping
+            idMapping.remove(id);
         }
-        // remove mapping
-        idMapping.remove(id);
     }
 
     private class QuantCategoryDataset extends DefaultCategoryDataset {

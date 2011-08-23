@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 
-import static uk.ac.ebi.pride.gui.component.utils.Constants.LINE_SEPARATOR;
-import static uk.ac.ebi.pride.gui.component.utils.Constants.TAB;
+import static uk.ac.ebi.pride.gui.utils.Constants.LINE_SEPARATOR;
+import static uk.ac.ebi.pride.gui.utils.Constants.TAB;
 
 /**
  * Created by IntelliJ IDEA.

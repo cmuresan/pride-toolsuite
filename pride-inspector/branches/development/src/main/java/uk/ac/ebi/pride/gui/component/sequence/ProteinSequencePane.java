@@ -10,8 +10,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
-import uk.ac.ebi.pride.gui.component.PrideInspectorLoadingPanel;
-import uk.ac.ebi.pride.gui.component.utils.Constants;
+import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
@@ -32,7 +31,6 @@ import java.beans.PropertyChangeEvent;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 

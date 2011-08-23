@@ -38,11 +38,18 @@ public abstract class ListTableModel<T> extends AbstractTableModel {
      * Add an extra column to table model
      *
      * @param columnName column string name
-     * @param toolTip  column tool tips
+     * @param toolTip    column tool tips
      */
     public void addColumn(String columnName, String toolTip) {
         columnNames.put(columnName, toolTip);
         fireTableStructureChanged();
+    }
+
+    /**
+     * Remove all the columns
+     */
+    public void removeAllColumns() {
+        columnNames.clear();
     }
 
     /**
@@ -52,6 +59,21 @@ public abstract class ListTableModel<T> extends AbstractTableModel {
      */
     public void addRow(List<Object> content) {
         contents.add(content);
+    }
+
+    /**
+     * Add the row data using a given row number
+     *
+     * @param rowNum row number
+     * @return  List<Object>    row data
+     */
+    public List<Object> getRow(int rowNum) {
+        List<Object> content = null;
+        int rowCnt = contents.size();
+        if (rowNum >= 0 && rowNum <= rowCnt) {
+            content = new ArrayList<Object>(contents.get(rowNum));
+        }
+        return  content;
     }
 
     public void removeAllRows() {

@@ -19,8 +19,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
-import static uk.ac.ebi.pride.gui.component.utils.Constants.DOT;
-import static uk.ac.ebi.pride.gui.component.utils.Constants.TAB_SEP_FILE;
+import static uk.ac.ebi.pride.gui.utils.Constants.DOT;
+import static uk.ac.ebi.pride.gui.utils.Constants.TAB_SEP_FILE;
 
 /**
  * Export spectrum description

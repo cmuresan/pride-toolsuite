@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.data.controller.impl;
 
-import com.sun.xml.internal.ws.api.addressing.WSEndpointReference;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +18,10 @@ import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
-import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.component.chart.PrideChartManager;
-import uk.ac.ebi.pride.gui.component.utils.Constants;
+import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.term.CvTermReference;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.ByteOrder;

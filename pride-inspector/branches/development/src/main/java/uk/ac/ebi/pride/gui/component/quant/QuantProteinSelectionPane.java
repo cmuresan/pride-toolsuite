@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.Quantitation;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.GUIUtilities;
+import uk.ac.ebi.pride.gui.action.impl.ExportQuantitativeDataAction;
 import uk.ac.ebi.pride.gui.action.impl.RetrieveExtraProteinDetailAction;
 import uk.ac.ebi.pride.gui.action.impl.SetRefSampleAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
@@ -20,7 +20,6 @@ import uk.ac.ebi.pride.gui.component.protein.ProteinTabPane;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.ProgressiveListTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
-import uk.ac.ebi.pride.gui.desktop.*;
 import uk.ac.ebi.pride.gui.event.QuantSelectionEvent;
 import uk.ac.ebi.pride.gui.event.ReferenceSampleChangeEvent;
 import uk.ac.ebi.pride.gui.event.container.ProteinIdentificationEvent;
@@ -60,6 +59,11 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
      * button to set reference sample
      */
     private JButton refSampleButton;
+
+    /**
+     * button to export quantitative data
+     */
+    private JButton exportButton;
 
     /**
      * The current reference sample index
@@ -196,6 +200,8 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
         toolBar.setFloatable(false);
         toolBar.setOpaque(false);
 
+
+
         // load protein names
         JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
         loadAllProteinNameButton.setForeground(Color.blue);
@@ -214,6 +220,15 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
         refSampleButton.setAction(new SetRefSampleAction(controller));
         refSampleButton.getAction().setEnabled(false);
         toolBar.add(refSampleButton);
+        // add gaps
+        toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
+
+        // ensemble
+        exportButton = GUIUtilities.createLabelLikeButton(null, null);
+        exportButton.setForeground(Color.blue);
+        exportButton.setAction(new ExportQuantitativeDataAction(proteinTable, controller));
+        exportButton.getAction().setEnabled(false);
+        toolBar.add(exportButton);
 
         return toolBar;
     }
@@ -234,6 +249,14 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
      */
     public JButton getRefSampleButton() {
         return refSampleButton;
+    }
+
+    /**
+     * Return the button to export quantitative data
+     * @return
+     */
+    public JButton getExportButton() {
+        return exportButton;
     }
 
     @Override

@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.gui.task.impl;
 import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.pride.gui.component.utils.Constants;
+import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
 import uk.ac.ebi.pride.gui.event.ThrowableEvent;
 import uk.ac.ebi.pride.gui.search.SearchEntry;

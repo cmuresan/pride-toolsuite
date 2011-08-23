@@ -10,14 +10,14 @@ Currently, PRIDE Converter 2 supports the following MS data formats:
 
 || *Format* || *Type* || *Status* ||
 || [MascotDatDAO Mascot .dat] || Identifications + Spectra || Tested on 6 submissions ||
-|| X!Tandem || Identifications + (processed spectra) <br>Can process additional peak list files for spectra || Complete. Not tested ||
-|| mzIdentML || Identifications + spectra in additional file || Complete. Not tested ||
-|| OMSSA || Identifications + Spectra || Under development ||
+|| [XTandemDAO X!Tandem] || Identifications + (processed spectra) <br>Can process additional peak list files for spectra || Complete. Not tested ||
+|| [MzIdentMlDAO mzIdentML] || Identifications + spectra in additional file || Complete. Not tested ||
+|| [OmssaDAO OMSSA] || Identifications + Spectra || Under development ||
 || dta || Spectra || Complete. Not tested ||
 || mgf || Spectra || Complete. Not tested ||
 || ms2 || Spectra || Complete. Not tested ||
 || mzML || Spectra || Complete. Not tested ||
-|| mzXML || Spectra || Complete. Not tested ||
+|| [MzXmlDAO mzXML] || Spectra || Complete. Not tested ||
 || pkl || Spectra || Complete. Not tested ||
 
 = Supported additional data =

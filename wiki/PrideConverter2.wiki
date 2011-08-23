@@ -9,7 +9,7 @@ PRIDE Converter 2 is a complete rewrite of the previous version.
 Currently, PRIDE Converter 2 supports the following MS data formats:
 
 || *Format* || *Type* || *Status* ||
-|| Mascot .dat || Identifications + Spectra || Tested on 6 submissions ||
+|| [MascotDatDAO Mascot .dat] || Identifications + Spectra || Tested on 6 submissions ||
 || X!Tandem || Identifications + (processed spectra) <br>Can process additional peak list files for spectra || Complete. Not tested ||
 || mzIdentML || Identifications + spectra in additional file || Complete. Not tested ||
 || OMSSA || Identifications + Spectra || Under development ||

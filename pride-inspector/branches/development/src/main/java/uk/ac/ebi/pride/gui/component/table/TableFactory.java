@@ -358,8 +358,12 @@ public class TableFactory {
             }
         }
         // hide mapped protein accession
-        TableColumnExt mappedProtAccColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
+        String mappedProtAccHeader = QuantProteinTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
+        TableColumnExt mappedProtAccColumn = (TableColumnExt) quantProteinTable.getColumn(mappedProtAccHeader);
         mappedProtAccColumn.setCellRenderer(new HyperLinkCellRenderer());
+        // add hyper link click listener
+        quantProteinTable.addMouseMotionListener(new TableCellMouseMotionListener(quantProteinTable, mappedProtAccHeader));
+        quantProteinTable.addMouseListener(new HyperLinkCellMouseClickListener(quantProteinTable, mappedProtAccHeader, new ProteinAccHyperLinkGenerator()));
 
         TableColumnExt proteinIdColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
         proteinIdColumn.setVisible(false);
@@ -406,8 +410,8 @@ public class TableFactory {
      *
      * @return JTable   protein quantitative table
      */
-    public static JTable createQuantProteinTable() {
-        QuantProteinTableModel tableModel = new QuantProteinTableModel();
+    public static JTable createQuantProteinTable(DataAccessController controller) {
+        QuantProteinTableModel tableModel = new QuantProteinTableModel(controller);
         return createQuantProteinTable(tableModel);
     }
 
@@ -417,8 +421,8 @@ public class TableFactory {
      * @param se search engine
      * @return JTable  peptide table
      */
-    public static JTable createQuantPeptideTable(SearchEngine se) {
-        QuantPeptideTableModel tableModel = new QuantPeptideTableModel(se);
+    public static JTable createQuantPeptideTable(SearchEngine se, DataAccessController controller) {
+        QuantPeptideTableModel tableModel = new QuantPeptideTableModel(se, controller);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable quantPeptideTable = new DefaultPrideTable(tableModel, columnModel);
         quantPeptideTable.setAutoCreateColumnsFromModel(false);
@@ -430,9 +434,13 @@ public class TableFactory {
         proteinAccColumn.setVisible(false);
 
         // hide mapped protein accession
-        TableColumnExt mappedProtAccColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
+        String mappedProtAccHeader = QuantPeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
+        TableColumnExt mappedProtAccColumn = (TableColumnExt) quantPeptideTable.getColumn(mappedProtAccHeader);
         mappedProtAccColumn.setCellRenderer(new HyperLinkCellRenderer());
         mappedProtAccColumn.setVisible(false);
+        // add hyper link click listener
+        quantPeptideTable.addMouseMotionListener(new TableCellMouseMotionListener(quantPeptideTable, mappedProtAccHeader));
+        quantPeptideTable.addMouseListener(new HyperLinkCellMouseClickListener(quantPeptideTable, mappedProtAccHeader, new ProteinAccHyperLinkGenerator()));
 
         // peptide sequence column renderer
         TableColumnExt peptideColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PEPTIDE_PTM_COLUMN.getHeader());

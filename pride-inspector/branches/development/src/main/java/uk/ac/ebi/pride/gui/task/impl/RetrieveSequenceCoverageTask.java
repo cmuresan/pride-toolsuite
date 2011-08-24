@@ -31,7 +31,8 @@ public class RetrieveSequenceCoverageTask extends AbstractDataAccessTask<Void, T
         Map<Comparable, Double> coverageMap = new HashMap<Comparable, Double>();
 
         for (Comparable identId : identIds) {
-            Double coverage = PrideInspectorCacheManager.getInstance().getSequenceCoverage(controller.getUid(), identId);
+            PrideInspectorCacheManager cacheManager = PrideInspectorCacheManager.getInstance();
+            Double coverage = cacheManager.getSequenceCoverage(controller.getUid(), identId);
             if (coverage == null) {
                 // get mapped protein accession
                 String accession = controller.getProteinAccession(identId);

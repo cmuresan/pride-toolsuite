@@ -37,4 +37,4 @@ default.pride.password=inspector
 pride.experiment.download.url=http://www.ebi.ac.uk/pride/review
 
 # URL for link to Ensembl Genome Browser
-ensembl.genome.browser.url=http://www.ensembl.org/Homo_sapiens/Location/Genome?type=ProteinAlignFeature
+ensembl.genome.browser.url=http://www.ensembl.org/%1$s/Location/Genome?type=ProteinAlignFeature

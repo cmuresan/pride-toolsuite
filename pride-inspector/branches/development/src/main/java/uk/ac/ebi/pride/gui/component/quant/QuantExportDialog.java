@@ -2,7 +2,12 @@ package uk.ac.ebi.pride.gui.component.quant;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.controller.DataAccessException;
+import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
+import uk.ac.ebi.pride.data.core.MetaData;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
@@ -12,6 +17,8 @@ import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.task.impl.ExportTableDataTask;
 import uk.ac.ebi.pride.gui.url.HttpUtilities;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
+import uk.ac.ebi.pride.gui.utils.EDTUtils;
+import uk.ac.ebi.pride.gui.utils.EnsemblSpeciesMapper;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
@@ -24,6 +31,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 
 import static uk.ac.ebi.pride.gui.utils.Constants.DOT;
 import static uk.ac.ebi.pride.gui.utils.Constants.TAB_SEP_FILE;
@@ -36,15 +44,19 @@ import static uk.ac.ebi.pride.gui.utils.Constants.TAB_SEP_FILE;
  * @author User #2
  */
 public class QuantExportDialog extends JDialog {
+    private static final Logger logger = LoggerFactory.getLogger(QuantExportDialog.class);
+
     private final static String UP_REGULATED = "Up Regulated";
     private final static String DOWN_REGULATED = "Down Regulated";
 
     private PrideInspectorContext appContext;
     private JTable table;
+    private DataAccessController controller;
 
-    public QuantExportDialog(Frame owner, JTable table) {
+    public QuantExportDialog(Frame owner, JTable table, DataAccessController controller) {
         super(owner);
         this.table = table;
+        this.controller = controller;
         setupMainPane();
         initComponents();
         populateComponents();
@@ -343,20 +355,62 @@ public class QuantExportDialog extends JDialog {
                 }
 
                 if (protColIndex >= 0 && mappedProtColIndex >= 0) {
-                    String url = appContext.getProperty("ensembl.genome.browser.url");
-                    for (int i = 0; i < rowCnt; i++) {
-                        String prot = (String) proteinTable.getValueAt(i, mappedProtColIndex);
-                        if (prot == null) {
-                            prot = (String) proteinTable.getValueAt(i, protColIndex);
-                        }
+                    String url = getBaseURL();
+                    if (url != null) {
+                        for (int i = 0; i < rowCnt; i++) {
+                            String prot = (String) proteinTable.getValueAt(i, mappedProtColIndex);
+                            if (prot == null) {
+                                prot = (String) proteinTable.getValueAt(i, protColIndex);
+                            }
 
-                        if (prot != null) {
-                            url += ";id=" + prot;
+                            if (prot != null) {
+                                url += ";id=" + prot;
+                            }
+                        }
+                        HttpUtilities.openURL(url);
+                    } else {
+                        // show warning message
+                        Runnable code = new Runnable() {
+
+                            @Override
+                            public void run() {
+                                GUIUtilities.warn(uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getMainComponent(),
+                                        "Experiment species is not supported by Ensembl Karyotype", "Unknown Species");
+                            }
+                        };
+                        try {
+                            EDTUtils.invokeAndWait(code);
+                        } catch (InvocationTargetException e1) {
+                            logger.error("Failed to show warning message", e1);
+                        } catch (InterruptedException e1) {
+                            logger.error("Failed to show warning message", e1);
                         }
                     }
-                    HttpUtilities.openURL(url);
                 }
             }
+        }
+
+        /**
+         * Get the base url to connect to Ensembl karyotype
+         *
+         * @return String  url string
+         */
+        private String getBaseURL() {
+            String url = null;
+
+            try {
+                MetaData metaData = controller.getMetaData();
+                java.util.List<String> speciesIds = DataAccessUtilities.getTaxonomy(metaData);
+                if (speciesIds.size() > 0) {
+                    url = appContext.getProperty("ensembl.genome.browser.url");
+                    String ensemblSpeciesName = EnsemblSpeciesMapper.getInstance().getEnsemblName(speciesIds.get(0));
+                    url = String.format(url, ensemblSpeciesName);
+                }
+            } catch (DataAccessException e) {
+                logger.error("Failed to retrieve metadata", e);
+            }
+
+            return url;
         }
     }
 
@@ -378,8 +432,8 @@ public class QuantExportDialog extends JDialog {
                 String filePath = selectedFile.getPath();
                 appContext.setOpenFilePath(filePath.replace(selectedFile.getName(), ""));
                 ExportTableDataTask newTask = new ExportTableDataTask(proteinTable,
-                                                                     filePath + (filePath.endsWith(TAB_SEP_FILE) ? "" : TAB_SEP_FILE),
-                                                                     "Export Protein Quantification", "Export Protein Quantification");
+                        filePath + (filePath.endsWith(TAB_SEP_FILE) ? "" : TAB_SEP_FILE),
+                        "Export Protein Quantification", "Export Protein Quantification");
                 // set task's gui blocker
                 newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
                 // add task listeners
@@ -443,7 +497,7 @@ public class QuantExportDialog extends JDialog {
 
         private void highlightColumn() {
             // get reagent
-            String reagent = (String)reagentComboBox.getSelectedItem();
+            String reagent = (String) reagentComboBox.getSelectedItem();
             // get the column index
             int columnIndex = -1;
             int colCnt = proteinTable.getColumnCount();

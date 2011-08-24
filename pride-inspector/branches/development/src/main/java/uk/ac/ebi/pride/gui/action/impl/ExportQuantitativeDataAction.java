@@ -43,6 +43,7 @@ public class ExportQuantitativeDataAction extends PrideAction {
         super(Desktop.getInstance().getDesktopContext().getProperty("export.quantitative.data.title"),
                 GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("export.quantitative.data.small.icon")));
         this.table = table;
+        this.controller = controller;
     }
 
     @Override
@@ -51,7 +52,7 @@ public class ExportQuantitativeDataAction extends PrideAction {
 
             @Override
             public void run() {
-                QuantExportDialog quantExportDialog = new QuantExportDialog(Desktop.getInstance().getMainComponent(), table);
+                QuantExportDialog quantExportDialog = new QuantExportDialog(Desktop.getInstance().getMainComponent(), table, controller);
                 quantExportDialog.setVisible(true);
             }
         };

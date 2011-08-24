@@ -17,9 +17,28 @@ import java.util.List;
  */
 public class DataAccessUtilities {
 
-    public static List<Integer> getTaxonomy(MetaData metaData) {
-        // todo: to be implemented
-        return null;
+    /**
+     * Get a list of taxonomy accessions based on a given metadata
+     *
+     * @param metaData  meta data
+     * @return  List<String>    a list of taxonomy ids
+     */
+    public static List<String> getTaxonomy(MetaData metaData) {
+        List<String> species = new ArrayList<String>();
+        List<Sample> samples = metaData.getSamples();
+        if (samples != null) {
+            for (Sample sample : samples) {
+                List<CvParam> cvParams = sample.getCvParams();
+                if (cvParams != null) {
+                    for (CvParam cvParam : cvParams) {
+                        if (cvParam.getCvLookupID().toLowerCase().equals("newt")) {
+                            species.add(cvParam.getAccession());
+                        }
+                    }
+                }
+            }
+        }
+        return species;
     }
 
     public static int getNumberOfPeaks(Spectrum spectrum) {

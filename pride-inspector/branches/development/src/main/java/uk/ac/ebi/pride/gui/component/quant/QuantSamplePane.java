@@ -5,11 +5,20 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.QuantitativeSample;
+import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
+import uk.ac.ebi.pride.gui.GUIUtilities;
+import uk.ac.ebi.pride.gui.action.impl.ExportQuantitativeDataAction;
+import uk.ac.ebi.pride.gui.action.impl.RetrieveExtraProteinDetailAction;
+import uk.ac.ebi.pride.gui.action.impl.SetRefSampleAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
+import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
+import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 
+import javax.help.CSH;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
@@ -66,9 +75,11 @@ public class QuantSamplePane extends DataAccessControllerPane {
     private JPanel buildHeaderPane() {
         // add meta data panel
         JPanel metaDataPanel = buildMetaDataPane();
+        JToolBar buttonPanel = buildButtonPane();
         JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setOpaque(false);
         titlePanel.add(metaDataPanel, BorderLayout.WEST);
+        titlePanel.add(buttonPanel, BorderLayout.EAST);
 
         return titlePanel;
     }
@@ -88,5 +99,30 @@ public class QuantSamplePane extends DataAccessControllerPane {
         metaDataPanel.add(tableLabel);
 
         return metaDataPanel;
+    }
+
+
+    /**
+     * Build toolbar which contains all the buttons.
+     *
+     * @return JToolbar    tool bar
+     */
+    private JToolBar buildButtonPane() {
+        JToolBar toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+        toolBar.setOpaque(false);
+
+
+        // Help button
+        // load icon
+        Icon helpIcon = GUIUtilities.loadIcon(appContext.getProperty("help.icon.small"));
+        JButton helpButton = GUIUtilities.createLabelLikeButton(helpIcon, null);
+        helpButton.setToolTipText("Help");
+        helpButton.setForeground(Color.blue);
+        CSH.setHelpIDString(helpButton, "help.browse.protein");
+        helpButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
+        toolBar.add(helpButton);
+
+        return toolBar;
     }
 }

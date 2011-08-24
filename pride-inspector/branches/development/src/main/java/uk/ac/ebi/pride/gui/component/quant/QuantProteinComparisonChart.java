@@ -13,13 +13,12 @@ import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.chart.renderer.category.LayeredBarRenderer;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.TextAnchor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.CvParam;
@@ -48,18 +47,49 @@ import java.util.Map;
 public class QuantProteinComparisonChart extends DataAccessControllerPane implements EventBusSubscribable {
     private static final Logger logger = LoggerFactory.getLogger(QuantProteinComparisonChart.class);
 
+    /**
+     * Data set used to render the bar chart
+     */
     private QuantCategoryDataset dataset;
+    /**
+     * Renderer used to draw the bars
+     */
     private BarRenderer renderer;
+    /**
+     * whether to set the default colour series for bars
+     */
     private boolean colorSet;
+    /**
+     * Index of the control sample
+     */
     private int referenceSampleIndex = -1;
+    /**
+     * mapping between protein identification id and the label of each category
+     */
     private Map<Comparable, java.util.List<Comparable>> idMapping;
+    /**
+     * Event subscriber listens to protein selection event
+     */
     private QuantSelectionSubscriber proteinSelectionSubscriber;
+    /**
+     * Event subscriber listens to reference sample change event
+     */
     private ReferenceSampleSubscriber referenceSampleSubscriber;
+    /**
+     * Warning message to show when no protein is selected
+     */
+    private String noProteinSelectionMessage;
+    /**
+     * Wether there are proteins selected
+     */
+    private boolean noProteinSelected;
 
 
     public QuantProteinComparisonChart(DataAccessController controller) {
         super(controller);
         this.idMapping = new HashMap<Comparable, java.util.List<Comparable>>();
+        this.noProteinSelected = true;
+        this.noProteinSelectionMessage = appContext.getProperty("no.protein.selection.warning.message");
     }
 
     @Override
@@ -71,14 +101,17 @@ public class QuantProteinComparisonChart extends DataAccessControllerPane implem
     @Override
     protected void addComponents() {
         dataset = new QuantCategoryDataset();
-        JFreeChart chart = ChartFactory.createBarChart("Protein Comparison",
-                "Reagent",
-                "Ratio",
+        JFreeChart chart = ChartFactory.createBarChart(appContext.getProperty("quant.histogram.title"),
+                appContext.getProperty("quant.histogram.x.axis"),
+                appContext.getProperty("quant.histogram.y.axis"),
                 dataset,
                 PlotOrientation.VERTICAL,
                 false,
                 true,
                 false);
+        // set chart title size
+        TextTitle title = chart.getTitle();
+        title.setFont(title.getFont().deriveFont(15f));
         // plot
         CategoryPlot plot = chart.getCategoryPlot();
         plot.setBackgroundPaint(Color.white);
@@ -115,6 +148,41 @@ public class QuantProteinComparisonChart extends DataAccessControllerPane implem
         ChartPanel chartPanel = new ChartPanel(chart, false);
         chartPanel.setBorder(null);
         this.add(chartPanel, BorderLayout.CENTER);
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+
+        if (noProteinSelected) {
+            // paint a semi transparent glass pane
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+            // get bound
+            Rectangle clip = g.getClipBounds();
+
+            // set composite
+            Composite oldComposite = g2.getComposite();
+            g2.setComposite(AlphaComposite.SrcOver.derive(0.30f));
+            // set colour
+            g2.setPaint(new Color(185, 218, 201));
+            // paint panel
+            g2.fillRect(clip.x, clip.y, clip.width, clip.height);
+
+            // reset composite
+            g2.setComposite(oldComposite);
+
+            // paint message
+            g2.setPaint(Color.gray);
+            g2.setFont(g2.getFont().deriveFont(20f).deriveFont(Font.BOLD));
+            FontMetrics fontMetrics = g2.getFontMetrics();
+            int msgWidth = fontMetrics.stringWidth(noProteinSelectionMessage);
+            int xPos = clip.x + clip.width / 2 - msgWidth / 2;
+            g2.drawString(noProteinSelectionMessage, xPos, clip.height / 2);
+            g2.dispose();
+        }
     }
 
     @Override
@@ -159,6 +227,7 @@ public class QuantProteinComparisonChart extends DataAccessControllerPane implem
             if (QuantSelectionEvent.Type.PROTIEN.equals(selectionEvent.getType())) {
                 Comparable id = selectionEvent.getId();
                 if (selectionEvent.isSelected()) {
+                    noProteinSelected = false;
                     addData(id);
                     if (!colorSet) {
                         setChartBarColour();

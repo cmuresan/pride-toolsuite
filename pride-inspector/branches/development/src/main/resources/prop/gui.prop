@@ -287,7 +287,7 @@ open.existing.experiment.title = Experiment Already Opened
 internet.connection.warning.message = <html><b>Please check whether you have Internet connection</b></html>
 chart.warning.message=It may take some time to compute these summary charts for big files, do you want to start?
 chart.time.warning.message=Calculating summary charts requires a full file scan, this may take a few minutes, thank you for waiting.
-no.protein.selection.warning.message=Select Proteins From Checkbox Above
+no.protein.selection.warning.message=Select Proteins Using Checkbox Above
 no.spectrum.warning.message = Spectrum Not Available
 out.of.memory.message=Pride Inspector has run out memory.\nYou can increase the memory limit in ./config/config.props.\nCheck out the FAQ section in the help document for details.
 

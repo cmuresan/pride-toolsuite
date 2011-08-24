@@ -2,8 +2,14 @@ package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Triple;
 import uk.ac.ebi.pride.data.Tuple;
+import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
+import uk.ac.ebi.pride.gui.desktop.Desktop;
+import uk.ac.ebi.pride.gui.task.Task;
+import uk.ac.ebi.pride.gui.task.impl.RetrieveSequenceCoverageTask;
+import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
+import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import java.util.ArrayList;
@@ -12,12 +18,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Quantitative protein table model
+ * <p/>
  * User: rwang
  * Date: 11/08/2011
  * Time: 09:17
  */
-public class QuantProteinTableModel extends ProgressiveListTableModel<Void, Tuple<TableContentType, Object>> {
+public class QuantProteinTableModel extends AbstractProteinTableModel {
 
     /**
      * table column title
@@ -59,7 +66,8 @@ public class QuantProteinTableModel extends ProgressiveListTableModel<Void, Tupl
      */
     Map<Comparable, Integer> identIdToRowNumMapping;
 
-    public QuantProteinTableModel() {
+    public QuantProteinTableModel(DataAccessController controller) {
+        super(controller);
         this.identIdToRowNumMapping = new HashMap<Comparable, Integer>();
     }
 
@@ -76,8 +84,6 @@ public class QuantProteinTableModel extends ProgressiveListTableModel<Void, Tupl
         String columnName = getColumnName(columnIndex);
         if (columnName.equals(TableHeader.COMPARE.getHeader())) {
             return Boolean.class;
-        } else if (columnName.equals(TableHeader.ROW_NUMBER_COLUMN.getHeader())) {
-            return Integer.class;
         } else {
             return super.getColumnClass(columnIndex);
         }
@@ -97,8 +103,8 @@ public class QuantProteinTableModel extends ProgressiveListTableModel<Void, Tupl
             setHeaders(newData.getValue());
         } else if (TableContentType.PROTEIN_QUANTITATION.equals(type)) {
             addProteinQuantData(newData.getValue());
-        } else if (TableContentType.PROTEIN_DETAILS.equals(type)) {
-            addProteinDetailData(newData.getValue());
+        } else {
+            super.addData(newData);
         }
     }
 
@@ -149,33 +155,6 @@ public class QuantProteinTableModel extends ProgressiveListTableModel<Void, Tupl
             }
             // notify
             fireTableRowsUpdated(rowNum, rowNum);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void addProteinDetailData(Object value) {
-        // column index for mapped protein accession column
-        int mappedAccIndex = getColumnIndex(TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
-        // column index for protein name
-        int identNameIndex = getColumnIndex(TableHeader.PROTEIN_NAME.getHeader());
-
-        // get a map of protein accession to protein details
-        Map<String, Protein> proteins = (Map<String, Protein>) value;
-
-        // iterate over each row, set the protein name
-        for (int row = 0; row < contents.size(); row++) {
-            List<Object> content = contents.get(row);
-            String mappedAcc = (String) content.get(mappedAccIndex);
-            if (mappedAcc != null) {
-                Protein protein = proteins.get(mappedAcc);
-                if (protein != null) {
-                    protein = new AnnotatedProtein(proteins.get(mappedAcc));
-                    // set protein name
-                    content.set(identNameIndex, protein.getName());
-                    // notify a row change
-                    fireTableRowsUpdated(row, row);
-                }
-            }
         }
     }
 }

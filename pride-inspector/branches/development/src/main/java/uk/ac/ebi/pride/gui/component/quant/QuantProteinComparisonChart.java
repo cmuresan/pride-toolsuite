@@ -80,7 +80,7 @@ public class QuantProteinComparisonChart extends DataAccessControllerPane implem
      */
     private String noProteinSelectionMessage;
     /**
-     * Wether there are proteins selected
+     * Whether there are proteins selected
      */
     private boolean noProteinSelected;
 

@@ -107,8 +107,7 @@ chart.icon.tooltips=Chart
 chart.icon.small=icon/16x16/stats.png
 
 chart.warning.icon.small=icon/16x16/warning.png
-chart.warning.message=It may take some time to compute these summary charts for big files, do you want to start?
-chart.time.warning.message=Calculating summary charts requires a full file scan, this may take a few minutes, thank you for waiting.
+
 
 chart_loading.desc=Loading
 chart_loading.tooltip.small=Loading charts
@@ -224,7 +223,6 @@ about.text=PRIDE Inspector is brought to you by\n\
 
 # out of memory message
 out.of.memory.title=Out of Memory
-out.of.memory.message=Pride Inspector has run out memory.\nYou can increase the memory limit in ./config/config.props.\nCheck out the FAQ section in the help document for details.
 
 # message board icons
 error.message.small.icon=icon/32x32/error_message.png
@@ -283,15 +281,26 @@ protein.sequence.unavailable.title = Protein sequence is not available
 
 # internet connection
 internet.connection.warning.short.message=Internet Connection Required
-internet.connection.warning.message = <html><b>Please check whether you have Internet connection</b></html>
 
-# warning message when opening an existing pride experiment
+# warning message
 open.existing.experiment.title = Experiment Already Opened
+internet.connection.warning.message = <html><b>Please check whether you have Internet connection</b></html>
+chart.warning.message=It may take some time to compute these summary charts for big files, do you want to start?
+chart.time.warning.message=Calculating summary charts requires a full file scan, this may take a few minutes, thank you for waiting.
+no.protein.selection.warning.message=Select Proteins From Checkbox Above
+no.spectrum.warning.message = Spectrum Not Available
+out.of.memory.message=Pride Inspector has run out memory.\nYou can increase the memory limit in ./config/config.props.\nCheck out the FAQ section in the help document for details.
+
 
 # export quantitative data
 export.quantitative.data.title = Export
 export.quantitative.data.long.title = Export Quantitative Data
 export.quantitative.data.small.icon= icon/16x16/export_enable.gif
+
+# quantitative histogram labels
+quant.histogram.title =  Protein Quantification
+quant.histogram.x.axis = Reagent
+quant.histogram.y.axis = Ratio
 
            
 

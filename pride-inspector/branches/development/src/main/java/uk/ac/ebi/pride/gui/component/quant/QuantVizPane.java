@@ -49,6 +49,7 @@ public class QuantVizPane extends DataAccessControllerPane implements EventBusSu
         spectrumViewPane = new SpectrumViewPane(controller, false);
         spectrumViewPane.setBorder(BorderFactory.createLineBorder(Color.gray));
 
+
         // put into a split pane
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setBorder(BorderFactory.createEmptyBorder());
@@ -58,6 +59,7 @@ public class QuantVizPane extends DataAccessControllerPane implements EventBusSu
 
         splitPane.setTopComponent(comparisonChart);
         splitPane.setBottomComponent(spectrumViewPane);
+
         this.add(splitPane, BorderLayout.CENTER);
         this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     }

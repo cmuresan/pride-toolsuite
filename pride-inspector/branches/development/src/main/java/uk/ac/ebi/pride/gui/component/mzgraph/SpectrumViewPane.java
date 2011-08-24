@@ -5,6 +5,7 @@ import org.bushe.swing.event.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.BinaryDataArray;
 import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.data.core.Spectrum;
@@ -37,8 +38,9 @@ import java.util.Map;
  * Date: 10/06/11
  * Time: 14:42
  */
-public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> implements EventBusSubscribable{
+public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> implements EventBusSubscribable {
     private static final Logger logger = LoggerFactory.getLogger(SpectrumViewPane.class);
+
     /**
      * In memory spectrum browser
      */
@@ -52,6 +54,14 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
      */
     private boolean showSidePanel;
     /**
+     * Indicates whether the data source contains spectra
+     */
+    private boolean spectrumAvailable;
+    /**
+     * message to show when there is no spectra
+      */
+    private String spectrumUnavailableMessage;
+    /**
      * Subscribe to peptide event
      */
     private PeptideSpectrumEventSubscriber spectrumSubscriber;
@@ -60,6 +70,12 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
     public SpectrumViewPane(DataAccessController controller, boolean showSidePanel) {
         super(controller);
         this.showSidePanel = showSidePanel;
+        try {
+            this.spectrumAvailable = controller.hasSpectrum();
+        } catch (DataAccessException e) {
+            logger.error("Failed to check the spectrum availability", e);
+        }
+        this.spectrumUnavailableMessage = appContext.getProperty("no.spectrum.warning.message");
     }
 
     @Override
@@ -95,6 +111,41 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
         button.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
 
         this.add(spectrumBrowser, BorderLayout.CENTER);
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+
+        if (!spectrumAvailable) {
+            // paint a semi transparent glass pane
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+            // get bound
+            Rectangle clip = g.getClipBounds();
+
+            // set composite
+            Composite oldComposite = g2.getComposite();
+            g2.setComposite(AlphaComposite.SrcOver.derive(0.30f));
+            // set colour
+            g2.setPaint(new Color(185, 218, 201));
+            // paint panel
+            g2.fillRect(clip.x, clip.y, clip.width, clip.height);
+
+            // reset composite
+            g2.setComposite(oldComposite);
+
+            // paint message
+            g2.setPaint(Color.gray);
+            g2.setFont(g2.getFont().deriveFont(20f).deriveFont(Font.BOLD));
+            FontMetrics fontMetrics = g2.getFontMetrics();
+            int msgWidth = fontMetrics.stringWidth(spectrumUnavailableMessage);
+            int xPos = clip.x + clip.width / 2 - msgWidth / 2;
+            g2.drawString(spectrumUnavailableMessage, xPos, clip.height / 2);
+            g2.dispose();
+        }
     }
 
     /**

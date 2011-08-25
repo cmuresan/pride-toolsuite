@@ -27,6 +27,9 @@ import java.util.List;
 public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
     private static final Logger logger = LoggerFactory.getLogger(SearchDatabaseTask.class);
 
+    private static final String DEFAULT_TASK_TITLE = "Search Results";
+    private static final String DEFAULT_TASK_DESCRIPTION = "Getting Search Results";
+
     private static final int BATCH_SIZE = 20;
 
     private SearchEntry entry;
@@ -45,6 +48,8 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
         this.entry = entry;
         this.headers = headers;
         this.valueToSearch = values;
+        this.setName(DEFAULT_TASK_TITLE);
+        this.setDescription(DEFAULT_TASK_DESCRIPTION);
     }
 
     @Override

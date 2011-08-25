@@ -1,0 +1,306 @@
+open.file.title=Open File(s)
+open.file.tooltip=Open mzML or Pride XML Files
+open.file.icon.small=icon/16x16/open_file.gif
+open.file.icon.medium=icon/32x32/open_file.png
+open.file.icon.large=icon/48x48/open_file.png
+
+open.database.title=Connect PRIDE
+open.database.tooltip=Connect to PRIDE Public Database
+open.database.icon.small=icon/16x16/open_database.gif
+open.database.icon.medium=icon/32x32/connect_database.png
+open.database.icon.large=icon/48x48/connect_database.png
+
+close.source.title=Close
+close.all.soruce.title=Close All
+close.source.tooltip=Close file/database connection
+close.individual.source.enable.icon.small=icon/16x16/close_data_source.gif
+close.source.enable.icon.small=icon/16x16/delete_enable.gif
+close.source.disable.icon.small=icon/16x16/delete_disable.gif
+
+reviewer.download.title=Private Download
+reviewer.download.tooltip=Private download
+reviewer.download.icon.small=icon/16x16/reviewer_download.png
+reviewer.download.icon.medium=icon/32x32/reviewer_download.png
+reviewer.download.icon.large=icon/48x48/reviewer_download.png
+
+help.title=Help
+help.tooltip=Open PRIDE Inspector Help Document
+help.icon.large=icon/48x48/help.png
+help.icon.medium=icon/32x32/help.png
+help.icon.small=icon/16x16/help.gif
+help.main.set=help/MainHelp.hs
+
+faq.title=PRIDE Inspector FAQ
+faq.tooltip=Open PRIDE Inspector FAQ Document
+
+open.pride.website.title=PRIDE Webpage
+open.pride.inspector.website.title=PRIDE Inspector Webpage
+
+feedback.title=Submit Feedback
+
+# check update menu item
+check.update.desc.title=Check for Update...
+
+# about menu item
+about.title=About PRIDE Inspector
+
+exit.title=Exit
+
+# try samples
+open.pride.xml.example.title=PRIDE XML
+open.mzml.example.title=mzML
+
+data.source.title=Experiments
+data.source.small.icon=icon/16x16/data_source.gif
+data.source.tooltip=Display data sources
+
+property.small.icon=icon/16x16/property.png
+property.title=Property
+property.tooltip=Display Spectrum Properties
+
+loading.small.icon=icon/16x16/loading.gif
+
+file.source.small.icon=icon/16x16/xml_file.gif
+file.source.loading.small.icon=icon/16x16/kit_loading.gif
+database.source.small.icon=icon/16x16/open_database.gif
+database.source.loading.small.icon=icon/16x16/kit_loading.gif
+
+data.source.viewer.title=Experiments
+data.source.viewer.small.icon=icon/16x16/data_source.gif
+data.source.viewer.tooltip=Opened Experiments
+
+experiment.tree.viewer.title=Experiments
+experiment.tree.viewer.small.icon=icon/16x16/experiment_tree_enable.gif
+experiment.tree.viewer.node.small.icon=icon/16x16/experiment_tree_node_blue.png
+experiment.tree.viewer.root.node.small.icon=icon/16x16/open_database.gif
+experiment.tree.viewer.find.node.small.icon=icon/16x16/find_experiment.png
+experiment.tree.viewer.tooltip=List of experiments
+
+summary.report.viewer.small.icon=icon/16x16/experiment_tree_enable.gif
+summary.report.viewer.title=Experiment Summary
+summary.report.viewer.tooltip=Summary report on selected experiment
+
+navigation.expand.small.icon=icon/16x16/navigation_expand.gif
+navigation.collapse.small.icon=icon/16x16/navigation_collapse.gif
+
+open.ptm.small.icon=icon/16x16/view.png
+expand.table.icon.small=icon/16x16/chart_zoom_in.png
+
+export.enabled.small.icon=icon/16x16/export_enable.gif
+export.disabled.small.icon=icon/16x16/export_disable.gif
+export.title=Spectra (.mgf)
+export.tooltip=Export spectra into MGF format
+
+export.identification.title=Protein-Peptide Mappings
+export.identification.tooltip=Export proteins and Peptides into tab delimited format.
+
+export.spectrum.desc.title=Spectrum Table
+export.spectrum.desc.tooltip=Export spectrum descriptions into tab delimited format.
+
+export.identification.desc.title=Protein Table
+export.identification.desc.tooltip=Export protein details into tab delimited format.
+
+export.peptide.desc.title=Peptide Table
+
+chart.icon.desc=Chart
+chart.icon.tooltips=Chart
+chart.icon.small=icon/16x16/stats.png
+
+chart.warning.icon.small=icon/16x16/warning.png
+
+
+chart_loading.desc=Loading
+chart_loading.tooltip.small=Loading charts
+chart_loading.icon.small=icon/16x16/stats_loading.gif
+
+chart_auto_adjust.desc=AutoAdjust
+chart_auto_adjust.tooltip=Auto adjust the chart axis
+chart_auto_adjust.icon.small=icon/16x16/chart_auto_adjust.png
+chart_auto_adjust.icon.large=icon/32x32/chart_auto_adjust.png
+
+chart_all_charts.desc=All thumbnails
+chart_all_charts.tooltip=Show all the chart thumbnails
+chart_all_charts.icon.small=icon/16x16/chart_all_charts.png
+chart_all_charts.icon.large=icon/32x32/chart_all_charts.png
+
+chart_legend.desc=Legend
+chart_legend.tooltip=Legend
+chart_legend.icon.small=icon/16x16/chart_legend.png
+chart_legend.icon.large=icon/32x32/chart_legend.png
+
+chart_options.desc=Options
+chart_options.tooltip=Show the options
+chart_options.icon.large=icon/32x32/chart_options.png
+
+chart_previous.desc=Back
+chart_previous.tooltip=Show the previous chart
+chart_previous.icon.small=icon/16x16/chart_back.png
+chart_previous.icon.large=icon/32x32/chart_back.png
+
+chart_next.desc=Next
+chart_next.tooltip=Show the next chart
+chart_next.icon.small=icon/16x16/chart_next.png
+chart_next.icon.large=icon/32x32/chart_next.png
+
+chart_info.desc=Info
+chart_info.tooltip=Information
+chart_info.icon.small=icon/16x16/chart_info.png
+chart_info.icon.large=icon/32x32/chart_info.png
+
+chart_zoom_in.desc=Zoom
+chart_zoom_in.tooltip=Zoom
+chart_zoom_in.icon.small=icon/16x16/chart_zoom_in.png
+
+chart_warning.desc=Warning
+chart_warning.tooltip=Warning
+chart_warning.icon.medium=icon/48x48/chart_warning.png
+chart_warning.icon.small=icon/32x32/chart_warning.png
+
+# icons for popup menu copy cell and copy row
+copy.cell.title=Copy Cell
+copy.cell.small.icon=icon/16x16/copy_cell.gif
+
+copy.row.title=Copy Rows
+copy.row.small.icon=icon/16x16/copy_row.png
+
+# icons for popup menu select all
+select.all.title=Select All
+deselect.all.title=Deselect All
+
+# icon for welcome pane
+puzzle.bulletin.icon.medium=icon/48x48/puzzle.png
+puzzle.bulletin.icon.small=icon/16x16/puzzle.png
+
+# pride logo
+pride.main.large.logo=logo/prideInspector-medium.png
+
+# icon for load spectra and chromatogram
+load.all.mzdata.title=Load All
+load.all.mzdata.tooltip=Load All Data
+load.all.mzdata.small.icon=icon/16x16/load_all.png
+load.next.mzdata.title=Load Next
+load.next.mzdata.tooltip=Load Next Batch
+load.next.mzdata.small.icon=icon/16x16/load_next.png
+
+#download protein name
+load.protein.detail.small.icon=icon/16x16/load_next.png
+load.protein.detail.title=Protein Details
+
+# set control sample
+set.control.sample.title=Set Control Sample
+set.control.sample.small.icon=icon/16x16/setting.png
+
+# icons for different tabs
+loading.large.icon=icon/64x64/loading.gif
+general.tab.icon.small=icon/16x16/general.png
+general.tab.loading.icon.small=icon/16x16/general_loading.gif
+identification.tab.icon.small=icon/16x16/view.png
+identification.tab.loading.icon.small=icon/16x16/view_loading.gif
+peptide.tab.icon.small=icon/16x16/view.png
+peptide.tab.loading.icon.small=icon/16x16/view_loading.gif
+mzdata.tab.icon.small=icon/16x16/view.png
+mzdata.tab.loading.icon.small=icon/16x16/view_loading.gif
+quantitation.tab.icon.small=icon/16x16/view.png
+quantitation.tab.loading.icon.small=icon/16x16/view_loading.gif
+
+# loading text
+loading.title =  Loading... Please wait
+
+# text for about pane
+about.pride.main.logo=logo/pride-logo.png
+about.bottom.line.text=PRIDE Inspector-{0}, java version {1}
+about.text=PRIDE Inspector is brought to you by\n\
+           \n\
+           Rui Wang\n\
+           Antonio Fabregat Mundo\n\
+           Daniel Rios\n\
+           Joe Foster\n\
+           David Ovelleiro\n\
+           Richard Cote\n\
+           Johannes Griss\n\
+           Florian Reisinger\n\
+           Juan Antonio Vizcaino\n\
+
+# out of memory message
+out.of.memory.title=Out of Memory
+
+# message board icons
+error.message.small.icon=icon/32x32/error_message.png
+info.message.small.icon=icon/32x32/info_message.png
+warning.message.small.icon=icon/32x32/warning_message.png
+
+# message
+welcome.message=<html>Welcome to PRIDE Inspector <br/> - <b>Message Board</b> will show you the latest news and updates.</html>
+new.update.message=<html><b>A new version of PRIDE Inspector is available</b>.<br>- You can download it from http://code.google.com/a/pride-toolsuite.</html>
+
+#pride inspector logo
+pride.inspector.logo.small.icon=icon/16x16/prideInspector-logo-small.png
+pride.inspector.logo.medium.icon=icon/32x32/prideInspector-logo-medium.png
+
+#notification icon
+exception.notify.small.icon=icon/16x16/exception_notify.png
+no.exception.notify.small.icon=icon/16x16/no_exception_notify.png
+
+#curation
+include.curation.menu=false
+make.experiment.public.title=Make Experiment Public...
+create.reviewer.title=Create Reviewer Account...
+
+# invalid experiment accession message
+invalid.experiment.accession=<html>\n\
+                              <b>Cannot open PRIDE accessions: \n\
+                              [insert]\n\
+                              </b><br/><br/>\n\
+                              This could due to the following reasons\n\
+                              <ul>\n\
+                                <li>These experiments are not available in PRIDE public instance yet</li>\n\
+                                <li>These experiments are too big to open</li>\n\
+                              </ul>\n\
+                              </html>\n\
+
+# download warning icon
+download.warning.icon.small=icon/16x16/warning.png
+
+# open experiment icon
+open.experiment.icon.small = icon/16x16/view.png
+
+# report summary icon
+report.item.success.icon.small=icon/16x16/report_success.png
+report.item.error.icon.small=icon/16x16/report_error.png
+report.item.warning.icon.small=icon/16x16/report_warning.png
+report.item.plain.icon.small=icon/16x16/report_plain.png
+
+# spectrum and protein sequence tab details
+spectrum.tab.title=Spectrum
+spectrum.tab.tooltip=Spectrum for selected peptide
+protein.sequence.tab.title=Sequence
+protein.sequence.tab.tooltip=Protein sequence converage for selected protein
+protein.sequence.missing.icon.small=icon/16x16/warning.png
+protein.sequence.missing.title = Protein sequences are not available, would you like to download them now?
+protein.sequence.unavailable.title = Protein sequence is not available
+
+# internet connection
+internet.connection.warning.short.message=Internet Connection Required
+
+# warning message
+open.existing.experiment.title = Experiment Already Opened
+internet.connection.warning.message = <html><b>Please check whether you have Internet connection</b></html>
+chart.warning.message=It may take some time to compute these summary charts for big files, do you want to start?
+chart.time.warning.message=Calculating summary charts requires a full file scan, this may take a few minutes, thank you for waiting.
+no.protein.selection.warning.message=Select Proteins Using Checkbox Above
+no.spectrum.warning.message = Spectrum Not Available
+out.of.memory.message=Pride Inspector has run out memory.\nYou can increase the memory limit in ./config/config.props.\nCheck out the FAQ section in the help document for details.
+
+
+# export quantitative data
+export.quantitative.data.title = Export
+export.quantitative.data.long.title = Export Quantitative Data
+export.quantitative.data.small.icon= icon/16x16/export_enable.gif
+
+# quantitative histogram labels
+quant.histogram.title =  Protein Quantification
+quant.histogram.x.axis = Reagent
+quant.histogram.y.axis = Ratio
+
+           
+

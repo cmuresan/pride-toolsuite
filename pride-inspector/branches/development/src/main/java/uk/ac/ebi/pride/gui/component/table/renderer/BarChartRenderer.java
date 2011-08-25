@@ -100,7 +100,7 @@ public class BarChartRenderer extends JLabel implements TableCellRenderer {
             int barWidth = -1;
             int barHeight = fontAscent;
             // calculate x position
-            xPos = width / 3;
+            xPos = width / 2;
             // calculate referent point if exist
             int referenceWidth = -1;
             if (referenceValue != minimumValue && referenceValue != maximumValue) {

@@ -19,10 +19,17 @@ import java.util.*;
  * Time: 11:36
  */
 public class RetrieveSequenceCoverageTask extends AbstractDataAccessTask<Void, Tuple<TableContentType, Object>> {
+
+    private static final String DEFAULT_TASK_NAME = "Calculating Sequence Coverage";
+
+    private static final String DEFAULT_TASK_DESC = "Calculating Sequence Coverage";
+
     private List<Comparable> identIds;
 
     public RetrieveSequenceCoverageTask(List<Comparable> identIds, DataAccessController controller) {
         super(controller);
+        this.setName(DEFAULT_TASK_NAME);
+        this.setDescription(DEFAULT_TASK_DESC);
         this.identIds = new ArrayList<Comparable>(identIds);
     }
 

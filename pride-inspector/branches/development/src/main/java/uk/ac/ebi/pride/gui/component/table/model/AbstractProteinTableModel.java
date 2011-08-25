@@ -32,8 +32,8 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
         PROTEIN_ACCESSION_COLUMN("Submitted", "Submitted Protein Accession From Source"),
         MAPPED_PROTEIN_ACCESSION_COLUMN("Mapped", "Pride Mapped Protein Accession"),
         PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
-        PROTEIN_STATUS("Protein Status", "Status Of The Protein Accession"),
-        PROTEIN_SEQUENCE_COVERAGE("Sequence Coverage", "Protein Sequence Coverage"),
+        PROTEIN_STATUS("Status", "Status Of The Protein Accession"),
+        PROTEIN_SEQUENCE_COVERAGE("Coverage", "Protein Sequence Coverage"),
         IDENTIFICATION_SCORE_COLUMN("Score", "PRIDE Protein Score"),
         IDENTIFICATION_THRESHOLD_COLUMN("Threshold", "PRIDE Protein Threshold"),
         NUMBER_OF_PEPTIDES("# Peptides", "Number of Peptides"),
@@ -69,10 +69,6 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
 
     public AbstractProteinTableModel(DataAccessController controller) {
         this.controller = controller;
-    }
-
-    public DataAccessController getController() {
-        return controller;
     }
 
     @Override

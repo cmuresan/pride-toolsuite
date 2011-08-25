@@ -26,6 +26,11 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
     private static final String DEFAULT_TASK_DESC = "Downloading protein details using web services";
 
     /**
+     * The number of proteins for each batch download
+     */
+    private static final int MAX_BATCH_DOWNLOAD_SIZE = 10;
+
+    /**
      * a collection of protein accessions to be retrieved
      */
     private Collection<String> proteinAccessions;
@@ -50,7 +55,7 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
         this.setName(DEFAULT_TASK_NAME);
         this.setDescription(DEFAULT_TASK_DESC);
 
-        this.proteinAccessions = new HashSet<String>(proteinAccs);
+        this.proteinAccessions = new ArrayList<String>(proteinAccs);
 
         this.fetcher = new ProteinDetailFetcher();
     }
@@ -59,13 +64,10 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
     protected Void doInBackground() throws Exception {
 
         if (!proteinAccessions.isEmpty()) {
-            showLoadingMessages();
+//            showLoadingMessages();
 
             // accession buffer
-            Set<String> accBuffer = new HashSet<String>();
-
-            // buffer size
-            int maxBufferSize = 20;
+            List<String> accBuffer = new ArrayList<String>();
 
             // protein map
             Map<String, Protein> proteins = new HashMap<String, Protein>();
@@ -84,7 +86,7 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
                     }
 
                     accBuffer.add(acc);
-                    if (accBuffer.size() == maxBufferSize) {
+                    if (accBuffer.size() == MAX_BATCH_DOWNLOAD_SIZE) {
                         // fetch and publish protein details
                         fetchAndPublish(accBuffer, proteins);
 
@@ -98,7 +100,7 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
                     }
                 }
 
-                if (!accBuffer.isEmpty()) {
+                if (!accBuffer.isEmpty() || !proteins.isEmpty()) {
                     fetchAndPublish(accBuffer, proteins);
                 }
             } catch (InterruptedException e) {
@@ -133,7 +135,7 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
      * @param proteins  protein map
      * @throws Exception    exception while fetching the protein
      */
-    private void fetchAndPublish(Set<String> accs, Map<String, Protein> proteins) throws Exception {
+    private void fetchAndPublish(Collection<String> accs, Map<String, Protein> proteins) throws Exception {
         // fetch protein details
         Map<String, Protein> results = fetcher.getProteinDetails(accs);
         // add results to cache

@@ -172,7 +172,7 @@ puzzle.bulletin.icon.medium=icon/48x48/puzzle.png
 puzzle.bulletin.icon.small=icon/16x16/puzzle.png
 
 # pride logo
-pride.main.large.logo=logo/pride-colour-logo.jpg
+pride.main.large.logo=logo/prideInspector-medium.png
 
 # icon for load spectra and chromatogram
 load.all.mzdata.title=Load All
@@ -234,8 +234,8 @@ welcome.message=<html>Welcome to PRIDE Inspector <br/> - <b>Message Board</b> wi
 new.update.message=<html><b>A new version of PRIDE Inspector is available</b>.<br>- You can download it from http://code.google.com/a/pride-toolsuite.</html>
 
 #pride inspector logo
-pride.inspector.logo.small.icon=icon/16x16/pride-inspector-logo-small.png
-pride.inspector.logo.medium.icon=icon/32x32/pride-inspector-logo-medium.png
+pride.inspector.logo.small.icon=icon/16x16/prideInspector-logo-small.png
+pride.inspector.logo.medium.icon=icon/32x32/prideInspector-logo-medium.png
 
 #notification icon
 exception.notify.small.icon=icon/16x16/exception_notify.png

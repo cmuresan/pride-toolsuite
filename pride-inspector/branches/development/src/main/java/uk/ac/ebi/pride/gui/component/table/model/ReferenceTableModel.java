@@ -41,10 +41,7 @@ public class ReferenceTableModel extends ListTableModel<Reference> {
         }
     }
 
-    private List<Reference> references;
-
     public ReferenceTableModel(Collection<Reference> references) {
-        this.references = new ArrayList<Reference>(references);
         // add the references to table model
         for (Reference reference : references) {
             addData(reference);
@@ -73,14 +70,16 @@ public class ReferenceTableModel extends ListTableModel<Reference> {
         String doi = null;
 
         List<CvParam> cvs = newData.getCvParams();
-        // pubmed
-        for (CvParam cv : cvs) {
-            String name = cv.getName();
-            String value = cv.getValue();
-            if (cv.getCvLookupID().toLowerCase().equals("pubmed") || cv.getName().toLowerCase().equals("pubmed")) {
-                pubmed = (name != null && !"".equals(name)) ? name : value;
-            } else if (cv.getCvLookupID().toLowerCase().equals("doi") || cv.getName().toLowerCase().equals("doi")) {
-                doi = (name != null && !"".equals(name)) ? name : value;
+        if (cvs != null) {
+            // pubmed
+            for (CvParam cv : cvs) {
+                String name = cv.getName();
+                String value = cv.getValue();
+                if (cv.getCvLookupID().toLowerCase().equals("pubmed") || cv.getName().toLowerCase().equals("pubmed")) {
+                    pubmed = (name != null && !"".equals(name)) ? name : value;
+                } else if (cv.getCvLookupID().toLowerCase().equals("doi") || cv.getName().toLowerCase().equals("doi")) {
+                    doi = (name != null && !"".equals(name)) ? name : value;
+                }
             }
         }
 

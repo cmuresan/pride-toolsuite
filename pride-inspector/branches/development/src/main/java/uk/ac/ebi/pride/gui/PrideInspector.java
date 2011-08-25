@@ -196,8 +196,6 @@ public class PrideInspector extends Desktop {
         try {
 //            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
-//            UIManager.setLookAndFeel("com.jtattoo.plaf.smart.SmartLookAndFeel");
-//            SubstanceLookAndFeel.setSkin(new ModerateSkin());  best alternative
 
         } catch (Exception e) {
             logger.error("Failed to set the look and feel", e);

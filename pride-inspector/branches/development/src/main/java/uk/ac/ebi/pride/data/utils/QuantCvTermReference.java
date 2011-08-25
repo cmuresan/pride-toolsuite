@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.data.utils;
 
-import sun.jvm.hotspot.debugger.cdbg.AccessControl;
 import uk.ac.ebi.pride.data.core.CvParam;
 
 /**

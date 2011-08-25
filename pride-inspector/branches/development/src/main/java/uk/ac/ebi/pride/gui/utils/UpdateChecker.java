@@ -79,7 +79,7 @@ public class UpdateChecker {
      */
     public static void showUpdateDialog() {
         int option = JOptionPane.showConfirmDialog(null, "<html><b>A new version of PRIDE Inspector is available</b>.<br><br> " +
-                "Press <b>Yes</b> to open a web page where you can download PRIDE Inspector manually <br> and learn more about the new version.</html>", "Update Info", JOptionPane.YES_NO_OPTION);
+                "Would you like to update?</html>", "Update Info", JOptionPane.YES_NO_OPTION);
 
         if (option == JOptionPane.YES_OPTION) {
             DesktopContext context = Desktop.getInstance().getDesktopContext();

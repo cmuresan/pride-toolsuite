@@ -78,20 +78,22 @@ public class GeneralMetadataPanel extends JPanel {
         Set<String> tissuesAcc = new HashSet<String>();
 
         List<Sample> samples = metaData.getSamples();
-        for (Sample sample : samples) {
-            for (CvParam cvParam : sample.getCvParams()) {
-                String cvAcc = cvParam.getAccession();
-                String name = cvParam.getName();
-                String cvLabel = cvParam.getCvLookupID().toLowerCase();
-                if ("newt".equals(cvLabel)) {
-                    if (!speciesAcc.contains(cvAcc)) {
-                        species += ("".equals(species) ? "" : ", ") + name;
-                        speciesAcc.add(cvAcc);
-                    }
-                } else if ("bto".equals(cvLabel)) {
-                    if (!tissuesAcc.contains(cvAcc)) {
-                        tissues += ("".equals(tissues) ? "" : ", ") + name;
-                        tissuesAcc.add(cvAcc);
+        if (samples != null) {
+            for (Sample sample : samples) {
+                for (CvParam cvParam : sample.getCvParams()) {
+                    String cvAcc = cvParam.getAccession();
+                    String name = cvParam.getName();
+                    String cvLabel = cvParam.getCvLookupID().toLowerCase();
+                    if ("newt".equals(cvLabel)) {
+                        if (!speciesAcc.contains(cvAcc)) {
+                            species += ("".equals(species) ? "" : ", ") + name;
+                            speciesAcc.add(cvAcc);
+                        }
+                    } else if ("bto".equals(cvLabel)) {
+                        if (!tissuesAcc.contains(cvAcc)) {
+                            tissues += ("".equals(tissues) ? "" : ", ") + name;
+                            tissuesAcc.add(cvAcc);
+                        }
                     }
                 }
             }

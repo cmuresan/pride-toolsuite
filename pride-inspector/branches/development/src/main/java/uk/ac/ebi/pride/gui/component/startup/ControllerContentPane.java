@@ -110,7 +110,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
                     // check chromatogram
                     if (categories.contains(DataAccessController.ContentCategory.CHROMATOGRAM)) {
-                        if (hasSpectrum) {
+                        if (hasChromatogram) {
                             EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Chromatograms found", "This data source contains Chromatograms")));
                         } else {
                             EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Chromatograms not found", "This data source does not contain Chromatograms")));

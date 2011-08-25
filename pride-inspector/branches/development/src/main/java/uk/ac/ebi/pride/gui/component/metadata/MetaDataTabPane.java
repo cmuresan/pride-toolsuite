@@ -19,6 +19,7 @@ import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.EDTUtils;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
+import javax.help.CSH;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -43,6 +44,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
 
     private static final String PANE_TITLE = "Overview";
 
+    private JPanel metaDataTopPanel;
     private JPanel metaDataContainer;
     private JPanel metaDataControlBar;
     private JPanel generalMetadataPanel;
@@ -94,7 +96,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
                 createMetaDataPanels(metaData);
 
                 // tool bar
-                createToolbar();
+                createTopPanel();
 
                 // add to scroll pane
                 JScrollPane scrollPane = new JScrollPane(metaDataContainer,
@@ -154,7 +156,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
         metaDataContainer.removeAll();
-        metaDataContainer.add(metaDataControlBar, BorderLayout.NORTH);
+        metaDataContainer.add(metaDataTopPanel, BorderLayout.NORTH);
         if (GENERAL.equals(cmd)) {
             metaDataContainer.add(generalMetadataPanel, BorderLayout.CENTER);
         } else if (SAMPLE_PROTOCOL.equals(cmd)) {
@@ -172,11 +174,37 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
         metaDataContainer.setBackground(Color.white);
     }
 
+    private void createTopPanel() {
+        metaDataTopPanel = new JPanel(new BorderLayout());
+        metaDataTopPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.gray));
+
+
+        // create tool bar
+        createToolbar();
+        metaDataTopPanel.add(metaDataControlBar, BorderLayout.CENTER);
+
+        // create help button
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBackground(Color.white);
+        // Help button
+        // load icon
+        Icon helpIcon = GUIUtilities.loadIcon(appContext.getProperty("help.icon.small"));
+        JButton helpButton = GUIUtilities.createLabelLikeButton(helpIcon, null);
+        helpButton.setToolTipText("Help");
+        helpButton.setForeground(Color.blue);
+        CSH.setHelpIDString(helpButton, "help.browse.general");
+        helpButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
+
+        buttonPanel.add(helpButton);
+        metaDataTopPanel.add(buttonPanel, BorderLayout.EAST);
+
+        metaDataContainer.add(metaDataTopPanel, BorderLayout.NORTH);
+    }
+
 
     private void createToolbar() {
         metaDataControlBar = new JPanel();
         metaDataControlBar.setBackground(Color.white);
-        metaDataControlBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.gray));
         metaDataControlBar.setLayout(new FlowLayout(FlowLayout.CENTER));
         ButtonGroup buttonGroup = new ButtonGroup();
         JToggleButton generalButton = new JToggleButton(GENERAL);
@@ -197,7 +225,6 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
         metaDataControlBar.add(generalButton);
         metaDataControlBar.add(proSamButton);
         metaDataControlBar.add(insSofButton);
-        metaDataContainer.add(metaDataControlBar, BorderLayout.NORTH);
 
         // set default selection
         generalButton.setSelected(true);

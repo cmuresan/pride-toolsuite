@@ -49,6 +49,8 @@ public class HyperLinkCellRenderer extends JLabel implements TableCellRenderer {
             } else {
                 this.setText(text);
             }
+        } else {
+            this.setText(null);
         }
         // set background
         if (isSelected) {

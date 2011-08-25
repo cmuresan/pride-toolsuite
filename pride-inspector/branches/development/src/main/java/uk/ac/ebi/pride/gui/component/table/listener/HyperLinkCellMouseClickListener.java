@@ -4,13 +4,21 @@ import uk.ac.ebi.pride.gui.url.HttpUtilities;
 import uk.ac.ebi.pride.gui.url.HyperLinkGenerator;
 
 import javax.swing.*;
-import javax.swing.JTable;import javax.swing.table.TableModel;
+import javax.swing.JTable;
+import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.Point;import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;import java.lang.Object;import java.lang.Override;import java.lang.String;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
+ * Mouse listener for clicking hyper link
+ * <p/>
  * User: rwang
  * Date: 10-Sep-2010
  * Time: 17:05:09
@@ -20,12 +28,19 @@ public class HyperLinkCellMouseClickListener extends MouseAdapter {
     private JTable table;
     private String columnHeader;
     private HyperLinkGenerator urlGen;
+    private Pattern pattern;
 
     public HyperLinkCellMouseClickListener(JTable table, String columnHeader,
-                                      HyperLinkGenerator generator) {
+                                           HyperLinkGenerator generator) {
+        this(table, columnHeader, generator, null);
+    }
+
+    public HyperLinkCellMouseClickListener(JTable table, String columnHeader,
+                                           HyperLinkGenerator generator, Pattern pattern) {
         this.table = table;
         this.columnHeader = columnHeader;
         this.urlGen = generator;
+        this.pattern = pattern;
     }
 
     @Override
@@ -37,9 +52,17 @@ public class HyperLinkCellMouseClickListener extends MouseAdapter {
             TableModel tableModel = table.getModel();
             Object val = tableModel.getValueAt(table.convertRowIndexToModel(row), table.convertColumnIndexToModel(col));
             if (val != null) {
-                String url = urlGen.generate(val);
-                if (url != null) {
-                    HttpUtilities.openURL(url);
+                String text = val.toString();
+                boolean match = true;
+                if (pattern != null) {
+                    Matcher m = pattern.matcher(text);
+                    match = m.matches();
+                }
+                if (match) {
+                    String url = urlGen.generate(text);
+                    if (url != null) {
+                        HttpUtilities.openURL(url);
+                    }
                 }
             }
         }

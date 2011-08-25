@@ -17,6 +17,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * TableFactory can be used to different type of tables.
@@ -111,7 +112,7 @@ public class TableFactory {
         deltaMassColumn.setCellRenderer(renderer);
         // set width
         int deltaMassColumnNum = deltaMassColumn.getModelIndex();
-        columnModel.getColumn(deltaMassColumnNum).setPreferredWidth(150);
+        columnModel.getColumn(deltaMassColumnNum).setPreferredWidth(200);
 
         // peptide sequence present in protein sequence
         TableColumnExt peptideFitColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
@@ -226,7 +227,8 @@ public class TableFactory {
         // pubmed
         String pubMedColumnHeader = ReferenceTableModel.TableHeader.PUBMED.getHeader();
         TableColumnExt pubMedColumn = (TableColumnExt) referenceTable.getColumn(pubMedColumnHeader);
-        pubMedColumn.setCellRenderer(new HyperLinkCellRenderer());
+        Pattern pubmedPattern = Pattern.compile("\\d+");
+        pubMedColumn.setCellRenderer(new HyperLinkCellRenderer(pubmedPattern));
         int pubMedColumnNum = pubMedColumn.getModelIndex();
         columnModel.getColumn(pubMedColumnNum).setMaxWidth(100);
 
@@ -239,7 +241,7 @@ public class TableFactory {
 
         // add mouse motion listener
         referenceTable.addMouseMotionListener(new TableCellMouseMotionListener(referenceTable, pubMedColumnHeader, doiColumnHeader));
-        referenceTable.addMouseListener(new HyperLinkCellMouseClickListener(referenceTable, pubMedColumnHeader, new PrefixedHyperLinkGenerator(Constants.PUBMED_URL_PERFIX)));
+        referenceTable.addMouseListener(new HyperLinkCellMouseClickListener(referenceTable, pubMedColumnHeader, new PrefixedHyperLinkGenerator(Constants.PUBMED_URL_PERFIX), pubmedPattern));
         referenceTable.addMouseListener(new HyperLinkCellMouseClickListener(referenceTable, doiColumnHeader, new DOIHyperLinkGenerator(Constants.DOI_URL_PREFIX)));
 
         return referenceTable;
@@ -479,7 +481,7 @@ public class TableFactory {
 
         // set width
         int deltaMassColumnNum = deltaMassColumn.getModelIndex();
-        columnModel.getColumn(deltaMassColumnNum).setPreferredWidth(150);
+        columnModel.getColumn(deltaMassColumnNum).setPreferredWidth(200);
 
         // precursor m/z column
         TableColumnExt precursorMzColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PRECURSOR_MZ_COLUMN.getHeader());

@@ -72,15 +72,15 @@ public class MetaData extends ParamGroup {
                     List<DataProcessing> dataProcessing,
                     ParamGroup params) {
         super(params);
-        setId(id);
-        setAccession(accession);
-        setVersion(version);
-        setFileDescription(fileDesc);
-        setSamples(samples);
-        setSoftwares(softwares);
-        setScanSettings(scanSettings);
-        setInstrumentConfigurations(instrumentConfigurations);
-        setDataProcessings(dataProcessing);
+        this.id = id;
+        this.accession = accession;
+        this.version = version;
+        this.fileDescription = fileDesc;
+        this.samples = samples;
+        this.softwares = softwares;
+        this.scanSettings = scanSettings;
+        this.instrumentConfigurations = instrumentConfigurations;
+        this.dataProcessings = dataProcessing;
     }
 
     public Comparable getId() {

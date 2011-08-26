@@ -37,10 +37,10 @@ public class CVLookup implements MassSpecObject {
      */
     public CVLookup(String cvLabel, String fullName,
                     String version, String address) {
-        setCvLabel(cvLabel);
-        setFullName(fullName);
-        setVersion(version);
-        setAddress(address);
+        this.cvLabel = cvLabel;
+        this.fullName = fullName;
+        this.version = version;
+        this.address = address;
     }
 
     public String getAddress() {

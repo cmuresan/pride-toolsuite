@@ -39,9 +39,9 @@ public class Protocol extends ParamGroup {
                     List<ParamGroup> steps,
                     ParamGroup params) {
         super(params);
-        setId(id);
-        setName(name);
-        setProtocolSteps(steps);
+        this.id = id;
+        this.name = name;
+        this.protocolSteps = steps;
     }
 
     public String getId() {

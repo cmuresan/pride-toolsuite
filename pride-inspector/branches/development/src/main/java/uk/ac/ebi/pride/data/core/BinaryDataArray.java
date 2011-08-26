@@ -46,8 +46,8 @@ public class BinaryDataArray extends ParamGroup {
      */
     public BinaryDataArray(DataProcessing dataProcessing, double[] binaryDoubleArr, ParamGroup params) {
         super(params);
-        setDataProcessing(dataProcessing);
-        setDoubleArray(binaryDoubleArr);
+        this.dataProcessing = dataProcessing;
+        this.binaryDoubleArray = binaryDoubleArr;
     }
 
     public double[] getDoubleArray() {

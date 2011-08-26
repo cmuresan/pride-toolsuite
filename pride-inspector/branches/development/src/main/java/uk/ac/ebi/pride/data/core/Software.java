@@ -33,8 +33,8 @@ public class Software extends ParamGroup {
                     String version,
                     ParamGroup params) {
         super(params);
-        setId(id);
-        setVersion(version);
+        this.id = id;
+        this.version = version;
     }
 
     public String getId() {

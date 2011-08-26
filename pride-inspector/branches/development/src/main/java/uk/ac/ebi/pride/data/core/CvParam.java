@@ -37,8 +37,8 @@ public class CvParam extends Parameter {
                    String unitName,
                    String unitCVLookupID) {
         super(name, value, unitAcc, unitName, unitCVLookupID);
-        setAccession(accession);
-        setCvLookupID(cvLookupID);
+        this.accession = accession;
+        this.cvLookupID = cvLookupID;
     }
 
     public String getCvLookupID() {

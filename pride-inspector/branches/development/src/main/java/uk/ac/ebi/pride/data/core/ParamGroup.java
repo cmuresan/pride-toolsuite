@@ -51,8 +51,8 @@ public class ParamGroup implements MassSpecObject {
      */
     public ParamGroup(List<CvParam> cvParams,
                       List<UserParam> userParams) {
-        setCvParams(cvParams);
-        setUserParams(userParams);
+        this.cvParams = cvParams;
+        this.userParams = userParams;
     }
 
     public List<CvParam> getCvParams() {

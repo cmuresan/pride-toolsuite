@@ -44,9 +44,9 @@ public class SourceFile extends ParamGroup {
                       String path,
                       ParamGroup params) {
         super(params);
-        setId(id);
-        setName(name);
-        setPath(path);
+        this.id = id;
+        this.name = name;
+        this.path = path;
     }
 
     public String getId() {

@@ -44,11 +44,11 @@ public abstract class Parameter implements MassSpecObject {
                      String unitAcc,
                      String unitName,
                      String unitCVLookupID) {
-        setName(name);
-        setValue(value);
-        setUnitAcc(unitAcc);
-        setUnitName(unitName);
-        setUnitCVLookupID(unitCVLookupID);
+        this.name = name;
+        this.value = value;
+        this.unitAcc = unitAcc;
+        this.unitName = unitName;
+        this.unitCVLookupID = unitCVLookupID;
     }
 
     public String getName() {

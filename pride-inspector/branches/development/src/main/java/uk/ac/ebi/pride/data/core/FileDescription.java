@@ -46,9 +46,9 @@ public class FileDescription implements MassSpecObject {
     public FileDescription(ParamGroup fileContent,
                            List<SourceFile> sourceFiles,
                            List<ParamGroup> contacts) {
-        setFileContent(fileContent);
-        setSourceFiles(sourceFiles);
-        setContacts(contacts);
+        this.fileContent = fileContent;
+        this.sourceFiles = sourceFiles;
+        this.contacts = contacts;
     }
 
     public ParamGroup getFileContent() {

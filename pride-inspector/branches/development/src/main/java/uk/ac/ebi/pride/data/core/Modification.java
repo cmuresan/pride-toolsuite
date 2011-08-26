@@ -58,12 +58,12 @@ public class Modification extends ParamGroup {
                         List<Double> avgMassDeltas,
                         int location) {
         super(params);
-        setAccession(accession);
-        setModDatabase(modDatabase);
-        setModDatabaseVersion(modDatabaseVersion);
-        setMonoMassDeltas(monoMassDeltas);
-        setAvgMassDeltas(avgMassDeltas);
-        setLocation(location);
+        this.accession = accession;
+        this.modDatabase = modDatabase;
+        this.modDatabaseVersion = modDatabaseVersion;
+        this.monoMassDeltas = monoMassDeltas;
+        this.avgMassDeltas = avgMassDeltas;
+        this.location = location;
     }
 
     public String getAccession() {

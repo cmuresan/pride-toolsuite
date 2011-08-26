@@ -54,12 +54,12 @@ public class Peptide extends ParamGroup implements Comparable {
                    List<FragmentIon> fragmentIons,
                    Spectrum spectrum) {
         super(params);
-        setSequence(sequence);
-        setStart(start);
-        setEnd(end);
-        setModifications(modifications);
-        setFragmentIons(fragmentIons);
-        setSpectrum(spectrum);
+        this.sequence = sequence;
+        this.start = start;
+        this.end = end;
+        this.modifications = modifications;
+        this.fragmentIons = fragmentIons;
+        this.spectrum = spectrum;
     }
 
     public String getSequence() {

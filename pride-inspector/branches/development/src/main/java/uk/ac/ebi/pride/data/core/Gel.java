@@ -46,11 +46,11 @@ public class Gel extends ParamGroup {
                double molecularWeight,
                double pI) {
         super(params);
-        setGelLink(gelLink);
-        setXCoordinate(xCoordinate);
-        setYCoordinate(yCoordinate);
-        setMolecularWeight(molecularWeight);
-        setPI(pI);
+        this.gelLink = gelLink;
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
+        this.molecularWeight = molecularWeight;
+        this.pI = pI;
     }
 
     public String getGelLink() {

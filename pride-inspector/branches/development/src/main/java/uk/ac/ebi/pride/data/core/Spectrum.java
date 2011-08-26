@@ -97,12 +97,12 @@ public class Spectrum extends MzGraph {
                     ParamGroup params) {
         super(id, index, dataProcessing,
                 arrLength, binaryArray, params);
-        setSpotID(spotID);
-        setSourceFile(sourceFile);
-        setScanList(scanList);
-        setPrecursors(precursors);
-        setProducts(products);
-        setPeptide(peptide);
+        this.spotID = spotID;
+        this.sourceFile = sourceFile;
+        this.scanList = scanList;
+        this.precursors = precursors;
+        this.products = products;
+        this.peptide = peptide;
     }
 
     public String getSpotID() {

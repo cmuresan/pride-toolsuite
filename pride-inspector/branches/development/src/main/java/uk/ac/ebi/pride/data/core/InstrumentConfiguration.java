@@ -66,12 +66,12 @@ public class InstrumentConfiguration extends ParamGroup {
                                    InstrumentComponent detector,
                                    ParamGroup params) {
         super(params);
-        setId(id);
-        setScanSetting(scanSetting);
-        setSoftware(software);
-        setSource(source);
-        setAnalyzer(analyzer);
-        setDetector(detector);
+        this.id = id;
+        this.scanSetting = scanSetting;
+        this.software = software;
+        this.source = source;
+        this.analyzer = analyzer;
+        this.detector = detector;
     }
 
     public String getId() {

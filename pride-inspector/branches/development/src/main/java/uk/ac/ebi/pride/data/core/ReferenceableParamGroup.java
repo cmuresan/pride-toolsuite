@@ -19,7 +19,7 @@ public class ReferenceableParamGroup implements MassSpecObject {
      * @param refMap required.
      */
     public ReferenceableParamGroup(Map<String, ParamGroup> refMap) {
-        setRefMap(refMap);
+        this.refMap = refMap;
     }
 
     public Map<String, ParamGroup> getRefMap() {

@@ -26,7 +26,7 @@ public class Reference extends ParamGroup {
     public Reference(String fullReference,
                      ParamGroup params) {
         super(params);
-        setFullReference(fullReference);
+        this.fullReference = fullReference;
     }
 
     public String getFullReference() {

@@ -44,8 +44,8 @@ public class ProcessingMethod extends ParamGroup {
                             Software software,
                             ParamGroup params) {
         super(params);
-        setOrder(order);
-        setSoftware(software);
+        this.order = order;
+        this.software = software;
     }
 
     public int getOrder() {

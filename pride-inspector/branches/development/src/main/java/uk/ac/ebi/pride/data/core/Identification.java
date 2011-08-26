@@ -92,18 +92,18 @@ public abstract class Identification extends ParamGroup {
                           double threshold,
                           ParamGroup params) {
         super(params);
-        setId(id);
-        setAccession(accession);
-        setAccessionVersion(accessionVersion);
-        setPeptides(peptides);
-        setScore(score);
-        setSearchDatabase(searchDatabase);
-        setSearchDatabaseVersion(searchDatabaseVersion);
-        setSearchEngine(searchEngine);
-        setSequenceCoverage(sequenceCoverage);
-        setSpectrum(spectrum);
-        setSpliceIsoform(spliceIsoform);
-        setThreshold(threshold);
+        this.id = id;
+        this.accession = accession;
+        this.accessionVersion = accessionVersion;
+        this.peptides = peptides;
+        this.score = score;
+        this.searchDatabase = searchDatabase;
+        this.searchDatabaseVersion = searchDatabaseVersion;
+        this.searchEngine = searchEngine;
+        this.sequenceCoverage = sequenceCoverage;
+        this.spectrum = spectrum;
+        this.spliceIsoform = spliceIsoform;
+        this.threshold = threshold;
     }
 
     public Comparable getId() {

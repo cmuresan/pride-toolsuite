@@ -27,8 +27,8 @@ public class DataProcessing implements MassSpecObject {
      * @param methods required and cannot be empty.
      */
     public DataProcessing(String id, List<ProcessingMethod> methods) {
-        setId(id);
-        setProcessingMethods(methods);
+        this.id = id;
+        this.processingMethods = methods;
     }
 
     public String getId() {

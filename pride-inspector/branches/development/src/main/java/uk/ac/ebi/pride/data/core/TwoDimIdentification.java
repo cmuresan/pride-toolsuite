@@ -61,7 +61,7 @@ public class TwoDimIdentification extends Identification {
                 threshold,
                 params);
 
-        setGel(gel);
+        this.gel = gel;
     }
 
     public Gel getGel() {

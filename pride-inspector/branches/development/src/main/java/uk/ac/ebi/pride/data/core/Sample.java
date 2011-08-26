@@ -28,8 +28,8 @@ public class Sample extends ParamGroup {
                   String name,
                   ParamGroup params) {
         super(params);
-        setId(id);
-        setName(name);
+        this.id = id;
+        this.name = name;
     }
 
     public String getId() {

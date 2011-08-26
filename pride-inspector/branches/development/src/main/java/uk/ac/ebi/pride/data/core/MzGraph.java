@@ -50,11 +50,11 @@ public abstract class MzGraph extends ParamGroup {
                    List<BinaryDataArray> binaryArr,
                    ParamGroup params) {
         super(params);
-        setId(id);
-        setIndex(index);
-        setDataProcessing(dataProcessing);
-        setDefaultArrayLength(arrLength);
-        setBinaryDataArrays(binaryArr);
+        this.id = id;
+        this.index = index;
+        this.dataProcessing = dataProcessing;
+        this.defaultArrayLength = arrLength;
+        this.binaryDataArrays = binaryArr;
     }
 
     public List<BinaryDataArray> getBinaryDataArrays() {

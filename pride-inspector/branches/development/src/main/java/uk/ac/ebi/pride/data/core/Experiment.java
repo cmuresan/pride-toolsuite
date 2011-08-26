@@ -91,12 +91,12 @@ public class Experiment extends MetaData {
                 instrumentConfigurations,
                 dataProcessing,
                 params);
-        setTitle(title);
-        setShortLabel(shortLabel);
-        setProtocol(protocol);
-        setReferences(references);
-        setPublicDate(publicDate);
-        setCreationDate(creationDate);
+        this.title = title;
+        this.shortLabel = shortLabel;
+        this.protocol = protocol;
+        this.references = references;
+        this.publicDate = publicDate;
+        this.creationDate = creationDate;
     }
 
     public String getTitle() {

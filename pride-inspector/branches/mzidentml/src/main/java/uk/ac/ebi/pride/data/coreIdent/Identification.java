@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.data.coreIdent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -140,6 +141,18 @@ public abstract class Identification extends IdentifiableParamGroup{
 
     public List<PeptideSequence> getPeptidesSequence(){
         ArrayList<PeptideSequence> result = new ArrayList<PeptideSequence>();
+        List<Peptide> identifiedPeptideList = this.getIdentifiedPeptides();
+        for (Peptide peptide : identifiedPeptideList){
+            result.add(peptide.getPeptideSequence());
+        }
         return result;
+    }
+
+    public List<Peptide> getIdentifiedPeptides(){
+        List<Peptide> IdentifiedPeptides = new ArrayList<Peptide>();
+        for(PeptideEvidence key : peptides.keySet()) {
+            IdentifiedPeptides.addAll(peptides.get(key));
+        }
+        return IdentifiedPeptides;
     }
 }

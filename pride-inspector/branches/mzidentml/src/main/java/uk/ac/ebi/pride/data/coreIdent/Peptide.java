@@ -3,11 +3,12 @@ package uk.ac.ebi.pride.data.coreIdent;
 import java.util.List;
 
 /**
+ * The class Peptide Manage the information for peptide Identifications
  * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 08/08/11
  * Time: 12:39
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class Peptide extends IdentifiableParamGroup {
     /**
@@ -31,7 +32,7 @@ public class Peptide extends IdentifiableParamGroup {
     /**
      * A reference to the identified (poly)peptide sequence in the Peptide element.
      */
-    private PeptideSequence peptideRef = null;
+    private PeptideSequence peptideSequence = null;
     /**
      * For an MS/MS result set, this is the rank of the identification quality as
      * scored by the search engine. 1 is the top rank. If multiple identifications
@@ -88,7 +89,7 @@ public class Peptide extends IdentifiableParamGroup {
                    double experimentalMassToCharge,
                    double calculatedMassToCharge,
                    double calculatedPI,
-                   PeptideSequence peptideRef,
+                   PeptideSequence peptideSequence,
                    int rank,
                    boolean passThreshold,
                    MassTable massTableRef,
@@ -103,7 +104,7 @@ public class Peptide extends IdentifiableParamGroup {
         this.experimentalMassToCharge = experimentalMassToCharge;
         this.calculatedMassToCharge = calculatedMassToCharge;
         this.calculatedPI = calculatedPI;
-        this.peptideRef = peptideRef;
+        this.peptideSequence = peptideSequence;
         this.rank = rank;
         this.passThreshold = passThreshold;
         this.massTableRef = massTableRef;
@@ -122,7 +123,7 @@ public class Peptide extends IdentifiableParamGroup {
                    double experimentalMassToCharge,
                    double calculatedMassToCharge,
                    double calculatedPI,
-                   PeptideSequence peptideRef,
+                   PeptideSequence peptideSequence,
                    int rank,
                    boolean passThreshold,
                    MassTable massTableRef,
@@ -137,7 +138,7 @@ public class Peptide extends IdentifiableParamGroup {
         this.experimentalMassToCharge = experimentalMassToCharge;
         this.calculatedMassToCharge = calculatedMassToCharge;
         this.calculatedPI = calculatedPI;
-        this.peptideRef = peptideRef;
+        this.peptideSequence = peptideSequence;
         this.rank = rank;
         this.passThreshold = passThreshold;
         this.massTableRef = massTableRef;
@@ -181,12 +182,12 @@ public class Peptide extends IdentifiableParamGroup {
         this.calculatedPI = calculatedPI;
     }
 
-    public PeptideSequence getPeptideRef() {
-        return peptideRef;
+    public PeptideSequence getPeptideSequence() {
+        return peptideSequence;
     }
 
-    public void setPeptideRef(PeptideSequence peptideRef) {
-        this.peptideRef = peptideRef;
+    public void setPeptideSequence(PeptideSequence peptideSequence) {
+        this.peptideSequence = peptideSequence;
     }
 
     public int getRank() {

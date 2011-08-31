@@ -302,5 +302,10 @@ quant.histogram.title =  Protein Quantification
 quant.histogram.x.axis = Reagent
 quant.histogram.y.axis = Ratio
 
+# decoy filter
+decoy.filter.title = Decoy Filter
+decoy.filter.tooltip = Decoy Filter
+decoy.filter.small.icon = icon/16x16/filter.png
+
            
 

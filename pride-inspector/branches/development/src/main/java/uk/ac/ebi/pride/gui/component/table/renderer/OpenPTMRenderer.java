@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.component.table.renderer;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.text.NumberFormat;
 
 /**
  * Cell renderer used for drawing number of ptms column
@@ -39,20 +40,31 @@ public class OpenPTMRenderer extends JLabel implements TableCellRenderer {
         // rendering hints
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // draw image
-        int xPos = 2;
-        int yPos = 2;
+        // get size
+        int height = this.getHeight();
+        int xPos = 0;
+        int yPos;
 
+
+        // font metrics
+        FontMetrics fontMetrics = g2.getFontMetrics();
+        int fontDescent = fontMetrics.getDescent();
+        int fontAscent = fontMetrics.getAscent();
+
+
+        // draw text
+        String str = value + "";
+        g2.drawString(str, xPos, height - fontDescent);
+
+
+        // draw icon
         if (value > 0) {
+            xPos += fontMetrics.stringWidth(str)+ 2;
+            yPos = height - fontAscent - fontDescent - 2;
+
             // draw icon
             g2.drawImage(icon.getImage(), xPos, yPos, null);
-
-            xPos += icon.getIconWidth() + 5;
         }
-
-        // draw value
-        yPos = 15;
-        g2.drawString(value + "", xPos, yPos);
 
         // remove
         g2.dispose();

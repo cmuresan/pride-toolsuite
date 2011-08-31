@@ -138,6 +138,14 @@ public class ControllerContentPane extends DataAccessControllerPane {
                     }
                 }
 
+                if (categories.contains(DataAccessController.ContentCategory.QUANTITATION)) {
+                    boolean hasQuant = controller.hasQuantData();
+                    contentTabPane.setEnabledAt(quantTabIndex, hasQuant);
+                    if (hasQuant) {
+                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Quantification found", "This data source contains quantitative data")));
+                    }
+                }
+
                 if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)
                         || categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
                     contentTabPane.setEnabledAt(chartTabIndex, controller.hasSpectrum() || controller.hasIdentification());
@@ -188,16 +196,12 @@ public class ControllerContentPane extends DataAccessControllerPane {
                 mzDataTab.populate();
             }
 
-            // quant data tabe
-            try {
-                if (categories.contains(DataAccessController.ContentCategory.QUANTITATION) && controller.hasQuantData()) {
-                    quantTabPane = new QuantTabPane(controller, this);
-                    quantTabIndex = indexCount++;
-                    contentTabPane.insertTab(quantTabPane.getTitle(), quantTabPane.getIcon(), quantTabPane, quantTabPane.getTitle(), quantTabIndex);
-                    quantTabPane.populate();
-                }
-            } catch (DataAccessException e) {
-                logger.error("Failed to create quantitative tab pane");
+            // quant data tab
+            if (categories.contains(DataAccessController.ContentCategory.QUANTITATION)) {
+                quantTabPane = new QuantTabPane(controller, this);
+                quantTabIndex = indexCount++;
+                contentTabPane.insertTab(quantTabPane.getTitle(), quantTabPane.getIcon(), quantTabPane, quantTabPane.getTitle(), quantTabIndex);
+                quantTabPane.populate();
             }
 
             // chart tab
@@ -313,7 +317,8 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
     /**
      * Retrun quantitative tab pane
-     * @return  QuantTabPane    quantitative tab pane
+     *
+     * @return QuantTabPane    quantitative tab pane
      */
     public QuantTabPane getQuantTabPane() {
         return quantTabPane;
@@ -357,6 +362,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
     /**
      * Tab index of the quantitative tab
+     *
      * @return
      */
     public int getQuantTabIndex() {

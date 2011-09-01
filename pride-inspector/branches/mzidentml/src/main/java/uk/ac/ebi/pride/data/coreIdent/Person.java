@@ -78,6 +78,22 @@ public class Person extends AbstractContact {
         this.mail = mail;
     }
 
+    /**
+     * Constructor for MzMl and Pride Person Contact
+     * @param params
+     * @param firstname
+     * @param mail
+     */
+    public Person(ParamGroup params, String firstname, String mail){
+        super(params, null,null);
+        this.firstname = firstname;
+        this.mail = mail;
+        this.lastname = null;
+        this.firstname = firstname;
+        this.midInitials = null;
+        this.affiliation = null;
+    }
+
     public String getLastname() {
         return lastname;
     }

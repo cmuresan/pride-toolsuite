@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.data.coreIdent;
 
-import uk.ac.ebi.pride.data.core.CvParam;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 
 import java.util.*;
@@ -58,7 +57,7 @@ public class Quantitation {
      */
     private Type type;
 
-    public Quantitation(Type type, List<uk.ac.ebi.pride.data.core.CvParam> cvParamList) {
+    public Quantitation(Type type, List<CvParam> cvParamList) {
         this.type = type;
         this.isotopeLabellingResults = new Double[QuantitativeSample.MAX_SUB_SAMPLE_SIZE];
         this.isotopeLabellingDeviations = new Double[QuantitativeSample.MAX_SUB_SAMPLE_SIZE];
@@ -71,7 +70,7 @@ public class Quantitation {
     }
 
 
-    private void init(List<uk.ac.ebi.pride.data.core.CvParam> cvParamList) {
+    private void init(List<CvParam> cvParamList) {
         for (CvParam cvParam : cvParamList) {
             // check intensities
             if (QuantCvTermReference.isIntensityParam(cvParam)) {

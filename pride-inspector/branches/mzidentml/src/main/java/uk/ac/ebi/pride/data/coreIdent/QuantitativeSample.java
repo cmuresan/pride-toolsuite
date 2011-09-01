@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.coreIdent;
 
-import uk.ac.ebi.pride.data.core.CvParam;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +14,7 @@ import java.util.regex.Pattern;
 public class QuantitativeSample {
 
     public static final int MAX_SUB_SAMPLE_SIZE = 8;
+
     private static final Pattern SUB_SAMPLE_PATTERN = Pattern.compile("[^\\d]+([\\d]+)[^\\d]*");
 
     /**
@@ -81,8 +80,8 @@ public class QuantitativeSample {
      * @param index sub sample index
      * @return CvParam species cv param
      */
-    public uk.ac.ebi.pride.data.core.CvParam getSpecies(int index) {
-        uk.ac.ebi.pride.data.core.CvParam species = null;
+    public CvParam getSpecies(int index) {
+        CvParam species = null;
 
         if (index >= 0 && index < MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -99,7 +98,7 @@ public class QuantitativeSample {
      *
      * @param cvParam species cv param
      */
-    public void setSpecies(uk.ac.ebi.pride.data.core.CvParam cvParam) {
+    public void setSpecies(CvParam cvParam) {
         int index = getSubSampleIndex(cvParam.getValue());
         if (index > 0 && index <= MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -132,8 +131,8 @@ public class QuantitativeSample {
      * @param index sub sample index
      * @return CvParam cell line cv param
      */
-    public uk.ac.ebi.pride.data.core.CvParam getCellLine(int index) {
-        uk.ac.ebi.pride.data.core.CvParam cellLine = null;
+    public CvParam getCellLine(int index) {
+        CvParam cellLine = null;
 
         if (index >= 0 && index < MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -150,7 +149,7 @@ public class QuantitativeSample {
      *
      * @param cvParam cell line cv param
      */
-    public void setCellLine(uk.ac.ebi.pride.data.core.CvParam cvParam) {
+    public void setCellLine(CvParam cvParam) {
         int index = getSubSampleIndex(cvParam.getValue());
         if (index > 0 && index <= MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -182,8 +181,8 @@ public class QuantitativeSample {
      * @param index sub sample index
      * @return CvParam tissue cv param
      */
-    public uk.ac.ebi.pride.data.core.CvParam getTissue(int index) {
-        uk.ac.ebi.pride.data.core.CvParam tissue = null;
+    public CvParam getTissue(int index) {
+        CvParam tissue = null;
 
         if (index >= 0 && index < MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -200,7 +199,7 @@ public class QuantitativeSample {
      *
      * @param cvParam tissue cv param
      */
-    public void setTissue(uk.ac.ebi.pride.data.core.CvParam cvParam) {
+    public void setTissue(CvParam cvParam) {
         int index = getSubSampleIndex(cvParam.getValue());
         if (index > 0 && index <= MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -232,8 +231,8 @@ public class QuantitativeSample {
      * @param index sub sample index
      * @return CvParam reagent cv param
      */
-    public uk.ac.ebi.pride.data.core.CvParam getReagent(int index) {
-        uk.ac.ebi.pride.data.core.CvParam reagent = null;
+    public CvParam getReagent(int index) {
+        CvParam reagent = null;
 
         if (index >= 0 && index < MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -250,7 +249,7 @@ public class QuantitativeSample {
      *
      * @param cvParam reagent cv param
      */
-    public void setReagent(uk.ac.ebi.pride.data.core.CvParam cvParam) {
+    public void setReagent(CvParam cvParam) {
         int index = getSubSampleIndex(cvParam.getValue());
         if (index > 0 && index <= MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -283,8 +282,8 @@ public class QuantitativeSample {
      * @param index sub sample index
      * @return CvParam disease cv param
      */
-    public uk.ac.ebi.pride.data.core.CvParam getDisease(int index) {
-        uk.ac.ebi.pride.data.core.CvParam disease = null;
+    public CvParam getDisease(int index) {
+        CvParam disease = null;
 
         if (index >= 0 && index < MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -301,7 +300,7 @@ public class QuantitativeSample {
      *
      * @param cvParam disease cv param
      */
-    public void setDisease(uk.ac.ebi.pride.data.core.CvParam cvParam) {
+    public void setDisease(CvParam cvParam) {
         int index = getSubSampleIndex(cvParam.getValue());
         if (index > 0 && index <= MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -333,8 +332,8 @@ public class QuantitativeSample {
      * @param index sub sample index
      * @return CvParam GO cv param
      */
-    public uk.ac.ebi.pride.data.core.CvParam getGOTerm(int index) {
-        uk.ac.ebi.pride.data.core.CvParam goTerm = null;
+    public CvParam getGOTerm(int index) {
+        CvParam goTerm = null;
 
         if (index >= 0 && index < MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -351,7 +350,7 @@ public class QuantitativeSample {
      *
      * @param cvParam GO cv param
      */
-    public void setGOTerm(uk.ac.ebi.pride.data.core.CvParam cvParam) {
+    public void setGOTerm(CvParam cvParam) {
         int index = getSubSampleIndex(cvParam.getValue());
         if (index > 0 && index <= MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -382,8 +381,8 @@ public class QuantitativeSample {
      * @param index sub sample index
      * @return CvParam description cv param
      */
-    public uk.ac.ebi.pride.data.core.CvParam getDescription(int index) {
-        uk.ac.ebi.pride.data.core.CvParam description = null;
+    public CvParam getDescription(int index) {
+        CvParam description = null;
 
         if (index >= 0 && index < MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -400,7 +399,7 @@ public class QuantitativeSample {
      *
      * @param cvParam description cv param
      */
-    public void setDescription(uk.ac.ebi.pride.data.core.CvParam cvParam) {
+    public void setDescription(CvParam cvParam) {
         int index = getSubSampleIndex(cvParam.getName());
         if (index > 0 && index <= MAX_SUB_SAMPLE_SIZE) {
             SubSample sample = samples[index - 1];
@@ -441,31 +440,31 @@ public class QuantitativeSample {
         /**
          * cv param contains species information
          */
-        uk.ac.ebi.pride.data.core.CvParam species;
+        CvParam species;
         /**
          * cv param contains cell line information
          */
-        uk.ac.ebi.pride.data.core.CvParam cellLine;
+        CvParam cellLine;
         /**
          * cv param contains tissue information
          */
-        uk.ac.ebi.pride.data.core.CvParam tissue;
+        CvParam tissue;
         /**
          * cv param contains disease
          */
-        uk.ac.ebi.pride.data.core.CvParam disease;
+        CvParam disease;
         /**
          * cv param contains GO term
          */
-        uk.ac.ebi.pride.data.core.CvParam goTerm;
+        CvParam goTerm;
         /**
          * cv param contains reagent information
          */
-        uk.ac.ebi.pride.data.core.CvParam reagent;
+        CvParam reagent;
         /**
          * cv param contains sample description
          */
-        uk.ac.ebi.pride.data.core.CvParam description;
+        CvParam description;
 
         public SubSample(int index) {
             this.index = index;
@@ -479,55 +478,55 @@ public class QuantitativeSample {
             this.index = index;
         }
 
-        public uk.ac.ebi.pride.data.core.CvParam getSpecies() {
+        public CvParam getSpecies() {
             return species;
         }
 
-        public void setSpecies(uk.ac.ebi.pride.data.core.CvParam species) {
+        public void setSpecies(CvParam species) {
             this.species = species;
         }
 
-        public uk.ac.ebi.pride.data.core.CvParam getCellLine() {
+        public CvParam getCellLine() {
             return cellLine;
         }
 
-        public void setCellLine(uk.ac.ebi.pride.data.core.CvParam cellLine) {
+        public void setCellLine(CvParam cellLine) {
             this.cellLine = cellLine;
         }
 
-        public uk.ac.ebi.pride.data.core.CvParam getTissue() {
+        public CvParam getTissue() {
             return tissue;
         }
 
-        public void setTissue(uk.ac.ebi.pride.data.core.CvParam tissue) {
+        public void setTissue(CvParam tissue) {
             this.tissue = tissue;
         }
 
-        public uk.ac.ebi.pride.data.core.CvParam getDisease() {
+        public CvParam getDisease() {
             return disease;
         }
 
-        public void setDisease(uk.ac.ebi.pride.data.core.CvParam disease) {
+        public void setDisease(CvParam disease) {
             this.disease = disease;
         }
 
-        public uk.ac.ebi.pride.data.core.CvParam getDescription() {
+        public CvParam getDescription() {
             return description;
         }
 
-        public void setDescription(uk.ac.ebi.pride.data.core.CvParam description) {
+        public void setDescription(CvParam description) {
             this.description = description;
         }
 
-        public uk.ac.ebi.pride.data.core.CvParam getReagent() {
+        public CvParam getReagent() {
             return reagent;
         }
 
-        public void setReagent(uk.ac.ebi.pride.data.core.CvParam reagent) {
+        public void setReagent(CvParam reagent) {
             this.reagent = reagent;
         }
 
-        public uk.ac.ebi.pride.data.core.CvParam getGoTerm() {
+        public CvParam getGoTerm() {
             return goTerm;
         }
 

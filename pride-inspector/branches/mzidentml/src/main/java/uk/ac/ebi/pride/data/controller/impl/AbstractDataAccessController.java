@@ -5,13 +5,11 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.coreIdent.*;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
-import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 
-import java.beans.PropertyChangeEvent;
 import java.util.*;
 
 /**
@@ -22,20 +20,30 @@ import java.util.*;
  * Date: 03-Feb-2010
  * Time: 12:22:24
  */
-public abstract class AbstractDataAccessController extends PropertyChangeHelper
-        implements DataAccessController {
+public abstract class AbstractDataAccessController extends PropertyChangeHelper   implements DataAccessController {
+
     private static final Logger logger = LoggerFactory.getLogger(AbstractDataAccessController.class);
 
     private String uid = null;
+
     private String name = null;
+
     private String description = null;
+
     private Type type = null;
+
     private Set<ContentCategory> categories = null;
+
     private Object source = null;
+
     protected SearchEngine searchEngine = null;
+
     protected Comparable foregroundExperimentAcc = null;
+
     protected Spectrum foregroundSpectrum = null;
+
     protected Chromatogram foregroundChromatogram = null;
+
     protected Identification foregroundIdentification = null;
 
     protected AbstractDataAccessController() {
@@ -117,7 +125,17 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     @Override
-    public MetaData getMetaData() throws DataAccessException {
+    public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
+        return null;
+    }
+
+    @Override
+    public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
+        return null;
+    }
+
+    @Override
+    public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
         return null;
     }
 
@@ -127,7 +145,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     @Override
-    public FileDescription getFileDescription() throws DataAccessException {
+    public ParamGroup getFileContent() throws DataAccessException {
         return null;
     }
 
@@ -142,12 +160,27 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     @Override
-    public Collection<Software> getSoftware() throws DataAccessException {
+    public Collection<Software> getSoftwareList() throws DataAccessException {
         return Collections.emptyList();
     }
 
     @Override
     public Collection<ScanSetting> getScanSettings() throws DataAccessException {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Collection<Person> getPersonContacts() throws DataAccessException {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Collection<Organization> getOrganizationContacts() throws DataAccessException {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Collection<SourceFile> getSourceFiles() throws DataAccessException {
         return Collections.emptyList();
     }
 
@@ -159,11 +192,6 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     @Override
     public Collection<DataProcessing> getDataProcessings() throws DataAccessException {
         return Collections.emptyList();
-    }
-
-    @Override
-    public ParamGroup getAdditional() throws DataAccessException {
-        return null;
     }
 
     @Override
@@ -412,7 +440,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         String acc = null;
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
-            acc = ident.getAccession();
+            acc = ident.getDbSequence().getAccessionId();
         }
         return acc;
     }
@@ -429,11 +457,17 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         String accVersion = null;
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
-            accVersion = ident.getAccessionVersion();
+            accVersion = ident.getDbSequence().getAccessionVersion();
         }
         return accVersion;
     }
 
+    /**
+     * Get the Type of Identification (Gel base Identification or Not Gel presented)
+     * @param identId identification id.
+     * @return
+     * @throws DataAccessException
+     */
     @Override
     public String getIdentificationType(Comparable identId) throws DataAccessException {
         String type = null;
@@ -486,11 +520,11 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      * @throws DataAccessException data accession exception
      */
     @Override
-    public String getSearchDatabase(Comparable identId) throws DataAccessException {
-        String database = null;
+    public SearchDataBase getSearchDatabase(Comparable identId) throws DataAccessException {
+        SearchDataBase database = null;
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
-            database = ident.getSearchDatabase();
+            database = ident.getDbSequence().getSearchDataBase();
         }
         return database;
     }
@@ -498,8 +532,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     /**
      * Get search engine has been used.
      *
-     * @return SearchEngine    search engine
-     * @throws DataAccessException data access exception
+     * @return  SearchEngine    search engine
+     * @throws DataAccessException  data access exception
      */
     @Override
     public SearchEngine getSearchEngine() throws DataAccessException {
@@ -509,7 +543,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
             if (ident != null) {
                 searchEngine = new SearchEngine(ident.getSearchEngine());
                 // check the search engine types from the data source
-                List<Peptide> peptides = ident.getPeptides();
+                List<Peptide> peptides = ident.getIdentifiedPeptides();
                 Peptide peptide = peptides.get(0);
                 List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide);
                 searchEngine.setSearchEngineTypes(types);
@@ -532,7 +566,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         Collection<Comparable> ids = new ArrayList<Comparable>();
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
-            List<Peptide> peptides = ident.getPeptides();
+            List<Peptide> peptides = ident.getIdentifiedPeptides();
             if (peptides != null) {
                 for (int index = 0; index < peptides.size(); index++) {
                     ids.add(index);
@@ -567,10 +601,10 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         // read from data source
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
-            List<Peptide> peptides = ident.getPeptides();
+            List<Peptide> peptides = ident.getIdentifiedPeptides();
             if (peptides != null) {
                 for (Peptide peptide : peptides) {
-                    String seq = peptide.getSequence();
+                    String seq = peptide.getPeptideSequence().getSequence();
                     sequences.add(seq);
                 }
             }
@@ -665,9 +699,9 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         int cnt = 0;
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
-            List<Peptide> peptides = ident.getPeptides();
+            List<PeptideSequence> peptides = ident.getPeptidesSequence();
             if (peptides != null) {
-                Peptide peptide = peptides.get(Integer.parseInt(peptideId.toString()));
+                PeptideSequence peptide = peptides.get(Integer.parseInt(peptideId.toString()));
                 if (peptide != null) {
                     cnt = DataAccessUtilities.getNumberOfPTMs(peptide);
                 }
@@ -690,7 +724,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         if (ident != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
-                seq = peptide.getSequence();
+                seq = peptide.getPeptideSequence().getSequence();
             }
         }
         return seq;
@@ -710,7 +744,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         if (ident != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
-                start = peptide.getStart();
+                start = peptide.getPeptideEvidenceList().get(0).getStartPosition();
+                //Todo: We need to define finally how to manage the information for pride xml object as PeptideEvidence
             }
         }
         return start;
@@ -730,7 +765,9 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         if (ident != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
-                stop = peptide.getEnd();
+                stop = peptide.getPeptideEvidenceList().get(0).getEndPosition();
+                //Todo: We need to define finally how to manage the information for pride xml object as PeptideEvidence
+
             }
         }
         return stop;
@@ -776,7 +813,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         if (ident != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
-                List<Modification> rawMods = peptide.getModifications();
+                List<Modification> rawMods = peptide.getPeptideSequence().getModificationList();
                 mods.addAll(rawMods);
             }
         }
@@ -790,7 +827,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         if (ident != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
-                List<FragmentIon> ions = peptide.getFragmentIons();
+                List<FragmentIon> ions = peptide.getFragmentation();
                 if (ions != null) {
                     num = ions.size();
                 }
@@ -806,7 +843,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         if (ident != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
-                List<FragmentIon> rawFrags = peptide.getFragmentIons();
+                List<FragmentIon> rawFrags = peptide.getFragmentation();
                 frags.addAll(rawFrags);
             }
         }
@@ -879,7 +916,6 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     @Override
     public void setForegroundSpectrumById(Comparable specId) throws DataAccessException {
         logger.debug("Set foreground spectrum id: {}", specId);
-
         Spectrum oldSpec = null;
         Spectrum newSpec = this.getSpectrumById(specId);
         synchronized (this) {
@@ -926,383 +962,4 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         firePropertyChange(FOREGROUND_IDENTIFICATION_CHANGED, oldIdent, newIdent);
     }
 
-    @Override
-    public boolean hasQuantData() throws DataAccessException {
-        Collection<QuantCvTermReference> methods = getQuantMethods();
-        return methods.size() > 0;
-    }
-
-    @Override
-    public boolean hasProteinQuantData() throws DataAccessException {
-        Collection<QuantCvTermReference> methods = getQuantMethods();
-
-        for (QuantCvTermReference method : methods) {
-            if (QuantCvTermReference.containsProteinQuantification(method)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean hasPeptideQuantData() throws DataAccessException {
-        Collection<QuantCvTermReference> methods = getQuantMethods();
-
-        for (QuantCvTermReference method : methods) {
-            if (QuantCvTermReference.containsPeptideQuantification(method)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean hasProteinTotalIntensities() throws DataAccessException {
-        return getProteinQuantUnit() == null;
-    }
-
-    @Override
-    public boolean hasPeptideTotalIntensities() throws DataAccessException {
-        return getPeptideQuantUnit() == null;
-    }
-
-    @Override
-    public boolean hasLabelFreeQuantMethods() throws DataAccessException {
-        // get the samples
-        ParamGroup additionals = getAdditional();
-
-        if (additionals != null) {
-            // iterate over each sample
-            List<CvParam> cvParams = additionals.getCvParams();
-            for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isLabelFreeMethod(cvParam)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean hasIsotopeLabellingQuantMethods() throws DataAccessException {
-        // get the samples
-        ParamGroup additionals = getAdditional();
-
-        if (additionals != null) {
-            // iterate over each sample
-            List<CvParam> cvParams = additionals.getCvParams();
-            for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public Collection<QuantCvTermReference> getQuantMethods() throws DataAccessException {
-        Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
-
-        // get the samples
-        ParamGroup additionals = getAdditional();
-
-        if (additionals != null) {
-            // iterate over each sample
-            List<CvParam> cvParams = additionals.getCvParams();
-            for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isQuantitativeMethodParam(cvParam)) {
-                    methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
-                }
-            }
-        }
-
-        return methods;
-    }
-
-    @Override
-    public Collection<QuantCvTermReference> getLabelFreeQuantMethods() throws DataAccessException {
-        Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
-
-        // get the samples
-        ParamGroup additionals = getAdditional();
-
-        if (additionals != null) {
-            // iterate over each sample
-            List<CvParam> cvParams = additionals.getCvParams();
-            for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isLabelFreeMethod(cvParam)) {
-                    methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
-                }
-            }
-        }
-
-        return methods;
-    }
-
-    @Override
-    public Collection<QuantCvTermReference> getProteinLabelFreeQuantMethods() throws DataAccessException {
-        Collection<QuantCvTermReference> methods = getLabelFreeQuantMethods();
-        Collection<QuantCvTermReference> protMethods = new ArrayList<QuantCvTermReference>();
-
-        for (QuantCvTermReference method : methods) {
-            if (QuantCvTermReference.containsProteinQuantification(method)) {
-                protMethods.add(method);
-            }
-        }
-
-        return protMethods;
-    }
-
-    @Override
-    public Collection<QuantCvTermReference> getPeptideLabelFreeQuantMethods() throws DataAccessException {
-        Collection<QuantCvTermReference> methods = getLabelFreeQuantMethods();
-        Collection<QuantCvTermReference> peptideMethods = new ArrayList<QuantCvTermReference>();
-
-        for (QuantCvTermReference method : methods) {
-            if (QuantCvTermReference.containsPeptideQuantification(method)) {
-                peptideMethods.add(method);
-            }
-        }
-
-        return peptideMethods;
-    }
-
-    @Override
-    public Collection<QuantCvTermReference> getIsotopeLabellingQuantMethods() throws DataAccessException {
-        Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
-
-        // get the samples
-        ParamGroup additionals = getAdditional();
-
-        if (additionals != null) {
-            // iterate over each sample
-            List<CvParam> cvParams = additionals.getCvParams();
-            for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
-                    methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
-                }
-            }
-        }
-
-        return methods;
-    }
-
-    @Override
-    public Collection<QuantCvTermReference> getProteinIsotopeLabellingQuantMethods() throws DataAccessException {
-        Collection<QuantCvTermReference> methods = getIsotopeLabellingQuantMethods();
-        Collection<QuantCvTermReference> protMethods = new ArrayList<QuantCvTermReference>();
-
-        for (QuantCvTermReference method : methods) {
-            if (QuantCvTermReference.containsProteinQuantification(method)) {
-                protMethods.add(method);
-            }
-        }
-
-        return protMethods;
-    }
-
-    @Override
-    public Collection<QuantCvTermReference> getPeptideIsotopeLabellingQuantMethods() throws DataAccessException {
-        Collection<QuantCvTermReference> methods = getIsotopeLabellingQuantMethods();
-        Collection<QuantCvTermReference> peptideMethods = new ArrayList<QuantCvTermReference>();
-
-        for (QuantCvTermReference method : methods) {
-            if (QuantCvTermReference.containsPeptideQuantification(method)) {
-                peptideMethods.add(method);
-            }
-        }
-
-        return peptideMethods;
-    }
-
-    @Override
-    public int getNumberOfReagents() throws DataAccessException {
-        int num = 0;
-
-        if (hasIsotopeLabellingQuantMethods()) {
-            // get samples
-            Collection<Sample> samples = getSamples();
-
-            if (samples != null) {
-                for (Sample sample : samples) {
-                    List<CvParam> cvParams = sample.getCvParams();
-                    for (CvParam cvParam : cvParams) {
-                        if (QuantCvTermReference.isReagent(cvParam)) {
-                            num++;
-                        }
-                    }
-                }
-            }
-        }
-
-        return num;
-    }
-
-    /**
-     * Check the first ten identification/peptide to get the reference sub sample's index
-     *
-     * @return index   reference sub sample index
-     * @throws DataAccessException
-     */
-    @Override
-    public int getReferenceSubSampleIndex() throws DataAccessException {
-        int index = -1;
-
-        if (hasIsotopeLabellingQuantMethods()) {
-            int cnt = 20;
-            if (hasProteinQuantData()) {
-                Collection<Comparable> identIds = getIdentificationIds();
-
-                for (Comparable identId : identIds) {
-                    Quantitation quant = getProteinQuantData(identId);
-                    if (quant.hasTotalIntensities()) {
-                        return index;
-                    } else {
-                        index = quant.getReferenceSubSampleIndex();
-                        if (index > 0) {
-                            break;
-                        }
-                    }
-                    cnt--;
-                    if (cnt == 0) {
-                        break;
-                    }
-                }
-            } else if (hasPeptideQuantData()) {
-                Collection<Comparable> identIds = getIdentificationIds();
-
-                for (Comparable identId : identIds) {
-                    Collection<Comparable> peptideIds = getPeptideIds(identId);
-                    for (Comparable peptideId : peptideIds) {
-                        Quantitation quant = getPeptideQuantData(identId, peptideId);
-                        if (quant.hasTotalIntensities()) {
-                            return index;
-                        } else {
-                            index = quant.getReferenceSubSampleIndex();
-                            if (index > 0) {
-                                break;
-                            }
-                        }
-                    }
-                    cnt --;
-                    if (cnt == 0) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        return index;
-    }
-
-    @Override
-    public QuantitativeSample getQuantSample() throws DataAccessException {
-        QuantitativeSample sampleDesc = new QuantitativeSample();
-
-        Collection<Sample> samples = getSamples();
-        if (samples != null && !samples.isEmpty()) {
-            Sample sample = CollectionUtils.getElement(samples, 0);
-            List<CvParam> cvParams = sample.getCvParams();
-            // scan for all the species
-            for (CvParam cvParam : cvParams) {
-                String cvLabel = cvParam.getCvLookupID().toLowerCase();
-                if ("newt".equals(cvLabel)) {
-                    sampleDesc.setSpecies(cvParam);
-                } else if ("bto".equals(cvLabel)) {
-                    sampleDesc.setTissue(cvParam);
-                } else if ("cl".equals(cvLabel)) {
-                    sampleDesc.setCellLine(cvParam);
-                } else if ("go".equals(cvLabel)) {
-                    sampleDesc.setGOTerm(cvParam);
-                } else if ("doid".equals(cvLabel)) {
-                    sampleDesc.setDisease(cvParam);
-                } else if (QuantCvTermReference.isSubSampleDescription(cvParam)) {
-                    sampleDesc.setDescription(cvParam);
-                } else if (QuantCvTermReference.isReagent(cvParam)) {
-                    sampleDesc.setReagent(cvParam);
-                }
-            }
-        }
-
-        return sampleDesc;
-    }
-
-    /**
-     * Note: this method will scan through first 10 identifications
-     *
-     * @return
-     * @throws DataAccessException
-     */
-    @Override
-    public QuantCvTermReference getProteinQuantUnit() throws DataAccessException {
-        Collection<Comparable> identIds = getIdentificationIds();
-
-        int cnt = 20;
-
-        for (Comparable identId : identIds) {
-            Quantitation quant = getProteinQuantData(identId);
-            QuantCvTermReference unit = quant.getUnit();
-            cnt--;
-            if (unit != null) {
-                return unit;
-            }
-
-            if (cnt == 0) {
-                break;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Note: this method will scan all the peptides
-     *
-     * @return QuantCvTermReference    unit cv term
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    public QuantCvTermReference getPeptideQuantUnit() throws DataAccessException {
-        Collection<Comparable> identIds = getIdentificationIds();
-
-        int cnt = 20;
-
-        for (Comparable identId : identIds) {
-            Collection<Comparable> peptideIds = getPeptideIds(identId);
-            for (Comparable peptideId : peptideIds) {
-                Quantitation quant = getPeptideQuantData(identId, peptideId);
-                QuantCvTermReference unit = quant.getUnit();
-                if (unit != null) {
-                    return unit;
-                }
-            }
-            cnt--;
-
-            if (cnt == 0) {
-                break;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Quantitation getProteinQuantData(Comparable identId) throws DataAccessException {
-        Identification ident = getIdentificationById(identId);
-        return new Quantitation(Quantitation.Type.PROTEIN, ident.getCvParams());
-    }
-
-    @Override
-    public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
-        Peptide peptide = getPeptideById(identId, peptideId);
-        return new Quantitation(Quantitation.Type.PEPTIDE, peptide.getCvParams());
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        // empty method
-    }
 }

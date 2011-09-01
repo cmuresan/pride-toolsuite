@@ -1,8 +1,10 @@
 package uk.ac.ebi.pride.data.controller.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.Identification;
-import uk.ac.ebi.pride.data.core.SearchEngine;
+import uk.ac.ebi.pride.data.coreIdent.DBSequence;
+import uk.ac.ebi.pride.data.coreIdent.Identification;
+import uk.ac.ebi.pride.data.coreIdent.SearchDataBase;
+import uk.ac.ebi.pride.data.coreIdent.SearchEngine;
 
 import java.util.Collection;
 
@@ -19,8 +21,11 @@ public interface ProteinDataAccess {
      * fired when an identification object has changed
      */
     public static final String IDENTIFICATION_TYPE = "Identification";
+
     public static final String IDENTIFICATION_ID = "Identification ID";
+
     public static final String TWO_DIM_IDENTIFICATION_TYPE = "Two Dimensional";
+
     public static final String GEL_FREE_IDENTIFICATION_TYPE = "Gel Free";
 
     /**
@@ -132,7 +137,7 @@ public interface ProteinDataAccess {
      * @return String   search database.
      * @throws DataAccessException data access exception.
      */
-    public String getSearchDatabase(Comparable identId) throws DataAccessException;
+    public SearchDataBase getSearchDatabase(Comparable identId) throws DataAccessException;
 
     /**
      * Get the search engine of a identification
@@ -141,4 +146,16 @@ public interface ProteinDataAccess {
      * @throws DataAccessException data access exception.
      */
     public SearchEngine getSearchEngine() throws DataAccessException;
+
+    /**
+     * Get the sequence of the Identified Protein
+     * @param identId identification Id
+     * @return Sequence Object in the Database
+     * @throws DataAccessException
+     */
+    public DBSequence getIdentificationSequence(Comparable identId) throws DataAccessException;
+
+
+
+
 }

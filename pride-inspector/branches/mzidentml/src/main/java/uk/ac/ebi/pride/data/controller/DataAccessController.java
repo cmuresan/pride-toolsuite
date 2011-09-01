@@ -1,12 +1,12 @@
 package uk.ac.ebi.pride.data.controller;
 
 import uk.ac.ebi.pride.data.controller.access.*;
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.coreIdent.ExperimentMetaData;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHandler;
 
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
-import java.util.UUID;
 
 /**
  * DataAccessController is an aggregate interface for data access.
@@ -37,7 +37,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
      * Note: this does not automatically mean they must have them.
      */
     public enum ContentCategory {
-        SPECTRUM, CHROMATOGRAM, PROTEIN, PEPTIDE, QUANTITATION, SAMPLE, PROTOCOL, SOFTWARE, INSTRUMENT, DATA_PROCESSING
+        SPECTRUM, CHROMATOGRAM, PROTEIN, PEPTIDE, QUANTIFICATION, SAMPLE, PROTOCOL, SOFTWARE, INSTRUMENT, DATA_PROCESSING
     }
 
     /**
@@ -162,12 +162,26 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     public Collection<Comparable> getExperimentAccs() throws DataAccessException;
 
     /**
-     * Get a meta object
+     * Get a MetaData Information for the Experiment Object
      *
      * @return MetaData meta data object
      * @throws DataAccessException throw a exception when there is an error accessing the data source
      */
-    public MetaData getMetaData() throws DataAccessException;
+    public ExperimentMetaData getExperimentMetaData() throws DataAccessException;
+
+    /**
+     * Get the MetaData Information for Identification Object.
+     * @return
+     * @throws DataAccessException
+     */
+    public IdentificationMetaData getIdentificationMetaData() throws DataAccessException;
+
+    /**
+     * Get MetaData Information for Spectrum Experiment Object
+     * @return
+     * @throws DataAccessException
+     */
+    public MzGraphMetaData getMzGraphMetaData() throws DataAccessException;
 
     /**
      * Get an collection of cv lookups
@@ -178,12 +192,11 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     public Collection<CVLookup> getCvLookups() throws DataAccessException;
 
     /**
-     * Get file description object.
-     *
-     * @return FileDescription  FileDescription object
-     * @throws DataAccessException throw a exception when there is an error accessing the data source
+     * Get File Content Object
+     * @return ParamGroup
+     * @throws DataAccessException
      */
-    public FileDescription getFileDescription() throws DataAccessException;
+    public ParamGroup getFileContent() throws DataAccessException;
 
     /**
      * Get the referenceable param group
@@ -207,8 +220,21 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
      * @return Collection<Software> an collection of softwares.
      * @throws DataAccessException throw a exception when there is an error accessing the data source
      */
-    public Collection<Software> getSoftware() throws DataAccessException;
+    public Collection<Software> getSoftwareList() throws DataAccessException;
 
+    /**
+     * Get the List of Persons Related with the Experiment
+     * @return
+     * @throws DataAccessException
+     */
+    public Collection<Person> getPersonContacts() throws DataAccessException;
+
+    /**
+     * Get the Collection of Organizations
+     * @return
+     * @throws DataAccessException
+     */
+    public Collection<Organization> getOrganizationContacts() throws DataAccessException;
     /**
      * Get an collection of scan settings.
      *
@@ -224,7 +250,6 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
      * @throws DataAccessException throw a exception when there is an error accessing the data source
      */
     public Collection<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException;
-
     /**
      * Get an collection of data processings.
      *
@@ -234,11 +259,31 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     public Collection<DataProcessing> getDataProcessings() throws DataAccessException;
 
     /**
-     * Get experimental additional params
-     * @return  ParamGroup  experimental additional param
-     * @throws DataAccessException  throw a exception when there is an error accessing the data source
+     * Get all the Search Databases used in the Experiment
+     * @return
+     * @throws DataAccessException
      */
-    public ParamGroup getAdditional() throws DataAccessException;
+    public Collection<SearchDataBase> getSearchDataBase() throws DataAccessException;
+
+    /**
+     * Get all modification presented in the Experiment
+     * @return
+     * @throws DataAccessException
+     */
+    public Collection<Modification> getModification() throws DataAccessException;
+
+    /**
+     * Get all Source Files
+     * @return
+     * @throws DataAccessException
+     */
+    public Collection<SourceFile> getSourceFiles() throws DataAccessException;
+
+
+
+
+
+
 
     //Todo: getDefaultInstrument() from mzML's run element
     //Todo: getDefaultSample() from mzML's run element

@@ -1,10 +1,10 @@
 package uk.ac.ebi.pride.data.controller.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.Chromatogram;
-import uk.ac.ebi.pride.data.core.Identification;
-import uk.ac.ebi.pride.data.core.MzGraph;
-import uk.ac.ebi.pride.data.core.Spectrum;
+import uk.ac.ebi.pride.data.coreIdent.Chromatogram;
+import uk.ac.ebi.pride.data.coreIdent.Identification;
+import uk.ac.ebi.pride.data.coreIdent.MzGraph;
+import uk.ac.ebi.pride.data.coreIdent.Spectrum;
 
 /**
  * TrackDataAccess acts as a point for data access, tracking the foreground experiment,

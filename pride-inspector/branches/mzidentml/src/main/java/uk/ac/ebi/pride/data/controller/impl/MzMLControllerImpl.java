@@ -9,24 +9,30 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.cache.impl.MzMLCacheBuilder;
-import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.data.core.Chromatogram;
-import uk.ac.ebi.pride.data.core.DataProcessing;
-import uk.ac.ebi.pride.data.core.FileDescription;
-import uk.ac.ebi.pride.data.core.InstrumentConfiguration;
-import uk.ac.ebi.pride.data.core.ParamGroup;
-import uk.ac.ebi.pride.data.core.ReferenceableParamGroup;
-import uk.ac.ebi.pride.data.core.Sample;
-import uk.ac.ebi.pride.data.core.Software;
-import uk.ac.ebi.pride.data.core.Spectrum;
+import uk.ac.ebi.pride.data.coreIdent.ExperimentMetaData;
+import uk.ac.ebi.pride.data.coreIdent.CVLookup;
+import uk.ac.ebi.pride.data.coreIdent.Chromatogram;
+import uk.ac.ebi.pride.data.coreIdent.DataProcessing;
+import uk.ac.ebi.pride.data.coreIdent.InstrumentConfiguration;
+import uk.ac.ebi.pride.data.coreIdent.ParamGroup;
+import uk.ac.ebi.pride.data.coreIdent.ReferenceableParamGroup;
+import uk.ac.ebi.pride.data.coreIdent.Sample;
+import uk.ac.ebi.pride.data.coreIdent.ScanSetting;
+import uk.ac.ebi.pride.data.coreIdent.Software;
+import uk.ac.ebi.pride.data.coreIdent.Spectrum;
+import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.coreIdent.Modification;
+import uk.ac.ebi.pride.data.coreIdent.SourceFile;
 import uk.ac.ebi.pride.data.io.file.MzMLUnmarshallerAdaptor;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
+import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -40,7 +46,9 @@ import java.util.regex.Pattern;
  * Time: 12:31:43
  */
 public class MzMLControllerImpl extends CachedDataAccessController {
+
     private static final Logger logger = LoggerFactory.getLogger(MzMLControllerImpl.class);
+
     private static Pattern mzMLHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<(mzML)|(indexedmzML) xmlns=.*", Pattern.MULTILINE);
 
     private MzMLUnmarshallerAdaptor unmarshaller = null;
@@ -55,6 +63,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     }
 
     private void initialize() throws DataAccessException {
+
         File file = (File) this.getSource();
         // create unmarshaller
         MzMLUnmarshaller um = new MzMLUnmarshaller(file);
@@ -98,37 +107,6 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         return uid;
     }
 
-    public MetaData getMetaData() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
-
-        if (metaData == null) {
-            // id , accession and version
-            String id = unmarshaller.getMzMLId();
-            String accession = unmarshaller.getMzMLAccession();
-            String version = unmarshaller.getMzMLVersion();
-            // FileDescription
-            FileDescription fileDesc = getFileDescription();
-            // Sample list
-            List<Sample> samples = getSamples();
-            // Software list
-            List<Software> softwares = getSoftware();
-            // ScanSettings list
-            List<ScanSetting> scanSettings = getScanSettings();
-            // Instrument configuration
-            List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
-            // Data processing list
-            List<DataProcessing> dataProcessings = getDataProcessings();
-            // Param group
-            ParamGroup params = null;
-
-            metaData = new MetaData(id, accession, version, fileDesc,
-                    samples, softwares, scanSettings, instrumentConfigurations,
-                    dataProcessings, params);
-        }
-
-        return metaData;
-    }
-
     public List<CVLookup> getCvLookups() throws DataAccessException {
         try {
             CVList rawCvList = unmarshaller.getCVList();
@@ -139,27 +117,18 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         }
     }
 
-    @Override
-    public FileDescription getFileDescription() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
-
-        if (metaData == null) {
-            try {
-                uk.ac.ebi.jmzml.model.mzml.FileDescription
-                        rawFileDesc = unmarshaller.getFileDescription();
-                return MzMLTransformer.transformFileDescription(rawFileDesc);
-            } catch (MzMLUnmarshallerException e) {
-                logger.error("Creating File Description", e);
-                throw new DataAccessException("Exception while trying to read file description", e);
-            }
-        } else {
-            return metaData.getFileDescription();
+    public uk.ac.ebi.jmzml.model.mzml.FileDescription getFileDescription() throws DataAccessException {
+        try{
+            uk.ac.ebi.jmzml.model.mzml.FileDescription rawFileDesc = unmarshaller.getFileDescription();
+            return rawFileDesc;
+        }catch (MzMLUnmarshallerException e){
+            logger.error("Creating File Description", e);
+            throw new DataAccessException("Exception while trying to read file description", e);
         }
     }
 
     @Override
     public ReferenceableParamGroup getReferenceableParamGroup() throws DataAccessException {
-
         try {
             ReferenceableParamGroupList rawRefParamGroup = unmarshaller.getReferenceableParamGroupList();
             return MzMLTransformer.transformReferenceableParamGroupList(rawRefParamGroup);
@@ -171,7 +140,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
     @Override
     public List<Sample> getSamples() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+        ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
             try {
@@ -182,13 +151,23 @@ public class MzMLControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException("Exception while trying to read smaples", e);
             }
         } else {
-            return metaData.getSamples();
+            return metaData.getSampleList();
         }
     }
 
     @Override
-    public List<Software> getSoftware() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+    public Collection<Person> getPersonContacts() throws DataAccessException {
+        return null;
+    }
+
+    @Override
+    public Collection<Organization> getOrganizationContacts() throws DataAccessException {
+        return null;
+    }
+
+    @Override
+    public List<Software> getSoftwareList() throws DataAccessException {
+        ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
             try {
@@ -199,13 +178,13 @@ public class MzMLControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException("Exception while trying to read softwares", e);
             }
         } else {
-            return metaData.getSoftwares();
+            return metaData.getSoftwareList();
         }
     }
 
     @Override
     public List<ScanSetting> getScanSettings() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+        MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
             try {
@@ -222,7 +201,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
     @Override
     public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+        MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
             try {
@@ -239,21 +218,35 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
     @Override
     public List<DataProcessing> getDataProcessings() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+        MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
             try {
-                uk.ac.ebi.jmzml.model.mzml.DataProcessingList
-                        rawDataProcList = unmarshaller.getDataProcessingList();
+                uk.ac.ebi.jmzml.model.mzml.DataProcessingList rawDataProcList = unmarshaller.getDataProcessingList();
                 return MzMLTransformer.transformDataProcessingList(rawDataProcList);
             } catch (MzMLUnmarshallerException e) {
                 logger.error("Creating DataProcessings", e);
                 throw new DataAccessException("Exception while trying to read data processing list", e);
             }
         } else {
-            return metaData.getDataProcessings();
+            return metaData.getDataProcessingList();
         }
 
+    }
+
+    @Override
+    public Collection<SearchDataBase> getSearchDataBase() throws DataAccessException {
+        return null;
+    }
+
+    @Override
+    public Collection<Modification> getModification() throws DataAccessException {
+        return null;
+    }
+
+    @Override
+    public Collection<SourceFile> getSourceFiles() throws DataAccessException {
+        return null;
     }
 
     /**
@@ -318,6 +311,52 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         super.close();
     }
 
+    @Override
+    public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
+
+        ExperimentMetaData metaData;
+
+        // id , accession and version
+        String id = unmarshaller.getMzMLId();
+
+        String accession = unmarshaller.getMzMLAccession();
+
+        String version = unmarshaller.getMzMLVersion();
+
+            // FileDescription
+        FileDescription fileDesc = getFileDescription();
+            // Sample list
+        List<Sample> samples = getSamples();
+            // Software list
+        List<Software> softwares = getSoftwareList();
+            // ScanSettings list
+        //List<ScanSetting> scanSettings = getScanSettings();
+            // Instrument configuration
+        //    List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
+            // Data processing list
+        //    List<DataProcessing> dataProcessings = getDataProcessings();
+            // Param group
+        ParamGroup params = null;
+
+        metaData = new ExperimentMetaData(params,id,accession,version,samples,softwares,personList,sourceFiles,null,organizationList,null,null,null,null);
+
+        //   metaData = new ExperimentMetaData(id, accession, version, fileDesc, samples, softwares, scanSettings, instrumentConfigurations, dataProcessings, params);
+        }
+
+        return metaData;
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
+        return null;
+    }
+
+    @Override
+    public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     /**
      * Check a file is mzML file
      *
@@ -351,5 +390,85 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         }
 
         return valid;
+    }
+
+    @Override
+    public boolean hasProteinQuantData() throws DataAccessException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean hasProteinTotalIntensities() throws DataAccessException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean hasPeptideTotalIntensities() throws DataAccessException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean hasLabelFreeQuantMethods() throws DataAccessException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Collection<QuantCvTermReference> getLabelFreeQuantMethods() throws DataAccessException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Collection<QuantCvTermReference> getProteinLabelFreeQuantMethods() throws DataAccessException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Collection<QuantCvTermReference> getPeptideLabelFreeQuantMethods() throws DataAccessException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean hasIsotopeLabellingQuantMethods() throws DataAccessException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Collection<QuantCvTermReference> getProteinIsotopeLabellingQuantMethods() throws DataAccessException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Collection<QuantCvTermReference> getPeptideIsotopeLabellingQuantMethods() throws DataAccessException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Collection<QuantCvTermReference> getIsotopeLabellingQuantMethods() throws DataAccessException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public int getReferenceSubSampleIndex() throws DataAccessException {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public QuantitativeSample getQuantSample() throws DataAccessException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public QuantCvTermReference getProteinQuantUnit() throws DataAccessException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Quantitation getProteinQuantData(Comparable identId) throws DataAccessException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

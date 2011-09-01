@@ -16,6 +16,7 @@ import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.coreIdent.*;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
+import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.gui.component.chart.PrideChartManager;
 
 import java.util.*;
@@ -780,22 +781,21 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
     @Override
     public SearchEngine getSearchEngine() throws DataAccessException {
-        /*if (searchEngine == null) {
+        if (searchEngine == null) {
             Collection<Comparable> identIds = this.getIdentificationIds();
             Comparable identId = CollectionUtils.getElement(identIds, 0);
             Identification ident = (Identification) cache.get(CacheCategory.IDENTIFICATION, identId);
             if (ident != null) {
                 searchEngine = new SearchEngine(ident.getSearchEngine());
                 // check the search engine types from the data source
-                List<Peptide> peptides = ident.getPeptides();
+                List<Peptide> peptides = ident.getIdentifiedPeptides();
                 Peptide peptide = peptides.get(0);
                 List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide);
                 searchEngine.setSearchEngineTypes(types);
             } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
                 super.getSearchEngine();
             }
-        } */
-
+        }
         return searchEngine;
     }
 

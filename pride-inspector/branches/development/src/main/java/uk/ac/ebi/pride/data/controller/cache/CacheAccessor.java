@@ -7,7 +7,7 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 /**
- * CacheAccessor provides a implementation of cache.
+ * CacheAccessor is the implementation of cache.
  * <p/>
  * User: rwang
  * Date: 07-Sep-2010

@@ -22,7 +22,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
                                               CacheAccess, ChartAccess, PropertyChangeHandler,
                                               PropertyChangeListener {
     /**
-     * Type indicates the type of the data source.
+     * Type indicates the I/O of the data source.
      * There are two types of data access controller at the moment:
      *
      * DATABASE means connection to a database

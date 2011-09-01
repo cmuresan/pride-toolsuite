@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.data.core.MzGraph;
 import uk.ac.ebi.pride.data.core.Spectrum;
 
 /**
- * TrackDataAccess acts as a point for data access, tracking the foreground experiment,
+ * TrackDataAccess acts as a pointer for data access, tracking the foreground experiment,
  * spectrum, chromatogram and identification.
  * <p/>
  * User: rwang

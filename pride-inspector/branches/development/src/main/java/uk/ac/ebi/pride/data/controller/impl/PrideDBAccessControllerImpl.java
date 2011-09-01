@@ -199,7 +199,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         try {
             st = connection.prepareStatement("SELECT sf.name_of_file, sf.path_to_file FROM mzdata_source_file sf, mzdata_mz_data mz " +
                     "WHERE mz.accession_number= ? and mz.source_file_id=sf.source_file_id");
-            st.setString(1, foregroundExperimentAcc.toString());
+            st.setString(1, getForegroundExperimentAcc().toString());
             rs = st.executeQuery();
             while (rs.next()) {
                 //there should be a single source file per spectrum
@@ -224,7 +224,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         try {
             st = connection.prepareStatement("SELECT contact_name, institution, contact_info FROM mzdata_contact sf, mzdata_mz_data mz " +
                     "WHERE mz.accession_number= ? and mz.mz_data_id=sf.mz_data_id");
-            st.setString(1, foregroundExperimentAcc.toString());
+            st.setString(1, getForegroundExperimentAcc().toString());
             rs = st.executeQuery();
             while (rs.next()) {
                 //there should be a single source file per spectrum
@@ -299,7 +299,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 logger.debug("Getting samples");
                 connection = PooledConnectionFactory.getConnection();
                 st = connection.prepareStatement("SELECT mz_data_id, sample_name FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
-                st.setString(1, foregroundExperimentAcc.toString());
+                st.setString(1, getForegroundExperimentAcc().toString());
                 rs = st.executeQuery();
                 while (rs.next()) {
                     int mz_data_id = rs.getInt("mz_data_id");
@@ -334,7 +334,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 logger.debug("Getting software");
                 connection = PooledConnectionFactory.getConnection();
                 st = connection.prepareStatement("SELECT software_name, software_version, software_completion_time, software_comments FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
-                st.setString(1, foregroundExperimentAcc.toString());
+                st.setString(1, getForegroundExperimentAcc().toString());
                 rs = st.executeQuery();
                 while (rs.next()) {
                     List<CvParam> cvParams = new ArrayList<CvParam>();
@@ -408,7 +408,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 logger.debug("Getting instrument");
                 connection = PooledConnectionFactory.getConnection();
                 st = connection.prepareStatement("SELECT instrument_name, mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
-                st.setString(1, foregroundExperimentAcc.toString());
+                st.setString(1, getForegroundExperimentAcc().toString());
                 rs = st.executeQuery();
                 while (rs.next()) {
                     int mz_data_id = rs.getInt("mz_data_id");
@@ -468,7 +468,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 logger.debug("Getting data processings");
                 connection = PooledConnectionFactory.getConnection();
                 st = connection.prepareStatement("SELECT mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
-                st.setString(1, foregroundExperimentAcc.toString());
+                st.setString(1, getForegroundExperimentAcc().toString());
                 rs = st.executeQuery();
                 while (rs.next()) {
                     int mz_data_id = rs.getInt("mz_data_id");
@@ -529,7 +529,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
         try {
             st = connection.prepareStatement("SELECT protocol_name FROM pride_experiment WHERE accession= ?");
-            st.setString(1, foregroundExperimentAcc.toString());
+            st.setString(1, getForegroundExperimentAcc().toString());
             rs = st.executeQuery();
             while (rs.next()) {
                 protocol_name = rs.getString("protocol_name");
@@ -540,7 +540,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             DBUtilities.releaseResources(null, st, rs);
         }
 
-        protocol_steps = getProtocolStepsById(connection, Integer.parseInt(foregroundExperimentAcc.toString()));
+        protocol_steps = getProtocolStepsById(connection, Integer.parseInt(getForegroundExperimentAcc().toString()));
 
         //for each protocol_step, get the paramGroup
         for (int protocol_step_id : protocol_steps) {
@@ -564,7 +564,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         try {
             st = connection.prepareStatement("SELECT reference_line, pr.reference_id FROM pride_experiment pe, pride_reference pr, pride_reference_exp_link pl WHERE " +
                     "pe.accession = ? AND pl.reference_id = pr.reference_id AND pl.experiment_id = pe.experiment_id");
-            st.setInt(1, Integer.parseInt(foregroundExperimentAcc.toString()));
+            st.setInt(1, Integer.parseInt(getForegroundExperimentAcc().toString()));
             rs = st.executeQuery();
             while (rs.next()) {
                 userParams = getUserParams(connection, "pride_reference_param", rs.getInt("pr.reference_id"));
@@ -597,7 +597,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             try {
                 connection = PooledConnectionFactory.getConnection();
                 st = connection.prepareStatement("SELECT experiment_id FROM pride_experiment WHERE accession= ?");
-                st.setString(1, foregroundExperimentAcc.toString());
+                st.setString(1, getForegroundExperimentAcc().toString());
                 rs = st.executeQuery();
                 while (rs.next()) {
                     int experiment_id = rs.getInt("experiment_id");
@@ -633,7 +633,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 logger.debug("Getting meta data");
                 connection = PooledConnectionFactory.getConnection();
                 st = connection.prepareStatement("SELECT pe.title, pe.accession, pe.short_label FROM pride_experiment pe WHERE pe.accession = ?");
-                st.setString(1, foregroundExperimentAcc.toString());
+                st.setString(1, getForegroundExperimentAcc().toString());
                 rs = st.executeQuery();
                 while (rs.next()) {
                     accession = rs.getString("pe.accession");
@@ -677,7 +677,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             logger.debug("Getting cv lookups");
             connection = PooledConnectionFactory.getConnection();
             st = connection.prepareStatement("SELECT cv_label, version, address, full_name FROM mzdata_cv_lookup sf, mzdata_mz_data mz WHERE mz.accession_number= ? and mz.mzdata_id=sf.mzdata_id");
-            st.setString(1, foregroundExperimentAcc.toString());
+            st.setString(1, getForegroundExperimentAcc().toString());
             rs = st.executeQuery();
             while (rs.next()) {
                 CVLookup cvLookup = new CVLookup(rs.getString("cv_label"), rs.getString("full_name"), rs.getString("version"), rs.getString("address"));
@@ -1196,7 +1196,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                         "molecular_weight, pi, identification_id, pi.experiment_id, pi.classname, pi.spectrum_ref FROM pride_identification pi, pride_experiment pe " +
                         "WHERE pe.accession = ? AND pi.experiment_id = pe.experiment_id AND pi.identification_id = ?");
                 st.setString(2, id.toString());
-                st.setString(1, foregroundExperimentAcc.toString());
+                st.setString(1, getForegroundExperimentAcc().toString());
                 rs = st.executeQuery();
                 while (rs.next()) {
                     String accession = rs.getString("accession_number");
@@ -1241,7 +1241,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         try {
             st = connection.prepareStatement("SELECT ms.spectrum_id FROM mzdata_spectrum ms, mzdata_mz_data mz WHERE " +
                     "mz.accession_number = ? AND mz.mz_data_id = ms.mz_data_id AND ms.spectrum_identifier = ?");
-            st.setString(1, foregroundExperimentAcc.toString());
+            st.setString(1, getForegroundExperimentAcc().toString());
             st.setString(2, spectrum_ref);
             rs = st.executeQuery();
             if (rs.next()) {
@@ -1303,7 +1303,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     @Override
     public SearchEngine getSearchEngine() throws DataAccessException {
         // check with cache if exists then use the in-memory ident object
-        super.getSearchEngine();
+        SearchEngine searchEngine = super.getSearchEngine();
         if (searchEngine == null && hasIdentification()) {
             Connection connection = null;
             PreparedStatement st = null;
@@ -1329,6 +1329,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     ParamGroup paramGroup = CollectionUtils.getElement(paramGroups, 0);
                     searchEngine.setSearchEngineTypes(DataAccessUtilities.getSearchEngineTypes(paramGroup));
                 }
+                cache.store(CacheCategory.SEARCH_ENGINE_TYPE, searchEngine);
             } catch (SQLException e) {
                 String errMsg = "Failed to query search engine for identification";
                 logger.error(errMsg, e);
@@ -1515,7 +1516,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                             "   e.accession = ? and " +
                             "   c.intermediate_data is not null " +
                             "order by c.chart_type");
-            st.setString(1, foregroundExperimentAcc.toString());
+            st.setString(1, getForegroundExperimentAcc().toString());
 
             Map<Integer, PrideChartManager> map = new HashMap<Integer, PrideChartManager>();
             rs = st.executeQuery();
@@ -1549,7 +1550,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                  * instead of using the intermediate data (because it could not be retrieved
                  * in the above step)
                  */
-                String accession = foregroundExperimentAcc.toString();
+                String accession = getForegroundExperimentAcc().toString();
                 connection = PooledConnectionFactory.getConnection();
                 PrideChartSummaryData summaryData = new PrideChartSummaryData(accession, connection);
                 for (PrideChart prideChart : PrideChartFactory.getAllCharts(summaryData)) {

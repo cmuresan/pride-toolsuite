@@ -26,17 +26,34 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         implements DataAccessController {
     private static final Logger logger = LoggerFactory.getLogger(AbstractDataAccessController.class);
 
+    /**
+     * Unique id to identify the data access controller
+     */
     private String uid = null;
+    /**
+     * The name of the data source for displaying purpose
+     */
     private String name = null;
+    /**
+     * The description of the data source for displaying purpose
+     */
     private String description = null;
+    /**
+     * The I/O type of the data source
+     */
     private Type type = null;
+    /**
+     * The type of contents can be present in the data source
+     */
     private Set<ContentCategory> categories = null;
+    /**
+     * Data source, such as: File
+     */
     private Object source = null;
-    protected SearchEngine searchEngine = null;
-    protected Comparable foregroundExperimentAcc = null;
-    protected Spectrum foregroundSpectrum = null;
-    protected Chromatogram foregroundChromatogram = null;
-    protected Identification foregroundIdentification = null;
+    private Comparable foregroundExperimentAcc = null;
+    private Spectrum foregroundSpectrum = null;
+    private Chromatogram foregroundChromatogram = null;
+    private Identification foregroundIdentification = null;
 
     protected AbstractDataAccessController() {
         this(null);
@@ -479,7 +496,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
-     * Get search database using identfication id
+     * Get search database for a given protein identification
      *
      * @param identId identification id.
      * @return String search database
@@ -496,24 +513,23 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
-     * Get search engine has been used.
+     * Get search engine has been used for the experiment.
      *
      * @return SearchEngine    search engine
      * @throws DataAccessException data access exception
      */
     @Override
     public SearchEngine getSearchEngine() throws DataAccessException {
-        if (searchEngine == null && hasIdentification()) {
-            Collection<Comparable> identIds = this.getIdentificationIds();
-            Identification ident = getIdentificationById(CollectionUtils.getElement(identIds, 0));
-            if (ident != null) {
-                searchEngine = new SearchEngine(ident.getSearchEngine());
-                // check the search engine types from the data source
-                List<Peptide> peptides = ident.getPeptides();
-                Peptide peptide = peptides.get(0);
-                List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide);
-                searchEngine.setSearchEngineTypes(types);
-            }
+        Collection<Comparable> identIds = this.getIdentificationIds();
+        Identification ident = getIdentificationById(CollectionUtils.getElement(identIds, 0));
+        SearchEngine searchEngine = null;
+        if (ident != null) {
+            searchEngine = new SearchEngine(ident.getSearchEngine());
+            // check the search engine types from the data source
+            List<Peptide> peptides = ident.getPeptides();
+            Peptide peptide = peptides.get(0);
+            List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide);
+            searchEngine.setSearchEngineTypes(types);
         }
 
         return searchEngine;
@@ -1189,7 +1205,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
                             }
                         }
                     }
-                    cnt --;
+                    cnt--;
                     if (cnt == 0) {
                         break;
                     }

@@ -19,6 +19,7 @@ public enum CacheCategory {
     PEPTIDE (CachedMap.class, 10), // Map<Tuple<Comparable, Comparable>, Peptide>
     EXPERIMENT_ACC(ArrayList.class, null), // List<Experiement Accession>
     EXPERIMENT_METADATA(ArrayList.class, null), // List<Experiment Metadata>
+    SEARCH_ENGINE_TYPE(ArrayList.class, null), // List<SearchEngine>
     SPECTRUM_ID(ArrayList.class, null), // List<Spectrum id>
     CHROMATOGRAM_ID(ArrayList.class, null), // List<Chromatogram id>
     IDENTIFICATION_ID(ArrayList.class, null), // List<Identification id>

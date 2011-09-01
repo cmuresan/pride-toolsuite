@@ -53,10 +53,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             // populate experiment accession only once
             populateExperimentAccs();
         } else {
-            // check the memory mode
-//            memorySaving = isMemorySavingMode(foregroundExperimentAcc);
             // populate the rest every time the foreground experiment accession has changed.
-            populateMetadataInfo();
             populateSpectrumInfo(foregroundExperimentAcc);
             populateIdentificationInfo(foregroundExperimentAcc);
             populatePrecursorInfo(foregroundExperimentAcc);
@@ -67,14 +64,6 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             populatePeptideParamInfo(foregroundExperimentAcc);
             populateTheRest();
         }
-    }
-
-
-    private void populateMetadataInfo() throws DataAccessException {
-        logger.info("Initializing experiment metadata");
-        // clear cache
-        cache.clear(CacheCategory.EXPERIMENT_METADATA);
-        controller.getMetaData();
     }
 
     /**

@@ -111,6 +111,14 @@ public class Software extends IdentifiableParamGroup {
         this.customization = customization;
     }
 
+    public Software(ParamGroup params, Comparable id, String version){
+        super(params,id,null);
+        this.version = version;
+        this.uri = null;
+        this.contact = null;
+        this.customization = null;
+    }
+
     public String getUri() {
         return uri;
     }

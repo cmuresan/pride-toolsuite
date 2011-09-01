@@ -4,7 +4,7 @@ import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.component.table.model.AbstractProteinTableModel;
+import uk.ac.ebi.pride.gui.component.table.filter.DecoyAccessionFilter;
 import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
@@ -27,7 +27,15 @@ import java.awt.event.ActionListener;
  * @author User #2
  */
 public class DecoyFilterDialog extends JDialog {
-    private enum Type {PREFIX, POSTFIX, CONTAIN}
+    /**
+     * Property change event when a new filter is created
+     */
+    public static final String NEW_FILTER = "New Filter";
+
+    private static final String FILTER_STRING_LABEL= "Filter String";
+    private static final String PREFIX_MESSAGE= "Decoy accessions start with";
+    private static final String POST_MESSAGE= "Decoy accessions end with";
+    private static final String CONTAIN_MESSAGE= "Decoy accessions contain";
 
     /**
      * Table which contains all the protein identifications
@@ -55,10 +63,11 @@ public class DecoyFilterDialog extends JDialog {
         panel1 = new JPanel();
         prefixRadioButton = new JRadioButton();
         postRadioButton = new JRadioButton();
-        containButton = new JRadioButton();
+        containRadioButton = new JRadioButton();
+        descriptionLabel = new JLabel();
+        descriptionContentLabel = new JLabel();
         criteriaLabel = new JLabel();
         criteriaTextField = new JTextField();
-        decoyOnlyCheckBox = new JCheckBox();
         buttonBar = new JPanel();
         helpButton = new JButton();
         Icon helpIcon = GUIUtilities.loadIcon(appContext.getProperty("help.icon.small"));
@@ -68,7 +77,6 @@ public class DecoyFilterDialog extends JDialog {
         CSH.setHelpIDString(helpButton, "help.browse.protein");
         helpButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
         cancelButton = new JButton();
-        resetButton = new JButton();
         okButton = new JButton();
 
         //======== this ========
@@ -85,7 +93,7 @@ public class DecoyFilterDialog extends JDialog {
 
                 //======== panel1 ========
                 {
-                    panel1.setBorder(new TitledBorder(null, "Action", TitledBorder.LEADING, TitledBorder.ABOVE_TOP));
+                    panel1.setBorder(new TitledBorder(null, "Filter Action", TitledBorder.LEADING, TitledBorder.ABOVE_TOP));
 
                     //---- prefixRadioButton ----
                     prefixRadioButton.setText("Prefix");
@@ -94,60 +102,67 @@ public class DecoyFilterDialog extends JDialog {
                     //---- postRadioButton ----
                     postRadioButton.setText("Postfix");
 
-                    //---- containButton ----
-                    containButton.setText("Contain");
+                    //---- containRadioButton ----
+                    containRadioButton.setText("Contain");
+
+                    //---- descriptionLabel ----
+                    descriptionLabel.setText("Description: ");
 
                     GroupLayout panel1Layout = new GroupLayout(panel1);
                     panel1.setLayout(panel1Layout);
                     panel1Layout.setHorizontalGroup(
-                        panel1Layout.createParallelGroup()
-                            .add(panel1Layout.createSequentialGroup()
-                                .add(prefixRadioButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(70, 70, 70)
-                                .add(postRadioButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(LayoutStyle.RELATED, 59, Short.MAX_VALUE)
-                                .add(containButton)
-                                .add(8, 8, 8))
+                            panel1Layout.createParallelGroup()
+                                    .add(panel1Layout.createSequentialGroup()
+                                            .add(panel1Layout.createParallelGroup()
+                                                    .add(panel1Layout.createSequentialGroup()
+                                                            .add(prefixRadioButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                            .add(70, 70, 70)
+                                                            .add(postRadioButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                            .add(55, 55, 55)
+                                                            .add(containRadioButton))
+                                                    .add(panel1Layout.createSequentialGroup()
+                                                            .add(9, 9, 9)
+                                                            .add(descriptionLabel)
+                                                            .addPreferredGap(LayoutStyle.RELATED)
+                                                            .add(descriptionContentLabel, GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)))
+                                            .addContainerGap())
                     );
                     panel1Layout.setVerticalGroup(
-                        panel1Layout.createParallelGroup()
-                            .add(panel1Layout.createParallelGroup(GroupLayout.BASELINE)
-                                .add(prefixRadioButton)
-                                .add(postRadioButton)
-                                .add(containButton))
+                            panel1Layout.createParallelGroup()
+                                    .add(panel1Layout.createSequentialGroup()
+                                            .add(panel1Layout.createParallelGroup(GroupLayout.BASELINE)
+                                                    .add(prefixRadioButton)
+                                                    .add(postRadioButton)
+                                                    .add(containRadioButton))
+                                            .addPreferredGap(LayoutStyle.RELATED, 7, Short.MAX_VALUE)
+                                            .add(panel1Layout.createParallelGroup(GroupLayout.BASELINE)
+                                                    .add(descriptionLabel)
+                                                    .add(descriptionContentLabel)))
                     );
                 }
 
                 //---- criteriaLabel ----
-                criteriaLabel.setText("Criteria");
-                criteriaLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-
-                //---- decoyOnlyCheckBox ----
-                decoyOnlyCheckBox.setText("Show decoy only");
+                criteriaLabel.setText("Filter String");
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .add(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(contentPanelLayout.createSequentialGroup()
-                            .add(criteriaLabel, GroupLayout.PREFERRED_SIZE, 57, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.RELATED)
-                            .add(criteriaTextField, GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE))
-                        .add(contentPanelLayout.createSequentialGroup()
-                            .add(decoyOnlyCheckBox, GroupLayout.PREFERRED_SIZE, 249, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap())
+                        contentPanelLayout.createParallelGroup()
+                                .add(panel1, GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
+                                .add(contentPanelLayout.createSequentialGroup()
+                                        .add(8, 8, 8)
+                                        .add(criteriaLabel, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+                                        .addContainerGap(262, Short.MAX_VALUE))
+                                .add(criteriaTextField, GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
                 );
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .add(contentPanelLayout.createSequentialGroup()
-                            .add(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(contentPanelLayout.createParallelGroup(GroupLayout.BASELINE)
-                                .add(criteriaTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .add(criteriaLabel))
-                            .addPreferredGap(LayoutStyle.RELATED)
-                            .add(decoyOnlyCheckBox))
+                        contentPanelLayout.createParallelGroup()
+                                .add(GroupLayout.TRAILING, contentPanelLayout.createSequentialGroup()
+                                        .add(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .add(18, 18, 18)
+                                        .add(criteriaLabel)
+                                        .addPreferredGap(LayoutStyle.RELATED)
+                                        .add(criteriaTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -156,32 +171,25 @@ public class DecoyFilterDialog extends JDialog {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 85, 85, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 85, 85, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0, 0.0, 0.0};
 
                 //---- helpLabel ----
-                helpButton.setText("Help");
                 buttonBar.add(helpButton, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- cancelButton ----
                 cancelButton.setText("Cancel");
-                buttonBar.add(cancelButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
-
-                //---- resetButton ----
-                resetButton.setText("Reset");
-                buttonBar.add(resetButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("OK");
                 buttonBar.add(okButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -193,7 +201,7 @@ public class DecoyFilterDialog extends JDialog {
         ButtonGroup buttonGroup1 = new ButtonGroup();
         buttonGroup1.add(prefixRadioButton);
         buttonGroup1.add(postRadioButton);
-        buttonGroup1.add(containButton);
+        buttonGroup1.add(containRadioButton);
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
@@ -209,50 +217,31 @@ public class DecoyFilterDialog extends JDialog {
             }
         });
 
-        // reset button
-        resetButton.addActionListener(new ActionListener() {
+        // ok button
+        okButton.addActionListener(new FilterActionListener());
+
+        // set the default text of description
+        descriptionContentLabel.setText(PREFIX_MESSAGE);
+
+        // action listener to radio buttons
+        prefixRadioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setRowFilter(null);
-                DecoyFilterDialog.this.setVisible(false);
+                descriptionContentLabel.setText(PREFIX_MESSAGE);
             }
         });
 
-        // ok button
-        okButton.addActionListener(new ActionListener() {
+        postRadioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // get criteria
-                String criteria = criteriaTextField.getText();
-                if (criteria != null && !"".equals(criteria.trim())) {
-                    // get action
-                    Type type;
-                    if (prefixRadioButton.isSelected()) {
-                        type = Type.PREFIX;
-                    } else if (postRadioButton.isSelected()) {
-                        type = Type.POSTFIX;
-                    } else {
-                        type = Type.CONTAIN;
-                    }
+                descriptionContentLabel.setText(POST_MESSAGE);
+            }
+        });
 
-                    // get accession index
-                    int index = -1;
-                    TableModel tableModel = proteinTable.getModel();
-                    String protAccColName = ProteinTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
-                    int colCnt = tableModel.getColumnCount();
-                    for (int i = 0; i < colCnt; i++) {
-                        if (tableModel.getColumnName(i).equals(protAccColName)) {
-                            index = i;
-                        }
-                    }
-
-                    // get criteria
-                    setRowFilter(new DecoyRowFilter(type, criteria, index, decoyOnlyCheckBox.isSelected()));
-                } else {
-                    setRowFilter(null);
-                }
-
-                DecoyFilterDialog.this.setVisible(false);
+        containRadioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                descriptionContentLabel.setText(CONTAIN_MESSAGE);
             }
         });
     }
@@ -274,58 +263,47 @@ public class DecoyFilterDialog extends JDialog {
     }
 
     /**
-     * Decoy row filter
+     * Action triggered when the ok button is clicked
      */
-    private class DecoyRowFilter extends RowFilter {
-        /**
-         * Type of the matching mechanism
-         */
-        private Type type;
-
-        /**
-         * Matching criteria
-         */
-        private String criteria;
-        /**
-         * Index of the protein accession column
-         */
-        private int accIndex;
-        /**
-         * whether to show decoy records only
-         */
-        private boolean decoyOnly;
-
-        /**
-         * Constructor
-         *
-         * @param type     type of the matching mechanism
-         * @param criteria matching criteria
-         * @param accIndex index of the protein accession
-         * @param decoyOnly whether to show decoy records only
-         */
-        private DecoyRowFilter(Type type, String criteria, int accIndex, boolean decoyOnly) {
-            this.type = type;
-            this.criteria = criteria.toLowerCase();
-            this.accIndex = accIndex;
-            this.decoyOnly = decoyOnly;
-        }
+    private class FilterActionListener implements ActionListener {
 
         @Override
-        public boolean include(Entry entry) {
-            String accession = entry.getStringValue(accIndex);
-
-            if (accession != null) {
-                accession = accession.toLowerCase();
-                switch (type) {
-                    case PREFIX:
-                        return decoyOnly ? accession.startsWith(criteria) : ! accession.startsWith(criteria);
-                    case POSTFIX:
-                        return decoyOnly ? accession.endsWith(criteria) : ! accession.startsWith(criteria);
-                    case CONTAIN:
-                        return decoyOnly ? accession.contains(criteria) : ! accession.contains(criteria);
+        public void actionPerformed(ActionEvent e) {
+            // get criteria
+            String criteria = criteriaTextField.getText();
+            if (criteria != null && !"".equals(criteria.trim())) {
+                // get action
+                DecoyAccessionFilter.Type type;
+                if (prefixRadioButton.isSelected()) {
+                    type = DecoyAccessionFilter.Type.PREFIX;
+                } else if (postRadioButton.isSelected()) {
+                    type = DecoyAccessionFilter.Type.POSTFIX;
+                } else {
+                    type = DecoyAccessionFilter.Type.CONTAIN;
                 }
+
+                // get accession index
+                int index = -1;
+                TableModel tableModel = proteinTable.getModel();
+                String protAccColName = ProteinTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
+                int colCnt = tableModel.getColumnCount();
+                for (int i = 0; i < colCnt; i++) {
+                    if (tableModel.getColumnName(i).equals(protAccColName)) {
+                        index = i;
+                    }
+                }
+
+                // get criteria
+                setRowFilter(new DecoyAccessionFilter(type, criteria, index, false));
+                DecoyFilterDialog.this.setVisible(false);
+                DecoyFilterDialog.this.firePropertyChange(NEW_FILTER, false, true);
+
+                // reset label
+                criteriaLabel.setText(FILTER_STRING_LABEL);
+            } else {
+                // set error message
+                criteriaLabel.setText("<html><div> " + FILTER_STRING_LABEL + " <b style=\"color:#FF0000\"> (Empty String)</b></div></html>");
             }
-            return false;
         }
     }
 
@@ -336,14 +314,14 @@ public class DecoyFilterDialog extends JDialog {
     private JPanel panel1;
     private JRadioButton prefixRadioButton;
     private JRadioButton postRadioButton;
-    private JRadioButton containButton;
+    private JRadioButton containRadioButton;
     private JLabel criteriaLabel;
     private JTextField criteriaTextField;
     private JPanel buttonBar;
     private JButton helpButton;
     private JButton cancelButton;
-    private JButton resetButton;
     private JButton okButton;
-    private JCheckBox decoyOnlyCheckBox;
+    private JLabel descriptionLabel;
+    private JLabel descriptionContentLabel;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

@@ -307,5 +307,9 @@ decoy.filter.title = Decoy Filter
 decoy.filter.tooltip = Decoy Filter
 decoy.filter.small.icon = icon/16x16/filter.png
 
+# menu related icons
+menu.selection.tick.small.icon = icon/16x16/tick.png
+menu.setting.small.icon = icon/16x16/configuration.png
+
            
 

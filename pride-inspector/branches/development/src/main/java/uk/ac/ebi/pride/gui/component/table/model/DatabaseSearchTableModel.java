@@ -15,7 +15,7 @@ import java.util.List;
  * Date: 02/06/11
  * Time: 15:23
  */
-public class DatabaseSearchTableModel extends ListTableModel<List<String>> {
+public class DatabaseSearchTableModel extends ListTableModel<List<Object>> {
     /**
      * table column title
      */
@@ -51,9 +51,19 @@ public class DatabaseSearchTableModel extends ListTableModel<List<String>> {
             addColumn(tableHeader.getHeader(), tableHeader.getToolTip());
         }
     }
+//
+//    @Override
+//    public Class<?> getColumnClass(int columnIndex) {
+//        if (columnIndex == 2) {
+//            System.out.println(getColumnName(columnIndex));
+//            return Integer.class;
+//        } else {
+//            return super.getColumnClass(columnIndex);
+//        }
+//    }
 
     @Override
-    public void addData(List<String> newData) {
+    public void addData(List<Object> newData) {
         List<Object> content = new ArrayList<Object>();
         // row number
         int rowCnt = this.getRowCount();
@@ -109,8 +119,8 @@ public class DatabaseSearchTableModel extends ListTableModel<List<String>> {
     @EventSubscriber(eventClass = DatabaseSearchEvent.class)
     public void onDatabaseSearchEvent(DatabaseSearchEvent evt) {
         if (DatabaseSearchEvent.Status.RESULT.equals(evt.getStatus())) {
-            List<List<String>> newData = (List<List<String>>) evt.getResult();
-            for (List<String> data : newData) {
+            List<List<Object>> newData = (List<List<Object>>) evt.getResult();
+            for (List<Object> data : newData) {
                 addData(data);
             }
         } else if (DatabaseSearchEvent.Status.HEADER.equals(evt.getStatus())) {

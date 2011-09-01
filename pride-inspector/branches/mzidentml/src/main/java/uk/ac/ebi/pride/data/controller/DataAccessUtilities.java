@@ -227,27 +227,55 @@ public class DataAccessUtilities {
 
     public static int getNumberOfPTMs(Identification ident) {
         int cnt = 0;
-        /*List<Peptide> peptides = ident.getPeptides();
+        List<Peptide> peptides = ident.getIdentifiedPeptides();
         for (Peptide peptide : peptides) {
-            List<Modification> mods = peptide.getModifications();
+            List<Modification> mods = peptide.getPeptideSequence().getModificationList();
             if (mods != null) {
                 cnt += mods.size();
             }
-        }*/
+        }
         return cnt;
     }
 
-    public static int getNumberOfPTMs(PeptideSequence peptide) {
+    public static int getNumberOfSubstitutionPTMs(Identification ident) {
         int cnt = 0;
+        List<Peptide> peptides = ident.getIdentifiedPeptides();
+        for (Peptide peptide : peptides) {
+            List<SubstitutionModification> mods = peptide.getPeptideSequence().getSubstitutionModificationList();
+            if (mods != null) {
+                cnt += mods.size();
+            }
+        }
+        return cnt;
+    }
 
-        /*List<Modification> mods = peptide.getModifications();
+    /**
+     * Get the number of the modification of a peptide
+     * @param peptide
+     * @return
+     */
+    public static int getNumberOfPTMs(Peptide peptide) {
+        int cnt = 0;
+        List<Modification> mods = peptide.getPeptideSequence().getModificationList();
         if (mods != null) {
             cnt = mods.size();
-        }*/
-
+        }
         return cnt;
     }
 
+    /**
+     * Get the number of substitution modification of a peptide
+     * @param peptide
+     * @return
+     */
+    public static int getNumberOfSubstitutionPTMs(Peptide peptide) {
+        int cnt = 0;
+        List<SubstitutionModification> mods = peptide.getPeptideSequence().getSubstitutionModificationList();
+        if (mods != null) {
+            cnt = mods.size();
+        }
+        return cnt;
+    }
     /**
      * Get peptide score from a peptide object.
      *

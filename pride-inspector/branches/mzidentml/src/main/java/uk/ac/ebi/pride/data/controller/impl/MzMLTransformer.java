@@ -1,7 +1,9 @@
 package uk.ac.ebi.pride.data.controller.impl;
 
 import uk.ac.ebi.jmzml.model.mzml.ComponentList;
+import uk.ac.ebi.jmzml.model.mzml.FileDescription;
 import uk.ac.ebi.jmzml.model.mzml.SoftwareRef;
+import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.coreIdent.*;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
 import uk.ac.ebi.pride.term.CvTermReference;
@@ -14,7 +16,7 @@ import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
- * User: rwang
+ * User: rwang, yperez
  * Date: 08-Feb-2010
  * Time: 15:11:47
  */
@@ -37,13 +39,7 @@ public class MzMLTransformer {
             List<ParamGroup> products = transformProductList(spectrum.getProductList());
             List<BinaryDataArray> binaryArray = transformBinaryDataArrayList(spectrum.getBinaryDataArrayList());
             ParamGroup paramGroup = transformParamGroup(spectrum);
-
-            newSpec = new Spectrum(specId, index,
-                    spotId, dataProcessing,
-                    arrLen, sourceFile,
-                    scans, precursors,
-                    products, binaryArray,
-                    paramGroup);
+            newSpec = new Spectrum(paramGroup,specId, null,index, dataProcessing, arrLen, binaryArray,spotId, sourceFile, scans, precursors,products);
         }
         return newSpec;
     }
@@ -303,7 +299,7 @@ public class MzMLTransformer {
             String id = oldSourceFile.getId();
             String path = oldSourceFile.getLocation();
             ParamGroup paramGroup = transformParamGroup(oldSourceFile);
-            newSourceFile = new SourceFile(id, name, path, paramGroup);
+            newSourceFile = new SourceFile(paramGroup, id, name, path);
         }
 
         return newSourceFile;
@@ -349,8 +345,7 @@ public class MzMLTransformer {
             int arrLength = chroma.getDefaultArrayLength();
             List<BinaryDataArray> binaryArr = transformBinaryDataArrayList(chroma.getBinaryDataArrayList());
             ParamGroup paramGroup = transformParamGroup(chroma);
-            newChroma = new Chromatogram(id, index, dataProcessing,
-                    arrLength, binaryArr, paramGroup);
+            newChroma = new Chromatogram(paramGroup,id, null,index, dataProcessing, arrLength, binaryArr);
         }
 
         return newChroma;
@@ -397,7 +392,7 @@ public class MzMLTransformer {
             String id = oldSample.getId();
             String name = oldSample.getName();
             ParamGroup paramGroup = transformParamGroup(oldSample);
-            newSample = new Sample(id, name, paramGroup);
+            newSample = new Sample(paramGroup,id, name);
         }
 
         return newSample;
@@ -423,7 +418,7 @@ public class MzMLTransformer {
             String id = oldSoftware.getId();
             String version = oldSoftware.getVersion();
             ParamGroup paramGroup = transformParamGroup(oldSoftware);
-            newSoftware = new Software(id, version, paramGroup);
+            newSoftware = new Software(paramGroup, id, version);
         }
         return newSoftware;
     }
@@ -545,22 +540,90 @@ public class MzMLTransformer {
         return newDataProcessing;
     }
 
-    public static FileDescription transformFileDescription(uk.ac.ebi.jmzml.model.mzml.FileDescription rawFileDesc) {
-
-
-        if (rawFileDesc != null) {
-            ParamGroup fileContent = transformParamGroup(rawFileDesc.getFileContent());
-            uk.ac.ebi.jmzml.model.mzml.SourceFileList rawSourceFileList = rawFileDesc.getSourceFileList();
-            List<SourceFile> sourceFiles = transformSourceFileList(rawSourceFileList);
-            List<ParamGroup> contacts = transformParamGroupList(rawFileDesc.getContact());
-            fileDesc = new FileDescription(fileContent, sourceFiles, contacts);
-        }
-
-        return fileDesc;
+    /**
+     * Retrieve the file contenct
+     * @param rawFileDescription
+     * @return
+     */
+    public static ParamGroup transformFileDescriptionToFileContent(FileDescription rawFileDescription){
+           if (rawFileDescription != null) {
+               ParamGroup fileContent = transformParamGroup(rawFileDescription.getFileContent());
+               return fileContent;
+           }
+        return null;
     }
 
+    /**
+     * Transform FileDescription object to List of SourceFile
+     * @param rawFileDescription jmzml FileDescription Object
+     * @return List<SourceFile> List of Source Files used in the MzMl
+     */
+    public static List<SourceFile> transformFileDescriptionToFileSource(FileDescription rawFileDescription){
+        if(rawFileDescription != null){
+            uk.ac.ebi.jmzml.model.mzml.SourceFileList rawSourceFileList = rawFileDescription.getSourceFileList();
+            List<SourceFile> sourceFiles = transformSourceFileList(rawSourceFileList);
+            return sourceFiles;
+        }
+        return null;
+    }
 
+    /**
+     * Method to retrieve the Contact Persons From the FileDescription Object in the MzMl Files
+     * @param rawFileDescription
+     * @return List<Person> List of Person Contacts
+     */
+    public static List<Person> transformFileDescriptionToPerson(FileDescription rawFileDescription){
+        if(rawFileDescription != null){
+            List<ParamGroup> contacts = transformParamGroupList(rawFileDescription.getContact());
+            List<Person> persons = new ArrayList<Person>();
+            for (ParamGroup contact : contacts){
+              CvTermReference contactTerm = CvTermReference.CONTACT_NAME;
+              List<CvParam> contactsValues = DataAccessUtilities.getCvParam(contact,contactTerm.getCvLabel(),contactTerm.getAccession());
+              String name = null;
+              if(!contactsValues.isEmpty()){
+                  name = contactsValues.get(0).getValue();
+              }
+              contactTerm = CvTermReference.CONTACT_EMAIL;
+              contactsValues = DataAccessUtilities.getCvParam(contact,contactTerm.getCvLabel(),contactTerm.getAccession());
+              String mail = null;
+              if(!contactsValues.isEmpty()){
+                  name = contactsValues.get(0).getValue();
+              }
+              Person contactPerson = new Person(contact,name,mail);
+              persons.add(contactPerson);
+            }
+            return persons;
+        }
+        return null;
+    }
 
-        return fileDesc;
+    /**
+     * Method to transform FileDescription in the MzMl file to an Organization Objet List
+     * @param rawFileDescription
+     * @return List<Organization> Organization List
+     */
+    public static List<Organization> transformFileDescriptionOrganization(FileDescription rawFileDescription){
+        if(rawFileDescription != null){
+            List<ParamGroup> contacts = transformParamGroupList(rawFileDescription.getContact());
+            List<Organization> organizations = new ArrayList<Organization>();
+            for (ParamGroup contact : contacts){
+              CvTermReference contactTerm = CvTermReference.CONTACT_ORG;
+              List<CvParam> contactsValues = DataAccessUtilities.getCvParam(contact,contactTerm.getCvLabel(),contactTerm.getAccession());
+              String name = null;
+              if(!contactsValues.isEmpty()){
+                  name = contactsValues.get(0).getValue();
+              }
+              contactTerm = CvTermReference.CONTACT_EMAIL;
+              contactsValues = DataAccessUtilities.getCvParam(contact,contactTerm.getCvLabel(),contactTerm.getAccession());
+              String mail = null;
+              if(!contactsValues.isEmpty()){
+                  name = contactsValues.get(0).getValue();
+              }
+              Organization contactOrganization = new Organization(contact,name,mail);
+              organizations.add(contactOrganization);
+            }
+            return organizations;
+        }
+        return null;
     }
 }

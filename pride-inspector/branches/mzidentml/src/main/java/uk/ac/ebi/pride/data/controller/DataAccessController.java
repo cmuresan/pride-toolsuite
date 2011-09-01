@@ -279,10 +279,12 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
      */
     public Collection<SourceFile> getSourceFiles() throws DataAccessException;
 
-
-
-
-
+    /**
+     * Get experimental additional params
+     * @return  ParamGroup  experimental additional param
+     * @throws DataAccessException  throw a exception when there is an error accessing the data source
+     */
+    public ParamGroup getAdditional() throws DataAccessException;
 
 
     //Todo: getDefaultInstrument() from mzML's run element

@@ -125,7 +125,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
                     samples, softwares, scanSettings, instrumentConfigurations,
                     dataProcessings, params);
 
-            cache.store(CacheCategory.EXPERIMENT_METADATA, metaData);
+            getCache().store(CacheCategory.EXPERIMENT_METADATA, metaData);
         }
 
         return metaData;
@@ -276,7 +276,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
                         rawSpec = unmarshaller.getSpectrumById(id.toString());
                 spectrum = MzMLTransformer.transformSpectrum(rawSpec);
                 if (useCache) {
-                    cache.store(CacheCategory.SPECTRUM, id, spectrum);
+                    getCache().store(CacheCategory.SPECTRUM, id, spectrum);
                 }
             } catch (MzMLUnmarshallerException ex) {
                 logger.error("Get spectrum by id", ex);
@@ -304,7 +304,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
                         rawChroma = unmarshaller.getChromatogramById(id.toString());
                 chroma = MzMLTransformer.transformChromatogram(rawChroma);
                 if (useCache) {
-                    cache.store(CacheCategory.CHROMATOGRAM, id, chroma);
+                    getCache().store(CacheCategory.CHROMATOGRAM, id, chroma);
                 }
             } catch (MzMLUnmarshallerException ex) {
                 logger.error("Get chromatogram by id", ex);

@@ -43,35 +43,6 @@ public class EmptyDataAccessController extends AbstractDataAccessController {
     }
 
     @Override
-    public Cache getCache() {
-        throw new UnsupportedOperationException("This is a empty data access controller");
-    }
-
-    @Override
-    public void setCache(Cache cache) {
-        throw new UnsupportedOperationException("This is a empty data access controller");
-    }
-
-    @Override
-    public CacheBuilder getCacheBuilder() {
-        throw new UnsupportedOperationException("This is a empty data access controller");
-    }
-
-    @Override
-    public void setCacheBuilder(CacheBuilder builder) {
-        throw new UnsupportedOperationException("This is a empty data access controller");
-    }
-
-    @Override
-    public void clearCache() {
-    }
-
-    @Override
-    public void populateCache() throws DataAccessException {
-        throw new UnsupportedOperationException("This is a empty data access controller");
-    }
-
-    @Override
     public Collection<Comparable> getIdentificationIds() throws DataAccessException {
         return new ArrayList<Comparable>();
     }

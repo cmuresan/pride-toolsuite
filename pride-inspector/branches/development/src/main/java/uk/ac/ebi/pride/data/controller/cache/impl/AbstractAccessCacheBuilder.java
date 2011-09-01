@@ -4,6 +4,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.cache.Cache;
 import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
+import uk.ac.ebi.pride.data.controller.impl.CachedDataAccessController;
 
 /**
  * Abstract implementation of CacheBuilder
@@ -26,9 +27,9 @@ public abstract class AbstractAccessCacheBuilder implements CacheBuilder {
     /**
      * Constructor
      * Stores a internal reference to DataAccessController and its Cache
-     * @param controller    DataAccessController
+     * @param controller    CachedDataAccessController
      */
-    protected AbstractAccessCacheBuilder(DataAccessController controller) {
+    protected AbstractAccessCacheBuilder(CachedDataAccessController controller) {
         this.controller = controller;
         this.cache = controller.getCache();
     }

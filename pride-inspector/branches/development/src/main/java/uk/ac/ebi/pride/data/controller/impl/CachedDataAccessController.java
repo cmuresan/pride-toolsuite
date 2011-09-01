@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
+import uk.ac.ebi.pride.data.controller.access.CacheAccess;
 import uk.ac.ebi.pride.data.controller.cache.Cache;
 import uk.ac.ebi.pride.data.controller.cache.CacheAccessor;
 import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;
@@ -35,7 +36,7 @@ import java.util.*;
  * Date: 13-Sep-2010
  * Time: 14:26:03
  */
-public abstract class CachedDataAccessController extends AbstractDataAccessController {
+public abstract class CachedDataAccessController extends AbstractDataAccessController implements CacheAccess{
     private static final Logger logger = LoggerFactory.getLogger(CachedDataAccessController.class);
     /**
      * the default data access mode is to use both cache and data source
@@ -48,11 +49,11 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     /**
      * Note: this cache is related to each experiment, must be reset when switching experiment.
      */
-    protected Cache cache;
+    private Cache cache;
     /**
      * builder is responsible for initializing the Cache
      */
-    protected CacheBuilder cacheBuilder;
+    private CacheBuilder cacheBuilder;
 
     public CachedDataAccessController() {
         this(null, DEFAULT_ACCESS_MODE);
@@ -820,5 +821,11 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
             list.add(new PrideChartManager(prideChart));
         }
         return list;
+    }
+
+    @Override
+    public void close() {
+        clearCache();
+        super.close();
     }
 }

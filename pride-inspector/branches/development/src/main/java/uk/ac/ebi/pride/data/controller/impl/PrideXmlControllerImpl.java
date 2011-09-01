@@ -17,10 +17,7 @@ import uk.ac.ebi.pride.jaxb.xml.PrideXmlReader;
 
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -137,6 +134,11 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         }
     }
 
+    @Override
+    public ReferenceableParamGroup getReferenceableParamGroup() throws DataAccessException {
+        throw new UnsupportedOperationException("This method is unsupported");
+    }
+
     /**
      * Get a list of source files.
      *
@@ -228,6 +230,11 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         } else {
             return metaData.getSoftwares();
         }
+    }
+
+    @Override
+    public Collection<ScanSetting> getScanSettings() throws DataAccessException {
+        throw new UnsupportedOperationException("This method is unsupported");
     }
 
     /**

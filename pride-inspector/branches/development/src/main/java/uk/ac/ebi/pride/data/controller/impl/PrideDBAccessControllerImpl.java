@@ -282,6 +282,11 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
+    public ReferenceableParamGroup getReferenceableParamGroup() throws DataAccessException {
+        throw new UnsupportedOperationException("This method is unsupported");
+    }
+
+    @Override
     public List<Sample> getSamples() throws DataAccessException {
         MetaData metaData = super.getMetaData();
 
@@ -357,6 +362,11 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         } else {
             return metaData.getSoftwares();
         }
+    }
+
+    @Override
+    public Collection<ScanSetting> getScanSettings() throws DataAccessException {
+        throw new UnsupportedOperationException("This method is unsupported");
     }
 
     private List<ParamGroup> getAnalyzerList(Connection connection, int mz_data_id) throws DataAccessException {

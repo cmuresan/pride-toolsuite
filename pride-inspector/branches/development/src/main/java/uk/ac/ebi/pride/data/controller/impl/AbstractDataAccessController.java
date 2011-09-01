@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.data.controller.impl;
 
+import com.sun.istack.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -77,7 +78,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Create a data access controller with source
-     * @param source    data source
+     *
+     * @param source data source
      */
     protected AbstractDataAccessController(Object source) {
         setSource(source);
@@ -87,7 +89,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get the unique id of the data access controller
-     * @return  String  unique id
+     *
+     * @return String  unique id
      */
     @Override
     public String getUid() {
@@ -96,7 +99,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Set the unique id of the data access controller
-     * @param uid   unique id
+     *
+     * @param uid unique id
      */
     @Override
     public void setUid(String uid) {
@@ -105,7 +109,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get the name of the data access controller
-     * @return  String  name of the data access controller
+     *
+     * @return String  name of the data access controller
      */
     @Override
     public String getName() {
@@ -114,6 +119,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Set the name of the data access controller
+     *
      * @param name the new name for this DataAccessController
      */
     @Override
@@ -123,7 +129,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get the I/O type of the data access controller
-     * @return  Type    I/O type
+     *
+     * @return Type    I/O type
      */
     @Override
     public Type getType() {
@@ -132,6 +139,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Set the I/O type of the data access controller
+     *
      * @param type controller type.
      */
     @Override
@@ -141,7 +149,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get the content could be present in the data access controller
-     * @return  Collection<ContentCateogry> a list of content types
+     *
+     * @return Collection<ContentCateogry> a list of content types
      */
     @Override
     public Collection<ContentCategory> getContentCategories() {
@@ -150,7 +159,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Set the content categories
-     * @param categories    a array of categories.
+     *
+     * @param categories a array of categories.
      */
     @Override
     public void setContentCategories(ContentCategory... categories) {
@@ -160,7 +170,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get the description of the data access controller
-     * @return  String  descriptioin
+     *
+     * @return String  description
      */
     @Override
     public String getDescription() {
@@ -169,6 +180,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Set the description of the data access controller
+     *
      * @param desc the new description for the controller
      */
     @Override
@@ -178,7 +190,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get the source of the data access controller
-     * @return  Object  the source of the data access controller
+     *
+     * @return Object  the source of the data access controller
      */
     @Override
     public Object getSource() {
@@ -187,6 +200,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Set the source of the data access controller
+     *
      * @param src data source object
      */
     @Override
@@ -203,66 +217,35 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         firePropertyChange(DATA_SOURCE_CLOSED, false, true);
     }
 
-    @Override
-    public MetaData getMetaData() throws DataAccessException {
-        return null;
-    }
-
-    @Override
-    public Collection<CVLookup> getCvLookups() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public FileDescription getFileDescription() throws DataAccessException {
-        return null;
-    }
-
-    @Override
-    public ReferenceableParamGroup getReferenceableParamGroup() throws DataAccessException {
-        return null;
-    }
-
-    @Override
-    public Collection<Sample> getSamples() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<Software> getSoftware() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<ScanSetting> getScanSettings() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<DataProcessing> getDataProcessings() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public ParamGroup getAdditional() throws DataAccessException {
-        return null;
-    }
-
+    /**
+     * Check spectrum availability
+     *
+     * @return boolean true means there is spectra
+     * @throws DataAccessException data access exception
+     */
     @Override
     public boolean hasSpectrum() throws DataAccessException {
         return getNumberOfSpectra() > 0;
     }
 
+    /**
+     * Get the number of spectra
+     *
+     * @return int the number of spectra
+     * @throws DataAccessException data access exception
+     */
     @Override
     public int getNumberOfSpectra() throws DataAccessException {
         return getSpectrumIds().size();
     }
 
+    /**
+     * Get the index of the spectrum
+     *
+     * @param id spectrum id
+     * @return int the index of the spectrum
+     * @throws DataAccessException data access exception
+     */
     @Override
     public int getSpectrumIndex(Comparable id) throws DataAccessException {
         int index = -1;
@@ -273,6 +256,14 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return index;
     }
 
+    /**
+     * Get a collection spectrum starting from a given index
+     *
+     * @param index  the start index of the spectrum.
+     * @param offset the max number of spectra to get.
+     * @return Collection<Spectrum>    a collection of spectrum
+     * @throws DataAccessException data access exception
+     */
     @Override
     public Collection<Spectrum> getSpectraByIndex(int index, int offset) throws DataAccessException {
         List<Spectrum> spectra = new ArrayList<Spectrum>();
@@ -294,8 +285,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      * Return false by default
      *
      * @param specId spectrum id
-     * @return
-     * @throws DataAccessException
+     * @return boolean  true means a peptide has been identified
+     * @throws DataAccessException data access exception
      */
     @Override
     public boolean isIdentifiedSpectrum(Comparable specId) throws DataAccessException {
@@ -338,7 +329,6 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get precursor charge of a spectrum.
-     * This implementation will check cache first.
      *
      * @param specId spectrum id.
      * @return int precursor charge
@@ -373,7 +363,6 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get precursor intensity value using spectrum id.
-     * This implementation will check cache first.
      *
      * @param specId spectrum id.
      * @return double intensity
@@ -406,17 +395,35 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return sum;
     }
 
+    /**
+     * Check the availability of the chromatogram
+     *
+     * @return boolean true means chromatogram available
+     * @throws DataAccessException data access exception
+     */
     @Override
     public boolean hasChromatogram() throws DataAccessException {
         return getNumberOfChromatograms() > 0;
     }
 
+    /**
+     * Get the number of chromatograms
+     *
+     * @return int the number of chromatograms
+     * @throws DataAccessException data access exception
+     */
     @Override
     public int getNumberOfChromatograms() throws DataAccessException {
         return getChromatogramIds().size();
     }
 
-
+    /**
+     * Get the index of a chromatogram by id
+     *
+     * @param id chromatogram id
+     * @return int the index of the the chromatogram
+     * @throws DataAccessException data access exception
+     */
     @Override
     public int getChromatogramIndex(Comparable id) throws DataAccessException {
         int index = -1;
@@ -427,6 +434,14 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return index;
     }
 
+    /**
+     * Get a collection of chromatograms starting from a given index
+     *
+     * @param index  index of the starting chromatogram.
+     * @param offset the number of chromatogram to get.
+     * @return Collection<Chromatogram>    a collection of chromatograms
+     * @throws DataAccessException data access exception
+     */
     @Override
     public Collection<Chromatogram> getChromatogramByIndex(int index, int offset) throws DataAccessException {
         List<Chromatogram> chromas = new ArrayList<Chromatogram>();
@@ -444,21 +459,46 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return chromas;
     }
 
+    /**
+     * Check the availability of protein identifications
+     *
+     * @return boolean true means there is protein identifications
+     * @throws DataAccessException data access exception
+     */
     @Override
     public boolean hasIdentification() throws DataAccessException {
         return getNumberOfIdentifications() > 0;
     }
 
+    /**
+     * Check the availability of peptide identifications
+     *
+     * @return boolean true means there is peptide identificaitons
+     * @throws DataAccessException data access exception
+     */
     @Override
     public boolean hasPeptide() throws DataAccessException {
         return getNumberOfIdentifications() > 0;
     }
 
+    /**
+     * Get the number of protein identifications
+     *
+     * @return int the number of protein identifications
+     * @throws DataAccessException data access exception
+     */
     @Override
     public int getNumberOfIdentifications() throws DataAccessException {
         return getIdentificationIds().size();
     }
 
+    /**
+     * Get the index of a identification using its id
+     *
+     * @param id identification id
+     * @return int index of the identification
+     * @throws DataAccessException
+     */
     @Override
     public int getIdentificationIndex(Comparable id) throws DataAccessException {
         int index = -1;
@@ -470,6 +510,14 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
 
+    /**
+     * Get a collection of protein identification starting from a given index
+     *
+     * @param index  starting index of the protein identification
+     * @param offset number of identification to get.
+     * @return Collection<Identification>  a collection of protein identifications
+     * @throws DataAccessException data access exception
+     */
     @Override
     public Collection<Identification> getIdentificationsByIndex(int index, int offset) throws DataAccessException {
         List<Identification> idents = new ArrayList<Identification>();
@@ -521,6 +569,13 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return accVersion;
     }
 
+    /**
+     * Get the type of the protein identification
+     *
+     * @param identId identification id.
+     * @return String  the type of the protein identification
+     * @throws DataAccessException data access exception
+     */
     @Override
     public String getIdentificationType(Comparable identId) throws DataAccessException {
         String type = null;
@@ -628,10 +683,18 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return ids;
     }
 
+    /**
+     * Get peptide using its index in a protein identificaiton
+     *
+     * @param identId protein identification id
+     * @param index   peptide index
+     * @return Peptide peptide identification
+     * @throws DataAccessException data access exception
+     */
     @Override
-    public Peptide getPeptideById(Comparable id, Comparable index) throws DataAccessException {
+    public Peptide getPeptideById(Comparable identId, Comparable index) throws DataAccessException {
         Peptide peptide = null;
-        Identification ident = getIdentificationById(id);
+        Identification ident = getIdentificationById(identId);
         if (ident != null) {
             peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(index.toString()));
         }
@@ -824,7 +887,6 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get peptide spectrum id using identification id and peptide id.
-     * This implementation will check cache first.
      *
      * @param identId identification id.
      * @return int   peptide sequence stop
@@ -869,6 +931,14 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return mods;
     }
 
+    /**
+     * Get the number of fragment ions of a given peptide
+     *
+     * @param identId   identification id
+     * @param peptideId peptide id, can be the index of the peptide as well.
+     * @return int the number of fragment ions
+     * @throws DataAccessException data access exception
+     */
     @Override
     public int getNumberOfFragmentIons(Comparable identId, Comparable peptideId) throws DataAccessException {
         int num = 0;
@@ -885,6 +955,14 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return num;
     }
 
+    /**
+     * Get all the fragment ions of a given peptide identification
+     *
+     * @param identId   identification id
+     * @param peptideId peptide id, can be the index of the peptide as well.
+     * @return Collection<FragmentIon> a collection of fragment ions
+     * @throws DataAccessException data access exception
+     */
     @Override
     public Collection<FragmentIon> getFragmentIons(Comparable identId, Comparable peptideId) throws DataAccessException {
         List<FragmentIon> frags = new ArrayList<FragmentIon>();
@@ -899,6 +977,14 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return frags;
     }
 
+    /**
+     * Get the search score for a given peptide
+     *
+     * @param identId   identification id
+     * @param peptideId peptide id, can be the index of the peptide as well.
+     * @return PeptideScore    search engine score
+     * @throws DataAccessException data access exception
+     */
     @Override
     public PeptideScore getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException {
         PeptideScore score = null;
@@ -913,18 +999,28 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return score;
     }
 
+    /**
+     * Get foreground experiment accession
+     *
+     * @return Comparable  experiment accession
+     */
     @Override
     public synchronized Comparable getForegroundExperimentAcc() {
         return foregroundExperimentAcc;
     }
 
+    /**
+     * Set foreground experiment accession
+     *
+     * @param expAcc new experiment accession
+     * @throws DataAccessException data access exception
+     */
     @Override
     public void setForegroundExperimentAcc(Comparable expAcc) throws DataAccessException {
         logger.debug("Set foreground experiment accession: {}", expAcc);
 
         Comparable acc = foregroundExperimentAcc;
         if (!expAcc.equals(acc)) {
-            // clear cache
             Comparable oldExp, newExp;
             synchronized (this) {
                 oldExp = foregroundExperimentAcc;
@@ -935,11 +1031,22 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         }
     }
 
+    /**
+     * Get foreground chromatogram
+     *
+     * @return Chromatogram    foreground chromatogram
+     */
     @Override
     public synchronized Chromatogram getForegroundChromatogram() {
         return foregroundChromatogram;
     }
 
+    /**
+     * Set foreground chromatogram
+     *
+     * @param chromaId chromatogram id
+     * @throws DataAccessException data access exception
+     */
     @Override
     public void setForegroundChromatogramById(Comparable chromaId) throws DataAccessException {
         logger.debug("Set foreground chromatogram id: {}", chromaId);
@@ -956,11 +1063,22 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         firePropertyChange(FOREGROUND_CHROMATOGRAM_CHANGED, oldChroma, newChroma);
     }
 
+    /**
+     * get foreground spectrum
+     *
+     * @return spectrum    foreground spectrum
+     */
     @Override
     public synchronized Spectrum getForegroundSpectrum() {
         return foregroundSpectrum;
     }
 
+    /**
+     * Set foreground spectrum using a given id
+     *
+     * @param specId spectrum id
+     * @throws DataAccessException data access exception
+     */
     @Override
     public void setForegroundSpectrumById(Comparable specId) throws DataAccessException {
         logger.debug("Set foreground spectrum id: {}", specId);
@@ -977,6 +1095,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         firePropertyChange(FOREGROUND_SPECTRUM_CHANGED, oldSpec, newSpec);
     }
 
+    /**
+     * Get the foreground mzgraph, can be either chromatogram or spectrum, depends on the given class type
+     *
+     * @param classType classes that extends MzGraph
+     * @return MzGraph foreground mzgrap object
+     */
     @Override
     public MzGraph getForegroundMzGraph(Class<? extends MzGraph> classType) {
         MzGraph mzGraph = null;
@@ -990,11 +1114,22 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return mzGraph;
     }
 
+    /**
+     * Get foreground protein identification
+     *
+     * @return Identification  protein identification
+     */
     @Override
     public synchronized Identification getForegroundIdentification() {
         return foregroundIdentification;
     }
 
+    /**
+     * Set foreground protein identification using a given id
+     *
+     * @param identId identification id
+     * @throws DataAccessException data access exception
+     */
     @Override
     public void setForegroundIdentificationById(Comparable identId) throws DataAccessException {
         logger.debug("Set foreground identification id: {}", identId);
@@ -1011,12 +1146,24 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         firePropertyChange(FOREGROUND_IDENTIFICATION_CHANGED, oldIdent, newIdent);
     }
 
+    /**
+     * Check the availability of quantitative data
+     *
+     * @return boolean true mean there is quantitative data
+     * @throws DataAccessException data access exception
+     */
     @Override
     public boolean hasQuantData() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getQuantMethods();
         return methods.size() > 0;
     }
 
+    /**
+     * Check the availability of quantitative data at the protein identification level
+     *
+     * @return boolean true means there is protein quantitative data
+     * @throws DataAccessException data access exception
+     */
     @Override
     public boolean hasProteinQuantData() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getQuantMethods();
@@ -1030,6 +1177,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return false;
     }
 
+    /**
+     * Check the availability of quantitative data at the peptide identification level
+     *
+     * @return boolean true means there is peptide quantitative data
+     * @throws DataAccessException data access exception
+     */
     @Override
     public boolean hasPeptideQuantData() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getQuantMethods();
@@ -1043,16 +1196,34 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return false;
     }
 
+    /**
+     * Check the availability of total intensities at the protein identification level
+     *
+     * @return boolean true means there is total intensities
+     * @throws DataAccessException data access exception
+     */
     @Override
     public boolean hasProteinTotalIntensities() throws DataAccessException {
         return getProteinQuantUnit() == null;
     }
 
+    /**
+     * Check the availability of total intensities at the peptide identification level
+     *
+     * @return boolean true means there is total intensities
+     * @throws DataAccessException data access exception
+     */
     @Override
     public boolean hasPeptideTotalIntensities() throws DataAccessException {
         return getPeptideQuantUnit() == null;
     }
 
+    /**
+     * Check whether label free methods have been used
+     *
+     * @return boolean true means there are label free methods
+     * @throws DataAccessException data access exception
+     */
     @Override
     public boolean hasLabelFreeQuantMethods() throws DataAccessException {
         // get the samples
@@ -1071,6 +1242,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return false;
     }
 
+    /**
+     * Check whether isotope labelling methods have been used
+     *
+     * @return boolean true means isotope labelling methods present
+     * @throws DataAccessException data access exception
+     */
     @Override
     public boolean hasIsotopeLabellingQuantMethods() throws DataAccessException {
         // get the samples
@@ -1089,6 +1266,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return false;
     }
 
+    /**
+     * get all the quantitative methods used
+     *
+     * @return Collection<QuantCvTermReference>    a collection of quantitative methods
+     * @throws DataAccessException data access exception
+     */
     @Override
     public Collection<QuantCvTermReference> getQuantMethods() throws DataAccessException {
         Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
@@ -1109,6 +1292,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return methods;
     }
 
+    /**
+     * Get a collection of all the label free methods used
+     *
+     * @return Collection<QuantCvTermReference>    a collection of label free methods
+     * @throws DataAccessException data access exception
+     */
     @Override
     public Collection<QuantCvTermReference> getLabelFreeQuantMethods() throws DataAccessException {
         Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
@@ -1129,6 +1318,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return methods;
     }
 
+    /**
+     * Get all the label free methods used at the protein identification level
+     *
+     * @return Collection<QuantCvTermReference>    a collection of label free methods
+     * @throws DataAccessException data access exception
+     */
     @Override
     public Collection<QuantCvTermReference> getProteinLabelFreeQuantMethods() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getLabelFreeQuantMethods();
@@ -1143,6 +1338,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return protMethods;
     }
 
+    /**
+     * Get all the label free methods used at the peptide identification level
+     *
+     * @return Collection<QuantCvTermReference>    a collection of label free methods
+     * @throws DataAccessException data access exception
+     */
     @Override
     public Collection<QuantCvTermReference> getPeptideLabelFreeQuantMethods() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getLabelFreeQuantMethods();
@@ -1157,6 +1358,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return peptideMethods;
     }
 
+    /**
+     * Get all the isotope labelling methods used
+     *
+     * @return Collection<QuantCvTermReference>    a collection of isotope labelling methods
+     * @throws DataAccessException data access exception
+     */
     @Override
     public Collection<QuantCvTermReference> getIsotopeLabellingQuantMethods() throws DataAccessException {
         Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
@@ -1177,6 +1384,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return methods;
     }
 
+    /**
+     * Get protein identification level isotope labelling methods
+     *
+     * @return Collection<QuantCvTermReference>    a collection of isotope labelling methods
+     * @throws DataAccessException data access exception
+     */
     @Override
     public Collection<QuantCvTermReference> getProteinIsotopeLabellingQuantMethods() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getIsotopeLabellingQuantMethods();
@@ -1191,6 +1404,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return protMethods;
     }
 
+    /**
+     * Get peptide identification level isotope labelling methods
+     *
+     * @return Collection<QuantCvTermReference>    a collection of isotope labelling methods
+     * @throws DataAccessException data access exception
+     */
     @Override
     public Collection<QuantCvTermReference> getPeptideIsotopeLabellingQuantMethods() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getIsotopeLabellingQuantMethods();
@@ -1205,6 +1424,11 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return peptideMethods;
     }
 
+    /**
+     * Get the number of reagents
+     * @return  int the number of reagents
+     * @throws DataAccessException  data access exception
+     */
     @Override
     public int getNumberOfReagents() throws DataAccessException {
         int num = 0;
@@ -1285,6 +1509,11 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return index;
     }
 
+    /**
+     * Get quantitative sample details
+     * @return  QuantitativeSample  quantitatve sample
+     * @throws DataAccessException  data access exception
+     */
     @Override
     public QuantitativeSample getQuantSample() throws DataAccessException {
         QuantitativeSample sampleDesc = new QuantitativeSample();
@@ -1318,6 +1547,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
+     * Get quantitative unit used at the protein identification level
+     *
      * Note: this method will scan through first 10 identifications
      *
      * @return
@@ -1345,6 +1576,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
+     * Get quantitative unit used at the peptide identification level
+     *
      * Note: this method will scan all the peptides
      *
      * @return QuantCvTermReference    unit cv term
@@ -1374,12 +1607,26 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         return null;
     }
 
+    /**
+     * Get protein level quantitative data using a given protein identification id
+     *
+     * @param identId   protein identification id
+     * @return  Quantitation    quantitative data
+     * @throws DataAccessException  data access exception
+     */
     @Override
     public Quantitation getProteinQuantData(Comparable identId) throws DataAccessException {
         Identification ident = getIdentificationById(identId);
         return new Quantitation(Quantitation.Type.PROTEIN, ident.getCvParams());
     }
 
+    /**
+     * Get peptide level quantitative data using a given peptide identification id
+     * @param identId   protein identification id
+     * @param peptideId peptide id
+     * @return  Quantitation    quantitative data
+     * @throws DataAccessException  data access exception
+     */
     @Override
     public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
         Peptide peptide = getPeptideById(identId, peptideId);

@@ -212,7 +212,6 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @return Collection<Comparable>  a collection of identification ids.
      * @throws DataAccessException data access exception
      */
-    @Override
     @SuppressWarnings("unchecked")
     public Collection<Comparable> getIdentificationIds() throws DataAccessException {
         Collection<Comparable> ids = (Collection<Comparable>) cache.get(CacheCategory.IDENTIFICATION_ID);
@@ -738,7 +737,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     }
 
     /**
-     * Get ptms using identification id nad peptide id
+     * Get ptms using identification id and peptide id
      *
      * @param identId   identification id
      * @param peptideId peptide id, can be the index of the peptide

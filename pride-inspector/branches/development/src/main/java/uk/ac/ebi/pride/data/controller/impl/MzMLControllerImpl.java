@@ -258,6 +258,11 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
     }
 
+    @Override
+    public ParamGroup getAdditional() throws DataAccessException {
+        throw new UnsupportedOperationException("This method is not supported");
+    }
+
     /**
      * Get spectrum using a spectrum id, gives the option to choose whether to use cache.
      * This implementation provides a way of by passing the cache.

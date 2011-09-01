@@ -38,15 +38,15 @@ public class InstrumentConfiguration extends ParamGroup {
     /**
      * only one source
      */
-    private List<ParamGroup> source = null;
+    private InstrumentComponent source = null;
     /**
      * only one analyzer
      */
-    private List<ParamGroup> analyzer = null;
+    private InstrumentComponent analyzer = null;
     /**
      * only one detector
      */
-    private List<ParamGroup> detector = null;
+    private InstrumentComponent detector = null;
 
     /**
      * Constructor
@@ -62,9 +62,9 @@ public class InstrumentConfiguration extends ParamGroup {
     public InstrumentConfiguration(String id,
                                    ScanSetting scanSetting,
                                    Software software,
-                                   List<ParamGroup> source,
-                                   List<ParamGroup> analyzer,
-                                   List<ParamGroup> detector,
+                                   InstrumentComponent source,
+                                   InstrumentComponent analyzer,
+                                   InstrumentComponent detector,
                                    ParamGroup params) {
         super(params);
         setId(id);
@@ -99,27 +99,27 @@ public class InstrumentConfiguration extends ParamGroup {
         this.software = software;
     }
 
-    public List<ParamGroup> getSource() {
+    public InstrumentComponent getSource() {
         return source;
     }
 
-    public void setSource(List<ParamGroup> source) {
+    public void setSource(InstrumentComponent source) {
         this.source = source;
     }
 
-    public List<ParamGroup> getAnalyzer() {
+    public InstrumentComponent getAnalyzer() {
         return analyzer;
     }
 
-    public void setAnalyzer(List<ParamGroup> analyzer) {
+    public void setAnalyzer(InstrumentComponent analyzer) {
         this.analyzer = analyzer;
     }
 
-    public List<ParamGroup> getDetector() {
+    public InstrumentComponent getDetector() {
         return detector;
     }
 
-    public void setDetector(List<ParamGroup> detector) {
+    public void setDetector(InstrumentComponent detector) {
         this.detector = detector;
     }
 }

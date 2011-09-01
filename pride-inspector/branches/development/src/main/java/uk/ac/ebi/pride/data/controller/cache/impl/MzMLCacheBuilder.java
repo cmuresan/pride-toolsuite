@@ -30,9 +30,6 @@ public class MzMLCacheBuilder extends AbstractAccessCacheBuilder {
         super.populate();
         // get a direct reference to unmarshaller
         MzMLUnmarshallerAdaptor unmarshaller = ((MzMLControllerImpl)controller).getUnmarshaller();
-        // clear and add metadata
-        cache.clear(CacheCategory.EXPERIMENT_METADATA);
-        controller.getMetaData();
         // clear and add spectrum ids
         cache.clear(CacheCategory.SPECTRUM_ID);
         cache.storeInBatch(CacheCategory.SPECTRUM_ID, new ArrayList<Comparable>(unmarshaller.getSpectrumIds()));

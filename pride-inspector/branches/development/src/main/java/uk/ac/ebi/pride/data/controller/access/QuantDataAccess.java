@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * QuantDataAccess defines interface for accessing quantitative proteomics data
+ * QuantDataAccess defines methods for accessing quantitative proteomics data
  * <p/>
  * User: rwang
  * Date: 06/07/2011

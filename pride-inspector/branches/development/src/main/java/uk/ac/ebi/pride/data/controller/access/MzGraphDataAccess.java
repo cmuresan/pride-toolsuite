@@ -8,7 +8,8 @@ import java.util.Collection;
 
 /**
  * MzGraphDataAccess defines the interface for accessing mzgraph data.
- * It also defines mzgraph related property changing event.
+ * It also defines mzgraph related property changing event messages.
+ *
  * <p/>
  * User: rwang
  * Date: 29-Aug-2010

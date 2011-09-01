@@ -124,6 +124,8 @@ public class MzMLControllerImpl extends CachedDataAccessController {
             metaData = new MetaData(id, accession, version, fileDesc,
                     samples, softwares, scanSettings, instrumentConfigurations,
                     dataProcessings, params);
+
+            cache.store(CacheCategory.EXPERIMENT_METADATA, metaData);
         }
 
         return metaData;

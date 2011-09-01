@@ -793,23 +793,15 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
     @Override
     public SearchEngine getSearchEngine() throws DataAccessException {
-        if (searchEngine == null) {
-            Collection<Comparable> identIds = this.getIdentificationIds();
-            Comparable identId = CollectionUtils.getElement(identIds, 0);
-            Identification ident = (Identification) cache.get(CacheCategory.IDENTIFICATION, identId);
-            if (ident != null) {
-                searchEngine = new SearchEngine(ident.getSearchEngine());
-                // check the search engine types from the data source
-                List<Peptide> peptides = ident.getPeptides();
-                Peptide peptide = peptides.get(0);
-                List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide);
-                searchEngine.setSearchEngineTypes(types);
-            } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
-                super.getSearchEngine();
-            }
+        Collection<SearchEngine> searchEngines = (Collection<SearchEngine>)cache.get(CacheCategory.SEARCH_ENGINE_TYPE);
+
+        if (searchEngines != null && !searchEngines.isEmpty()) {
+            return CollectionUtils.getElement(searchEngines, 0);
+        } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
+            return super.getSearchEngine();
         }
 
-        return searchEngine;
+        return null;
     }
 
     @Override

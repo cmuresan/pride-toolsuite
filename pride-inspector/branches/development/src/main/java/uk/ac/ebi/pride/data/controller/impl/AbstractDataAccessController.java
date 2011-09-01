@@ -50,85 +50,155 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      * Data source, such as: File
      */
     private Object source = null;
+    /**
+     * Foreground experiment accession, the one which user is currently viewing/analysing
+     */
     private Comparable foregroundExperimentAcc = null;
+    /**
+     * Foreground spectrum, the one which user currently selected
+     */
     private Spectrum foregroundSpectrum = null;
+    /**
+     * Foreground chromatogram, the one which user currently selected
+     */
     private Chromatogram foregroundChromatogram = null;
+    /**
+     * Foreground protein identification, the one which user currently selected
+     */
     private Identification foregroundIdentification = null;
 
+
+    /**
+     * Create a data access controller without source
+     */
     protected AbstractDataAccessController() {
         this(null);
     }
 
+    /**
+     * Create a data access controller with source
+     * @param source    data source
+     */
     protected AbstractDataAccessController(Object source) {
         setSource(source);
         // initialize content categories
         categories = new HashSet<ContentCategory>();
     }
 
+    /**
+     * Get the unique id of the data access controller
+     * @return  String  unique id
+     */
     @Override
     public String getUid() {
         return uid;
     }
 
+    /**
+     * Set the unique id of the data access controller
+     * @param uid   unique id
+     */
     @Override
     public void setUid(String uid) {
         this.uid = uid;
     }
 
+    /**
+     * Get the name of the data access controller
+     * @return  String  name of the data access controller
+     */
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * Set the name of the data access controller
+     * @param name the new name for this DataAccessController
+     */
     @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Get the I/O type of the data access controller
+     * @return  Type    I/O type
+     */
     @Override
     public Type getType() {
         return type;
     }
 
+    /**
+     * Set the I/O type of the data access controller
+     * @param type controller type.
+     */
     @Override
     public void setType(Type type) {
         this.type = type;
     }
 
+    /**
+     * Get the content could be present in the data access controller
+     * @return  Collection<ContentCateogry> a list of content types
+     */
     @Override
     public Collection<ContentCategory> getContentCategories() {
         return new ArrayList<ContentCategory>(categories);
     }
 
+    /**
+     * Set the content categories
+     * @param categories    a array of categories.
+     */
     @Override
     public void setContentCategories(ContentCategory... categories) {
         this.categories.clear();
         this.categories.addAll(Arrays.asList(categories));
     }
 
+    /**
+     * Get the description of the data access controller
+     * @return  String  descriptioin
+     */
     @Override
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Set the description of the data access controller
+     * @param desc the new description for the controller
+     */
     @Override
     public void setDescription(String desc) {
         this.description = desc;
     }
 
+    /**
+     * Get the source of the data access controller
+     * @return  Object  the source of the data access controller
+     */
     @Override
     public Object getSource() {
         return source;
     }
 
+    /**
+     * Set the source of the data access controller
+     * @param src data source object
+     */
     @Override
     public void setSource(Object src) {
         this.source = src;
     }
 
+    /**
+     * Close the data access controller
+     */
     @Override
     public void close() {
-        clearCache();
         removeAllPropertyChangeListeners();
         firePropertyChange(DATA_SOURCE_CLOSED, false, true);
     }
@@ -860,7 +930,6 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
                 oldExp = foregroundExperimentAcc;
                 foregroundExperimentAcc = expAcc;
                 newExp = foregroundExperimentAcc;
-                populateCache();
             }
             firePropertyChange(FOREGROUND_EXPERIMENT_CHANGED, oldExp, newExp);
         }

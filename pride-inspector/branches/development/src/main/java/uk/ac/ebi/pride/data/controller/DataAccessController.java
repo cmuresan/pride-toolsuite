@@ -19,7 +19,7 @@ import java.util.UUID;
  */
 public interface DataAccessController extends MzGraphDataAccess, ProteinDataAccess,
                                               TrackDataAccess, PeptideDataAccess, QuantDataAccess,
-                                              CacheAccess, ChartAccess, PropertyChangeHandler,
+                                              ChartAccess, PropertyChangeHandler,
                                               PropertyChangeListener {
     /**
      * Type indicates the I/O of the data source.

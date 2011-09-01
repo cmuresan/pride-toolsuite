@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.data.coreIdent;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -11,39 +12,13 @@ import java.util.List;
  */
 public class GelFreeIdentification extends Identification {
 
-    /**
-     *
-     * @param id
-     * @param name
-     * @param dbSequence
-     * @param passThreshold
-     * @param peptides
-     * @param peptideEvidence
-     * @param score
-     * @param threshold
-     * @param searchEngine
-     * @param sequenceCoverage
-     */
-
-    public GelFreeIdentification(Comparable id, String name, DBSequence dbSequence, boolean passThreshold, List<Peptide> peptides, PeptideEvidence peptideEvidence, double score, double threshold, String searchEngine, double sequenceCoverage) {
-        super(id, name, dbSequence, passThreshold, peptides, peptideEvidence, score, threshold, searchEngine, sequenceCoverage);
+    public GelFreeIdentification(Comparable id, String name, DBSequence dbSequence, boolean passThreshold, HashMap<PeptideEvidence, List<Peptide>> peptides, double score, double threshold, SearchEngine searchEngine, double sequenceCoverage) {
+        super(id, name, dbSequence, passThreshold, peptides, score, threshold, searchEngine, sequenceCoverage);
     }
 
-    /**
-     *
-     * @param params
-     * @param id
-     * @param name
-     * @param dbSequence
-     * @param passThreshold
-     * @param peptides
-     * @param peptideEvidence
-     * @param score
-     * @param threshold
-     * @param searchEngine
-     * @param sequenceCoverage
-     */
-    public GelFreeIdentification(ParamGroup params, Comparable id, String name, DBSequence dbSequence, boolean passThreshold, List<Peptide> peptides, PeptideEvidence peptideEvidence, double score, double threshold, String searchEngine, double sequenceCoverage) {
-        super(params, id, name, dbSequence, passThreshold, peptides, peptideEvidence, score, threshold, searchEngine, sequenceCoverage);
+    public GelFreeIdentification(ParamGroup params, Comparable id, String name, DBSequence dbSequence, boolean passThreshold, HashMap<PeptideEvidence, List<Peptide>> peptides, double score, double threshold, SearchEngine searchEngine, double sequenceCoverage) {
+        super(params, id, name, dbSequence, passThreshold, peptides, score, threshold, searchEngine, sequenceCoverage);
     }
+
+
 }

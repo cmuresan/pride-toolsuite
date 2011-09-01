@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.DatabaseSearchTableModel;
 import uk.ac.ebi.pride.gui.component.table.renderer.IconRenderer;
+import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
 import uk.ac.ebi.pride.gui.search.Criteria;
 import uk.ac.ebi.pride.gui.search.SearchEntry;
@@ -290,6 +291,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                 searchResultLabel.setIcon(icon);
                 break;
             case COMPLETE:
+                searchResultTable.setRowSorter(new NumberTableRowSorter(searchResultTable.getModel()));
                 searchResultLabel.setIcon(null);
                 break;
             case RESULT:

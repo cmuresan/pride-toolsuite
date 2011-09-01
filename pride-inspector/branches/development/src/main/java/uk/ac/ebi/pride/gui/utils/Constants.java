@@ -71,7 +71,6 @@ public interface Constants {
     public static final String GZIPPED_FILE = ".gz";
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    public static final String NOT_AVAILABLE = "Not Available";
     public static final String UNKNOWN = "Unknown";
     public static final String FIT = "Fuzzy Fit";
     public static final String NOT_FIT = "No Fit";
@@ -87,6 +86,8 @@ public interface Constants {
     public final static String DOI_URL_PREFIX = "http://dx.doi.org/";
 
     public static final String OLS_URL_PREFIX = "http://www.ebi.ac.uk/ontology-lookup/?termId=";
+
+    public static final String NOT_AVAILABLE = "N/A";
 
     /**
      * Colours

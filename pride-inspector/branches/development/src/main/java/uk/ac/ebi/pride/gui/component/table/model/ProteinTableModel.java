@@ -23,10 +23,6 @@ import java.util.Map;
  */
 public class ProteinTableModel extends AbstractProteinTableModel {
 
-    public ProteinTableModel() {
-        this(null);
-    }
-
     public ProteinTableModel(DataAccessController controller) {
         super(controller);
     }

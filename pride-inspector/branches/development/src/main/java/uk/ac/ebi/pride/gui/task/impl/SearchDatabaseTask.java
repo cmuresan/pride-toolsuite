@@ -15,6 +15,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -116,10 +117,10 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
         try {
             reader = new BufferedReader(new FileReader(file));
             // get headers
-            int headerCnt = getHeaders(reader);
+            getHeaders(reader);
 
             // get content
-            getContents(reader, headerCnt);
+            getContents(reader);
 
         } catch (FileNotFoundException e) {
             String msg = "Failed to find the file which contains a list of database summaries";
@@ -147,9 +148,8 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
      *
      * @param reader buffered reader
      * @throws IOException exception while reading
-     * @return  int number of headers
      */
-    private int getHeaders(BufferedReader reader) throws IOException {
+    private void getHeaders(BufferedReader reader) throws IOException {
         String line;
         // get header
         while ((line = reader.readLine()) != null) {
@@ -158,21 +158,18 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
                 String[] parts = line.split(Constants.TAB);
                 headers = new ArrayList<String>(Arrays.asList(parts));
                 EventBus.publish(new DatabaseSearchEvent<List<String>>(null, DatabaseSearchEvent.Status.HEADER, Arrays.asList(parts)));
-                return headers.size();
+                break;
             }
         }
-        return -1;
     }
 
     /**
      * Get contents from the file
      *
-     *
-     * @param reader buffered reader
-     * @param headerCnt number of headers
+     * @param reader    buffered reader
      * @throws IOException exception while reading
      */
-    private void getContents(BufferedReader reader, int headerCnt) throws IOException {
+    private void getContents(BufferedReader reader) throws IOException {
         // to filter
         boolean toFilter = (entry != null && entry.getTerm() != null && !"".equals(entry.getTerm().trim()));
 
@@ -183,7 +180,7 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
         }
 
         // content list
-        List<List<String>> content = new ArrayList<List<String>>();
+        List<List<Object>> content = new ArrayList<List<Object>>();
 
         // counter
         int cnt = 0;
@@ -193,25 +190,39 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
             if (!"".equals(line)) {
                 String[] parts = line.split(Constants.TAB, -1);
                 if (!toFilter || finder.search(Arrays.asList(parts))) {
-                    List<String> rowParts = new ArrayList<String>(Arrays.asList(parts));
-                    // fill the missing ones with null
-                    int size = rowParts.size();
-                    if (size < headerCnt) {
-                        for (int i = 0; i < headerCnt - size; i++) {
-                            rowParts.add(null);
-                        }
-                    }
+                    List<Object> rowParts = prepareRowContent(parts);
                     content.add(rowParts);
                     cnt++;
                     if (cnt == BATCH_SIZE) {
-                        EventBus.publish(new DatabaseSearchEvent<List<List<String>>>(null, DatabaseSearchEvent.Status.RESULT, content));
+                        EventBus.publish(new DatabaseSearchEvent<List<List<Object>>>(null, DatabaseSearchEvent.Status.RESULT, content));
                         cnt = 0;
-                        content = new ArrayList<List<String>>();
+                        content = new ArrayList<List<Object>>();
                     }
                 }
             }
         }
 
-        EventBus.publish(new DatabaseSearchEvent<List<List<String>>>(null, DatabaseSearchEvent.Status.RESULT, content));
+        EventBus.publish(new DatabaseSearchEvent<List<List<Object>>>(null, DatabaseSearchEvent.Status.RESULT, content));
+    }
+
+    /**
+     * Prepare the content of each row
+     *
+     * @param parts array of string contents
+     * @return List<Object>    a list of row contents
+     */
+    private List<Object> prepareRowContent(String[] parts) {
+        List<Object> rowParts = new ArrayList<Object>();
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (part == null || "".equals(part.trim())) {
+                rowParts.add(Constants.NOT_AVAILABLE);
+            } else if (i == 0) {
+                rowParts.add(Integer.parseInt(part));
+            } else {
+                rowParts.add(part);
+            }
+        }
+        return rowParts;
     }
 }

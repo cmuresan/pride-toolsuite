@@ -37,7 +37,7 @@ public abstract class Identification extends IdentifiableParamGroup{
     /**
      * search engine name
      */
-    private String searchEngine = null;
+    private SearchEngine searchEngine = null;
     /**
      * percentage of sequence coverage obtained through all identified peptides/masses
      */
@@ -50,7 +50,7 @@ public abstract class Identification extends IdentifiableParamGroup{
                           HashMap<PeptideEvidence,List<Peptide>> peptides,
                           double score,
                           double threshold,
-                          String searchEngine,
+                          SearchEngine searchEngine,
                           double sequenceCoverage) {
         super(id, name);
         this.dbSequence = dbSequence;
@@ -70,7 +70,7 @@ public abstract class Identification extends IdentifiableParamGroup{
                           HashMap<PeptideEvidence,List<Peptide>> peptides,
                           double score,
                           double threshold,
-                          String searchEngine,
+                          SearchEngine searchEngine,
                           double sequenceCoverage) {
         super(params, id, name);
         this.dbSequence = dbSequence;
@@ -123,11 +123,11 @@ public abstract class Identification extends IdentifiableParamGroup{
         this.threshold = threshold;
     }
 
-    public String getSearchEngine() {
+    public SearchEngine getSearchEngine() {
         return searchEngine;
     }
 
-    public void setSearchEngine(String searchEngine) {
+    public void setSearchEngine(SearchEngine searchEngine) {
         this.searchEngine = searchEngine;
     }
 

@@ -77,12 +77,31 @@ public class Peptide extends IdentifiableParamGroup {
      *  by SpectraData_ref. External guidelines are provided on the use of
      *  consistent identifiers for spectra in different external formats.
      */
-    private Spectrum spectrumId = null;
+    private Spectrum spectrum = null;
     /**
      *  A reference to a spectra data set (e.g. a spectra file).
      */
     private SpectraData spectraData = null;
 
+    /**
+     *
+     * @param id
+     * @param name
+     * @param chargeState
+     * @param experimentalMassToCharge
+     * @param calculatedMassToCharge
+     * @param calculatedPI
+     * @param peptideSequence
+     * @param rank
+     * @param passThreshold
+     * @param massTableRef
+     * @param sample
+     * @param peptideEvidenceList
+     * @param fragmentation
+     * @param peptideScore
+     * @param spectrum
+     * @param spectraData
+     */
     public Peptide(Comparable id,
                    String name,
                    int chargeState,
@@ -97,7 +116,7 @@ public class Peptide extends IdentifiableParamGroup {
                    List<PeptideEvidence> peptideEvidenceList,
                    List<FragmentIon> fragmentation,
                    PeptideScore peptideScore,
-                   Spectrum spectrumId,
+                   Spectrum spectrum,
                    SpectraData spectraData) {
         super(id, name);
         this.chargeState = chargeState;
@@ -112,7 +131,7 @@ public class Peptide extends IdentifiableParamGroup {
         this.peptideEvidenceList = peptideEvidenceList;
         this.fragmentation = fragmentation;
         this.peptideScore = peptideScore;
-        this.spectrumId = spectrumId;
+        this.spectrum = spectrum;
         this.spectraData = spectraData;
     }
 
@@ -131,7 +150,7 @@ public class Peptide extends IdentifiableParamGroup {
                    List<PeptideEvidence> peptideEvidenceList,
                    List<FragmentIon> fragmentation,
                    PeptideScore peptideScore,
-                   Spectrum spectrumId,
+                   Spectrum spectrum,
                    SpectraData spectraData) {
         super(params, id, name);
         this.chargeState = chargeState;
@@ -146,7 +165,7 @@ public class Peptide extends IdentifiableParamGroup {
         this.peptideEvidenceList = peptideEvidenceList;
         this.fragmentation = fragmentation;
         this.peptideScore = peptideScore;
-        this.spectrumId = spectrumId;
+        this.spectrum = spectrum;
         this.spectraData = spectraData;
     }
 
@@ -236,5 +255,29 @@ public class Peptide extends IdentifiableParamGroup {
 
     public void setFragmentation(List<FragmentIon> fragmentation) {
         this.fragmentation = fragmentation;
+    }
+
+    public PeptideScore getPeptideScore() {
+        return peptideScore;
+    }
+
+    public void setPeptideScore(PeptideScore peptideScore) {
+        this.peptideScore = peptideScore;
+    }
+
+    public Spectrum getSpectrum() {
+        return spectrum;
+    }
+
+    public void setSpectrum(Spectrum spectrum) {
+        this.spectrum = spectrum;
+    }
+
+    public SpectraData getSpectraData() {
+        return spectraData;
+    }
+
+    public void setSpectraData(SpectraData spectraData) {
+        this.spectraData = spectraData;
     }
 }

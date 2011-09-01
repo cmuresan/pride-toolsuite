@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.data.controller.impl;
 
 import uk.ac.ebi.jmzml.model.mzml.ComponentList;
 import uk.ac.ebi.jmzml.model.mzml.SoftwareRef;
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.coreIdent.*;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
 import uk.ac.ebi.pride.term.CvTermReference;
 
@@ -19,6 +19,8 @@ import java.util.Map;
  * Time: 15:11:47
  */
 public class MzMLTransformer {
+
+    private uk.ac.ebi.jmzml.model.mzml.FileDescription fileDescription = null;
 
     public static Spectrum transformSpectrum(uk.ac.ebi.jmzml.model.mzml.Spectrum spectrum) {
         Spectrum newSpec = null;
@@ -544,7 +546,7 @@ public class MzMLTransformer {
     }
 
     public static FileDescription transformFileDescription(uk.ac.ebi.jmzml.model.mzml.FileDescription rawFileDesc) {
-        FileDescription fileDesc = null;
+
 
         if (rawFileDesc != null) {
             ParamGroup fileContent = transformParamGroup(rawFileDesc.getFileContent());
@@ -553,6 +555,11 @@ public class MzMLTransformer {
             List<ParamGroup> contacts = transformParamGroupList(rawFileDesc.getContact());
             fileDesc = new FileDescription(fileContent, sourceFiles, contacts);
         }
+
+        return fileDesc;
+    }
+
+
 
         return fileDesc;
     }

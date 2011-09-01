@@ -29,6 +29,15 @@ public class SearchEngine extends Identifiable{
 
     /**
      *
+     * @param searchengine
+     */
+    public SearchEngine(SearchEngine searchengine){
+        super(searchengine.getId(), searchengine.getName());
+        this.searchEngineTypes = searchengine.getSearchEngineTypes();
+    }
+
+    /**
+     *
      * @param id
      * @param name
      * @param searchEngineTypes

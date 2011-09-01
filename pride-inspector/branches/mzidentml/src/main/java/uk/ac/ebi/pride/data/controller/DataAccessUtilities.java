@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.controller;
 
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.coreIdent.*;
 import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
@@ -17,28 +17,9 @@ import java.util.List;
  */
 public class DataAccessUtilities {
 
-    /**
-     * Get a list of taxonomy accessions based on a given metadata
-     *
-     * @param metaData  meta data
-     * @return  List<String>    a list of taxonomy ids
-     */
-    public static List<String> getTaxonomy(MetaData metaData) {
-        List<String> species = new ArrayList<String>();
-        List<Sample> samples = metaData.getSamples();
-        if (samples != null) {
-            for (Sample sample : samples) {
-                List<CvParam> cvParams = sample.getCvParams();
-                if (cvParams != null) {
-                    for (CvParam cvParam : cvParams) {
-                        if (cvParam.getCvLookupID().toLowerCase().equals("newt")) {
-                            species.add(cvParam.getAccession());
-                        }
-                    }
-                }
-            }
-        }
-        return species;
+    public static List<Integer> getTaxonomy(ExperimentMetaData metaData) {
+        // todo: to be implemented
+        return null;
     }
 
     public static int getNumberOfPeaks(Spectrum spectrum) {
@@ -178,11 +159,10 @@ public class DataAccessUtilities {
      */
     public static Peptide getPeptide(Identification ident, int index) {
         Peptide peptide = null;
-        List<Peptide> peptides = ident.getPeptides();
+        List<Peptide> peptides = ident.getIdentifiedPeptides();
         if (peptides != null && peptides.size() > index) {
             peptide = peptides.get(index);
         }
-
         return peptide;
     }
 
@@ -193,7 +173,7 @@ public class DataAccessUtilities {
      * @return int number of peptides
      */
     public static int getNumberOfPeptides(Identification ident) {
-        List<Peptide> peptides = ident.getPeptides();
+        List<Peptide> peptides = ident.getIdentifiedPeptides();
         return peptides == null ? 0 : peptides.size();
     }
 
@@ -204,13 +184,13 @@ public class DataAccessUtilities {
      * @return int  number of unique peptide sequences.
      */
     public static int getNumberOfUniquePeptides(Identification ident) {
-        List<Peptide> peptides = ident.getPeptides();
+        List<PeptideSequence> peptides = ident.getPeptidesSequence();
+        int cnt = 0;
         if (peptides == null) {
-            return 0;
+            return cnt;
         } else {
-            int cnt = 0;
             List<String> seqs = new ArrayList<String>();
-            for (Peptide peptide : peptides) {
+            for (PeptideSequence peptide : peptides) {
                 String seq = peptide.getSequence();
                 if (!seqs.contains(seq)) {
                     seqs.add(seq);
@@ -240,29 +220,30 @@ public class DataAccessUtilities {
      * @return boolean true if peptide contains fragment ion information.
      */
     public static boolean hasFragmentIon(Peptide peptide) {
-        List<FragmentIon> ions = peptide.getFragmentIons();
+       // List<FragmentIon> ions = peptide.getFragmentIons();
+       List<FragmentIon> ions = new ArrayList<FragmentIon>();
         return ions != null && !ions.isEmpty();
     }
 
     public static int getNumberOfPTMs(Identification ident) {
         int cnt = 0;
-        List<Peptide> peptides = ident.getPeptides();
+        /*List<Peptide> peptides = ident.getPeptides();
         for (Peptide peptide : peptides) {
             List<Modification> mods = peptide.getModifications();
             if (mods != null) {
                 cnt += mods.size();
             }
-        }
+        }*/
         return cnt;
     }
 
-    public static int getNumberOfPTMs(Peptide peptide) {
+    public static int getNumberOfPTMs(PeptideSequence peptide) {
         int cnt = 0;
 
-        List<Modification> mods = peptide.getModifications();
+        /*List<Modification> mods = peptide.getModifications();
         if (mods != null) {
             cnt = mods.size();
-        }
+        }*/
 
         return cnt;
     }

@@ -1,11 +1,7 @@
 package uk.ac.ebi.pride.data.controller.access;
 
-import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.FragmentIon;
-import uk.ac.ebi.pride.data.core.Modification;
-import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.data.core.PeptideScore;
+import uk.ac.ebi.pride.data.coreIdent.*;
 
 import java.util.Collection;
 
@@ -160,6 +156,37 @@ public interface PeptideDataAccess {
     public Collection<Modification> getPTMs(Comparable identId, Comparable peptideId) throws DataAccessException;
 
     /**
+     * Get the number of Substitution ptms of a identification.
+     * Note: this is not unique number of PTMs.
+     *
+     * @param identId identification id.
+     * @return int  the number of PTMs.
+     * @throws DataAccessException data access exception.
+     */
+    public int getNumberOfSubstitutionPTMs(Comparable identId) throws DataAccessException;
+
+    /**
+     * Get the number of Substitution PTMs for a peptide
+     *
+     * @param identId   identification id
+     * @param peptideId peptide id
+     * @return int  number of ptms
+     * @throws DataAccessException data access exception
+     */
+
+    public int getNumberOfSubstitutionPTMs(Comparable identId, Comparable peptideId) throws DataAccessException;
+
+    /**
+     * Get the ptms assigned to a peptide
+     *
+     * @param identId   identification id
+     * @param peptideId peptide id, can be the index of the peptide
+     * @return Collection<Modification> a collection of ptms
+     * @throws DataAccessException data access exception
+     */
+    public Collection<SubstitutionModification> getSubstitutionPTMs(Comparable identId, Comparable peptideId) throws DataAccessException;
+
+    /**
      * Get the number of fragment ions for a peptide
      *
      * @param identId   identification id
@@ -188,4 +215,17 @@ public interface PeptideDataAccess {
      * @throws DataAccessException  data access exception
      */
     public PeptideScore getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException;
+
+    /**
+     * Get all Peptide Evidence for a Peptide Identification
+     * @param identId   identification id
+     * @param peptideId  peptide id, can be the index of the peptide as well.
+     * @return Collection<PeptideEvidence> collection of peptide Evidences.
+     * @throws DataAccessException
+     */
+    public Collection<PeptideEvidence> getPeptideEvidences(Comparable identId, Comparable peptideId) throws DataAccessException;
+
+
+
+
 }

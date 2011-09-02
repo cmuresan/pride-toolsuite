@@ -179,8 +179,8 @@ public interface PeptideDataAccess {
      *
      * @param identId   identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
-     * @return  PeptideScore  peptide score
-     * @throws DataAccessException  data access exception
+     * @return PeptideScore  peptide score
+     * @throws DataAccessException data access exception
      */
     public PeptideScore getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException;
 }

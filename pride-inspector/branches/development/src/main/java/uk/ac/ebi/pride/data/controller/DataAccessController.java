@@ -18,13 +18,13 @@ import java.util.UUID;
  * Time: 14:25:49
  */
 public interface DataAccessController extends MzGraphDataAccess, ProteinDataAccess,
-                                              TrackDataAccess, PeptideDataAccess, QuantDataAccess,
-                                              ChartAccess, PropertyChangeHandler,
-                                              PropertyChangeListener {
+        TrackDataAccess, PeptideDataAccess, QuantDataAccess,
+        ChartAccess, PropertyChangeHandler,
+        PropertyChangeListener {
     /**
      * Type indicates the I/O of the data source.
      * There are two types of data access controller at the moment:
-     *
+     * <p/>
      * DATABASE means connection to a database
      * XML_FILE means reading the data from a file.
      */
@@ -41,10 +41,6 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     }
 
     /**
-     * fired when data controller is reloaded
-     */
-    public static final String DATA_SOURCE_RELOADED = "dataSourceReloaded";
-    /**
      * fired when data controller is closed
      */
     public static final String DATA_SOURCE_CLOSED = "dataSourceClosed";
@@ -54,12 +50,14 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     /**
      * Get the unique id represent the uniqueness of the data source
      *
-      * @return String    uid
+     * @return String    uid
      */
     public String getUid();
 
     /**
      * Set a unique id
+     *
+     * @param uid unique id
      */
     public void setUid(String uid);
 
@@ -101,9 +99,9 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     /**
      * Add a array of content categories.
      *
-     * @param categories    a array of categories.
+     * @param categories a array of categories.
      */
-    public void setContentCategories(ContentCategory ... categories);
+    public void setContentCategories(ContentCategory... categories);
 
     /**
      * Get the description for this controller, for GUI
@@ -196,7 +194,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     /**
      * Get an collection of samples.
      *
-     * @return Collection<Sample>   an colleciton of samples.
+     * @return Collection<Sample>   an collection of samples.
      * @throws DataAccessException throw a exception when there is an error accessing the data source
      */
     public Collection<Sample> getSamples() throws DataAccessException;
@@ -226,22 +224,18 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     public Collection<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException;
 
     /**
-     * Get an collection of data processings.
+     * Get a collection of data processing.
      *
-     * @return Collection<DataProcessing>   an collection of data processings.
+     * @return Collection<DataProcessing>   an collection of data processing.
      * @throws DataAccessException throw a exception when there is an error accessing the data source
      */
     public Collection<DataProcessing> getDataProcessings() throws DataAccessException;
 
     /**
      * Get experimental additional params
-     * @return  ParamGroup  experimental additional param
-     * @throws DataAccessException  throw a exception when there is an error accessing the data source
+     *
+     * @return ParamGroup  experimental additional param
+     * @throws DataAccessException throw a exception when there is an error accessing the data source
      */
     public ParamGroup getAdditional() throws DataAccessException;
-
-    //Todo: getDefaultInstrument() from mzML's run element
-    //Todo: getDefaultSample() from mzML's run element
-    //Todo: getDefaultSpectrumDataProcessing() from mzML's spectrumList element
-    //Todo: getDefaultChromatogramDataProcessing() from mzML's chromatogramList element
 }

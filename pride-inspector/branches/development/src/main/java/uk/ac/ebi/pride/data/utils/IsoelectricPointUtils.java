@@ -11,7 +11,7 @@ import java.util.HashMap;
  * The implementation is provided by Yasset Perez Riverol
  * <p/>
  * <p/>
- * User: rwang
+ * User: Yasset
  * Date: 03/08/2011
  * Time: 13:55
  */

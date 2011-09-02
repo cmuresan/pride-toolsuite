@@ -17,13 +17,22 @@ import java.sql.*;
 public class PooledConnectionFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(PooledConnectionFactory.class);
-
+    /**
+     * Singleton instance
+     */
     private static PooledConnectionFactory instance = new PooledConnectionFactory();
-
+    /**
+     * Database connection pool
+     */
     private ComboPooledDataSource connectionPool = null;
-
+    /**
+     * Application context
+     */
     private DesktopContext context;
 
+    /**
+     * Build a connection factory
+     */
     private PooledConnectionFactory() {
 
         //will throw exception if not properly configured
@@ -50,6 +59,12 @@ public class PooledConnectionFactory {
         }
     }
 
+    /**
+     * Setup connection pool
+     *
+     * @param schema the schema to use
+     * @throws PropertyVetoException exception
+     */
     private void setupConnectionPool(String schema) throws PropertyVetoException {
         if (connectionPool == null) {
             connectionPool = new ComboPooledDataSource();
@@ -65,7 +80,13 @@ public class PooledConnectionFactory {
         connectionPool.setPassword(context.getProperty("pride.database.password"));
     }
 
-    private String getActiveSchema(){
+    /**
+     * Get the active schema
+     * In pride public instance, we have two schema, normally one is for live queries, the other one is for offline update
+     *
+     * @return String  database schema
+     */
+    private String getActiveSchema() {
         String schema = null;
 
         // get connection to the master database
@@ -79,7 +100,7 @@ public class PooledConnectionFactory {
                     + context.getProperty("pride.database.alias") + "/"
                     + context.getProperty("pride.database.master.schema");
             connection = DriverManager.getConnection(
-                    databaseURL ,
+                    databaseURL,
                     context.getProperty("pride.database.user"),
                     context.getProperty("pride.database.password"));
             stmt = connection.prepareStatement("select schema_name from active_schema");
@@ -127,10 +148,20 @@ public class PooledConnectionFactory {
         }
     }
 
+    /**
+     * Get singleton instance
+     *
+     * @return PooledConnectionFactory connection factory
+     */
     private static PooledConnectionFactory getInstance() {
         return instance;
     }
 
+    /**
+     * Connection pool
+     *
+     * @return ComboPooledDataSource   connection pool
+     */
     private ComboPooledDataSource getConnectionPool() {
         return connectionPool;
     }

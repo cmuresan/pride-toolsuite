@@ -20,6 +20,7 @@ public class DBUtilities {
     /**
      * It is a good idea to call this method in the finally block.
      *
+     * @param connection    database connection
      * @param stmt statement
      * @param rs   result set
      */

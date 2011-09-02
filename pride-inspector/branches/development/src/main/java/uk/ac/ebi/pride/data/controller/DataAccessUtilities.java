@@ -20,8 +20,8 @@ public class DataAccessUtilities {
     /**
      * Get a list of taxonomy accessions based on a given metadata
      *
-     * @param metaData  meta data
-     * @return  List<String>    a list of taxonomy ids
+     * @param metaData meta data
+     * @return List<String>    a list of taxonomy ids
      */
     public static List<String> getTaxonomy(MetaData metaData) {
         List<String> species = new ArrayList<String>();
@@ -41,6 +41,12 @@ public class DataAccessUtilities {
         return species;
     }
 
+    /**
+     * Count the number of peaks of a spectrum
+     *
+     * @param spectrum spectrum
+     * @return int number of peaks
+     */
     public static int getNumberOfPeaks(Spectrum spectrum) {
         int numOfPeaks = -1;
         BinaryDataArray mzArr = spectrum.getBinaryDataArrays().get(0);
@@ -50,6 +56,12 @@ public class DataAccessUtilities {
         return numOfPeaks;
     }
 
+    /**
+     * Get ms level of a spectrum
+     *
+     * @param spectrum spectrum
+     * @return int ms level
+     */
     public static int getMsLevel(Spectrum spectrum) {
         int msLevel = -1;
         List<Parameter> param = getParamByName(spectrum, "ms level");
@@ -60,6 +72,12 @@ public class DataAccessUtilities {
         return msLevel;
     }
 
+    /**
+     * Get precursor charge
+     *
+     * @param spectrum spectrum
+     * @return int precursor charge
+     */
     public static int getPrecursorCharge(Spectrum spectrum) {
         int charge = 0;
         List<Precursor> precursors = spectrum.getPrecursors();
@@ -72,6 +90,12 @@ public class DataAccessUtilities {
         return charge;
     }
 
+    /**
+     * Get precursor m/z value
+     *
+     * @param spectrum spectrum
+     * @return double  precursor m/z
+     */
     public static double getPrecursorMz(Spectrum spectrum) {
         double mz = -1;
         List<Precursor> precursors = spectrum.getPrecursors();
@@ -84,6 +108,12 @@ public class DataAccessUtilities {
         return mz;
     }
 
+    /**
+     * Get precursor intensity
+     *
+     * @param spectrum spectrum
+     * @return double  precursor intensity
+     */
     public static double getPrecursorIntensity(Spectrum spectrum) {
         double intent = -1;
         List<Precursor> precursors = spectrum.getPrecursors();
@@ -96,6 +126,12 @@ public class DataAccessUtilities {
         return intent;
     }
 
+    /**
+     * Get the sum of all the peak intensities within a spectrum
+     *
+     * @param spectrum spectrum
+     * @return double  sum of intensities
+     */
     public static double getSumOfIntensity(Spectrum spectrum) {
         double sum = 0;
         BinaryDataArray intentArr = spectrum.getIntensityBinaryDataArray();
@@ -244,6 +280,12 @@ public class DataAccessUtilities {
         return ions != null && !ions.isEmpty();
     }
 
+    /**
+     * Get the number of post translational modifications within a protein identification
+     *
+     * @param ident protein identification
+     * @return int number of ptms
+     */
     public static int getNumberOfPTMs(Identification ident) {
         int cnt = 0;
         List<Peptide> peptides = ident.getPeptides();
@@ -256,6 +298,12 @@ public class DataAccessUtilities {
         return cnt;
     }
 
+    /**
+     * Get the number of ptms within a peptide
+     *
+     * @param peptide peptide
+     * @return int     nunber of ptms
+     */
     public static int getNumberOfPTMs(Peptide peptide) {
         int cnt = 0;
 

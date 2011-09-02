@@ -90,22 +90,22 @@ public class PrideXmlControllerImplTest {
     public void testGetMetaData() throws Exception {
         Experiment experiment = (Experiment) prideController.getMetaData();
 
-        // test additional param
+        // dbtest additional param
         List<CvParam> additional = experiment.getCvParams();
         assertTrue("There should be only two additional cv parameters", additional.size()==2);
         assertEquals("XML generation software accession should be PRIDE:0000175", additional.get(0).getAccession(), "PRIDE:0000175");
 
-        // test references
+        // dbtest references
         List<Reference> references = experiment.getReferences();
         assertTrue("There should be only one reference", references.size()==2);
         assertEquals("PubMed number should be 16038019", references.get(0).getCvParams().get(0).getAccession(), "16038019");
 
-        // test protocol
+        // dbtest protocol
         Protocol protocol = experiment.getProtocol();
         assertEquals("Protocol name is In Gel Protein Digestion", protocol.getName(), "In Gel Protein Digestion");
         assertEquals("First protocol step is reduction", protocol.getProtocolSteps().get(0).getCvParams().get(0).getName(), "Reduction");
 
-        // test version
+        // dbtest version
         assertEquals("Version should be 2.1", experiment.getVersion(), "2.1");
     }
 
@@ -118,16 +118,16 @@ public class PrideXmlControllerImplTest {
     public void testGetSpectrumById() throws Exception {
         Spectrum spectrum = prideController.getSpectrumById("2");
 
-        // test spectrum index
+        // dbtest spectrum index
         //assertEquals("Spectrum index should be 1", spectrum.getIndex(), 1);
 
-        // test param group
+        // dbtest param group
         assertEquals("MS level should be 0", spectrum.getCvParams().get(0).getValue(), "0");
         assertEquals("Spectrum type", spectrum.getCvParams().get(1).getAccession(), "MS:1000294");
         assertEquals("Spectrum representation", spectrum.getCvParams().get(2).getAccession(), "MS:1000127");
         assertEquals("Scan mode", spectrum.getCvParams().get(3).getAccession(), "PSI:1000036");
 
-        // test scan list
+        // dbtest scan list
         ScanList scanList = spectrum.getScanList();
         // check param group
         assertEquals("Method of combination", scanList.getCvParams().get(0).getAccession(), "MS:1000571");
@@ -137,12 +137,12 @@ public class PrideXmlControllerImplTest {
         assertEquals("ScanWindow upper limit", scanList.getScans().get(0).getScanWindows().get(0).getCvParams().get(1).getValue(), "123.45");
         assertEquals("Scan param group", scanList.getScans().get(0).getCvParams().get(0).getValue(), "Zero Value");
 
-        // test precursor
+        // dbtest precursor
         assertTrue("There should be only one precursor", spectrum.getPrecursors().size() == 1);
         assertEquals("Precursor spectrum ref", spectrum.getPrecursors().get(0).getSpectrum().getId().toString(), "0");
         assertEquals("Precursor ion selection", spectrum.getPrecursors().get(0).getSelectedIons().get(0).getCvParams().get(0).getAccession(), "PSI:1000041");
 
-        // test binary array
+        // dbtest binary array
         assertEquals("Mz Binary array precision", spectrum.getMzBinaryDataArray().getCvParams().get(0).getAccession(), "MS:1000523");
         assertEquals("Mz binary array compression", spectrum.getMzBinaryDataArray().getCvParams().get(1).getAccession(), "MS:1000576");
         

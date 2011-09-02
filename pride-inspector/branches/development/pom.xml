@@ -255,7 +255,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <!-- comment exclusion section out if want to run batch test -->
+                    <!-- comment exclusion section out if want to run batch dbtest -->
                     <excludes>
                         <exclude>**/test</exclude>
                         <exclude>**/test/*.class</exclude>
@@ -263,8 +263,8 @@
                     <archive>
                         <manifest>
                             <mainClass>uk.ac.ebi.pride.gui.PrideInspectorBootstrap</mainClass>
-                            <!--use this if want to run batch test-->
-                            <!--<mainClass>uk.ac.ebi.pride.data.test.FileControllerBatchTest</mainClass>-->
+                            <!--use this if want to run batch dbtest-->
+                            <!--<mainClass>uk.ac.ebi.pride.dbtestst.FileControllerBatchTest</mainClass>-->
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
                         </manifest>

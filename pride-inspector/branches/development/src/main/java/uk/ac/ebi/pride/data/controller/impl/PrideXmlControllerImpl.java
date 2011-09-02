@@ -10,14 +10,16 @@ import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.cache.impl.PrideXmlCacheBuilder;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
-import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
-import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.jaxb.xml.PrideXmlReader;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,19 +32,42 @@ import java.util.regex.Pattern;
  */
 public class PrideXmlControllerImpl extends CachedDataAccessController {
     private static final Logger logger = LoggerFactory.getLogger(PrideXmlControllerImpl.class);
+    /**
+     * Pattern for match pride xml format
+     */
     private static final Pattern prideXmlHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<ExperimentCollection [^>]*>", Pattern.MULTILINE);
-
+    /**
+     * Reader to get information from pride xml file
+     */
     private PrideXmlReader reader = null;
 
+    /**
+     * Construct a data access controller to read a pride xml
+     *
+     * @param file pride xml
+     * @throws DataAccessException data access controller
+     */
     public PrideXmlControllerImpl(File file) throws DataAccessException {
         this(file, null);
     }
 
+    /**
+     * Construct a data access controller with a pride xml and a given data access mode
+     *
+     * @param file pride xml file
+     * @param mode data access mode
+     * @throws DataAccessException data access exception
+     */
     public PrideXmlControllerImpl(File file, DataAccessMode mode) throws DataAccessException {
         super(file, mode);
         initialize();
     }
 
+    /**
+     * Initialize data access controller
+     *
+     * @throws DataAccessException data access exception
+     */
     protected void initialize() throws DataAccessException {
         // create pride access utils
         File file = (File) getSource();
@@ -65,14 +90,22 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         setCacheBuilder(new PrideXmlCacheBuilder(this));
         // populate cache
         populateCache();
-        // create pride xml transformer
-        PrideXmlTransformer.setSpectrumIds(new ArrayList<Comparable>(this.getSpectrumIds()));
     }
 
+    /**
+     * Get the pride xml reader
+     *
+     * @return PrideXmlReader  pride xml reader
+     */
     public PrideXmlReader getReader() {
         return reader;
     }
 
+    /**
+     * Get md5 hash unique id
+     *
+     * @return String  unique id
+     */
     @Override
     public String getUid() {
         String uid = super.getUid();
@@ -93,7 +126,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * Get a list of cv lookup objects.
      *
      * @return List<CVLookup>   a list of cvlookup objects.
-     * @throws DataAccessException
+     * @throws DataAccessException data access exception
      */
     @Override
     public List<CVLookup> getCvLookups() throws DataAccessException {
@@ -111,7 +144,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * Get the FileDescription object
      *
      * @return FileDescription  FileDescription object.
-     * @throws DataAccessException
+     * @throws DataAccessException data access exception
      */
     @Override
     public FileDescription getFileDescription() throws DataAccessException {
@@ -121,10 +154,9 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
             FileDescription fileDesc;
 
             try {
-                ParamGroup fileContent = PrideXmlTransformer.transformFileContent();
                 List<SourceFile> sourceFiles = getSourceFiles();
                 List<ParamGroup> contacts = getContacts();
-                fileDesc = new FileDescription(fileContent, sourceFiles, contacts);
+                fileDesc = new FileDescription(null, sourceFiles, contacts);
                 return fileDesc;
             } catch (Exception ex) {
                 throw new DataAccessException("Failed to retrieve file description", ex);
@@ -134,6 +166,12 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         }
     }
 
+    /**
+     * Get referenceable param group, pride xml does not contain this kind of information
+     *
+     * @return ReferenceableParamGroup referenceable param group
+     * @throws DataAccessException data access exception
+     */
     @Override
     public ReferenceableParamGroup getReferenceableParamGroup() throws DataAccessException {
         throw new UnsupportedOperationException("This method is unsupported");
@@ -232,6 +270,12 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         }
     }
 
+    /**
+     * Get a list of scan settings, pride xml does not contain this kind of information
+     *
+     * @return Collection<ScanSetting> a collection of scan settings
+     * @throws DataAccessException data access exception
+     */
     @Override
     public Collection<ScanSetting> getScanSettings() throws DataAccessException {
         throw new UnsupportedOperationException("This method is unsupported");
@@ -264,7 +308,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * Get a list of data processing objects
      *
      * @return List<DataProcessing> a list of data processing objects
-     * @throws DataAccessException
+     * @throws DataAccessException data access exception
      */
     @Override
     public List<DataProcessing> getDataProcessings() throws DataAccessException {
@@ -291,7 +335,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      *
      * @return List<Reference>  a list of reference objects
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
-     *
+     *          data access exception
      */
     private List<Reference> getReferences() throws DataAccessException {
         List<Reference> refs = new ArrayList<Reference>();
@@ -391,7 +435,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @throws DataAccessException data access exception
      */
     @Override
-    Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
+    protected Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
         Spectrum spectrum = super.getSpectrumById(id, useCache);
         if (spectrum == null && id != null) {
             logger.debug("Get new spectrum from file: {}", id);

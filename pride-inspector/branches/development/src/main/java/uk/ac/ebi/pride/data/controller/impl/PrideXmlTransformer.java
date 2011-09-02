@@ -14,13 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * User: rwang
+ * PrideXmlTransformer contains a list of static methods which convert pride-jaxb objects to pride inspector core objects
+ * <p/>
  * Date: 17-Mar-2010
  * Time: 14:14:12
  */
 public class PrideXmlTransformer {
-    private static final Logger logger = LoggerFactory.getLogger(PrideXmlTransformer.class);
 
+    /**
+     * These are a list of default names to be used for the conversion
+     */
     private final static String SAMPLE_ID = "sample1";
     private final static String COMMENTS = "comments";
     private final static String COMPLETION_TIME = "completion time";
@@ -31,18 +34,13 @@ public class PrideXmlTransformer {
     private final static String PROTOCOL_ID = "protocol1";
     private final static int PROCESSING_METHOD_ORDER = 1;
 
-    private static List<Comparable> spectrumIds = new ArrayList<Comparable>();
-
-    public static void setSpectrumIds(List<Comparable> specIds) {
-        spectrumIds.clear();
-        spectrumIds.addAll(specIds);
-    }
-
     /**
+     * Convert spectrum
+     * <p/>
      * Note: supDes, supDataArrayBinary are ignored.
      *
-     * @param rawSpec
-     * @return
+     * @param rawSpec pride xml spectrum
+     * @return Spectrum    spectrum
      */
     public static Spectrum transformSpectrum(uk.ac.ebi.pride.jaxb.model.Spectrum rawSpec) {
         Spectrum spectrum = null;
@@ -79,10 +77,7 @@ public class PrideXmlTransformer {
             // get spectrum id
             Integer specId = rawSpec.getId();
 
-            // spectrum index
-            int index = spectrumIds.indexOf(specId);
-
-            spectrum = new Spectrum(specId, index, null,
+            spectrum = new Spectrum(specId, -1, null,
                     null, defaultArrLength, null,
                     scanList, precursors, null,
                     dataArr, params);
@@ -92,7 +87,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * transform spectrum's param grouop from pride xml to core data model.
+     * Copnvert spectrum's param group from pride xml to core data model.
      *
      * @param rawSpecDesc original spectrum description from pride xml.
      * @return ParamGroup   param group in core data model format.
@@ -130,7 +125,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * create a cv param for spectrum type
+     * Create a cv param for spectrum type
      *
      * @param value original value of the spectrum type, map discrete to centroid spectrum, continuous to profile spectrum.
      * @return CvParam cv param in core data model format.
@@ -152,7 +147,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform spectrumSetting in pride xml to ScanList
+     * Convert spectrumSetting in pride xml to ScanList
      * <p/>
      * 1. for each acquisition a Scan object will created
      * 2. Method of combination is mapped to ParamGroup of scan list
@@ -201,7 +196,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * create a list of scan windows
+     * Create a list of scan windows
      *
      * @param rawSpecInstrument spectrum instrument in pride xml.
      * @return List<ParamGroup> a list of param groups represents scan windows.
@@ -231,7 +226,7 @@ public class PrideXmlTransformer {
 
 
     /**
-     * create a cv param for method of combination
+     * Create a cv param for method of combination
      *
      * @param value original value of the method of combination.
      * @return CvParam  cv param in core data model format.
@@ -250,8 +245,10 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * @param rawPrecursors
-     * @return
+     * Convert precursor list
+     *
+     * @param rawPrecursors pride xml precursor list
+     * @return List<Precursor> a list of precursors
      */
     public static List<Precursor> transformPrecursorList(uk.ac.ebi.pride.jaxb.model.PrecursorList rawPrecursors) {
         List<Precursor> precursors = null;
@@ -268,13 +265,13 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * transform precursors from pride xml to core data model
+     * Convert precursors from pride xml to core data model
      * <p/>
      * Note: In MzData schema, there are experimentRef, this is not included
      * in pride xml schema.
      *
-     * @param rawPrecursor
-     * @return
+     * @param rawPrecursor pride xml precursor
+     * @return Precursor   precursor
      */
     public static Precursor transformPrecursor(uk.ac.ebi.pride.jaxb.model.Precursor rawPrecursor) {
 
@@ -296,11 +293,11 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform BinaryDataArray from pride xml to core data model
+     * Convert BinaryDataArray from pride xml to core data model
      *
-     * @param rawArr     binary data array
-     * @param binaryType
-     * @return
+     * @param rawArr     pride xml binary data array
+     * @param binaryType binary type
+     * @return BinaryDataArray binary data array
      */
     public static BinaryDataArray transformBinaryDataArray(uk.ac.ebi.pride.jaxb.model.PeakListBinary rawArr,
                                                            CvTermReference binaryType) {
@@ -329,6 +326,12 @@ public class PrideXmlTransformer {
     }
 
 
+    /**
+     * Convert protein identification
+     *
+     * @param identification pride xml protein identification
+     * @return Identification  protein identification
+     */
     public static Identification transformIdentification(uk.ac.ebi.pride.jaxb.model.Identification identification) {
         return identification instanceof uk.ac.ebi.pride.jaxb.model.TwoDimensionalIdentification ?
                 transformTwoDimIdent((uk.ac.ebi.pride.jaxb.model.TwoDimensionalIdentification) identification) :
@@ -336,10 +339,12 @@ public class PrideXmlTransformer {
     }
 
     /**
+     * Convert two dimensional identification
+     * <p/>
      * ToDo: there are code dupliation between transformTwoDimIdent and transformGelFreeIdent
      *
-     * @param rawIdent
-     * @return
+     * @param rawIdent pride xml two dimensional identification
+     * @return TwoDimIdentification    two dimentional identification
      */
     public static TwoDimIdentification transformTwoDimIdent(uk.ac.ebi.pride.jaxb.model.TwoDimensionalIdentification rawIdent) {
         TwoDimIdentification ident = null;
@@ -384,6 +389,12 @@ public class PrideXmlTransformer {
         return ident;
     }
 
+    /**
+     * Convert gel free protein identification
+     *
+     * @param rawIdent pride xml protein identification
+     * @return GelFreeIdentification   gel free identification
+     */
     public static GelFreeIdentification transformGelFreeIdent(uk.ac.ebi.pride.jaxb.model.GelFreeIdentification rawIdent) {
         GelFreeIdentification ident = null;
 
@@ -424,7 +435,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform gel from pride xml to core data model.
+     * Convert gel from pride xml to core data model.
      *
      * @param rawGel      gel in pride xml format.
      * @param gelLocation gel location in pride xml format.
@@ -458,7 +469,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform peptide from pride xml to core data model.
+     * Convert peptide from pride xml to core data model.
      *
      * @param rawPeptide peptide in pride xml format.
      * @return Peptide  peptide in core data model.
@@ -506,7 +517,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform modification from pride xml to core data model
+     * Convert modification from pride xml to core data model
      *
      * @param rawMod modification in pride xml format.
      * @return Modification modification in core data model.
@@ -548,7 +559,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * transform protocol from pride xml to core data model.
+     * Convert protocol from pride xml to core data model.
      *
      * @param rawProt protocol from pride xml.
      * @return Protocol protocol in core data model format.
@@ -579,7 +590,7 @@ public class PrideXmlTransformer {
 
 
     /**
-     * Transform a paramgroup from pride xml format to core data model format.
+     * Convert a paramgroup from pride xml format to core data model format.
      * <p/>
      * Note: if the paramgroup returned is not null, then it must have a cv param list and
      * a user param list, even they are empty.
@@ -599,6 +610,12 @@ public class PrideXmlTransformer {
         return params;
     }
 
+    /**
+     * Convert a list of user params
+     *
+     * @param rawUserParams pride xml user params
+     * @return List<UserParam> a list of user params
+     */
     public static List<UserParam> transformUserParams(List<uk.ac.ebi.pride.jaxb.model.UserParam> rawUserParams) {
         List<UserParam> userParams = new ArrayList<UserParam>();
         if (rawUserParams != null) {
@@ -610,7 +627,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform a user parameter from pride xml format to core data model format.
+     * Convert a user parameter from pride xml format to core data model format.
      * Note: there is neither data type or unit related information in pride xml format.
      *
      * @param rawUserParam a user parameter in pride xml format.
@@ -622,6 +639,12 @@ public class PrideXmlTransformer {
                 null, null, null);
     }
 
+    /**
+     * Convert a list of cv params
+     *
+     * @param rawCvParams pride xml cv params
+     * @return List<CvParam>   a list of cv params
+     */
     public static List<CvParam> transformCvParams(List<uk.ac.ebi.pride.jaxb.model.CvParam> rawCvParams) {
         List<CvParam> cvParams = new ArrayList<CvParam>();
         if (rawCvParams != null) {
@@ -633,7 +656,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform a cv parameter from pride xml format to core data model format.
+     * Convert a cv parameter from pride xml format to core data model format.
      * Note: there is no unit related information in pride xml format.
      *
      * @param rawCvParam a cv parameter in pride xml format.
@@ -647,7 +670,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform a list of cvlookup object from pride Xml format to core data model format.
+     * Convert a list of cvlookup object from pride Xml format to core data model format.
      *
      * @param rawCvLookups a list of cv lookups in pride xml format.
      * @return List<CVLookup>   a list of cv lookups in core data model format.
@@ -669,7 +692,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform sample from pride xml format to core data model format
+     * Convert sample from pride xml format to core data model format
      *
      * @param rawAdmin Admin object in pride xml format, which contains all the details about sample.
      * @return Sample   sample object in core data model format.
@@ -686,7 +709,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform an software object from pride xml format to core data model format.
+     * Convert an software object from pride xml format to core data model format.
      *
      * @param rawDataProcessing software object in pride xml format.
      * @return Software software object in core data model format.
@@ -714,7 +737,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform an instrument from pride xml to core data model format.
+     * Convert an instrument from pride xml to core data model format.
      * <p/>
      * Note: for each instrument object, only three instrument components can exists.
      * multiple analyzer should be spliced into different instrument objecs.
@@ -754,7 +777,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform source from pride xml to core data model format
+     * Convert source from pride xml to core data model format
      *
      * @param order     order of encounter.
      * @param rawSource source in pride xml format.
@@ -762,8 +785,6 @@ public class PrideXmlTransformer {
      */
     private static InstrumentComponent transformSource(int order, uk.ac.ebi.pride.jaxb.model.Param rawSource) {
         InstrumentComponent component = null;
-        // ToDo: add semantic support
-        // ToDo: must have ionization type (MS:1000008)
         if (rawSource != null) {
             ParamGroup params = transformParamGroup(rawSource);
             component = new InstrumentComponent(order, params);
@@ -773,7 +794,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform analyzer from pride xml to core data model format
+     * Convert analyzer from pride xml to core data model format
      *
      * @param order       order of encounter.
      * @param rawAnalyzer analyzer in pride xml format.
@@ -781,8 +802,6 @@ public class PrideXmlTransformer {
      */
     private static InstrumentComponent transformAnalyzer(int order, uk.ac.ebi.pride.jaxb.model.Param rawAnalyzer) {
         InstrumentComponent component = null;
-        // ToDo: add semantic support
-        // ToDo: must have mass analyzer type (MS:1000443)
         if (rawAnalyzer != null) {
             ParamGroup params = transformParamGroup(rawAnalyzer);
             component = new InstrumentComponent(order, params);
@@ -792,7 +811,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform detector from pride xml to core data model format
+     * Convert detector from pride xml to core data model format
      *
      * @param order       order of encounter.
      * @param rawDetector detector in pride xml format.
@@ -800,8 +819,6 @@ public class PrideXmlTransformer {
      */
     private static InstrumentComponent transformDetector(int order, uk.ac.ebi.pride.jaxb.model.Param rawDetector) {
         InstrumentComponent component = null;
-        // ToDo: add semantic support
-        // ToDo: must have detector type (MS:1000026)
         if (rawDetector != null) {
             ParamGroup params = transformParamGroup(rawDetector);
             component = new InstrumentComponent(order, params);
@@ -811,7 +828,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform data processing from pride xml to core data model format.
+     * Convert data processing from pride xml to core data model format.
      *
      * @param rawDataProcessing data processing in pride xml.
      * @return DataProcessing    data processing in core data model.
@@ -826,13 +843,7 @@ public class PrideXmlTransformer {
             uk.ac.ebi.pride.jaxb.model.Param rawProcMethod = rawDataProcessing.getProcessingMethod();
             if (rawProcMethod != null) {
                 // semantic support for mzML
-                // ToDo: does semantic support really make sense here ?
                 ParamGroup params = transformParamGroup(rawProcMethod);
-//                if (params == null) {
-//                    params = new ParamGroup();
-//                }
-//                CvTermReference cvTerm = CvTermReference.CONVERSION_TO_MZML;
-//                params.addCvParam(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), null, null, null, null));
                 // generated order id added here
                 procMethods.add(new ProcessingMethod(PROCESSING_METHOD_ORDER, software, params));
             } else if (software != null) {
@@ -847,7 +858,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform a list of contacts from pride xml to core data model format
+     * Convert a list of contacts from pride xml to core data model format
      *
      * @param rawAdmin admin object in pride xml.
      * @return List<ParamGroup> a list of param groups represents contact details.
@@ -880,7 +891,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform source file from pride xml to core data model
+     * Convert source file from pride xml to core data model
      *
      * @param rawAdmin Admin in pride xml format.
      * @return SourceFile   source file in core data model.
@@ -889,7 +900,6 @@ public class PrideXmlTransformer {
         SourceFile sourceFile = null;
 
         if (rawAdmin != null) {
-            // ToDo: add semantic support for mzML
             // ToDo: native spectrum identifier format
             // ToDo: data file checksum type
             // ToDo: source file type is kept as user param for the moment.
@@ -909,22 +919,7 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Create a file content object
-     * At the moment, it only consists of one CvParam based on mass spectrum cv term.
-     *
-     * @return ParamGroup   parameter group represents file content.
-     */
-    public static ParamGroup transformFileContent() {
-        //ToDo: check with Richard
-        List<CvParam> cvParams = new ArrayList<CvParam>();
-        CvTermReference cvTerm = CvTermReference.MASS_SPECTRUM;
-        CvParam cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), null, null, null, null);
-        cvParams.add(cvParam);
-        return new ParamGroup(cvParams, null);
-    }
-
-    /**
-     * Transform references from pride xml format to core data model format
+     * Convert references from pride xml format to core data model format
      *
      * @param rawReferences a list of references in pride xml format.
      * @return List<Reference>  a list of references in core data model foramt.
@@ -944,9 +939,9 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * Transform additional params from pride xml to core data model format.
+     * Convert additional params from pride xml to core data model format.
      *
-     * @param rawAdditionalParams
+     * @param rawAdditionalParams   pride xml additional params
      * @return ParamGroup   additional param groups
      */
     public static ParamGroup transformAdditional(uk.ac.ebi.pride.jaxb.model.Param rawAdditionalParams) {

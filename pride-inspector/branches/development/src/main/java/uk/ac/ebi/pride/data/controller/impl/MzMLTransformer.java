@@ -13,13 +13,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * This class contains a set of static methods for converting jmzML object to the pride inspector core objects
+ * <p/>
  * User: rwang
  * Date: 08-Feb-2010
  * Time: 15:11:47
  */
 public class MzMLTransformer {
 
+    /**
+     * Convert spectrum
+     *
+     * @param spectrum jmzML spectrum object
+     * @return Spectrum    spectrum
+     */
     public static Spectrum transformSpectrum(uk.ac.ebi.jmzml.model.mzml.Spectrum spectrum) {
         Spectrum newSpec = null;
         if (spectrum != null) {
@@ -46,6 +53,13 @@ public class MzMLTransformer {
         return newSpec;
     }
 
+    /**
+     * Convert param group
+     *
+     * @param paramGroup jmzML param group
+     * @param <T>        any jmzml objects which extends param group
+     * @return ParamGroup  param group
+     */
     public static <T extends uk.ac.ebi.jmzml.model.mzml.ParamGroup> ParamGroup transformParamGroup(T paramGroup) {
         ParamGroup newParamGroup = null;
 
@@ -62,6 +76,13 @@ public class MzMLTransformer {
         return newParamGroup;
     }
 
+    /**
+     * Convert a list of param groups
+     *
+     * @param oldParamGroupList a list of jmzML param groups
+     * @param <T>               any jmzML objects extends param group
+     * @return ParamGroup  param group
+     */
     public static <T extends uk.ac.ebi.jmzml.model.mzml.ParamGroup> List<ParamGroup> transformParamGroupList(
             List<T> oldParamGroupList) {
         List<ParamGroup> newParamGroupList = null;
@@ -75,6 +96,12 @@ public class MzMLTransformer {
         return newParamGroupList;
     }
 
+    /**
+     * Convert referenceable param group
+     *
+     * @param oldRefParamGroupList jmzml referenceable param group
+     * @return ReferenceableParamGroup param group
+     */
     public static ReferenceableParamGroup transformReferenceableParamGroupList(uk.ac.ebi.jmzml.model.mzml.ReferenceableParamGroupList oldRefParamGroupList) {
         Map<String, ParamGroup> refMap = null;
         if (oldRefParamGroupList != null) {
@@ -94,6 +121,13 @@ public class MzMLTransformer {
         return new ReferenceableParamGroup(refMap);
     }
 
+    /**
+     * Convert a list of cv params
+     *
+     * @param newCvParams a list of new cv params, where the converted value should go
+     * @param oldCvParams a list of jmzml cv params
+     * @return List<CvParam>   a list of cv params
+     */
     private static List<CvParam> transformCvParam(List<CvParam> newCvParams, List<uk.ac.ebi.jmzml.model.mzml.CVParam> oldCvParams) {
 
         if (oldCvParams != null) {
@@ -115,6 +149,13 @@ public class MzMLTransformer {
         return newCvParams;
     }
 
+    /**
+     * Convert a list of user params
+     *
+     * @param newUserParams a list of new user params, where the converted value should go
+     * @param oldUserParams a list of jmzml user params
+     * @return List<UserParam> a list of user params
+     */
     private static List<UserParam> transformUserParam(List<UserParam> newUserParams, List<uk.ac.ebi.jmzml.model.mzml.UserParam> oldUserParams) {
 
         if (oldUserParams != null) {
@@ -133,6 +174,13 @@ public class MzMLTransformer {
         return newUserParams;
     }
 
+    /**
+     * Convert a referenceable param group to a list of cv params and a list of user params
+     *
+     * @param cvParams   a list of new cv params
+     * @param userParams a list of new user params
+     * @param paramRefs  a list of jmzml referenceable paramgroups
+     */
     private static void transformReferenceableParamGroup(List<CvParam> cvParams,
                                                          List<UserParam> userParams,
                                                          List<uk.ac.ebi.jmzml.model.mzml.ReferenceableParamGroupRef> paramRefs) {
@@ -144,6 +192,12 @@ public class MzMLTransformer {
         }
     }
 
+    /**
+     * Convert a list of binary data array
+     *
+     * @param binaryDataArrayList jmzml binary data array list
+     * @return List<BinaryDataArray>   a list of binary data array
+     */
     private static List<BinaryDataArray> transformBinaryDataArrayList(uk.ac.ebi.jmzml.model.mzml.BinaryDataArrayList binaryDataArrayList) {
         List<BinaryDataArray> dataArrs = null;
 
@@ -159,6 +213,12 @@ public class MzMLTransformer {
         return dataArrs;
     }
 
+    /**
+     * Convert binary data array
+     *
+     * @param oldBinaryArr jmzml binary data array
+     * @return BinaryDataArray binary data array
+     */
     private static BinaryDataArray transformBinaryDataArray(uk.ac.ebi.jmzml.model.mzml.BinaryDataArray oldBinaryArr) {
         BinaryDataArray newBinaryArr = null;
 
@@ -192,6 +252,12 @@ public class MzMLTransformer {
         return newBinaryArr;
     }
 
+    /**
+     * Convert product list
+     *
+     * @param productList jmzml product list
+     * @return List<ParamGroup>    a list of param group
+     */
     private static List<ParamGroup> transformProductList(uk.ac.ebi.jmzml.model.mzml.ProductList productList) {
         List<ParamGroup> products = null;
 
@@ -209,6 +275,12 @@ public class MzMLTransformer {
         return products;
     }
 
+    /**
+     * Convert precursor list
+     *
+     * @param precursorList jmzml precursor list
+     * @return List<Precursor> a list of precursor
+     */
     private static List<Precursor> transformPrecursorList(uk.ac.ebi.jmzml.model.mzml.PrecursorList precursorList) {
         List<Precursor> precursors = null;
 
@@ -223,6 +295,12 @@ public class MzMLTransformer {
         return precursors;
     }
 
+    /**
+     * Convert precursor
+     *
+     * @param oldPrecursor jmzml precursor
+     * @return Precursor   precursor
+     */
     private static Precursor transformPrecursor(uk.ac.ebi.jmzml.model.mzml.Precursor oldPrecursor) {
         Precursor newPrecursor = null;
 
@@ -244,6 +322,12 @@ public class MzMLTransformer {
         return newPrecursor;
     }
 
+    /**
+     * Convert scan list
+     *
+     * @param scanList jmzml scan list
+     * @return ScanList    scan list
+     */
     private static ScanList transformScanList(uk.ac.ebi.jmzml.model.mzml.ScanList scanList) {
         ScanList newScanList = null;
 
@@ -261,6 +345,12 @@ public class MzMLTransformer {
         return newScanList;
     }
 
+    /**
+     * Convert scan
+     *
+     * @param oldScan jmzml scan
+     * @return Scan    scan
+     */
     private static Scan transformScan(uk.ac.ebi.jmzml.model.mzml.Scan oldScan) {
         Scan newScan = null;
 
@@ -281,6 +371,12 @@ public class MzMLTransformer {
         return newScan;
     }
 
+    /**
+     * Convert source file list
+     *
+     * @param oldSourceFileList jmzml source file list
+     * @return List<SourceFile>    a list of source file
+     */
     public static List<SourceFile> transformSourceFileList(uk.ac.ebi.jmzml.model.mzml.SourceFileList oldSourceFileList) {
         List<SourceFile> sourceFiles = null;
         if (oldSourceFileList != null) {
@@ -293,6 +389,12 @@ public class MzMLTransformer {
         return sourceFiles;
     }
 
+    /**
+     * Convert source file
+     *
+     * @param oldSourceFile jmzml source file
+     * @return SourceFile  source file
+     */
     private static SourceFile transformSourceFile(uk.ac.ebi.jmzml.model.mzml.SourceFile oldSourceFile) {
         SourceFile newSourceFile = null;
 
@@ -307,13 +409,19 @@ public class MzMLTransformer {
         return newSourceFile;
     }
 
+    /**
+     * Convert scan setting
+     *
+     * @param oldScanSettings jmzml scan settings
+     * @return ScanSetting scan setting
+     */
     private static ScanSetting transformScanSettings(uk.ac.ebi.jmzml.model.mzml.ScanSettings oldScanSettings) {
         ScanSetting newScanSetting = null;
 
         if (oldScanSettings != null) {
             String id = oldScanSettings.getId();
             List<SourceFile> sourceFile = new ArrayList<SourceFile>();
-            // ToDo: this might need to improve
+            // ToDo: this might need to be improved
             List<uk.ac.ebi.jmzml.model.mzml.SourceFileRef> oldSourceFileRefs = oldScanSettings.getSourceFileRefList().getSourceFileRef();
             for (uk.ac.ebi.jmzml.model.mzml.SourceFileRef oldSourceFileRef : oldSourceFileRefs) {
                 sourceFile.add(transformSourceFile(oldSourceFileRef.getSourceFile()));
@@ -325,6 +433,12 @@ public class MzMLTransformer {
         return newScanSetting;
     }
 
+    /**
+     * Convert processsing method
+     *
+     * @param oldProcMethod jmzml processing method
+     * @return ProcessingMethod    processing method
+     */
     private static ProcessingMethod transformProcessingMethod(uk.ac.ebi.jmzml.model.mzml.ProcessingMethod oldProcMethod) {
         ProcessingMethod newProcessingMethod = null;
 
@@ -337,6 +451,12 @@ public class MzMLTransformer {
         return newProcessingMethod;
     }
 
+    /**
+     * Convert chromatogram
+     *
+     * @param chroma jmzml chromatogram
+     * @return Chromatogram    chromatogram
+     */
     public static Chromatogram transformChromatogram(uk.ac.ebi.jmzml.model.mzml.Chromatogram chroma) {
         Chromatogram newChroma = null;
 
@@ -354,6 +474,12 @@ public class MzMLTransformer {
         return newChroma;
     }
 
+    /**
+     * Convert cv loopups
+     *
+     * @param oldCvList jmzml cv list
+     * @return List<CvLookup>  a list of cv lookups
+     */
     public static List<CVLookup> transformCVList(uk.ac.ebi.jmzml.model.mzml.CVList oldCvList) {
         List<CVLookup> cvLookups = null;
         if (oldCvList != null) {
@@ -366,6 +492,12 @@ public class MzMLTransformer {
         return cvLookups;
     }
 
+    /**
+     * Convert cv lookups
+     *
+     * @param oldCv jmzml cv lookups
+     * @return CVLookup    cv lookup
+     */
     public static CVLookup transformCVLookup(uk.ac.ebi.jmzml.model.mzml.CV oldCv) {
         CVLookup cvLookup = null;
         if (oldCv != null) {
@@ -375,6 +507,12 @@ public class MzMLTransformer {
         return cvLookup;
     }
 
+    /**
+     * Convert sample list
+     *
+     * @param oldSampleList jmzml sample list
+     * @return List<Sample>    a list of samples
+     */
     public static List<Sample> transformSampleList(uk.ac.ebi.jmzml.model.mzml.SampleList oldSampleList) {
         List<Sample> samples = null;
 
@@ -388,6 +526,12 @@ public class MzMLTransformer {
         return samples;
     }
 
+    /**
+     * Convert sample
+     *
+     * @param oldSample jmzml sample
+     * @return Sample  sample
+     */
     public static Sample transformSample(uk.ac.ebi.jmzml.model.mzml.Sample oldSample) {
         Sample newSample = null;
 
@@ -401,6 +545,12 @@ public class MzMLTransformer {
         return newSample;
     }
 
+    /**
+     * Convert software list
+     *
+     * @param oldSoftwareList a list of jmzml software
+     * @return List<Software>  a list of sfotware
+     */
     public static List<Software> transformSoftwareList(uk.ac.ebi.jmzml.model.mzml.SoftwareList oldSoftwareList) {
         List<Software> softwares = null;
 
@@ -414,6 +564,12 @@ public class MzMLTransformer {
         return softwares;
     }
 
+    /**
+     * Convert software
+     *
+     * @param oldSoftware jmzml softare
+     * @return Software    software
+     */
     public static Software transformSoftware(uk.ac.ebi.jmzml.model.mzml.Software oldSoftware) {
         Software newSoftware = null;
 
@@ -426,6 +582,12 @@ public class MzMLTransformer {
         return newSoftware;
     }
 
+    /**
+     * Convert scan settings
+     *
+     * @param oldScanSettingsList scan setting list
+     * @return List<ScanSetting>   a list of scan settings
+     */
     public static List<ScanSetting> transformScanSettingList(uk.ac.ebi.jmzml.model.mzml.ScanSettingsList oldScanSettingsList) {
         List<ScanSetting> scanSettings = null;
 
@@ -440,6 +602,12 @@ public class MzMLTransformer {
         return scanSettings;
     }
 
+    /**
+     * Convert scan setting
+     *
+     * @param oldScanSetting jmzml scan setting
+     * @return ScanSetting scan setting
+     */
     public static ScanSetting transformScanSetting(uk.ac.ebi.jmzml.model.mzml.ScanSettings oldScanSetting) {
         ScanSetting scanSetting = null;
 
@@ -458,6 +626,12 @@ public class MzMLTransformer {
         return scanSetting;
     }
 
+    /**
+     * Convert instrument configuration list
+     *
+     * @param oldInstrumentList jmzml instrument configuration list
+     * @return List<InstrumentConfiguration>   a list of instrument configurations
+     */
     public static List<InstrumentConfiguration> transformInstrumentConfigurationList(uk.ac.ebi.jmzml.model.mzml.InstrumentConfigurationList oldInstrumentList) {
         List<InstrumentConfiguration> instrumentConfigurations = null;
 
@@ -472,6 +646,12 @@ public class MzMLTransformer {
         return instrumentConfigurations;
     }
 
+    /**
+     * Convert instrument configuration
+     *
+     * @param oldInstrument jmzml instrument configuration
+     * @return Instrumentconfiguration insturment configuration
+     */
     public static InstrumentConfiguration transformInstrumentConfiguration(uk.ac.ebi.jmzml.model.mzml.InstrumentConfiguration oldInstrument) {
         InstrumentConfiguration instrumentConfiguration = null;
 
@@ -503,6 +683,12 @@ public class MzMLTransformer {
         return instrumentConfiguration;
     }
 
+    /**
+     * Convert instrument component
+     *
+     * @param rawComponent jmzml instrument component
+     * @return InstrumentComponent instrument component
+     */
     private static InstrumentComponent transformInstrumentComponent(uk.ac.ebi.jmzml.model.mzml.Component rawComponent) {
         InstrumentComponent component = null;
 
@@ -513,7 +699,12 @@ public class MzMLTransformer {
         return component;
     }
 
-
+    /**
+     * Convert a list of data prcessings
+     *
+     * @param oldDataProcessingList jmzml data processing list
+     * @return List<DataProcessing>    a list of data processings
+     */
     public static List<DataProcessing> transformDataProcessingList(uk.ac.ebi.jmzml.model.mzml.DataProcessingList oldDataProcessingList) {
         List<DataProcessing> dataProcessings = null;
 
@@ -528,6 +719,12 @@ public class MzMLTransformer {
         return dataProcessings;
     }
 
+    /**
+     * Convert data processing
+     *
+     * @param oldDataProcessing jmzml data processing
+     * @return DataProcessing  data processing
+     */
     public static DataProcessing transformDataProcessing(uk.ac.ebi.jmzml.model.mzml.DataProcessing oldDataProcessing) {
         DataProcessing newDataProcessing = null;
         if (oldDataProcessing != null) {
@@ -543,6 +740,11 @@ public class MzMLTransformer {
         return newDataProcessing;
     }
 
+    /**
+     * Convert file description
+     * @param rawFileDesc   jmzml file description
+     * @return  FileDescription file description
+     */
     public static FileDescription transformFileDescription(uk.ac.ebi.jmzml.model.mzml.FileDescription rawFileDesc) {
         FileDescription fileDesc = null;
 

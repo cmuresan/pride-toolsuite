@@ -36,7 +36,7 @@ import java.util.*;
  * Date: 13-Sep-2010
  * Time: 14:26:03
  */
-public abstract class CachedDataAccessController extends AbstractDataAccessController implements CacheAccess{
+public abstract class CachedDataAccessController extends AbstractDataAccessController implements CacheAccess {
     private static final Logger logger = LoggerFactory.getLogger(CachedDataAccessController.class);
     /**
      * the default data access mode is to use both cache and data source
@@ -55,16 +55,24 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     private CacheBuilder cacheBuilder;
 
+    /**
+     * Construct a data access controller to use both the cache and the source
+     */
     public CachedDataAccessController() {
         this(null, DEFAULT_ACCESS_MODE);
     }
 
+    /**
+     * Construct a data access controller using a given access mode
+     *
+     * @param mode
+     */
     public CachedDataAccessController(DataAccessMode mode) {
         this(null, mode);
     }
 
     /**
-     * Constructor for CachedDataAccessController.
+     * Constructor a data access controller using a given data source and access mode.
      *
      * @param source data source
      * @param mode   DataAccessMode
@@ -168,10 +176,16 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return (Collection<Comparable>) cache.get(CacheCategory.EXPERIMENT_ACC);
     }
 
+    /**
+     * Get experimental metadata
+     *
+     * @return MetaData    meta data
+     * @throws DataAccessException data access exception
+     */
     @Override
     @SuppressWarnings("unchecked")
     public MetaData getMetaData() throws DataAccessException {
-        Collection<MetaData> metaDatas = (Collection<MetaData>)cache.get(CacheCategory.EXPERIMENT_METADATA);
+        Collection<MetaData> metaDatas = (Collection<MetaData>) cache.get(CacheCategory.EXPERIMENT_METADATA);
 
         if (metaDatas != null && !metaDatas.isEmpty()) {
             return CollectionUtils.getElement(metaDatas, 0);
@@ -240,7 +254,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @return Spectrum spectrum object
      * @throws DataAccessException data access exception
      */
-    Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
+    protected Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
         return useCache ? (Spectrum) cache.get(CacheCategory.SPECTRUM, id) : null;
     }
 
@@ -292,7 +306,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @return Identification identification object
      * @throws DataAccessException data access exception
      */
-    Identification getIdentificationById(Comparable id, boolean useCache) throws DataAccessException {
+    protected Identification getIdentificationById(Comparable id, boolean useCache) throws DataAccessException {
         return useCache ? (Identification) cache.get(CacheCategory.IDENTIFICATION, id) : null;
     }
 
@@ -527,11 +541,11 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
         if (useCache) {
             // check whether the identification exist in the cache already
-            Identification ident = (Identification)cache.get(CacheCategory.IDENTIFICATION, identId);
+            Identification ident = (Identification) cache.get(CacheCategory.IDENTIFICATION, identId);
             if (ident != null) {
                 int indexInt = Integer.parseInt(index.toString());
                 List<Peptide> peptides = ident.getPeptides();
-                if (indexInt >=0  && indexInt < peptides.size()) {
+                if (indexInt >= 0 && indexInt < peptides.size()) {
                     pep = peptides.get(indexInt);
                 }
             } else {
@@ -766,6 +780,14 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return mods;
     }
 
+    /**
+     * Get the number of fragment ions in a given peptide
+     *
+     * @param identId   identification id
+     * @param peptideId peptide id, can be the index of the peptide as well.
+     * @return int number of fragment ions
+     * @throws DataAccessException data access controller
+     */
     @Override
     public int getNumberOfFragmentIons(Comparable identId, Comparable peptideId) throws DataAccessException {
         Integer num = (Integer) cache.get(CacheCategory.NUMBER_OF_FRAGMENT_IONS, peptideId);
@@ -775,11 +797,19 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return num == null ? 0 : num;
     }
 
+    /**
+     * Get peptide score from search engine
+     *
+     * @param identId   identification id
+     * @param peptideId peptide id, can be the index of the peptide as well.
+     * @return PeptideScore    peptide score from search engine
+     * @throws DataAccessException data access exception
+     */
     @Override
     public PeptideScore getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException {
         PeptideScore score = null;
         // get peptide additional parameters
-        ParamGroup paramGroup = (ParamGroup)cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
+        ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
         if (paramGroup != null) {
             // get peptide score
             SearchEngine se = this.getSearchEngine();
@@ -791,9 +821,15 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return score;
     }
 
+    /**
+     * Get search engine type
+     *
+     * @return SearchEngine    search engine
+     * @throws DataAccessException data access exception
+     */
     @Override
     public SearchEngine getSearchEngine() throws DataAccessException {
-        Collection<SearchEngine> searchEngines = (Collection<SearchEngine>)cache.get(CacheCategory.SEARCH_ENGINE_TYPE);
+        Collection<SearchEngine> searchEngines = (Collection<SearchEngine>) cache.get(CacheCategory.SEARCH_ENGINE_TYPE);
 
         if (searchEngines != null && !searchEngines.isEmpty()) {
             return CollectionUtils.getElement(searchEngines, 0);
@@ -804,6 +840,12 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return null;
     }
 
+    /**
+     * Get chart data for generating chart component
+     *
+     * @return List<PrideChartManager> a list of chart data
+     * @throws DataAccessException data access exception
+     */
     @Override
     public List<PrideChartManager> getChartData() throws DataAccessException {
         ExperimentSummaryData spectralSummaryData;
@@ -822,6 +864,9 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return list;
     }
 
+    /**
+     * Close data access controller by clearing the cache first
+     */
     @Override
     public void close() {
         clearCache();

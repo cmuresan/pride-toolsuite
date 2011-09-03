@@ -1,9 +1,8 @@
 package uk.ac.ebi.pride.data.coreIdent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Abstract class for both GelFreeIdentification and TwoDimIdentification
@@ -17,15 +16,15 @@ public abstract class Identification extends IdentifiableParamGroup{
     /**
      * DEB Sequence
      */
-    DBSequence dbSequence = null;
+    private DBSequence dbSequence = null;
     /**
      * Pass Threshold of the Search Engine
      */
-    boolean passThreshold = false;
+    private boolean passThreshold = false;
     /**
      * Peptide Evidence in which is based the identification
      */
-    private HashMap<PeptideEvidence,List<Peptide>> peptides = null;
+    private Map<PeptideEvidence,List<Peptide>> peptides = null;
     /**
      * optional search engine score
      */
@@ -47,19 +46,12 @@ public abstract class Identification extends IdentifiableParamGroup{
                           String name,
                           DBSequence dbSequence,
                           boolean passThreshold,
-                          HashMap<PeptideEvidence,List<Peptide>> peptides,
+                          Map<PeptideEvidence,List<Peptide>> peptides,
                           double score,
                           double threshold,
                           SearchEngine searchEngine,
                           double sequenceCoverage) {
-        super(id, name);
-        this.dbSequence = dbSequence;
-        this.passThreshold = passThreshold;
-        this.peptides = peptides;
-        this.score = score;
-        this.threshold = threshold;
-        this.searchEngine = searchEngine;
-        this.sequenceCoverage = sequenceCoverage;
+        this(null,id,name,dbSequence,passThreshold,peptides,score,threshold,searchEngine,sequenceCoverage);
     }
 
     public Identification(ParamGroup params,
@@ -67,7 +59,7 @@ public abstract class Identification extends IdentifiableParamGroup{
                           String name,
                           DBSequence dbSequence,
                           boolean passThreshold,
-                          HashMap<PeptideEvidence,List<Peptide>> peptides,
+                          Map<PeptideEvidence,List<Peptide>> peptides,
                           double score,
                           double threshold,
                           SearchEngine searchEngine,
@@ -87,7 +79,7 @@ public abstract class Identification extends IdentifiableParamGroup{
         return dbSequence;
     }
 
-    public void setDbSequenceRef(DBSequence dbSequence) {
+    public void setDbSequence(DBSequence dbSequence) {
         this.dbSequence = dbSequence;
     }
 
@@ -99,11 +91,11 @@ public abstract class Identification extends IdentifiableParamGroup{
         this.passThreshold = passThreshold;
     }
 
-    public HashMap<PeptideEvidence,List<Peptide>> getPeptides() {
+    public Map<PeptideEvidence,List<Peptide>> getPeptides() {
         return peptides;
     }
 
-    public void setPeptides(HashMap<PeptideEvidence,List<Peptide>> peptides) {
+    public void setPeptides(Map<PeptideEvidence,List<Peptide>> peptides) {
         this.peptides = peptides;
     }
 
@@ -149,10 +141,10 @@ public abstract class Identification extends IdentifiableParamGroup{
     }
 
     public List<Peptide> getIdentifiedPeptides(){
-        List<Peptide> IdentifiedPeptides = new ArrayList<Peptide>();
+        List<Peptide> identifiedPeptides = new ArrayList<Peptide>();
         for(PeptideEvidence key : peptides.keySet()) {
-            IdentifiedPeptides.addAll(peptides.get(key));
+            identifiedPeptides.addAll(peptides.get(key));
         }
-        return IdentifiedPeptides;
+        return identifiedPeptides;
     }
 }

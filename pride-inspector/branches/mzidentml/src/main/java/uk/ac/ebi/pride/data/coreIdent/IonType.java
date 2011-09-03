@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.data.coreIdent;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * IonType defines the index of fragmentation ions being reported,
@@ -33,7 +33,7 @@ public class IonType extends CvParam{
      * An array of values for a given type of measure and for a particular ion
      * type, in parallel to the index of ions identified.
      */
-    private HashMap<IdentifiableParamGroup, List<Integer>> measureListHashMap = null;
+    private Map<IdentifiableParamGroup, List<Integer>> measureListHashMap = null;
 
 
     /**
@@ -47,7 +47,13 @@ public class IonType extends CvParam{
      * @param unitName       optional.
      * @param unitCVLookupID optional.
      */
-    public IonType(String accession, String name, String cvLookupID, String value, String unitAcc, String unitName, String unitCVLookupID) {
+    public IonType(String accession,
+                   String name,
+                   String cvLookupID,
+                   String value,
+                   String unitAcc,
+                   String unitName,
+                   String unitCVLookupID) {
         super(accession, name, cvLookupID, value, unitAcc, unitName, unitCVLookupID);
     }
 
@@ -67,11 +73,11 @@ public class IonType extends CvParam{
         this.charge = charge;
     }
 
-    public HashMap<IdentifiableParamGroup, List<Integer>> getMeasureListHashMap() {
+    public Map<IdentifiableParamGroup, List<Integer>> getMeasureListHashMap() {
         return measureListHashMap;
     }
 
-    public void setMeasureListHashMap(HashMap<IdentifiableParamGroup, List<Integer>> measureListHashMap) {
+    public void setMeasureListHashMap(Map<IdentifiableParamGroup, List<Integer>> measureListHashMap) {
         this.measureListHashMap = measureListHashMap;
     }
 }

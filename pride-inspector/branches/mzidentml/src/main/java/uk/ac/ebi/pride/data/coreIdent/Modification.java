@@ -47,12 +47,12 @@ public class Modification extends IdentifiableParamGroup{
      * In the new validation approach for pride modification objects, just one Average Mass Delta could be associated
      * to a Modification. In the MzIdentMl Modification object only one Average Mass Delta is annotated.
      */
-    private double avgMassDelta = -1;
+    private List<Double> avgMassDelta = null;
     /**
      * In the new validation approach for pride modification objects, just one MonoIsotopic Mass Delta could be associated
      * to a Modification. In the MzIdentMl Modification object only one MonoIsotopic Mass Delta is annotated.
      */
-    private double monoisotopicMassDelta = -1;
+    private List<Double> monoisotopicMassDelta = null;
     /**
      * modification database where accession is from (used for PRIDE Objects)
      */
@@ -75,8 +75,8 @@ public class Modification extends IdentifiableParamGroup{
                         String name,
                         int location,
                         List<Character> residues,
-                        double avgMassDelta,
-                        double monoisotopicMassDelta) {
+                        List<Double> avgMassDelta,
+                        List<Double> monoisotopicMassDelta) {
         super(id, name);
         this.location = location;
         this.residues = residues;
@@ -99,8 +99,8 @@ public class Modification extends IdentifiableParamGroup{
                         String name,
                         int location,
                         List<Character> residues,
-                        double avgMassDelta,
-                        double monoisotopicMassDelta) {
+                        List<Double> avgMassDelta,
+                        List<Double> monoisotopicMassDelta) {
         super(params, id, name);
         this.location = location;
         this.residues = residues;
@@ -125,8 +125,8 @@ public class Modification extends IdentifiableParamGroup{
                         String name,
                         int location,
                         List<Character> residues,
-                        double avgMassDelta,
-                        double monoisotopicMassDelta) {
+                        List<Double> avgMassDelta,
+                        List<Double> monoisotopicMassDelta) {
         super(cvParams, userParams, id, name);
         this.location = location;
         this.residues = residues;
@@ -149,8 +149,8 @@ public class Modification extends IdentifiableParamGroup{
                         String name,
                         int location,
                         List<Character> residues,
-                        double avgMassDelta,
-                        double monoisotopicMassDelta,
+                        List<Double> avgMassDelta,
+                        List<Double> monoisotopicMassDelta,
                         String modDatabase,
                         String modDatabaseVersion) {
         super(id, name);
@@ -179,8 +179,8 @@ public class Modification extends IdentifiableParamGroup{
                         String name,
                         int location,
                         List<Character> residues,
-                        double avgMassDelta,
-                        double monoisotopicMassDelta,
+                        List<Double> avgMassDelta,
+                        List<Double> monoisotopicMassDelta,
                         String modDatabase,
                         String modDatabaseVersion) {
         super(params, id, name);
@@ -211,8 +211,8 @@ public class Modification extends IdentifiableParamGroup{
                         String name,
                         int location,
                         List<Character> residues,
-                        double avgMassDelta,
-                        double monoisotopicMassDelta,
+                        List<Double> avgMassDelta,
+                        List<Double> monoisotopicMassDelta,
                         String modDatabase,
                         String modDatabaseVersion) {
         super(cvParams, userParams, id, name);
@@ -240,22 +240,6 @@ public class Modification extends IdentifiableParamGroup{
         this.residues = residues;
     }
 
-    public double getAvgMassDelta() {
-        return avgMassDelta;
-    }
-
-    public void setAvgMassDelta(double avgMassDelta) {
-        this.avgMassDelta = avgMassDelta;
-    }
-
-    public double getMonoisotopicMassDelta() {
-        return monoisotopicMassDelta;
-    }
-
-    public void setMonoisotopicMassDelta(double monoisotopicMassDelta) {
-        this.monoisotopicMassDelta = monoisotopicMassDelta;
-    }
-
     public String getModDatabase() {
         return modDatabase;
     }
@@ -270,5 +254,21 @@ public class Modification extends IdentifiableParamGroup{
 
     public void setModDatabaseVersion(String modDatabaseVersion) {
         this.modDatabaseVersion = modDatabaseVersion;
+    }
+
+    public List<Double> getAvgMassDelta() {
+        return avgMassDelta;
+    }
+
+    public void setAvgMassDelta(List<Double> avgMassDelta) {
+        this.avgMassDelta = avgMassDelta;
+    }
+
+    public List<Double> getMonoisotopicMassDelta() {
+        return monoisotopicMassDelta;
+    }
+
+    public void setMonoisotopicMassDelta(List<Double> monoisotopicMassDelta) {
+        this.monoisotopicMassDelta = monoisotopicMassDelta;
     }
 }

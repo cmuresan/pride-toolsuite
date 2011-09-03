@@ -25,9 +25,7 @@ public class Organization extends AbstractContact {
                         String name,
                         String mail,
                         Organization parentOrganization) {
-        super(id, name);
-        this.parentOrganization = parentOrganization;
-        this.mail = mail;
+        this(null,id,name,parentOrganization,mail);
     }
 
     /**
@@ -56,7 +54,7 @@ public class Organization extends AbstractContact {
     public Organization(ParamGroup params, String name, String mail){
         super(params,null,name);
         this.parentOrganization = null;
-        this.mail = null;
+        this.mail = mail;
     }
 
     /**

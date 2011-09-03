@@ -10,7 +10,6 @@ import java.util.List;
  * User: yperez
  * Date: 04/08/11
  * Time: 11:32
- * To change this template use File | Settings | File Templates.
  */
 public class IdentifiableParamGroup extends ParamGroup {
     /**

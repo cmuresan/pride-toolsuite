@@ -72,7 +72,10 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      * to put and small description of the steps in the experiment.
      */
     private ExperimentProtocol protocol = null;
-
+    /*
+     * Short Label used by Pride XML Object
+     */
+    private String shortLabel = null;
     /**
      *
      * @param id
@@ -92,6 +95,7 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
     public ExperimentMetaData(Comparable id,
                               String name,
                               String version,
+                              String shortLabel,
                               List<Sample> sampleList,
                               List<Software> softwareList,
                               List<Person> personList,
@@ -114,12 +118,14 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
         this.creationDate = creationDate;
         this.publicDate = publicDate;
         this.protocol = protocol;
+        this.shortLabel = shortLabel;
     }
 
     public ExperimentMetaData(ParamGroup params,
                               Comparable id,
                               String name,
                               String version,
+                              String shortLabel,
                               List<Sample> sampleList,
                               List<Software> softwareList,
                               List<Person> personList,
@@ -142,6 +148,7 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
         this.creationDate = creationDate;
         this.publicDate = publicDate;
         this.protocol = protocol;
+        this.shortLabel = shortLabel;
     }
 
     public Provider getProvider() {
@@ -230,5 +237,13 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
 
     public void setSourceFiles(List<SourceFile> sourceFiles) {
         this.sourceFiles = sourceFiles;
+    }
+
+    public String getShortLabel() {
+        return shortLabel;
+    }
+
+    public void setShortLabel(String shortLabel) {
+        this.shortLabel = shortLabel;
     }
 }

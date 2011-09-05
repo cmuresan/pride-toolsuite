@@ -684,7 +684,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
-     * Get peptide using its index in a protein identificaiton
+     * Get peptide using its index in a protein identification
      *
      * @param identId protein identification id
      * @param index   peptide index

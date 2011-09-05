@@ -5,6 +5,7 @@ import org.bushe.swing.event.annotation.EventSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.CentralContentPaneLockEvent;
@@ -13,7 +14,6 @@ import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ShowWelcomePaneEvent;
 import uk.ac.ebi.pride.gui.task.impl.OpenWelcomePaneTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.EDTUtils;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;

@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
 import org.bushe.swing.event.EventBus;
+import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.db.DatabaseSearchPane;
 import uk.ac.ebi.pride.gui.component.startup.WelcomePane;
@@ -44,12 +45,7 @@ public class OpenWelcomePaneTask extends TaskAdapter<Void, Void> {
                 }
             };
 
-
-            if (SwingUtilities.isEventDispatchThread()) {
-                code.run();
-            } else {
-                EventQueue.invokeAndWait(code);
-            }
+            EDTUtils.invokeAndWait(code);
         }
 
         EventBus.publish(new ShowWelcomePaneEvent(null));

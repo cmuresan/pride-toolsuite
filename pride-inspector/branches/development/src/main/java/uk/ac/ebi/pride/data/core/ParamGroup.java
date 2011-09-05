@@ -38,8 +38,8 @@ public class ParamGroup implements MassSpecObject {
      */
     public ParamGroup(ParamGroup params) {
         if (params != null) {
-            setCvParams(params.getCvParams());
-            setUserParams(params.getUserParams());
+            this.cvParams = params.getCvParams();
+            this.userParams = params.getUserParams();
         }
     }
 

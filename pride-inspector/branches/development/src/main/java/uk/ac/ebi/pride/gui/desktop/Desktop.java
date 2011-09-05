@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.gui.desktop;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.component.status.StatusBar;
 import uk.ac.ebi.pride.gui.listeners.ExitListener;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
@@ -55,7 +56,7 @@ public abstract class Desktop extends PropertyChangeHelper {
                 }
             }
         };
-        EventQueue.invokeLater(mainThread);
+        EDTUtils.invokeLater(mainThread);
     }
 
     private static <V extends DesktopContext> V buildAppContext(Class<V> appContextClass) throws Exception {
@@ -124,7 +125,7 @@ public abstract class Desktop extends PropertyChangeHelper {
                 }
             }
         };
-        EventQueue.invokeLater(exitThread);
+        EDTUtils.invokeLater(exitThread);
     }
 
     public final DesktopContext getDesktopContext() {

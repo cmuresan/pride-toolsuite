@@ -35,6 +35,17 @@ public class DBSequence extends IdentifiableParamGroup {
      */
     private String spliceIsoform = null;
 
+    /**
+     * Constructor without ParamGroup Information
+     * @param id
+     * @param name
+     * @param length
+     * @param accessionId
+     * @param searchDataBase
+     * @param sequence
+     * @param accessionVersion
+     * @param spliceIsoform
+     */
     public DBSequence(Comparable id,
                       String name,
                       int length,
@@ -43,15 +54,21 @@ public class DBSequence extends IdentifiableParamGroup {
                       String sequence,
                       String accessionVersion,
                       String spliceIsoform) {
-        super(id, name);
-        this.length = length;
-        this.accessionId = accessionId;
-        this.searchDataBase = searchDataBase;
-        this.sequence = sequence;
-        this.accessionVersion = accessionVersion;
-        this.spliceIsoform = spliceIsoform;
+        this(null,id,name,length,accessionId,searchDataBase,sequence,accessionVersion,spliceIsoform);
     }
 
+    /**
+     * Constructor with ParamGroup Information
+     * @param params
+     * @param id
+     * @param name
+     * @param length
+     * @param accessionId
+     * @param searchDataBase
+     * @param sequence
+     * @param accessionVersion
+     * @param spliceIsoform
+     */
     public DBSequence(ParamGroup params,
                       Comparable id,
                       String name,
@@ -68,6 +85,21 @@ public class DBSequence extends IdentifiableParamGroup {
         this.sequence = sequence;
         this.accessionVersion = accessionVersion;
         this.spliceIsoform = spliceIsoform;
+    }
+
+    /**
+     * Constructor for PRIDE DBSequence Objects
+     * @param accessionId
+     * @param searchDataBase
+     * @param accessionVersion
+     * @param spliceIsoform
+     */
+    public DBSequence(String accessionId,
+                      SearchDataBase searchDataBase,
+                      String accessionVersion,
+                      String spliceIsoform){
+     this(null,null,null,-1,accessionId,searchDataBase,null,accessionVersion,spliceIsoform);
+
     }
 
     public int getLength() {
@@ -116,5 +148,33 @@ public class DBSequence extends IdentifiableParamGroup {
 
     public void setSpliceIsoform(String spliceIsoform) {
         this.spliceIsoform = spliceIsoform;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DBSequence that = (DBSequence) o;
+
+        if (length != that.length) return false;
+        if (!accessionId.equals(that.accessionId)) return false;
+        if (!accessionVersion.equals(that.accessionVersion)) return false;
+        if (!searchDataBase.equals(that.searchDataBase)) return false;
+        if (!sequence.equals(that.sequence)) return false;
+        if (!spliceIsoform.equals(that.spliceIsoform)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = length;
+        result = 31 * result + accessionId.hashCode();
+        result = 31 * result + searchDataBase.hashCode();
+        result = 31 * result + sequence.hashCode();
+        result = 31 * result + accessionVersion.hashCode();
+        result = 31 * result + spliceIsoform.hashCode();
+        return result;
     }
 }

@@ -12,16 +12,12 @@ package uk.ac.ebi.pride.data.coreIdent;
  * Time: 11:32
  * To change this template use File | Settings | File Templates.
  */
-public class Protocol extends Identifiable {
+public class Protocol extends IdentifiableParamGroup {
     /**
      * The protein or Spectrum detection software used,
      * given as a reference to the SoftwareCollection section.
      */
     private Software analysisSoftware = null;
-    /**
-     * The parameters and settings for the protein detection given as CV terms.
-     */
-    private ParamGroup analysisParam = null;
     /**
      * The threshold(s) applied to determine that a result is significant.
      * If multiple terms are used it is assumed that all conditions are satisfied
@@ -37,14 +33,12 @@ public class Protocol extends Identifiable {
      * @param analysisParam
      * @param threshold
      */
-    public Protocol(Comparable id,
+    public Protocol(ParamGroup analysisParam, Comparable id,
                     String name,
                     Software analysisSoftware,
-                    ParamGroup analysisParam,
                     ParamGroup threshold) {
-        super(id, name);
+        super(analysisParam, id, name);
         this.analysisSoftware = analysisSoftware;
-        this.analysisParam = analysisParam;
         this.threshold = threshold;
     }
 
@@ -55,8 +49,8 @@ public class Protocol extends Identifiable {
      * @param analysisParam
      */
     public Protocol(Comparable id, String name, ParamGroup analysisParam) {
-        super(id, name);
-        analysisParam = analysisParam;
+        super(analysisParam, id, name);
+
     }
 
     public Software getAnalysisSoftware() {
@@ -68,11 +62,13 @@ public class Protocol extends Identifiable {
     }
 
     public ParamGroup getAnalysisParam() {
+        ParamGroup analysisParam = new ParamGroup(this.getCvParams(),this.getUserParams());
         return analysisParam;
     }
 
     public void setAnalysisParam(ParamGroup analysisParam) {
-        this.analysisParam = analysisParam;
+        this.setCvParams(analysisParam.getCvParams());
+        this.setUserParams(analysisParam.getUserParams());
     }
 
     public ParamGroup getThreshold() {

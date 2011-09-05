@@ -246,4 +246,8 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
     public void setShortLabel(String shortLabel) {
         this.shortLabel = shortLabel;
     }
+
+    public ParamGroup getAdditional(){
+        return new ParamGroup(this.getCvParams(),this.getUserParams());
+    }
 }

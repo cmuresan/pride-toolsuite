@@ -482,16 +482,24 @@ public class MzMLTransformer {
             if (oldSoftware != null) {
                 software = transformSoftware(oldInstrument.getSoftwareRef().getSoftware());
             }
-
             // convert component list
             ComponentList componentList = oldInstrument.getComponentList();
-            InstrumentComponent source = null;
-            InstrumentComponent analyzer = null;
-            InstrumentComponent detector = null;
+            List<InstrumentComponent> source = new ArrayList<InstrumentComponent>();
+            List<InstrumentComponent> analyzer = new ArrayList<InstrumentComponent>();
+            List<InstrumentComponent> detector = new ArrayList<InstrumentComponent>();
             if (componentList != null) {
-                source = transformInstrumentComponent(componentList.getSource().get(0));
-                analyzer = transformInstrumentComponent(componentList.getAnalyzer().get(0));
-                detector = transformInstrumentComponent(componentList.getDetector().get(0));
+                for(uk.ac.ebi.jmzml.model.mzml.SourceComponent oldSource: componentList.getSource()){
+                    InstrumentComponent newSource = transformInstrumentComponent(oldSource);
+                    source.add(newSource);
+                }
+                for(uk.ac.ebi.jmzml.model.mzml.AnalyzerComponent oldAnalyzer: componentList.getAnalyzer()){
+                    InstrumentComponent newAnalyzer = transformInstrumentComponent(oldAnalyzer);
+                    source.add(newAnalyzer);
+                }
+                for(uk.ac.ebi.jmzml.model.mzml.DetectorComponent oldDetector: componentList.getDetector()){
+                    InstrumentComponent newDetector = transformInstrumentComponent(oldDetector);
+                    source.add(newDetector);
+                }
             }
             ParamGroup paramGroup = transformParamGroup(oldInstrument);
             instrumentConfiguration = new InstrumentConfiguration(id, scanSetting, software, source, analyzer, detector, paramGroup);
@@ -509,7 +517,6 @@ public class MzMLTransformer {
 
         return component;
     }
-
 
     public static List<DataProcessing> transformDataProcessingList(uk.ac.ebi.jmzml.model.mzml.DataProcessingList oldDataProcessingList) {
         List<DataProcessing> dataProcessings = null;

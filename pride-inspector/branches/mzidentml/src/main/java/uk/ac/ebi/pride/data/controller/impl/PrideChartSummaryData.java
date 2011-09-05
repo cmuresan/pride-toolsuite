@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.chart.graphics.implementation.charts.MZHistogramChartSpec
 import uk.ac.ebi.pride.chart.model.implementation.*;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.coreIdent.*;
 import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 
@@ -196,17 +196,17 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
                 Identification id = cdac.getIdentificationById(idenID, false);
 
                 int identification_id = Integer.valueOf(id.getId().toString());
-                for (Peptide pep : id.getPeptides()) {
+                for (Peptide pep : id.getIdentifiedPeptides()) {
                     double ptmMass = 0;
-                    for (Modification modification : pep.getModifications()) {
+                    for (Modification modification : pep.getPeptideSequence().getModificationList()) {
                         try {
-                            ptmMass += (modification.getMonoMassDeltas().size() > 0) ?
-                                    modification.getMonoMassDeltas().get(0) :
-                                    modification.getAvgMassDeltas().get(0);
+                            ptmMass += (modification.getMonoisotopicMassDelta().size() > 0) ?
+                                    modification.getMonoisotopicMassDelta().get(0) :
+                                    modification.getAvgMassDelta().get(0);
                         } catch (IndexOutOfBoundsException e) {/*Nothing here*/}
                     }
 
-                    String seq = pep.getSequence();
+                    String seq = pep.getPeptideSequence().getSequence();
                     Spectrum spectrum = pep.getSpectrum();
                     ProteinPeptide pp;
                     if (spectrum != null) {

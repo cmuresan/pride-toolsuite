@@ -6,7 +6,9 @@ import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * DataAccessUtilities provides methods for getting information out from the core objects.
@@ -363,6 +365,20 @@ public class DataAccessUtilities {
     }
 
     /**
+     * Create a List of Cv Params
+     * @param value
+     * @param cvLabel
+     * @param accession
+     * @return
+     */
+    public static List<CvParam> getCvParam(String name, String cvLabel, String accession, String value){
+       List<CvParam> cvParams  = new ArrayList<CvParam>();
+       CvParam cvParam = new CvParam(accession,name,cvLabel,value,null,null,null);
+       cvParams.add(cvParam);
+       return cvParams;
+    }
+
+    /**
      * Get a list parameters using a given name.
      *
      * @param paramGroup parameter group
@@ -394,5 +410,23 @@ public class DataAccessUtilities {
         }
 
         return params;
+    }
+
+    public static Map<PeptideEvidence, List<Peptide>> getPeptideEvidence(List<Peptide> peptides) {
+        HashMap<PeptideEvidence,List<Peptide>> peptideEvidences = new HashMap<PeptideEvidence, List<Peptide>>();
+        for(Peptide peptide: peptides){
+            for (PeptideEvidence peptideEvidence: peptide.getPeptideEvidenceList()){
+                if(peptideEvidences.containsKey(peptideEvidence)){
+                    List<Peptide> peptidesIn = peptideEvidences.get(peptideEvidence);
+                    peptidesIn.add(peptide);
+                    peptideEvidences.put(peptideEvidence,peptidesIn);
+                }else{
+                    List<Peptide> peptidesIn = new ArrayList<Peptide>();
+                    peptidesIn.add(peptide);
+                    peptideEvidences.put(peptideEvidence,peptidesIn);
+                }
+            }
+        }
+        return peptideEvidences;
     }
 }

@@ -129,4 +129,24 @@ public class ParamGroup implements MassSpecObject {
     public void removeUserParams(List<UserParam> ups) {
         userParams.removeAll(ups);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ParamGroup that = (ParamGroup) o;
+
+        if (!cvParams.equals(that.cvParams)) return false;
+        if (!userParams.equals(that.userParams)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = cvParams.hashCode();
+        result = 31 * result + userParams.hashCode();
+        return result;
+    }
 }

@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.coreIdent;
 
-import java.util.List;
-
 /**
  * PeptideEvidence links a specific Peptide Element to a specific position in a DBSequence.
  * There must only be one PeptideEvidence item per Peptide-to-DBSequence-position.
@@ -47,7 +45,7 @@ public class PeptideEvidence extends IdentifiableParamGroup {
      * The details specifying this translation table are captured as cvParams, e.g. translation table,
      * translation start codons and translation table description (see specification document and mapping file)
      */
-    private IdentifiableParamGroup translationTableRef = null;
+    private IdentifiableParamGroup translationTable = null;
     /**
      * The translation frame of this sequence if this is PeptideEvidence derived from nucleic acid sequence.
      */
@@ -59,98 +57,41 @@ public class PeptideEvidence extends IdentifiableParamGroup {
     /**
      * A reference to the identified (poly)peptide sequence in the Peptide element.
      */
-    private PeptideSequence peptideRef = null;
+    private PeptideSequence peptideSequence = null;
      /**
      * A reference to the protein sequence in which the specified peptide has been linked.
      */
-    private DBSequence dbSequenceRef = null;
+    private DBSequence dbSequence = null;
 
-    public PeptideEvidence(String id, String name, int startPosition, int endPosition, boolean decoy, PeptideSequence peptideRef, DBSequence dbSequenceRef) {
+    public PeptideEvidence(String id,
+                           String name,
+                           int startPosition,
+                           int endPosition,
+                           boolean decoy,
+                           PeptideSequence peptideSequence,
+                           DBSequence dbSequence) {
         super(id, name);
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         this.decoy = decoy;
-        this.peptideRef = peptideRef;
-        this.dbSequenceRef = dbSequenceRef;
+        this.peptideSequence = peptideSequence;
+        this.dbSequence = dbSequence;
     }
 
-    public PeptideEvidence(ParamGroup params, String id, String name, int startPosition, int endPosition, boolean decoy, PeptideSequence peptideRef, DBSequence dbSequenceRef) {
+    public PeptideEvidence(ParamGroup params,
+                           String id,
+                           String name,
+                           int startPosition,
+                           int endPosition,
+                           boolean decoy,
+                           PeptideSequence peptideSequence,
+                           DBSequence dbSequence) {
         super(params, id, name);
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         this.decoy = decoy;
-        this.peptideRef = peptideRef;
-        this.dbSequenceRef = dbSequenceRef;
-    }
-
-    public PeptideEvidence(List<CvParam> cvParams, List<UserParam> userParams, String id, String name, int startPosition, int endPosition, boolean decoy, PeptideSequence peptideRef, DBSequence dbSequenceRef) {
-        super(cvParams, userParams, id, name);
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
-        this.decoy = decoy;
-        this.peptideRef = peptideRef;
-        this.dbSequenceRef = dbSequenceRef;
-    }
-
-    public PeptideEvidence(List<CvParam> cvParams, String id, String name, int startPosition, int endPosition, boolean decoy, PeptideSequence peptideRef, DBSequence dbSequenceRef) {
-        super(cvParams, id, name);
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
-        this.decoy = decoy;
-        this.peptideRef = peptideRef;
-        this.dbSequenceRef = dbSequenceRef;
-    }
-
-    public PeptideEvidence(String id, String name, int startPosition, int endPosition, char preResidue, char postResidue, IdentifiableParamGroup translationTableRef, int frame, boolean decoy, PeptideSequence peptideRef, DBSequence dbSequenceRef) {
-        super(id, name);
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
-        this.preResidue = preResidue;
-        this.postResidue = postResidue;
-        this.translationTableRef = translationTableRef;
-        this.frame = frame;
-        this.decoy = decoy;
-        this.peptideRef = peptideRef;
-        this.dbSequenceRef = dbSequenceRef;
-    }
-
-    public PeptideEvidence(ParamGroup params, String id, String name, int startPosition, int endPosition, char preResidue, char postResidue, IdentifiableParamGroup translationTableRef, int frame, boolean decoy, PeptideSequence peptideRef, DBSequence dbSequenceRef) {
-        super(params, id, name);
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
-        this.preResidue = preResidue;
-        this.postResidue = postResidue;
-        this.translationTableRef = translationTableRef;
-        this.frame = frame;
-        this.decoy = decoy;
-        this.peptideRef = peptideRef;
-        this.dbSequenceRef = dbSequenceRef;
-    }
-
-    public PeptideEvidence(List<CvParam> cvParams, List<UserParam> userParams, String id, String name, int startPosition, int endPosition, char preResidue, char postResidue, IdentifiableParamGroup translationTableRef, int frame, boolean decoy, PeptideSequence peptideRef, DBSequence dbSequenceRef) {
-        super(cvParams, userParams, id, name);
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
-        this.preResidue = preResidue;
-        this.postResidue = postResidue;
-        this.translationTableRef = translationTableRef;
-        this.frame = frame;
-        this.decoy = decoy;
-        this.peptideRef = peptideRef;
-        this.dbSequenceRef = dbSequenceRef;
-    }
-
-    public PeptideEvidence(List<CvParam> cvParams, String id, String name, int startPosition, int endPosition, char preResidue, char postResidue, IdentifiableParamGroup translationTableRef, int frame, boolean decoy, PeptideSequence peptideRef, DBSequence dbSequenceRef) {
-        super(cvParams, id, name);
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
-        this.preResidue = preResidue;
-        this.postResidue = postResidue;
-        this.translationTableRef = translationTableRef;
-        this.frame = frame;
-        this.decoy = decoy;
-        this.peptideRef = peptideRef;
-        this.dbSequenceRef = dbSequenceRef;
+        this.peptideSequence = peptideSequence;
+        this.dbSequence = dbSequence;
     }
 
     public int getStartPosition() {
@@ -201,27 +142,61 @@ public class PeptideEvidence extends IdentifiableParamGroup {
         this.decoy = decoy;
     }
 
-    public PeptideSequence getPeptideRef() {
-        return peptideRef;
+    public PeptideSequence getPeptideSequence() {
+        return peptideSequence;
     }
 
-    public void setPeptideRef(PeptideSequence peptideRef) {
-        this.peptideRef = peptideRef;
+    public void setPeptideSequence(PeptideSequence peptideSequence) {
+        this.peptideSequence = peptideSequence;
     }
 
-    public DBSequence getDbSequenceRef() {
-        return dbSequenceRef;
+    public DBSequence getDbSequence() {
+        return dbSequence;
     }
 
-    public void setDbSequenceRef(DBSequence dbSequenceRef) {
-        this.dbSequenceRef = dbSequenceRef;
+    public void setDbSequence(DBSequence dbSequence) {
+        this.dbSequence = dbSequence;
     }
 
-    public IdentifiableParamGroup getTranslationTableRef() {
-        return translationTableRef;
+    public IdentifiableParamGroup getTranslationTable() {
+        return translationTable;
     }
 
-    public void setTranslationTableRef(IdentifiableParamGroup translationTableRef) {
-        this.translationTableRef = translationTableRef;
+    public void setTranslationTable(IdentifiableParamGroup translationTable) {
+        this.translationTable = translationTable;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PeptideEvidence that = (PeptideEvidence) o;
+
+        if (decoy != that.decoy) return false;
+        if (endPosition != that.endPosition) return false;
+        if (frame != that.frame) return false;
+        if (postResidue != that.postResidue) return false;
+        if (preResidue != that.preResidue) return false;
+        if (startPosition != that.startPosition) return false;
+        if (!dbSequence.equals(that.dbSequence)) return false;
+        if (!peptideSequence.equals(that.peptideSequence)) return false;
+        if (!translationTable.equals(that.translationTable)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = startPosition;
+        result = 31 * result + endPosition;
+        result = 31 * result + (int) preResidue;
+        result = 31 * result + (int) postResidue;
+        result = 31 * result + translationTable.hashCode();
+        result = 31 * result + frame;
+        result = 31 * result + (decoy ? 1 : 0);
+        result = 31 * result + peptideSequence.hashCode();
+        result = 31 * result + dbSequence.hashCode();
+        return result;
     }
 }

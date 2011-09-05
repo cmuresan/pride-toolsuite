@@ -8,19 +8,17 @@ import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.cache.impl.PrideXmlCacheBuilder;
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.coreIdent.*;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
-import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
-import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.jaxb.xml.PrideXmlReader;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,8 +29,10 @@ import java.util.regex.Pattern;
  * Date: 02-Feb-2010
  * Time: 12:31:30
  */
-public class PrideXmlControllerImpl extends CachedDataAccessController {
+public class  PrideXmlControllerImpl extends CachedDataAccessController {
+
     private static final Logger logger = LoggerFactory.getLogger(PrideXmlControllerImpl.class);
+
     private static final Pattern prideXmlHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<ExperimentCollection [^>]*>", Pattern.MULTILINE);
 
     private PrideXmlReader reader = null;
@@ -109,34 +109,6 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         return cvLookups;
     }
 
-
-    /**
-     * Get the FileDescription object
-     *
-     * @return FileDescription  FileDescription object.
-     * @throws DataAccessException
-     */
-    @Override
-    public FileDescription getFileDescription() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
-
-        if (metaData == null) {
-            FileDescription fileDesc;
-
-            try {
-                ParamGroup fileContent = PrideXmlTransformer.transformFileContent();
-                List<SourceFile> sourceFiles = getSourceFiles();
-                List<ParamGroup> contacts = getContacts();
-                fileDesc = new FileDescription(fileContent, sourceFiles, contacts);
-                return fileDesc;
-            } catch (Exception ex) {
-                throw new DataAccessException("Failed to retrieve file description", ex);
-            }
-        } else {
-            return metaData.getFileDescription();
-        }
-    }
-
     /**
      * Get a list of source files.
      *
@@ -144,7 +116,8 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *
      */
-    private List<SourceFile> getSourceFiles() throws DataAccessException {
+    @Override
+    public List<SourceFile> getSourceFiles() throws DataAccessException {
         List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
 
         try {
@@ -159,23 +132,26 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         return sourceFiles;
     }
 
-    /**
-     * Get a list of contact details
-     *
-     * @return List<ParamGroup> a list of parameter groups.
-     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
-     *
-     */
-    private List<ParamGroup> getContacts() throws DataAccessException {
-        List<ParamGroup> contacts = new ArrayList<ParamGroup>();
-
+    @Override
+    public List<Organization> getOrganizationContacts() throws DataAccessException {
+        List<Organization> organizationList = new ArrayList<Organization>();
         try {
-            contacts.addAll(PrideXmlTransformer.transformContacts(reader.getAdmin()));
+            organizationList.addAll(PrideXmlTransformer.transformContactToOrganization(reader.getAdmin()));
         } catch (Exception ex) {
             throw new DataAccessException("Failed to retrieve contacts", ex);
         }
+        return organizationList;
+    }
 
-        return contacts;
+    @Override
+    public List<Person> getPersonContacts() throws DataAccessException {
+        List<Person> personList = new ArrayList<Person>();
+        try {
+            personList.addAll(PrideXmlTransformer.transformContactToPerson(reader.getAdmin()));
+        } catch (Exception ex) {
+            throw new DataAccessException("Failed to retrieve contacts", ex);
+        }
+        return personList;
     }
 
     /**
@@ -186,7 +162,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      */
     @Override
     public List<Sample> getSamples() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+        ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
             List<Sample> samples = new ArrayList<Sample>();
@@ -200,7 +176,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException("Failed to retrieve samples", ex);
             }
         } else {
-            return metaData.getSamples();
+            return metaData.getSampleList();
         }
     }
 
@@ -211,8 +187,8 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @throws DataAccessException
      */
     @Override
-    public List<Software> getSoftware() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+    public List<Software> getSoftwareList() throws DataAccessException {
+        ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
             List<Software> softwares = new ArrayList<Software>();
@@ -226,7 +202,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException("Failed to retrieve software", ex);
             }
         } else {
-            return metaData.getSoftwares();
+            return metaData.getSoftwareList();
         }
     }
 
@@ -238,7 +214,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      */
     @Override
     public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+        MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
             List<InstrumentConfiguration> configs = new ArrayList<InstrumentConfiguration>();
@@ -261,7 +237,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      */
     @Override
     public List<DataProcessing> getDataProcessings() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+        MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
             List<DataProcessing> dataProcessings = new ArrayList<DataProcessing>();
@@ -275,7 +251,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException("Failed to retrieve data processings", ex);
             }
         } else {
-            return metaData.getDataProcessings();
+            return metaData.getDataProcessingList();
         }
     }
 
@@ -305,14 +281,12 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *
      */
-    private Protocol getProtocol() throws DataAccessException {
-
+    private ExperimentProtocol getProtocol() throws DataAccessException {
         try {
             return PrideXmlTransformer.transformProtocol(reader.getProtocol());
         } catch (Exception ex) {
             throw new DataAccessException("Failed to retrieve protocol", ex);
         }
-
     }
 
     /**
@@ -324,7 +298,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      */
     @Override
     public ParamGroup getAdditional() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+        ExperimentMetaData metaData = super.getExperimentMetaData();
         if (metaData == null) {
             try {
                 return PrideXmlTransformer.transformAdditional(reader.getAdditionalParams());
@@ -343,27 +317,39 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @throws DataAccessException data access exception
      */
     @Override
-    public MetaData getMetaData() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+    public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
+        ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
             try {
+                // Get Accession for Pride XML Object
                 String accession = reader.getExpAccession();
+                // Get the Version of the Pride File.
                 String version = reader.getVersion();
-                FileDescription fileDesc = getFileDescription();
+                //Get Source File List
+                List<SourceFile> sources = getSourceFiles();
+                // Get Samples objects for PRide Object
                 List<Sample> samples = getSamples();
-                List<Software> software = getSoftware();
+                // Get all the softwares related with the object
+                List<Software> softwares = getSoftwareList();
+                // Ge instrument Configuration
                 List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
-                List<DataProcessing> dataProcessings = getDataProcessings();
+                // Get Contact Persons
+                List<Person> persons = getPersonContacts();
+                // Get the Contact Organization
+                List<Organization> organizations = getOrganizationContacts();
+                // Get Additional Information Related with the Project
                 ParamGroup additional = getAdditional();
+                // Get the Experiment Title
                 String title = reader.getExpTitle();
+                // Get The Experiment Short Label
                 String shortLabel = reader.getExpShortLabel();
-                Protocol protocol = getProtocol();
+                //Get Experiment Protocol
+                ExperimentProtocol protocol = getProtocol();
+                // Get References From the Experiment
                 List<Reference> references = getReferences();
-                metaData = new Experiment(null, accession, version, fileDesc,
-                        samples, software, null, instrumentConfigurations,
-                        dataProcessings, additional, title, shortLabel,
-                        protocol, references, null, null);
+
+                metaData = new ExperimentMetaData(additional,accession,title,version,shortLabel,samples,softwares,persons,sources,null,organizations,references,null,null,protocol);
                 // store it in the cache
                 cache.store(CacheCategory.EXPERIMENT_METADATA, metaData);
             } catch (Exception ex) {
@@ -371,6 +357,36 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
             }
         }
 
+        return metaData;
+    }
+
+    @Override
+    public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
+        IdentificationMetaData metaData = super.getIdentificationMetaData();
+        if(metaData == null){
+            List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = null;
+            //Todo: Try to convert the CVTerms in Pride to SpectrumIdentificationProtocol
+            Protocol proteinDetectionProtocol = null;
+            //Todo: Try to convert the CVTerms in Pride to Protocol
+            List<SearchDataBase> searchDataBaseList = null;
+            List<Modification>  modificationList = null;
+            //Todo: We need to search in the peptides Identifications all of the Search Databases Used.
+            //Todo: We need to search all of the possible modifications presented in the experiment.
+
+            metaData = new IdentificationMetaData(null,null,spectrumIdentificationProtocolList,proteinDetectionProtocol,searchDataBaseList,modificationList);
+        }
+        return metaData;
+    }
+
+    @Override
+    public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
+        MzGraphMetaData metaData = super.getMzGraphMetaData();
+        if(metaData == null){
+            List<ScanSetting> scanSettings = null;
+            List<DataProcessing> dataProcessings = getDataProcessings();
+            List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
+            metaData = new MzGraphMetaData(null,null,scanSettings,instrumentConfigurations,dataProcessings);
+        }
         return metaData;
     }
 
@@ -432,7 +448,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                     // store identification into cache
                     cache.store(CacheCategory.IDENTIFICATION, id, ident);
                     // store precursor charge and m/z
-                    for (Peptide peptide : ident.getPeptides()) {
+                    for (Peptide peptide : ident.getIdentifiedPeptides()) {
                         Spectrum spectrum = peptide.getSpectrum();
                         if (spectrum != null) {
                             cache.store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));

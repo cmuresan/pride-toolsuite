@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.data.coreIdent;
 
-   import java.util.HashMap;
-   import java.util.List;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Two dimensional identification.
@@ -16,12 +16,30 @@ public class TwoDimIdentification extends Identification {
      */
     private Gel gel = null;
 
-    public TwoDimIdentification(Comparable id, String name, DBSequence dbSequence, boolean passThreshold, HashMap<PeptideEvidence, List<Peptide>> peptides, double score, double threshold, SearchEngine searchEngine, double sequenceCoverage, Gel gel) {
-        super(id, name, dbSequence, passThreshold, peptides, score, threshold, searchEngine, sequenceCoverage);
-        this.gel = gel;
+    public TwoDimIdentification(Comparable id,
+                                String name,
+                                DBSequence dbSequence,
+                                boolean passThreshold,
+                                Map<PeptideEvidence, List<Peptide>> peptides,
+                                double score,
+                                double threshold,
+                                SearchEngine searchEngine,
+                                double sequenceCoverage,
+                                Gel gel) {
+        this(null,id,name,dbSequence,passThreshold,peptides,score,threshold,searchEngine,sequenceCoverage,gel);
     }
 
-    public TwoDimIdentification(ParamGroup params, Comparable id, String name, DBSequence dbSequence, boolean passThreshold, HashMap<PeptideEvidence, List<Peptide>> peptides, double score, double threshold, SearchEngine searchEngine, double sequenceCoverage, Gel gel) {
+    public TwoDimIdentification(ParamGroup params,
+                                Comparable id,
+                                String name,
+                                DBSequence dbSequence,
+                                boolean passThreshold,
+                                Map<PeptideEvidence, List<Peptide>> peptides,
+                                double score,
+                                double threshold,
+                                SearchEngine searchEngine,
+                                double sequenceCoverage,
+                                Gel gel) {
         super(params, id, name, dbSequence, passThreshold, peptides, score, threshold, searchEngine, sequenceCoverage);
         this.gel = gel;
     }

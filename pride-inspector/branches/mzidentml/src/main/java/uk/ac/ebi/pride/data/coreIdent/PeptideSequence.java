@@ -169,4 +169,28 @@ public class PeptideSequence extends IdentifiableParamGroup {
     public void setSubstitutionModificationList(List<SubstitutionModification> substitutionModificationList) {
         this.substitutionModificationList = substitutionModificationList;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PeptideSequence that = (PeptideSequence) o;
+
+        if (!modificationList.equals(that.modificationList)) return false;
+        if (!sequence.equals(that.sequence)) return false;
+        if (!substitutionModificationList.equals(that.substitutionModificationList)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + sequence.hashCode();
+        result = 31 * result + modificationList.hashCode();
+        result = 31 * result + substitutionModificationList.hashCode();
+        return result;
+    }
 }

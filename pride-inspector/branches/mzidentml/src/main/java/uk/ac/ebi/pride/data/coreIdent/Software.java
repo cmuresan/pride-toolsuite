@@ -111,7 +111,7 @@ public class Software extends IdentifiableParamGroup {
         this.customization = customization;
     }
 
-    public Software(ParamGroup params, Comparable id, String version){
+    public Software(ParamGroup params, Comparable id, String name, String version){
         super(params,id,null);
         this.version = version;
         this.uri = null;

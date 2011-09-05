@@ -346,8 +346,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
             List<Software> softwares = getSoftwareList();
             // ScanSettings list
             ParamGroup fileContent = getFileContent();
-            metaData = new ExperimentMetaData(fileContent,id,accession,version,samples,softwares,personList,sourceFileList,null,organizationList,null,null,null,null);
-           //metaData = new ExperimentMetaData(id, accession, version, fileDesc, samples, softwares, scanSettings, instrumentConfigurations, dataProcessings, params);
+            metaData = new ExperimentMetaData(fileContent,id,accession,version,null,samples,softwares,personList,sourceFileList,null,organizationList,null,null,null,null);
         }
         return metaData;
     }

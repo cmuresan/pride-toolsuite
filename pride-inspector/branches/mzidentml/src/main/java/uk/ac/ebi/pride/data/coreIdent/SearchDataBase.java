@@ -80,6 +80,15 @@ public class SearchDataBase extends ExternalData{
         this.description = description;
     }
 
+    /**
+     * Constructor for Pride SearchDatabase Object
+     * @param name
+     * @param databaseVersion
+     */
+    public SearchDataBase(String name, String databaseVersion){
+        this(null,name,null,null,null,databaseVersion,null,-1,-1,null,null);
+    }
+
     public String getVersion() {
         return version;
     }
@@ -126,5 +135,33 @@ public class SearchDataBase extends ExternalData{
 
     public void setDescription(List<CvParam> description) {
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SearchDataBase that = (SearchDataBase) o;
+
+        if (numDatabaseResidue != that.numDatabaseResidue) return false;
+        if (numDatabaseSequence != that.numDatabaseSequence) return false;
+        if (!description.equals(that.description)) return false;
+        if (!nameDatabase.equals(that.nameDatabase)) return false;
+        if (!releaseDate.equals(that.releaseDate)) return false;
+        if (!version.equals(that.version)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = version.hashCode();
+        result = 31 * result + releaseDate.hashCode();
+        result = 31 * result + numDatabaseSequence;
+        result = 31 * result + (int) (numDatabaseResidue ^ (numDatabaseResidue >>> 32));
+        result = 31 * result + nameDatabase.hashCode();
+        result = 31 * result + description.hashCode();
+        return result;
     }
 }

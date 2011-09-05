@@ -82,7 +82,7 @@ public class SpectrumIdentificationProtocol extends Protocol {
                                           List<CvParam> parentTolerance,
                                           List<Filter> filterList,
                                           DataBaseTranslation dataBaseTranslation) {
-        super(id, name, analysisSoftware, analysisParam, threshold);
+        super(analysisParam,id, name, analysisSoftware, threshold);
         this.searchType = searchType;
         this.searchModificationList = searchModificationList;
         this.enzymeIndependent = enzymeIndependent;

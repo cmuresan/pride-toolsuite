@@ -12,7 +12,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.cache.impl.PrideDBCacheBuilder;
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.coreIdent.*;
 import uk.ac.ebi.pride.data.io.db.DBUtilities;
 import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
@@ -20,6 +20,7 @@ import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
 import uk.ac.ebi.pride.gui.component.chart.PrideChartManager;
 import uk.ac.ebi.pride.gui.utils.Constants;
+import uk.ac.ebi.pride.model.interfaces.mzdata.Param;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.io.UnsupportedEncodingException;
@@ -190,7 +191,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return userParams;
     }
 
-
     private List<SourceFile> getSourceFiles(Connection connection) {
         List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
 
@@ -203,7 +203,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             rs = st.executeQuery();
             while (rs.next()) {
                 //there should be a single source file per spectrum
-                SourceFile sourceFile = new SourceFile("", rs.getString("name_of_file"), rs.getString("path_to_file"), null);
+                SourceFile sourceFile = new SourceFile(null, rs.getString("name_of_file"), rs.getString("path_to_file"), null);
                 sourceFiles.add(sourceFile);
             }
         } catch (SQLException e) {
@@ -282,8 +282,22 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
+    public List<Person> getPersonContacts() throws DataAccessException {
+        ExperimentMetaData metadata = super.getExperimentMetaData();
+        if(metadata == null){
+
+        }
+
+    }
+
+    @Override
+    public List<Organization> getOrganizationContacts() throws DataAccessException {
+        return super.getOrganizationContacts();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    @Override
     public List<Sample> getSamples() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+        ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
             List<Sample> samples = new ArrayList<Sample>();
@@ -306,7 +320,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     String sample_name = rs.getString("sample_name");
                     userParam = getUserParams(connection, "mzdata_sample_param", mz_data_id);
                     cvParam = getCvParams(connection, "mzdata_sample_param", mz_data_id);
-                    samples.add(new Sample(SAMPLE_ID, sample_name, new ParamGroup(cvParam, userParam)));
+                    samples.add(new Sample(new ParamGroup(cvParam, userParam),SAMPLE_ID, sample_name));
                 }
             } catch (SQLException e) {
                 logger.error("Failed to query samples", e);
@@ -315,13 +329,13 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             }
             return samples;
         } else {
-            return metaData.getSamples();
+            return metaData.getSampleList();
         }
     }
 
     @Override
-    public List<Software> getSoftware() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+    public List<Software> getSoftwareList() throws DataAccessException {
+        ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
             List<Software> softwares = new ArrayList<Software>();
@@ -345,7 +359,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     if (completionTime != null) {
                         userParams.add(new UserParam(COMPLETION_TIME, null, completionTime, null, null, null));
                     }
-                    softwares.add(new Software(rs.getString("software_name"), rs.getString("software_version"), new ParamGroup(cvParams, userParams)));
+                    softwares.add(new Software(new ParamGroup(cvParams, userParams),null,rs.getString("software_name"), rs.getString("software_version")));
                 }
 
             } catch (SQLException e) {
@@ -355,7 +369,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             }
             return softwares;
         } else {
-            return metaData.getSoftwares();
+            return metaData.getSoftwareList();
         }
     }
 
@@ -391,14 +405,14 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     @Override
     public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+        MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
             List<InstrumentConfiguration> instrumentConfigurations = new ArrayList<InstrumentConfiguration>();
             //get software
             Software software = null;
-            if (getSoftware().size() > 0) {
-                software = getSoftware().get(0);
+            if (getSoftwareList().size() > 0) {
+                software = getSoftwareList().get(0);
             }
 
             Connection connection = null;
@@ -422,18 +436,23 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     //create source
                     //create source object
                     int sourceOrder = 1;
-                    InstrumentComponent source = new InstrumentComponent(sourceOrder, new ParamGroup(getCvParams(connection, "mzdata_instrument_source_param", mz_data_id), getUserParams(connection, "mzdata_instrument_source_param", mz_data_id)));
+                    InstrumentComponent sourceInstrument = new InstrumentComponent(sourceOrder, new ParamGroup(getCvParams(connection, "mzdata_instrument_source_param", mz_data_id), getUserParams(connection, "mzdata_instrument_source_param", mz_data_id)));
+                    List<InstrumentComponent> sources  = new ArrayList<InstrumentComponent>();
+                    sources.add(sourceInstrument);
                     //create detector
                     int detectorOrder = getAnalyzerList(connection, mz_data_id).size() + 2;
-                    InstrumentComponent detector = new InstrumentComponent(detectorOrder, new ParamGroup(getCvParams(connection, "mzdata_instrument_detector_param", mz_data_id), getUserParams(connection, "mzdata_instrument_detector_param", mz_data_id)));
+                    InstrumentComponent detectorInstrument = new InstrumentComponent(detectorOrder, new ParamGroup(getCvParams(connection, "mzdata_instrument_detector_param", mz_data_id), getUserParams(connection, "mzdata_instrument_detector_param", mz_data_id)));
                     //create analyzer
-                    List<ParamGroup> analyzers = getAnalyzerList(connection, mz_data_id);
+                    List<InstrumentComponent> detectors = new ArrayList<InstrumentComponent>();
+                    detectors.add(detectorInstrument);
+                    List<ParamGroup> paramGroupAnalyzers = getAnalyzerList(connection, mz_data_id);
+                    List<InstrumentComponent> analyzers = new ArrayList<InstrumentComponent>();
                     int orderCnt = 2;
                     for (ParamGroup analyzer : analyzers) {
                         InstrumentComponent analyzerInstrument = new InstrumentComponent(orderCnt, analyzer);
-                        instrumentConfigurations.add(new InstrumentConfiguration(rs.getString("instrument_name"), null, software, source, analyzerInstrument, detector, params));
-                        orderCnt++;
+                         analyzers.add(analyzerInstrument);
                     }
+                    instrumentConfigurations.add(new InstrumentConfiguration(rs.getString("instrument_name"), null, software, sources, analyzers, detectors,params));
                 }
             } catch (SQLException e) {
                 logger.error("Failed to query instrument configuration", e);
@@ -448,7 +467,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     @Override
     public List<DataProcessing> getDataProcessings() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+        MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
             List<CvParam> cvParams;
@@ -487,7 +506,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             }
             return dataProcessings;
         } else {
-            return metaData.getDataProcessings();
+            return metaData.getDataProcessingList();
         }
     }
 
@@ -516,7 +535,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return protocol_steps;
     }
 
-    private Protocol getProtocol(Connection connection) throws DataAccessException {
+    private ExperimentProtocol getProtocol(Connection connection) throws DataAccessException {
 
         List<Integer> protocol_steps;
         List<UserParam> userParams;
@@ -549,7 +568,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             paramGroup.add(new ParamGroup(cvParams, userParams));
         }
 
-        return new Protocol(PROTOCOL_ID, protocol_name, paramGroup, null);
+        return new ExperimentProtocol(null,PROTOCOL_ID, protocol_name, paramGroup);
     }
 
     private List<Reference> getReferences(Connection connection) throws DataAccessException {
@@ -569,7 +588,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             while (rs.next()) {
                 userParams = getUserParams(connection, "pride_reference_param", rs.getInt("pr.reference_id"));
                 cvParams = getCvParams(connection, "pride_reference_param", rs.getInt("pr.reference_id"));
-                references.add(new Reference(rs.getString("reference_line"), new ParamGroup(cvParams, userParams)));
+                references.add(new Reference( new ParamGroup(cvParams, userParams),rs.getString("reference_line")));
             }
 
         } catch (SQLException e) {
@@ -583,7 +602,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     @Override
     public ParamGroup getAdditional() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+        ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
             ParamGroup additional = null;
@@ -612,13 +631,13 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             }
             return additional;
         } else {
-            return metaData;
+            return metaData.getAdditional();
         }
     }
 
     @Override
-    public MetaData getMetaData() throws DataAccessException {
-        MetaData metaData = super.getMetaData();
+    public ExperimentMetaData getMetaData() throws DataAccessException {
+        ExperimentMetaData metaData = super.getExperimentMetaData();
         if (metaData == null) {
             String accession = "";
             String version = "2.1";
@@ -641,13 +660,14 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     shortLabel = rs.getString("pe.short_label");
                 }
 
-                FileDescription fileDesc = getFileDescription();
                 List<Sample> samples = getSamples();
-                List<Software> software = getSoftware();
-                List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
-                List<DataProcessing> dataProcessings = getDataProcessings();
+                List<Software> software = getSoftwareList();
+                //List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
+                //List<DataProcessing> dataProcessings = getDataProcessings();
                 ParamGroup additional = getAdditional();
-                Protocol protocol = getProtocol(connection);
+                ExperimentProtocol protocol = getProtocol(connection);
+                List<SourceFile> sourceFiles = getSourceFiles(connection);
+
                 List<Reference> references = getReferences(connection);
                 metaData = new Experiment(null, accession, version, fileDesc,
                         samples, software, null, instrumentConfigurations,

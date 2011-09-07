@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.gui.utils;
 
-import uk.ac.ebi.pride.gui.EDTUtils;
-
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
@@ -80,20 +78,23 @@ public class PropertyChangeHelper implements PropertyChangeHandler {
         supporter.firePropertyChange(propName, oldValue, newValue);
     }
 
-    private static class ImprovedPropertyChangerSupport extends PropertyChangeSupport {
+    private class ImprovedPropertyChangerSupport extends PropertyChangeSupport {
         public ImprovedPropertyChangerSupport(Object o) {
             super(o);
         }
 
         @Override
         public void firePropertyChange(final PropertyChangeEvent event) {
-
-            Runnable eventDispatcher = new Runnable() {
-                public void run() {
-                    firePropertyChange(event);
-                }
-            };
-            EDTUtils.invokeLater(eventDispatcher);
+            if (SwingUtilities.isEventDispatchThread()) {
+                super.firePropertyChange(event);
+            } else {
+                Runnable eventDispatcher = new Runnable() {
+                    public void run() {
+                        firePropertyChange(event);
+                    }
+                };
+                EventQueue.invokeLater(eventDispatcher);
+            }
         }
     }
 }

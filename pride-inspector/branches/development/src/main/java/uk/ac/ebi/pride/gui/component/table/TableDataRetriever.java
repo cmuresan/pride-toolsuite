@@ -106,10 +106,10 @@ public class TableDataRetriever {
                 }
             }
             Double deltaMass = MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
-            content.add(deltaMass == null ? null : NumberUtilities.scaleDouble(deltaMass, 4));
+            content.add(deltaMass == null ? null : NumberUtilities.scaleDouble(deltaMass, 2));
 
             // precursor m/z
-            content.add(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 4));
+            content.add(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 2));
         } else {
             content.add(null);
             content.add(null);

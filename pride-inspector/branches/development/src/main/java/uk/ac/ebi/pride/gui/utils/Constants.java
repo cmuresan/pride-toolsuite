@@ -106,4 +106,6 @@ public interface Constants {
     public static final Color ALTER_ROW_COLOUR = new Color(214, 241, 249);
     public static final Color ROW_SELECTION_BACKGROUD = new Color(193, 210, 238);
     public static final Color ROW_SELECTION_FOREGROUND = Color.black;
+    public static final Color DELTA_MZ_WARNING = new Color(215, 39, 41, 100);
+    public static final Color DELTA_MZ_NORMAL = new Color(40, 175, 99, 100);
 }

@@ -212,8 +212,8 @@ public class DataSourceViewer extends JPanel {
             int colIndex = columnAtPoint(p);
             int realColIndex = convertColumnIndexToModel(colIndex);
             TableModel model = getModel();
-            if (realColIndex == 0 && model != null) {
-                tooltip = model.getValueAt(rowIndex, colIndex).toString();
+            if (realColIndex == 0) {
+                tooltip = model.getValueAt(rowIndex, 0).toString();
             } else {
                 tooltip = super.getToolTipText(event);
             }

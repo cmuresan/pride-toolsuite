@@ -92,7 +92,7 @@ public class SampleProtocolMetadataPanel extends JPanel {
                                         .add(GroupLayout.LEADING, scrollPane2, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
                                         .add(GroupLayout.LEADING, sampleTabbedPane, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
                                         .add(GroupLayout.LEADING, layout.createSequentialGroup()
-                                                .add(protocolLabel, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE)
+                                                .add(protocolLabel, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(LayoutStyle.UNRELATED)
                                                 .add(protocolNameField, GroupLayout.PREFERRED_SIZE, 400, GroupLayout.PREFERRED_SIZE))
                                         .add(GroupLayout.LEADING, sampleLabel, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))

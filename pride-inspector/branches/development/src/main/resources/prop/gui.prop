@@ -184,7 +184,7 @@ load.next.mzdata.small.icon=icon/16x16/load_next.png
 
 #download protein name
 load.protein.detail.small.icon=icon/16x16/load_next.png
-load.protein.detail.title=Protein Details
+load.protein.detail.title=Obtain Protein Details
 
 # set control sample
 set.control.sample.title=Set Control Sample

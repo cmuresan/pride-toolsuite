@@ -123,6 +123,7 @@ public class DecoyFilterAction extends PrideAction implements PropertyChangeList
             nonDecoyMenuItem.setEnabled(true);
             nonDecoyMenuItem.setIcon(GUIUtilities.loadIcon(appContext.getProperty("menu.selection.tick.small.icon")));
             decoyMenuItem.setEnabled(true);
+            decoyMenuItem.setIcon(null);
             undoFilterMenuItem.setEnabled(true);
         }
     }

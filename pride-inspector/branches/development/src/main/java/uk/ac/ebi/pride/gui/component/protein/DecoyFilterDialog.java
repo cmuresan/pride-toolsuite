@@ -33,9 +33,9 @@ public class DecoyFilterDialog extends JDialog {
     public static final String NEW_FILTER = "New Filter";
 
     private static final String FILTER_STRING_LABEL= "Filter String";
-    private static final String PREFIX_MESSAGE= "Decoy accessions start with";
-    private static final String POST_MESSAGE= "Decoy accessions end with";
-    private static final String CONTAIN_MESSAGE= "Decoy accessions contain";
+    private static final String PREFIX_MESSAGE= "Hide decoy protein accessions start with";
+    private static final String POST_MESSAGE= "Hide decoy protein accessions end with";
+    private static final String CONTAIN_MESSAGE= "Hide decoy protein accessions contain";
 
     /**
      * Table which contains all the protein identifications

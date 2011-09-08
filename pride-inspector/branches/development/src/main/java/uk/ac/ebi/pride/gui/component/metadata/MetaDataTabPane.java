@@ -204,13 +204,13 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
         ButtonGroup buttonGroup = new ButtonGroup();
         JToggleButton generalButton = new JToggleButton(GENERAL);
         generalButton.setActionCommand(GENERAL);
-        generalButton.setPreferredSize(new Dimension(180, 25));
+        generalButton.setPreferredSize(new Dimension(200, 25));
         JToggleButton proSamButton = new JToggleButton(SAMPLE_PROTOCOL);
         proSamButton.setActionCommand(SAMPLE_PROTOCOL);
-        proSamButton.setPreferredSize(new Dimension(180, 25));
+        proSamButton.setPreferredSize(new Dimension(200, 25));
         JToggleButton insSofButton = new JToggleButton(INSTRUMENT_SOFTWARE);
         insSofButton.setActionCommand(INSTRUMENT_SOFTWARE);
-        insSofButton.setPreferredSize(new Dimension(180, 25));
+        insSofButton.setPreferredSize(new Dimension(200, 25));
         generalButton.addActionListener(this);
         proSamButton.addActionListener(this);
         insSofButton.addActionListener(this);

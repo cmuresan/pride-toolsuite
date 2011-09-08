@@ -107,12 +107,10 @@ public class TableFactory {
 
         // delta mass column
         TableColumnExt deltaMassColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.DELTA_MASS_COLUMN.getHeader());
-        BarChartRenderer renderer = new BarChartRenderer(4, -4, 0);
-        renderer.setWarningVisible(true);
+        double minLimit = Double.parseDouble(Desktop.getInstance().getDesktopContext().getProperty("delta.mz.min.limit"));
+        double maxLimit = Double.parseDouble(Desktop.getInstance().getDesktopContext().getProperty("delta.mz.max.limit"));
+        DeltaMZRenderer renderer = new DeltaMZRenderer(minLimit, maxLimit);
         deltaMassColumn.setCellRenderer(renderer);
-        // set width
-        int deltaMassColumnNum = deltaMassColumn.getModelIndex();
-        columnModel.getColumn(deltaMassColumnNum).setPreferredWidth(200);
 
         // peptide sequence present in protein sequence
         TableColumnExt peptideFitColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
@@ -475,13 +473,10 @@ public class TableFactory {
         // delta mass column
         TableColumnExt deltaMassColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.DELTA_MASS_COLUMN.getHeader());
         deltaMassColumn.setVisible(false);
-        BarChartRenderer renderer = new BarChartRenderer(4, -4, 0);
-        renderer.setWarningVisible(true);
+        double minLimit = Double.parseDouble(Desktop.getInstance().getDesktopContext().getProperty("delta.mz.min.limit"));
+        double maxLimit = Double.parseDouble(Desktop.getInstance().getDesktopContext().getProperty("delta.mz.max.limit"));
+        DeltaMZRenderer renderer = new DeltaMZRenderer(minLimit, maxLimit);
         deltaMassColumn.setCellRenderer(renderer);
-
-        // set width
-        int deltaMassColumnNum = deltaMassColumn.getModelIndex();
-        columnModel.getColumn(deltaMassColumnNum).setPreferredWidth(200);
 
         // precursor m/z column
         TableColumnExt precursorMzColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PRECURSOR_MZ_COLUMN.getHeader());

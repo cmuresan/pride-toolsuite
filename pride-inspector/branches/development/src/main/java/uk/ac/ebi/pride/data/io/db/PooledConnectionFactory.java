@@ -41,7 +41,6 @@ public class PooledConnectionFactory {
         try {
             // retrieve the active schema from the master schema
             String schema = getActiveSchema();
-            System.out.println(schema);
             logger.info("Using PRIDE public active schema: " + schema);
 
             if (schema != null) {

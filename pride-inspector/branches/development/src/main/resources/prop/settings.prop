@@ -38,3 +38,7 @@ pride.experiment.download.url=http://www.ebi.ac.uk/pride/review
 
 # URL for link to Ensembl Genome Browser
 ensembl.genome.browser.url=http://www.ensembl.org/%1$s/Location/Genome?type=ProteinAlignFeature
+
+# Delta m/z limits
+delta.mz.max.limit = 4
+delta.mz.min.limit = -4

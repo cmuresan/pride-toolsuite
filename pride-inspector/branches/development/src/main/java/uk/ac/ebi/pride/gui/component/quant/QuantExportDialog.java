@@ -109,7 +109,7 @@ public class QuantExportDialog extends JDialog {
             }
 
             //---- ensemblButton ----
-            ensemblButton.setText("Ensembl");
+            ensemblButton.setText("Ensembl View");
 
             //---- exportButton ----
             exportButton.setText("Export");
@@ -129,8 +129,8 @@ public class QuantExportDialog extends JDialog {
                                                     .add(scrollPane2, GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
                                                     .addPreferredGap(LayoutStyle.RELATED)
                                                     .add(panel1Layout.createParallelGroup(GroupLayout.TRAILING)
-                                                            .add(ensemblButton, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
-                                                            .add(exportButton, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE))))
+                                                            .add(ensemblButton, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
+                                                            .add(exportButton, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE))))
                                     .addContainerGap())
             );
             panel1Layout.setVerticalGroup(

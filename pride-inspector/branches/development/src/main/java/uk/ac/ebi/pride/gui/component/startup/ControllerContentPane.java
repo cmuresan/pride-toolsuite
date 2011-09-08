@@ -241,12 +241,16 @@ public class ControllerContentPane extends DataAccessControllerPane {
             retrieveTask.addTaskListener((ProgressiveListTableModel) peptideTable.getModel());
 
             // register quantitative tab as a task listener
-            if (quantTabPane != null) {
-                retrieveTask.addTaskListener(quantTabPane);
+            try {
+                if (controller.hasQuantData()) {
+                    retrieveTask.addTaskListener(quantTabPane);
 
-                // register quantitative protein table model as a task listener
-                JTable quantProteinTable = quantTabPane.getQuantProteinSelectionPane().getQuantProteinTable();
-                retrieveTask.addTaskListener((ProgressiveListTableModel) quantProteinTable.getModel());
+                    // register quantitative protein table model as a task listener
+                    JTable quantProteinTable = quantTabPane.getQuantProteinSelectionPane().getQuantProteinTable();
+                    retrieveTask.addTaskListener((ProgressiveListTableModel) quantProteinTable.getModel());
+                }
+            } catch (DataAccessException e) {
+                logger.error("Failed to check the availability of quantitative data", e);
             }
 
             // start the task

@@ -16,14 +16,23 @@ import java.util.regex.Pattern;
 public class HyperLinkCellRenderer extends JLabel implements TableCellRenderer {
 
     private Pattern pattern;
+    /**
+     * Whether to shorten the url
+     */
+    private boolean shorten;
 
     public HyperLinkCellRenderer() {
-        this(null);
+        this(null, false);
     }
 
     public HyperLinkCellRenderer(Pattern pattern) {
+        this(pattern, false);
+    }
+
+    public HyperLinkCellRenderer(Pattern pattern, boolean shorten) {
         this.setOpaque(true);
         this.pattern = pattern;
+        this.shorten = shorten;
     }
 
     @Override
@@ -41,8 +50,8 @@ public class HyperLinkCellRenderer extends JLabel implements TableCellRenderer {
 
             if (match) {
                 StringBuilder builder = new StringBuilder();
-                builder.append("<html><a href=''>");
-                builder.append(text);
+                builder.append("<html><a href='" + text + "'>");
+                builder.append(shorten? "Link" : text);
                 builder.append("</a>");
                 builder.append("</html>");
                 this.setText(builder.toString());

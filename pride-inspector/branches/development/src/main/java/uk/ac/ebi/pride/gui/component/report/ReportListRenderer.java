@@ -49,7 +49,7 @@ public class ReportListRenderer implements ListCellRenderer{
                 return GUIUtilities.loadIcon(context.getProperty("report.item.error.icon.small"));
             case WARNING:
                 return GUIUtilities.loadIcon(context.getProperty("report.item.warning.icon.small"));
-            case PLAIN:
+            case INFO:
                 return GUIUtilities.loadIcon(context.getProperty("report.item.plain.icon.small"));
             default:
                 return GUIUtilities.loadIcon(context.getProperty("report.item.plain.icon.small"));
@@ -69,7 +69,7 @@ public class ReportListRenderer implements ListCellRenderer{
                 return new GradientPaint(0, 0, new Color(215, 39, 41, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(215, 39, 41, STOP_ALPHA), true);
             case WARNING:
                 return new GradientPaint(0, 0, new Color(251, 182, 1, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(251, 182, 1, STOP_ALPHA), true);
-            case PLAIN:
+            case INFO:
                 return new GradientPaint(0, 0, new Color(27, 106, 165, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(27, 106, 165, STOP_ALPHA), true);
             default:
                 return new GradientPaint(0, 0, new Color(27, 106, 165, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(27, 106, 165, STOP_ALPHA), true);
@@ -90,7 +90,7 @@ public class ReportListRenderer implements ListCellRenderer{
                 return new Color(215, 39, 41);
             case WARNING:
                 return new Color(251, 182, 1);
-            case PLAIN:
+            case INFO:
                 return new Color(27, 106, 165);
             default:
                 return new Color(27, 106, 165);

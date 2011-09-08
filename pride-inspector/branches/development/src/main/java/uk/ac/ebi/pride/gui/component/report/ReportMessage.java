@@ -10,7 +10,7 @@ import javax.swing.*;
  * To change this template use File | Settings | File Templates.
  */
 public class ReportMessage {
-    public static enum Type {SUCCESS, WARNING, ERROR, PLAIN}
+    public static enum Type {SUCCESS, WARNING, ERROR, INFO}
 
     private Type type;
     private String message;

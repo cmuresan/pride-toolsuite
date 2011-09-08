@@ -1,19 +1,26 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
+import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.core.CvParam;
 import uk.ac.ebi.pride.data.core.MetaData;
+import uk.ac.ebi.pride.data.core.UserParam;
 import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
+import uk.ac.ebi.pride.gui.component.report.ReportMessage;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
+import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveMetaDataTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.term.CvTermReference;
+import uk.ac.ebi.pride.util.NumberUtilities;
 
 import javax.help.CSH;
 import javax.swing.*;
@@ -114,6 +121,53 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
         } catch (InterruptedException e) {
             String msg = "Failed to create meta data panels";
             logger.error(msg, e);
+        }
+
+        // notify key information, such as: FDR
+        notifyKeyInfo(metaData);
+    }
+
+    /**
+     * Notify experiment summary for certain data
+     * Such as: FDR, Tranche Link
+     *
+     * @param metaData Experimental metadata
+     */
+    private void notifyKeyInfo(MetaData metaData) {
+        java.util.List<CvParam> cvParams = metaData.getCvParams();
+        if (cvParams != null) {
+            for (CvParam cvParam : cvParams) {
+                String acc = cvParam.getAccession();
+                String value = cvParam.getValue();
+                // FDR
+                if (CvTermReference.PEPTIDE_GLOBAL_FDR.getAccession().equals(acc)) {
+                    // peptide FDR
+                    if (NumberUtilities.isNumber(value)) {
+                        double dVal = NumberUtilities.scaleDouble(Double.parseDouble(value), 5);
+                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.INFO, "Peptide FDR: " + dVal, "This data source contains petpide golabl FDR")));
+                    }
+                } else if (CvTermReference.PROTEIN_GLOBAL_FDR.getAccession().equals(acc)) {
+                    // peptide FDR
+                    if (NumberUtilities.isNumber(value)) {
+                        double dVal = NumberUtilities.scaleDouble(Double.parseDouble(value), 5);
+                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.INFO, "Protein FDR: " + dVal, "This data source contains protein golabl FDR")));
+                    }
+                }
+
+            }
+        }
+
+        java.util.List<UserParam> userParams = metaData.getUserParams();
+        if (userParams != null) {
+            for (UserParam userParam : userParams) {
+                String name = userParam.getName().toLowerCase();
+                String value = userParam.getValue();
+                // tranche link
+                if (name.contains("tranche")) {
+                    EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.INFO, "Tranche Link Available", "This data source contains Tranche links")));
+                    break;
+                }
+            }
         }
     }
 

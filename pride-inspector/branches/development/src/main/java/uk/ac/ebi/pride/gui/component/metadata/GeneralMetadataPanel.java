@@ -1,9 +1,19 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
+import org.bushe.swing.event.EventBus;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
+import org.jdesktop.swingx.table.TableColumnExt;
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.gui.component.report.ReportMessage;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
+import uk.ac.ebi.pride.gui.component.table.listener.HyperLinkCellMouseClickListener;
+import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
+import uk.ac.ebi.pride.gui.component.table.model.ParamTableModel;
+import uk.ac.ebi.pride.gui.component.table.renderer.HyperLinkCellRenderer;
+import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
+import uk.ac.ebi.pride.gui.url.PrefixedHyperLinkGenerator;
+import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import javax.swing.*;
@@ -12,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 /*
  * Created by JFormDesigner on Sat Jul 23 08:30:00 BST 2011
  */
@@ -133,10 +144,11 @@ public class GeneralMetadataPanel extends JPanel {
         ParamGroup paramGroup = new ParamGroup();
         List<CvParam> cvParams = metaData.getCvParams();
         if (cvParams != null) {
-            for (CvParam cvParam : metaData.getCvParams()) {
+            for (CvParam cvParam : cvParams) {
+                String acc = cvParam.getAccession();
                 // get project name
-                if (!CvTermReference.PROJECT_NAME.getAccession().equals(cvParam.getAccession()) &&
-                        !CvTermReference.EXPERIMENT_DESCRIPTION.getAccession().equals(cvParam.getAccession())) {
+                if (!CvTermReference.PROJECT_NAME.getAccession().equals(acc) &&
+                        !CvTermReference.EXPERIMENT_DESCRIPTION.getAccession().equals(acc)) {
                     paramGroup.addCvParam(cvParam);
                 }
             }
@@ -144,10 +156,19 @@ public class GeneralMetadataPanel extends JPanel {
 
         List<UserParam> userParams = metaData.getUserParams();
         if (userParams != null) {
-            paramGroup.addUserParams(metaData.getUserParams());
+            paramGroup.addUserParams(userParams);
         }
 
         additionalTable = TableFactory.createParamTable(paramGroup);
+        // hyperlink ontology accessions
+        String valColumnHeader = ParamTableModel.TableHeader.VALUE.getHeader();
+        TableColumnExt accColumn = (TableColumnExt) additionalTable.getColumn(valColumnHeader);
+        accColumn.setCellRenderer(new HyperLinkCellRenderer(Pattern.compile("http.*"), true));
+
+        // add mouse motion listener
+        additionalTable.addMouseMotionListener(new TableCellMouseMotionListener(additionalTable, valColumnHeader));
+        additionalTable.addMouseListener(new HyperLinkCellMouseClickListener(additionalTable, valColumnHeader, null));
+
     }
 
     private void initComponents() {

@@ -59,7 +59,7 @@ public class HyperLinkCellMouseClickListener extends MouseAdapter {
                     match = m.matches();
                 }
                 if (match) {
-                    String url = urlGen.generate(text);
+                    String url = urlGen  == null ? text : urlGen.generate(text);
                     if (url != null) {
                         HttpUtilities.openURL(url);
                     }

@@ -5,6 +5,7 @@ import org.jdesktop.swingx.table.TableColumnModelExt;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.action.PrideAction;
+import uk.ac.ebi.pride.gui.component.table.model.AbstractProteinTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskListener;
@@ -50,9 +51,10 @@ public class RetrieveExtraProteinDetailAction extends ExtraProteinDetailAction {
         TableColumnModelExt showHideColModel = (TableColumnModelExt) getTable().getColumnModel();
         List<TableColumn> columns = showHideColModel.getColumns(true);
         for (TableColumn column : columns) {
-            if (ProteinTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(column.getHeaderValue()) ||
-                    ProteinTableModel.TableHeader.PROTEIN_STATUS.getHeader().equals(column.getHeaderValue()) ||
-                    ProteinTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(column.getHeaderValue())) {
+            Object header = column.getHeaderValue();
+            if (ProteinTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(header) ||
+                    ProteinTableModel.TableHeader.PROTEIN_STATUS.getHeader().equals(header) ||
+                    ProteinTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(header)) {
                 ((TableColumnExt) column).setVisible(true);
             }
         }

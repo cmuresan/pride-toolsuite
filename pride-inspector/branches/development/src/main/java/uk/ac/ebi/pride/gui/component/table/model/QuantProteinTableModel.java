@@ -37,6 +37,7 @@ public class QuantProteinTableModel extends AbstractProteinTableModel {
         PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
         PROTEIN_STATUS("Protein Status", "Status Of The Protein Accession"),
         PROTEIN_SEQUENCE_COVERAGE("Sequence Coverage", "Protein Sequence Coverage"),
+        THEORITICAL_ISOELECTRIC_POINT_COLUMN("pI", "Theoritical isoelectric point"),
         IDENTIFICATION_SCORE_COLUMN("Score", "PRIDE Protein Score"),
         IDENTIFICATION_THRESHOLD_COLUMN("Threshold", "PRIDE Protein Threshold"),
         NUMBER_OF_PEPTIDES("# Peptides", "Number of Peptides"),

@@ -71,4 +71,26 @@ public class IdentifiableParamGroup extends ParamGroup {
     public void setId(Comparable id) {
         this.id = id;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        IdentifiableParamGroup that = (IdentifiableParamGroup) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!name.equals(that.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + id.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
+    }
 }

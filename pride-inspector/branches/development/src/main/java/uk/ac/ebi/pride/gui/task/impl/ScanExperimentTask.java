@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
+import uk.ac.ebi.pride.data.core.Modification;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.report.ReportMessage;
@@ -13,9 +14,7 @@ import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Scan experiment for all the data related to identification, peptide and quantitation
@@ -56,7 +55,8 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
             int missingSpectrumLinks = 0;
 
             boolean hasQuantData = controller.hasQuantData();
-
+            // ptm maps
+            Map<String, String> ptmMap = new HashMap<String, String>();
             // get headers
             if (hasQuantData) {
                 // protein quantitative table header
@@ -64,7 +64,6 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
                 publish(new Tuple<TableContentType, List<Object>>(TableContentType.PROTEIN_QUANTITATION_HEADER, proteinQuantHeaders));
             }
 
-            // check internet availability
             for (Comparable identId : identIds) {
 
                 // get and publish protein related details
@@ -89,6 +88,19 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
 
                         if (controller.getPeptideSpectrumId(identId, peptideId) == null) {
                             missingSpectrumLinks++;
+                        }
+
+                        Collection<Modification> mods = controller.getPTMs(identId, peptideId);
+                        if (mods != null) {
+                            for (Modification mod : mods) {
+                                String accession = mod.getAccession();
+                                String name = mod.getName();
+                                if (!ptmMap.containsKey(accession)) {
+                                    EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.INFO, "PTM: " + accession,
+                                            "PTM found: [" + accession + "]\t" + name)));
+                                    ptmMap.put(mod.getAccession(), mod.getName());
+                                }
+                            }
                         }
                     }
                 }

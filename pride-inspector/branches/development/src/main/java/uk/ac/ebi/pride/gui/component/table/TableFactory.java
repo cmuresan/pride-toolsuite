@@ -76,6 +76,10 @@ public class TableFactory {
         seqCoverageColumn.setCellRenderer(new SequenceCoverageRenderer());
         seqCoverageColumn.setVisible(false);
 
+        // isoelectric point column
+        TableColumnExt isoelectricColumn = (TableColumnExt) table.getColumn(ProteinTableModel.TableHeader.THEORITICAL_ISOELECTRIC_POINT_COLUMN.getHeader());
+        isoelectricColumn.setVisible(false);
+
         // add hyper link click listener
         String protAccColumnHeader = ProteinTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
         table.addMouseMotionListener(new TableCellMouseMotionListener(table, protAccColumnHeader));
@@ -380,6 +384,10 @@ public class TableFactory {
         TableColumnExt seqCoverageColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader());
         seqCoverageColumn.setCellRenderer(new SequenceCoverageRenderer());
         seqCoverageColumn.setVisible(false);
+
+        // isoelectric point column
+        TableColumnExt isoelectricColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.THEORITICAL_ISOELECTRIC_POINT_COLUMN.getHeader());
+        isoelectricColumn.setVisible(false);
 
         // score
         TableColumnExt proteinScoreColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.IDENTIFICATION_SCORE_COLUMN.getHeader());

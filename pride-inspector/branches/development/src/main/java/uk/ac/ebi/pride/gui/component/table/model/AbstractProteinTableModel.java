@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveSequenceCoverageTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.mol.IsoelectricPointUtils;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
         PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
         PROTEIN_STATUS("Status", "Status Of The Protein Accession"),
         PROTEIN_SEQUENCE_COVERAGE("Coverage", "Protein Sequence Coverage"),
+        THEORITICAL_ISOELECTRIC_POINT_COLUMN("pI", "Theoritical isoelectric point"),
         IDENTIFICATION_SCORE_COLUMN("Score", "PRIDE Protein Score"),
         IDENTIFICATION_THRESHOLD_COLUMN("Threshold", "PRIDE Protein Threshold"),
         NUMBER_OF_PEPTIDES("# Peptides", "Number of Peptides"),
@@ -104,6 +106,8 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
         int identStatusIndex = getColumnIndex(TableHeader.PROTEIN_STATUS.getHeader());
         // column index for protein identification id
         int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
+        // column index for isoelectric point
+        int isoelectricIndex = getColumnIndex(TableHeader.THEORITICAL_ISOELECTRIC_POINT_COLUMN.getHeader());
 
         // get a map of protein accession to protein details
         Map<String, Protein> proteins = (Map<String, Protein>) newData;
@@ -122,6 +126,9 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
                     content.set(identNameIndex, protein.getName());
                     // set protein status
                     content.set(identStatusIndex, protein.getStatus().name());
+                    // set isoelectric point
+                    String sequence = protein.getSequenceString();
+                    content.set(isoelectricIndex, sequence == null ? null : IsoelectricPointUtils.calculate(sequence));
                     // add protein identification id to the list
                     identIds.add((Comparable) content.get(identIdIndex));
                     // notify a row change

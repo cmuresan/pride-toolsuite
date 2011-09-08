@@ -113,22 +113,6 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
 
 
     /**
-     * Show loading messages
-     */
-    private void showLoadingMessages() {
-        // display loading for all the rows first
-        Map<String, Protein> tempProteinDetailsMap = new HashMap<String, Protein>();
-        for (String acc : proteinAccessions) {
-            Protein tempProteinDetails = new Protein(acc);
-            tempProteinDetails.setName("Loading...");
-            tempProteinDetailsMap.put(acc, tempProteinDetails);
-            tempProteinDetails.setStatus(Protein.STATUS.UNKNOWN);
-        }
-        publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_DETAILS, tempProteinDetailsMap));
-    }
-
-
-    /**
      * Fetch then publish
      *
      * @param accs  protein accessions

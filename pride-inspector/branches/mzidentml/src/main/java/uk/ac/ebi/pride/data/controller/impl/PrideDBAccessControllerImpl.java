@@ -1258,15 +1258,13 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     peptides = getPeptideIdentification(connection, rs.getInt("identification_id"), rs.getInt("pi.experiment_id"));
                     spectrum = getSpectrumByRef(connection, rs.getString("spectrum_ref"));
                     String className = rs.getString("classname");
+                    DBSequence dbSequence = new DBSequence(null,null,-1,accession,new SearchDataBase(rs.getString("search_database"),rs.getString("database_version")),null,rs.getString("accession_version"),rs.getString("splice_isoform"));
+                    Map<PeptideEvidence,List<Peptide>> peptideEvidences = DataAccessUtilities.getPeptideEvidence(peptides);
                     if ("uk.ac.ebi.pride.rdbms.ojb.model.core.TwoDimensionalIdentificationBean".equals(className)) {
                         gel = getPeptideGel(connection, rs.getInt("gel_id"), rs.getDouble("x_coordinate"), rs.getDouble("y_coordinate"), rs.getDouble("molecular_weight"), rs.getDouble("pi"));
-                        identification = new TwoDimIdentification(Integer.toString(rs.getInt("identification_id")), accession, rs.getString("accession_version"), peptides, rs.getDouble("score"),
-                                rs.getString("search_database"), rs.getString("database_version"), rs.getString("search_engine"), seqConverageVal,
-                                spectrum, rs.getString("splice_isoform"), rs.getDouble("threshold"), params, gel);
+                        identification = new TwoDimIdentification(params,Integer.toString(rs.getInt("identification_id")),null,dbSequence,false,peptideEvidences,0.0,rs.getDouble("threshold"),new SearchEngine(null,rs.getString("search_engine")),seqConverage,gel);
                     } else if ("uk.ac.ebi.pride.rdbms.ojb.model.core.GelFreeIdentificationBean".equals(className)) {
-                        identification = new GelFreeIdentification(Integer.toString(rs.getInt("identification_id")), accession, rs.getString("accession_version"), peptides, rs.getDouble("score"),
-                                rs.getString("search_database"), rs.getString("database_version"), rs.getString("search_engine"), seqConverageVal,
-                                spectrum, rs.getString("splice_isoform"), rs.getDouble("threshold"), params);
+                        identification = new GelFreeIdentification(params,Integer.toString(rs.getInt("identification_id")),null,dbSequence,false,peptideEvidences,0.0,rs.getDouble("threshold"),new SearchEngine(null,rs.getString("search_engine")),seqConverage);
                     }
 
                     if (useCache) {
@@ -1373,7 +1371,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 st.setString(1, identId.toString());
                 rs = st.executeQuery();
                 if (rs.next()) {
-                    searchEngine = new SearchEngine(null,getString("search_engine"));
+                    searchEngine = new SearchEngine(null,rs.getString("search_engine"));
                 }
 
                 // get search engine types

@@ -28,6 +28,8 @@ The parameters taken by the *Mascot DAO* are very similar / identical to the one
 
 *Enable protein grouping*: Indicates whether the grouping mode (Occam's Razor, see Mascot documentation) should be enabled. This is the default behaviour for Mascot. This mode is not equivalent to the protein clustering introduced in Mascot 2.3.
 
+*Remove empty spectra*: If set to true (default) spectra without any peaks are ignored and not reported in the PRIDE XML file.
+
 = Details =
 
 To convert Mascot results into PRIDE XML files several compromises have to be taken:

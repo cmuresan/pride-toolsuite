@@ -201,7 +201,6 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
         toolBar.setOpaque(false);
 
 
-
         // load protein names
         JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
         loadAllProteinNameButton.setForeground(Color.blue);
@@ -253,6 +252,7 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
 
     /**
      * Return the button to export quantitative data
+     *
      * @return
      */
     public JButton getExportButton() {
@@ -332,25 +332,34 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
         @Override
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
-                int rowTableNum = table.getSelectedRow();
-                int rowCnt = table.getRowCount();
-                if (rowCnt > 0 && rowTableNum >= 0) {
-                    // get table model
-                    QuantProteinTableModel tableModel = (QuantProteinTableModel) proteinTable.getModel();
+                int colTableNum = table.convertColumnIndexToModel(table.getSelectedColumn());
+                int checkBoxTableColumn = ((QuantProteinTableModel) table.getModel()).getColumnIndex(QuantProteinTableModel.TableHeader.COMPARE.getHeader());
+                if (checkBoxTableColumn != colTableNum) {
+                    int rowTableNum = table.getSelectedRow();
+                    int rowCnt = table.getRowCount();
+                    if (rowCnt > 0 && rowTableNum >= 0) {
+                        // get table model
+                        QuantProteinTableModel tableModel = (QuantProteinTableModel) proteinTable.getModel();
 
-                    // fire a property change event with selected identification id
-                    int identColNum = tableModel.getColumnIndex(QuantProteinTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
-                    int rowModelNum = table.convertRowIndexToModel(rowTableNum);
-                    Comparable identId = (Comparable) tableModel.getValueAt(rowModelNum, identColNum);
+                        // fire a property change event with selected identification id
+                        int identColNum = tableModel.getColumnIndex(QuantProteinTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
+                        int rowModelNum = table.convertRowIndexToModel(rowTableNum);
+                        Comparable identId = (Comparable) tableModel.getValueAt(rowModelNum, identColNum);
 
-                    // publish the event to local event bus
-                    EventService eventBus = ContainerEventServiceFinder.getEventService(QuantProteinSelectionPane.this);
-                    eventBus.publish(new ProteinIdentificationEvent(QuantProteinSelectionPane.this, controller, identId));
+                        // publish the event to local event bus
+                        EventService eventBus = ContainerEventServiceFinder.getEventService(QuantProteinSelectionPane.this);
+                        eventBus.publish(new ProteinIdentificationEvent(QuantProteinSelectionPane.this, controller, identId));
+                    }
+                } else {
+                    table.getSelectionModel().clearSelection();
                 }
             }
         }
     }
 
+    /**
+     *
+     */
     private class CheckBoxSelectionListener implements TableModelListener {
         /**
          * whether to ignore the next event

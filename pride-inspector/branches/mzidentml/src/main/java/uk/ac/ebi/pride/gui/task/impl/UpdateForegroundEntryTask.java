@@ -1,10 +1,10 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.core.Chromatogram;
-import uk.ac.ebi.pride.data.core.Experiment;
-import uk.ac.ebi.pride.data.core.Identification;
-import uk.ac.ebi.pride.data.core.Spectrum;
+import uk.ac.ebi.pride.data.coreIdent.Chromatogram;
+import uk.ac.ebi.pride.data.coreIdent.ExperimentMetaData;
+import uk.ac.ebi.pride.data.coreIdent.Identification;
+import uk.ac.ebi.pride.data.coreIdent.Spectrum;
 
 /**
  * Retrieve foreground entry using data access controller
@@ -30,7 +30,7 @@ public class UpdateForegroundEntryTask<T> extends AbstractDataAccessTask<T, Void
     @SuppressWarnings("unchecked")
     protected T retrieve() throws Exception {
         Object result = null;
-        if (Experiment.class.equals(classType)) {
+        if (ExperimentMetaData.class.equals(classType)) {
             controller.setForegroundExperimentAcc(id);
             result = controller.getForegroundExperimentAcc();
         } else if (Spectrum.class.equals(classType)) {

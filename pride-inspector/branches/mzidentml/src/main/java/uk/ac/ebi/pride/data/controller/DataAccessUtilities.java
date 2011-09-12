@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class DataAccessUtilities {
 
-    public static List<Integer> getTaxonomy(ExperimentMetaData metaData) {
+    public static List<String> getTaxonomy(ExperimentMetaData metaData) {
         // todo: to be implemented
         return null;
     }

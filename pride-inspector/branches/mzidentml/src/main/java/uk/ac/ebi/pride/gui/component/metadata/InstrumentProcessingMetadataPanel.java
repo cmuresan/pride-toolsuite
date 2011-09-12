@@ -2,10 +2,10 @@ package uk.ac.ebi.pride.gui.component.metadata;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
-import uk.ac.ebi.pride.data.core.DataProcessing;
-import uk.ac.ebi.pride.data.core.InstrumentConfiguration;
-import uk.ac.ebi.pride.data.core.MetaData;
-import uk.ac.ebi.pride.data.core.ProcessingMethod;
+import uk.ac.ebi.pride.data.coreIdent.DataProcessing;
+import uk.ac.ebi.pride.data.coreIdent.InstrumentConfiguration;
+import uk.ac.ebi.pride.data.coreIdent.ExperimentMetaData;
+import uk.ac.ebi.pride.data.coreIdent.ProcessingMethod;
 
 import javax.sound.midi.Instrument;
 import javax.swing.*;
@@ -20,16 +20,18 @@ import java.util.List;
  * @author User #2
  */
 public class InstrumentProcessingMetadataPanel extends JPanel {
-    public InstrumentProcessingMetadataPanel(MetaData metaData) {
+    public InstrumentProcessingMetadataPanel(ExperimentMetaData metaData) {
         populateComponents(metaData);
         initComponents();
     }
 
-    private void populateComponents(MetaData metaData) {
+    private void populateComponents(ExperimentMetaData metaData) {
         // instrument configurations
         instrumentTabbedPane = new JTabbedPane();
         instrumentTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
-        List<InstrumentConfiguration> instrumentConfigurationList = metaData.getInstrumentConfigurations();
+        //List<InstrumentConfiguration> instrumentConfigurationList = metaData.getInstrumentConfigurations();
+        List<InstrumentConfiguration> instrumentConfigurationList = null;
+        //Todo: Changes to Compile Instrument Configuration
         if (instrumentConfigurationList != null) {
             for (InstrumentConfiguration instrumentConfiguration : instrumentConfigurationList) {
                 String name = instrumentConfiguration.getId();
@@ -41,7 +43,9 @@ public class InstrumentProcessingMetadataPanel extends JPanel {
         // data processings
         dataProcTabbedPane = new JTabbedPane();
         dataProcTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
-        List<DataProcessing> dataProcessingList = metaData.getDataProcessings();
+        //List<DataProcessing> dataProcessingList = metaData.getDataProcessings();
+        //Todo: changes to Compile dataProcessing
+        List<DataProcessing> dataProcessingList = null;
         if (dataProcessingList != null) {
             int cnt = 1;
             for (DataProcessing dataProcessing : dataProcessingList) {

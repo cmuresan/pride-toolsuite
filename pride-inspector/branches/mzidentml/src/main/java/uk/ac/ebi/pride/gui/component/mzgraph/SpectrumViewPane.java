@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.BinaryDataArray;
-import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.data.core.Spectrum;
+import uk.ac.ebi.pride.data.coreIdent.BinaryDataArray;
+import uk.ac.ebi.pride.data.coreIdent.Peptide;
+import uk.ac.ebi.pride.data.coreIdent.Spectrum;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.SideToolBarPanel;
 import uk.ac.ebi.pride.gui.action.PrideAction;
@@ -186,7 +186,7 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
                 int peptideLength = peptide.getSequenceLength();
                 Map<Integer, java.util.List<PTModification>> modifications = AnnotationUtils.createModificationMap(peptide.getModifications(), peptideLength);
                 spectrumBrowser.setAminoAcidAnnotationParameters(peptide.getSequenceLength(), modifications);
-                java.util.List<IonAnnotation> ions = AnnotationUtils.convertToIonAnnotations(peptide.getFragmentIons());
+                java.util.List<IonAnnotation> ions = AnnotationUtils.convertToIonAnnotations(peptide.getFragmentation());
                 spectrumBrowser.addFragmentIons(ions);
                 if (showSidePanel && !ions.isEmpty()) {
                     spectrumBrowser.enableAnnotationControl(true);

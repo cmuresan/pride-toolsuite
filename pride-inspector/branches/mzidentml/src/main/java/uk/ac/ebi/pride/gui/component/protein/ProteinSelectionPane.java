@@ -126,7 +126,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
             metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
             // search engine
-            Object engine = identId == null ? "Unknown" : controller.getSearchEngine().getOriginalTitle();
+            Object engine = identId == null ? "Unknown" : controller.getSearchEngine().getName();
             engine = engine == null ? "Unknown" : engine;
             JLabel dbLabel = new JLabel("<html><b>Search Engine</b>: " + engine + "</htlm>");
             dbLabel.setToolTipText(engine.toString());

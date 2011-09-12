@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
-import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.QuantitativeSample;
+import uk.ac.ebi.pride.data.coreIdent.CvParam;
+import uk.ac.ebi.pride.data.coreIdent.QuantitativeSample;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,7 +5,7 @@ import org.jdesktop.swingx.border.DropShadowBorder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.coreIdent.*;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
@@ -18,6 +18,7 @@ import uk.ac.ebi.pride.gui.task.impl.RetrieveMetaDataTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.EDTUtils;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.jaxb.model.Experiment;
 
 import javax.help.CSH;
 import javax.swing.*;
@@ -35,7 +36,7 @@ import java.util.Collection;
  * Date: 05-Mar-2010
  * Time: 15:12:07
  */
-public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> implements ActionListener {
+public class MetaDataTabPane extends DataAccessControllerPane<ExperimentMetaData, Void> implements ActionListener {
     private static final Logger logger = LoggerFactory.getLogger(MetaDataTabPane.class);
 
     private static final String GENERAL = "Experiment General";
@@ -82,8 +83,8 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
     }
 
     @Override
-    public void succeed(TaskEvent<MetaData> metaDataTaskEvent) {
-        final MetaData metaData = metaDataTaskEvent.getValue();
+    public void succeed(TaskEvent<ExperimentMetaData> metaDataTaskEvent) {
+        final ExperimentMetaData metaData = metaDataTaskEvent.getValue();
 
         Runnable run = new Runnable() {
 
@@ -230,7 +231,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
         generalButton.setSelected(true);
     }
 
-    private void createMetaDataPanels(MetaData metaData) {
+    private void createMetaDataPanels(ExperimentMetaData metaData) {
         generalMetadataPanel = new GeneralMetadataPanel(metaData);
         sampleProtocolMetadataPanel = new SampleProtocolMetadataPanel(metaData);
         instrumentProcMetadataPanel = new InstrumentProcessingMetadataPanel(metaData);

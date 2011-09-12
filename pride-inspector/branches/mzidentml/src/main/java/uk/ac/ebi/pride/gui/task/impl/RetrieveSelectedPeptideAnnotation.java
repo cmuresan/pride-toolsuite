@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.gui.task.impl;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.Modification;
+import uk.ac.ebi.pride.data.coreIdent.Modification;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PTMAnnotation;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideAnnotation;
@@ -79,12 +79,12 @@ public class RetrieveSelectedPeptideAnnotation extends AbstractDataAccessTask<Vo
             PTMAnnotation ptmAnnotation = new PTMAnnotation();
 
             // copy all the values from ptm to ptm annotation
-            ptmAnnotation.setAccession(ptm.getAccession());
+            ptmAnnotation.setAccession(ptm.getId().toString());
             ptmAnnotation.setLocation(ptm.getLocation());
             ptmAnnotation.setModDatabaseVersion(ptm.getModDatabaseVersion());
             ptmAnnotation.setName(ptm.getName());
-            ptmAnnotation.setAvgMassDeltas(ptm.getAvgMassDeltas());
-            ptmAnnotation.setMonoMassDeltas(ptm.getMonoMassDeltas());
+            ptmAnnotation.setAvgMassDeltas(ptm.getAvgMassDelta());
+            ptmAnnotation.setMonoMassDeltas(ptm.getMonoisotopicMassDelta());
 
             peptide.addPtmAnnotation(ptmAnnotation);
         }

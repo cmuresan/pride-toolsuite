@@ -1,9 +1,7 @@
 package uk.ac.ebi.pride.gui.component.protein;
 
-import uk.ac.ebi.pride.data.core.Modification;
-import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.desktop.DesktopContext;
+import uk.ac.ebi.pride.data.coreIdent.Modification;
+import uk.ac.ebi.pride.data.coreIdent.Peptide;
 
 import javax.swing.*;
 import java.awt.*;

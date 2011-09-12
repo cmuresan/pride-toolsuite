@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.Modification;
+import uk.ac.ebi.pride.data.coreIdent.Modification;
 import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
@@ -79,7 +79,7 @@ public class RetrieveProteinDetailModelTask extends AbstractDataAccessTask<Annot
         // get formmatted protein accession
         String protAcc = controller.getProteinAccession(identId);
         String protAccVersion = controller.getProteinAccessionVersion(identId);
-        String database = controller.getSearchDatabase(identId);
+        String database = controller.getSearchDatabase(identId).getName();
         AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database);
         String mappedProtAcc = resolver.isValidAccession()? resolver.getAccession() : null;
 
@@ -127,12 +127,12 @@ public class RetrieveProteinDetailModelTask extends AbstractDataAccessTask<Annot
             PTMAnnotation ptmAnnotation = new PTMAnnotation();
 
             // copy all the values from ptm to ptm annotation
-            ptmAnnotation.setAccession(ptm.getAccession());
+            ptmAnnotation.setAccession(ptm.getId().toString());
             ptmAnnotation.setLocation(ptm.getLocation());
             ptmAnnotation.setModDatabaseVersion(ptm.getModDatabaseVersion());
             ptmAnnotation.setName(ptm.getName());
-            ptmAnnotation.setAvgMassDeltas(ptm.getAvgMassDeltas());
-            ptmAnnotation.setMonoMassDeltas(ptm.getMonoMassDeltas());
+            ptmAnnotation.setAvgMassDeltas(ptm.getAvgMassDelta());
+            ptmAnnotation.setMonoMassDeltas(ptm.getMonoisotopicMassDelta());
 
             peptide.addPtmAnnotation(ptmAnnotation);
         }

@@ -2,21 +2,10 @@ package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.core.SearchEngine;
-import uk.ac.ebi.pride.engine.SearchEngineType;
-import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
-import uk.ac.ebi.pride.gui.desktop.Desktop;
-import uk.ac.ebi.pride.gui.task.Task;
-import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideFitTask;
-import uk.ac.ebi.pride.gui.task.impl.RetrieveSequenceCoverageTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
-import uk.ac.ebi.pride.term.CvTermReference;
-import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
+import uk.ac.ebi.pride.data.coreIdent.SearchEngine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * PeptideTableModel contains all the detailed that displayed in peptide table.

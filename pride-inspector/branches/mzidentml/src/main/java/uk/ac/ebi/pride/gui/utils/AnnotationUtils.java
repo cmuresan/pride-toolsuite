@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.utils;
 
-import uk.ac.ebi.pride.data.core.FragmentIon;
-import uk.ac.ebi.pride.data.core.Modification;
+import uk.ac.ebi.pride.data.coreIdent.FragmentIon;
+import uk.ac.ebi.pride.data.coreIdent.Modification;
 import uk.ac.ebi.pride.mol.*;
 import uk.ac.ebi.pride.mol.ion.FragmentIonType;
 import uk.ac.ebi.pride.mol.ion.FragmentIonUtilities;
@@ -84,7 +84,7 @@ public class AnnotationUtils {
     public static Map<Integer, List<PTModification>> createModificationMap(List<Modification> mods, int peptideLength) {
         Map<Integer, List<PTModification>> modMap
                 = new HashMap<Integer, List<PTModification>>();
-        for (uk.ac.ebi.pride.data.core.Modification mod : mods) {
+        for (uk.ac.ebi.pride.data.coreIdent.Modification mod : mods) {
             int location = mod.getLocation();
             // merge the N-terminus modification to the first amino acid
             location = location == 0 ? 1 : location;
@@ -97,7 +97,7 @@ public class AnnotationUtils {
                 modMap.put(mod.getLocation(), subMods);
             }
             subMods.add(new PTModification(mod.getName(), mod.getModDatabase(),
-                    mod.getName(), mod.getMonoMassDeltas(), mod.getAvgMassDeltas()));
+                    mod.getName(), mod.getMonoisotopicMassDelta(), mod.getAvgMassDelta()));
         }
         return modMap;
     }
@@ -106,7 +106,7 @@ public class AnnotationUtils {
         List<PTModification> newMods = new ArrayList<PTModification>();
         for (Modification mod : modifications) {
             newMods.add(new PTModification(mod.getName(), mod.getModDatabase(),
-                    mod.getName(), mod.getMonoMassDeltas(), mod.getAvgMassDeltas()));
+                    mod.getName(), mod.getMonoisotopicMassDelta(), mod.getAvgMassDelta()));
         }
         return newMods;
     }

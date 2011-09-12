@@ -418,7 +418,7 @@ public class MzMLTransformer {
             String id = oldSoftware.getId();
             String version = oldSoftware.getVersion();
             ParamGroup paramGroup = transformParamGroup(oldSoftware);
-            newSoftware = new Software(paramGroup, id, version);
+            newSoftware = new Software(paramGroup, null,id, version);
         }
         return newSoftware;
     }

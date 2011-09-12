@@ -2,12 +2,13 @@ package uk.ac.ebi.pride.data.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * IsoelectricPointUtils is used to calculate the theoretical isoelectric point of a peptide
  * <p/>
  * At the moment we only support one method, and the peptide PTMs are not taken into account
- *
+ * <p/>
  * The implementation is provided by Yasset Perez Riverol
  * <p/>
  * <p/>
@@ -28,29 +29,27 @@ public class IsoelectricPointUtils {
      */
     private static class BjellpI {
 
-        private HashMap Cterm_pI_Bjell = new HashMap(); // pk at CTerm position Bjell
-        private HashMap Nterm_pI_Bjell = new HashMap(); // pk at the NTerm position
-        private HashMap sideGroup_pI_Bjell = new HashMap(); // in oder position
+        private Map<String,Double> Cterm_pI_Bjell = new HashMap<String, Double>(); // pk at CTerm position Bjell
+        private Map<String,Double> Nterm_pI_Bjell = new HashMap<String, Double>(); // pk at the NTerm position
+        private Map<String,Double> sideGroup_pI_Bjell = new HashMap<String, Double>(); // in oder position
 
 
-        private HashMap Cterm_pI_Skoog = new HashMap();
-        private HashMap Nterm_pI_Skoog = new HashMap();
-        private HashMap sideGroup_pI_Skoog = new HashMap();
+        private Map<String,Double> Cterm_pI_Skoog = new HashMap<String, Double>();
+        private Map<String,Double> Nterm_pI_Skoog = new HashMap<String,Double>();
+        private Map<String, Double> sideGroup_pI_Skoog = new HashMap<String,Double>();
 
 
-        private HashMap Cterm_pI_expasy = new HashMap();
-        private HashMap Nterm_pI_expasy = new HashMap();
-        private HashMap sideGroup_pI_expasy = new HashMap();
+        private Map<String,Double> Cterm_pI_expasy = new HashMap<String,Double>();
+        private Map<String,Double> Nterm_pI_expasy = new HashMap<String,Double>();
+        private Map<String,Double> sideGroup_pI_expasy = new HashMap<String,Double>();
 
 
-        private HashMap Cterm_pI_calibrated = new HashMap(); // pk set from the Proteomics 2008,8, 4898-4906
-        private HashMap Nterm_pI_calibrated = new HashMap();
-        private HashMap sideGroup_pI_calibrated = new HashMap();
+        private Map<String,Double> Cterm_pI_calibrated = new HashMap<String,Double>(); // pk set from the Proteomics 2008,8, 4898-4906
+        private Map<String,Double> Nterm_pI_calibrated = new HashMap<String,Double>();
+        private Map<String,Double> sideGroup_pI_calibrated = new HashMap<String,Double>();
 
-        private HashMap AA_pI_mod = new HashMap();
-        private HashMap sideGroup_pI = new HashMap();
+        private Map<String,Double> AA_pI_mod = new HashMap<String,Double>();
 
-        private double phStart = 0.0D;
         private double FoRmU = 0.0D;
 
         private String seq = "nAAAEDTNSNVTQNPSGSDAPK"; // SequenceAA
@@ -124,9 +123,9 @@ public class IsoelectricPointUtils {
         */
         public double calculate(String sequence) {
 
-            HashMap AApI_n; // Variables for pk Values in N-Term position (Depend of the method)
-            HashMap AApI_c; // Variables for pk Values in C-Term position (Depend of the method)
-            HashMap AApI_side; // Variables for pk Values in other position (Depend of the method)
+            Map<String,Double> AApI_n; // Variables for pk Values in N-Term position (Depend of the method)
+            Map<String,Double> AApI_c; // Variables for pk Values in C-Term position (Depend of the method)
+            Map<String,Double> AApI_side; // Variables for pk Values in other position (Depend of the method)
             this.seq = sequence; // SequenceAA
 
             if (this.useAApI.equals("Bjell")) {
@@ -152,10 +151,9 @@ public class IsoelectricPointUtils {
             }
 
             if (this.methylated) {
-                HashMap tempmap = AApI_side;
+                Map<String,Double> tempmap = AApI_side;
                 tempmap.remove("D");  // When the SequenceAA is methylated the function delete the
                 tempmap.remove("E");  // Aspartic and Glutamic AA contributions in the any position.
-                AApI_side = new HashMap(); // of the SequenceAA less in the N-term and C-term position.
                 AApI_side = tempmap;
             }
 
@@ -223,7 +221,7 @@ public class IsoelectricPointUtils {
         * value is minimal), the metionine (M) oxidation in the N-term
         * was represented as (m).
         */
-        private double getpI(HashMap AApI_n, HashMap AApI_c, HashMap AApI_side, double PH) {
+        private double getpI(Map<String,Double> AApI_n, Map<String,Double> AApI_c, Map<String,Double> AApI_side, double PH) {
 
             String sideAA; //281
             double pHpK = 0.0D;
@@ -277,14 +275,14 @@ public class IsoelectricPointUtils {
                     String mod = "";
                     sideAA = AA;
                     if (t == i) {
-                        if (usephosphoNterm == true) {
+                        if (usephosphoNterm) {
                             mod = String.valueOf("p"); // modification
-                        } else if (useoxidation == true) {
+                        } else if (useoxidation) {
                             mod = String.valueOf("o"); // modification
                         }
                     } else {
                         mod = String.valueOf(this.seq.charAt(t - 1));
-                        if (!(mod.equals("o")) && !(mod.equals("p"))) {
+                        if(!(mod.equals("o")) && !(mod.equals("p"))) {
                             useSideChain = true;
                         } else {
                             useSideChain = false;
@@ -349,7 +347,7 @@ public class IsoelectricPointUtils {
             this.FoRmU = 0.0D;
             this.numberOfPhosfoptides = 0;
             this.seq = "";
-            this.AA_pI_mod = new HashMap();
+            this.AA_pI_mod = new HashMap<String,Double>();
             this.PhosphoAADep = false;
             this.STpKa1 = 2.12D;
             this.STpKa2 = 7.12D;
@@ -371,243 +369,206 @@ public class IsoelectricPointUtils {
             System.out.println("pKa2: " + pKa2);
         }
 
-        public void setPhospAAdep(boolean useAAdep) {
-            this.PhosphoAADep = true;
-        }
-
-        public void setSTYPkA(double ST1, double ST2, double Y1, double Y2) {
-            this.STpKa1 = ST1;
-            this.STpKa2 = ST2;
-            this.YpKa1 = Y1;
-            this.YpKa2 = Y2;
-        }
-
-        public void setUserPka(double PKA1, double PKA2) {
-            this.pKa1 = PKA1;
-            this.pKa2 = PKA2;
-        }
-
-        public void setpKaSet(String setname) {
-            if (setname.equals("scansite")) {
-                this.pKa1 = 2.12D;
-                this.pKa2 = 7.21D;
-            } else if (setname.equals("promost")) {
-                this.pKa1 = 1.2D;
-                this.pKa2 = 6.5D;
-            } else {
-                this.pKa1 = 1.2D;
-                this.pKa2 = 6.9D;
-            }
-        }
-
-        public void insertMod(String aminoacid, double pka, double mw_mono, double mw_ave) {
-            this.AA_pI_mod.put(aminoacid, Double.valueOf(pka));
-        }
-
-        public void setPhosfoNumber(int n) {
-            this.numberOfPhosfoptides = n;
-        }
-
         private void fillMaps() {
 
-            this.Cterm_pI_Bjell.put("A", Double.valueOf(2.35D));
-            this.Cterm_pI_Bjell.put("R", Double.valueOf(2.17D));
-            this.Cterm_pI_Bjell.put("N", Double.valueOf(2.02D));
-            this.Cterm_pI_Bjell.put("D", Double.valueOf(2.09D));
-            this.Cterm_pI_Bjell.put("C", Double.valueOf(1.71D));
-            this.Cterm_pI_Bjell.put("E", Double.valueOf(2.19D));
-            this.Cterm_pI_Bjell.put("Q", Double.valueOf(2.17D));
-            this.Cterm_pI_Bjell.put("G", Double.valueOf(2.34D));
-            this.Cterm_pI_Bjell.put("H", Double.valueOf(1.82D));
-            this.Cterm_pI_Bjell.put("I", Double.valueOf(2.36D));
-            this.Cterm_pI_Bjell.put("L", Double.valueOf(2.36D));
-            this.Cterm_pI_Bjell.put("K", Double.valueOf(2.18D));
-            this.Cterm_pI_Bjell.put("M", Double.valueOf(2.28D));
-            this.Cterm_pI_Bjell.put("F", Double.valueOf(1.83D));
-            this.Cterm_pI_Bjell.put("P", Double.valueOf(1.99D));
-            this.Cterm_pI_Bjell.put("S", Double.valueOf(2.21D));
-            this.Cterm_pI_Bjell.put("T", Double.valueOf(2.63D));
-            this.Cterm_pI_Bjell.put("W", Double.valueOf(2.38D));
-            this.Cterm_pI_Bjell.put("Y", Double.valueOf(2.2D));
-            this.Cterm_pI_Bjell.put("V", Double.valueOf(2.32D));
+            Cterm_pI_Bjell.put("A", 2.35D);
+            Cterm_pI_Bjell.put("R", 2.17D);
+            Cterm_pI_Bjell.put("N", 2.02D);
+            Cterm_pI_Bjell.put("D", 2.09D);
+            Cterm_pI_Bjell.put("C", 1.71D);
+            Cterm_pI_Bjell.put("E", 2.19D);
+            Cterm_pI_Bjell.put("Q", 2.17D);
+            Cterm_pI_Bjell.put("G", 2.34D);
+            Cterm_pI_Bjell.put("H", 1.82D);
+            Cterm_pI_Bjell.put("I", 2.36D);
+            Cterm_pI_Bjell.put("L", 2.36D);
+            Cterm_pI_Bjell.put("K", 2.18D);
+            Cterm_pI_Bjell.put("M", 2.28D);
+            Cterm_pI_Bjell.put("F", 1.83D);
+            Cterm_pI_Bjell.put("P", 1.99D);
+            Cterm_pI_Bjell.put("S", 2.21D);
+            Cterm_pI_Bjell.put("T", 2.63D);
+            Cterm_pI_Bjell.put("W", 2.38D);
+            Cterm_pI_Bjell.put("Y", 2.2D);
+            Cterm_pI_Bjell.put("V", 2.32D);
 
-            this.Nterm_pI_Bjell.put("A", Double.valueOf(7.5D));
-            this.Nterm_pI_Bjell.put("R", Double.valueOf(6.76D));
-            this.Nterm_pI_Bjell.put("N", Double.valueOf(7.22D));
-            this.Nterm_pI_Bjell.put("D", Double.valueOf(7.7D));
-            this.Nterm_pI_Bjell.put("C", Double.valueOf(8.119999999999999D));
-            this.Nterm_pI_Bjell.put("E", Double.valueOf(7.19D));
-            this.Nterm_pI_Bjell.put("Q", Double.valueOf(6.73D));
-            this.Nterm_pI_Bjell.put("G", Double.valueOf(7.5D));
-            this.Nterm_pI_Bjell.put("H", Double.valueOf(7.18D));
-            this.Nterm_pI_Bjell.put("I", Double.valueOf(7.48D));
-            this.Nterm_pI_Bjell.put("L", Double.valueOf(7.46D));
-            this.Nterm_pI_Bjell.put("K", Double.valueOf(6.67D));
-            this.Nterm_pI_Bjell.put("M", Double.valueOf(6.98D));
-            this.Nterm_pI_Bjell.put("F", Double.valueOf(6.96D));
-            this.Nterm_pI_Bjell.put("P", Double.valueOf(8.359999999999999D));
-            this.Nterm_pI_Bjell.put("S", Double.valueOf(6.86D));
-            this.Nterm_pI_Bjell.put("T", Double.valueOf(7.02D));
-            this.Nterm_pI_Bjell.put("W", Double.valueOf(7.11D));
-            this.Nterm_pI_Bjell.put("Y", Double.valueOf(6.83D));
-            this.Nterm_pI_Bjell.put("V", Double.valueOf(7.44D));
+            Nterm_pI_Bjell.put("A", 7.5D);
+            Nterm_pI_Bjell.put("R", 6.76D);
+            Nterm_pI_Bjell.put("N", 7.22D);
+            Nterm_pI_Bjell.put("D", 7.7D);
+            Nterm_pI_Bjell.put("C", 8.119999999999999D);
+            Nterm_pI_Bjell.put("E", 7.19D);
+            Nterm_pI_Bjell.put("Q", 6.73D);
+            Nterm_pI_Bjell.put("G", 7.5D);
+            Nterm_pI_Bjell.put("H", 7.18D);
+            Nterm_pI_Bjell.put("I", 7.48D);
+            Nterm_pI_Bjell.put("L", 7.46D);
+            Nterm_pI_Bjell.put("K", 6.67D);
+            Nterm_pI_Bjell.put("M", 6.98D);
+            Nterm_pI_Bjell.put("F", 6.96D);
+            Nterm_pI_Bjell.put("P", 8.359999999999999D);
+            Nterm_pI_Bjell.put("S", 6.86D);
+            Nterm_pI_Bjell.put("T", 7.02D);
+            Nterm_pI_Bjell.put("W", 7.11D);
+            Nterm_pI_Bjell.put("Y", 6.83D);
+            Nterm_pI_Bjell.put("V", 7.44D);
 
-            this.sideGroup_pI_Bjell.put("R", Double.valueOf(-12.5D));
-            this.sideGroup_pI_Bjell.put("D", Double.valueOf(4.07D));
-            this.sideGroup_pI_Bjell.put("C", Double.valueOf(8.279999999999999D));
-            this.sideGroup_pI_Bjell.put("E", Double.valueOf(4.45D));
-            this.sideGroup_pI_Bjell.put("H", Double.valueOf(-6.08D));
-            this.sideGroup_pI_Bjell.put("K", Double.valueOf(-9.800000000000001D));
-            this.sideGroup_pI_Bjell.put("Y", Double.valueOf(9.84D));
+            sideGroup_pI_Bjell.put("R", -12.5D);
+            sideGroup_pI_Bjell.put("D", 4.07D);
+            sideGroup_pI_Bjell.put("C", 8.279999999999999D);
+            sideGroup_pI_Bjell.put("E", 4.45D);
+            sideGroup_pI_Bjell.put("H", -6.08D);
+            sideGroup_pI_Bjell.put("K", -9.800000000000001D);
+            sideGroup_pI_Bjell.put("Y", 9.84D);
 
-            this.Cterm_pI_Skoog.put("A", Double.valueOf(2.35D));
-            this.Cterm_pI_Skoog.put("R", Double.valueOf(2.17D));
-            this.Cterm_pI_Skoog.put("N", Double.valueOf(2.02D));
-            this.Cterm_pI_Skoog.put("D", Double.valueOf(2.09D));
-            this.Cterm_pI_Skoog.put("C", Double.valueOf(1.71D));
-            this.Cterm_pI_Skoog.put("E", Double.valueOf(2.19D));
-            this.Cterm_pI_Skoog.put("Q", Double.valueOf(2.17D));
-            this.Cterm_pI_Skoog.put("G", Double.valueOf(2.34D));
-            this.Cterm_pI_Skoog.put("H", Double.valueOf(1.82D));
-            this.Cterm_pI_Skoog.put("I", Double.valueOf(2.36D));
-            this.Cterm_pI_Skoog.put("L", Double.valueOf(2.36D));
-            this.Cterm_pI_Skoog.put("K", Double.valueOf(2.18D));
-            this.Cterm_pI_Skoog.put("M", Double.valueOf(2.28D));
-            this.Cterm_pI_Skoog.put("F", Double.valueOf(1.83D));
-            this.Cterm_pI_Skoog.put("P", Double.valueOf(1.99D));
-            this.Cterm_pI_Skoog.put("S", Double.valueOf(2.21D));
-            this.Cterm_pI_Skoog.put("T", Double.valueOf(2.63D));
-            this.Cterm_pI_Skoog.put("W", Double.valueOf(2.38D));
-            this.Cterm_pI_Skoog.put("Y", Double.valueOf(2.2D));
-            this.Cterm_pI_Skoog.put("V", Double.valueOf(2.32D));
+            Cterm_pI_Skoog.put("A", 2.35D);
+            Cterm_pI_Skoog.put("R", 2.17D);
+            Cterm_pI_Skoog.put("N", 2.02D);
+            Cterm_pI_Skoog.put("D", 2.09D);
+            Cterm_pI_Skoog.put("C", 1.71D);
+            Cterm_pI_Skoog.put("E", 2.19D);
+            Cterm_pI_Skoog.put("Q", 2.17D);
+            Cterm_pI_Skoog.put("G", 2.34D);
+            Cterm_pI_Skoog.put("H", 1.82D);
+            Cterm_pI_Skoog.put("I", 2.36D);
+            Cterm_pI_Skoog.put("L", 2.36D);
+            Cterm_pI_Skoog.put("K", 2.18D);
+            Cterm_pI_Skoog.put("M", 2.28D);
+            Cterm_pI_Skoog.put("F", 1.83D);
+            Cterm_pI_Skoog.put("P", 1.99D);
+            Cterm_pI_Skoog.put("S", 2.21D);
+            Cterm_pI_Skoog.put("T", 2.63D);
+            Cterm_pI_Skoog.put("W", 2.38D);
+            Cterm_pI_Skoog.put("Y", 2.2D);
+            Cterm_pI_Skoog.put("V", 2.32D);
 
-            this.Nterm_pI_Skoog.put("A", Double.valueOf(9.69D));
-            this.Nterm_pI_Skoog.put("R", Double.valueOf(9.039999999999999D));
-            this.Nterm_pI_Skoog.put("N", Double.valueOf(8.800000000000001D));
-            this.Nterm_pI_Skoog.put("D", Double.valueOf(9.82D));
-            this.Nterm_pI_Skoog.put("C", Double.valueOf(10.779999999999999D));
-            this.Nterm_pI_Skoog.put("E", Double.valueOf(9.76D));
-            this.Nterm_pI_Skoog.put("Q", Double.valueOf(9.130000000000001D));
-            this.Nterm_pI_Skoog.put("G", Double.valueOf(9.6D));
-            this.Nterm_pI_Skoog.put("H", Double.valueOf(9.17D));
-            this.Nterm_pI_Skoog.put("I", Double.valueOf(9.68D));
-            this.Nterm_pI_Skoog.put("L", Double.valueOf(9.6D));
-            this.Nterm_pI_Skoog.put("K", Double.valueOf(8.949999999999999D));
-            this.Nterm_pI_Skoog.put("M", Double.valueOf(9.210000000000001D));
-            this.Nterm_pI_Skoog.put("F", Double.valueOf(9.130000000000001D));
-            this.Nterm_pI_Skoog.put("P", Double.valueOf(10.6D));
-            this.Nterm_pI_Skoog.put("S", Double.valueOf(9.15D));
-            this.Nterm_pI_Skoog.put("T", Double.valueOf(10.43D));
-            this.Nterm_pI_Skoog.put("W", Double.valueOf(9.390000000000001D));
-            this.Nterm_pI_Skoog.put("Y", Double.valueOf(9.109999999999999D));
-            this.Nterm_pI_Skoog.put("V", Double.valueOf(9.619999999999999D));
-            this.sideGroup_pI_Skoog.put("R", Double.valueOf(-12.48D));
-            this.sideGroup_pI_Skoog.put("D", Double.valueOf(3.86D));
-            this.sideGroup_pI_Skoog.put("C", Double.valueOf(8.33D));
-            this.sideGroup_pI_Skoog.put("E", Double.valueOf(4.25D));
-            this.sideGroup_pI_Skoog.put("H", Integer.valueOf(-6));
-            this.sideGroup_pI_Skoog.put("K", Double.valueOf(-10.529999999999999D));
-            this.sideGroup_pI_Skoog.put("Y", Double.valueOf(10.07D));
+            Nterm_pI_Skoog.put("A", 9.69D);
+            Nterm_pI_Skoog.put("R", 9.039999999999999D);
+            Nterm_pI_Skoog.put("N", 8.800000000000001D);
+            Nterm_pI_Skoog.put("D", 9.82D);
+            Nterm_pI_Skoog.put("C", 10.779999999999999D);
+            Nterm_pI_Skoog.put("E", 9.76D);
+            Nterm_pI_Skoog.put("Q", 9.130000000000001D);
+            Nterm_pI_Skoog.put("G", 9.6D);
+            Nterm_pI_Skoog.put("H", 9.17D);
+            Nterm_pI_Skoog.put("I", 9.68D);
+            Nterm_pI_Skoog.put("L", 9.6D);
+            Nterm_pI_Skoog.put("K", 8.949999999999999D);
+            Nterm_pI_Skoog.put("M", 9.210000000000001D);
+            Nterm_pI_Skoog.put("F", 9.130000000000001D);
+            Nterm_pI_Skoog.put("P", 10.6D);
+            Nterm_pI_Skoog.put("S", 9.15D);
+            Nterm_pI_Skoog.put("T", 10.43D);
+            Nterm_pI_Skoog.put("W", 9.390000000000001D);
+            Nterm_pI_Skoog.put("Y", 9.109999999999999D);
+            Nterm_pI_Skoog.put("V", 9.619999999999999D);
+            sideGroup_pI_Skoog.put("R", -12.48D);
+            sideGroup_pI_Skoog.put("D", 3.86D);
+            sideGroup_pI_Skoog.put("C", 8.33D);
+            sideGroup_pI_Skoog.put("E", 4.25D);
+            sideGroup_pI_Skoog.put("H", -6.0D);
+            sideGroup_pI_Skoog.put("K", -10.529999999999999D);
+            sideGroup_pI_Skoog.put("Y", 10.07D);
 
-            this.Cterm_pI_expasy.put("A", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("R", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("N", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("D", Double.valueOf(4.55D));
-            this.Cterm_pI_expasy.put("C", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("E", Double.valueOf(4.75D));
-            this.Cterm_pI_expasy.put("Q", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("G", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("H", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("I", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("L", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("K", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("M", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("F", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("P", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("S", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("T", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("W", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("Y", Double.valueOf(3.55D));
-            this.Cterm_pI_expasy.put("V", Double.valueOf(3.55D));
+            Cterm_pI_expasy.put("A", 3.55D);
+            Cterm_pI_expasy.put("R", 3.55D);
+            Cterm_pI_expasy.put("N", 3.55D);
+            Cterm_pI_expasy.put("D", 4.55D);
+            Cterm_pI_expasy.put("C", 3.55D);
+            Cterm_pI_expasy.put("E", 4.75D);
+            Cterm_pI_expasy.put("Q", 3.55D);
+            Cterm_pI_expasy.put("G", 3.55D);
+            Cterm_pI_expasy.put("H", 3.55D);
+            Cterm_pI_expasy.put("I", 3.55D);
+            Cterm_pI_expasy.put("L", 3.55D);
+            Cterm_pI_expasy.put("K", 3.55D);
+            Cterm_pI_expasy.put("M", 3.55D);
+            Cterm_pI_expasy.put("F", 3.55D);
+            Cterm_pI_expasy.put("P", 3.55D);
+            Cterm_pI_expasy.put("S", 3.55D);
+            Cterm_pI_expasy.put("T", 3.55D);
+            Cterm_pI_expasy.put("W", 3.55D);
+            Cterm_pI_expasy.put("Y", 3.55D);
+            Cterm_pI_expasy.put("V", 3.55D);
 
-            this.Nterm_pI_expasy.put("A", Double.valueOf(7.59D));
-            this.Nterm_pI_expasy.put("R", Double.valueOf(7.5D));
-            this.Nterm_pI_expasy.put("N", Double.valueOf(7.5D));
-            this.Nterm_pI_expasy.put("D", Double.valueOf(7.5D));
-            this.Nterm_pI_expasy.put("C", Double.valueOf(7.5D));
-            this.Nterm_pI_expasy.put("E", Double.valueOf(7.7D));
-            this.Nterm_pI_expasy.put("Q", Double.valueOf(7.5D));
-            this.Nterm_pI_expasy.put("G", Double.valueOf(7.5D));
-            this.Nterm_pI_expasy.put("H", Double.valueOf(7.5D));
-            this.Nterm_pI_expasy.put("I", Double.valueOf(7.5D));
-            this.Nterm_pI_expasy.put("L", Double.valueOf(7.5D));
-            this.Nterm_pI_expasy.put("K", Double.valueOf(7.5D));
-            this.Nterm_pI_expasy.put("M", Double.valueOf(7.0D));
-            this.Nterm_pI_expasy.put("F", Double.valueOf(7.5D));
-            this.Nterm_pI_expasy.put("P", Double.valueOf(8.359999999999999D));
-            this.Nterm_pI_expasy.put("S", Double.valueOf(6.93D));
-            this.Nterm_pI_expasy.put("T", Double.valueOf(6.82D));
-            this.Nterm_pI_expasy.put("W", Double.valueOf(7.5D));
-            this.Nterm_pI_expasy.put("Y", Double.valueOf(7.5D));
-            this.Nterm_pI_expasy.put("V", Double.valueOf(7.44D));
+            Nterm_pI_expasy.put("A", 7.59D);
+            Nterm_pI_expasy.put("R", 7.5D);
+            Nterm_pI_expasy.put("N", 7.5D);
+            Nterm_pI_expasy.put("D", 7.5D);
+            Nterm_pI_expasy.put("C", 7.5D);
+            Nterm_pI_expasy.put("E", 7.7D);
+            Nterm_pI_expasy.put("Q", 7.5D);
+            Nterm_pI_expasy.put("G", 7.5D);
+            Nterm_pI_expasy.put("H", 7.5D);
+            Nterm_pI_expasy.put("I", 7.5D);
+            Nterm_pI_expasy.put("L", 7.5D);
+            Nterm_pI_expasy.put("K", 7.5D);
+            Nterm_pI_expasy.put("M", 7.0D);
+            Nterm_pI_expasy.put("F", 7.5D);
+            Nterm_pI_expasy.put("P", 8.359999999999999D);
+            Nterm_pI_expasy.put("S", 6.93D);
+            Nterm_pI_expasy.put("T", 6.82D);
+            Nterm_pI_expasy.put("W", 7.5D);
+            Nterm_pI_expasy.put("Y", 7.5D);
+            Nterm_pI_expasy.put("V", 7.44D);
 
-            this.sideGroup_pI_expasy.put("R", Double.valueOf(-12.0D));
-            this.sideGroup_pI_expasy.put("D", Double.valueOf(4.05D));
-            this.sideGroup_pI_expasy.put("C", Double.valueOf(9.0D));
-            this.sideGroup_pI_expasy.put("E", Double.valueOf(4.45D));
-            this.sideGroup_pI_expasy.put("H", Double.valueOf(-5.98D));
-            this.sideGroup_pI_expasy.put("K", Double.valueOf(-10.0D));
-            this.sideGroup_pI_expasy.put("Y", Double.valueOf(10.0D));
+            sideGroup_pI_expasy.put("R", -12.0D);
+            sideGroup_pI_expasy.put("D", 4.05D);
+            sideGroup_pI_expasy.put("C", 9.0D);
+            sideGroup_pI_expasy.put("E", 4.45D);
+            sideGroup_pI_expasy.put("H", -5.98D);
+            sideGroup_pI_expasy.put("K", -10.0D);
+            sideGroup_pI_expasy.put("Y", 10.0D);
 
-            this.Cterm_pI_calibrated.put("A", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("R", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("N", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("D", Double.valueOf(4.55D));
-            this.Cterm_pI_calibrated.put("C", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("E", Double.valueOf(4.75D));
-            this.Cterm_pI_calibrated.put("Q", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("G", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("H", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("I", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("L", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("K", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("M", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("F", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("P", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("S", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("T", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("W", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("Y", Double.valueOf(3.55D));
-            this.Cterm_pI_calibrated.put("V", Double.valueOf(3.55D));
+            Cterm_pI_calibrated.put("A", 3.55D);
+            Cterm_pI_calibrated.put("R", 3.55D);
+            Cterm_pI_calibrated.put("N", 3.55D);
+            Cterm_pI_calibrated.put("D", 4.55D);
+            Cterm_pI_calibrated.put("C", 3.55D);
+            Cterm_pI_calibrated.put("E", 4.75D);
+            Cterm_pI_calibrated.put("Q", 3.55D);
+            Cterm_pI_calibrated.put("G", 3.55D);
+            Cterm_pI_calibrated.put("H", 3.55D);
+            Cterm_pI_calibrated.put("I", 3.55D);
+            Cterm_pI_calibrated.put("L", 3.55D);
+            Cterm_pI_calibrated.put("K", 3.55D);
+            Cterm_pI_calibrated.put("M", 3.55D);
+            Cterm_pI_calibrated.put("F", 3.55D);
+            Cterm_pI_calibrated.put("P", 3.55D);
+            Cterm_pI_calibrated.put("S", 3.55D);
+            Cterm_pI_calibrated.put("T", 3.55D);
+            Cterm_pI_calibrated.put("W", 3.55D);
+            Cterm_pI_calibrated.put("Y", 3.55D);
+            Cterm_pI_calibrated.put("V", 3.55D);
 
-            this.Nterm_pI_calibrated.put("A", Double.valueOf(7.59D));
-            this.Nterm_pI_calibrated.put("R", Double.valueOf(7.5D));
-            this.Nterm_pI_calibrated.put("N", Double.valueOf(6.7D));
-            this.Nterm_pI_calibrated.put("D", Double.valueOf(7.5D));
-            this.Nterm_pI_calibrated.put("C", Double.valueOf(6.5D));
-            this.Nterm_pI_calibrated.put("E", Double.valueOf(7.7D));
-            this.Nterm_pI_calibrated.put("Q", Double.valueOf(7.5D));
-            this.Nterm_pI_calibrated.put("G", Double.valueOf(7.5D));
-            this.Nterm_pI_calibrated.put("H", Double.valueOf(7.5D));
-            this.Nterm_pI_calibrated.put("I", Double.valueOf(7.5D));
-            this.Nterm_pI_calibrated.put("L", Double.valueOf(7.5D));
-            this.Nterm_pI_calibrated.put("K", Double.valueOf(7.5D));
-            this.Nterm_pI_calibrated.put("M", Double.valueOf(7.0D));
-            this.Nterm_pI_calibrated.put("F", Double.valueOf(7.5D));
-            this.Nterm_pI_calibrated.put("P", Double.valueOf(8.359999999999999D));
-            this.Nterm_pI_calibrated.put("S", Double.valueOf(6.93D));
-            this.Nterm_pI_calibrated.put("T", Double.valueOf(6.82D));
-            this.Nterm_pI_calibrated.put("W", Double.valueOf(7.5D));
-            this.Nterm_pI_calibrated.put("Y", Double.valueOf(7.5D));
-            this.Nterm_pI_calibrated.put("V", Double.valueOf(7.44D));
+            Nterm_pI_calibrated.put("A", 7.59D);
+            Nterm_pI_calibrated.put("R", 7.5D);
+            Nterm_pI_calibrated.put("N", 6.7D);
+            Nterm_pI_calibrated.put("D", 7.5D);
+            Nterm_pI_calibrated.put("C", 6.5D);
+            Nterm_pI_calibrated.put("E", 7.7D);
+            Nterm_pI_calibrated.put("Q", 7.5D);
+            Nterm_pI_calibrated.put("G", 7.5D);
+            Nterm_pI_calibrated.put("H", 7.5D);
+            Nterm_pI_calibrated.put("I", 7.5D);
+            Nterm_pI_calibrated.put("L", 7.5D);
+            Nterm_pI_calibrated.put("K", 7.5D);
+            Nterm_pI_calibrated.put("M", 7.0D);
+            Nterm_pI_calibrated.put("F", 7.5D);
+            Nterm_pI_calibrated.put("P", 8.359999999999999D);
+            Nterm_pI_calibrated.put("S", 6.93D);
+            Nterm_pI_calibrated.put("T", 6.82D);
+            Nterm_pI_calibrated.put("W", 7.5D);
+            Nterm_pI_calibrated.put("Y", 7.5D);
+            Nterm_pI_calibrated.put("V", 7.44D);
 
-            this.sideGroup_pI_calibrated.put("R", Double.valueOf(-12.0D));
-            this.sideGroup_pI_calibrated.put("D", Double.valueOf(4.05D));
-            this.sideGroup_pI_calibrated.put("C", Double.valueOf(9.0D));
-            this.sideGroup_pI_calibrated.put("E", Double.valueOf(4.45D));
-            this.sideGroup_pI_calibrated.put("H", Double.valueOf(-5.98D));
-            this.sideGroup_pI_calibrated.put("K", Double.valueOf(-10.0D));
-            this.sideGroup_pI_calibrated.put("Y", Double.valueOf(10.0D));
+            sideGroup_pI_calibrated.put("R", -12.0D);
+            sideGroup_pI_calibrated.put("D", 4.05D);
+            sideGroup_pI_calibrated.put("C", 9.0D);
+            sideGroup_pI_calibrated.put("E", 4.45D);
+            sideGroup_pI_calibrated.put("H", -5.98D);
+            sideGroup_pI_calibrated.put("K", -10.0D);
+            sideGroup_pI_calibrated.put("Y", 10.0D);
         }
     }
 
@@ -624,30 +585,6 @@ public class IsoelectricPointUtils {
 
         public AminoAcid getCterm() {
             return Cterm;
-        }
-
-        public void setCterm(AminoAcid Cterm) {
-            this.Cterm = Cterm;
-        }
-
-        public AminoAcid getNterm() {
-            return Nterm;
-        }
-
-        public void setNterm(AminoAcid Nterm) {
-            this.Nterm = Nterm;
-        }
-
-        public ArrayList<AminoAcid> getSeqList() {
-            return seqList;
-        }
-
-        public void setSeqList(ArrayList<AminoAcid> seqList) {
-            this.seqList = seqList;
-        }
-
-        public void setSeqList(String aSequence) {
-            this.seqList = parseSequence(aSequence);
         }
 
         public SequenceAA() {
@@ -773,8 +710,8 @@ public class IsoelectricPointUtils {
         }
 
         public AminoAcid(Character aa, char mod) {
-            this.AAletter = new Character(aa);
-            this.mod = new Character(mod);
+            this.AAletter = aa;
+            this.mod = mod;
         }
 
         public AminoAcid() {

@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.impl.PrideDBAccessControllerImpl;
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.coreIdent.*;
 import uk.ac.ebi.pride.data.io.db.DBUtilities;
 import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
 import uk.ac.ebi.pride.term.CvTermReference;
@@ -74,7 +74,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         logger.info("Initializing experiment metadata");
         // clear cache
         cache.clear(CacheCategory.EXPERIMENT_METADATA);
-        controller.getMetaData();
+        controller.getExperimentMetaData();
     }
 
     /**
@@ -481,7 +481,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
                 ParamGroup paramGroup = new ParamGroup(cvParams, null);
                 // create a modification
                 // Note: location is a pseudo location, need to be replace before use
-                Modification mod = new Modification(paramGroup, modAcc, modDB, modDBVersion, monoMasses, avgMasses, 0);
+                Modification mod = new Modification(paramGroup, modAcc,modDB,0,null,avgMasses,avgMasses,modDB, modDBVersion);
                 modifications.put(modAcc, mod);
             } catch (SQLException e) {
                 logger.error("Querying PTM delta mass", e);

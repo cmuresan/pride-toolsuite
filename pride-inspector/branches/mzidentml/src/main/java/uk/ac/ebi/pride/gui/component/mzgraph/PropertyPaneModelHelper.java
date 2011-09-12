@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.gui.component.mzgraph;
 
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.coreIdent.*;
 import uk.ac.ebi.pride.gui.utils.Constants;
 
 import java.util.Collection;
@@ -82,7 +82,7 @@ public class PropertyPaneModelHelper {
             Software software = proMethod.getSoftware();
             if (software != null) {
                 // software id
-                appendParamEntry(paneModel, Constants.SOFTWARE_ID, software.getId(), category, subCategoryTitle);
+                appendParamEntry(paneModel, Constants.SOFTWARE_ID, software.getId().toString(), category, subCategoryTitle);
                 // software version
                 appendParamEntry(paneModel, Constants.SOFTWARE_VERSION, software.getVersion(), category, subCategoryTitle);
                 // software param group
@@ -97,7 +97,7 @@ public class PropertyPaneModelHelper {
     private static void addSourceFile(PropertyPaneModel paneModel, SourceFile sourceFile,
                                       String category, String subcategory) {
         // id
-        appendParamEntry(paneModel, Constants.SOURCE_FILE_ID, sourceFile.getId(), category, subcategory);
+        appendParamEntry(paneModel, Constants.SOURCE_FILE_ID, sourceFile.getId().toString(), category, subcategory);
         // name
         appendParamEntry(paneModel, Constants.SOURCE_FILE_NAME, sourceFile.getName(), category, subcategory);
         // path

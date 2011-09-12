@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.Spectrum;
+import uk.ac.ebi.pride.data.coreIdent.Spectrum;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;

@@ -44,7 +44,7 @@ public class DBControllerBatchTest {
                         PrideDBAccessControllerImpl controller = new PrideDBAccessControllerImpl(expAcc);
 
                         // read the meta data
-                        controller.getMetaData();
+                        controller.getExperimentMetaData();
 
                         // iterate over 50 spectra
                         if (controller.hasSpectrum()) {

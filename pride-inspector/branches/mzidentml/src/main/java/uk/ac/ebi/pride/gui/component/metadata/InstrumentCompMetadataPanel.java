@@ -2,14 +2,13 @@ package uk.ac.ebi.pride.gui.component.metadata;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
-import uk.ac.ebi.pride.data.core.InstrumentComponent;
-import uk.ac.ebi.pride.data.core.InstrumentConfiguration;
-import uk.ac.ebi.pride.data.core.Parameter;
+import uk.ac.ebi.pride.data.coreIdent.InstrumentComponent;
+import uk.ac.ebi.pride.data.coreIdent.InstrumentConfiguration;
+import uk.ac.ebi.pride.data.coreIdent.Parameter;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.List;
 /*
  * Created by JFormDesigner on Sun Jul 24 22:04:54 BST 2011
  */
@@ -26,7 +25,7 @@ public class InstrumentCompMetadataPanel extends JPanel {
 
     private void populateComponents(InstrumentConfiguration instrument) {
         // ion source
-        InstrumentComponent ionSource = instrument.getSource();
+        InstrumentComponent ionSource = instrument.getSource().get(0);
         if (ionSource != null) {
             ionSourceTable = TableFactory.createParamTable(ionSource);
         } else {
@@ -34,7 +33,7 @@ public class InstrumentCompMetadataPanel extends JPanel {
         }
 
         // analyzers
-        InstrumentComponent analyzer = instrument.getAnalyzer();
+        InstrumentComponent analyzer = instrument.getAnalyzer().get(0);
         if (analyzer != null) {
             analyzerTable = TableFactory.createParamTable(analyzer);
         } else {
@@ -42,7 +41,7 @@ public class InstrumentCompMetadataPanel extends JPanel {
         }
 
         // detector
-        InstrumentComponent detector = instrument.getDetector();
+        InstrumentComponent detector = instrument.getDetector().get(0);
         if (analyzer != null) {
             detectorTable = TableFactory.createParamTable(detector);
         } else {

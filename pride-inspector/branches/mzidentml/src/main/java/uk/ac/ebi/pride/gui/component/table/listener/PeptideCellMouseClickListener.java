@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table.listener;
 
 import org.jdesktop.swingx.table.TableColumnExt;
-import uk.ac.ebi.pride.data.core.Peptide;
+import uk.ac.ebi.pride.data.coreIdent.Peptide;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.component.protein.PTMDialog;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;

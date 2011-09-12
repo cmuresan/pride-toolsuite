@@ -44,7 +44,7 @@ public class RetrieveSequenceCoverageTask extends AbstractDataAccessTask<Void, T
                 // get mapped protein accession
                 String accession = controller.getProteinAccession(identId);
                 String accessionVersion = controller.getProteinAccessionVersion(identId);
-                String database = controller.getSearchDatabase(identId);
+                String database = controller.getSearchDatabase(identId).getName();
 
                 // Mapped Protein Accession
                 AccessionResolver resolver = new AccessionResolver(accession, accessionVersion, database);

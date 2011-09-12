@@ -102,7 +102,7 @@ public class FileControllerBatchTest {
             if (controller != null) {
                 writer.println("File: " + file.getAbsolutePath());
                 // read the meta data
-                controller.getMetaData();
+                controller.getExperimentMetaData();
 
                 // iterate over 50 spectra
                 if (controller.hasSpectrum()) {

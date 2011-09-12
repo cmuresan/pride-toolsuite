@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
-import uk.ac.ebi.pride.data.core.MetaData;
+import uk.ac.ebi.pride.data.coreIdent.ExperimentMetaData;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
@@ -399,7 +399,7 @@ public class QuantExportDialog extends JDialog {
             String url = null;
 
             try {
-                MetaData metaData = controller.getMetaData();
+                ExperimentMetaData metaData = controller.getExperimentMetaData();
                 java.util.List<String> speciesIds = DataAccessUtilities.getTaxonomy(metaData);
                 if (speciesIds.size() > 0) {
                     url = appContext.getProperty("ensembl.genome.browser.url");

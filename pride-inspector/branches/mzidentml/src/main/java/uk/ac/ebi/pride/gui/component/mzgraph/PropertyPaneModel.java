@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.gui.component.mzgraph;
 
-import uk.ac.ebi.pride.data.core.Chromatogram;
-import uk.ac.ebi.pride.data.core.MzGraph;
-import uk.ac.ebi.pride.data.core.Parameter;
-import uk.ac.ebi.pride.data.core.Spectrum;
+import uk.ac.ebi.pride.data.coreIdent.Chromatogram;
+import uk.ac.ebi.pride.data.coreIdent.MzGraph;
+import uk.ac.ebi.pride.data.coreIdent.Parameter;
+import uk.ac.ebi.pride.data.coreIdent.Spectrum;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 

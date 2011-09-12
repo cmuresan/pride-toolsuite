@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table.renderer;
 
-import uk.ac.ebi.pride.data.core.Modification;
-import uk.ac.ebi.pride.data.core.Peptide;
+import uk.ac.ebi.pride.data.coreIdent.Modification;
+import uk.ac.ebi.pride.data.coreIdent.Peptide;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -34,11 +34,11 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
             Peptide peptide = (Peptide) value;
             ptmString = getPTMString(peptide);
             // get the modifications
-            java.util.List<Modification> mods = peptide.getModifications();
+            java.util.List<Modification> mods = peptide.getPeptideSequence().getModificationList();
             // set the ptm string
             // set tooltips
             if (mods != null) {
-                String tooltip = getToolTipText(mods, peptide.getSequence().length());
+                String tooltip = getToolTipText(mods, peptide.getPeptideSequence().getSequence().length());
                 if (!tooltip.trim().equals("")) {
                     this.setToolTipText(tooltip);
                 }
@@ -68,8 +68,8 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
     }
 
     private AttributedString getPTMString(Peptide peptide) {
-        String sequence = peptide.getSequence();
-        java.util.List<Modification> mods = peptide.getModifications();
+        String sequence = peptide.getPeptideSequence().getSequence();
+        java.util.List<Modification> mods = peptide.getPeptideSequence().getModificationList();
         AttributedString str = new AttributedString(sequence);
         str.addAttribute(TextAttribute.FONT, DEFAULT_FONT);
         if (mods != null) {
@@ -93,7 +93,7 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
             for (Modification mod : mods) {
                 tip.append("<p>");
                 tip.append("<b><font size=\"3\" color=\"red\">");
-                tip.append(mod.getAccession());
+                tip.append(mod.getId().toString());
                 tip.append("</font></b><br>");
                 tip.append("<b>Name</b>:");
                 tip.append(mod.getName());
@@ -108,7 +108,7 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
                     tip.append(location);
                 }
                 tip.append("<br>");
-                java.util.List<Double> avgs = mod.getAvgMassDeltas();
+                java.util.List<Double> avgs = mod.getAvgMassDelta();
                 if (avgs != null) {
                     for (Double avg : avgs) {
                         tip.append("<b>Average Mass Delta</b>:");
@@ -116,7 +116,7 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
                         tip.append("<br>");
                     }
                 }
-                java.util.List<Double> monos = mod.getMonoMassDeltas();
+                java.util.List<Double> monos = mod.getMonoisotopicMassDelta();
                 if (monos != null) {
                     for (Double mono : monos) {
                         tip.append("<b>Mono Mass Delta</b>:");

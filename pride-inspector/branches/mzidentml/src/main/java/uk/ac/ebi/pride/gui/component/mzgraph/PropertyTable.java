@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.gui.component.mzgraph;
 
-import uk.ac.ebi.pride.data.core.Parameter;
+import uk.ac.ebi.pride.data.coreIdent.Parameter;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.gui.utils.Constants;
 

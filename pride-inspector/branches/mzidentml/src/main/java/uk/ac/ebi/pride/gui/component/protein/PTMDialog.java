@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.gui.component.protein;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.pride.data.core.Peptide;
+import uk.ac.ebi.pride.data.coreIdent.Peptide;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;

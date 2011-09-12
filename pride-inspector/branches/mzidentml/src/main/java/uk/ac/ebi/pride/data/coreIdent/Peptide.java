@@ -280,4 +280,20 @@ public class Peptide extends IdentifiableParamGroup {
     public void setSpectraData(SpectraData spectraData) {
         this.spectraData = spectraData;
     }
+
+    public boolean hasModification() {
+        return (!(getPeptideSequence().getModificationList().isEmpty()));
+    }
+
+    public int getSequenceLength() {
+        return getPeptideSequence().getSequence().length();
+    }
+
+    public List<Modification> getModifications() {
+        return getPeptideSequence().getModificationList();
+    }
+
+    public String getSequence() {
+        return getPeptideSequence().getSequence();
+    }
 }

@@ -4,9 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.MetaData;
-import uk.ac.ebi.pride.gui.PrideInspector;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
+import uk.ac.ebi.pride.data.coreIdent.ExperimentMetaData;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 
@@ -17,7 +15,7 @@ import uk.ac.ebi.pride.gui.component.message.MessageType;
  * Date: 22-Oct-2010
  * Time: 12:18:34
  */
-public class RetrieveMetaDataTask extends AbstractDataAccessTask<MetaData, Void> {
+public class RetrieveMetaDataTask extends AbstractDataAccessTask<ExperimentMetaData, Void> {
     private static final Logger logger = LoggerFactory.getLogger(RetrieveEntryTask.class);
     /**
      * the default task title
@@ -35,10 +33,10 @@ public class RetrieveMetaDataTask extends AbstractDataAccessTask<MetaData, Void>
     }
 
     @Override
-    protected MetaData retrieve() throws Exception {
-        MetaData metaData = null;
+    protected ExperimentMetaData retrieve() throws Exception {
+        ExperimentMetaData metaData = null;
         try {
-            metaData = controller.getMetaData();
+            metaData = controller.getExperimentMetaData();
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve meta data from data source";
             logger.error(msg, dex);

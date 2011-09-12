@@ -41,7 +41,7 @@ public class RetrievePeptideFitTask extends AbstractDataAccessTask<Void, Tuple<T
                         // Original Protein Accession
                         String protAcc = controller.getProteinAccession(identId);
                         String protAccVersion = controller.getProteinAccessionVersion(identId);
-                        String database = controller.getSearchDatabase(identId);
+                        String database = controller.getSearchDatabase(identId).getName();
 
                         // Mapped Protein Accession
                         AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database);

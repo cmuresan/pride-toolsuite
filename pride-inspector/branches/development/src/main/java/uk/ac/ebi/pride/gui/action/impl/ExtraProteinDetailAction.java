@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
+import uk.ac.ebi.pride.gui.component.table.model.AbstractPeptideTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
@@ -95,9 +96,10 @@ public class ExtraProteinDetailAction extends PrideAction {
         columns = showHideColModel.getColumns(true);
         for (TableColumn column : columns) {
             Object header = column.getHeaderValue();
-            if (ProteinTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(header) ||
-                    ProteinTableModel.TableHeader.PROTEIN_STATUS.getHeader().equals(header) ||
-                    ProteinTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(header)) {
+            if (PeptideTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(header) ||
+                    PeptideTableModel.TableHeader.PROTEIN_STATUS.getHeader().equals(header) ||
+                    PeptideTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(header) ||
+                    PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader().equals(header)) {
                 ((TableColumnExt) column).setVisible(true);
             }
         }

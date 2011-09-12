@@ -1,16 +1,6 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
-import uk.ac.ebi.pride.data.Triple;
 import uk.ac.ebi.pride.data.Tuple;
-import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.utils.CollectionUtils;
-import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
-import uk.ac.ebi.pride.gui.desktop.Desktop;
-import uk.ac.ebi.pride.gui.task.Task;
-import uk.ac.ebi.pride.gui.task.impl.RetrieveSequenceCoverageTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
-import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,8 +25,8 @@ public class QuantProteinTableModel extends AbstractProteinTableModel {
         PROTEIN_ACCESSION_COLUMN("Submitted", "Submitted Protein Accession From Source"),
         MAPPED_PROTEIN_ACCESSION_COLUMN("Mapped", "Pride Mapped Protein Accession"),
         PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
-        PROTEIN_STATUS("Protein Status", "Status Of The Protein Accession"),
-        PROTEIN_SEQUENCE_COVERAGE("Sequence Coverage", "Protein Sequence Coverage"),
+        PROTEIN_STATUS("Status", "Status Of The Protein Accession"),
+        PROTEIN_SEQUENCE_COVERAGE("Coverage", "Protein Sequence Coverage"),
         THEORITICAL_ISOELECTRIC_POINT_COLUMN("pI", "Theoritical isoelectric point"),
         IDENTIFICATION_SCORE_COLUMN("Score", "PRIDE Protein Score"),
         IDENTIFICATION_THRESHOLD_COLUMN("Threshold", "PRIDE Protein Threshold"),
@@ -67,8 +57,7 @@ public class QuantProteinTableModel extends AbstractProteinTableModel {
      */
     Map<Comparable, Integer> identIdToRowNumMapping;
 
-    public QuantProteinTableModel(DataAccessController controller) {
-        super(controller);
+    public QuantProteinTableModel() {
         this.identIdToRowNumMapping = new HashMap<Comparable, Integer>();
     }
 

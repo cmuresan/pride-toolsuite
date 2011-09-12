@@ -10,7 +10,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.action.impl.ExportQuantitativeDataAction;
-import uk.ac.ebi.pride.gui.action.impl.RetrieveExtraProteinDetailAction;
+import uk.ac.ebi.pride.gui.action.impl.ExtraProteinDetailAction;
 import uk.ac.ebi.pride.gui.action.impl.SetRefSampleAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
@@ -111,7 +111,7 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
     @Override
     protected void addComponents() {
         // create identification table
-        proteinTable = TableFactory.createQuantProteinTable(controller);
+        proteinTable = TableFactory.createQuantProteinTable();
 
         // createAttributedSequence header panel
         JPanel headerPanel = buildHeaderPane();
@@ -206,7 +206,7 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
         JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
         loadAllProteinNameButton.setForeground(Color.blue);
 
-        loadAllProteinNameButton.setAction(new RetrieveExtraProteinDetailAction(proteinTable, controller));
+        loadAllProteinNameButton.setAction(new ExtraProteinDetailAction(controller));
         toolBar.add(loadAllProteinNameButton);
 
         // add gap

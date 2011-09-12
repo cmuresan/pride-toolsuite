@@ -1,13 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
-import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
-import uk.ac.ebi.pride.gui.desktop.Desktop;
-import uk.ac.ebi.pride.gui.task.Task;
-import uk.ac.ebi.pride.gui.task.impl.RetrieveSequenceCoverageTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.mol.IsoelectricPointUtils;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
@@ -58,19 +52,6 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
         public String getToolTip() {
             return toolTip;
         }
-    }
-
-    /**
-     * the data access controller related to this model
-     */
-    private DataAccessController controller;
-
-    public AbstractProteinTableModel() {
-        this(null);
-    }
-
-    public AbstractProteinTableModel(DataAccessController controller) {
-        this.controller = controller;
     }
 
     @Override
@@ -136,12 +117,6 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
                 }
             }
         }
-
-        // retrieve protein sequence coverages
-        Task task = new RetrieveSequenceCoverageTask(identIds, controller);
-        task.addTaskListener(this);
-        task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-        Desktop.getInstance().getDesktopContext().addTask(task);
     }
 
     /**

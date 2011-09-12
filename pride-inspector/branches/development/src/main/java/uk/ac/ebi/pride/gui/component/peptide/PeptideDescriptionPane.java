@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.action.impl.RetrieveExtraPeptideDetailAction;
+import uk.ac.ebi.pride.gui.action.impl.ExtraProteinDetailAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
@@ -131,7 +131,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
         JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
         loadAllProteinNameButton.setForeground(Color.blue);
 
-        loadAllProteinNameButton.setAction(new RetrieveExtraPeptideDetailAction(pepTable, controller));
+        loadAllProteinNameButton.setAction(new ExtraProteinDetailAction(controller));
 
         toolBar.add(loadAllProteinNameButton);
 

@@ -3,14 +3,9 @@ package uk.ac.ebi.pride.gui.component.table.model;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.SearchEngine;
-import uk.ac.ebi.pride.engine.SearchEngineType;
-import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
-import uk.ac.ebi.pride.term.CvTermReference;
-import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Quantitative peptide table model
@@ -21,8 +16,8 @@ import java.util.Map;
  */
 public class QuantPeptideTableModel extends AbstractPeptideTableModel {
 
-    public QuantPeptideTableModel(SearchEngine se, DataAccessController controller) {
-        super(se, controller);
+    public QuantPeptideTableModel(SearchEngine se) {
+        super(se);
     }
 
     @Override

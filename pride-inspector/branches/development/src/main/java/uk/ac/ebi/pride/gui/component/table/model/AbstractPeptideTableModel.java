@@ -5,12 +5,6 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.SearchEngine;
 import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
-import uk.ac.ebi.pride.gui.desktop.Desktop;
-import uk.ac.ebi.pride.gui.task.Task;
-import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideFitTask;
-import uk.ac.ebi.pride.gui.task.impl.RetrieveSequenceCoverageTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
@@ -71,13 +65,10 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
         }
     }
 
-    private DataAccessController controller;
-
     private SearchEngine searchEngine;
 
-    public AbstractPeptideTableModel(SearchEngine se, DataAccessController controller) {
+    public AbstractPeptideTableModel(SearchEngine se) {
         this.searchEngine = se;
-        this.controller = controller;
         addAdditionalColumns();
     }
 
@@ -164,14 +155,6 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
                 }
             }
         }
-
-        // retrieve protein sequence coverages
-        Task task = new RetrieveSequenceCoverageTask(identIds, controller);
-        task.addTaskListener(this);
-        task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-        Desktop.getInstance().getDesktopContext().addTask(task);
-
-
     }
 
     /**
@@ -200,12 +183,6 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
                 fireTableCellUpdated(row, coverageIndex);
             }
         }
-
-        // retrieve peptide fit
-        Task ptask = new RetrievePeptideFitTask(coverageMap.keySet(), controller);
-        ptask.addTaskListener(this);
-        ptask.setGUIBlocker(new DefaultGUIBlocker(ptask, GUIBlocker.Scope.NONE, null));
-        Desktop.getInstance().getDesktopContext().addTask(ptask);
     }
 
     /**

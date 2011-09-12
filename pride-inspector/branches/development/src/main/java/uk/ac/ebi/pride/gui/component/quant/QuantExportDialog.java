@@ -290,7 +290,7 @@ public class QuantExportDialog extends JDialog {
      * @return JTable  a new jtable
      */
     private JTable createProteinTable() {
-        QuantProteinTableModel tableModel = new QuantProteinTableModel(controller);
+        QuantProteinTableModel tableModel = new QuantProteinTableModel();
         tableModel.removeAllColumns();
 
         // get the existing quant protein table model

@@ -50,6 +50,13 @@ public class ControllerContentPane extends DataAccessControllerPane {
     private int quantTabIndex;
     private int chartTabIndex;
 
+    private boolean metaDataTabEnabled;
+    private boolean mzDataTabEnabled;
+    private boolean proteinTabEnabled;
+    private boolean peptideTabEnabled;
+    private boolean quantTabEnabled;
+    private boolean chartTabEnabled;
+
     /**
      * This indicates the index for the latest tab
      */
@@ -91,6 +98,9 @@ public class ControllerContentPane extends DataAccessControllerPane {
         try {
             Collection<DataAccessController.ContentCategory> categories = controller.getContentCategories();
 
+            // metadata tab is always visible
+            metaDataTabEnabled = true;
+
             if (!categories.isEmpty()) {
                 if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)
                         || categories.contains(DataAccessController.ContentCategory.CHROMATOGRAM)) {
@@ -98,6 +108,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
                     boolean hasChromatogram = controller.hasChromatogram();
 
                     contentTabPane.setEnabledAt(mzDataTabIndex, hasSpectrum || hasChromatogram);
+                    mzDataTabEnabled = hasSpectrum || hasChromatogram;
 
                     // check spectrum
                     if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)) {
@@ -119,9 +130,9 @@ public class ControllerContentPane extends DataAccessControllerPane {
                 }
 
                 if (categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
-                    boolean hasProtein = controller.hasIdentification();
-                    contentTabPane.setEnabledAt(proteinTabIndex, hasProtein);
-                    if (hasProtein) {
+                    proteinTabEnabled = controller.hasIdentification();
+                    contentTabPane.setEnabledAt(proteinTabIndex, proteinTabEnabled);
+                    if (proteinTabEnabled) {
                         EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Protein identifications found", "This data source contains protein identifications")));
                     } else {
                         EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Protein identifications not found", "This data source does not contain protein identifications")));
@@ -129,9 +140,9 @@ public class ControllerContentPane extends DataAccessControllerPane {
                 }
 
                 if (categories.contains(DataAccessController.ContentCategory.PEPTIDE)) {
-                    boolean hasPeptide = controller.hasPeptide();
-                    contentTabPane.setEnabledAt(peptideTabIndex, hasPeptide);
-                    if (hasPeptide) {
+                    peptideTabEnabled = controller.hasPeptide();
+                    contentTabPane.setEnabledAt(peptideTabIndex, peptideTabEnabled);
+                    if (peptideTabEnabled) {
                         EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Peptides found", "This data source contains peptides")));
                     } else {
                         EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Peptides not found", "This data source does not contain peptides")));
@@ -139,16 +150,17 @@ public class ControllerContentPane extends DataAccessControllerPane {
                 }
 
                 if (categories.contains(DataAccessController.ContentCategory.QUANTITATION)) {
-                    boolean hasQuant = controller.hasQuantData();
-                    contentTabPane.setEnabledAt(quantTabIndex, hasQuant);
-                    if (hasQuant) {
+                    quantTabEnabled = controller.hasQuantData();
+                    contentTabPane.setEnabledAt(quantTabIndex, quantTabEnabled);
+                    if (quantTabEnabled) {
                         EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Quantification found", "This data source contains quantitative data")));
                     }
                 }
 
                 if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)
                         || categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
-                    contentTabPane.setEnabledAt(chartTabIndex, controller.hasSpectrum() || controller.hasIdentification());
+                    chartTabEnabled = controller.hasSpectrum() || controller.hasIdentification();
+                    contentTabPane.setEnabledAt(chartTabIndex, chartTabEnabled);
                 }
 
                 contentTabPane.setSelectedIndex(metaDataTabIndex);
@@ -380,5 +392,53 @@ public class ControllerContentPane extends DataAccessControllerPane {
      */
     public int getChartTabIndex() {
         return chartTabIndex;
+    }
+
+    /**
+     * Whether meta data tab is enabled
+     * @return  boolean true means enabled
+     */
+    public boolean isMetaDataTabEnabled() {
+        return metaDataTabEnabled;
+    }
+
+    /**
+     * Whether mz data tab is enabled
+     * @return  boolean true means enabled
+     */
+    public boolean isMzDataTabEnabled() {
+        return mzDataTabEnabled;
+    }
+
+    /**
+     * Whether protein tab is enabled
+     * @return  boolean true means enabled
+     */
+    public boolean isProteinTabEnabled() {
+        return proteinTabEnabled;
+    }
+
+    /**
+     * Whether peptide tab is enabled
+     * @return  boolean true means enabled
+     */
+    public boolean isPeptideTabEnabled() {
+        return peptideTabEnabled;
+    }
+
+    /**
+     * Whether quantitative data tab is enabled
+     * @return  boolean true means enabled
+     */
+    public boolean isQuantTabEnabled() {
+        return quantTabEnabled;
+    }
+
+    /**
+     * Whether chart tab is enabled
+     * @return  boolean true means enabled
+     */
+    public boolean isChartTabEnabled() {
+        return chartTabEnabled;
     }
 }

@@ -52,7 +52,7 @@ public class TableFactory {
      * @return JTable   identification table
      */
     public static JTable createIdentificationTable(DataAccessController controller) {
-        ProteinTableModel identTableModel = new ProteinTableModel(controller);
+        ProteinTableModel identTableModel = new ProteinTableModel();
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable table = new DefaultPrideTable(identTableModel, columnModel);
 
@@ -101,7 +101,7 @@ public class TableFactory {
      */
     public static JTable createPeptideTable(SearchEngine se, DataAccessController controller) {
 
-        PeptideTableModel peptideTableModel = new PeptideTableModel(se, controller);
+        PeptideTableModel peptideTableModel = new PeptideTableModel(se);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable table = new DefaultPrideTable(peptideTableModel, columnModel);
 
@@ -418,8 +418,8 @@ public class TableFactory {
      *
      * @return JTable   protein quantitative table
      */
-    public static JTable createQuantProteinTable(DataAccessController controller) {
-        QuantProteinTableModel tableModel = new QuantProteinTableModel(controller);
+    public static JTable createQuantProteinTable() {
+        QuantProteinTableModel tableModel = new QuantProteinTableModel();
         return createQuantProteinTable(tableModel);
     }
 
@@ -429,8 +429,8 @@ public class TableFactory {
      * @param se search engine
      * @return JTable  peptide table
      */
-    public static JTable createQuantPeptideTable(SearchEngine se, DataAccessController controller) {
-        QuantPeptideTableModel tableModel = new QuantPeptideTableModel(se, controller);
+    public static JTable createQuantPeptideTable(SearchEngine se) {
+        QuantPeptideTableModel tableModel = new QuantPeptideTableModel(se);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable quantPeptideTable = new DefaultPrideTable(tableModel, columnModel);
         quantPeptideTable.setAutoCreateColumnsFromModel(false);

@@ -9,7 +9,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.action.impl.DecoyFilterAction;
-import uk.ac.ebi.pride.gui.action.impl.RetrieveExtraProteinDetailAction;
+import uk.ac.ebi.pride.gui.action.impl.ExtraProteinDetailAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
@@ -165,7 +165,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
         JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
         loadAllProteinNameButton.setForeground(Color.blue);
 
-        loadAllProteinNameButton.setAction(new RetrieveExtraProteinDetailAction(identTable, controller));
+        loadAllProteinNameButton.setAction(new ExtraProteinDetailAction(controller));
         toolBar.add(loadAllProteinNameButton);
 
         // add gap

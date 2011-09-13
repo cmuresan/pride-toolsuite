@@ -212,7 +212,8 @@ public class TableDataRetriever {
         content.add(end == -1 ? null : end);
 
         // Theoritical isoelectric point
-        content.add(IsoelectricPointUtils.calculate(sequence));
+//        content.add(IsoelectricPointUtils.calculate(sequence));
+        content.add(null);
 
         // Spectrum reference
         content.add(specId);

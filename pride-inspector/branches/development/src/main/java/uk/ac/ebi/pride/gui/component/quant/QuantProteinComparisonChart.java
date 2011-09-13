@@ -276,35 +276,30 @@ public class QuantProteinComparisonChart extends DataAccessControllerPane implem
             if (referenceSampleIndex < 1) {
                 referenceSampleIndex = controller.getReferenceSubSampleIndex();
             }
-            // checks whether it contains isotope labelling methods
-            if (quantitation.hasIsotopeLabellingMethod()) {
-                // get reference reagent
-                Double referenceReagentResult = quantitation.getIsotopeLabellingResult(referenceSampleIndex);
-                CvParam referenceReagent = sample.getReagent(referenceSampleIndex);
-                // get short label for the reagent
-                for (int i = 1; i < QuantitativeSample.MAX_SUB_SAMPLE_SIZE; i++) {
-                    if (referenceSampleIndex != i) {
-                        CvParam reagent = sample.getReagent(i);
-                        if (reagent != null) {
-                            Double reagentResult = quantitation.getIsotopeLabellingResult(i);
-                            if (referenceReagentResult != null && reagentResult != null) {
-                                double value = reagentResult / referenceReagentResult;
-                                Comparable column = QuantCvTermReference.getReagentShortLabel(reagent)
-                                        + "/" + QuantCvTermReference.getReagentShortLabel(referenceReagent);
-                                dataset.addValue(value, proteinAcc, id, column);
-                                java.util.List<Comparable> columns = idMapping.get(id);
-                                if (columns == null) {
-                                    columns = new ArrayList<Comparable>();
-                                    idMapping.put(id, columns);
-                                }
-                                columns.add(column);
-                            }
+            // get reference reagent
+            Double referenceReagentResult = quantitation.getIsotopeLabellingResult(referenceSampleIndex);
+            CvParam referenceReagent = sample.getReagent(referenceSampleIndex);
+            // get short label for the reagent
+            for (int i = 1; i < QuantitativeSample.MAX_SUB_SAMPLE_SIZE; i++) {
+                if (referenceSampleIndex != i) {
+                    CvParam reagent = sample.getReagent(i);
+                    if (reagent != null) {
+                        Double reagentResult = quantitation.getIsotopeLabellingResult(i);
+                        double value = (referenceReagentResult == null || reagentResult == null) ? 0 : (reagentResult / referenceReagentResult);
+                        Comparable column = QuantCvTermReference.getReagentShortLabel(reagent)
+                                + "/" + QuantCvTermReference.getReagentShortLabel(referenceReagent);
+                        dataset.addValue(value, proteinAcc, id, column);
+                        java.util.List<Comparable> columns = idMapping.get(id);
+                        if (columns == null) {
+                            columns = new ArrayList<Comparable>();
+                            idMapping.put(id, columns);
                         }
+                        columns.add(column);
                     }
                 }
             }
         } catch (DataAccessException e) {
-            logger.error("Failed to retrieve quantitation data", e);
+            logger.error("Failed to retrieve quantitative data", e);
         }
     }
 

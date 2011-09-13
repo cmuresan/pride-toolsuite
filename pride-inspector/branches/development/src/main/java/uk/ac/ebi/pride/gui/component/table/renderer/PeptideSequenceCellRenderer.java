@@ -17,8 +17,6 @@ import java.text.AttributedString;
  */
 public class PeptideSequenceCellRenderer extends JLabel implements TableCellRenderer {
     private static final Color PTM_COLOR = new Color(255, 0, 0, 150);
-    public final static Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.PLAIN, 16);
-    public final static Font DEFAULT_FONT_BOLD = new Font(Font.MONOSPACED, Font.BOLD, 16);
     private AttributedString ptmString = null;
 
     public PeptideSequenceCellRenderer() {
@@ -71,7 +69,6 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
         String sequence = peptide.getSequence();
         java.util.List<Modification> mods = peptide.getModifications();
         AttributedString str = new AttributedString(sequence);
-        str.addAttribute(TextAttribute.FONT, DEFAULT_FONT);
         if (mods != null) {
             int seqLength = sequence.length();
             for (Modification mod : mods) {
@@ -79,7 +76,6 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
                 location = location == 0 ? 1 : location;
                 if (seqLength + 1 > location && location > 0) {
                     str.addAttribute(TextAttribute.FOREGROUND, PTM_COLOR, location - 1, location);
-                    str.addAttribute(TextAttribute.FONT, DEFAULT_FONT_BOLD, location - 1, location);
                 }
             }
         }

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.access.DataAccessMonitor;
+import uk.ac.ebi.pride.gui.action.impl.DecoyFilterAction;
 import uk.ac.ebi.pride.gui.component.db.DatabaseSearchPane;
 import uk.ac.ebi.pride.gui.component.report.ReportListModel;
 import uk.ac.ebi.pride.gui.component.startup.WelcomePane;

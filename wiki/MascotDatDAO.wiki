@@ -16,7 +16,7 @@ The parameters taken by the *Mascot DAO* are very similar / identical to the one
 
 *Use MudPIT Scoring*: Indicates whether MudPIT or normal scoring should be used.
 
-*Only significant peptides*: Indicates whether only significant peptides should be included in the generated PRIDE file. Significant peptides are determined using the set *Min Probability* on the _Identity Threshold_. There is no clear suggestion whether only the _Identity Threshold_ or also the _Homology Threshold_ should be used.
+*Only significant*: Indicates whether only significant peptides / (in PMF searches) proteins should be included in the generated PRIDE file. Significant identifications are determined using the set *Min Probability* on the _Identity Threshold_. There is no clear suggestion whether only the _Identity Threshold_ or also the _Homology Threshold_ should be used.
 
 *Remove duplicate same query*: Indicates whether duplicate peptides having the same sequence and coming from the same query (= spectrum) should be removed. These peptides may have different modifications reported.
 
@@ -40,6 +40,6 @@ To convert Mascot results into PRIDE XML files several compromises have to be ta
     * Spectrum acquisition parameters
   * *Error tolerant searches*: The *Mascot DAO* currently only supports integrated error tolerant searches. Separate error tolerant searches are not recommended by Matrix Science and thus are not supported.
   * *Quantitation Methods*: Quantitation methods are not supported by the *Mascot DAO* directly. As defined in the [PrideConverter2 PRIDE Converter 2 introduction] it is possible to report quantitative values using additional mzTab files.
-  * *PMF*: PMF searches are currently not supported by the *Mascot DAO*
+  * *PMF*: In PMF searches all queries are reported as 1 MS1 spectrum. In case no intensities are supplied to the search all peak intensities are set to 1. The spectra then all point to the same one spectrum. Additionally, every peptide contains one additional m/z parameter storing the m/z value the peptide was identified from.
   * *Protein families*: Protein families (available from Mascot version >= 2.3) cannot be reported in PRIDE XML files. Therefore, the here presented results correspond to the results seen in the older "peptide summary" view.
   * *Protein scores in MudPIT experiments*: For several reasons when using MudPIT scoring, proteins with only one peptide can have a lower score than the threshold while still being deemed significant identifications. this is caused by the fact that the protein thresholds have to be determined by using the average peptide threshold in the file (as recommended in the _Mascot Parser_ documentation).

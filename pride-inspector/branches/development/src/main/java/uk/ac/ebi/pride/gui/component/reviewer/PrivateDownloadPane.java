@@ -142,10 +142,10 @@ public class PrivateDownloadPane extends JDialog implements ActionListener {
     private void loginButtonPressed() {
         String currentUserName = userField.getText();
         char[] currentPassWord = pwdField.getPassword();
-        OpenReviewerConnectionTask reviewerTask = new OpenReviewerConnectionTask(currentUserName, currentPassWord);
+        OpenReviewerConnectionTask reviewerTask = new OpenReviewerConnectionTask(currentUserName, String.valueOf(currentPassWord));
         reviewerTask.setGUIBlocker(new DefaultGUIBlocker(reviewerTask, GUIBlocker.Scope.NONE, null));
         selectionPane.setCurrentUserName(currentUserName);
-        selectionPane.setCurrentPassWord(currentPassWord);
+        selectionPane.setCurrentPassWord(String.valueOf(currentPassWord));
         reviewerTask.addTaskListener(selectionPane);
         reviewerTask.addTaskListener(msgLabel);
         reviewerTask.execute();

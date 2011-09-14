@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * PrivateDownloadSelectionPane display both a list of experiments to be downloaded
  * and where it is going to be stored.
- *
+ * <p/>
  * User: rwang
  * Date: 24/01/11
  * Time: 11:08
@@ -56,7 +56,7 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
     private JButton deselectAllButton;
     private JButton downloadButton;
     private String currentUserName;
-    private char[] currentPassWord;
+    private String currentPassWord;
     private JCheckBox openAfterDownloadCheckbox;
     private PrideInspectorContext context;
 
@@ -64,17 +64,12 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
         this(parent, toDispose, null, null);
     }
 
-    public PrivateDownloadSelectionPane(Component parent, boolean toDispose, String username, char[] password) {
+    public PrivateDownloadSelectionPane(Component parent, boolean toDispose, String username, String password) {
         this.parent = parent;
         this.toDispose = toDispose;
         this.currentUserName = username;
-        if (password == null) {
-            this.currentPassWord = null;
-        } else {
-            this.currentPassWord = new char[password.length];
-            System.arraycopy(password, 0, currentPassWord, 0, password.length);
-        }
-        this.context = (PrideInspectorContext)uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
+        this.currentPassWord = password;
+        this.context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
 
         // setup the main GUI components
         setupMainPane();
@@ -88,17 +83,12 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
         this.currentUserName = currentUserName;
     }
 
-    public char[] getCurrentPassWord() {
+    public String getCurrentPassWord() {
         return currentPassWord;
     }
 
-    public void setCurrentPassWord(char[] currentPassWord) {
-        if (currentPassWord == null) {
-            this.currentPassWord = null;
-        } else {
-            this.currentPassWord = new char[currentPassWord.length];
-            System.arraycopy(currentPassWord, 0, currentPassWord, 0, currentPassWord.length);
-        }
+    public void setCurrentPassWord(String currentPassWord) {
+        this.currentPassWord = currentPassWord;
     }
 
     public void addExperimentMetaData(List<Map<String, String>> metadata) {

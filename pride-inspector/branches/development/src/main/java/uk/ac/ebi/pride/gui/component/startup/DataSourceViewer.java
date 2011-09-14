@@ -205,7 +205,7 @@ public class DataSourceViewer extends JPanel {
 
         @Override
         public String getToolTipText(MouseEvent event) {
-            String tooltip;
+            String tooltip = null;
 
             Point p = event.getPoint();
             int rowIndex = rowAtPoint(p);
@@ -213,7 +213,10 @@ public class DataSourceViewer extends JPanel {
             int realColIndex = convertColumnIndexToModel(colIndex);
             TableModel model = getModel();
             if (realColIndex == 0 && model != null) {
-                tooltip = model.getValueAt(rowIndex, 0).toString();
+                Object value = model.getValueAt(rowIndex, 0);
+                if (value != null) {
+                    tooltip = value.toString();
+                }
             } else {
                 tooltip = super.getToolTipText(event);
             }

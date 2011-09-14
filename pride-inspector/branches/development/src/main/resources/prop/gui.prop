@@ -91,6 +91,8 @@ export.disabled.small.icon=icon/16x16/export_disable.gif
 export.title=Spectra (.mgf)
 export.tooltip=Export spectra into MGF format
 
+export.pride.xml.title = PRIDE XML
+
 export.identification.title=Protein-Peptide Mappings
 export.identification.tooltip=Export proteins and Peptides into tab delimited format.
 

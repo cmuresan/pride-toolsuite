@@ -141,7 +141,7 @@ public class OpenValidPrideExperimentTask extends TaskAdapter<Void, Void> implem
      * Open all the remaing experiments, they could be public or private
      */
     private void openRemainingExperiments(List<Comparable> remainingExps) {
-        OpenReviewerConnectionTask task = new OpenReviewerConnectionTask(username, password.toCharArray(), remainingExps);
+        OpenReviewerConnectionTask task = new OpenReviewerConnectionTask(username, password, remainingExps);
         task.addTaskListener(this);
         task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
         context.addTask(task);
@@ -151,7 +151,7 @@ public class OpenValidPrideExperimentTask extends TaskAdapter<Void, Void> implem
      * Open all the private experiment associated with the user
      */
     private void openAllPrivateExperiments() {
-        OpenReviewerConnectionTask task = new OpenReviewerConnectionTask(username, password.toCharArray());
+        OpenReviewerConnectionTask task = new OpenReviewerConnectionTask(username, password);
         task.addTaskListener(this);
         task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
         context.addTask(task);
@@ -289,7 +289,7 @@ public class OpenValidPrideExperimentTask extends TaskAdapter<Void, Void> implem
             dialog.add(msgPanel, BorderLayout.NORTH);
 
             // add a experiment selection pane
-            PrivateDownloadSelectionPane selectionPane = new PrivateDownloadSelectionPane(dialog, true, username, password.toCharArray());
+            PrivateDownloadSelectionPane selectionPane = new PrivateDownloadSelectionPane(dialog, true, username, password);
             selectionPane.addExperimentMetaData(validMetaData);
             dialog.add(selectionPane, BorderLayout.CENTER);
             dialog.setAlwaysOnTop(true);
@@ -300,7 +300,7 @@ public class OpenValidPrideExperimentTask extends TaskAdapter<Void, Void> implem
             TaskDialog dialog = new TaskDialog(Desktop.getInstance().getMainComponent(), "Download PRIDE Experiment", "Downloading...Please be aware that this may take a few minutes");
             dialog.setAlwaysOnTop(true);
             dialog.setVisible(true);
-            DownloadExperimentTask downloadTask = new DownloadExperimentTask(accs, new File(System.getProperty("java.io.tmpdir")), username, password.toCharArray(), true);
+            DownloadExperimentTask downloadTask = new DownloadExperimentTask(accs, new File(System.getProperty("java.io.tmpdir")), username, password, true);
             downloadTask.addTaskListener(dialog);
             downloadTask.setGUIBlocker(new DefaultGUIBlocker(downloadTask, GUIBlocker.Scope.NONE, null));
             context.addTask(downloadTask);
@@ -321,17 +321,6 @@ public class OpenValidPrideExperimentTask extends TaskAdapter<Void, Void> implem
 
     @Override
     public void process(TaskEvent<List<String>> listTaskEvent) {
-        boolean isErrMsg = listTaskEvent.getValue().contains(OpenReviewerConnectionTask.WRONG_LOGGING_CREDENTIAL);
-
-        if (isErrMsg) {
-            Runnable eventDispatcher = new Runnable() {
-                public void run() {
-                    GUIUtilities.error(Desktop.getInstance().getMainComponent(),
-                            "Please ensure you have the correct user name and password", "Login Error");
-                }
-            };
-            EDTUtils.invokeLater(eventDispatcher);
-        }
     }
 
     @Override

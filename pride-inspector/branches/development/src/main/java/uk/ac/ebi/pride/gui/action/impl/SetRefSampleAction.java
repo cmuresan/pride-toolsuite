@@ -54,7 +54,7 @@ public class SetRefSampleAction extends PrideAction {
             controlSampleMenu = createPopupMenu(button);
         }
         Point location = button.getLocation();
-        controlSampleMenu.show(button, (int) location.getX() - 100, (int) location.getY() + button.getHeight());
+        controlSampleMenu.show(button, (int) location.getX(), (int) location.getY() + button.getHeight());
     }
 
     private JPopupMenu createPopupMenu(JComponent source) {

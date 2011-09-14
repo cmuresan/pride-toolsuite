@@ -2,10 +2,16 @@ package uk.ac.ebi.pride.gui.component.protein;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
+import uk.ac.ebi.pride.data.Tuple;
+import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
+import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.table.filter.DecoyAccessionFilter;
+import uk.ac.ebi.pride.gui.component.table.model.AbstractPeptideTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
@@ -32,25 +38,19 @@ public class DecoyFilterDialog extends JDialog {
      */
     public static final String NEW_FILTER = "New Filter";
 
-    private static final String FILTER_STRING_LABEL= "Filter String";
-    private static final String PREFIX_MESSAGE= "Hide decoy protein accessions start with";
-    private static final String POST_MESSAGE= "Hide decoy protein accessions end with";
-    private static final String CONTAIN_MESSAGE= "Hide decoy protein accessions contain";
-
-    /**
-     * Table which contains all the protein identifications
-     */
-    private JTable proteinTable;
+    private static final String FILTER_STRING_LABEL = "Filter String";
+    private static final String PREFIX_MESSAGE = "Hide decoy protein accessions start with";
+    private static final String POST_MESSAGE = "Hide decoy protein accessions end with";
+    private static final String CONTAIN_MESSAGE = "Hide decoy protein accessions contain";
 
     /**
      * Pride Inspector desktop context
      */
     private PrideInspectorContext appContext;
 
-    public DecoyFilterDialog(Frame owner, JTable proteinTable) {
+    public DecoyFilterDialog(Frame owner) {
         super(owner, uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().getProperty("decoy.filter.title"));
         this.appContext = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
-        this.proteinTable = proteinTable;
         initComponents();
         populateComponents();
     }
@@ -246,21 +246,6 @@ public class DecoyFilterDialog extends JDialog {
         });
     }
 
-    /**
-     * Set the row filter
-     *
-     * @param rowFilter a given row filter
-     */
-    private void setRowFilter(RowFilter rowFilter) {
-        // get table model
-        TableModel tableModel = proteinTable.getModel();
-        RowSorter rowSorter = proteinTable.getRowSorter();
-        if (rowSorter == null || !(rowSorter instanceof TableRowSorter)) {
-            rowSorter = new NumberTableRowSorter(tableModel);
-            proteinTable.setRowSorter(rowSorter);
-        }
-        ((TableRowSorter) rowSorter).setRowFilter(rowFilter);
-    }
 
     /**
      * Action triggered when the ok button is clicked
@@ -282,21 +267,8 @@ public class DecoyFilterDialog extends JDialog {
                     type = DecoyAccessionFilter.Type.CONTAIN;
                 }
 
-                // get accession index
-                int index = -1;
-                TableModel tableModel = proteinTable.getModel();
-                String protAccColName = ProteinTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
-                int colCnt = tableModel.getColumnCount();
-                for (int i = 0; i < colCnt; i++) {
-                    if (tableModel.getColumnName(i).equals(protAccColName)) {
-                        index = i;
-                    }
-                }
-
-                // get criteria
-                setRowFilter(new DecoyAccessionFilter(type, criteria, index, false));
                 DecoyFilterDialog.this.setVisible(false);
-                DecoyFilterDialog.this.firePropertyChange(NEW_FILTER, false, true);
+                DecoyFilterDialog.this.firePropertyChange(NEW_FILTER, null, new Tuple<DecoyAccessionFilter.Type, String>(type, criteria));
 
                 // reset label
                 criteriaLabel.setText(FILTER_STRING_LABEL);
@@ -305,6 +277,8 @@ public class DecoyFilterDialog extends JDialog {
                 criteriaLabel.setText("<html><div> " + FILTER_STRING_LABEL + " <b style=\"color:#FF0000\"> (Empty String)</b></div></html>");
             }
         }
+
+
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables

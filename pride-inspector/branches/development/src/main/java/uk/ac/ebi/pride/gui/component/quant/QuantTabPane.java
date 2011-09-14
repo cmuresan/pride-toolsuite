@@ -183,7 +183,6 @@ public class QuantTabPane extends PrideInspectorTabPane {
         Task task = (Task)event.getSource();
         if (task instanceof ScanExperimentTask) {
             proteinPane.getRefSampleButton().getAction().setEnabled(true);
-            proteinPane.getExportButton().getAction().setEnabled(true);
         }
     }
 

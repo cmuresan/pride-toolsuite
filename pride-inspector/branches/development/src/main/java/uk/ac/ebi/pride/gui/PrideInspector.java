@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui;
 
+import com.jtattoo.plaf.mint.MintLookAndFeel;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Properties;
 
 /**
  * This is the main class to call to run PRIDE GUI
@@ -195,6 +197,11 @@ public class PrideInspector extends Desktop {
         mainFrame.setIconImage(icon.getImage());
         try {
 //            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            Properties props = new Properties();
+
+            props.put("logoString", "PRIDE");
+
+            MintLookAndFeel.setTheme(props);
             UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
 
         } catch (Exception e) {

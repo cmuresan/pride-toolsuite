@@ -12,8 +12,11 @@ pride.inspector.mzml.example.file=examples/mzml-example.mzML
 # pride website
 pride.website=http://www.ebi.ac.uk/pride
 
-# pride inspector download website
+# pride inspector website
 pride.inspector.website=http://code.google.com/p/pride-toolsuite
+
+# pride inspector download website
+pride.inspector.download.website=http://code.google.com/p/pride-toolsuite/downloads/list
 
 # the size of each mzdata batch load
 mzdata.batch.load.size=100

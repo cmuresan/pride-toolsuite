@@ -165,7 +165,10 @@ copy.cell.small.icon=icon/16x16/copy_cell.gif
 copy.row.title=Copy Rows
 copy.row.small.icon=icon/16x16/copy_row.png
 
-# icons for popup menu select all
+# icons for table popup menu
+search.table.title = Find
+search.table.small.icon = icon/16x16/find_experiment.png
+print.table.title = Print
 select.all.title=Select All
 deselect.all.title=Deselect All
 

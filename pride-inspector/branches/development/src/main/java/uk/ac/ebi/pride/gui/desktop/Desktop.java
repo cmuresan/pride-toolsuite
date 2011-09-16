@@ -63,7 +63,7 @@ public abstract class Desktop extends PropertyChangeHelper {
         Constructor<V> cstruct = appContextClass.getDeclaredConstructor();
         V appContext = cstruct.newInstance();
         appContext.setDesktop(desktop);
-        return appContext;  //To change body of created methods use File | Settings | File Templates.
+        return appContext;
     }
 
     private static <T extends Desktop> T buildApp(final Class<T> appClass) throws Exception{

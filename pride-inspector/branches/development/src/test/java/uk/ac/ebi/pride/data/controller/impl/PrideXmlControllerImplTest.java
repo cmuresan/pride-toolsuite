@@ -45,12 +45,6 @@ public class PrideXmlControllerImplTest {
     }
 
     @Test
-    public void testGetFileDescription() throws Exception {
-        FileDescription fileDesc = prideController.getFileDescription();
-        assertEquals("File content", fileDesc.getFileContent().getCvParams().get(0).getAccession(), "MS:1000294");
-    }
-
-    @Test
     public void testGetSamples() throws Exception {
         List<Sample> samples = prideController.getSamples();
         assertTrue("There should be only one sample", samples.size() == 1);

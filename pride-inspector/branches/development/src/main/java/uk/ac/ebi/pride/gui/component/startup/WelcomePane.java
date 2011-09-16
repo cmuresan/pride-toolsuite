@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.impl.CheckUpdateTask;
+import uk.ac.ebi.pride.gui.url.HttpUtilities;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.gui.utils.UpdateChecker;
@@ -19,6 +20,8 @@ import uk.ac.ebi.pride.util.IOUtilities;
 import javax.help.CSH;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
@@ -77,6 +80,11 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
      * PRIDE xml sample
      */
     private static final String PRIDE_XML_SAMPLE = "PRIDE XML";
+
+    /**
+     * More samples
+     */
+    private static final String MORE_SAMPLE = "More...";
 
     /**
      * mzML sample
@@ -323,6 +331,19 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         positionalPanel.add(buttonPanel);
 
         trySamplePane.add(positionalPanel, BorderLayout.CENTER);
+
+        JPanel moreSamplePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        moreSamplePanel.setOpaque(false);
+        JButton openMoreExampleButton = createLabelLikeButton(null, MORE_SAMPLE);
+        openMoreExampleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                HttpUtilities.openURL(context.getProperty("pride.inspector.download.website"));
+            }
+        });
+        moreSamplePanel.add(openMoreExampleButton);
+        trySamplePane.add(moreSamplePanel, BorderLayout.SOUTH);
+
 
         return trySamplePane;
     }

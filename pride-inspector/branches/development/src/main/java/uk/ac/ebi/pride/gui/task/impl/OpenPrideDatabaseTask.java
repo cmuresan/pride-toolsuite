@@ -142,7 +142,7 @@ public class OpenPrideDatabaseTask extends TaskAdapter<DataAccessController, Voi
             EmptyDataAccessController dummy = null;
             if (acc != null) {
                 dummy = new EmptyDataAccessController();
-                dummy.setName("Pride Experiment " + acc);
+                dummy.setName("PRIDE Experiment " + acc);
                 dummy.setType(DataAccessController.Type.DATABASE);
                 // add a closure hook
                 this.addOwner(dummy);
@@ -152,7 +152,7 @@ public class OpenPrideDatabaseTask extends TaskAdapter<DataAccessController, Voi
             //connect to database
             dbAccessController = new PrideDBAccessControllerImpl(acc);
             if (acc != null) {
-                dbAccessController.setName("Pride Experiment " + acc);
+                dbAccessController.setName("PRIDE Experiment " + acc);
                 // this is important for cancelling
                 if (Thread.interrupted()) {
                     context.removeDataAccessController(dummy, false);

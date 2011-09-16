@@ -1,14 +1,14 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.bushe.swing.event.EventBus;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
-import uk.ac.ebi.pride.gui.component.protein.DecoyFilterDialog;
-import uk.ac.ebi.pride.gui.component.startup.CentralContentPane;
+import uk.ac.ebi.pride.gui.component.decoy.DecoyFilterDialog;
+import uk.ac.ebi.pride.gui.component.report.RemovalReportMessage;
+import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.table.filter.DecoyAccessionFilter;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
@@ -16,15 +16,24 @@ import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
+import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
+import uk.ac.ebi.pride.gui.task.Task;
+import uk.ac.ebi.pride.gui.task.impl.DecoyFilterTask;
+import uk.ac.ebi.pride.gui.task.impl.DecoyRatioTask;
+import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
+import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.util.NumberUtilities;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.regex.Pattern;
 
 /**
  * Action to show a decoy filter dialog
@@ -129,8 +138,16 @@ public class DecoyFilterAction extends PrideAction implements PropertyChangeList
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(DecoyFilterDialog.NEW_FILTER)) {
-            Tuple<DecoyAccessionFilter.Type, String> newValue = (Tuple<DecoyAccessionFilter.Type, String>)evt.getNewValue();
-            setRowFilters(newValue.getKey(), newValue.getValue());
+            Tuple<DecoyAccessionFilter.Type, String> newValue = (Tuple<DecoyAccessionFilter.Type, String>) evt.getNewValue();
+            // decoy task
+            Task decoyRatioTask = new DecoyRatioTask(controller, newValue.getKey(), newValue.getValue());
+            decoyRatioTask.setGUIBlocker(new DefaultGUIBlocker(decoyRatioTask, GUIBlocker.Scope.NONE, null));
+            appContext.addTask(decoyRatioTask);
+
+            Task decoyFilterTask = new DecoyFilterTask(controller, newValue.getKey(), newValue.getValue());
+            decoyFilterTask.setGUIBlocker(new DefaultGUIBlocker(decoyFilterTask, GUIBlocker.Scope.NONE, null));
+            appContext.addTask(decoyFilterTask);
+
             // enable menu items
             nonDecoyMenuItem.setEnabled(true);
             nonDecoyMenuItem.setIcon(GUIUtilities.loadIcon(appContext.getProperty("menu.selection.tick.small.icon")));
@@ -138,54 +155,6 @@ public class DecoyFilterAction extends PrideAction implements PropertyChangeList
             decoyMenuItem.setIcon(null);
             undoFilterMenuItem.setEnabled(true);
         }
-    }
-
-    private void setRowFilters(DecoyAccessionFilter.Type type, String criteria) {
-        // get content pane
-        ControllerContentPane contentPane = (ControllerContentPane) appContext.getDataContentPane(controller);
-        // protein tab
-        JTable table = contentPane.getProteinTabPane().getIdentificationPane().getIdentificationTable();
-        String protAccColName = ProteinTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
-        int index = getAccessionColumnIndex(table.getModel(), protAccColName);
-        setRowFilter(table, new DecoyAccessionFilter(type, criteria, index, false));
-        // peptide tab
-        table = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
-        protAccColName = PeptideTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
-        index = getAccessionColumnIndex(table.getModel(), protAccColName);
-        setRowFilter(table, new DecoyAccessionFilter(type, criteria, index, false));
-        // quant tab
-        if (contentPane.isQuantTabEnabled()) {
-            table = contentPane.getQuantTabPane().getQuantProteinSelectionPane().getQuantProteinTable();
-            protAccColName = QuantProteinTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
-            index = getAccessionColumnIndex(table.getModel(), protAccColName);
-            setRowFilter(table, new DecoyAccessionFilter(type, criteria, index, false));
-        }
-    }
-
-    private int getAccessionColumnIndex(TableModel tableModel, String protAccColName) {
-        int colCnt = tableModel.getColumnCount();
-        for (int i = 0; i < colCnt; i++) {
-            if (tableModel.getColumnName(i).equals(protAccColName)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Set the row filter
-     *
-     * @param rowFilter a given row filter
-     */
-    private void setRowFilter(JTable table, RowFilter rowFilter) {
-        // get table model
-        TableModel tableModel = table.getModel();
-        RowSorter rowSorter = table.getRowSorter();
-        if (rowSorter == null || !(rowSorter instanceof TableRowSorter)) {
-            rowSorter = new NumberTableRowSorter(tableModel);
-            table.setRowSorter(rowSorter);
-        }
-        ((TableRowSorter) rowSorter).setRowFilter(rowFilter);
     }
 
     /**
@@ -251,6 +220,7 @@ public class DecoyFilterAction extends PrideAction implements PropertyChangeList
         public void actionPerformed(ActionEvent e) {
             // remove the decoy filter
             ControllerContentPane contentPane = (ControllerContentPane) appContext.getDataContentPane(controller);
+
             // protein tab
             setFilter(contentPane.getProteinTabPane().getIdentificationPane().getIdentificationTable());
 

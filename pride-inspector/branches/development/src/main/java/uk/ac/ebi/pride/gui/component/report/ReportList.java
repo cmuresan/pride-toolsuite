@@ -18,7 +18,7 @@ public class ReportList extends JList {
         int index = locationToIndex(event.getPoint());
 
         // get item
-        ReportMessage item = (ReportMessage)getModel().getElementAt(index);
+        SummaryReportMessage item = (SummaryReportMessage)getModel().getElementAt(index);
 
         return item.getDescription();
     }

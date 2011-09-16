@@ -97,8 +97,6 @@ public class ExtraProteinDetailAction extends PrideAction {
         for (TableColumn column : columns) {
             Object header = column.getHeaderValue();
             if (PeptideTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(header) ||
-                    PeptideTableModel.TableHeader.PROTEIN_STATUS.getHeader().equals(header) ||
-                    PeptideTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(header) ||
                     PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader().equals(header)) {
                 ((TableColumnExt) column).setVisible(true);
             }

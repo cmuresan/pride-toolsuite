@@ -12,7 +12,7 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
-import uk.ac.ebi.pride.gui.component.report.ReportMessage;
+import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
@@ -144,13 +144,13 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
                     // peptide FDR
                     if (NumberUtilities.isNumber(value)) {
                         double dVal = NumberUtilities.scaleDouble(Double.parseDouble(value), 5);
-                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.INFO, "Peptide FDR: " + dVal, "This data source contains petpide golabl FDR")));
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.INFO, "Peptide FDR: " + dVal, "This data source contains petpide golabl FDR")));
                     }
                 } else if (CvTermReference.PROTEIN_GLOBAL_FDR.getAccession().equals(acc)) {
                     // peptide FDR
                     if (NumberUtilities.isNumber(value)) {
                         double dVal = NumberUtilities.scaleDouble(Double.parseDouble(value), 5);
-                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.INFO, "Protein FDR: " + dVal, "This data source contains protein golabl FDR")));
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.INFO, "Protein FDR: " + dVal, "This data source contains protein golabl FDR")));
                     }
                 }
 
@@ -164,7 +164,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
                 String value = userParam.getValue();
                 // tranche link
                 if (name.contains("tranche")) {
-                    EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.INFO, "Tranche Link Available", "This data source contains Tranche links")));
+                    EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.INFO, "Tranche Link Available", "This data source contains Tranche links")));
                     break;
                 }
             }

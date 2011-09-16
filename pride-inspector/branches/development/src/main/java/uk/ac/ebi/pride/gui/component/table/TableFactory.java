@@ -162,6 +162,11 @@ public class TableFactory {
         int rowColumnNum = peptideColumn.getModelIndex();
         columnModel.getColumn(rowColumnNum).setPreferredWidth(200);
 
+        // hide spectrum id column
+        String spectrumIdHeader = PeptideTableModel.TableHeader.SPECTRUM_ID.getHeader();
+        TableColumnExt spectrumIdColumn = (TableColumnExt) table.getColumn(spectrumIdHeader);
+        spectrumIdColumn.setVisible(false);
+
         return table;
     }
 

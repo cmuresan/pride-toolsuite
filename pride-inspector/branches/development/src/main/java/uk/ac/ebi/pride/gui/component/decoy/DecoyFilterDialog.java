@@ -1,26 +1,17 @@
-package uk.ac.ebi.pride.gui.component.protein;
+package uk.ac.ebi.pride.gui.component.decoy;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 import uk.ac.ebi.pride.data.Tuple;
-import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.table.filter.DecoyAccessionFilter;
-import uk.ac.ebi.pride.gui.component.table.model.AbstractPeptideTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
-import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
 import javax.help.CSH;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

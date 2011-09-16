@@ -9,7 +9,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Modification;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
-import uk.ac.ebi.pride.gui.component.report.ReportMessage;
+import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
@@ -96,7 +96,7 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
                                 String accession = mod.getAccession();
                                 String name = mod.getName();
                                 if (!ptmMap.containsKey(accession)) {
-                                    EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.INFO, "PTM: " + accession,
+                                    EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.INFO, "PTM: " + accession,
                                             "PTM found: [" + accession + "]\t" + name)));
                                     ptmMap.put(mod.getAccession(), mod.getName());
                                 }
@@ -109,7 +109,7 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
             }
 
             if (missingSpectrumLinks > 0) {
-                EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.WARNING, "Missing spectra [" + missingSpectrumLinks + "]", "The number of peptides without spectrum links")));
+                EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.WARNING, "Missing spectra [" + missingSpectrumLinks + "]", "The number of peptides without spectrum links")));
             }
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve protein and peptide related data";

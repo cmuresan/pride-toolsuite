@@ -153,7 +153,7 @@ public class PooledConnectionFactory {
      *
      * @return PooledConnectionFactory connection factory
      */
-    private static PooledConnectionFactory getInstance() {
+    public static PooledConnectionFactory getInstance() {
         return instance;
     }
 

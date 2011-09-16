@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.event;
 import org.bushe.swing.event.AbstractEventServiceEvent;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.component.report.ReportMessage;
+import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 
 /**
  * Event to trigger when a new summary report item is created
@@ -25,23 +26,15 @@ public class SummaryReportEvent extends AbstractEventServiceEvent {
      */
     public SummaryReportEvent(Object source, DataAccessController controller, ReportMessage msg) {
         super(source);
-        setDataSource(controller);
-        setMessage(msg);
+        this.dataSource = controller;
+        this.message = msg;
     }
 
     public DataAccessController getDataSource() {
         return dataSource;
     }
 
-    public void setDataSource(DataAccessController dataSource) {
-        this.dataSource = dataSource;
-    }
-
     public ReportMessage getMessage() {
         return message;
-    }
-
-    public void setMessage(ReportMessage message) {
-        this.message = message;
     }
 }

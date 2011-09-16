@@ -6,10 +6,14 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * List model for report list
- *
+ * <p/>
  * User: rwang
  * Date: 07/06/11
  * Time: 15:14
@@ -28,9 +32,29 @@ public class ReportListModel extends DefaultListModel {
     @EventSubscriber(eventClass = SummaryReportEvent.class)
     public void onSummaryReportEvent(SummaryReportEvent evt) {
         DataAccessController controller = evt.getDataSource();
-        if(source == controller) {
+        if (source == controller) {
             ReportMessage msg = evt.getMessage();
-            addElement(msg);
+            if (msg instanceof SummaryReportMessage) {
+                addElement(msg);
+            } else if (msg instanceof RemovalReportMessage) {
+                int size = size();
+                // get the message to be removed
+                Pattern pattern = ((RemovalReportMessage) msg).getPattern();
+                List<SummaryReportMessage> messageToRemove = new ArrayList<SummaryReportMessage>();
+                for (int i = 0; i < size; i++) {
+                    SummaryReportMessage currMsg = (SummaryReportMessage)getElementAt(i);
+                    String message = currMsg.getMessage();
+                    Matcher m = pattern.matcher(message);
+                    if (m.matches()) {
+                        messageToRemove.add(currMsg);
+                    }
+                }
+
+                // remove message
+                for (SummaryReportMessage reportMessage : messageToRemove) {
+                    removeElement(reportMessage);
+                }
+            }
         }
     }
 }

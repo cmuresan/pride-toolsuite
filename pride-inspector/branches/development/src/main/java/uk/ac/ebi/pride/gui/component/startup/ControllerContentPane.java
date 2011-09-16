@@ -13,7 +13,7 @@ import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
 import uk.ac.ebi.pride.gui.component.protein.ProteinTabPane;
 import uk.ac.ebi.pride.gui.component.quant.QuantTabPane;
-import uk.ac.ebi.pride.gui.component.report.ReportMessage;
+import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.table.model.ProgressiveListTableModel;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
@@ -113,18 +113,18 @@ public class ControllerContentPane extends DataAccessControllerPane {
                     // check spectrum
                     if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)) {
                         if (hasSpectrum) {
-                            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Spectra found", "This data source contains spectra")));
+                            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Spectra found", "This data source contains spectra")));
                         } else {
-                            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Spectra not found", "This data source does not contain spectra")));
+                            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.ERROR, "Spectra not found", "This data source does not contain spectra")));
                         }
                     }
 
                     // check chromatogram
                     if (categories.contains(DataAccessController.ContentCategory.CHROMATOGRAM)) {
                         if (hasChromatogram) {
-                            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Chromatograms found", "This data source contains Chromatograms")));
+                            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Chromatograms found", "This data source contains Chromatograms")));
                         } else {
-                            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Chromatograms not found", "This data source does not contain Chromatograms")));
+                            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.ERROR, "Chromatograms not found", "This data source does not contain Chromatograms")));
                         }
                     }
                 }
@@ -133,9 +133,9 @@ public class ControllerContentPane extends DataAccessControllerPane {
                     proteinTabEnabled = controller.hasIdentification();
                     contentTabPane.setEnabledAt(proteinTabIndex, proteinTabEnabled);
                     if (proteinTabEnabled) {
-                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Protein identifications found", "This data source contains protein identifications")));
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Protein identifications found", "This data source contains protein identifications")));
                     } else {
-                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Protein identifications not found", "This data source does not contain protein identifications")));
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.ERROR, "Protein identifications not found", "This data source does not contain protein identifications")));
                     }
                 }
 
@@ -143,9 +143,9 @@ public class ControllerContentPane extends DataAccessControllerPane {
                     peptideTabEnabled = controller.hasPeptide();
                     contentTabPane.setEnabledAt(peptideTabIndex, peptideTabEnabled);
                     if (peptideTabEnabled) {
-                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Peptides found", "This data source contains peptides")));
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Peptides found", "This data source contains peptides")));
                     } else {
-                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Peptides not found", "This data source does not contain peptides")));
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.ERROR, "Peptides not found", "This data source does not contain peptides")));
                     }
                 }
 
@@ -153,7 +153,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
                     quantTabEnabled = controller.hasQuantData();
                     contentTabPane.setEnabledAt(quantTabIndex, quantTabEnabled);
                     if (quantTabEnabled) {
-                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Quantification found", "This data source contains quantitative data")));
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Quantification found", "This data source contains quantitative data")));
                     }
                 }
 

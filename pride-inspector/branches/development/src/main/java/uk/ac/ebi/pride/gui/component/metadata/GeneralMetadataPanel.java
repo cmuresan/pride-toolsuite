@@ -1,19 +1,14 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
-import org.bushe.swing.event.EventBus;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 import org.jdesktop.swingx.table.TableColumnExt;
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.gui.component.report.ReportMessage;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.listener.HyperLinkCellMouseClickListener;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.component.table.model.ParamTableModel;
 import uk.ac.ebi.pride.gui.component.table.renderer.HyperLinkCellRenderer;
-import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
-import uk.ac.ebi.pride.gui.url.PrefixedHyperLinkGenerator;
-import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import javax.swing.*;

@@ -32,7 +32,6 @@ import java.util.List;
  * Time: 11:08
  */
 public class PrivateDownloadSelectionPane extends JPanel implements ActionListener, TableModelListener, TaskListener<List<Map<String, String>>, String> {
-    private static final String DOWNLOAD_TITLE = "Experiment Download";
     private static final String SAVE_TO_TITLE = "Save to";
     private static final String BROWSE_BUTTON = "Browse";
     private static final String SELECTION_ALL_BUTTON = "Select All";
@@ -100,8 +99,19 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
      * Set up all the main GUI components
      */
     private void setupMainPane() {
-        this.setBorder(BorderFactory.createTitledBorder(DOWNLOAD_TITLE));
         this.setLayout(new BorderLayout());
+
+        // create download table
+        downloadTable = new JXTable();
+        downloadTableModel = new ReviewDownloadTableModel();
+        downloadTableModel.addTableModelListener(this);
+        downloadTable.setModel(downloadTableModel);
+        downloadTable.setColumnControlVisible(true);
+        downloadTable.setFillsViewportHeight(true);
+        downloadTable.setCellEditor(new DefaultCellEditor(new JCheckBox()));
+        JScrollPane scrollPane = new JScrollPane(downloadTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        this.add(scrollPane, BorderLayout.CENTER);
+
         // create file browser pane
         JPanel dirPane = new JPanel();
         dirPane.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -118,18 +128,6 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
         dirPane.add(saveToLabel);
         dirPane.add(pathField);
         dirPane.add(browseButton);
-        this.add(dirPane, BorderLayout.NORTH);
-
-        // create download table
-        downloadTable = new JXTable();
-        downloadTableModel = new ReviewDownloadTableModel();
-        downloadTableModel.addTableModelListener(this);
-        downloadTable.setModel(downloadTableModel);
-        downloadTable.setColumnControlVisible(true);
-        downloadTable.setFillsViewportHeight(true);
-        downloadTable.setCellEditor(new DefaultCellEditor(new JCheckBox()));
-        JScrollPane scrollPane = new JScrollPane(downloadTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.add(scrollPane, BorderLayout.CENTER);
 
         // create button panel
         JPanel buttonPanel = new JPanel();
@@ -151,7 +149,11 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
         buttonPanel.add(selectAllButton);
         buttonPanel.add(deselectAllButton);
         buttonPanel.add(downloadButton);
-        this.add(buttonPanel, BorderLayout.SOUTH);
+
+        JPanel container = new JPanel(new BorderLayout());
+        container.add(dirPane, BorderLayout.NORTH);
+        container.add(buttonPanel, BorderLayout.CENTER);
+        this.add(container, BorderLayout.SOUTH);
     }
 
     @Override

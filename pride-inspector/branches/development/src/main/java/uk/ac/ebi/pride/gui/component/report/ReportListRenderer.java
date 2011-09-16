@@ -26,8 +26,8 @@ public class ReportListRenderer implements ListCellRenderer{
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        ReportMessage item = (ReportMessage) value;
-        ReportMessage.Type type = item.getType();
+        SummaryReportMessage item = (SummaryReportMessage) value;
+        SummaryReportMessage.Type type = item.getType();
 
         RoundCornerLabel label= new RoundCornerLabel(getIcon(type), item.getMessage(), getBackgroundPaint(type), getBorderPaint(type));
         label.setPreferredSize(new Dimension(50, DEFAULT_HEIGHT));
@@ -41,7 +41,7 @@ public class ReportListRenderer implements ListCellRenderer{
      * @param type  message type
      * @return  Icon    message icon
      */
-    private Icon getIcon(ReportMessage.Type type) {
+    private Icon getIcon(SummaryReportMessage.Type type) {
         switch(type) {
             case SUCCESS:
                 return GUIUtilities.loadIcon(context.getProperty("report.item.success.icon.small"));
@@ -61,7 +61,7 @@ public class ReportListRenderer implements ListCellRenderer{
      * @param type  message type
      * @return  Paint   background
      */
-    private Paint getBackgroundPaint(ReportMessage.Type type) {
+    private Paint getBackgroundPaint(SummaryReportMessage.Type type) {
         switch(type) {
             case SUCCESS:
                 return new GradientPaint(0, 0, new Color(40, 175, 99, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(40, 175, 99, STOP_ALPHA), true);
@@ -82,7 +82,7 @@ public class ReportListRenderer implements ListCellRenderer{
      * @param type  message type
      * @return  Paint   border color
      */
-    private Paint getBorderPaint(ReportMessage.Type type) {
+    private Paint getBorderPaint(SummaryReportMessage.Type type) {
         switch(type) {
             case SUCCESS:
                 return new Color(40, 175, 99);

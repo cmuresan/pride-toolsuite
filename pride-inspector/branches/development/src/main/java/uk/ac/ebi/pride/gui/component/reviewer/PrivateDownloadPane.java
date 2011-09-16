@@ -20,8 +20,7 @@ import java.awt.event.ActionListener;
  */
 public class PrivateDownloadPane extends JDialog implements ActionListener {
 
-    private static final String TITLE = "Download Experiments from PRIDE";
-    private static final String LOGIN_TITLE = "User Login";
+    private static final String TITLE = "Download PRIDE Experiment";
     private static final String MSG_TITLE = "Message";
     private static final String USER_NAME_TITLE = "User Name";
     private static final String PASSWORD_TITLE = "Password";
@@ -79,7 +78,7 @@ public class PrivateDownloadPane extends JDialog implements ActionListener {
      */
     private JPanel createLoginPane() {
         JPanel loginPane = new JPanel(new BorderLayout());
-        loginPane.setBorder(BorderFactory.createTitledBorder(LOGIN_TITLE));
+//        loginPane.setBorder(BorderFactory.createTitledBorder(LOGIN_TITLE));
         loginPane.setMaximumSize(LOGIN_PANE_SIZE);
 
         // input box panel

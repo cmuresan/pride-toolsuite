@@ -472,7 +472,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         c.weightx = 0;
         c.gridx = 0;
 
-        Icon bulletinIcon = GUIUtilities.loadIcon(context.getProperty("puzzle.bulletin.icon.small"));
+        Icon bulletinIcon = GUIUtilities.loadIcon(context.getProperty("feedback.icon.small"));
 
         c.gridy = 0;
         // add button

@@ -369,11 +369,10 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
             Protocol proteinDetectionProtocol = null;
             //Todo: Try to convert the CVTerms in Pride to Protocol
             List<SearchDataBase> searchDataBaseList = null;
-            List<Modification>  modificationList = null;
             //Todo: We need to search in the peptides Identifications all of the Search Databases Used.
             //Todo: We need to search all of the possible modifications presented in the experiment.
 
-            metaData = new IdentificationMetaData(null,null,spectrumIdentificationProtocolList,proteinDetectionProtocol,searchDataBaseList,modificationList);
+            metaData = new IdentificationMetaData(null,null,spectrumIdentificationProtocolList,proteinDetectionProtocol,searchDataBaseList);
         }
         return metaData;
     }

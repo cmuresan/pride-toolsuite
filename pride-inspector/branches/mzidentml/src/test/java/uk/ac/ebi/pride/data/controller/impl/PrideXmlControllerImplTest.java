@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.data.controller.impl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.coreIdent.*;
 
 import java.io.File;
 import java.net.URL;
@@ -46,8 +46,8 @@ public class PrideXmlControllerImplTest {
 
     @Test
     public void testGetFileDescription() throws Exception {
-        FileDescription fileDesc = prideController.getFileDescription();
-        assertEquals("File content", fileDesc.getFileContent().getCvParams().get(0).getAccession(), "MS:1000294");
+        //FileDescription fileDesc = prideController.getFileDescription();
+        //assertEquals("File content", fileDesc.getFileContent().getCvParams().get(0).getAccession(), "MS:1000294");
     }
 
     @Test
@@ -60,9 +60,9 @@ public class PrideXmlControllerImplTest {
 
     @Test
     public void testGetSoftware() throws Exception {
-        List<Software> software = prideController.getSoftware();
+        List<Software> software = prideController.getSoftwareList();
         assertTrue("There should be only one software", software.size() == 1);
-        assertEquals("Software ID should be Xcalibur", software.get(0).getId(), "Xcalibur");
+        assertEquals("Software ID should be Xcalibur", software.get(0).getName(), "Xcalibur");
         assertEquals("Software version should be 1.2 SP1", software.get(0).getVersion(), "1.2 SP1");
     }
 
@@ -70,25 +70,24 @@ public class PrideXmlControllerImplTest {
     public void testGetInstruments() throws Exception {
         List<InstrumentConfiguration> instrumentConfigurations = prideController.getInstrumentConfigurations();
         assertTrue("There should be only one instrument configuration", instrumentConfigurations.size() == 1);
-        assertEquals("Source should contain Electrospray Ionization", instrumentConfigurations.get(0).getSource().getCvParams().get(0).getName(), "Electrospray Ionization");
-        assertEquals("Analyzer should contain Ion Trap", instrumentConfigurations.get(0).getAnalyzer().getCvParams().get(0).getName(), "Ion Trap");
-        assertEquals("Detector should contain Electron Multiplier Tube", instrumentConfigurations.get(0).getDetector().getCvParams().get(0).getName(), "Electron Multiplier Tube");
+        assertEquals("Source should contain Electrospray Ionization", instrumentConfigurations.get(0).getSource().get(0).getCvParams().get(0).getName(), "Electrospray Ionization");
+        assertEquals("Analyzer should contain Ion Trap", instrumentConfigurations.get(0).getAnalyzer().get(0).getCvParams().get(0).getName(), "Ion Trap");
+        assertEquals("Detector should contain Electron Multiplier Tube", instrumentConfigurations.get(0).getDetector().get(0).getCvParams().get(0).getName(), "Electron Multiplier Tube");
     }
 
-//    @Test
-//    public void testGetDataProcessings() throws Exception {
-//        List<DataProcessing> dataProcs = prideController.getDataProcessings();
-//        assertTrue("There should be only one data processing", dataProcs.size() == 1);
-//        assertEquals("Auto-generated data processing id should be dataprocess1", dataProcs.get(0).getId(), "dataprocessing1");
-//        assertTrue("There should be only on processing method", dataProcs.get(0).getProcessingMethods().size() == 1);
-//        assertEquals("Processing method's software id should Xcalibur", dataProcs.get(0).getProcessingMethods().get(0).getSoftware().getId(), "Xcalibur");
-//        assertEquals("Processing method should contain cv term PSI:1000035", dataProcs.get(0).getProcessingMethods().get(0).getCvParams().get(0).getAccession(), "PSI:1000035");
-//        assertEquals("Processing method should contain cv term MS:1000544", dataProcs.get(0).getProcessingMethods().get(0).getCvParams().get(1).getAccession(), "MS:1000544");
-//    }
+    @Test
+    public void testGetDataProcessings() throws Exception {
+        List<DataProcessing> dataProcs = prideController.getDataProcessings();
+        assertTrue("There should be only one data processing", dataProcs.size() == 1);
+        assertEquals("Auto-generated data processing id should be dataprocess1", dataProcs.get(0).getId(), "dataprocessing1");
+        assertTrue("There should be only on processing method", dataProcs.get(0).getProcessingMethods().size() == 1);
+        assertEquals("Processing method's software id should Xcalibur", dataProcs.get(0).getProcessingMethods().get(0).getSoftware().getName(), "Xcalibur");
+        assertEquals("Processing method should contain cv term PSI:1000035", dataProcs.get(0).getProcessingMethods().get(0).getCvParams().get(0).getAccession(), "PSI:1000035");
+    }
 
     @Test
     public void testGetMetaData() throws Exception {
-        Experiment experiment = (Experiment) prideController.getMetaData();
+        ExperimentMetaData experiment = (ExperimentMetaData) prideController.getExperimentMetaData();
 
         // test additional param
         List<CvParam> additional = experiment.getCvParams();
@@ -101,7 +100,7 @@ public class PrideXmlControllerImplTest {
         assertEquals("PubMed number should be 16038019", references.get(0).getCvParams().get(0).getAccession(), "16038019");
 
         // test protocol
-        Protocol protocol = experiment.getProtocol();
+        ExperimentProtocol protocol = experiment.getProtocol();
         assertEquals("Protocol name is In Gel Protein Digestion", protocol.getName(), "In Gel Protein Digestion");
         assertEquals("First protocol step is reduction", protocol.getProtocolSteps().get(0).getCvParams().get(0).getName(), "Reduction");
 

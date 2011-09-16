@@ -27,8 +27,6 @@ public class IdentificationMetaData extends IdentifiableParamGroup{
     /**
      * List of all modifications listed in the experiment.
      */
-    private List<Modification>  modificationList = null;
-
     /**
      *
      * @param id
@@ -36,19 +34,16 @@ public class IdentificationMetaData extends IdentifiableParamGroup{
      * @param spectrumIdentificationProtocolList
      * @param proteinDetectionProtocol
      * @param searchDataBaseList
-     * @param modificationList
      */
     public IdentificationMetaData(Comparable id,
                                   String name,
                                   List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList,
                                   Protocol proteinDetectionProtocol,
-                                  List<SearchDataBase> searchDataBaseList,
-                                  List<Modification> modificationList) {
+                                  List<SearchDataBase> searchDataBaseList) {
         super(id, name);
         this.spectrumIdentificationProtocolList = spectrumIdentificationProtocolList;
         this.proteinDetectionProtocol = proteinDetectionProtocol;
         this.searchDataBaseList = searchDataBaseList;
-        this.modificationList = modificationList;
     }
 
     /**
@@ -72,15 +67,6 @@ public class IdentificationMetaData extends IdentifiableParamGroup{
         this.spectrumIdentificationProtocolList = spectrumIdentificationProtocolList;
         this.proteinDetectionProtocol = proteinDetectionProtocol;
         this.searchDataBaseList = searchDataBaseList;
-        this.modificationList = modificationList;
-    }
-
-    public List<Modification> getModificationList() {
-        return modificationList;
-    }
-
-    public void setModificationList(List<Modification> modificationList) {
-        this.modificationList = modificationList;
     }
 
     public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocolList() {

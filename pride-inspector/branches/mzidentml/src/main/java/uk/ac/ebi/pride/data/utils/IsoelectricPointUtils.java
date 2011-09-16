@@ -16,11 +16,11 @@ import java.util.Map;
  * Date: 03/08/2011
  * Time: 13:55
  */
-public class IsoelectricPointUtils {
+public final class IsoelectricPointUtils {
 
     private final static BjellpI bjellpI = new BjellpI();
 
-    public static double calculate(String peptideSeq) {
+    public double calculate(String peptideSeq) {
         return bjellpI.calculate(peptideSeq);
     }
 

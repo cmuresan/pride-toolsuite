@@ -171,7 +171,8 @@ deselect.all.title=Deselect All
 
 # icon for welcome pane
 puzzle.bulletin.icon.medium=icon/48x48/puzzle.png
-puzzle.bulletin.icon.small=icon/16x16/puzzle.png
+puzzle.bulletin.icon.small=icon/16x16/help_doc.png
+feedback.icon.small=icon/16x16/feedback.png
 
 # pride logo
 pride.main.large.logo=logo/prideInspector-medium.png

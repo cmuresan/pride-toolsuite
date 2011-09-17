@@ -317,5 +317,9 @@ decoy.filter.small.icon = icon/16x16/filter.png
 menu.selection.tick.small.icon = icon/16x16/tick.png
 menu.setting.small.icon = icon/16x16/configuration.png
 
+# table related icons
+add.experiment.small.icon = icon/16x16/plus.png
+view.detail.small.icon = icon/16x16/detail.png
+
            
 

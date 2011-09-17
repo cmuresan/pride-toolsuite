@@ -4,7 +4,6 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableHandler;
-import uk.ac.ebi.pride.gui.task.TaskManager;
 
 import javax.swing.*;
 import java.awt.*;

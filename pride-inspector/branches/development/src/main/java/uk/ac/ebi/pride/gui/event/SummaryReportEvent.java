@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.gui.event;
 import org.bushe.swing.event.AbstractEventServiceEvent;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.component.report.ReportMessage;
-import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 
 /**
  * Event to trigger when a new summary report item is created

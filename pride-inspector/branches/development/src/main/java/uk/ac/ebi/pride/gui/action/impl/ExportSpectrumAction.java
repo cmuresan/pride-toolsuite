@@ -19,7 +19,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
-import static uk.ac.ebi.pride.gui.utils.Constants.*;
+import static uk.ac.ebi.pride.gui.utils.Constants.DOT;
+import static uk.ac.ebi.pride.gui.utils.Constants.MGF_FILE;
 
 /**
  * Export spectra to mgf format.

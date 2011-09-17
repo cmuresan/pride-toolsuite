@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.gui.component.table.renderer;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.text.NumberFormat;
 
 /**
  * Cell renderer used for drawing number of ptms column

@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
-import uk.ac.ebi.pride.data.controller.DataAccessController;
 
 import java.util.ArrayList;
 import java.util.List;

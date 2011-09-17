@@ -2,13 +2,10 @@ package uk.ac.ebi.pride.gui.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
-import uk.ac.ebi.pride.data.controller.cache.Cache;
-import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;
 import uk.ac.ebi.pride.data.controller.impl.AbstractDataAccessController;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.component.chart.PrideChartManager;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;

@@ -7,9 +7,7 @@ import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PTMAnnotation;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideAnnotation;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Retrieve peptide annotation, and set it as selected annotation to a given protein

@@ -1,9 +1,7 @@
 package uk.ac.ebi.pride.data.controller.cache.impl;
 
-import uk.ac.ebi.pride.data.controller.cache.impl.AbstractAccessCacheBuilder;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.impl.PrideXmlControllerImpl;
-import uk.ac.ebi.pride.data.core.MetaData;
 import uk.ac.ebi.pride.jaxb.xml.PrideXmlReader;
 
 import java.util.ArrayList;

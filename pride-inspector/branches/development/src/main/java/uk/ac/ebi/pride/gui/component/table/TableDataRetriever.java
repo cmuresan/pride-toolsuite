@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
+import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.mol.IsoelectricPointUtils;
 import uk.ac.ebi.pride.mol.MoleculeUtilities;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
@@ -224,6 +225,9 @@ public class TableDataRetriever {
         // peptide index
         content.add(peptideId);
 
+        // additional details
+        content.add(identId + Constants.COMMA + peptideId);
+
         return content;
     }
 
@@ -296,6 +300,9 @@ public class TableDataRetriever {
         content.add(controller.getNumberOfPTMs(identId));
 
         // unique id for identification
+        content.add(identId);
+
+        // additional details is always null
         content.add(identId);
 
         return content;

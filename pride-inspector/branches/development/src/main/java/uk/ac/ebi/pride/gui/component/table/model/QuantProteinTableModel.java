@@ -33,7 +33,8 @@ public class QuantProteinTableModel extends AbstractProteinTableModel {
         NUMBER_OF_PEPTIDES("# Peptides", "Number of Peptides"),
         NUMBER_OF_UNIQUE_PEPTIDES("# Distinct Peptides", "Number of Distinct Peptides"),
         NUMBER_OF_PTMS("# PTMs", "Number of PTMs"),
-        IDENTIFICATION_ID("Identification ID", "Identification ID");
+        IDENTIFICATION_ID("Identification ID", "Identification ID"),
+        ADDITIONAL("More", "Additional Details");
 
         private final String header;
         private final String toolTip;

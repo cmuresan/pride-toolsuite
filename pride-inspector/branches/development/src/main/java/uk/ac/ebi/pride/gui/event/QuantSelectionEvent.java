@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.gui.event;
 
 import org.bushe.swing.event.AbstractEventServiceEvent;
-import uk.ac.ebi.pride.data.core.Quantitation;
 
 /**
  * Event to notify that a quantitation has been selected

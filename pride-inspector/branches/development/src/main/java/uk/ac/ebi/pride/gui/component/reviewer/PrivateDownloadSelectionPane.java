@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.gui.component.reviewer;
 
 import org.jdesktop.swingx.JXTable;
-import sun.security.provider.SystemSigner;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.component.dialog.TaskDialog;
@@ -20,8 +19,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.*;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * PrivateDownloadSelectionPane display both a list of experiments to be downloaded

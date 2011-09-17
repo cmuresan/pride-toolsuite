@@ -120,7 +120,7 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
     @Override
     protected void addComponents() {
         // create identification table
-        proteinTable = TableFactory.createQuantProteinTable();
+        proteinTable = TableFactory.createQuantProteinTable(controller);
 
         // createAttributedSequence header panel
         JPanel headerPanel = buildHeaderPane();

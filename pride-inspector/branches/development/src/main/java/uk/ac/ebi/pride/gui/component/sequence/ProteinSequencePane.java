@@ -10,12 +10,12 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
-import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveProteinDetailModelTask;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveSelectedPeptideAnnotation;
+import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
@@ -31,10 +31,11 @@ import java.beans.PropertyChangeEvent;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
-import static uk.ac.ebi.pride.gui.component.sequence.AttributedSequenceBuilder.*;
+import static uk.ac.ebi.pride.gui.component.sequence.AttributedSequenceBuilder.PROTEIN_SEGMENT_GAP;
+import static uk.ac.ebi.pride.gui.component.sequence.AttributedSequenceBuilder.PROTEIN_SEGMENT_LENGTH;
 
 /**
  * Panel to visualize protein sequence

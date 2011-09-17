@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
-import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.SearchEngine;
 import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
@@ -46,7 +45,8 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
         THEORITICAL_ISOELECTRIC_POINT_COLUMN("pI", "Theoritical isoelectric point"),
         SPECTRUM_ID("Spectrum", "Spectrum Reference"),
         IDENTIFICATION_ID("Identification ID", "Identification ID"),
-        PEPTIDE_ID("Peptide ID", "Peptide ID");
+        PEPTIDE_ID("Peptide ID", "Peptide ID"),
+        ADDITIONAL("More", "Additional Details");
 
         private final String header;
         private final String toolTip;

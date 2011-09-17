@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.gui.component.table.TableFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 /*
  * Created by JFormDesigner on Sat Jul 23 10:52:41 BST 2011

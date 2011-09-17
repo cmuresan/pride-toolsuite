@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.gui.action.impl;
 
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.curation.CreateReviewerDialog;
-import uk.ac.ebi.pride.gui.component.curation.MakeExperimentPublicDialog;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
 import javax.swing.*;

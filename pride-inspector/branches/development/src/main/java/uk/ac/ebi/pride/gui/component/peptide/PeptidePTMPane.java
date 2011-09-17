@@ -2,12 +2,10 @@ package uk.ac.ebi.pride.gui.component.peptide;
 
 import org.bushe.swing.event.ContainerEventServiceFinder;
 import org.bushe.swing.event.EventService;
-import org.bushe.swing.event.EventSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
@@ -19,7 +17,6 @@ import uk.ac.ebi.pride.gui.task.TaskEvent;
 
 import javax.swing.*;
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
 
 /**
  * This pane is to display the PTMs details for a peptide

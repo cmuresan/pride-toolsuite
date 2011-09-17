@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.data.controller.cache.impl;
 
-import uk.ac.ebi.pride.data.controller.cache.impl.AbstractAccessCacheBuilder;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.impl.MzMLControllerImpl;
 import uk.ac.ebi.pride.data.io.file.MzMLUnmarshallerAdaptor;

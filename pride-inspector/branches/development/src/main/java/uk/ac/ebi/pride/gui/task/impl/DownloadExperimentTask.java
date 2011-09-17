@@ -7,11 +7,10 @@ import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
-import java.io.*;
+import java.io.File;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.GZIPInputStream;
 
 /**
  * Task for download private experiments form PRIDE server.

@@ -1,12 +1,9 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
-import org.bushe.swing.event.EventBus;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
-import uk.ac.ebi.pride.gui.event.CentralContentPaneLockEvent;
 import uk.ac.ebi.pride.gui.task.impl.OpenDatabaseSearchPaneTask;
-import uk.ac.ebi.pride.gui.task.impl.OpenPrideDatabaseTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.util.InternetChecker;

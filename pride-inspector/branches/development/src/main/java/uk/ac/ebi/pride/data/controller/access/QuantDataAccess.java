@@ -6,7 +6,6 @@ import uk.ac.ebi.pride.data.core.QuantitativeSample;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * QuantDataAccess defines methods for accessing quantitative proteomics data

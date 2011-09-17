@@ -6,7 +6,6 @@ import uk.ac.ebi.pride.gui.utils.PropertyChangeHandler;
 
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
-import java.util.UUID;
 
 /**
  * DataAccessController is an aggregate interface for data access.

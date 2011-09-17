@@ -1,16 +1,10 @@
 package uk.ac.ebi.pride.gui.component;
 
-import org.jdesktop.swingx.border.DropShadowBorder;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.utils.GraphicsUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.ConvolveOp;
-import java.awt.image.ImageObserver;
-import java.awt.image.Kernel;
 
 /**
  * A panel displays pride's logo and showing a loading status

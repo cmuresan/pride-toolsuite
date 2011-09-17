@@ -8,7 +8,6 @@ import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideTask;
-import uk.ac.ebi.pride.gui.task.impl.RetrieveSpectrumTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 

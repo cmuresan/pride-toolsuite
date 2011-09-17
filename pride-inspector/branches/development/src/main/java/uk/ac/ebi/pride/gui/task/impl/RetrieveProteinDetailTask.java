@@ -14,7 +14,10 @@ import uk.ac.ebi.pride.tools.protein_details_fetcher.ProteinDetailFetcher;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 import uk.ac.ebi.pride.tools.utils.AccessionResolver;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Retrieve protein name for a given set of proteins

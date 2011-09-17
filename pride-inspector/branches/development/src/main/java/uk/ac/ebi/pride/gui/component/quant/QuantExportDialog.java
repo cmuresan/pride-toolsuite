@@ -315,7 +315,7 @@ public class QuantExportDialog extends JDialog {
             tableModel.addRow(row);
         }
 
-        return TableFactory.createQuantProteinTable(tableModel);
+        return TableFactory.createQuantProteinTable(controller, tableModel);
     }
 
     /**

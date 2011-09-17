@@ -3,9 +3,9 @@ package uk.ac.ebi.pride.gui.task.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
+import uk.ac.ebi.pride.gui.utils.Constants;
 
 import javax.swing.*;
 import java.io.File;

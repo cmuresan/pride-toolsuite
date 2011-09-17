@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.gui.task.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.impl.PrideDBAccessControllerImpl;
-import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.TaskDialog;

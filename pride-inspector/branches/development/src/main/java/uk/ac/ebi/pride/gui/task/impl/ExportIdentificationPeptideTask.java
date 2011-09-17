@@ -6,8 +6,8 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Experiment;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
+import uk.ac.ebi.pride.gui.utils.Constants;
 
 import java.io.File;
 import java.io.FileWriter;

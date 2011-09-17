@@ -1,39 +1,27 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
-import org.bushe.swing.event.EventBus;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.decoy.DecoyFilterDialog;
-import uk.ac.ebi.pride.gui.component.report.RemovalReportMessage;
-import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.table.filter.DecoyAccessionFilter;
-import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
-import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
-import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.impl.DecoyFilterTask;
 import uk.ac.ebi.pride.gui.task.impl.DecoyRatioTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
-import uk.ac.ebi.pride.util.NumberUtilities;
 
 import javax.swing.*;
-import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.regex.Pattern;
 
 /**
  * Action to show a decoy filter dialog

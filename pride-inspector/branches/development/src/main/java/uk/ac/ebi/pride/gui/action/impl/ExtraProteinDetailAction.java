@@ -7,7 +7,6 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
-import uk.ac.ebi.pride.gui.component.table.model.AbstractPeptideTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;

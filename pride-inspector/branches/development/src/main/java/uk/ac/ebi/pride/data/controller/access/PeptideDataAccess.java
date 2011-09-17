@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.data.controller.access;
 
-import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.FragmentIon;
 import uk.ac.ebi.pride.data.core.Modification;

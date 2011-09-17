@@ -8,7 +8,6 @@ import uk.ac.ebi.pride.gui.listeners.ExitListener;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 
 import javax.swing.*;
-import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.EventObject;

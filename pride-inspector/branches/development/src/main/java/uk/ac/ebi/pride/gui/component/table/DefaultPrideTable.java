@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.gui.component.table;
 
 import org.jdesktop.swingx.search.SearchFactory;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.component.table.listener.EntryUpdateSelectionListener;
 import uk.ac.ebi.pride.gui.component.table.model.ListTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.SpectrumTableModel;
@@ -10,6 +9,7 @@ import uk.ac.ebi.pride.gui.component.table.renderer.RowNumberRenderer;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
+import uk.ac.ebi.pride.gui.utils.Constants;
 
 import javax.swing.*;
 import javax.swing.table.*;

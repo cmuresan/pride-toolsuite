@@ -1,13 +1,11 @@
 package uk.ac.ebi.pride.gui.component.message;
 
 import javax.swing.*;
-import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * MessageBoard to display a list of messages.

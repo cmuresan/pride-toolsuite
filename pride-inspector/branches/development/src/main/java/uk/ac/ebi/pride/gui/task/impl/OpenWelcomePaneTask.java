@@ -3,17 +3,10 @@ package uk.ac.ebi.pride.gui.task.impl;
 import org.bushe.swing.event.EventBus;
 import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.component.db.DatabaseSearchPane;
 import uk.ac.ebi.pride.gui.component.startup.WelcomePane;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
-import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
 import uk.ac.ebi.pride.gui.event.ShowWelcomePaneEvent;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * Created by IntelliJ IDEA.

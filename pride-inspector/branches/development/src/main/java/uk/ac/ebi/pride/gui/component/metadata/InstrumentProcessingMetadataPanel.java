@@ -7,7 +7,6 @@ import uk.ac.ebi.pride.data.core.InstrumentConfiguration;
 import uk.ac.ebi.pride.data.core.MetaData;
 import uk.ac.ebi.pride.data.core.ProcessingMethod;
 
-import javax.sound.midi.Instrument;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;

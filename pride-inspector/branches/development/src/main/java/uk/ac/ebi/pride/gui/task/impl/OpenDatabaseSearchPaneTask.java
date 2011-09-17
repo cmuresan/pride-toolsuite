@@ -10,9 +10,6 @@ import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
-import javax.swing.*;
-import java.awt.*;
-
 /**
  * Task to open database search pane
  * <p/>

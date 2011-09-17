@@ -11,7 +11,6 @@ import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.mzgraph.SpectrumViewPane;
-import uk.ac.ebi.pride.gui.component.protein.ProteinTabPane;
 import uk.ac.ebi.pride.gui.component.sequence.ProteinSequencePane;
 
 import javax.swing.*;

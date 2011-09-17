@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.gui.component.table.renderer;
 
-import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
 import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.util.NumberUtilities;
 

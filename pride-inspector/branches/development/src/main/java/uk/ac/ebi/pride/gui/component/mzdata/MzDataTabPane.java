@@ -5,14 +5,9 @@ import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.PrideInspectorTabPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
-import uk.ac.ebi.pride.gui.component.mzgraph.ChromatogramViewPane;
-import uk.ac.ebi.pride.gui.component.mzgraph.MzGraphViewPane;
-import uk.ac.ebi.pride.gui.component.mzgraph.SpectrumViewPane;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 

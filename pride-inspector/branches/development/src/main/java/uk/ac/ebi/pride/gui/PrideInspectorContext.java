@@ -2,11 +2,9 @@ package uk.ac.ebi.pride.gui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.access.DataAccessMonitor;
 import uk.ac.ebi.pride.gui.action.PrideAction;
-import uk.ac.ebi.pride.gui.action.impl.DecoyFilterAction;
 import uk.ac.ebi.pride.gui.component.db.DatabaseSearchPane;
 import uk.ac.ebi.pride.gui.component.report.ReportListModel;
 import uk.ac.ebi.pride.gui.component.startup.WelcomePane;
@@ -18,7 +16,10 @@ import javax.help.HelpSet;
 import javax.help.HelpSetException;
 import javax.swing.*;
 import java.net.URL;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Overall context of the GUI, this object should only have one instance per application.

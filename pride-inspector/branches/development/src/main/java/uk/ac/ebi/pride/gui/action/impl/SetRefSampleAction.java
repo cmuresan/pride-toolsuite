@@ -9,18 +9,9 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.CvParam;
 import uk.ac.ebi.pride.data.core.QuantitativeSample;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
-import uk.ac.ebi.pride.gui.component.table.model.ProgressiveListTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.ReferenceSampleChangeEvent;
-import uk.ac.ebi.pride.gui.event.container.ProteinIdentificationEvent;
-import uk.ac.ebi.pride.gui.task.Task;
-import uk.ac.ebi.pride.gui.task.TaskListener;
-import uk.ac.ebi.pride.gui.task.impl.RetrieveQuantProteinTableTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import java.awt.*;

@@ -6,7 +6,6 @@ import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.List;
 
 /**

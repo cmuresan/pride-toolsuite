@@ -2,15 +2,16 @@ package uk.ac.ebi.pride.gui.component.table;
 
 import org.jdesktop.swingx.table.DefaultTableColumnModelExt;
 import org.jdesktop.swingx.table.TableColumnExt;
+import uk.ac.ebi.pride.business.security.DataAccess;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.table.listener.*;
 import uk.ac.ebi.pride.gui.component.table.model.*;
 import uk.ac.ebi.pride.gui.component.table.renderer.*;
-import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.url.*;
+import uk.ac.ebi.pride.gui.utils.Constants;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -61,8 +62,7 @@ public class TableFactory {
 
         TableColumnExt proteinNameColumn = (TableColumnExt) table.getColumn(ProteinTableModel.TableHeader.PROTEIN_NAME.getHeader());
         // set protein name width
-        int protNameColumnNum = proteinNameColumn.getModelIndex();
-        columnModel.getColumn(protNameColumnNum).setPreferredWidth(200);
+        proteinNameColumn.setPreferredWidth(200);
 
         // hide the protein name column
         proteinNameColumn.setVisible(false);
@@ -88,6 +88,18 @@ public class TableFactory {
         // ptm accession hyperlink
         TableColumn protAcc = table.getColumn(ProteinTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
         protAcc.setCellRenderer(new HyperLinkCellRenderer());
+
+        // additional column
+        String additionalColHeader = ProteinTableModel.TableHeader.ADDITIONAL.getHeader();
+        TableColumnExt additionalCol = (TableColumnExt) table.getColumn(additionalColHeader);
+        Icon icon = GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("view.detail.small.icon"));
+        additionalCol.setCellRenderer(new IconRenderer(icon));
+        additionalCol.setMaxWidth(50);
+        additionalCol.setVisible(false);
+
+        // add mouse motion listener
+        table.addMouseMotionListener(new TableCellMouseMotionListener(table, additionalColHeader));
+        table.addMouseListener(new ShowParamsMouseListener(controller, table, additionalColHeader));
 
         return table;
     }
@@ -134,8 +146,7 @@ public class TableFactory {
 
         // set protein name column width
         TableColumnExt proteinNameColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PROTEIN_NAME.getHeader());
-        int protNameColumnNum = proteinNameColumn.getModelIndex();
-        columnModel.getColumn(protNameColumnNum).setPreferredWidth(200);
+        proteinNameColumn.setPreferredWidth(200);
 
         // hide the protein name column
         proteinNameColumn.setVisible(false);
@@ -159,13 +170,24 @@ public class TableFactory {
         protAcc.setCellRenderer(new HyperLinkCellRenderer());
 
         // set peptide column width
-        int rowColumnNum = peptideColumn.getModelIndex();
-        columnModel.getColumn(rowColumnNum).setPreferredWidth(200);
+        peptideColumn.setPreferredWidth(200);
 
         // hide spectrum id column
         String spectrumIdHeader = PeptideTableModel.TableHeader.SPECTRUM_ID.getHeader();
         TableColumnExt spectrumIdColumn = (TableColumnExt) table.getColumn(spectrumIdHeader);
         spectrumIdColumn.setVisible(false);
+
+        // additional column
+        String additionalColHeader = PeptideTableModel.TableHeader.ADDITIONAL.getHeader();
+        TableColumnExt additionalCol = (TableColumnExt) table.getColumn(additionalColHeader);
+        Icon icon = GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("view.detail.small.icon"));
+        additionalCol.setCellRenderer(new IconRenderer(icon));
+        additionalCol.setMaxWidth(50);
+        additionalCol.setVisible(false);
+
+        // add mouse motion listener
+        table.addMouseMotionListener(new TableCellMouseMotionListener(table, additionalColHeader));
+        table.addMouseListener(new ShowParamsMouseListener(controller, table, additionalColHeader));
 
         return table;
     }
@@ -208,9 +230,9 @@ public class TableFactory {
         // add cell renderer to view column
         String viewColumnHeader = DatabaseSearchTableModel.TableHeader.VIEW.getHeader();
         TableColumnExt viewColumn = (TableColumnExt) searchTable.getColumn(viewColumnHeader);
-        viewColumn.setCellRenderer(new ButtonRenderer(Constants.VIEW));
-        int viewColumnNum = viewColumn.getModelIndex();
-        columnModel.getColumn(viewColumnNum).setMaxWidth(50);
+        Icon icon = GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("add.experiment.small.icon"));
+        viewColumn.setCellRenderer(new IconRenderer(icon));
+        viewColumn.setMaxWidth(50);
 
 
         // add mouse motion listener
@@ -236,15 +258,13 @@ public class TableFactory {
         TableColumnExt pubMedColumn = (TableColumnExt) referenceTable.getColumn(pubMedColumnHeader);
         Pattern pubmedPattern = Pattern.compile("\\d+");
         pubMedColumn.setCellRenderer(new HyperLinkCellRenderer(pubmedPattern));
-        int pubMedColumnNum = pubMedColumn.getModelIndex();
-        columnModel.getColumn(pubMedColumnNum).setMaxWidth(100);
+        pubMedColumn.setMaxWidth(100);
 
         // doi
         String doiColumnHeader = ReferenceTableModel.TableHeader.DOI.getHeader();
         TableColumnExt doiColumn = (TableColumnExt) referenceTable.getColumn(doiColumnHeader);
         doiColumn.setCellRenderer(new HyperLinkCellRenderer());
-        int doiColumnNum = doiColumn.getModelIndex();
-        columnModel.getColumn(doiColumnNum).setMaxWidth(100);
+        doiColumn.setMaxWidth(100);
 
         // add mouse motion listener
         referenceTable.addMouseMotionListener(new TableCellMouseMotionListener(referenceTable, pubMedColumnHeader, doiColumnHeader));
@@ -351,7 +371,7 @@ public class TableFactory {
      * @param tableModel quant protein table model
      * @return JTable  quant protein table
      */
-    public static JTable createQuantProteinTable(TableModel tableModel) {
+    public static JTable createQuantProteinTable(DataAccessController controller, TableModel tableModel) {
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable quantProteinTable = new DefaultPrideTable(tableModel, columnModel);
         quantProteinTable.setAutoCreateColumnsFromModel(false);
@@ -362,8 +382,7 @@ public class TableFactory {
         List<TableColumn> columns = columnModel.getColumns(true);
         for (TableColumn column : columns) {
             if (column.getHeaderValue().equals(QuantProteinTableModel.TableHeader.COMPARE.getHeader())) {
-                int rowColumnNum = column.getModelIndex();
-                columnModel.getColumn(rowColumnNum).setMaxWidth(25);
+                column.setMaxWidth(25);
             }
         }
         // hide mapped protein accession
@@ -414,6 +433,18 @@ public class TableFactory {
         TableColumnExt numOfPtmColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.NUMBER_OF_PTMS.getHeader());
         numOfPtmColumn.setVisible(false);
 
+        // additional column
+        String additionalColHeader = ProteinTableModel.TableHeader.ADDITIONAL.getHeader();
+        TableColumnExt additionalCol = (TableColumnExt) quantProteinTable.getColumn(additionalColHeader);
+        Icon icon = GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("view.detail.small.icon"));
+        additionalCol.setCellRenderer(new IconRenderer(icon));
+        additionalCol.setMaxWidth(50);
+        additionalCol.setVisible(false);
+
+        // add mouse motion listener
+        quantProteinTable.addMouseMotionListener(new TableCellMouseMotionListener(quantProteinTable, additionalColHeader));
+        quantProteinTable.addMouseListener(new ShowParamsMouseListener(controller, quantProteinTable, additionalColHeader));
+
 
         return quantProteinTable;
     }
@@ -421,11 +452,12 @@ public class TableFactory {
     /**
      * Create a table for protein quantitative data
      *
+     * @param controller data access controller
      * @return JTable   protein quantitative table
      */
-    public static JTable createQuantProteinTable() {
+    public static JTable createQuantProteinTable(DataAccessController controller) {
         QuantProteinTableModel tableModel = new QuantProteinTableModel();
-        return createQuantProteinTable(tableModel);
+        return createQuantProteinTable(controller, tableModel);
     }
 
     /**
@@ -434,7 +466,7 @@ public class TableFactory {
      * @param se search engine
      * @return JTable  peptide table
      */
-    public static JTable createQuantPeptideTable(SearchEngine se) {
+    public static JTable createQuantPeptideTable(DataAccessController controller, SearchEngine se) {
         QuantPeptideTableModel tableModel = new QuantPeptideTableModel(se);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable quantPeptideTable = new DefaultPrideTable(tableModel, columnModel);
@@ -459,8 +491,7 @@ public class TableFactory {
         TableColumnExt peptideColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PEPTIDE_PTM_COLUMN.getHeader());
         peptideColumn.setCellRenderer(new PeptideSequenceCellRenderer());
         // set peptide column width
-        int rowColumnNum = peptideColumn.getModelIndex();
-        columnModel.getColumn(rowColumnNum).setPreferredWidth(150);
+        peptideColumn.setPreferredWidth(150);
 
         // hide protein name
         TableColumnExt proteinNameColumn = (TableColumnExt) quantPeptideTable.getColumn(QuantPeptideTableModel.TableHeader.PROTEIN_NAME.getHeader());
@@ -545,6 +576,18 @@ public class TableFactory {
         String protAccColumnHeader = QuantPeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
         quantPeptideTable.addMouseMotionListener(new TableCellMouseMotionListener(quantPeptideTable, protAccColumnHeader));
         quantPeptideTable.addMouseListener(new HyperLinkCellMouseClickListener(quantPeptideTable, protAccColumnHeader, new ProteinAccHyperLinkGenerator()));
+
+        // additional column
+        String additionalColHeader = ProteinTableModel.TableHeader.ADDITIONAL.getHeader();
+        TableColumnExt additionalCol = (TableColumnExt) quantPeptideTable.getColumn(additionalColHeader);
+        Icon detailIcon = GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("view.detail.small.icon"));
+        additionalCol.setCellRenderer(new IconRenderer(detailIcon));
+        additionalCol.setMaxWidth(50);
+        additionalCol.setVisible(false);
+
+        // add mouse motion listener
+        quantPeptideTable.addMouseMotionListener(new TableCellMouseMotionListener(quantPeptideTable, additionalColHeader));
+        quantPeptideTable.addMouseListener(new ShowParamsMouseListener(controller, quantPeptideTable, additionalColHeader));
 
 
         return quantPeptideTable;

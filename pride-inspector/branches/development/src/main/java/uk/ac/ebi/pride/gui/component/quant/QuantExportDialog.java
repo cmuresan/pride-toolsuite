@@ -93,7 +93,7 @@ public class QuantExportDialog extends JDialog {
         helpButton = GUIUtilities.createLabelLikeButton(helpIcon, null);
         helpButton.setToolTipText("Help");
         helpButton.setForeground(Color.blue);
-        CSH.setHelpIDString(helpButton, "help.browse.protein");
+        CSH.setHelpIDString(helpButton, "help.export.quant");
         helpButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
 
         //======== this ========

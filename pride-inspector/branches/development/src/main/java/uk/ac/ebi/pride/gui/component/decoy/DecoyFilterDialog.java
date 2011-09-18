@@ -65,7 +65,7 @@ public class DecoyFilterDialog extends JDialog {
         JButton helpButton = GUIUtilities.createLabelLikeButton(helpIcon, null);
         helpButton.setToolTipText("Help");
         helpButton.setForeground(Color.blue);
-        CSH.setHelpIDString(helpButton, "help.browse.protein");
+        CSH.setHelpIDString(helpButton, "help.protein.decoy");
         helpButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
         cancelButton = new JButton();
         okButton = new JButton();

@@ -18,11 +18,17 @@
             <tocitem text="View Protein Descriptions" target="help.browse.protein"/>
             <tocitem text="View Peptide Descriptions" target="help.browse.peptide"/>
             <tocitem text="View Spectrum/Chromatogram Descriptions" target="help.browse.mzgraph"/>
+            <tocitem text="View Quantification Descriptions" target="help.browse.quant"/>
             <tocitem text="View Summary Charts" target="help.browse.chart"/>
         </tocitem>
         <tocitem text="Visualizing Spectra and Chromatogram" target="help.mzgraph">
             <tocitem text="Spectra Browser" target="help.mzgraph.spectra"/>
             <tocitem text="Chromatogram Browser" target="help.mzgraph.chroma"/>
+        </tocitem>
+        <tocitem text="Showing Protein Details" target="help.protein">
+            <tocitem text="Obtain Protein Details" target="help.protein.details"/>
+            <tocitem text="Protein Sequence Viewer" target="help.protein.viewer"/>
+            <tocitem text="Decoy Filter" target="help.protein.decoy"/>
         </tocitem>
         <tocitem text="Understanding Summary Charts" target="help.chart">
             <tocitem text="Peak Intensity Distribution Chart" target="help.chart.1"/>
@@ -38,7 +44,8 @@
         <tocitem text="Trying mzML or PRIDE XML Example Files" target="help.examples" />
         <tocitem text="Connecting to PRIDE Public Database Instance" target="help.pridedb" />
         <tocitem text="Downloading Your Experiments from PRIDE" target="help.download"/>
-        <tocitem text="Exporting Data from PRIDE Inspector" target="help.exprot"/>
+        <tocitem text="Exporting Data from PRIDE Inspector" target="help.export"/>
+        <tocitem text="Exporting Quantification Data from PRIDE Inspector" target="help.export.quant"/>
 
         <tocitem text="FAQ" target="help.faq">
             <tocitem text="What is PRIDE?" target="help.faq.pride"/>

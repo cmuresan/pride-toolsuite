@@ -250,4 +250,8 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
     public ParamGroup getAdditional(){
         return new ParamGroup(this.getCvParams(),this.getUserParams());
     }
+
+    public ParamGroup getFileContent(){
+        return new ParamGroup(this.getCvParams(),this.getUserParams());
+    }
 }

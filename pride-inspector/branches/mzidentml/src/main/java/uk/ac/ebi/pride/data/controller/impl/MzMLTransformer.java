@@ -417,8 +417,13 @@ public class MzMLTransformer {
         if (oldSoftware != null) {
             String id = oldSoftware.getId();
             String version = oldSoftware.getVersion();
+            String name = null;
+            if(oldSoftware.getCvParam().size() > 0){
+                name = oldSoftware.getCvParam().get(0).getName();
+            }
+            //Todo: Ask to Rui the id and the Name problem in Software Object
             ParamGroup paramGroup = transformParamGroup(oldSoftware);
-            newSoftware = new Software(paramGroup, null,id, version);
+            newSoftware = new Software(paramGroup, id,name, version);
         }
         return newSoftware;
     }
@@ -494,11 +499,11 @@ public class MzMLTransformer {
                 }
                 for(uk.ac.ebi.jmzml.model.mzml.AnalyzerComponent oldAnalyzer: componentList.getAnalyzer()){
                     InstrumentComponent newAnalyzer = transformInstrumentComponent(oldAnalyzer);
-                    source.add(newAnalyzer);
+                    analyzer.add(newAnalyzer);
                 }
                 for(uk.ac.ebi.jmzml.model.mzml.DetectorComponent oldDetector: componentList.getDetector()){
                     InstrumentComponent newDetector = transformInstrumentComponent(oldDetector);
-                    source.add(newDetector);
+                    detector.add(newDetector);
                 }
             }
             ParamGroup paramGroup = transformParamGroup(oldInstrument);
@@ -594,7 +599,7 @@ public class MzMLTransformer {
               contactsValues = DataAccessUtilities.getCvParam(contact,contactTerm.getCvLabel(),contactTerm.getAccession());
               String mail = null;
               if(!contactsValues.isEmpty()){
-                  name = contactsValues.get(0).getValue();
+                  mail = contactsValues.get(0).getValue();
               }
               Person contactPerson = new Person(contact,name,mail);
               persons.add(contactPerson);
@@ -624,7 +629,7 @@ public class MzMLTransformer {
               contactsValues = DataAccessUtilities.getCvParam(contact,contactTerm.getCvLabel(),contactTerm.getAccession());
               String mail = null;
               if(!contactsValues.isEmpty()){
-                  name = contactsValues.get(0).getValue();
+                  mail = contactsValues.get(0).getValue();
               }
               Organization contactOrganization = new Organization(contact,name,mail);
               organizations.add(contactOrganization);

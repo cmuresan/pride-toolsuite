@@ -112,7 +112,7 @@ public class Software extends IdentifiableParamGroup {
     }
 
     public Software(ParamGroup params, Comparable id, String name, String version){
-        super(params,id,null);
+        super(params,id,name);
         this.version = version;
         this.uri = null;
         this.contact = null;

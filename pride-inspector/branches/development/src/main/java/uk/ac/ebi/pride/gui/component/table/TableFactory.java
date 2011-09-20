@@ -95,7 +95,6 @@ public class TableFactory {
         Icon icon = GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("view.detail.small.icon"));
         additionalCol.setCellRenderer(new IconRenderer(icon));
         additionalCol.setMaxWidth(50);
-        additionalCol.setVisible(false);
 
         // add mouse motion listener
         table.addMouseMotionListener(new TableCellMouseMotionListener(table, additionalColHeader));
@@ -183,7 +182,11 @@ public class TableFactory {
         Icon icon = GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("view.detail.small.icon"));
         additionalCol.setCellRenderer(new IconRenderer(icon));
         additionalCol.setMaxWidth(50);
-        additionalCol.setVisible(false);
+
+        // hide pI column
+        String pIHeader = PeptideTableModel.TableHeader.THEORITICAL_ISOELECTRIC_POINT_COLUMN.getHeader();
+        TableColumnExt pICol = (TableColumnExt) table.getColumn(pIHeader);
+        pICol.setVisible(false);
 
         // add mouse motion listener
         table.addMouseMotionListener(new TableCellMouseMotionListener(table, additionalColHeader));

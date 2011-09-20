@@ -36,7 +36,7 @@ public class ParamGroupDialog extends JDialog {
         JScrollPane scrollPane = new JScrollPane();
 
         scrollPane.setOpaque(false);
-        scrollPane.setBorder(BorderFactory.createLineBorder(Color.black));
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.gray));
 
         //---- searchResultTable ----
         // set view experiment cell renderer

@@ -30,23 +30,26 @@
     <div class="introduction">
         <p>
             Four types of information have been taken into account to calculate delta m/z in PRIDE Inspector:
-            <ul>
-                <li>Peptide Sequence - Required</li>
-                <li>Post translational modifications - Optional</li>
-                <li>Precursor m/z - Required</li>
-                <li>Precursor charge - Required</li>
-            </ul>
+        <ul>
+            <li>Peptide Sequence - Required</li>
+            <li>Post translational modifications - Optional</li>
+            <li>Precursor m/z - Required</li>
+            <li>Precursor charge - Required</li>
+        </ul>
         </p>
 
         <div class="note">
             The calculation can be broken down into the following steps:
-            <ul>
-                <li>Calculate the sum of the mass of all the amino acids in the peptide.</li>
-                <li>Calculate the sum of the mass of all the post translational modifications.</li>
-                <li>Calculate theoretical mass: Sum of peptide - Sum of post translational modifications - 18 dalton.</li>
-                <li>Calculate precursor mass: Precursor m/z * Precursor charge - Precursor charge * 1 dalton.</li>
-                <li>Calculate detla m/z: (Precursor mass - Theoretical mass)/Precursor charge.</li>
-            </ul>
+            <br><br>
+            1. Calculate peptide mass: simply sum the masses of all the amino acids in the peptide.
+            <br><br>
+            2. Calculate PTM mass: simply sum the masses of all the post translational modifications in the peptide.
+            <br><br>
+            3. Calculate theoretical mass: [Peptide mass - PTM mass - 18 dalton].
+            <br><br>
+            4. Calculate precursor mass: [(Precursor m/z * Precursor charge) - (Precursor charge * 1 dalton)].
+            <br><br>
+            5. Calculate detla m/z: [(Precursor mass - Theoretical mass)/Precursor charge].
         </div>
     </div>
 

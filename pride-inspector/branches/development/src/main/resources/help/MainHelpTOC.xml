@@ -46,6 +46,7 @@
         <tocitem text="Downloading Your Experiments from PRIDE" target="help.download"/>
         <tocitem text="Exporting Data from PRIDE Inspector" target="help.export"/>
         <tocitem text="Exporting Quantification Data from PRIDE Inspector" target="help.export.quant"/>
+        <tocitem text="Quantification Principle" target="help.export.quant.principle"/>
 
         <tocitem text="FAQ" target="help.faq">
             <tocitem text="What is PRIDE?" target="help.faq.pride"/>

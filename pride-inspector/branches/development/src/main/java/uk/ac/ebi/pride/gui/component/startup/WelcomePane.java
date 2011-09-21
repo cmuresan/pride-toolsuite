@@ -75,21 +75,6 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
     private static final String FEED_BACK = "Feedback";
 
     /**
-     * PRIDE xml sample
-     */
-    private static final String PRIDE_XML_SAMPLE = "PRIDE XML";
-
-    /**
-     * More samples
-     */
-    private static final String MORE_SAMPLE = "More...";
-
-    /**
-     * mzML sample
-     */
-    private static final String MZ_ML_SAMPLE = "mzML";
-
-    /**
      * give feedback
      */
     private static final String GIVE_US_FEEDBACK = "Give Us Your Feedback";
@@ -168,7 +153,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         bottomSplitPane.setOpaque(false);
         bottomSplitPane.setBorder(BorderFactory.createEmptyBorder());
         bottomSplitPane.setDividerSize(0);
-        
+
         JSplitPane topSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, quickStartPanel, trySamplePanel);
         topSplitPane.setResizeWeight(0.5);
         topSplitPane.setOpaque(false);
@@ -192,7 +177,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         scrollPane.setBorder(BorderFactory.createLineBorder(Color.gray));
 
         this.add(scrollPane, BorderLayout.CENTER);
-        
+
         // check for update
         checkForUpdate();
     }
@@ -307,7 +292,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         if (mzMLExampleFile != null) {
             mzMLFiles.add(mzMLExampleFile);
         }
-        Action openMzMLExampleAction = new OpenFileAction(MZ_ML_SAMPLE, circleIcon, mzMLFiles);
+        Action openMzMLExampleAction = new OpenFileAction(context.getProperty("open.mzml.example.title"), circleIcon, mzMLFiles);
         openMzMLExampleAction.setEnabled(mzMLExampleFile != null && mzMLExampleFile.exists());
         JButton openMzMLExampleButton = createLabelLikeButton(openMzMLExampleAction);
         buttonPanel.add(openMzMLExampleButton, c);
@@ -318,7 +303,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         if (prideXMLExampleFile != null) {
             prideXmlFiles.add(prideXMLExampleFile);
         }
-        Action openPrideExampleAction = new OpenFileAction(PRIDE_XML_SAMPLE, circleIcon, prideXmlFiles);
+        Action openPrideExampleAction = new OpenFileAction(context.getProperty("open.pride.xml.example.title"), circleIcon, prideXmlFiles);
         openPrideExampleAction.setEnabled(prideXMLExampleFile != null && prideXMLExampleFile.exists());
         JButton openPrideExampleButton = createLabelLikeButton(openPrideExampleAction);
         openPrideExampleButton.setAction(openPrideExampleAction);
@@ -332,13 +317,11 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
 
         JPanel moreSamplePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         moreSamplePanel.setOpaque(false);
-        JButton openMoreExampleButton = createLabelLikeButton(null, MORE_SAMPLE);
-        openMoreExampleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                HttpUtilities.openURL(context.getProperty("pride.inspector.download.website"));
-            }
-        });
+        Action openMoreExampleAction = new OpenUrlAction(context.getProperty("open.more.example.title"), null,
+                context.getProperty("pride.inspector.download.website"));
+        JButton openMoreExampleButton = createLabelLikeButton(openMoreExampleAction);
+        openMoreExampleButton.setAction(openMoreExampleAction);
+
         moreSamplePanel.add(openMoreExampleButton);
         trySamplePane.add(moreSamplePanel, BorderLayout.SOUTH);
 
@@ -349,7 +332,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
     /**
      * Get examples file based on the sub path
      *
-     * @param subPath   sub path to the example file
+     * @param subPath sub path to the example file
      * @return File   an array of example file
      */
     private File getExampleFiles(String subPath) {
@@ -357,7 +340,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         File file;
         try {
             file = IOUtilities.convertURLToFile(path);
-        } catch(IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
             return null;
         }
         return file;
@@ -529,7 +512,8 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
 
     /**
      * Create a label like button using a action
-     * @param action    action which contains a icon and title
+     *
+     * @param action action which contains a icon and title
      * @return JButton  button
      */
     private JButton createLabelLikeButton(Action action) {
@@ -556,7 +540,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
     @Override
     public void succeed(TaskEvent<Object> objectTaskEvent) {
         Object obj = objectTaskEvent.getValue();
-        if (obj instanceof Boolean && (Boolean)obj) {
+        if (obj instanceof Boolean && (Boolean) obj) {
 //            messageBoard.showMessage(MessageBoard.Type.WARNING, context.getProperty("new.update.message"));
             UpdateChecker.showUpdateDialog();
         }

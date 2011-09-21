@@ -122,7 +122,7 @@ public abstract class Task<T, V> extends SwingWorker<T, V> {
      *
      * @param owner owner of the task
      */
-    public void removeOwner(Object owner) {
+    public synchronized void removeOwner(Object owner) {
         if (!isDone() && owners.contains(owner)) {
             this.cancel(true);
         }

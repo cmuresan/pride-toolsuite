@@ -11,7 +11,7 @@ open.database.icon.medium=icon/32x32/connect_database.png
 open.database.icon.large=icon/48x48/connect_database.png
 
 close.source.title=Close
-close.all.soruce.title=Close All
+close.all.source.title=Close All
 close.source.tooltip=Close file/database connection
 close.individual.source.enable.icon.small=icon/16x16/close_data_source.gif
 close.source.enable.icon.small=icon/16x16/delete_enable.gif
@@ -49,6 +49,7 @@ exit.title=Exit
 # try samples
 open.pride.xml.example.title=PRIDE XML
 open.mzml.example.title=mzML
+open.more.example.title=More...
 
 data.source.title=Experiments
 data.source.small.icon=icon/16x16/data_source.gif

@@ -55,7 +55,7 @@ public class DecoyAccessionFilter extends RowFilter {
                 case PREFIX:
                     return decoyOnly ? accession.startsWith(criteria) : !accession.startsWith(criteria);
                 case POSTFIX:
-                    return decoyOnly ? accession.startsWith(criteria) : !accession.startsWith(criteria);
+                    return decoyOnly ? accession.endsWith(criteria) : !accession.endsWith(criteria);
                 case CONTAIN:
                     return decoyOnly ? accession.contains(criteria) : !accession.contains(criteria);
             }

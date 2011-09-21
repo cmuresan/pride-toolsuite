@@ -130,6 +130,7 @@ public class TableFactory {
         // peptide sequence present in protein sequence
         TableColumnExt peptideFitColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
         peptideFitColumn.setCellRenderer(new PeptideFitCellRenderer());
+        peptideFitColumn.setVisible(false);
 
         // hide modified peptide sequence
         TableColumnExt peptideSeqColumn = (TableColumnExt) table.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_MASS_COLUMN.getHeader());

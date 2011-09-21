@@ -70,9 +70,6 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
         // create identification table
         try {
             pepTable = TableFactory.createPeptideTable(controller.getSearchEngine(), controller);
-            TableColumnExt peptideFitColumn = (TableColumnExt) pepTable.getColumn(PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader());
-            peptideFitColumn.setCellRenderer(new PeptideFitCellRenderer());
-            peptideFitColumn.setVisible(false);
         } catch (DataAccessException e) {
             String msg = "Failed to retrieve search engine details";
             logger.error(msg, e);

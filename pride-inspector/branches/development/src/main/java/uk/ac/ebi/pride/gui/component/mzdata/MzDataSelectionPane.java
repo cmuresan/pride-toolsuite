@@ -458,14 +458,20 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
 
                     // get the column number for mzgraph id
                     int columnNum;
-                    if (tableModel instanceof SpectrumTableModel) {
-                        columnNum = ((SpectrumTableModel) tableModel).getColumnIndex(SpectrumTableModel.TableHeader.SPECTRUM_ID_COLUMN.getHeader());
-                        Comparable id = (Comparable) table.getValueAt(rowNum, columnNum);
-                        eventBus.publish(new SpectrumEvent(this, controller, id));
-                    } else if (tableModel instanceof ChromatogramTableModel) {
-                        columnNum = ((ChromatogramTableModel) tableModel).getColumnIndex(ChromatogramTableModel.TableHeader.CHROMATOGRAM_ID_COLUMN.getHeader());
-                        Comparable id = (Comparable) table.getValueAt(rowNum, columnNum);
-                        eventBus.publish(new ChromatogramEvent(this, controller, id));
+                    try {
+                        if (tableModel instanceof SpectrumTableModel) {
+                            columnNum = ((SpectrumTableModel) tableModel).getColumnIndex(SpectrumTableModel.TableHeader.SPECTRUM_ID_COLUMN.getHeader());
+                            Comparable id = (Comparable) table.getValueAt(rowNum, columnNum);
+                            controller.setForegroundSpectrumById(id);
+                            eventBus.publish(new SpectrumEvent(this, controller, id));
+                        } else if (tableModel instanceof ChromatogramTableModel) {
+                            columnNum = ((ChromatogramTableModel) tableModel).getColumnIndex(ChromatogramTableModel.TableHeader.CHROMATOGRAM_ID_COLUMN.getHeader());
+                            Comparable id = (Comparable) table.getValueAt(rowNum, columnNum);
+                            controller.setForegroundChromatogramById(id);
+                            eventBus.publish(new ChromatogramEvent(this, controller, id));
+                        }
+                    } catch (DataAccessException e1) {
+                        logger.error("Failed to set foreground id", e1);
                     }
                 }
             }

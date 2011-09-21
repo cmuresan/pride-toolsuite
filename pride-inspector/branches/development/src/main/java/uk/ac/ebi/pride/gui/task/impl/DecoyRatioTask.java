@@ -36,7 +36,7 @@ public class DecoyRatioTask extends TaskAdapter<Void, Void> {
     public DecoyRatioTask(DataAccessController controller, DecoyAccessionFilter.Type type, String criteria) {
         this.controller = controller;
         this.type = type;
-        this.criteria = criteria;
+        this.criteria = criteria.toLowerCase();
 
         this.setName(TASK_NAME);
         this.setDescription(TASK_DESCRIPTION);
@@ -54,8 +54,8 @@ public class DecoyRatioTask extends TaskAdapter<Void, Void> {
         String protAccColName = ProteinTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
         int index = getAccessionColumnIndex(table.getModel(), protAccColName);
         // protein decoy ratio
-        double proteinDecoyRatio = calculateDecoyRatio(table.getModel(), index, type, criteria);
-        String proteinDecoyMsg = "Decoy Protein: " + NumberUtilities.scaleDouble(proteinDecoyRatio * 100, 2) + " %";
+        String proteinDecoyRatio = calculateDecoyRatio(table.getModel(), index, type, criteria);
+        String proteinDecoyMsg = "Decoy Protein: " + proteinDecoyRatio;
         EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.INFO, proteinDecoyMsg, proteinDecoyMsg)));
 
         // peptide tab
@@ -63,8 +63,8 @@ public class DecoyRatioTask extends TaskAdapter<Void, Void> {
         protAccColName = PeptideTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
         index = getAccessionColumnIndex(table.getModel(), protAccColName);
         // peptide decoy ratio
-        double peptideDecoyRatio = calculateDecoyRatio(table.getModel(), index, type, criteria);
-        String peptideDecoyMsg = "Decoy Peptide: " + NumberUtilities.scaleDouble(peptideDecoyRatio * 100, 2) + " %";
+        String peptideDecoyRatio = calculateDecoyRatio(table.getModel(), index, type, criteria);
+        String peptideDecoyMsg = "Decoy Peptide: " + peptideDecoyRatio;
         EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.INFO, peptideDecoyMsg, peptideDecoyMsg)));
 
         return null;
@@ -94,36 +94,36 @@ public class DecoyRatioTask extends TaskAdapter<Void, Void> {
      * @param colIndex   protein accession column
      * @param type
      * @param criteria
-     * @return double  decoy ratio
+     * @return String  decoy ratio
      */
-    private double calculateDecoyRatio(TableModel tableModel, int colIndex,
+    private String calculateDecoyRatio(TableModel tableModel, int colIndex,
                                        DecoyAccessionFilter.Type type, String criteria) {
-        double rowCnt = tableModel.getRowCount() + 0d;
-        double decoyCnt = 0;
+        int rowCnt = tableModel.getRowCount();
+        int decoyCnt = 0;
 
         for (int i = 0; i < rowCnt; i++) {
-            String acc = (String) tableModel.getValueAt(i, colIndex);
+            String acc = ((String) tableModel.getValueAt(i, colIndex)).toLowerCase();
             if (acc != null) {
                 switch (type) {
                     case PREFIX:
-                        if (acc.toLowerCase().startsWith(criteria)) {
-                            decoyCnt += 1d;
+                        if (acc.startsWith(criteria)) {
+                            decoyCnt ++;
                         }
                         break;
                     case POSTFIX:
-                        if (acc.toLowerCase().endsWith(criteria)) {
-                            decoyCnt += 1d;
+                        if (acc.endsWith(criteria)) {
+                            decoyCnt ++;
                         }
                         break;
                     case CONTAIN:
-                        if (acc.toLowerCase().contains(criteria)) {
-                            decoyCnt += 1d;
+                        if (acc.contains(criteria)) {
+                            decoyCnt ++;
                         }
                         break;
                 }
             }
         }
 
-        return decoyCnt / rowCnt;
+        return decoyCnt + "/"+ rowCnt;
     }
 }

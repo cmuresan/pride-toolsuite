@@ -113,9 +113,9 @@ public class MzGraphPropertyPane extends JPanel implements PropertyChangeListene
                         contentPane.add(collapsePane);
                     }
                 }
-                contentPane.revalidate();
-                contentPane.repaint();
             }
+            this.revalidate();
+            this.repaint();
         }
 
         public void etdUpdate() {

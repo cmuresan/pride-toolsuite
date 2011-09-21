@@ -37,7 +37,7 @@ public class DecoyFilterTask extends TaskAdapter<Void, Void>{
     public DecoyFilterTask(DataAccessController controller, DecoyAccessionFilter.Type type, String criteria) {
         this.controller = controller;
         this.type = type;
-        this.criteria = criteria;
+        this.criteria = criteria.toLowerCase();
 
         this.setName(TASK_NAME);
         this.setDescription(TASK_DESCRIPTION);

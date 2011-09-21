@@ -89,6 +89,17 @@ public class ExtraProteinDetailAction extends PrideAction {
             }
         }
 
+        // set protein tab's peptide table columns to visible
+        JTable proteinPeptideTable = contentPane.getProteinTabPane().getPeptidePane().getPeptideTable();
+        showHideColModel = (TableColumnModelExt) proteinPeptideTable.getColumnModel();
+        columns = showHideColModel.getColumns(true);
+        for (TableColumn column : columns) {
+            Object header = column.getHeaderValue();
+            if (PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader().equals(header)) {
+                ((TableColumnExt) column).setVisible(true);
+            }
+        }
+
         // set peptide tab table columns to visible
         JTable peptideTable = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
         showHideColModel = (TableColumnModelExt) peptideTable.getColumnModel();

@@ -151,6 +151,15 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
         this.add(scrollPane, BorderLayout.CENTER);
     }
 
+    /**
+     * Get peptide table
+     *
+     * @return  peptide table
+     */
+    public JTable getPeptideTable() {
+        return pepTable;
+    }
+
     @Override
     public void subscribeToEventBus(EventService eventBus) {
         // get local event bus

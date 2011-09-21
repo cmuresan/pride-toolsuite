@@ -99,8 +99,12 @@ public class CentralContentPane extends JPanel {
                 setLocked(false);
             }
         } else {
-            ControllerContentPane dataContentPane = getControllerContentPane(controller);
-            setContentPane(dataContentPane);
+            if (controller == null) {
+                showWelcomePane();
+            } else {
+                ControllerContentPane dataContentPane = getControllerContentPane(controller);
+                setContentPane(dataContentPane);
+            }
             setLocked(false);
         }
     }

@@ -246,7 +246,7 @@ public class PrideInspector extends Desktop {
 
         // close
         String closeDesc = context.getProperty("close.source.title");
-        String closeAllDesc = context.getProperty("close.all.soruce.title");
+        String closeAllDesc = context.getProperty("close.all.source.title");
         PrideAction closeAction = new CloseControllerAction(closeDesc, null);
         PrideAction closeAllAction = new CloseAllControllersAction(closeAllDesc, null);
 
@@ -269,6 +269,10 @@ public class PrideInspector extends Desktop {
         }
         PrideAction openMzMLExampleAction = new OpenFileAction(openMzMLExampleDesc, null, mzMLFiles);
         openMzMLExampleAction.setEnabled(mzMLExampleFile != null && mzMLExampleFile.exists());
+
+        // try more samples
+        String openMoreExampleDesc = context.getProperty("open.more.example.title");
+        PrideAction openMoreExampleAction = new OpenUrlAction(openMoreExampleDesc, null, context.getProperty("pride.inspector.download.website"));
 
         // help
         Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
@@ -348,7 +352,7 @@ public class PrideInspector extends Desktop {
 
         // try samples
         JMenu trySampleMenu = MenuFactory.createMenu("Examples",
-                openPrideXmlExampleAction, openMzMLExampleAction);
+                openPrideXmlExampleAction, openMzMLExampleAction, openMoreExampleAction);
         trySampleMenu.setMnemonic(java.awt.event.KeyEvent.VK_X);
         menuBar.add(trySampleMenu);
 

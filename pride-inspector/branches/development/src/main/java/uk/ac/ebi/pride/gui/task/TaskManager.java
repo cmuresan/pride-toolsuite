@@ -9,6 +9,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -212,7 +213,7 @@ public class TaskManager extends PropertyChangeHelper {
      * @param listener task listener
      */
     @SuppressWarnings("unchecked")
-    public void removeTaskListener(TaskListener listener) {
+    public synchronized void removeTaskListener(TaskListener listener) {
         synchronized (tasks) {
             for (Task task : tasks) {
                 task.removeTaskListener(listener);
@@ -260,8 +261,10 @@ public class TaskManager extends PropertyChangeHelper {
      * @param owner owner of the tasks
      */
     public void cancelTasksByOwner(Object owner) {
-        for (Task task : tasks) {
-            task.removeOwner(owner);
+        synchronized (tasks) {
+            for (Task task : tasks) {
+                task.removeOwner(owner);
+            }
         }
     }
 

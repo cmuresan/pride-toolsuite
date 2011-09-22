@@ -104,7 +104,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
 
         //-------- help button -----------
         helpButton.setToolTipText("Help on " + PANE_TITLE);
-        CSH.setHelpIDString(helpButton, "help.browse.mzgraph");
+        CSH.setHelpIDString(helpButton, "help.pridedb");
         helpButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
         helpButtonPanel.add(helpButton);
         helpButtonPanel.setPreferredSize(new Dimension(200, 30));

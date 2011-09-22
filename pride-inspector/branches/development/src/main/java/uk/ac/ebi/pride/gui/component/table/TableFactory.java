@@ -231,6 +231,11 @@ public class TableFactory {
         // add table model change listener
         tableModel.addTableModelListener(new DynamicColumnListener(searchTable));
 
+        // hide row number column
+        String rowNumHeader = DatabaseSearchTableModel.TableHeader.ROW_NUMBER_COLUMN.getHeader();
+        TableColumnExt rowColumn = (TableColumnExt) searchTable.getColumn(rowNumHeader);
+        rowColumn.setVisible(false);
+
         // add cell renderer to view column
         String viewColumnHeader = DatabaseSearchTableModel.TableHeader.VIEW.getHeader();
         TableColumnExt viewColumn = (TableColumnExt) searchTable.getColumn(viewColumnHeader);

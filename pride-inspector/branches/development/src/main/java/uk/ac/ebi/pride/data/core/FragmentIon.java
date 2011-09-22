@@ -82,8 +82,9 @@ public class FragmentIon extends ParamGroup {
             } else if (CvTermReference.PRODUCT_ION_CHARGE.getAccession().equals(accession)) {
                 charge = NumberUtilities.isInteger(value) ? Integer.parseInt(value) : charge;
             } else if (ionType == null) {
-                if (cvParam.getName().contains("ion")) {
-                    ionType = cvParam.getName();
+                String cvName = cvParam.getName();
+                if (cvName.toLowerCase().contains("ion") || cvName.toLowerCase().contains("immonium")) {
+                    ionType = cvName;
                     location = NumberUtilities.isInteger(value) ? Integer.parseInt(value) : location;
                     ionTypeAccession = accession;
                 }

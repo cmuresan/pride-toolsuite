@@ -47,7 +47,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
     /**
      * Connect to pride database
      */
-    private static final String OPEN_DB = "Connect to PRIDE Database";
+    private static final String OPEN_DB = "Search PRIDE Database";
 
     /**
      * Reviewer download

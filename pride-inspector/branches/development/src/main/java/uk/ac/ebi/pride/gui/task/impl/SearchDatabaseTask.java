@@ -215,7 +215,7 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (part == null || "".equals(part.trim())) {
-                rowParts.add(Constants.NOT_AVAILABLE);
+                rowParts.add(" " + Constants.NOT_AVAILABLE);
             } else if (i == 0) {
                 rowParts.add(Integer.parseInt(part));
             } else {

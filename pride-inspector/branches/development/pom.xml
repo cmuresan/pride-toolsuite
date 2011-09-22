@@ -105,7 +105,7 @@
         <dependency>
             <groupId>uk.ac.ebi.pride.mzgraph</groupId>
             <artifactId>pride-mzgraph-browser</artifactId>
-            <version>1.0.10</version>
+            <version>1.0.11</version>
         </dependency>
         <dependency>
             <groupId>jdom</groupId>

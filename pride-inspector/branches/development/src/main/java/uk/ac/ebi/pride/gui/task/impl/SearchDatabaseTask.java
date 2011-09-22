@@ -109,12 +109,11 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
      * Read and filter summary the file
      */
     private void searchDatabaseSummaryFile() {
-        URL pathURL = IOUtilities.getFullPath(SearchDatabaseTask.class, "metadata/database_summary.tsv");
-        File file = IOUtilities.convertURLToFile(pathURL);
+        InputStream input = this.getClass().getClassLoader().getResourceAsStream("metadata/database_summary.tsv");
         // input stream of the database file
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(file));
+            reader = new BufferedReader(new InputStreamReader(input));
             // get headers
             getHeaders(reader);
 

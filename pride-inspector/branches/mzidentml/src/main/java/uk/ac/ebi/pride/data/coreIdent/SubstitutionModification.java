@@ -9,9 +9,9 @@ package uk.ac.ebi.pride.data.coreIdent;
  */
 public class SubstitutionModification {
 
-    private char originalResidue = '\u0000';
+    private String originalResidue = null;
 
-    private char replacementResidue = '\u0000';
+    private String replacementResidue = null;
 
     private int location = -1;
 
@@ -19,7 +19,7 @@ public class SubstitutionModification {
 
     private double monoisotopicMassDelta = 0.0;
 
-    public SubstitutionModification(char originalResidue, char replacementResidue, int location, double avgMassDelta, double monoisotopicMassDelta) {
+    public SubstitutionModification(String originalResidue, String replacementResidue, int location, double avgMassDelta, double monoisotopicMassDelta) {
         this.originalResidue = originalResidue;
         this.replacementResidue = replacementResidue;
         this.location = location;
@@ -27,19 +27,19 @@ public class SubstitutionModification {
         this.monoisotopicMassDelta = monoisotopicMassDelta;
     }
 
-    public char getOriginalResidue() {
+    public String getOriginalResidue() {
         return originalResidue;
     }
 
-    public void setOriginalResidue(char originalResidue) {
+    public void setOriginalResidue(String originalResidue) {
         this.originalResidue = originalResidue;
     }
 
-    public char getReplacementResidue() {
+    public String getReplacementResidue() {
         return replacementResidue;
     }
 
-    public void setReplacementResidue(char replacementResidue) {
+    public void setReplacementResidue(String replacementResidue) {
         this.replacementResidue = replacementResidue;
     }
 

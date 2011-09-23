@@ -42,7 +42,7 @@ public class Modification extends IdentifiableParamGroup{
      * pride modification validator One modification can be related with more than one specificity. In MzIdentML
      * Object the Modification is related with more than one specificity.
      */
-    private List<Character> residues = null;
+    private List<String> residues = null;
     /**
      * In the new validation approach for pride modification objects, just one Average Mass Delta could be associated
      * to a Modification. In the MzIdentMl Modification object only one Average Mass Delta is annotated.
@@ -74,7 +74,7 @@ public class Modification extends IdentifiableParamGroup{
     public Modification(String id,
                         String name,
                         int location,
-                        List<Character> residues,
+                        List<String> residues,
                         List<Double> avgMassDelta,
                         List<Double> monoisotopicMassDelta) {
         super(id, name);
@@ -98,7 +98,7 @@ public class Modification extends IdentifiableParamGroup{
                         String id,
                         String name,
                         int location,
-                        List<Character> residues,
+                        List<String> residues,
                         List<Double> avgMassDelta,
                         List<Double> monoisotopicMassDelta) {
         super(params, id, name);
@@ -124,7 +124,7 @@ public class Modification extends IdentifiableParamGroup{
                         String id,
                         String name,
                         int location,
-                        List<Character> residues,
+                        List<String> residues,
                         List<Double> avgMassDelta,
                         List<Double> monoisotopicMassDelta) {
         super(cvParams, userParams, id, name);
@@ -148,7 +148,7 @@ public class Modification extends IdentifiableParamGroup{
     public Modification(String id,
                         String name,
                         int location,
-                        List<Character> residues,
+                        List<String> residues,
                         List<Double> avgMassDelta,
                         List<Double> monoisotopicMassDelta,
                         String modDatabase,
@@ -178,7 +178,7 @@ public class Modification extends IdentifiableParamGroup{
                         String id,
                         String name,
                         int location,
-                        List<Character> residues,
+                        List<String> residues,
                         List<Double> avgMassDelta,
                         List<Double> monoisotopicMassDelta,
                         String modDatabase,
@@ -210,7 +210,7 @@ public class Modification extends IdentifiableParamGroup{
                         String id,
                         String name,
                         int location,
-                        List<Character> residues,
+                        List<String> residues,
                         List<Double> avgMassDelta,
                         List<Double> monoisotopicMassDelta,
                         String modDatabase,
@@ -232,11 +232,11 @@ public class Modification extends IdentifiableParamGroup{
         this.location = location;
     }
 
-    public List<Character> getResidues() {
+    public List<String> getResidues() {
         return residues;
     }
 
-    public void setResidues(List<Character> residues) {
+    public void setResidues(List<String> residues) {
         this.residues = residues;
     }
 

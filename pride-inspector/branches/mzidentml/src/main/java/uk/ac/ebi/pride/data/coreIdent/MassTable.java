@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.data.coreIdent;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,33 +12,40 @@ import java.util.HashMap;
  */
 public class MassTable extends ParamGroup{
 
-    private String msLevel = null;
+    private List<Integer> msLevel = null;
 
-    private HashMap<Character,Double> residueList = null;
+    private Map<String,Double> residues = null;
 
-    private HashMap<Character,ParamGroup> ambiguousResidueList = null;
+    private Map<String,ParamGroup> ambiguousResidues = null;
 
-    public String getMsLevel() {
+
+    public MassTable(List<Integer> msLevel, Map<String, Double> residueList, Map<String, ParamGroup> ambiguousResidueList) {
+        this.msLevel = msLevel;
+        this.residues = residueList;
+        this.ambiguousResidues = ambiguousResidueList;
+    }
+
+    public List<Integer> getMsLevel() {
         return msLevel;
     }
 
-    public void setMsLevel(String msLevel) {
+    public void setMsLevel(List<Integer> msLevel) {
         this.msLevel = msLevel;
     }
 
-    public HashMap<Character, Double> getResidueList() {
-        return residueList;
+    public Map<String, Double> getResidues() {
+        return residues;
     }
 
-    public void setResidueList(HashMap<Character, Double> residueList) {
-        this.residueList = residueList;
+    public void setResidues(Map<String, Double> residues) {
+        this.residues = residues;
     }
 
-    public HashMap<Character, ParamGroup> getAmbiguousResidueList() {
-        return ambiguousResidueList;
+    public Map<String, ParamGroup> getAmbiguousResidues() {
+        return ambiguousResidues;
     }
 
-    public void setAmbiguousResidueList(HashMap<Character, ParamGroup> ambiguousResidueList) {
-        this.ambiguousResidueList = ambiguousResidueList;
+    public void setAmbiguousResidues(Map<String, ParamGroup> ambiguousResidues) {
+        this.ambiguousResidues = ambiguousResidues;
     }
 }

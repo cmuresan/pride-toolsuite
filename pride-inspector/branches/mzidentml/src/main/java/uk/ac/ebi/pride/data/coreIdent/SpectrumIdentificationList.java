@@ -18,7 +18,7 @@ public class SpectrumIdentificationList extends IdentifiableParamGroup {
     /**
      * Contains the types of measures that will be reported in generic arrays for
      * each SpectrumIdentificationItem e.g. product ion m/z, product ion
-     * intensity, product ion m/z error
+     * intensity, product ion m/z error. Fragmentation Table is used as
      */
     private List<IdentifiableParamGroup> fragmentationTable = null;
     /**

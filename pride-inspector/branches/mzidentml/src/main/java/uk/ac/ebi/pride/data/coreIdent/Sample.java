@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.data.coreIdent;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description of the sample used to generate the Dataset.
@@ -20,7 +21,7 @@ public class Sample extends IdentifiableParamGroup {
     /**
      * Contact Role could be defined as a Person and a specific role (CVTerms)
      */
-    private HashMap<Person, CvParam> contactRoleList = null;
+    private Map<AbstractContact, CvParam> contactRoleList = null;
 
     /**
      * Constructor for MZIndentMl Sample.
@@ -32,7 +33,7 @@ public class Sample extends IdentifiableParamGroup {
     public Sample(String id,
                   String name,
                   Sample parentSample,
-                  HashMap<Person, CvParam> contactRoleList) {
+                  Map<AbstractContact, CvParam> contactRoleList) {
         super(id, name);
         this.parentSample = parentSample;
         this.contactRoleList = contactRoleList;
@@ -50,7 +51,7 @@ public class Sample extends IdentifiableParamGroup {
                   String id,
                   String name,
                   Sample parentSample,
-                  HashMap<Person, CvParam> contactRoleList) {
+                  Map<AbstractContact, CvParam> contactRoleList) {
         super(params, id, name);
         this.parentSample = parentSample;
         this.contactRoleList = contactRoleList;
@@ -70,7 +71,7 @@ public class Sample extends IdentifiableParamGroup {
                   String id,
                   String name,
                   Sample parentSample,
-                  HashMap<Person,CvParam> contactRoleList) {
+                  Map<AbstractContact,CvParam> contactRoleList) {
         super(cvParams, userParams, id, name);
         this.parentSample = parentSample;
         this.contactRoleList = contactRoleList;
@@ -120,11 +121,11 @@ public class Sample extends IdentifiableParamGroup {
         this.parentSample = parentSample;
     }
 
-    public HashMap<Person, CvParam> getContactRoleList() {
+    public Map<AbstractContact, CvParam> getContactRoleList() {
         return contactRoleList;
     }
 
-    public void setContactRoleList(HashMap<Person, CvParam> contactRoleList) {
+    public void setContactRoleList(Map<AbstractContact, CvParam> contactRoleList) {
         this.contactRoleList = contactRoleList;
     }
 }

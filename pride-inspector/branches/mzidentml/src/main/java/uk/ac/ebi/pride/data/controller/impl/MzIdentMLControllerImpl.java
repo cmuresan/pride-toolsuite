@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.data.controller.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.jmzidml.xml.io.MzIdentMLUnmarshaller;
+import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
@@ -12,10 +13,14 @@ import uk.ac.ebi.pride.data.coreIdent.*;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -390,18 +395,17 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     /**
      * Get peptide using a given identification id and a given peptide index
      *
-     * @param identId  identification id
      * @param index    peptide index
      * @param useCache whether to use cache
      * @return Peptide  peptide
      * @throws DataAccessException exception while getting peptide
      */
     @Override
-    public Peptide getPeptideById(Comparable index, boolean useCache) throws DataAccessException {
+    public Peptide getPeptideById(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
         Peptide peptide = super.getPeptideById(null, index, useCache);
         if (peptide == null) {
             logger.debug("Get new peptide from file: {}", index);
-            peptide = MzIdentMLTransformer.transformToPeptideIdentification(unmarshaller.getPeptideIdentificationById(index),unmarshaller.getFragmentationTable());
+            peptide = MzIdentMLTransformer.transformToPeptideIdentification(unmarshaller.getPeptideIdentificationById(identId,index),unmarshaller.getFragmentationTable());
             if (useCache && peptide != null) {
                 // store peptide
                 cache.store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, index), peptide);
@@ -427,7 +431,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         int num;
         try {
             // this method is overridden to use the reader directly
-            num = reader.getNumberOfPeptides();
+            num = unmarshaller.getNumIdentifiedPeptides();
         } catch (Exception ex) {
             throw new DataAccessException("Failed to retrieve number of peptides", ex);
         }
@@ -436,7 +440,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
     @Override
     public void close() {
-        reader = null;
+        unmarshaller = null;
         super.close();
     }
 
@@ -457,7 +461,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 content.append(reader.readLine());
             }
             // check file type
-            Matcher matcher = prideXmlHeaderPattern.matcher(content);
+            Matcher matcher = mzIdentMLHeaderPattern.matcher(content);
             valid = matcher.find();
         } catch (Exception e) {
             logger.error("Failed to read file", e);

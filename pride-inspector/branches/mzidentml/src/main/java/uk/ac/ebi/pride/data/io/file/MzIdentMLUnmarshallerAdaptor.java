@@ -1,11 +1,14 @@
 package uk.ac.ebi.pride.data.io.file;
 
-import uk.ac.ebi.jmzidml.xml.io.MzIdentMLUnmarshaller;
+import uk.ac.ebi.jmzidml.MzIdentMLElement;
 import uk.ac.ebi.jmzidml.model.mzidml.*;
+import uk.ac.ebi.jmzidml.xml.io.MzIdentMLUnmarshaller;
 
+import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -80,8 +83,26 @@ public class MzIdentMLUnmarshallerAdaptor {
         return unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis.class, (String) IdentId);
     }
 
-    public SpectrumIdentificationItem getPeptideIdentificationById(Comparable IdentId) throws JAXBException {
-        return unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem.class, (String) IdentId);
+    public SpectrumIdentificationItem getPeptideIdentificationById(Comparable IdentId, Comparable index) {
+        ProteinDetectionHypothesis protein = null;
+        try {
+            protein = unmarshaller.unmarshal(ProteinDetectionHypothesis.class, (String) IdentId);
+            List<PeptideHypothesis> peptideHypothesises = protein.getPeptideHypothesis();
+            for (PeptideHypothesis peptideHypothesis: peptideHypothesises){
+                for (SpectrumIdentificationItemRef spectrumIdentificationItemRef: peptideHypothesis.getSpectrumIdentificationItemRef())
+                    if(spectrumIdentificationItemRef.getSpectrumIdentificationItem().getId().equalsIgnoreCase((String)index)){
+                    return spectrumIdentificationItemRef.getSpectrumIdentificationItem();
+                }
+            }
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public int getNumIdentifiedPeptides(){
+        return (unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationResult.class)).getSpectrumIdentificationItem().size();
     }
 
     public FragmentationTable getFragmentationTable(){
@@ -89,5 +110,12 @@ public class MzIdentMLUnmarshallerAdaptor {
     }
 
 
-
+    public Set<String> getIDsForElement(MzIdentMLElement mzIdentMLElement) {
+        try {
+            return unmarshaller.getIDsForElement(mzIdentMLElement);
+        } catch (ConfigurationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return null;
+    }
 }

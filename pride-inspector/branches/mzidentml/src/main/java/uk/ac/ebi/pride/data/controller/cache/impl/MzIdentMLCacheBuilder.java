@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.data.controller.cache.impl;
 
 import uk.ac.ebi.jmzidml.MzIdentMLElement;
-import uk.ac.ebi.jmzidml.xml.io.MzIdentMLUnmarshaller;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.impl.MzIdentMLControllerImpl;
+import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
 
 import java.util.ArrayList;
 
@@ -29,7 +29,7 @@ public class MzIdentMLCacheBuilder extends AbstractAccessCacheBuilder{
     public void populate() throws Exception {
         super.populate();
         // get a reference to xml reader
-        MzIdentMLUnmarshaller unmarshaller = ((MzIdentMLControllerImpl)controller).getUnmarshaller();
+        MzIdentMLUnmarshallerAdaptor unmarshaller = ((MzIdentMLControllerImpl)controller).getUnmarshaller();
         // clear and add metadata
         cache.clear(CacheCategory.EXPERIMENT_METADATA);
         controller.getExperimentMetaData();

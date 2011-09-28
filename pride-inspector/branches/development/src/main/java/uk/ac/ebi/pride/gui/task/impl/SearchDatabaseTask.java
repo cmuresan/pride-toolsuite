@@ -155,7 +155,6 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
             if (!"".equals(line)) {
                 String[] parts = line.split(Constants.TAB);
                 headers = new ArrayList<String>(Arrays.asList(parts));
-                EventBus.publish(new DatabaseSearchEvent<List<String>>(null, DatabaseSearchEvent.Status.HEADER, Arrays.asList(parts)));
                 break;
             }
         }

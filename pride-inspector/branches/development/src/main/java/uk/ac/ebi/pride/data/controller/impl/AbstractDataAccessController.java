@@ -644,16 +644,18 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      */
     @Override
     public SearchEngine getSearchEngine() throws DataAccessException {
-        Collection<Comparable> identIds = this.getIdentificationIds();
-        Identification ident = getIdentificationById(CollectionUtils.getElement(identIds, 0));
         SearchEngine searchEngine = null;
-        if (ident != null) {
-            searchEngine = new SearchEngine(ident.getSearchEngine());
-            // check the search engine types from the data source
-            List<Peptide> peptides = ident.getPeptides();
-            Peptide peptide = peptides.get(0);
-            List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide);
-            searchEngine.setSearchEngineTypes(types);
+        Collection<Comparable> identIds = this.getIdentificationIds();
+        if (identIds.size() > 0) {
+            Identification ident = getIdentificationById(CollectionUtils.getElement(identIds, 0));
+            if (ident != null) {
+                searchEngine = new SearchEngine(ident.getSearchEngine());
+                // check the search engine types from the data source
+                List<Peptide> peptides = ident.getPeptides();
+                Peptide peptide = peptides.get(0);
+                List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide);
+                searchEngine.setSearchEngineTypes(types);
+            }
         }
 
         return searchEngine;
@@ -1425,8 +1427,9 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get the number of reagents
-     * @return  int the number of reagents
-     * @throws DataAccessException  data access exception
+     *
+     * @return int the number of reagents
+     * @throws DataAccessException data access exception
      */
     @Override
     public int getNumberOfReagents() throws DataAccessException {
@@ -1510,8 +1513,9 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get quantitative sample details
-     * @return  QuantitativeSample  quantitatve sample
-     * @throws DataAccessException  data access exception
+     *
+     * @return QuantitativeSample  quantitatve sample
+     * @throws DataAccessException data access exception
      */
     @Override
     public QuantitativeSample getQuantSample() throws DataAccessException {
@@ -1547,7 +1551,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get quantitative unit used at the protein identification level
-     *
+     * <p/>
      * Note: this method will scan through first 10 identifications
      *
      * @return
@@ -1576,7 +1580,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get quantitative unit used at the peptide identification level
-     *
+     * <p/>
      * Note: this method will scan all the peptides
      *
      * @return QuantCvTermReference    unit cv term
@@ -1609,9 +1613,9 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     /**
      * Get protein level quantitative data using a given protein identification id
      *
-     * @param identId   protein identification id
-     * @return  Quantitation    quantitative data
-     * @throws DataAccessException  data access exception
+     * @param identId protein identification id
+     * @return Quantitation    quantitative data
+     * @throws DataAccessException data access exception
      */
     @Override
     public Quantitation getProteinQuantData(Comparable identId) throws DataAccessException {
@@ -1621,10 +1625,11 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
 
     /**
      * Get peptide level quantitative data using a given peptide identification id
+     *
      * @param identId   protein identification id
      * @param peptideId peptide id
-     * @return  Quantitation    quantitative data
-     * @throws DataAccessException  data access exception
+     * @return Quantitation    quantitative data
+     * @throws DataAccessException data access exception
      */
     @Override
     public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {

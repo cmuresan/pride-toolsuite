@@ -133,9 +133,9 @@ public class ControllerContentPane extends DataAccessControllerPane {
                     proteinTabEnabled = controller.hasIdentification();
                     contentTabPane.setEnabledAt(proteinTabIndex, proteinTabEnabled);
                     if (proteinTabEnabled) {
-                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Protein identifications found", "This data source contains protein identifications")));
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Proteins found", "This data source contains protein identifications")));
                     } else {
-                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.ERROR, "Protein identifications not found", "This data source does not contain protein identifications")));
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.ERROR, "Proteins not found", "This data source does not contain protein identifications")));
                     }
                 }
 
@@ -153,7 +153,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
                     quantTabEnabled = controller.hasQuantData();
                     contentTabPane.setEnabledAt(quantTabIndex, quantTabEnabled);
                     if (quantTabEnabled) {
-                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Quantification found", "This data source contains quantitative data")));
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Quantifications found", "This data source contains quantitative data")));
                     }
                 }
 

@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.gui.component.db;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventSubscriber;
+import uk.ac.ebi.pride.gui.component.table.model.DatabaseSearchTableModel;
 import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
 
 import javax.swing.*;
@@ -22,15 +23,9 @@ public class FieldComboBoxModel extends DefaultComboBoxModel{
         AnnotationProcessor.process(this);
 
         this.addElement("Any field");
-    }
-
-    @EventSubscriber(eventClass = DatabaseSearchEvent.class)
-    public void onDatabaseSearchEvent(DatabaseSearchEvent evt) {
-        if (DatabaseSearchEvent.Status.HEADER.equals(evt.getStatus())) {
-            List<String> headers = (List<String>)evt.getResult();
-            for (String header : headers) {
-                this.addElement(header);
-            }
+        DatabaseSearchTableModel.TableHeader[] headers = DatabaseSearchTableModel.TableHeader.values();
+        for (DatabaseSearchTableModel.TableHeader header : headers) {
+            this.addElement(header.getHeader());
         }
     }
 }

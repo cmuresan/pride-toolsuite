@@ -110,7 +110,7 @@ public class DBMetadataExtractor {
                     // tissue, brenda id
                     boolean foundTissue = false;
                     for (CvParam cvParam : cvParams) {
-                        if (cvParam.getCvLookupID().toLowerCase().equals("brenda")) {
+                        if (cvParam.getCvLookupID().toLowerCase().equals("bto")) {
                             writeEntry(writer, cvParam.getName());
                             writeEntry(writer, cvParam.getAccession());
                             foundTissue = true;
@@ -150,7 +150,7 @@ public class DBMetadataExtractor {
                             if (cvParam.getCvLookupID().toLowerCase().equals("pubmed")) {
                                 String pubMed = cvParam.getAccession();
                                 if (NumberUtilities.isInteger(pubMed)) {
-                                    pubmedId += pubMed + ";";
+                                    pubmedId += pubMed + ",";
                                 }
                             }
                         }

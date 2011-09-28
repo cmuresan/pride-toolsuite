@@ -14,6 +14,7 @@ import uk.ac.ebi.pride.gui.url.*;
 import uk.ac.ebi.pride.gui.utils.Constants;
 
 import javax.swing.*;
+import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.util.Collection;
@@ -227,9 +228,6 @@ public class TableFactory {
         DatabaseSearchTableModel tableModel = new DatabaseSearchTableModel();
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable searchTable = new DefaultPrideTable(tableModel, columnModel);
-        searchTable.setAutoCreateColumnsFromModel(false);
-        // add table model change listener
-        tableModel.addTableModelListener(new DynamicColumnListener(searchTable));
 
         // hide row number column
         String rowNumHeader = DatabaseSearchTableModel.TableHeader.ROW_NUMBER_COLUMN.getHeader();
@@ -243,10 +241,17 @@ public class TableFactory {
         viewColumn.setCellRenderer(new IconRenderer(icon));
         viewColumn.setMaxWidth(50);
 
+        // pubmed column
+        String pubmedHeader = DatabaseSearchTableModel.TableHeader.PUBMED_ID.getHeader();
+        TableColumnExt pubmedColumn = (TableColumnExt) searchTable.getColumn(pubmedHeader);
+        Pattern pubmedPattern = Pattern.compile("[\\d,]+");
+        pubmedColumn.setCellRenderer(new HyperLinkCellRenderer(pubmedPattern));
+
 
         // add mouse motion listener
-        searchTable.addMouseMotionListener(new TableCellMouseMotionListener(searchTable, viewColumnHeader));
+        searchTable.addMouseMotionListener(new TableCellMouseMotionListener(searchTable, viewColumnHeader, pubmedHeader));
         searchTable.addMouseListener(new OpenExperimentMouseListener(searchTable, viewColumnHeader));
+        searchTable.addMouseListener(new HyperLinkCellMouseClickListener(searchTable, pubmedHeader, new PrefixedHyperLinkGenerator(Constants.PUBMED_URL_PERFIX), pubmedPattern));
 
         return searchTable;
     }

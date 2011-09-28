@@ -20,7 +20,19 @@ public class DatabaseSearchTableModel extends ListTableModel<List<Object>> {
      */
     public enum TableHeader {
         ROW_NUMBER_COLUMN("#", "Row Number"),
-        VIEW("View", "View experiment");
+        VIEW("View", "View experiment"),
+        EXPERIMENT_ACCESSION("Accession", "PRIDE Experiment Accession"),
+        EXPERIMENT_TITLE("Title", "PRIDE Experiment Title"),
+        PROJECT("Project", "PRIDE Project Name"),
+        SPECIES("Species", "Sample Species"),
+        TAXONOMY_ID("Taxonomy ID", "Sample Taxonomy ID"),
+        TISSUE("Tissue", "Sample Tissue"),
+        BRENDA_ID("BRENDA ID (Tissue)", "Tissue's BRENDA ID"),
+        NUMBER_OF_SPECTRA("#Spectra", "Number of spectra"),
+        NUMBER_OF_PROTEIN("#Proteins", "Number of proteins"),
+        NUMBER_OF_PEPTIDE("#Peptides", "Number of peptides"),
+        REFERENCE("Reference", "Full Reference Line"),
+        PUBMED_ID("PubMed ID", "PubMed ID");
 
         private final String header;
         private final String toolTip;
@@ -50,16 +62,6 @@ public class DatabaseSearchTableModel extends ListTableModel<List<Object>> {
             addColumn(tableHeader.getHeader(), tableHeader.getToolTip());
         }
     }
-//
-//    @Override
-//    public Class<?> getColumnClass(int columnIndex) {
-//        if (columnIndex == 2) {
-//            System.out.println(getColumnName(columnIndex));
-//            return Integer.class;
-//        } else {
-//            return super.getColumnClass(columnIndex);
-//        }
-//    }
 
     @Override
     public void addData(List<Object> newData) {
@@ -102,14 +104,14 @@ public class DatabaseSearchTableModel extends ListTableModel<List<Object>> {
     }
 
     /**
-     * Get all the headers of the table without the row number, selection column and view column
+     * Get all the headers of the table without the row number, view column
      *
      * @return List<String>    a list of headers
      */
     public List<String> getAllHeaders() {
         List<String> headers = new ArrayList<String>();
         int cnt = this.getColumnCount();
-        for (int i = 3; i < cnt; i++) {
+        for (int i = 2; i < cnt; i++) {
             headers.add(this.getColumnName(i));
         }
         return headers;
@@ -121,11 +123,6 @@ public class DatabaseSearchTableModel extends ListTableModel<List<Object>> {
             List<List<Object>> newData = (List<List<Object>>) evt.getResult();
             for (List<Object> data : newData) {
                 addData(data);
-            }
-        } else if (DatabaseSearchEvent.Status.HEADER.equals(evt.getStatus())) {
-            List<String> headers = (List<String>) evt.getResult();
-            for (String header : headers) {
-                addColumn(header, header);
             }
         }
     }

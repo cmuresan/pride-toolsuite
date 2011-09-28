@@ -168,7 +168,6 @@ public class PrideInspector extends Desktop {
         try {
             context.loadSystemProps(this.getClass().getClassLoader().getResourceAsStream("prop/gui.prop"));
             context.loadSystemProps(this.getClass().getClassLoader().getResourceAsStream("prop/settings.prop"));
-            context.loadSystemProps(this.getClass().getClassLoader().getResourceAsStream("prop/database.prop"));
         } catch (IOException e) {
             logger.error("Error while loading properties", e);
         }

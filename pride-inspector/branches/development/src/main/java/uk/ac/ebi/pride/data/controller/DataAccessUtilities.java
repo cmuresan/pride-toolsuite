@@ -42,6 +42,25 @@ public class DataAccessUtilities {
     }
 
     /**
+     * Get the project of a experiment
+     *
+     * @param metaData experiment metadata
+     * @return String project name
+     */
+    public static String getProjectName(MetaData metaData) {
+        String project = null;
+
+        List<CvParam> cvParams = metaData.getCvParams();
+        for (CvParam cvParam : cvParams) {
+            if (CvTermReference.PROJECT_NAME.getAccession().equals(cvParam.getAccession())) {
+                project = cvParam.getValue();
+            }
+        }
+
+        return project;
+    }
+
+    /**
      * Count the number of peaks of a spectrum
      *
      * @param spectrum spectrum

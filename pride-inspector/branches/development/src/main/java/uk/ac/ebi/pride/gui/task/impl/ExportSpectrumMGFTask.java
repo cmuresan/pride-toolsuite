@@ -74,6 +74,11 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
                 writer.println("# PRIDE accession: " + acc);
             }
 
+            String title = exp.getTitle();
+            if (title != null) {
+                writer.println("# Experiment title: " + title);
+            }
+
             // number of spectrum
             if (controller.hasSpectrum()) {
                 writer.println("# Number of spectra: " + controller.getNumberOfSpectra());
@@ -90,13 +95,6 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
             }
 
             //------- MGF content section -------
-
-            // title: COM
-            String title = exp.getTitle();
-            if (title != null) {
-                writer.println("COM=" + title);
-            }
-
             for (Comparable spectrumId : controller.getSpectrumIds()) {
                 writer.println("BEGIN IONS");
                 writer.println("TITLE=" + spectrumId);

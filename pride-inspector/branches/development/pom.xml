@@ -271,9 +271,9 @@
                     </excludes>
                     <archive>
                         <manifest>
-                            <!--<mainClass>uk.ac.ebi.pride.gui.PrideInspectorBootstrap</mainClass>-->
+                            <mainClass>uk.ac.ebi.pride.gui.PrideInspectorBootstrap</mainClass>
                             <!--use this if want to extract metadata from public mysql instance-->
-                            <mainClass>uk.ac.ebi.pride.data.io.db.DBMetadataExtractor</mainClass>
+                            <!--<mainClass>uk.ac.ebi.pride.data.io.db.DBMetadataExtractor</mainClass>-->
                             <!--use this if want to run batch dbtest-->
                             <!--<mainClass>uk.ac.ebi.pride.dbtestst.FileControllerBatchTest</mainClass>-->
                             <addClasspath>true</addClasspath>

@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 
 /**
  * Task to export to MGF file format
- *
+ * <p/>
  * User: dani, rwang
  * Date: 18-Oct-2010
  * Time: 10:46:54
@@ -63,7 +63,7 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
 
             // data source
             if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
-                writer.println("# Data source: " + ((File)controller.getSource()).getAbsolutePath());
+                writer.println("# Data source: " + ((File) controller.getSource()).getAbsolutePath());
             } else if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
                 writer.println("# Data source: pride public mysql instance");
             }
@@ -96,27 +96,30 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
 
             //------- MGF content section -------
             for (Comparable spectrumId : controller.getSpectrumIds()) {
-                writer.println("BEGIN IONS");
-                writer.println("TITLE=" + spectrumId);
                 Spectrum spectrum = controller.getSpectrumById(spectrumId);
-                writer.println("PEPMASS=" + controller.getPrecursorMz(spectrumId));
-                // precursor charge
-                int charge = controller.getPrecursorCharge(spectrumId);
-                writer.println("CHARGE=" + charge + (charge >= 0 ? "+" : "-"));
-                //get both arrays
-                double[] mzBinaryArray = spectrum.getMzBinaryDataArray().getDoubleArray();
-                double[] intensityArray = spectrum.getIntensityBinaryDataArray().getDoubleArray();
+                int msLevel = controller.getMsLevel(spectrumId);
+                if (msLevel == 2) {
+                    writer.println("BEGIN IONS");
+                    writer.println("TITLE=" + spectrumId);
+                    writer.println("PEPMASS=" + controller.getPrecursorMz(spectrumId));
+                    // precursor charge
+                    int charge = controller.getPrecursorCharge(spectrumId);
+                    writer.println("CHARGE=" + charge + (charge >= 0 ? "+" : "-"));
+                    //get both arrays
+                    double[] mzBinaryArray = spectrum.getMzBinaryDataArray().getDoubleArray();
+                    double[] intensityArray = spectrum.getIntensityBinaryDataArray().getDoubleArray();
 
-                for (int i = 0; i < mzBinaryArray.length; i++) {
-                    writer.println(mzBinaryArray[i] + Constants.TAB + intensityArray[i]);
-                }
-                writer.println("END IONS" + Constants.LINE_SEPARATOR);
+                    for (int i = 0; i < mzBinaryArray.length; i++) {
+                        writer.println(mzBinaryArray[i] + Constants.TAB + intensityArray[i]);
+                    }
+                    writer.println("END IONS" + Constants.LINE_SEPARATOR);
 
-                // this is important for cancelling
-                if (Thread.interrupted()) {
-                    throw new InterruptedException();
+                    // this is important for cancelling
+                    if (Thread.interrupted()) {
+                        throw new InterruptedException();
+                    }
+                    writer.flush();
                 }
-                writer.flush();
             }
             writer.flush();
         } catch (DataAccessException e2) {

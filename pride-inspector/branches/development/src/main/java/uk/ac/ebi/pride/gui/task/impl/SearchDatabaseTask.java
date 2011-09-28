@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.task.impl;
 import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.gui.component.table.model.DatabaseSearchTableModel;
 import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
 import uk.ac.ebi.pride.gui.event.ThrowableEvent;
 import uk.ac.ebi.pride.gui.search.SearchEntry;
@@ -210,11 +211,16 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
      */
     private List<Object> prepareRowContent(String[] parts) {
         List<Object> rowParts = new ArrayList<Object>();
+        DatabaseSearchTableModel.TableHeader[] headers = DatabaseSearchTableModel.TableHeader.values();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (part == null || "".equals(part.trim())) {
                 rowParts.add(" " + Constants.NOT_AVAILABLE);
-            } else if (i == 0) {
+            } else if (headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.EXPERIMENT_ACCESSION) ||
+                        headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.TAXONOMY_ID) ||
+                        headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.NUMBER_OF_SPECTRA) ||
+                        headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.NUMBER_OF_PEPTIDE) ||
+                        headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.NUMBER_OF_PROTEIN)) {
                 rowParts.add(Integer.parseInt(part));
             } else {
                 rowParts.add(part);

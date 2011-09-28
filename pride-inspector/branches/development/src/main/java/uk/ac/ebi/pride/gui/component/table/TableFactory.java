@@ -270,7 +270,7 @@ public class TableFactory {
         // pubmed
         String pubMedColumnHeader = ReferenceTableModel.TableHeader.PUBMED.getHeader();
         TableColumnExt pubMedColumn = (TableColumnExt) referenceTable.getColumn(pubMedColumnHeader);
-        Pattern pubmedPattern = Pattern.compile("\\d+");
+        Pattern pubmedPattern = Pattern.compile("[\\d,]+");
         pubMedColumn.setCellRenderer(new HyperLinkCellRenderer(pubmedPattern));
         pubMedColumn.setMaxWidth(100);
 

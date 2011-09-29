@@ -8,6 +8,7 @@ import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -114,12 +115,25 @@ public class MzIdentMLUnmarshallerAdaptor {
         try {
             return unmarshaller.getIDsForElement(mzIdentMLElement);
         } catch (ConfigurationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
         return null;
     }
 
     public List<Cv> getCvList() {
         return (unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.CvList.class)).getCv();
+    }
+
+    public String getMzIdentMLName() {
+        Map<String,String> properties = unmarshaller.getElementAttributes(unmarshaller.getMzIdentMLId(),uk.ac.ebi.jmzidml.model.mzidml.MzIdentML.class);
+        /*
+        * This is the only way that we can use now to retrieve the name property
+        * In the future we need to think in more elaborated way.
+        * */
+        return (properties.containsKey("name")) ? properties.get("name") : "Unknown experiment (mzIdentML)";
+    }
+
+    public Provider getProvider() {
+        return unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.Provider.class);
     }
 }

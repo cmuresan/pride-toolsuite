@@ -179,6 +179,16 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         }
     }
 
+    @Override
+    public Provider getProvider() throws DataAccessException {
+        ExperimentMetaData metaData = super.getExperimentMetaData();
+        if(metaData == null){
+            Provider provider = MzIdentMLTransformer.transformProvider(unmarshaller.getProvider());
+            return provider;
+        }
+        return metaData.getProvider();
+    }
+
     /**
      * Get a list of software
      *
@@ -218,6 +228,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
         return refs;
     }
+
+
 
     /**
      * Get the protocol object
@@ -275,6 +287,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 String version = unmarshaller.getMzIdentMLVersion();
                 //Get Source File List
                 List<SourceFile> sources = getSourceFiles();
+                //List<SourceFile> sources = null;
                 // Get Samples objects for PRide Object
                 List<Sample> samples = getSamples();
                 //List<Sample> samples = null;
@@ -287,15 +300,16 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 // Get Additional Information Related with the Project
                 ParamGroup additional = getAdditional();
                 // Get the Experiment Title
-                //Todo: Florian is in charge of get the name of the file.
-                String title = null;
-                // Get The Experiment Short Label
-                String shortLabel = null;
+                String title = unmarshaller.getMzIdentMLName();
+                // Get The Experiment Short Label, in case of mzidentml we decided to show the same value of the Id.
+                String shortLabel =  unmarshaller.getMzIdentMLId();
                 //Get Experiment Protocol
+                //Todo: We need to think if it would be possible to convert the protocols to a ExperimentProtocol see Johannes Code
                 ExperimentProtocol protocol = getProtocol();
                 // Get References From the Experiment
                 List<Reference> references = getReferences();
-
+                // Get the provider object of the MzIdentMl file
+                Provider provider = getProvider();
                 metaData = new ExperimentMetaData(additional,accession,title,version,shortLabel,samples,softwares,persons,sources,null,organizations,references,null,null,protocol);
                 // store it in the cache
                 cache.store(CacheCategory.EXPERIMENT_METADATA, metaData);

@@ -215,6 +215,13 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     public Collection<Sample> getSamples() throws DataAccessException;
 
     /**
+     * Get a Provider for a File
+     * @return
+     * @throws DataAccessException
+     */
+    public Provider getProvider() throws DataAccessException;
+
+    /**
      * Get an collection of softwares.
      *
      * @return Collection<Software> an collection of softwares.

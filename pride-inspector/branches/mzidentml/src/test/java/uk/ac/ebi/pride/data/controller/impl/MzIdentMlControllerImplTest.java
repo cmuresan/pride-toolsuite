@@ -41,9 +41,9 @@ public class MzIdentMlControllerImplTest {
     @Test
     public void testGetSamples() throws Exception {
         List<Sample> samples = mzIdentMlController.getSamples();
-        assertTrue("There should be only one sample", samples.size() == 1);
+        assertTrue("There should be only one sample", samples.size() == 2);
         assertEquals("Sample ID should always be sample1", samples.get(0).getId(), "sample1");
-        assertEquals("Sample cv param should be lung", samples.get(0).getCvParams().get(0).getName(), "lung");
+        assertEquals("Sample cv param should be ", samples.get(0).getCvParams().get(0).getName(), "name31");
     }
 
     @Test

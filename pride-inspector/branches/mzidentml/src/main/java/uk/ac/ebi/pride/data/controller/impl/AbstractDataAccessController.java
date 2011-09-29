@@ -162,6 +162,11 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     @Override
+    public Provider getProvider() throws DataAccessException {
+        return null;
+    }
+
+    @Override
     public Collection<Software> getSoftwareList() throws DataAccessException {
         return Collections.emptyList();
     }

@@ -130,6 +130,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      */
     @Override
     public List<CVLookup> getCvLookups() throws DataAccessException {
+        logger.debug("Get cv lookups");
         List<CVLookup> cvLookups = new ArrayList<CVLookup>();
         try {
             cvLookups.addAll(PrideXmlTransformer.transformCvLookups(reader.getCvLookups()));
@@ -151,6 +152,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         MetaData metaData = super.getMetaData();
 
         if (metaData == null) {
+            logger.debug("Get file description");
             FileDescription fileDesc;
 
             try {
@@ -185,6 +187,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      *
      */
     private List<SourceFile> getSourceFiles() throws DataAccessException {
+        logger.debug("Get source files");
         List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
 
         try {
@@ -207,6 +210,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      *
      */
     private List<ParamGroup> getContacts() throws DataAccessException {
+        logger.debug("Get contacts");
         List<ParamGroup> contacts = new ArrayList<ParamGroup>();
 
         try {
@@ -229,6 +233,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         MetaData metaData = super.getMetaData();
 
         if (metaData == null) {
+            logger.error("Get samples");
             List<Sample> samples = new ArrayList<Sample>();
             try {
                 Sample sample = PrideXmlTransformer.transformSample(reader.getAdmin());
@@ -255,6 +260,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         MetaData metaData = super.getMetaData();
 
         if (metaData == null) {
+            logger.debug("Get software");
             List<Software> softwares = new ArrayList<Software>();
             try {
                 Software software = PrideXmlTransformer.transformSoftware(reader.getDataProcessing());
@@ -292,6 +298,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         MetaData metaData = super.getMetaData();
 
         if (metaData == null) {
+            logger.debug("Get instrument configurations");
             List<InstrumentConfiguration> configs = new ArrayList<InstrumentConfiguration>();
             try {
                 configs.addAll(PrideXmlTransformer.transformInstrument(reader.getInstrument(), reader.getDataProcessing()));
@@ -315,6 +322,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         MetaData metaData = super.getMetaData();
 
         if (metaData == null) {
+            logger.debug("Get data processings");
             List<DataProcessing> dataProcessings = new ArrayList<DataProcessing>();
             try {
                 DataProcessing dataProcessing = PrideXmlTransformer.transformDataProcessing(reader.getDataProcessing());
@@ -338,6 +346,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      *          data access exception
      */
     private List<Reference> getReferences() throws DataAccessException {
+        logger.debug("Get references");
         List<Reference> refs = new ArrayList<Reference>();
 
         try {
@@ -357,7 +366,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      *
      */
     private Protocol getProtocol() throws DataAccessException {
-
+        logger.debug("Get protocol");
         try {
             return PrideXmlTransformer.transformProtocol(reader.getProtocol());
         } catch (Exception ex) {
@@ -377,6 +386,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
     public ParamGroup getAdditional() throws DataAccessException {
         MetaData metaData = super.getMetaData();
         if (metaData == null) {
+            logger.debug("Get additional params");
             try {
                 return PrideXmlTransformer.transformAdditional(reader.getAdditionalParams());
             } catch (Exception ex) {
@@ -398,6 +408,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         MetaData metaData = super.getMetaData();
 
         if (metaData == null) {
+            logger.debug("Get metadata");
             try {
                 String accession = reader.getExpAccession();
                 String version = reader.getVersion();

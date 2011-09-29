@@ -69,6 +69,7 @@ public class CacheAccessor implements Cache {
                 logger.error(errMsg);
                 throw new IllegalArgumentException(errMsg);
             }
+            ((Collection)content).add(key);
         } else {
             String errMsg = "Cannot store key-value pair to a data structure other than map";
             logger.error(errMsg);

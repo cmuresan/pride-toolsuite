@@ -192,6 +192,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
 
     private List<SourceFile> getSourceFiles(Connection connection) {
+        logger.debug("Get source files");
         List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
 
         PreparedStatement st = null;
@@ -217,6 +218,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
 
     private List<ParamGroup> getContacts(Connection connection) {
+        logger.debug("Get contacts");
         List<ParamGroup> contacts = new ArrayList<ParamGroup>();
         PreparedStatement st = null;
         ResultSet rs = null;
@@ -255,6 +257,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         MetaData metaData = super.getMetaData();
 
         if (metaData == null) {
+            logger.debug("Get file description");
             List<CvParam> cvParams = new ArrayList<CvParam>();
             CvTermReference cvTerm = CvTermReference.MASS_SPECTRUM;
             CvParam cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), null, null, null, null);
@@ -265,7 +268,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             List<SourceFile> sourceFiles = null;
             List<ParamGroup> contacts = null;
             try {
-                logger.debug("Getting file description");
                 connection = PooledConnectionFactory.getConnection();
                 sourceFiles = getSourceFiles(connection);
                 contacts = getContacts(connection);
@@ -291,6 +293,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         MetaData metaData = super.getMetaData();
 
         if (metaData == null) {
+            logger.debug("Get samples");
             List<Sample> samples = new ArrayList<Sample>();
 
             List<CvParam> cvParam;
@@ -301,7 +304,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             ResultSet rs = null;
 
             try {
-                logger.debug("Getting samples");
                 connection = PooledConnectionFactory.getConnection();
                 st = connection.prepareStatement("SELECT mz_data_id, sample_name FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
                 st.setString(1, getForegroundExperimentAcc().toString());
@@ -329,6 +331,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         MetaData metaData = super.getMetaData();
 
         if (metaData == null) {
+            logger.debug("Getting software");
             List<Software> softwares = new ArrayList<Software>();
 
             Connection connection = null;
@@ -336,7 +339,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             ResultSet rs = null;
 
             try {
-                logger.debug("Getting software");
                 connection = PooledConnectionFactory.getConnection();
                 st = connection.prepareStatement("SELECT software_name, software_version, software_completion_time, software_comments FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
                 st.setString(1, getForegroundExperimentAcc().toString());
@@ -370,6 +372,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     private List<ParamGroup> getAnalyzerList(Connection connection, int mz_data_id) throws DataAccessException {
+        logger.debug("Get analyzer list");
 
         List<ParamGroup> analyzerList = new ArrayList<ParamGroup>();
         List<UserParam> userParams;
@@ -404,6 +407,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         MetaData metaData = super.getMetaData();
 
         if (metaData == null) {
+            logger.debug("Get instrument configurations");
+
             List<InstrumentConfiguration> instrumentConfigurations = new ArrayList<InstrumentConfiguration>();
             //get software
             Software software = null;
@@ -415,7 +420,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             PreparedStatement st = null;
             ResultSet rs = null;
             try {
-                logger.debug("Getting instrument");
                 connection = PooledConnectionFactory.getConnection();
                 st = connection.prepareStatement("SELECT instrument_name, mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
                 st.setString(1, getForegroundExperimentAcc().toString());
@@ -461,6 +465,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         MetaData metaData = super.getMetaData();
 
         if (metaData == null) {
+            logger.debug("Getting data processings");
+
             List<CvParam> cvParams;
             List<UserParam> userParams;
             List<ProcessingMethod> procMethods = new ArrayList<ProcessingMethod>();
@@ -475,7 +481,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             ResultSet rs = null;
 
             try {
-                logger.debug("Getting data processings");
                 connection = PooledConnectionFactory.getConnection();
                 st = connection.prepareStatement("SELECT mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
                 st.setString(1, getForegroundExperimentAcc().toString());
@@ -504,6 +509,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     //for a given experimentId, will return the protocol_steps_id sorted by index
 
     private List<Integer> getProtocolStepsById(Connection connection, int experimentId) {
+        logger.debug("Get protocol steps");
+
         List<Integer> protocol_steps = new ArrayList<Integer>();
 
         PreparedStatement st = null;
@@ -527,6 +534,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     private Protocol getProtocol(Connection connection) throws DataAccessException {
+        logger.debug("Get protocol");
 
         List<Integer> protocol_steps;
         List<UserParam> userParams;
@@ -563,6 +571,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     private List<Reference> getReferences(Connection connection) throws DataAccessException {
+        logger.debug("Get references");
 
         List<Reference> references = new ArrayList<Reference>();
         List<UserParam> userParams;
@@ -596,6 +605,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         MetaData metaData = super.getMetaData();
 
         if (metaData == null) {
+            logger.debug("Get additional params");
+
             ParamGroup additional = null;
             List<CvParam> cvParam;
             List<UserParam> userParam;
@@ -630,6 +641,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     public MetaData getMetaData() throws DataAccessException {
         MetaData metaData = super.getMetaData();
         if (metaData == null) {
+            logger.debug("Getting meta data");
             String accession = "";
             String version = "2.1";
             String title = "";
@@ -640,7 +652,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             ResultSet rs = null;
 
             try {
-                logger.debug("Getting meta data");
                 connection = PooledConnectionFactory.getConnection();
                 st = connection.prepareStatement("SELECT pe.title, pe.accession, pe.short_label FROM pride_experiment pe WHERE pe.accession = ?");
                 st.setString(1, getForegroundExperimentAcc().toString());
@@ -677,6 +688,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     @Override
     public List<CVLookup> getCvLookups() throws DataAccessException {
+        logger.debug("Getting cv lookups");
         List<CVLookup> cvLookups = new ArrayList<CVLookup>();
 
         Connection connection = null;
@@ -684,7 +696,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         ResultSet rs = null;
 
         try {
-            logger.debug("Getting cv lookups");
             connection = PooledConnectionFactory.getConnection();
             st = connection.prepareStatement("SELECT cv_label, version, address, full_name FROM mzdata_cv_lookup sf, mzdata_mz_data mz WHERE mz.accession_number= ? and mz.mzdata_id=sf.mzdata_id");
             st.setString(1, getForegroundExperimentAcc().toString());
@@ -811,6 +822,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     private List<Precursor> getPrecursorsBySpectrum_id(Connection connection, int spectrum_id) throws DataAccessException {
+        logger.debug("Get precursors");
+
         List<Precursor> precursors = new ArrayList<Precursor>();
         List<ParamGroup> selectedIon = new ArrayList<ParamGroup>();
         Spectrum spectrum;
@@ -867,6 +880,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     private List<UserParam> getSpectrumDesc(Connection connection, int spectrum_id) {
+        logger.debug("Get spectrum description");
+
         List<UserParam> userParams = new ArrayList<UserParam>();
 
         PreparedStatement st = null;
@@ -1001,6 +1016,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     private List<Double> getDeltaValues(Connection connection, int modification_id, String deltaType) {
+        logger.debug("Get delta values");
+
         List<Double> deltas = new ArrayList<Double>();
 
         PreparedStatement st = null;
@@ -1024,6 +1041,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     private List<Modification> getModificationsPeptide(Connection connection, int peptide_id) throws DataAccessException {
+        logger.debug("Get a list of modifications, peptide {}", peptide_id);
+
         List<Modification> modifications = new ArrayList<Modification>();
         List<Double> monoMassDeltas;
         List<Double> avgMassDeltas;
@@ -1054,6 +1073,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     private List<FragmentIon> getFragmentIons(Connection connection, int peptide_id) throws DataAccessException {
+        logger.debug("Get list of fragment ions for peptide {}", peptide_id);
+
         List<FragmentIon> fragmentIons = new ArrayList<FragmentIon>();
 
 
@@ -1105,6 +1126,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     private Spectrum getSpectrumByPeptide(Connection connection, int experiment_id, int spectrum_ref) throws DataAccessException {
+        logger.debug("Get spectrum by spectrum reference {}", spectrum_ref);
+
         Spectrum spectrum = null;
 
         PreparedStatement st = null;
@@ -1129,6 +1152,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     private List<Peptide> getPeptideIdentification(Connection connection, int identification_id, int experiment_id) throws DataAccessException {
+        logger.debug("Get a list of peptides for identification {}", identification_id);
         List<Peptide> peptides = new ArrayList<Peptide>();
         List<Modification> modifications;
         List<FragmentIon> fragmentIons;
@@ -1161,6 +1185,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
 
     private Gel getPeptideGel(Connection connection, int gel_id, double x_coordinate, double y_coordinate, double molecular_weight, double pi) throws DataAccessException {
+        logger.debug("Get peptide gel {}", gel_id);
+
         Gel gel;
         ParamGroup params = null;
         String gelLink = null;
@@ -1190,6 +1216,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     public Identification getIdentificationById(Comparable id, boolean useCache) throws DataAccessException {
         Identification identification = super.getIdentificationById(id, useCache);
         if (identification == null) {
+            logger.debug("Get protein identification {}", id);
+
             List<Peptide> peptides;
             Spectrum spectrum;
             ParamGroup params;
@@ -1243,6 +1271,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
 
     private Spectrum getSpectrumByRef(Connection connection, String spectrum_ref) throws DataAccessException {
+        logger.debug("Get spectrum by spectrum reference {}", spectrum_ref);
+
         Spectrum spectrum = null;
 
         PreparedStatement st = null;

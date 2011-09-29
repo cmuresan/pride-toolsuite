@@ -126,10 +126,8 @@ public class CentralContentPane extends JPanel {
 
     @EventSubscriber(eventClass = DatabaseSearchEvent.class)
     public void onDatabaseSearchEvent(DatabaseSearchEvent evt) {
-        // todo: why this is called many times?
-        logger.debug("Database search pane is to be displayed");
-
         if (DatabaseSearchEvent.Status.SHOW.equals(evt.getStatus())) {
+            logger.debug("Database search pane is to be displayed, event status: " + evt.getStatus().name());
             // show database search pane
             setContentPane(inspectorContext.getDatabaseSearchPane());
             // lock the central content panel
@@ -137,6 +135,7 @@ public class CentralContentPane extends JPanel {
             // deselect the foreground data access controller
             inspectorContext.setForegroundDataAccessController(null);
         } else if (DatabaseSearchEvent.Status.HIDE.equals(evt.getStatus())) {
+            logger.debug("Database search pane is to be replaced by the welcome pane, event status: " + evt.getStatus().name());
             // hide database search pane
             showWelcomePane();
         }

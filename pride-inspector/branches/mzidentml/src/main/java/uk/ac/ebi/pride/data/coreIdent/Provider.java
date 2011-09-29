@@ -13,20 +13,20 @@ package uk.ac.ebi.pride.data.coreIdent;
  * User: yperez
  * Date: 04/08/11
  * Time: 11:11
- * To change this template use File | Settings | File Templates.
  */
 
 public class Provider extends Identifiable {
-
-    private Software analysisSoftware = null;
     /**
      * The Software that produced the document instance. mzIdentML
      */
-
-    private IdentifiableParamGroup contactRef  = null;
+    private Software software = null;
     /**
      * A reference to the Contact person that provide the mzIdentMl File.
      * (mzIndetMl description: When a ContactRole is used, it specifies which Contact the role is associated with.
+     */
+    private AbstractContact contact  = null;
+    /*
+     * Role in CvParam
      */
     private CvParam role = null;
 
@@ -34,23 +34,35 @@ public class Provider extends Identifiable {
      *
      * @param id
      * @param name
-     * @param analysisSoftware
-     * @param contactRef
+     * @param software
+     * @param contact
      * @param role
      */
-    public Provider(String id, String name, Software analysisSoftware, IdentifiableParamGroup contactRef, CvParam role) {
+    public Provider(Comparable id,
+                    String name,
+                    Software software,
+                    AbstractContact contact,
+                    CvParam role) {
         super(id, name);
-        this.analysisSoftware = analysisSoftware;
-        this.contactRef = contactRef;
+        this.software = software;
+        this.contact = contact;
         this.role = role;
     }
 
-    public IdentifiableParamGroup getContactRef() {
-        return contactRef;
+    public Software getSoftware() {
+        return software;
     }
 
-    public void setContactRef(IdentifiableParamGroup contactRef) {
-        this.contactRef = contactRef;
+    public void setSoftware(Software software) {
+        this.software = software;
+    }
+
+    public AbstractContact getContact() {
+        return contact;
+    }
+
+    public void setContact(AbstractContact contact) {
+        this.contact = contact;
     }
 
     public CvParam getRole() {
@@ -59,18 +71,5 @@ public class Provider extends Identifiable {
 
     public void setRole(CvParam role) {
         this.role = role;
-    }
-
-    /**
-     * CV term for contact roles, such as software provider.
-     */
-
-
-    public Software getSoftware() {
-        return analysisSoftware;
-    }
-
-    public void setSoftware(Software analysisSoftware) {
-        this.analysisSoftware = analysisSoftware;
     }
 }

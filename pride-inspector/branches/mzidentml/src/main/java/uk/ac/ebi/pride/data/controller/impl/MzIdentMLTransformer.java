@@ -1,6 +1,20 @@
 package uk.ac.ebi.pride.data.controller.impl;
 
 import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.coreIdent.AbstractContact;
+import uk.ac.ebi.pride.data.coreIdent.CvParam;
+import uk.ac.ebi.pride.data.coreIdent.DBSequence;
+import uk.ac.ebi.pride.data.coreIdent.MassTable;
+import uk.ac.ebi.pride.data.coreIdent.Modification;
+import uk.ac.ebi.pride.data.coreIdent.Organization;
+import uk.ac.ebi.pride.data.coreIdent.Peptide;
+import uk.ac.ebi.pride.data.coreIdent.PeptideEvidence;
+import uk.ac.ebi.pride.data.coreIdent.Person;
+import uk.ac.ebi.pride.data.coreIdent.Provider;
+import uk.ac.ebi.pride.data.coreIdent.Sample;
+import uk.ac.ebi.pride.data.coreIdent.SourceFile;
+import uk.ac.ebi.pride.data.coreIdent.SubstitutionModification;
+import uk.ac.ebi.pride.data.coreIdent.UserParam;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.*;
@@ -493,5 +507,21 @@ public class MzIdentMLTransformer {
                     oldCv.getVersion(), oldCv.getUri());
         }
         return cvLookup;
+    }
+
+    public static Provider transformProvider(uk.ac.ebi.jmzidml.model.mzidml.Provider oldProvider) {
+       Provider provider = null;
+       if(oldProvider !=null){
+           AbstractContact abstractContact = null;
+           if(oldProvider.getContactRole().getOrganization() != null){
+               abstractContact = transformToOrganization(oldProvider.getContactRole().getOrganization());
+           }else if(oldProvider.getContactRole().getPerson() != null){
+               abstractContact = transformToPerson(oldProvider.getContactRole().getPerson());
+           }
+           CvParam role = transformToCvParam(oldProvider.getContactRole().getRole().getCvParam());
+           Software software = transformToSoftware(oldProvider.getSoftware());
+           provider = new Provider(oldProvider.getId(),oldProvider.getName(),software,abstractContact,role);
+       }
+        return provider;
     }
 }

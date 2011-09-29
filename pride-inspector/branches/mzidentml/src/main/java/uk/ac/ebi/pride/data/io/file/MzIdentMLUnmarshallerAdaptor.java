@@ -52,8 +52,8 @@ public class MzIdentMLUnmarshallerAdaptor {
     }
 
     public List<SourceFile> getSourceFiles(){
-        uk.ac.ebi.jmzidml.model.mzidml.DataCollection dc =  unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.DataCollection.class);
-        List<uk.ac.ebi.jmzidml.model.mzidml.SourceFile> oldSourceFiles = dc.getInputs().getSourceFile();
+        uk.ac.ebi.jmzidml.model.mzidml.Inputs dc =  unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.Inputs.class);
+        List<uk.ac.ebi.jmzidml.model.mzidml.SourceFile> oldSourceFiles = dc.getSourceFile();
         return oldSourceFiles;
     }
 
@@ -117,5 +117,9 @@ public class MzIdentMLUnmarshallerAdaptor {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         return null;
+    }
+
+    public List<Cv> getCvList() {
+        return (unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.CvList.class)).getCv();
     }
 }

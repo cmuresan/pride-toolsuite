@@ -141,6 +141,11 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>psidev.psi.tools</groupId>
+            <artifactId>xxindex</artifactId>
+            <version>0.11</version>
+        </dependency>
+        <dependency>
             <groupId>uk.ac.ebi.pride.curation</groupId>
             <artifactId>pride-curation</artifactId>
             <version>0.0.1</version>

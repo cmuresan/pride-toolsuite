@@ -1,12 +1,9 @@
 package uk.ac.ebi.pride.gui.component.db;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
-import org.bushe.swing.event.annotation.EventSubscriber;
 import uk.ac.ebi.pride.gui.component.table.model.DatabaseSearchTableModel;
-import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
 
 import javax.swing.*;
-import java.util.List;
 
 /**
  * Data model for the search field combo box, provides a list of fields

@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -122,7 +123,7 @@ public abstract class Task<T, V> extends SwingWorker<T, V> {
      *
      * @param owner owner of the task
      */
-    public synchronized void removeOwner(Object owner) {
+    public synchronized void removeByOwner(Object owner) {
         if (!isDone() && owners.contains(owner)) {
             this.cancel(true);
         }
@@ -337,7 +338,7 @@ public abstract class Task<T, V> extends SwingWorker<T, V> {
          * Called when task is done
          */
         private void taskDone() {
-            EDTUtils.invokeLater(new Runnable() {
+            EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     try {

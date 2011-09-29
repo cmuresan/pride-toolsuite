@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.gui.component.table.sorter;
 
-import uk.ac.ebi.pride.util.NumberUtilities;
-
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.io.Serializable;

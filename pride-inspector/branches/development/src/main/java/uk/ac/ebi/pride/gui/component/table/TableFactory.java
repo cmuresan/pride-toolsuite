@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.gui.component.table;
 
 import org.jdesktop.swingx.table.DefaultTableColumnModelExt;
 import org.jdesktop.swingx.table.TableColumnExt;
-import uk.ac.ebi.pride.business.security.DataAccess;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.GUIUtilities;
@@ -14,7 +13,6 @@ import uk.ac.ebi.pride.gui.url.*;
 import uk.ac.ebi.pride.gui.utils.Constants;
 
 import javax.swing.*;
-import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.util.Collection;

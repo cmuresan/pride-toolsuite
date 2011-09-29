@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.gui.component.peptide;
 
 import org.bushe.swing.event.ContainerEventServiceFinder;
 import org.bushe.swing.event.EventService;
-import org.jdesktop.swingx.table.TableColumnExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -16,7 +15,6 @@ import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
-import uk.ac.ebi.pride.gui.component.table.renderer.PeptideFitCellRenderer;
 import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 

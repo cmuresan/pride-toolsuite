@@ -61,6 +61,8 @@
 
     <mapID target="help.export.quant.principle" url="html/usage/quant_principle.html"/>
 
+    <mapID target="help.isoelectric.point" url="html/usage/isoelectric_point.html"/>
+
     <mapID target="help.pridedb" url="html/usage/connect_pride_db.html"/>
 
     <mapID target="help.download" url="html/usage/download_pride_exp.html"/>

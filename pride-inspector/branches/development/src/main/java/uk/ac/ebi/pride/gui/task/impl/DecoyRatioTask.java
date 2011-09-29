@@ -12,7 +12,6 @@ import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
-import uk.ac.ebi.pride.util.NumberUtilities;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;

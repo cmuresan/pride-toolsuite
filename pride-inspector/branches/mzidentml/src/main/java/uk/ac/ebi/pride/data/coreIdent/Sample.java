@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.data.coreIdent;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +16,7 @@ public class Sample extends IdentifiableParamGroup {
     /**
      * Each sample could have a parent Sample, this relation is defined in the MzIdentMl Files.
      */
-    private Sample parentSample = null;
+    private List<Sample> subSamples = null;
     /**
      * Contact Role could be defined as a Person and a specific role (CVTerms)
      */
@@ -27,15 +26,15 @@ public class Sample extends IdentifiableParamGroup {
      * Constructor for MZIndentMl Sample.
      * @param id
      * @param name
-     * @param parentSample
+     * @param subSamples
      * @param contactRoleList
      */
     public Sample(String id,
                   String name,
-                  Sample parentSample,
+                  List<Sample> subSamples,
                   Map<AbstractContact, CvParam> contactRoleList) {
         super(id, name);
-        this.parentSample = parentSample;
+        this.subSamples = subSamples;
         this.contactRoleList = contactRoleList;
     }
 
@@ -44,16 +43,16 @@ public class Sample extends IdentifiableParamGroup {
      * @param params
      * @param id
      * @param name
-     * @param parentSample
+     * @param subSamples
      * @param contactRoleList
      */
     public Sample(ParamGroup params,
                   String id,
                   String name,
-                  Sample parentSample,
+                  List<Sample> subSamples,
                   Map<AbstractContact, CvParam> contactRoleList) {
         super(params, id, name);
-        this.parentSample = parentSample;
+        this.subSamples = subSamples;
         this.contactRoleList = contactRoleList;
     }
 
@@ -63,17 +62,17 @@ public class Sample extends IdentifiableParamGroup {
      * @param userParams
      * @param id
      * @param name
-     * @param parentSample
+     * @param subSamples
      * @param contactRoleList
      */
     public Sample(List<CvParam> cvParams,
                   List<UserParam> userParams,
                   String id,
                   String name,
-                  Sample parentSample,
+                  List<Sample> subSamples,
                   Map<AbstractContact,CvParam> contactRoleList) {
         super(cvParams, userParams, id, name);
-        this.parentSample = parentSample;
+        this.subSamples = subSamples;
         this.contactRoleList = contactRoleList;
     }
 
@@ -113,12 +112,12 @@ public class Sample extends IdentifiableParamGroup {
         super(cvParams, userParams, id, name);
     }
 
-    public Sample getParentSample() {
-        return parentSample;
+    public List<Sample> getParentSample() {
+        return subSamples;
     }
 
-    public void setParentSample(Sample parentSample) {
-        this.parentSample = parentSample;
+    public void setParentSample(List<Sample> subSamples) {
+        this.subSamples = subSamples;
     }
 
     public Map<AbstractContact, CvParam> getContactRoleList() {

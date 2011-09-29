@@ -110,6 +110,13 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return cvLookups;
     } */
 
+
+    public List<CVLookup> getCvLookups() throws DataAccessException {
+        List<CVLookup> cvLookups = MzIdentMLTransformer.transformCVList(unmarshaller.getCvList());
+        return cvLookups;
+
+    }
+
     /**
      * Get a list of source files.
      *
@@ -163,7 +170,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         if (metaData == null) {
             try {
                 List<Sample> samples = MzIdentMLTransformer.transformToSample(unmarshaller.getSampleList());
-                metaData.setSampleList(samples);
                 return samples;
             } catch (Exception ex) {
                 throw new DataAccessException("Failed to retrieve samples", ex);
@@ -186,7 +192,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         if (metaData == null) {
             try {
                 List<Software> softwares = MzIdentMLTransformer.transformToSoftware(unmarshaller.getSoftwares());
-                metaData.setSoftwareList(softwares);
                 return softwares;
             } catch (Exception ex) {
                 throw new DataAccessException("Failed to retrieve software", ex);
@@ -272,6 +277,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 List<SourceFile> sources = getSourceFiles();
                 // Get Samples objects for PRide Object
                 List<Sample> samples = getSamples();
+                //List<Sample> samples = null;
                 // Get all the softwares related with the object
                 List<Software> softwares = getSoftwareList();
                 // Get Contact Persons

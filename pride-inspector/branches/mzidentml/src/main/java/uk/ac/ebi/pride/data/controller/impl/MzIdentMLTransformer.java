@@ -23,10 +23,11 @@ public class MzIdentMLTransformer {
                 String id = oldsourcefile.getId();
                 String name = oldsourcefile.getName();
                 String location = oldsourcefile.getLocation();
+                CvParam format = transformToCvParam(oldsourcefile.getFileFormat().getCvParam());
                 String formatDocumentation = oldsourcefile.getExternalFormatDocumentation();
                 List<CvParam> cvParams = transformCvParams(oldsourcefile.getCvParam());
                 List<UserParam> userParams = transformUserParams(oldsourcefile.getUserParam());
-                sourceFiles.add(new SourceFile(new ParamGroup(cvParams,userParams),id,name,location,null,formatDocumentation));
+                sourceFiles.add(new SourceFile(new ParamGroup(cvParams,userParams),id,name,location,format,formatDocumentation));
             }
         }
         return sourceFiles;
@@ -37,7 +38,7 @@ public class MzIdentMLTransformer {
         if(oldUserParams != null){
             userParams = new ArrayList<UserParam>();
             for (uk.ac.ebi.jmzidml.model.mzidml.UserParam oldUserParam: oldUserParams){
-                userParams.add(new UserParam(oldUserParam.getName(),oldUserParam.getType(),oldUserParam.getValue(),oldUserParam.getUnitAccession(),oldUserParam.getUnitName(),oldUserParam.getUnitCv().getId()));
+                userParams.add(transformUserParam(oldUserParam));
             }
         }
         return userParams;
@@ -48,7 +49,7 @@ public class MzIdentMLTransformer {
         if(oldCvParams != null){
             cvParams = new ArrayList<CvParam>();
             for (uk.ac.ebi.jmzidml.model.mzidml.CvParam oldCvParam: oldCvParams){
-                cvParams.add(new CvParam(oldCvParam.getAccession(),oldCvParam.getName(),oldCvParam.getUnitCvRef(),oldCvParam.getValue(),oldCvParam.getAccession(),oldCvParam.getUnitName(),oldCvParam.getUnitCv().getId()));
+                cvParams.add(transformToCvParam(oldCvParam));
             }
         }
         return cvParams;
@@ -69,7 +70,11 @@ public class MzIdentMLTransformer {
     public static Organization transformToOrganization(uk.ac.ebi.jmzidml.model.mzidml.Organization oldOrganization) {
         Organization organization = null;
         if(oldOrganization != null){
-              organization = new Organization(new ParamGroup(transformCvParams(oldOrganization.getCvParam()),transformUserParams(oldOrganization.getUserParam())),oldOrganization.getId(),oldOrganization.getName(),null,null);
+              Organization parentOrganization = null;
+              if(oldOrganization.getParent()!=null){
+                  parentOrganization = transformToOrganization(oldOrganization.getParent().getOrganization());
+              }
+              organization = new Organization(new ParamGroup(transformCvParams(oldOrganization.getCvParam()),transformUserParams(oldOrganization.getUserParam())),oldOrganization.getId(),oldOrganization.getName(),parentOrganization,null);
         }
         return organization;
     }
@@ -80,8 +85,7 @@ public class MzIdentMLTransformer {
             organizations = new ArrayList<Organization>();
             for (uk.ac.ebi.jmzidml.model.mzidml.Affiliation oldAffiliation: oldAffiliations){
                 uk.ac.ebi.jmzidml.model.mzidml.Organization oldOrganization = oldAffiliation.getOrganization();
-                //Todo: I need to solve the problem with mail and the parent organization
-                organizations.add(new Organization(new ParamGroup(transformCvParams(oldOrganization.getCvParam()),transformUserParams(oldOrganization.getUserParam())),oldOrganization.getId(),oldOrganization.getName(),null,null));
+                organizations.add(transformToOrganization(oldOrganization));
             }
         }
         return organizations;
@@ -122,16 +126,31 @@ public class MzIdentMLTransformer {
         return samples;
     }
 
+    public static List<Sample> transformSubSampleToSample(List<uk.ac.ebi.jmzidml.model.mzidml.SubSample> oldSamples) {
+        List<Sample> samples = null;
+        if(oldSamples != null){
+            samples = new ArrayList<Sample>();
+            for (uk.ac.ebi.jmzidml.model.mzidml.SubSample oldSubSample: oldSamples){
+                samples.add(transformToSample(oldSubSample.getSample()));
+            }
+        }
+        return samples;
+    }
+
     public static Sample transformToSample(uk.ac.ebi.jmzidml.model.mzidml.Sample oldSample){
         Sample sample = null;
         if(oldSample != null){
-            Map<AbstractContact, CvParam> role = trnasformToRoleList(oldSample.getContactRole());
-            sample = new Sample(new ParamGroup(transformCvParams(oldSample.getCvParam()),transformUserParams(oldSample.getUserParam())),oldSample.getId(),oldSample.getName(),null,role);
+            Map<AbstractContact, CvParam> role = transformToRoleList(oldSample.getContactRole());
+            List<Sample> subSamples = null;
+            if((oldSample.getSubSample() != null) && (!oldSample.getSubSample().isEmpty())){
+                subSamples = transformSubSampleToSample(oldSample.getSubSample());
+            }
+            sample = new Sample(new ParamGroup(transformCvParams(oldSample.getCvParam()),transformUserParams(oldSample.getUserParam())),oldSample.getId(),oldSample.getName(),subSamples,role);
         }
         return sample;
     }
 
-    private static Map<AbstractContact,CvParam> trnasformToRoleList(List<uk.ac.ebi.jmzidml.model.mzidml.ContactRole> contactRoles) {
+    private static Map<AbstractContact,CvParam> transformToRoleList(List<uk.ac.ebi.jmzidml.model.mzidml.ContactRole> contactRoles) {
         Map<AbstractContact, CvParam> contacts = null;
         if(contactRoles != null){
             contacts = new HashMap<AbstractContact, CvParam>();
@@ -150,7 +169,27 @@ public class MzIdentMLTransformer {
     }
 
     private static CvParam transformToCvParam(uk.ac.ebi.jmzidml.model.mzidml.CvParam oldCvParam) {
-         return new CvParam(oldCvParam.getAccession(),oldCvParam.getName(),oldCvParam.getCv().getId(),oldCvParam.getValue(),oldCvParam.getUnitAccession(),oldCvParam.getUnitName(),oldCvParam.getUnitCvRef());
+        String cvLookupID = null;
+        uk.ac.ebi.jmzidml.model.mzidml.Cv cv = oldCvParam.getCv();
+        if (cv != null) cvLookupID = cv.getId();
+        String unitCVLookupID = null;
+        cv = oldCvParam.getUnitCv();
+        if (cv != null) unitCVLookupID = cv.getId();
+        CvParam newParam = new CvParam(oldCvParam.getAccession(), oldCvParam.getName(), cvLookupID,oldCvParam.getValue(),
+                oldCvParam.getUnitAccession(),
+                oldCvParam.getUnitName(), unitCVLookupID);
+        return newParam;
+    }
+
+    private static UserParam transformUserParam(uk.ac.ebi.jmzidml.model.mzidml.UserParam oldUserParam) {
+
+        String unitCVLookupID = null;
+        uk.ac.ebi.jmzidml.model.mzidml.Cv cv = oldUserParam.getUnitCv();
+        if (cv != null) unitCVLookupID = cv.getId();
+        UserParam newParam = new UserParam(oldUserParam.getName(), oldUserParam.getType(),
+                        oldUserParam.getValue(), oldUserParam.getUnitAccession(),
+                        oldUserParam.getUnitName(), unitCVLookupID);
+        return newParam;
     }
 
     public static List<Software> transformToSoftware(List<uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftware> oldSoftwares) {
@@ -172,9 +211,9 @@ public class MzIdentMLTransformer {
             }else if(oldSoftware.getContactRole().getPerson() != null){
                 contact = transformToPerson(oldSoftware.getContactRole().getPerson());
             }
-         Software software = new Software(oldSoftware.getId(),oldSoftware.getName(),oldSoftware.getVersion(),oldSoftware.getUri(),contact,oldSoftware.getCustomizations());
+            Software software = new Software(oldSoftware.getId(),oldSoftware.getName(),oldSoftware.getVersion(),oldSoftware.getUri(),contact,oldSoftware.getCustomizations());
+            return software;
         }
-
         return null;
     }
 
@@ -434,5 +473,25 @@ public class MzIdentMLTransformer {
 
     private static SearchDataBase transformToSeachDatabase(uk.ac.ebi.jmzidml.model.mzidml.SearchDatabase oldDatabase) {
         return new SearchDataBase(oldDatabase.getId(),oldDatabase.getName(),oldDatabase.getLocation(),transformToCvParam(oldDatabase.getFileFormat().getCvParam()),oldDatabase.getExternalFormatDocumentation(),oldDatabase.getVersion(),oldDatabase.getReleaseDate().toString(),oldDatabase.getNumDatabaseSequences().intValue(),oldDatabase.getNumResidues(),null,transformCvParams(oldDatabase.getCvParam()));
+    }
+
+    public static List<CVLookup> transformCVList(List<uk.ac.ebi.jmzidml.model.mzidml.Cv> cvList) {
+        List<CVLookup> cvLookups = null;
+        if(cvLookups != null){
+            cvLookups = new ArrayList<CVLookup>();
+            for (uk.ac.ebi.jmzidml.model.mzidml.Cv cv : cvList){
+               cvLookups.add(transformCVLookup(cv));
+            }
+        }
+        return cvLookups;
+    }
+
+    public static CVLookup transformCVLookup(uk.ac.ebi.jmzidml.model.mzidml.Cv oldCv) {
+        CVLookup cvLookup = null;
+        if (oldCv != null) {
+            cvLookup = new CVLookup(oldCv.getId(), oldCv.getFullName(),
+                    oldCv.getVersion(), oldCv.getUri());
+        }
+        return cvLookup;
     }
 }

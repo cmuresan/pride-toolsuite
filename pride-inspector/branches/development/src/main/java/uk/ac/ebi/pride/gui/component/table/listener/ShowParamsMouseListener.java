@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.gui.component.table.listener;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.gui.task.impl.OpenPrideDatabaseTask;
 import uk.ac.ebi.pride.gui.task.impl.ShowParamDialogTask;
 import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;

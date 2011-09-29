@@ -10,10 +10,8 @@ import uk.ac.ebi.pride.gui.search.SearchEntry;
 import uk.ac.ebi.pride.gui.search.SearchFinder;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.utils.Constants;
-import uk.ac.ebi.pride.util.IOUtilities;
 
 import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

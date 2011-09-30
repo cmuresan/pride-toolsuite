@@ -57,7 +57,7 @@ public class TableDataRetriever {
         content.add(protAcc);
 
         // Mapped Protein Accession
-        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database);
+        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
         String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
         content.add(mappedProtAcc);
 
@@ -250,7 +250,7 @@ public class TableDataRetriever {
         content.add(protAcc);
 
         // Mapped Protein Accession
-        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database);
+        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
         String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
         content.add(mappedProtAcc);
 

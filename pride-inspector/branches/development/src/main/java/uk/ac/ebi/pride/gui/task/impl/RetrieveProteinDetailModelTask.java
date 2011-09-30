@@ -80,7 +80,7 @@ public class RetrieveProteinDetailModelTask extends AbstractDataAccessTask<Annot
         String protAcc = controller.getProteinAccession(identId);
         String protAccVersion = controller.getProteinAccessionVersion(identId);
         String database = controller.getSearchDatabase(identId);
-        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database);
+        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
         String mappedProtAcc = resolver.isValidAccession()? resolver.getAccession() : null;
 
         // get protein details

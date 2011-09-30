@@ -84,7 +84,7 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
                 String protAcc = controller.getProteinAccession(protIdentId);
                 String protAccVersion = controller.getProteinAccessionVersion(protIdentId);
                 String database = controller.getSearchDatabase(protIdentId);
-                AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database);
+                AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
                 String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
 
 

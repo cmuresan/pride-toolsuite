@@ -110,12 +110,13 @@ svn checkout http://pride-toolsuite.googlecode.com/svn/pride-inspector/trunk pri
 ==Screenshots==
 (Click on a screenshot to see the full size version)
 <table><tr>
+<td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/database_search.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/database_search_small.png]</td>
 <td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/general_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/general_tab_small.png]</td>
 <td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/protein_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/protein_tab_small.png]</td>
 <td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/peptide_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/peptide_tab_small.png]</td>
-<td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/spectrum_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/spectrum_tab_small.png]</td>
 </tr>
 <tr>
+<td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/spectrum_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/spectrum_tab_small.png]</td>
 <td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/chart_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/chart_tab_small.png]</td>
 </tr>
 </table>

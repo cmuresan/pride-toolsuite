@@ -118,6 +118,7 @@ svn checkout http://pride-toolsuite.googlecode.com/svn/pride-inspector/trunk pri
 <tr>
 <td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/spectrum_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/spectrum_tab_small.png]</td>
 <td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/chart_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/chart_tab_small.png]</td>
+<td>[http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/quantification_tab.png http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/pride-inspector/quantification_tab_small.png]</td>
 </tr>
 </table>
 

@@ -18,13 +18,13 @@ import uk.ac.ebi.pride.gui.task.TaskAdapter;
 public abstract class AbstractDataAccessTask<K, V> extends TaskAdapter<K, V> {
 
     /** data access controller used in this task */
-    protected DataAccessController controller;
+    DataAccessController controller;
     /**
      * application context
       */
-    protected PrideInspectorContext appContext;
+    PrideInspectorContext appContext;
 
-    protected AbstractDataAccessTask(DataAccessController controller) {
+    AbstractDataAccessTask(DataAccessController controller) {
         this.controller = controller;
         this.appContext = (PrideInspectorContext)uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
         // add controller as property change listener to the task

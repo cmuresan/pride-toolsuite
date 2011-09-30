@@ -546,7 +546,7 @@ public class QuantExportDialog extends JDialog {
         }
 
         @Override
-        public boolean include(Entry<? extends Object, ? extends Object> entry) {
+        public boolean include(Entry<?, ?> entry) {
             Object entryValue = entry.getValue(columnIndex);
 
             if (entryValue != null) {

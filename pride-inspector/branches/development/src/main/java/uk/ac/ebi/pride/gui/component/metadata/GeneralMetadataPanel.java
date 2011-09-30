@@ -13,6 +13,8 @@ import uk.ac.ebi.pride.term.CvTermReference;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,6 +50,7 @@ public class GeneralMetadataPanel extends JPanel {
 
         expTitleField = new JTextField();
         shortLabelField = new JTextField();
+
         if (metaData instanceof Experiment) {
             // get experiment title
             String expTitle = ((Experiment) metaData).getTitle();
@@ -60,6 +63,8 @@ public class GeneralMetadataPanel extends JPanel {
                 shortLabelField.setText(sl);
             }
         }
+        expTitleField.setCaretPosition(0);
+        shortLabelField.setCaretPosition(0);
 
         projectField = new JTextField();
         expDescArea = new JTextPane();
@@ -75,6 +80,8 @@ public class GeneralMetadataPanel extends JPanel {
                 }
             }
         }
+        projectField.setCaretPosition(0);
+        expDescArea.setCaretPosition(0);
 
         // species field
         speciesField = new JTextField();
@@ -106,10 +113,12 @@ public class GeneralMetadataPanel extends JPanel {
         }
 
         speciesField.setText(species);
+        speciesField.setCaretPosition(0);
 
         // tissue field
         tissueField = new JTextField();
         tissueField.setText(tissues);
+        tissueField.setCaretPosition(0);
 
 
         // instrument field
@@ -120,6 +129,7 @@ public class GeneralMetadataPanel extends JPanel {
             instrumentStr += instrument.getId();
         }
         instrumentField.setText(instrumentStr);
+        instrumentField.setCaretPosition(0);
 
 
         // reference

@@ -20,7 +20,7 @@ public class Quantitation {
      * The type of the identification;
      */
     public enum Type {
-        PROTEIN, PEPTIDE;
+        PROTEIN, PEPTIDE
     }
     /**
      * Label free method results

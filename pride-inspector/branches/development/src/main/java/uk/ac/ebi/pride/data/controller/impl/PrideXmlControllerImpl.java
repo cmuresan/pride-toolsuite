@@ -304,7 +304,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 configs.addAll(PrideXmlTransformer.transformInstrument(reader.getInstrument(), reader.getDataProcessing()));
                 return configs;
             } catch (Exception ex) {
-                throw new DataAccessException("Failed to retrieve isntrument configuration", ex);
+                throw new DataAccessException("Failed to retrieve instrument configuration", ex);
             }
         } else {
             return metaData.getInstrumentConfigurations();

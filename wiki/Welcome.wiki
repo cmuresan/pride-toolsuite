@@ -12,6 +12,15 @@
 
 ----
 == News ==
+*_September 30. 2011:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.2.0] is now available:*
+ * This version is a major update.
+ * New search and download feature for experiments in the PRIDE public database.
+ * New protein details download option for getting protein name, protein sequence.
+ * New component to visualize protein sequence and its peptide/PTM coverage.
+ * New decoy filter on both protein and peptide identifications. 
+ * New experiment summary on key measurements of experiment quality. 
+ * Enhanced documentation.  
+
 *_July 1. 2011:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.0.6] is now available:*
  * This version contains a number of bug fixes from the last version.
 

@@ -67,7 +67,7 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
 
     private SearchEngine searchEngine;
 
-    public AbstractPeptideTableModel(SearchEngine se) {
+    AbstractPeptideTableModel(SearchEngine se) {
         this.searchEngine = se;
         addAdditionalColumns();
     }
@@ -77,7 +77,7 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
         // nothing here
     }
 
-    protected void addAdditionalColumns() {
+    void addAdditionalColumns() {
         // add columns for search engine scores
         TableHeader[] headers = TableHeader.values();
         for (TableHeader header : headers) {

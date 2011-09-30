@@ -79,7 +79,7 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
      *
      * @param newData protein detail map
      */
-    protected void addProteinDetailData(Object newData) {
+    void addProteinDetailData(Object newData) {
         // column index for mapped protein accession column
         int mappedAccIndex = getColumnIndex(TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
         // column index for protein name
@@ -125,7 +125,7 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
      *
      * @param newData sequence coverage map
      */
-    protected void addSequenceCoverageData(Object newData) {
+    void addSequenceCoverageData(Object newData) {
         // column index for protein identification id
         int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
         // column index for protein sequence coverage

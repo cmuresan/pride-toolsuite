@@ -30,7 +30,7 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
      *
      * @return HttpURLConnection    http connection
      */
-    protected HttpURLConnection connect() {
+    HttpURLConnection connect() {
         HttpURLConnection connection = null;
 
         try {
@@ -52,7 +52,7 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
      * @param user       user name
      * @param password   password
      */
-    protected void initExperimentDownload(HttpURLConnection connection, Comparable accession,
+    void initExperimentDownload(HttpURLConnection connection, Comparable accession,
                                           String user, String password) {
         OutputStreamWriter out = null;
         try {
@@ -91,7 +91,7 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
      * @param size       size of the file
      */
     @SuppressWarnings("unchecked")
-    protected void downloadExperiment(HttpURLConnection connection, Comparable accession, File file, Double size) {
+    void downloadExperiment(HttpURLConnection connection, Comparable accession, File file, Double size) {
         BufferedOutputStream boutStream = null;
         GZIPInputStream in = null;
         try {
@@ -159,7 +159,7 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
      * @param user       user name
      * @param password   password
      */
-    protected void initMetaDataDownload(HttpURLConnection connection, Collection<Comparable> accessions,
+    void initMetaDataDownload(HttpURLConnection connection, Collection<Comparable> accessions,
                                         String user, String password) {
         OutputStreamWriter out = null;
         try {
@@ -201,7 +201,7 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
      * @param connection http connection
      * @return List<Map<String, String>>   experiment meta data
      */
-    protected List<Map<String, String>> downloadMetaData(HttpURLConnection connection) {
+    List<Map<String, String>> downloadMetaData(HttpURLConnection connection) {
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 
         BufferedReader in = null;

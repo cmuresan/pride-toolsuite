@@ -22,6 +22,11 @@ The key features include:
   * Fast loading of *mzML* and *PRIDE XML* files.
   * Search, access and download all PRIDE public database experiments.
   * Different views on spectra, chromatogram, protein, peptides and metadata.
+  * Visualize quantification data for both protein and peptide identifications.
+  * Experiment summary on key measurements of experiment quality.
+  * Download additional protein details, such as: protein name, sequence.
+  * Visualize protein sequences and their peptide/PTM coverage.
+  * Decoy filter on both protein and peptide identifications. 
   * Visualization for all spectra and chromatograms, including automatic MS2 fragment ion annotations.
   * Possibility to perform a quality assessment of the data using a statistical view with different charts.
   * User-friendly download facility for private PRIDE experiments.

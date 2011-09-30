@@ -20,13 +20,13 @@
 ==About PRIDE Inspector==
 The key features include:
   * Fast loading of *mzML* and *PRIDE XML* files.
-  * Search, access and download all PRIDE public database experiments.
+  * Search, access and download all PRIDE public database experiments. <font color="blue"><i><b>New</b></i></font>
   * Different views on spectra, chromatogram, protein, peptides and metadata.
-  * Visualize quantification data for both protein and peptide identifications.
-  * Experiment summary on key measurements of experiment quality.
-  * Download additional protein details, such as: protein name, sequence.
-  * Visualize protein sequences and their peptide/PTM coverage.
-  * Decoy filter on both protein and peptide identifications. 
+  * Visualize quantification data for both protein and peptide identifications. <font color="blue"><i><b>New</b></i></font>
+  * Experiment summary on key measurements of experiment quality. <font color="blue"><i><b>New</b></i></font>
+  * Download additional protein details, such as: protein name, sequence. <font color="blue"><i><b>New</b></i></font>
+  * Visualize protein sequences and their peptide/PTM coverage. <font color="blue"><i><b>New</b></i></font>
+  * Decoy filter on both protein and peptide identifications.  <font color="blue"><i><b>New</b></i></font>
   * Visualization for all spectra and chromatograms, including automatic MS2 fragment ion annotations.
   * Possibility to perform a quality assessment of the data using a statistical view with different charts.
   * User-friendly download facility for private PRIDE experiments.

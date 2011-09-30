@@ -20,6 +20,7 @@
  * New decoy filter on both protein and peptide identifications. 
  * New experiment summary on key measurements of experiment quality. 
  * Enhanced documentation.  
+ * And a lot more!
 
 *_July 1. 2011:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.0.6] is now available:*
  * This version contains a number of bug fixes from the last version.

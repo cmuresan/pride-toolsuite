@@ -9,8 +9,7 @@ import java.util.List;
  * User: local_admin
  * Date: 05/08/11
  * Time: 15:56
- * To change this template use File | Settings | File Templates.
- */
+ * */
 public class SpectrumIdentificationProtocol extends Protocol {
     /**
      * The type of search performed e.g. PMF, Tag searches, MS-MS
@@ -83,6 +82,32 @@ public class SpectrumIdentificationProtocol extends Protocol {
                                           List<Filter> filterList,
                                           DataBaseTranslation dataBaseTranslation) {
         super(analysisParam,id, name, analysisSoftware, threshold);
+        this.searchType = searchType;
+        this.searchModificationList = searchModificationList;
+        this.enzymeIndependent = enzymeIndependent;
+        this.enzymeList = enzymeList;
+        this.massTableList = massTableList;
+        this.fragmentTolerance = fragmentTolerance;
+        this.parentTolerance = parentTolerance;
+        this.filterList = filterList;
+        this.dataBaseTranslation = dataBaseTranslation;
+    }
+
+    public SpectrumIdentificationProtocol(ParamGroup analysisParam,
+                                          Comparable id,
+                                          String name,
+                                          Software analysisSoftware,
+                                          ParamGroup threshold,
+                                          ParamGroup searchType,
+                                          List<SearchModification> searchModificationList,
+                                          boolean enzymeIndependent,
+                                          List<Enzyme> enzymeList,
+                                          List<MassTable> massTableList,
+                                          List<CvParam> fragmentTolerance,
+                                          List<CvParam> parentTolerance,
+                                          List<Filter> filterList,
+                                          DataBaseTranslation dataBaseTranslation) {
+        super(analysisParam, id, name, analysisSoftware, threshold);
         this.searchType = searchType;
         this.searchModificationList = searchModificationList;
         this.enzymeIndependent = enzymeIndependent;

@@ -4,11 +4,11 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.DataSources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.pride.gui.desktop.Desktop;
-import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 
 import java.beans.PropertyVetoException;
+import java.io.IOException;
 import java.sql.*;
+import java.util.Properties;
 
 
 /**
@@ -18,30 +18,45 @@ public class PooledConnectionFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(PooledConnectionFactory.class);
 
+    /**
+     * Database property file which contains all the database connection settings
+     */
+    private static final String DATABASE_PROP_FILE = "prop/database.prop";
+    /**
+     * Singleton instance
+     */
     private static PooledConnectionFactory instance = new PooledConnectionFactory();
-
+    /**
+     * Database connection pool
+     */
     private ComboPooledDataSource connectionPool = null;
 
-    private DesktopContext context;
+    /**
+     * Database properties
+     */
+    private Properties dbProperties;
 
+    /**
+     * Build a connection factory
+     */
     private PooledConnectionFactory() {
 
-        //will throw exception if not properly configured
-        context = Desktop.getInstance().getDesktopContext();
+        dbProperties = new Properties();
+        try {
+            dbProperties.load(this.getClass().getClassLoader().getResourceAsStream(DATABASE_PROP_FILE));
+        } catch (IOException e) {
+            String msg = "Failed to load database connection properties";
+            logger.error(msg, e);
+            throw new IllegalStateException(msg + ": " + e.getMessage());
+        }
 
         try {
             // retrieve the active schema from the master schema
             String schema = getActiveSchema();
             logger.info("Using PRIDE public active schema: " + schema);
 
-            if (schema != null) {
-                // create a new connection pool
-                setupConnectionPool(schema);
-            } else {
-                String msg = "Failed to get a valid active DB schema.";
-                logger.error(msg);
-                throw new IllegalStateException(msg);
-            }
+            // create a new connection pool
+            setupConnectionPool(schema);
 
         } catch (PropertyVetoException e) {
             String msg = "Error while creating database pool";
@@ -50,22 +65,38 @@ public class PooledConnectionFactory {
         }
     }
 
+    /**
+     * Setup connection pool
+     *
+     * @param schema the schema to use
+     * @throws PropertyVetoException exception
+     */
     private void setupConnectionPool(String schema) throws PropertyVetoException {
         if (connectionPool == null) {
             connectionPool = new ComboPooledDataSource();
         }
         // setting up the database connection to the master database
-        connectionPool.setDriverClass(context.getProperty("pride.database.driver"));
-        String databaseURL = context.getProperty("pride.database.protocol") + ':'
-                + context.getProperty("pride.database.subprotocol") +
-                ':' + context.getProperty("pride.database.alias") + "/" + schema;
+        connectionPool.setDriverClass(dbProperties.getProperty("pride.database.driver"));
+        String databaseURL = dbProperties.getProperty("pride.database.protocol") + ':'
+                + dbProperties.getProperty("pride.database.subprotocol") +
+                ':' + dbProperties.getProperty("pride.database.alias");
+
+        if (schema != null) {
+            databaseURL += "/" + schema;
+        }
 
         connectionPool.setJdbcUrl(databaseURL);
-        connectionPool.setUser(context.getProperty("pride.database.user"));
-        connectionPool.setPassword(context.getProperty("pride.database.password"));
+        connectionPool.setUser(dbProperties.getProperty("pride.database.user"));
+        connectionPool.setPassword(dbProperties.getProperty("pride.database.password"));
     }
 
-    private String getActiveSchema(){
+    /**
+     * Get the active schema
+     * In pride public instance, we have two schema, normally one is for live queries, the other one is for offline update
+     *
+     * @return String  database schema
+     */
+    private String getActiveSchema() {
         String schema = null;
 
         // get connection to the master database
@@ -73,15 +104,15 @@ public class PooledConnectionFactory {
         PreparedStatement stmt = null;
         ResultSet resultSet = null;
         try {
-            Class.forName(context.getProperty("pride.database.driver"));
-            String databaseURL = context.getProperty("pride.database.protocol") + ':'
-                    + context.getProperty("pride.database.subprotocol") + ':'
-                    + context.getProperty("pride.database.alias") + "/"
-                    + context.getProperty("pride.database.master.schema");
+            Class.forName(dbProperties.getProperty("pride.database.driver"));
+            String databaseURL = dbProperties.getProperty("pride.database.protocol") + ':'
+                    + dbProperties.getProperty("pride.database.subprotocol") + ':'
+                    + dbProperties.getProperty("pride.database.alias") + "/"
+                    + dbProperties.getProperty("pride.database.master.schema");
             connection = DriverManager.getConnection(
-                    databaseURL ,
-                    context.getProperty("pride.database.user"),
-                    context.getProperty("pride.database.password"));
+                    databaseURL,
+                    dbProperties.getProperty("pride.database.user"),
+                    dbProperties.getProperty("pride.database.password"));
             stmt = connection.prepareStatement("select schema_name from active_schema");
             resultSet = stmt.executeQuery();
             if (resultSet.next()) {
@@ -90,7 +121,7 @@ public class PooledConnectionFactory {
         } catch (SQLException e) {
             logger.error("Failed to get active DB schema.", e);
         } catch (ClassNotFoundException e) {
-            logger.error("Fail to load database driver class: " + context.getProperty("pride.database.driver"));
+            logger.error("Fail to load database driver class: " + dbProperties.getProperty("pride.database.driver"));
         } finally {
             DBUtilities.releaseResources(connection, stmt, resultSet);
         }
@@ -127,10 +158,20 @@ public class PooledConnectionFactory {
         }
     }
 
-    private static PooledConnectionFactory getInstance() {
+    /**
+     * Get singleton instance
+     *
+     * @return PooledConnectionFactory connection factory
+     */
+    public static PooledConnectionFactory getInstance() {
         return instance;
     }
 
+    /**
+     * Connection pool
+     *
+     * @return ComboPooledDataSource   connection pool
+     */
     private ComboPooledDataSource getConnectionPool() {
         return connectionPool;
     }

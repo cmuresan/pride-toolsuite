@@ -128,7 +128,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public List<SourceFile> getSourceFiles() throws DataAccessException {
         List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
         try {
-            sourceFiles = MzIdentMLTransformer.transformSourceFile(unmarshaller.getSourceFiles());
+            sourceFiles = MzIdentMLTransformer.transformToSourceFile(unmarshaller.getSourceFiles());
         } catch (Exception ex) {
             throw new DataAccessException("Failed to retrieve source files", ex);
         }
@@ -183,7 +183,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public Provider getProvider() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
         if(metaData == null){
-            Provider provider = MzIdentMLTransformer.transformProvider(unmarshaller.getProvider());
+            Provider provider = MzIdentMLTransformer.transformToProvider(unmarshaller.getProvider());
             return provider;
         }
         return metaData.getProvider();
@@ -310,7 +310,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 List<Reference> references = getReferences();
                 // Get the provider object of the MzIdentMl file
                 Provider provider = getProvider();
-                metaData = new ExperimentMetaData(additional,accession,title,version,shortLabel,samples,softwares,persons,sources,null,organizations,references,null,null,protocol);
+
+                metaData = new ExperimentMetaData(additional,accession,title,version,shortLabel,samples,softwares,persons,sources,provider,organizations,references,null,null,protocol);
                 // store it in the cache
                 cache.store(CacheCategory.EXPERIMENT_METADATA, metaData);
             } catch (Exception ex) {
@@ -322,10 +323,21 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     }
 
     @Override
+    public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() throws DataAccessException {
+        IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
+
+        if(identificationMetaData == null){
+            List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = MzIdentMLTransformer.transformToSpectrumIdentificationProtocol(unmarshaller.getSpectrumIdentificationProtcol());
+            return spectrumIdentificationProtocolList;
+        }
+        return null;
+    }
+
+    @Override
     public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
         IdentificationMetaData metaData = super.getIdentificationMetaData();
         if(metaData == null){
-            List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = null;
+            List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = getSpectrumIdentificationProtocol();
             //Todo: Try to convert the CVTerms in Pride to SpectrumIdentificationProtocol
             Protocol proteinDetectionProtocol = null;
             //Todo: Try to convert the CVTerms in Pride to Protocol

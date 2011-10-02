@@ -136,4 +136,8 @@ public class MzIdentMLUnmarshallerAdaptor {
     public Provider getProvider() {
         return unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.Provider.class);
     }
+
+    public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtcol() {
+        return (unmarshaller.unmarshal(AnalysisProtocolCollection.class)).getSpectrumIdentificationProtocol();
+    }
 }

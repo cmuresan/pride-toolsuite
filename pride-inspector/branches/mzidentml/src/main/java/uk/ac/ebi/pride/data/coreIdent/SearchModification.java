@@ -15,13 +15,13 @@ public class SearchModification {
 
     private double massDelta = 0.0;
 
-    private List<Character> specificityList = null;
+    private List<String> specificityList = null;
 
     private List<CvParam> specificityRuleList = null;
 
     private List<CvParam> cvParamList = null;
 
-    public SearchModification(boolean fixedMod, double massDelta, List<Character> specificityList, List<CvParam> specificityRuleList, List<CvParam> cvParamList) {
+    public SearchModification(boolean fixedMod, double massDelta, List<String> specificityList, List<CvParam> specificityRuleList, List<CvParam> cvParamList) {
         this.fixedMod = fixedMod;
         this.massDelta = massDelta;
         this.specificityList = specificityList;
@@ -45,11 +45,11 @@ public class SearchModification {
         this.massDelta = massDelta;
     }
 
-    public List<Character> getSpecificityList() {
+    public List<String> getSpecificityList() {
         return specificityList;
     }
 
-    public void setSpecificityList(List<Character> specificityList) {
+    public void setSpecificityList(List<String> specificityList) {
         this.specificityList = specificityList;
     }
 

@@ -59,6 +59,20 @@ public class ParamGroup implements MassSpecObject {
     }
 
     /**
+     * Constructor Using Single Entries
+     * @param cvParam
+     * @param userParam
+     */
+    public ParamGroup(CvParam cvParam, UserParam userParam){
+        List<CvParam> cvParams = new ArrayList<CvParam>();
+        cvParams.add(cvParam);
+        List<UserParam> userParams = new ArrayList<UserParam>();
+        userParams.add(userParam);
+        setCvParams(cvParams);
+        setUserParams(userParams);
+    }
+
+    /**
      * This method return a List of CvParam, the result List in a new Instance
      * of the current List of CvParam
      * @return List of CvParam

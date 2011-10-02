@@ -209,10 +209,17 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     /**
      * Get an collection of samples.
      *
-     * @return Collection<Sample>   an colleciton of samples.
+     * @return Collection<Sample>   an collection of samples.
      * @throws DataAccessException throw a exception when there is an error accessing the data source
      */
     public Collection<Sample> getSamples() throws DataAccessException;
+
+    /**
+     * Get the Collection of the SpectrumIdentification Protocol
+     * @return Collection<SpectrumIdentificationProtocol>  a Collection of SpectrumIdentification Protocol
+     * @throws DataAccessException
+     */
+    public Collection<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() throws  DataAccessException;
 
     /**
      * Get a Provider for a File

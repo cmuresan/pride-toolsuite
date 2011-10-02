@@ -1,20 +1,7 @@
 package uk.ac.ebi.pride.data.controller.impl;
 
+
 import uk.ac.ebi.pride.data.coreIdent.*;
-import uk.ac.ebi.pride.data.coreIdent.AbstractContact;
-import uk.ac.ebi.pride.data.coreIdent.CvParam;
-import uk.ac.ebi.pride.data.coreIdent.DBSequence;
-import uk.ac.ebi.pride.data.coreIdent.MassTable;
-import uk.ac.ebi.pride.data.coreIdent.Modification;
-import uk.ac.ebi.pride.data.coreIdent.Organization;
-import uk.ac.ebi.pride.data.coreIdent.Peptide;
-import uk.ac.ebi.pride.data.coreIdent.PeptideEvidence;
-import uk.ac.ebi.pride.data.coreIdent.Person;
-import uk.ac.ebi.pride.data.coreIdent.Provider;
-import uk.ac.ebi.pride.data.coreIdent.Sample;
-import uk.ac.ebi.pride.data.coreIdent.SourceFile;
-import uk.ac.ebi.pride.data.coreIdent.SubstitutionModification;
-import uk.ac.ebi.pride.data.coreIdent.UserParam;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.*;
@@ -28,7 +15,7 @@ import java.util.*;
 public class MzIdentMLTransformer {
     private static List<IdentifiableParamGroup> FragmentationTable = null;
 
-    public static List<SourceFile> transformSourceFile(List<uk.ac.ebi.jmzidml.model.mzidml.SourceFile> oldSourceFiles) {
+    public static List<SourceFile> transformToSourceFile(List<uk.ac.ebi.jmzidml.model.mzidml.SourceFile> oldSourceFiles) {
         List<SourceFile> sourceFiles = null ;
 
         if (oldSourceFiles != null) {
@@ -39,26 +26,26 @@ public class MzIdentMLTransformer {
                 String location = oldsourcefile.getLocation();
                 CvParam format = transformToCvParam(oldsourcefile.getFileFormat().getCvParam());
                 String formatDocumentation = oldsourcefile.getExternalFormatDocumentation();
-                List<CvParam> cvParams = transformCvParams(oldsourcefile.getCvParam());
-                List<UserParam> userParams = transformUserParams(oldsourcefile.getUserParam());
+                List<CvParam> cvParams = transformToCvParam(oldsourcefile.getCvParam());
+                List<UserParam> userParams = transformToUserParam(oldsourcefile.getUserParam());
                 sourceFiles.add(new SourceFile(new ParamGroup(cvParams,userParams),id,name,location,format,formatDocumentation));
             }
         }
         return sourceFiles;
     }
 
-    private static List<UserParam> transformUserParams(List<uk.ac.ebi.jmzidml.model.mzidml.UserParam> oldUserParams) {
+    private static List<UserParam> transformToUserParam(List<uk.ac.ebi.jmzidml.model.mzidml.UserParam> oldUserParams) {
         List<UserParam> userParams = null;
         if(oldUserParams != null){
             userParams = new ArrayList<UserParam>();
             for (uk.ac.ebi.jmzidml.model.mzidml.UserParam oldUserParam: oldUserParams){
-                userParams.add(transformUserParam(oldUserParam));
+                userParams.add(transformToUserParam(oldUserParam));
             }
         }
         return userParams;
     }
 
-    private static List<CvParam> transformCvParams(List<uk.ac.ebi.jmzidml.model.mzidml.CvParam> oldCvParams) {
+    private static List<CvParam> transformToCvParam(List<uk.ac.ebi.jmzidml.model.mzidml.CvParam> oldCvParams) {
         List<CvParam> cvParams = null;
         if(oldCvParams != null){
             cvParams = new ArrayList<CvParam>();
@@ -88,7 +75,7 @@ public class MzIdentMLTransformer {
               if(oldOrganization.getParent()!=null){
                   parentOrganization = transformToOrganization(oldOrganization.getParent().getOrganization());
               }
-              organization = new Organization(new ParamGroup(transformCvParams(oldOrganization.getCvParam()),transformUserParams(oldOrganization.getUserParam())),oldOrganization.getId(),oldOrganization.getName(),parentOrganization,null);
+              organization = new Organization(new ParamGroup(transformToCvParam(oldOrganization.getCvParam()),transformToUserParam(oldOrganization.getUserParam())),oldOrganization.getId(),oldOrganization.getName(),parentOrganization,null);
         }
         return organization;
     }
@@ -122,7 +109,7 @@ public class MzIdentMLTransformer {
             List<uk.ac.ebi.jmzidml.model.mzidml.Affiliation> oldAffiliation = oldPerson.getAffiliation();
             List<Organization> affiliation = transformAffiliationToOrganization(oldPerson.getAffiliation());
                 //Todo: Take from Cv Params the value of the mail.
-            return new Person(new ParamGroup(transformCvParams(oldPerson.getCvParam()),transformUserParams(oldPerson.getUserParam())),oldPerson.getId(),oldPerson.getName(),oldPerson.getLastName(),oldPerson.getFirstName(),oldPerson.getMidInitials(),affiliation,null);
+            return new Person(new ParamGroup(transformToCvParam(oldPerson.getCvParam()),transformToUserParam(oldPerson.getUserParam())),oldPerson.getId(),oldPerson.getName(),oldPerson.getLastName(),oldPerson.getFirstName(),oldPerson.getMidInitials(),affiliation,null);
         }
 
         return null;
@@ -159,7 +146,7 @@ public class MzIdentMLTransformer {
             if((oldSample.getSubSample() != null) && (!oldSample.getSubSample().isEmpty())){
                 subSamples = transformSubSampleToSample(oldSample.getSubSample());
             }
-            sample = new Sample(new ParamGroup(transformCvParams(oldSample.getCvParam()),transformUserParams(oldSample.getUserParam())),oldSample.getId(),oldSample.getName(),subSamples,role);
+            sample = new Sample(new ParamGroup(transformToCvParam(oldSample.getCvParam()),transformToUserParam(oldSample.getUserParam())),oldSample.getId(),oldSample.getName(),subSamples,role);
         }
         return sample;
     }
@@ -195,7 +182,7 @@ public class MzIdentMLTransformer {
         return newParam;
     }
 
-    private static UserParam transformUserParam(uk.ac.ebi.jmzidml.model.mzidml.UserParam oldUserParam) {
+    private static UserParam transformToUserParam(uk.ac.ebi.jmzidml.model.mzidml.UserParam oldUserParam) {
 
         String unitCVLookupID = null;
         uk.ac.ebi.jmzidml.model.mzidml.Cv cv = oldUserParam.getUnitCv();
@@ -255,7 +242,7 @@ public class MzIdentMLTransformer {
     public static Identification transformToIdentification(uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis oldIdent, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
         Identification ident = null;
         if(FragmentationTable == null){
-            FragmentationTable = transformFragmentationTable(oldFragmentationTable);
+            FragmentationTable = transformToFragmentationTable(oldFragmentationTable);
         }
         if(oldIdent != null){
             SearchDataBase database = transformToSeachDatabase(oldIdent.getDBSequence().getSearchDatabase());
@@ -266,12 +253,12 @@ public class MzIdentMLTransformer {
         return ident;
     }
 
-    public static List<IdentifiableParamGroup> transformFragmentationTable(uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable){
+    public static List<IdentifiableParamGroup> transformToFragmentationTable(uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable){
         List<IdentifiableParamGroup> fragmentationTable = null;
         if(oldFragmentationTable != null){
             fragmentationTable = new ArrayList<IdentifiableParamGroup>();
             for (uk.ac.ebi.jmzidml.model.mzidml.Measure oldMeasure : oldFragmentationTable.getMeasure()){
-                fragmentationTable.add(new IdentifiableParamGroup(new ParamGroup(transformCvParams(oldMeasure.getCvParam()),null),oldMeasure.getId(),oldMeasure.getName()));
+                fragmentationTable.add(new IdentifiableParamGroup(new ParamGroup(transformToCvParam(oldMeasure.getCvParam()),null),oldMeasure.getId(),oldMeasure.getName()));
             }
         }
         return fragmentationTable;
@@ -315,7 +302,7 @@ public class MzIdentMLTransformer {
     private static List<FragmentIon> transformToFragmentationIon(uk.ac.ebi.jmzidml.model.mzidml.Fragmentation fragmentation, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
         List<FragmentIon> fragmentIons = null;
         if(FragmentationTable == null){
-            FragmentationTable = transformFragmentationTable(oldFragmentationTable);
+            FragmentationTable = transformToFragmentationTable(oldFragmentationTable);
         }
         if(fragmentation != null){
             fragmentIons = new ArrayList<FragmentIon>();
@@ -387,6 +374,16 @@ public class MzIdentMLTransformer {
         return null;
     }
 
+    private static List<MassTable> transformToMassTable(List<uk.ac.ebi.jmzidml.model.mzidml.MassTable> oldMassTables){
+        List<MassTable> massTables = null;
+        if(oldMassTables != null){
+            massTables = new ArrayList<MassTable>();
+            for (uk.ac.ebi.jmzidml.model.mzidml.MassTable oldMassTable: oldMassTables){
+                massTables.add(transformToMassTable(oldMassTable));
+            }
+        }
+        return massTables;
+    }
 
     private static MassTable transformToMassTable(uk.ac.ebi.jmzidml.model.mzidml.MassTable oldMassTable) {
         MassTable massTable = null;
@@ -397,7 +394,7 @@ public class MzIdentMLTransformer {
             }
             Map<String, ParamGroup> ambiguousResidues = new HashMap<String, ParamGroup>();
             for(uk.ac.ebi.jmzidml.model.mzidml.AmbiguousResidue residue : oldMassTable.getAmbiguousResidue()){
-               ambiguousResidues.put(residue.getCode(),new ParamGroup(transformCvParams(residue.getCvParam()),transformUserParams(residue.getUserParam())));
+               ambiguousResidues.put(residue.getCode(),new ParamGroup(transformToCvParam(residue.getCvParam()),transformToUserParam(residue.getUserParam())));
             }
             massTable = new MassTable(oldMassTable.getMsLevel(),residues,ambiguousResidues);
         }
@@ -486,7 +483,7 @@ public class MzIdentMLTransformer {
     }
 
     private static SearchDataBase transformToSeachDatabase(uk.ac.ebi.jmzidml.model.mzidml.SearchDatabase oldDatabase) {
-        return new SearchDataBase(oldDatabase.getId(),oldDatabase.getName(),oldDatabase.getLocation(),transformToCvParam(oldDatabase.getFileFormat().getCvParam()),oldDatabase.getExternalFormatDocumentation(),oldDatabase.getVersion(),oldDatabase.getReleaseDate().toString(),oldDatabase.getNumDatabaseSequences().intValue(),oldDatabase.getNumResidues(),null,transformCvParams(oldDatabase.getCvParam()));
+        return new SearchDataBase(oldDatabase.getId(),oldDatabase.getName(),oldDatabase.getLocation(),transformToCvParam(oldDatabase.getFileFormat().getCvParam()),oldDatabase.getExternalFormatDocumentation(),oldDatabase.getVersion(),oldDatabase.getReleaseDate().toString(),oldDatabase.getNumDatabaseSequences().intValue(),oldDatabase.getNumResidues(),null,transformToCvParam(oldDatabase.getCvParam()));
     }
 
     public static List<CVLookup> transformCVList(List<uk.ac.ebi.jmzidml.model.mzidml.Cv> cvList) {
@@ -494,13 +491,13 @@ public class MzIdentMLTransformer {
         if(cvLookups != null){
             cvLookups = new ArrayList<CVLookup>();
             for (uk.ac.ebi.jmzidml.model.mzidml.Cv cv : cvList){
-               cvLookups.add(transformCVLookup(cv));
+               cvLookups.add(transformToCVLookup(cv));
             }
         }
         return cvLookups;
     }
 
-    public static CVLookup transformCVLookup(uk.ac.ebi.jmzidml.model.mzidml.Cv oldCv) {
+    public static CVLookup transformToCVLookup(uk.ac.ebi.jmzidml.model.mzidml.Cv oldCv) {
         CVLookup cvLookup = null;
         if (oldCv != null) {
             cvLookup = new CVLookup(oldCv.getId(), oldCv.getFullName(),
@@ -509,7 +506,7 @@ public class MzIdentMLTransformer {
         return cvLookup;
     }
 
-    public static Provider transformProvider(uk.ac.ebi.jmzidml.model.mzidml.Provider oldProvider) {
+    public static Provider transformToProvider(uk.ac.ebi.jmzidml.model.mzidml.Provider oldProvider) {
        Provider provider = null;
        if(oldProvider !=null){
            AbstractContact abstractContact = null;
@@ -523,5 +520,83 @@ public class MzIdentMLTransformer {
            provider = new Provider(oldProvider.getId(),oldProvider.getName(),software,abstractContact,role);
        }
         return provider;
+    }
+
+    public static List<SpectrumIdentificationProtocol> transformToSpectrumIdentificationProtocol(List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationProtocol> oldSpecProtocol) {
+        List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = null;
+        if(oldSpecProtocol != null){
+            spectrumIdentificationProtocolList = new ArrayList<SpectrumIdentificationProtocol>();
+            for (uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationProtocol oldProtocol: oldSpecProtocol){
+                spectrumIdentificationProtocolList.add(transformToSpectrumIdentificationProtocol(oldProtocol));
+            }
+        }
+        return spectrumIdentificationProtocolList;
+
+    }
+
+    public static SpectrumIdentificationProtocol transformToSpectrumIdentificationProtocol(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationProtocol oldProtocol){
+        SpectrumIdentificationProtocol spectrumIdentificationProtocol = null;
+        if(oldProtocol != null){
+            Comparable id = oldProtocol.getId();
+            String name = oldProtocol.getName();
+            Software analysisSoftware = transformToSoftware(oldProtocol.getAnalysisSoftware());
+            ParamGroup threshold = new ParamGroup(transformToCvParam(oldProtocol.getThreshold().getCvParam()),transformToUserParam(oldProtocol.getThreshold().getUserParam()));
+            ParamGroup searchType = new ParamGroup(transformToCvParam(oldProtocol.getSearchType().getCvParam()),transformToUserParam(oldProtocol.getSearchType().getUserParam()));
+            boolean enzymeIndependent = oldProtocol.getEnzymes().isIndependent();
+            List<Enzyme> enzymeList = transformToEnzyme(oldProtocol.getEnzymes().getEnzyme());
+            List<CvParam> fragmentTolerance = transformToCvParam(oldProtocol.getFragmentTolerance().getCvParam());
+            List<CvParam> parentTolerance = transformToCvParam(oldProtocol.getParentTolerance().getCvParam());
+            List<Filter> filterList = transformToFilter(oldProtocol.getDatabaseFilters().getFilter());
+            DataBaseTranslation dataBaseTranslation = transformToDataBaseTranslation(oldProtocol.getDatabaseTranslation());
+            List<SearchModification> searchModificationList = transformToSearchModification(oldProtocol.getModificationParams().getSearchModification());
+            List<MassTable> massTableList = transformToMassTable(oldProtocol.getMassTable());
+           spectrumIdentificationProtocol = new SpectrumIdentificationProtocol(new ParamGroup(transformToCvParam(oldProtocol.getAdditionalSearchParams().getCvParam()),transformToUserParam(oldProtocol.getAdditionalSearchParams().getUserParam())),oldProtocol.getId(),oldProtocol.getName(),analysisSoftware,threshold,searchType,searchModificationList,enzymeIndependent,enzymeList,massTableList,fragmentTolerance,parentTolerance,filterList,dataBaseTranslation);
+        }
+        return spectrumIdentificationProtocol;
+    }
+
+    private static List<SearchModification> transformToSearchModification(List<uk.ac.ebi.jmzidml.model.mzidml.SearchModification> oldSearchModifications) {
+        List<SearchModification> searchModifications = null;
+        if(oldSearchModifications != null){
+            searchModifications = new ArrayList<SearchModification>();
+            for (uk.ac.ebi.jmzidml.model.mzidml.SearchModification oldSearchModification: oldSearchModifications){
+                searchModifications.add(new SearchModification(oldSearchModification.isFixedMod(),oldSearchModification.getMassDelta(),oldSearchModification.getResidues(),transformToCvParam(oldSearchModification.getSpecificityRules().getCvParam()),transformToCvParam(oldSearchModification.getCvParam())));
+            }
+        }
+        return searchModifications;
+    }
+
+    private static DataBaseTranslation transformToDataBaseTranslation(uk.ac.ebi.jmzidml.model.mzidml.DatabaseTranslation oldDatabaseTranslation) {
+        DataBaseTranslation dataBaseTranslation = null;
+        if(oldDatabaseTranslation != null){
+            List<IdentifiableParamGroup> translationTable = new ArrayList<IdentifiableParamGroup>();
+            for (uk.ac.ebi.jmzidml.model.mzidml.TranslationTable oldTranslationTable: oldDatabaseTranslation.getTranslationTable()){
+                translationTable.add(new IdentifiableParamGroup(new ParamGroup(transformToCvParam(oldTranslationTable.getCvParam()),null),oldTranslationTable.getId(),oldTranslationTable.getName()));
+            }
+            dataBaseTranslation = new DataBaseTranslation(oldDatabaseTranslation.getFrames(),translationTable);
+        }
+        return dataBaseTranslation;
+    }
+
+    private static List<Filter> transformToFilter(List<uk.ac.ebi.jmzidml.model.mzidml.Filter> oldFilters) {
+        List<Filter> filters = null;
+        if(oldFilters != null){
+            filters = new ArrayList<Filter>();
+            for(uk.ac.ebi.jmzidml.model.mzidml.Filter oldFilter: oldFilters){
+                filters.add(new Filter(new ParamGroup(transformToCvParam(oldFilter.getFilterType().getCvParam()),transformToUserParam(oldFilter.getFilterType().getUserParam())),new ParamGroup(transformToCvParam(oldFilter.getInclude().getCvParam()),transformToUserParam(oldFilter.getInclude().getUserParam())),new ParamGroup(transformToCvParam(oldFilter.getExclude().getCvParam()),transformToUserParam(oldFilter.getExclude().getUserParam()))));
+            }
+        }
+        return filters;
+    }
+
+    private static List<Enzyme> transformToEnzyme(List<uk.ac.ebi.jmzidml.model.mzidml.Enzyme> oldEnzymes) {
+        List<Enzyme> enzymes = null;
+        if(oldEnzymes != null){
+            enzymes = new ArrayList<Enzyme>();
+            for (uk.ac.ebi.jmzidml.model.mzidml.Enzyme oldEnzyme: oldEnzymes){
+                enzymes.add(new Enzyme(oldEnzyme.getId(),oldEnzyme.getName(),oldEnzyme.isSemiSpecific(),oldEnzyme.getMissedCleavages(),oldEnzyme.getMinDistance(),new ParamGroup(transformToCvParam(oldEnzyme.getEnzymeName().getCvParam()),transformToUserParam(oldEnzyme.getEnzymeName().getUserParam())),oldEnzyme.getSiteRegexp()));
+            }
+        }
+        return enzymes;
     }
 }

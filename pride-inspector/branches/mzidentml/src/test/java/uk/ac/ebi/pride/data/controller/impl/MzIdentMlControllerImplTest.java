@@ -49,32 +49,52 @@ public class MzIdentMlControllerImplTest {
     @Test
     public void testGetSoftware() throws Exception {
         List<Software> software = mzIdentMlController.getSoftwareList();
-        assertTrue("There should be only one software", software.size() == 1);
-        assertEquals("Software ID should be Xcalibur", software.get(0).getName(), "Xcalibur");
-        assertEquals("Software version should be 1.2 SP1", software.get(0).getVersion(), "1.2 SP1");
+        assertTrue("There should be only one software", software.size() == 2);
+        assertEquals("Software ID should be Mascot Server", software.get(0).getName(), "Mascot Server");
+        assertEquals("Software version should be 2.3.3.0 for the second software", software.get(1).getVersion(), "2.3.3.0");
     }
 
     @Test
     public void testGetMetaData() throws Exception {
         ExperimentMetaData experiment = (ExperimentMetaData) mzIdentMlController.getExperimentMetaData();
 
-        // test additional param
-        List<CvParam> additional = experiment.getCvParams();
-        assertTrue("There should be only two additional cv parameters", additional.size()==2);
-        assertEquals("XML generation software accession should be PRIDE:0000175", additional.get(0).getAccession(), "PRIDE:0000175");
-
         // test references
         List<Reference> references = experiment.getReferences();
-        assertTrue("There should be only one reference", references.size()==2);
-        assertEquals("PubMed number should be 16038019", references.get(0).getCvParams().get(0).getAccession(), "16038019");
-
-        // test protocol
-        ExperimentProtocol protocol = experiment.getProtocol();
-        assertEquals("Protocol name is In Gel Protein Digestion", protocol.getName(), "In Gel Protein Digestion");
-        assertEquals("First protocol step is reduction", protocol.getProtocolSteps().get(0).getCvParams().get(0).getName(), "Reduction");
+        assertTrue("There should be only one reference", references.size()==1);
+        assertEquals("PubMed number should be 16038019", references.get(0).getDoi(), "10.1002/(SICI)1522-2683(19991201)20:18<3551::AID-ELPS3551>3.0.CO;2-2");
 
         // test version
-        assertEquals("Version should be 2.1", experiment.getVersion(), "2.1");
+        assertEquals("Version should be 1.1.0", experiment.getVersion(), "1.1.0");
+        // test name
+        assertEquals("The name of the file should be PSI Example File", experiment.getName(), "PSI Example File");
+
+        // test the Provider of the File
+        assertEquals("The id of the Provider should be person2",((Person)(experiment.getProvider().getContact())).getId(),"person2");
+        assertEquals("The role of the Provider should be researcher",experiment.getProvider().getRole().getName(),"researcher");
+
     }
+
+    @Test
+    public void testGetPersonContacts() throws Exception{
+        List<Person> persons = mzIdentMlController.getPersonContacts();
+        assertTrue("There should be only two persons", persons.size() == 2);
+        assertEquals("Person one ID should be person1", persons.get(0).getId(), "person1");
+        assertEquals("Person two last Name should be Perez-Riverol", persons.get(1).getLastname(), "Perez-Riverol");
+        assertEquals("Affiliation for Person two should be Matrix Science Limited", persons.get(1).getAffiliation().get(0).getName(),"Matrix Science Limited");
+    }
+
+    @Test
+    public void testGetOrganizationContacts() throws Exception{
+        List<Organization> organizations = mzIdentMlController.getOrganizationContacts();
+        assertTrue("There should be only two organizations", organizations.size() == 2);
+        assertEquals("Organization one ID should be ORG_MSL", organizations.get(0).getId(), "ORG_MSL");
+        assertEquals("Organization two Parent Organization Name should be Matrix Science Limited", organizations.get(1).getParentOrganization().getName(), "Matrix Science Limited");
+    }
+
+    @Test
+    public void testGetIdentificationIDs(){
+
+    }
+
 
 }

@@ -162,6 +162,11 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     @Override
+    public Collection<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() throws DataAccessException {
+        return Collections.emptyList();
+    }
+
+    @Override
     public Provider getProvider() throws DataAccessException {
         return null;
     }

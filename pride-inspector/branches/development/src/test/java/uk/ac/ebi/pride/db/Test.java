@@ -5,4 +5,6 @@ package uk.ac.ebi.pride.db;
  * @version $Id$
  */
 public class Test {
+
+
 }

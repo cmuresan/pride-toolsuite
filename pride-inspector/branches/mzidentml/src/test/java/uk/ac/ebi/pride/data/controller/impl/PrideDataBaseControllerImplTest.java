@@ -3,10 +3,8 @@ package uk.ac.ebi.pride.data.controller.impl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.coreIdent.*;
 
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -26,14 +24,14 @@ public class PrideDataBaseControllerImplTest {
     @Before
     public void setUp() throws Exception {
        // PooledConnectionFactory pooledConnectionFactory = PooledConnectionFactory.getInstance();
-       PrideDBAccessControllerImpl controller = new PrideDBAccessControllerImpl(new Double(16649));
+       prideController = new PrideDBAccessControllerImpl("10885");
     }
 
     @After
     public void tearDown() throws Exception {
         prideController.close();
     }
-    @Test
+    /*@Test
     public void testAccessions(){
         Collection<Comparable> expAccs = null;
         try {
@@ -41,8 +39,8 @@ public class PrideDataBaseControllerImplTest {
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
-        assertTrue("There should be only one cv lookup", expAccs.size()>1000);
-    }
+       // assertTrue("There should be only one cv lookup", expAccs.size()>1000);
+    } */
 
     @Test
     public void testGetCvLookups() throws Exception {
@@ -52,9 +50,11 @@ public class PrideDataBaseControllerImplTest {
     }
 
     @Test
-    public void testGetFileDescription() throws Exception {
-        //FileDescription fileDesc = prideController.getFileDescription();
-        //assertEquals("File content", fileDesc.getFileContent().getCvParams().get(0).getAccession(), "MS:1000294");
+    public void testGetAdditionals() throws Exception {
+        ParamGroup additionals = prideController.getAdditional();
+        assertTrue("The number of CvTermns Should be 4:", additionals.getCvParams().size() ==4);
+        assertEquals("The accession of the first CvTerm should be PRIDE:0000175", additionals.getCvParams().get(0).getAccession(), "PRIDE:0000175");
+        assertEquals("The name of the four CvTerm should be Experiment description", additionals.getCvParams().get(3).getName(),"Experiment description");
     }
 
     @Test
@@ -62,15 +62,15 @@ public class PrideDataBaseControllerImplTest {
         List<Sample> samples = prideController.getSamples();
         assertTrue("There should be only one sample", samples.size() == 1);
         assertEquals("Sample ID should always be sample1", samples.get(0).getId(), "sample1");
-        assertEquals("Sample cv param should be lung", samples.get(0).getCvParams().get(0).getName(), "lung");
+        assertEquals("Sample cv param should be iTRAQ4plex-114 reporter+balance reagent derivatized residue", samples.get(0).getCvParams().get(0).getName(), "iTRAQ4plex-114 reporter+balance reagent derivatized residue");
     }
 
     @Test
     public void testGetSoftware() throws Exception {
         List<Software> software = prideController.getSoftwareList();
         assertTrue("There should be only one software", software.size() == 1);
-        assertEquals("Software ID should be Xcalibur", software.get(0).getName(), "Xcalibur");
-        assertEquals("Software version should be 1.2 SP1", software.get(0).getVersion(), "1.2 SP1");
+        assertEquals("Software ID should be MassLynx", software.get(0).getName(), "MassLynx");
+        assertEquals("Software version should be 4.0", software.get(0).getVersion(), "4.0");
     }
 
     @Test
@@ -78,8 +78,8 @@ public class PrideDataBaseControllerImplTest {
         List<InstrumentConfiguration> instrumentConfigurations = prideController.getInstrumentConfigurations();
         assertTrue("There should be only one instrument configuration", instrumentConfigurations.size() == 1);
         assertEquals("Source should contain Electrospray Ionization", instrumentConfigurations.get(0).getSource().get(0).getCvParams().get(0).getName(), "Electrospray Ionization");
-        assertEquals("Analyzer should contain Ion Trap", instrumentConfigurations.get(0).getAnalyzer().get(0).getCvParams().get(0).getName(), "Ion Trap");
-        assertEquals("Detector should contain Electron Multiplier Tube", instrumentConfigurations.get(0).getDetector().get(0).getCvParams().get(0).getName(), "Electron Multiplier Tube");
+        assertEquals("Detector should contain Microchannel Plate Detector", instrumentConfigurations.get(0).getDetector().get(0).getCvParams().get(0).getName(), "Microchannel Plate Detector");
+        assertEquals("The Instrument Global Configuration QToF Global", instrumentConfigurations.get(0).getCvParams().get(0).getValue(),"QToF Global");
     }
 
     @Test
@@ -88,28 +88,23 @@ public class PrideDataBaseControllerImplTest {
         assertTrue("There should be only one data processing", dataProcs.size() == 1);
         assertEquals("Auto-generated data processing id should be dataprocess1", dataProcs.get(0).getId(), "dataprocessing1");
         assertTrue("There should be only on processing method", dataProcs.get(0).getProcessingMethods().size() == 1);
-        assertEquals("Processing method's software id should Xcalibur", dataProcs.get(0).getProcessingMethods().get(0).getSoftware().getName(), "Xcalibur");
-        assertEquals("Processing method should contain cv term PSI:1000035", dataProcs.get(0).getProcessingMethods().get(0).getCvParams().get(0).getAccession(), "PSI:1000035");
+        assertEquals("Processing method's software id should MassLynx", dataProcs.get(0).getProcessingMethods().get(0).getSoftware().getName(), "MassLynx");
+        assertEquals("Processing method should contain first Cv term Name Deisotoping", dataProcs.get(0).getProcessingMethods().get(0).getCvParams().get(0).getName(), "Deisotoping");
     }
 
     @Test
     public void testGetMetaData() throws Exception {
         ExperimentMetaData experiment = (ExperimentMetaData) prideController.getExperimentMetaData();
 
-        // test additional param
-        List<CvParam> additional = experiment.getCvParams();
-        assertTrue("There should be only two additional cv parameters", additional.size()==2);
-        assertEquals("XML generation software accession should be PRIDE:0000175", additional.get(0).getAccession(), "PRIDE:0000175");
-
         // test references
         List<Reference> references = experiment.getReferences();
-        assertTrue("There should be only one reference", references.size()==2);
-        assertEquals("PubMed number should be 16038019", references.get(0).getCvParams().get(0).getAccession(), "16038019");
+        assertTrue("There should be only one reference", references.size()==1);
+        assertEquals("PubMed number should be 20213678", references.get(0).getCvParams().get(0).getAccession(), "20213678");
 
         // test protocol
         ExperimentProtocol protocol = experiment.getProtocol();
-        assertEquals("Protocol name is In Gel Protein Digestion", protocol.getName(), "In Gel Protein Digestion");
-        assertEquals("First protocol step is reduction", protocol.getProtocolSteps().get(0).getCvParams().get(0).getName(), "Reduction");
+        assertEquals("Protocol name is iTRAQ", protocol.getName(), "iTRAQ");
+        assertEquals("First protocol step is methyl methanethiosulfonate", protocol.getProtocolSteps().get(0).getCvParams().get(0).getName(), "methyl methanethiosulfonate");
 
         // test version
         assertEquals("Version should be 2.1", experiment.getVersion(), "2.1");
@@ -117,26 +112,25 @@ public class PrideDataBaseControllerImplTest {
 
     @Test
     public void testGetSpectrumIds() throws Exception {
-        assertTrue("The number of spectrum should be 100", prideController.getSpectrumIds().size() == 100);
+        assertTrue("The number of spectrum should be 3099", prideController.getSpectrumIds().size() == 3099);
     }
 
     @Test
     public void testGetSpectrumById() throws Exception {
-        Spectrum spectrum = prideController.getSpectrumById("2");
+        Spectrum spectrum = prideController.getSpectrumById("119972762");
 
         // test spectrum index
         //assertEquals("Spectrum index should be 1", spectrum.getIndex(), 1);
 
         // test param group
-        assertEquals("MS level should be 0", spectrum.getCvParams().get(0).getValue(), "0");
+        assertEquals("MS level should be 2", spectrum.getCvParams().get(0).getValue(), "2");
         assertEquals("Spectrum type", spectrum.getCvParams().get(1).getAccession(), "MS:1000294");
-        assertEquals("Spectrum representation", spectrum.getCvParams().get(2).getAccession(), "MS:1000127");
-        assertEquals("Scan mode", spectrum.getCvParams().get(3).getAccession(), "PSI:1000036");
+
 
         // test scan list
         ScanList scanList = spectrum.getScanList();
         // check param group
-        assertEquals("Method of combination", scanList.getCvParams().get(0).getAccession(), "MS:1000571");
+        assertEquals("Method of combination", scanList.getCvParams().get(0).getAccession(), "MS:1000795");
         //
         // check scans
         assertTrue("There should be two scans", scanList.getScans().size() == 2);

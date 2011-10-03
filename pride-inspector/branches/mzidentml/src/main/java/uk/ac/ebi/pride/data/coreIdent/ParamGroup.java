@@ -159,8 +159,8 @@ public class ParamGroup implements MassSpecObject {
 
     @Override
     public int hashCode() {
-        int result = cvParams.hashCode();
-        result = 31 * result + userParams.hashCode();
+        int result = cvParams != null ? cvParams.hashCode() : 0;
+        result = 31 * result + (userParams != null ? userParams.hashCode() : 0);
         return result;
     }
 }

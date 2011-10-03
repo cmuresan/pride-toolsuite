@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.data.controller.impl;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections.list.SetUniqueList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.chart.controller.PrideChartSummaryData;
@@ -21,7 +20,6 @@ import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
 import uk.ac.ebi.pride.gui.component.chart.PrideChartManager;
 import uk.ac.ebi.pride.gui.utils.Constants;
-import uk.ac.ebi.pride.model.interfaces.mzdata.Param;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.io.UnsupportedEncodingException;
@@ -283,7 +281,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     Person contactPerson = new Person(new ParamGroup(cvParams, userParams),null,rs.getString("contact_name"),null,null,null,affiliation,null);
                     persons.add(contactPerson);
                 }
-                metadata.setPersonList(persons);
+                return persons;
             } catch (SQLException e) {
                 logger.error("Failed to query contacts", e);
             } finally {
@@ -316,7 +314,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     Organization organization = new Organization(new ParamGroup(cvParams, userParams),rs.getString("institution"),null);
                     organizations.add(organization);
                 }
-                metadata.setOrganizationList(new ArrayList<Organization>(organizations));
+                return new ArrayList<Organization>(organizations);
             } catch (SQLException e) {
                 logger.error("Failed to query contacts", e);
             } finally {
@@ -398,7 +396,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             } finally {
                 DBUtilities.releaseResources(connection, st, rs);
             }
-            metaData.setSoftwareList(softwares);
+            return softwares;
         }
 
         return metaData.getSoftwareList();
@@ -424,7 +422,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 cvParams = getCvParams(connection, "mzdata_analyzer_param", rs.getInt("analyzer_id"));
                 params = new ParamGroup(cvParams, userParams);
                 analyzerList.add(params);
-
             }
         } catch (SQLException e) {
             logger.error("Failed to query param groups", e);
@@ -536,7 +533,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             } finally {
                 DBUtilities.releaseResources(connection, st, rs);
             }
-            metaData.setDataProcessingList(dataProcessings);
+            return dataProcessings;
         }
         return metaData.getDataProcessingList();
 
@@ -726,7 +723,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         try {
             logger.debug("Getting cv lookups");
             connection = PooledConnectionFactory.getConnection();
-            st = connection.prepareStatement("SELECT cv_label, version, address, full_name FROM mzdata_cv_lookup sf, mzdata_mz_data mz WHERE mz.accession_number= ? and mz.mzdata_id=sf.mzdata_id");
+            st = connection.prepareStatement("SELECT cv_label, sf.version, address, full_name FROM mzdata_cv_lookup sf, mzdata_mz_data mz, mzdata_cv_lookup_mzdata_lnk lnk WHERE mz.accession_number= ? and mz.mz_data_id=lnk.mz_data_id and lnk.cv_lookup_id=sf.cv_lookup_id");
             st.setString(1, foregroundExperimentAcc.toString());
             rs = st.executeQuery();
             while (rs.next()) {

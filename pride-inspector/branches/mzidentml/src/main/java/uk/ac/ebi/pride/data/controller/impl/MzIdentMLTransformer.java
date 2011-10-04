@@ -170,26 +170,37 @@ public class MzIdentMLTransformer {
     }
 
     private static CvParam transformToCvParam(uk.ac.ebi.jmzidml.model.mzidml.CvParam oldCvParam) {
-        String cvLookupID = null;
-        uk.ac.ebi.jmzidml.model.mzidml.Cv cv = oldCvParam.getCv();
-        if (cv != null) cvLookupID = cv.getId();
-        String unitCVLookupID = null;
-        cv = oldCvParam.getUnitCv();
-        if (cv != null) unitCVLookupID = cv.getId();
-        CvParam newParam = new CvParam(oldCvParam.getAccession(), oldCvParam.getName(), cvLookupID,oldCvParam.getValue(),
-                oldCvParam.getUnitAccession(),
-                oldCvParam.getUnitName(), unitCVLookupID);
+        CvParam newParam = null;
+        if(oldCvParam != null){
+            String cvLookupID = null;
+            uk.ac.ebi.jmzidml.model.mzidml.Cv cv = oldCvParam.getCv();
+            if (cv != null) cvLookupID = cv.getId();
+            String unitCVLookupID = null;
+            cv = oldCvParam.getUnitCv();
+            if (cv != null) unitCVLookupID = cv.getId();
+            newParam = new CvParam(oldCvParam.getAccession(),
+                                   oldCvParam.getName(),
+                                   cvLookupID,
+                                   oldCvParam.getValue(),
+                                   oldCvParam.getUnitAccession(),
+                                   oldCvParam.getUnitName(), unitCVLookupID);
+        }
         return newParam;
     }
 
     private static UserParam transformToUserParam(uk.ac.ebi.jmzidml.model.mzidml.UserParam oldUserParam) {
-
-        String unitCVLookupID = null;
-        uk.ac.ebi.jmzidml.model.mzidml.Cv cv = oldUserParam.getUnitCv();
-        if (cv != null) unitCVLookupID = cv.getId();
-        UserParam newParam = new UserParam(oldUserParam.getName(), oldUserParam.getType(),
-                        oldUserParam.getValue(), oldUserParam.getUnitAccession(),
-                        oldUserParam.getUnitName(), unitCVLookupID);
+        UserParam newParam = null;
+        if(oldUserParam !=  null){
+            String unitCVLookupID = null;
+            uk.ac.ebi.jmzidml.model.mzidml.Cv cv = oldUserParam.getUnitCv();
+            if (cv != null) unitCVLookupID = cv.getId();
+            newParam = new UserParam(oldUserParam.getName(),
+                                     oldUserParam.getType(),
+                                     oldUserParam.getValue(),
+                                     oldUserParam.getUnitAccession(),
+                                     oldUserParam.getUnitName(),
+                                     unitCVLookupID);
+        }
         return newParam;
     }
 
@@ -388,9 +399,9 @@ public class MzIdentMLTransformer {
     private static MassTable transformToMassTable(uk.ac.ebi.jmzidml.model.mzidml.MassTable oldMassTable) {
         MassTable massTable = null;
         if(oldMassTable != null){
-            Map<String,Double> residues = new HashMap<String, Double>();
+            Map<String,Float> residues = new HashMap<String, Float>();
             for(uk.ac.ebi.jmzidml.model.mzidml.Residue residue : oldMassTable.getResidue()){
-               residues.put(residue.getCode(),new Double(residue.getMass()));
+               residues.put(residue.getCode(),new Float(residue.getMass()));
             }
             Map<String, ParamGroup> ambiguousResidues = new HashMap<String, ParamGroup>();
             for(uk.ac.ebi.jmzidml.model.mzidml.AmbiguousResidue residue : oldMassTable.getAmbiguousResidue()){
@@ -483,7 +494,16 @@ public class MzIdentMLTransformer {
     }
 
     private static SearchDataBase transformToSeachDatabase(uk.ac.ebi.jmzidml.model.mzidml.SearchDatabase oldDatabase) {
-        return new SearchDataBase(oldDatabase.getId(),oldDatabase.getName(),oldDatabase.getLocation(),transformToCvParam(oldDatabase.getFileFormat().getCvParam()),oldDatabase.getExternalFormatDocumentation(),oldDatabase.getVersion(),oldDatabase.getReleaseDate().toString(),oldDatabase.getNumDatabaseSequences().intValue(),oldDatabase.getNumResidues(),null,transformToCvParam(oldDatabase.getCvParam()));
+        CvParam fileFormat = (oldDatabase.getFileFormat() == null)?null: transformToCvParam(oldDatabase.getFileFormat().getCvParam());
+        String releaseDate  = (oldDatabase.getReleaseDate() == null)? null: oldDatabase.getReleaseDate().toString();
+        int dataBaseSeq = (oldDatabase.getNumDatabaseSequences() == null)?-1:oldDatabase.getNumDatabaseSequences().intValue();
+        int dataBaseRes = (oldDatabase.getNumResidues() == null)?-1: oldDatabase.getNumResidues().intValue();
+        ParamGroup nameOfDatabase = null;
+        if(oldDatabase.getDatabaseName() != null){
+            nameOfDatabase = new ParamGroup(transformToCvParam(oldDatabase.getDatabaseName().getCvParam()),transformToUserParam(oldDatabase.getDatabaseName().getUserParam()));
+        }
+        return new SearchDataBase(oldDatabase.getId(),
+                oldDatabase.getName(),oldDatabase.getLocation(),fileFormat,oldDatabase.getExternalFormatDocumentation(),oldDatabase.getVersion(),releaseDate,dataBaseSeq,dataBaseRes,nameOfDatabase,transformToCvParam(oldDatabase.getCvParam()));
     }
 
     public static List<CVLookup> transformCVList(List<uk.ac.ebi.jmzidml.model.mzidml.Cv> cvList) {
@@ -542,7 +562,7 @@ public class MzIdentMLTransformer {
             Software analysisSoftware = transformToSoftware(oldProtocol.getAnalysisSoftware());
             ParamGroup threshold = new ParamGroup(transformToCvParam(oldProtocol.getThreshold().getCvParam()),transformToUserParam(oldProtocol.getThreshold().getUserParam()));
             ParamGroup searchType = new ParamGroup(transformToCvParam(oldProtocol.getSearchType().getCvParam()),transformToUserParam(oldProtocol.getSearchType().getUserParam()));
-            boolean enzymeIndependent = oldProtocol.getEnzymes().isIndependent();
+            boolean enzymeIndependent = (oldProtocol.getEnzymes().isIndependent() == null)? false:oldProtocol.getEnzymes().isIndependent();
             List<Enzyme> enzymeList = transformToEnzyme(oldProtocol.getEnzymes().getEnzyme());
             List<CvParam> fragmentTolerance = transformToCvParam(oldProtocol.getFragmentTolerance().getCvParam());
             List<CvParam> parentTolerance = transformToCvParam(oldProtocol.getParentTolerance().getCvParam());
@@ -555,16 +575,26 @@ public class MzIdentMLTransformer {
         return spectrumIdentificationProtocol;
     }
 
+    private static SearchModification transformToSearchModification(uk.ac.ebi.jmzidml.model.mzidml.SearchModification oldModification){
+        SearchModification searchModification = null;
+        if(oldModification != null){
+            List<CvParam> rules = (oldModification.getSpecificityRules()==null)?null:transformToCvParam(oldModification.getSpecificityRules().getCvParam());
+            searchModification = new SearchModification(oldModification.isFixedMod(),oldModification.getMassDelta(),oldModification.getResidues(),rules,transformToCvParam(oldModification.getCvParam()));
+        }
+        return searchModification;
+    }
+
     private static List<SearchModification> transformToSearchModification(List<uk.ac.ebi.jmzidml.model.mzidml.SearchModification> oldSearchModifications) {
         List<SearchModification> searchModifications = null;
         if(oldSearchModifications != null){
             searchModifications = new ArrayList<SearchModification>();
             for (uk.ac.ebi.jmzidml.model.mzidml.SearchModification oldSearchModification: oldSearchModifications){
-                searchModifications.add(new SearchModification(oldSearchModification.isFixedMod(),oldSearchModification.getMassDelta(),oldSearchModification.getResidues(),transformToCvParam(oldSearchModification.getSpecificityRules().getCvParam()),transformToCvParam(oldSearchModification.getCvParam())));
+                searchModifications.add(transformToSearchModification(oldSearchModification));
             }
         }
         return searchModifications;
     }
+
 
     private static DataBaseTranslation transformToDataBaseTranslation(uk.ac.ebi.jmzidml.model.mzidml.DatabaseTranslation oldDatabaseTranslation) {
         DataBaseTranslation dataBaseTranslation = null;
@@ -583,7 +613,22 @@ public class MzIdentMLTransformer {
         if(oldFilters != null){
             filters = new ArrayList<Filter>();
             for(uk.ac.ebi.jmzidml.model.mzidml.Filter oldFilter: oldFilters){
-                filters.add(new Filter(new ParamGroup(transformToCvParam(oldFilter.getFilterType().getCvParam()),transformToUserParam(oldFilter.getFilterType().getUserParam())),new ParamGroup(transformToCvParam(oldFilter.getInclude().getCvParam()),transformToUserParam(oldFilter.getInclude().getUserParam())),new ParamGroup(transformToCvParam(oldFilter.getExclude().getCvParam()),transformToUserParam(oldFilter.getExclude().getUserParam()))));
+                ParamGroup filterType = null;
+                if(oldFilter.getFilterType() != null){
+                    filterType = new ParamGroup(transformToCvParam(oldFilter.getFilterType().getCvParam()),
+                                                transformToUserParam(oldFilter.getFilterType().getUserParam()));
+                }
+                ParamGroup include = null;
+                if(oldFilter.getInclude() != null){
+                    include = new ParamGroup(transformToCvParam(oldFilter.getInclude().getCvParam()),
+                                                      transformToUserParam(oldFilter.getInclude().getUserParam()));
+                }
+                ParamGroup exclude = null;
+                if(oldFilter.getExclude() != null){
+                    exclude = new ParamGroup(transformToCvParam(oldFilter.getExclude().getCvParam()),
+                                                      transformToUserParam(oldFilter.getExclude().getUserParam()));
+                }
+                filters.add(new Filter(filterType,include,exclude));
             }
         }
         return filters;
@@ -594,9 +639,51 @@ public class MzIdentMLTransformer {
         if(oldEnzymes != null){
             enzymes = new ArrayList<Enzyme>();
             for (uk.ac.ebi.jmzidml.model.mzidml.Enzyme oldEnzyme: oldEnzymes){
-                enzymes.add(new Enzyme(oldEnzyme.getId(),oldEnzyme.getName(),oldEnzyme.isSemiSpecific(),oldEnzyme.getMissedCleavages(),oldEnzyme.getMinDistance(),new ParamGroup(transformToCvParam(oldEnzyme.getEnzymeName().getCvParam()),transformToUserParam(oldEnzyme.getEnzymeName().getUserParam())),oldEnzyme.getSiteRegexp()));
+                enzymes.add(transformToEnzyme(oldEnzyme));
             }
         }
         return enzymes;
+    }
+
+    private static Enzyme transformToEnzyme(uk.ac.ebi.jmzidml.model.mzidml.Enzyme oldEnzyme){
+        Enzyme newEnzyme = null;
+        if(oldEnzyme != null){
+            boolean specific = (oldEnzyme.isSemiSpecific()==null)?false:oldEnzyme.isSemiSpecific();
+            int misscleavage = (oldEnzyme.getMissedCleavages() == null)?0:oldEnzyme.getMissedCleavages();
+            int mindistance = (oldEnzyme.getMinDistance() == null)?-1:oldEnzyme.getMinDistance();
+
+            newEnzyme = new Enzyme(oldEnzyme.getId(),
+                                   oldEnzyme.getName(),
+                                   specific,
+                                   misscleavage,
+                                   mindistance,
+                                   new ParamGroup(transformToCvParam(oldEnzyme.getEnzymeName().getCvParam()),transformToUserParam(oldEnzyme.getEnzymeName().getUserParam())),
+                                   oldEnzyme.getSiteRegexp());
+        }
+        return newEnzyme;
+    }
+
+    public static Protocol transformToProteinDetectionProtocol(uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionProtocol oldProteinDetectionProtocol) {
+        Protocol proteinDetectionProtocol = null;
+        if(oldProteinDetectionProtocol != null){
+            proteinDetectionProtocol = new Protocol(new ParamGroup(transformToCvParam(oldProteinDetectionProtocol.getAnalysisParams().getCvParam()),transformToUserParam(oldProteinDetectionProtocol.getAnalysisParams().getUserParam())),
+                                                        oldProteinDetectionProtocol.getId(),
+                                                        oldProteinDetectionProtocol.getName(),
+                                                        transformToSoftware(oldProteinDetectionProtocol.getAnalysisSoftware()),
+                                                        new ParamGroup(transformToCvParam(oldProteinDetectionProtocol.getThreshold().getCvParam()),transformToUserParam(oldProteinDetectionProtocol.getThreshold().getUserParam())));
+
+        }
+        return proteinDetectionProtocol;
+    }
+
+    public static List<SearchDataBase> transformToSearchDataBase(List<uk.ac.ebi.jmzidml.model.mzidml.SearchDatabase> oldSearchDatabases) {
+        List<SearchDataBase> searchDataBases = null;
+        if(oldSearchDatabases !=null){
+            searchDataBases = new ArrayList<SearchDataBase>();
+            for (uk.ac.ebi.jmzidml.model.mzidml.SearchDatabase oldSearchDatabase: oldSearchDatabases){
+                searchDataBases.add(transformToSeachDatabase(oldSearchDatabase));
+            }
+        }
+        return searchDataBases;
     }
 }

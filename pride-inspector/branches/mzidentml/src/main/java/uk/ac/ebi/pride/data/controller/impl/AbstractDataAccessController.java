@@ -167,6 +167,11 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     @Override
+    public Protocol getProteinDetectionProtocol() throws DataAccessException{
+        return null;
+    }
+
+    @Override
     public Provider getProvider() throws DataAccessException {
         return null;
     }
@@ -745,7 +750,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     @Override
-    public Collection<SearchDataBase> getSearchDataBase() throws DataAccessException {
+    public Collection<SearchDataBase> getSearchDataBases() throws DataAccessException {
         return Collections.emptyList();
         //Todo: Think About how we can report all the search databases reported in the file.
     }

@@ -99,18 +99,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @return List<CVLookup>   a list of cvlookup objects.
      * @throws DataAccessException
      */
-   // @Override
-    /*public List<CVLookup> getCvLookups() throws DataAccessException {
-        List<CVLookup> cvLookups = new ArrayList<CVLookup>();
-        try {
-            cvLookups.addAll(MzIdentMLTransformer.transformCvLookups(unmarshaller.getCvLookups()));
-        } catch (Exception ex) {
-            throw new DataAccessException("Failed to retrieve cv lookups", ex);
-        }
-        return cvLookups;
-    } */
-
-
+    @Override
     public List<CVLookup> getCvLookups() throws DataAccessException {
         List<CVLookup> cvLookups = MzIdentMLTransformer.transformCVList(unmarshaller.getCvList());
         return cvLookups;
@@ -330,7 +319,27 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = MzIdentMLTransformer.transformToSpectrumIdentificationProtocol(unmarshaller.getSpectrumIdentificationProtcol());
             return spectrumIdentificationProtocolList;
         }
-        return null;
+        return identificationMetaData.getSpectrumIdentificationProtocolList();
+    }
+
+    @Override
+    public Protocol getProteinDetectionProtocol() throws DataAccessException{
+        IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
+        if(identificationMetaData == null){
+            Protocol proteinDetectionProtocol = MzIdentMLTransformer.transformToProteinDetectionProtocol(unmarshaller.getProteinDetectionProtocol());
+            return proteinDetectionProtocol;
+        }
+        return identificationMetaData.getProteinDetectionProtocol();
+    }
+
+    @Override
+    public List<SearchDataBase> getSearchDataBases() throws DataAccessException{
+        IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
+        if(identificationMetaData == null){
+             List<SearchDataBase> searchDataBases = MzIdentMLTransformer.transformToSearchDataBase(unmarshaller.getSearchDatabases());
+             return searchDataBases;
+        }
+        return identificationMetaData.getSearchDataBaseList();
     }
 
     @Override
@@ -339,9 +348,9 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         if(metaData == null){
             List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = getSpectrumIdentificationProtocol();
             //Todo: Try to convert the CVTerms in Pride to SpectrumIdentificationProtocol
-            Protocol proteinDetectionProtocol = null;
+            Protocol proteinDetectionProtocol = getProteinDetectionProtocol();
             //Todo: Try to convert the CVTerms in Pride to Protocol
-            List<SearchDataBase> searchDataBaseList = null;
+            List<SearchDataBase> searchDataBaseList = getSearchDataBases();
             //Todo: We need to search in the peptides Identifications all of the Search Databases Used.
             //Todo: We need to search all of the possible modifications presented in the experiment.
 

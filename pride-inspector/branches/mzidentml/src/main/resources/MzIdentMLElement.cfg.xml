@@ -527,7 +527,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/DataCollection/AnalysisData/ProteinDetectionList</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionProtocol</clazz>
         <idMapped>true</idMapped>
@@ -685,7 +685,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/DataCollection/AnalysisData/SpectrumIdentificationList</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationProtocol</clazz>
         <idMapped>true</idMapped>

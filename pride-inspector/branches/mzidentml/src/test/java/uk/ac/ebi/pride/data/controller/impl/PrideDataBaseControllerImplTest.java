@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class PrideDataBaseControllerImplTest {
     @After
     public void tearDown() throws Exception {
         prideController.close();
+        PooledConnectionFactory factory = PooledConnectionFactory.getInstance();
     }
     /*@Test
     public void testAccessions(){
@@ -42,8 +44,8 @@ public class PrideDataBaseControllerImplTest {
        // assertTrue("There should be only one cv lookup", expAccs.size()>1000);
     } */
 
-    @Test
-    public void testGetCvLookups() throws Exception {
+   @Test
+   public void testGetCvLookups() throws Exception {
         List<CVLookup> cvs = prideController.getCvLookups();
         assertTrue("There should be only one cv lookup", cvs.size()==1);
         assertEquals("CV label should be PSI", cvs.get(0).getCvLabel(), "PSI");
@@ -130,16 +132,15 @@ public class PrideDataBaseControllerImplTest {
         // test scan list
         ScanList scanList = spectrum.getScanList();
         // check param group
-        assertEquals("Method of combination", scanList.getCvParams().get(0).getAccession(), "MS:1000795");
+        assertEquals("Method of combination MS:1000795", scanList.getCvParams().get(0).getAccession(), "MS:1000795");
         //
         // check scans
-        assertTrue("There should be two scans", scanList.getScans().size() == 2);
-        assertEquals("ScanWindow upper limit", scanList.getScans().get(0).getScanWindows().get(0).getCvParams().get(1).getValue(), "123.45");
-        assertEquals("Scan param group", scanList.getScans().get(0).getCvParams().get(0).getValue(), "Zero Value");
+        assertTrue("There should be two scans", scanList.getScans().size() == 1);
+        assertEquals("ScanWindow upper limit", scanList.getScans().get(0).getScanWindows().get(0).getCvParams().get(0).getValue(), "115.087800");
+
 
         // test precursor
         assertTrue("There should be only one precursor", spectrum.getPrecursors().size() == 1);
-        assertEquals("Precursor spectrum ref", spectrum.getPrecursors().get(0).getSpectrum().getId().toString(), "0");
         assertEquals("Precursor ion selection", spectrum.getPrecursors().get(0).getSelectedIons().get(0).getCvParams().get(0).getAccession(), "PSI:1000041");
 
         // test binary array

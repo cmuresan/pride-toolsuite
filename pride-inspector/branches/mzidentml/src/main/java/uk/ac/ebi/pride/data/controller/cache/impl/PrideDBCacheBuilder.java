@@ -6,7 +6,10 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.impl.PrideDBAccessControllerImpl;
-import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.coreIdent.CvParam;
+import uk.ac.ebi.pride.data.coreIdent.Modification;
+import uk.ac.ebi.pride.data.coreIdent.ParamGroup;
+import uk.ac.ebi.pride.data.coreIdent.UserParam;
 import uk.ac.ebi.pride.data.io.db.DBUtilities;
 import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
 import uk.ac.ebi.pride.term.CvTermReference;
@@ -439,14 +442,15 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         PreparedStatement innerStmt = null;
         ResultSet innerRs = null;
         for (Map.Entry<String, Comparable> entry : accToModId.entrySet()) {
+
+            String modAcc = entry.getKey();
+            Comparable modId = entry.getValue();
+            String modDB = null;
+            String modDBVersion = null;
+            List<Double> monoMasses = new ArrayList<Double>();
+            List<Double> avgMasses = new ArrayList<Double>();
+            logger.debug("Getting mass delta value");
             try {
-                String modAcc = entry.getKey();
-                Comparable modId = entry.getValue();
-                String modDB = null;
-                String modDBVersion = null;
-                List<Double> monoMasses = new ArrayList<Double>();
-                List<Double> avgMasses = new ArrayList<Double>();
-                logger.debug("Getting mass delta value");
                 connection = PooledConnectionFactory.getConnection();
                 st = connection.prepareStatement("SELECT ms.modification_id, ms.mass_delta_value, ms.classname, pm.mod_database, pm.mod_database_version FROM pride_mass_delta ms " +
                         "join pride_modification pm using(modification_id) where ms.modification_id= ?");
@@ -464,7 +468,14 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
                         avgMasses.add(massDelta);
                     }
                 }
+            } catch (SQLException e) {
+                logger.error("Querying PTM delta mass", e);
+                throw e;
+            } finally {
+                DBUtilities.releaseResources(connection, st, rs);
+            }
 
+            try {
                 // get modification cv params
                 List<CvParam> cvParams = new ArrayList<CvParam>();
                 logger.debug("Getting ptm accession");
@@ -481,13 +492,13 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
                 ParamGroup paramGroup = new ParamGroup(cvParams, null);
                 // create a modification
                 // Note: location is a pseudo location, need to be replace before use
-                Modification mod = new Modification(paramGroup, modAcc,modDB,0,null,avgMasses,avgMasses,modDB, modDBVersion);
+                Modification mod = new Modification(paramGroup, modAcc, modDB, 0, null, avgMasses, avgMasses, modDB, modDBVersion);
                 modifications.put(modAcc, mod);
-            } catch (SQLException e) {
+            } catch (SQLException
+                    e) {
                 logger.error("Querying PTM delta mass", e);
                 throw e;
             } finally {
-                DBUtilities.releaseResources(connection, st, rs);
                 DBUtilities.releaseResources(innerConnection, innerStmt, innerRs);
             }
         }
@@ -534,7 +545,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
     }
 
 
-    private void populateIdentificationParamInfo(Comparable foregroundExperimentAcc) throws SQLException{
+    private void populateIdentificationParamInfo(Comparable foregroundExperimentAcc) throws SQLException {
         logger.info("Initializing protein params");
 
         // clear cache
@@ -559,7 +570,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
                 // get or create param list
                 ParamGroup paramGroup = params.get(peptideId);
                 if (paramGroup == null) {
-                    paramGroup =  new ParamGroup();
+                    paramGroup = new ParamGroup();
                     params.put(peptideId, paramGroup);
                 }
                 // store parameters
@@ -587,12 +598,12 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         // add to cache
         cache.storeInBatch(CacheCategory.IDENTIFICATION_TO_PARAM, params);
     }
-    
+
     private void populatePeptideParamInfo(Comparable expAcc) throws SQLException {
         logger.info("Initializing peptide params");
         // clear cache
         cache.clear(CacheCategory.PEPTIDE_TO_PARAM);
-        
+
         // map of peptide id to params
         Map<Comparable, ParamGroup> params = new HashMap<Comparable, ParamGroup>();
 
@@ -613,7 +624,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
                 // get or create param list
                 ParamGroup paramGroup = params.get(peptideId);
                 if (paramGroup == null) {
-                    paramGroup =  new ParamGroup();
+                    paramGroup = new ParamGroup();
                     params.put(peptideId, paramGroup);
                 }
                 // store parameters
@@ -640,7 +651,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         }
         // add to cache
         cache.storeInBatch(CacheCategory.PEPTIDE_TO_PARAM, params);
-        
+
     }
 
     /**

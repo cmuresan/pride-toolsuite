@@ -92,6 +92,36 @@ public class MzIdentMlControllerImplTest {
     }
 
     @Test
+    public void testGetIdentificationMetaData() throws Exception {
+        IdentificationMetaData experiment = (IdentificationMetaData) mzIdentMlController.getIdentificationMetaData();
+
+        // test SearchDatabase
+        List<SearchDataBase> databases = experiment.getSearchDataBaseList();
+        assertTrue("There should be only one database", databases.size()==1);
+        assertEquals("The name of hte database should be", databases.get(0).getName(), "NeoProt_tripledecoy");
+        assertEquals("The CvTerm Name for the File format should be", databases.get(0).getFileFormat().getName(),"FASTA format");
+        assertEquals("The name of the File in user Params should be", databases.get(0).getNameDatabase().getUserParams().get(0).getName(),"Neo_rndTryp_3times.fasta");
+        assertTrue("The number of sequences should be 22348",databases.get(0).getNumDatabaseSequence()==22348);
+
+        // test SpectrumIdentificationProtocol
+        List<SpectrumIdentificationProtocol> spectrumIdentificationProtocol = experiment.getSpectrumIdentificationProtocolList();
+
+        assertEquals("The Enzyme Name should be", spectrumIdentificationProtocol.get(0).getEnzymeList().get(0).getEnzymeName().getCvParams().get(0).getName(), "Trypsin");
+        assertEquals("The mass for the Lysine Residue should be", spectrumIdentificationProtocol.get(0).getMassTableList().get(0).getResidues().get("K"), new Float(128.09496));
+        assertEquals("The Filter Used in the Search Process should be DB filter taxonomy",spectrumIdentificationProtocol.get(0).getFilterList().get(0).getFilterType().getCvParams().get(0).getName(),"DB filter taxonomy");
+
+        Protocol proteinDetectionProtocol = experiment.getProteinDetectionProtocol();
+
+        // test Protein Detection Protocol
+        assertEquals("The name of the software used should be Mascot Parser",proteinDetectionProtocol.getAnalysisSoftware().getName(), "Mascot Parser");
+        //assertEquals("The role of the Provider should be researcher",experiment.getProvider().getRole().getName(),"researcher");
+        assertEquals("Protein Detection Protocol Id should be", proteinDetectionProtocol.getId(), "PDP_MascotParser_1");
+
+    }
+
+
+
+    @Test
     public void testGetIdentificationIDs(){
 
     }

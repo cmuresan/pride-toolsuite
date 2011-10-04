@@ -140,4 +140,14 @@ public class MzIdentMLUnmarshallerAdaptor {
     public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtcol() {
         return (unmarshaller.unmarshal(AnalysisProtocolCollection.class)).getSpectrumIdentificationProtocol();
     }
+
+    public ProteinDetectionProtocol getProteinDetectionProtocol() {
+        return unmarshaller.unmarshal(ProteinDetectionProtocol.class);
+    }
+
+    public List<SearchDatabase> getSearchDatabases() {
+        uk.ac.ebi.jmzidml.model.mzidml.Inputs dc =  unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.Inputs.class);
+        List<SearchDatabase> oldSearchDatabases = dc.getSearchDatabase();
+        return oldSearchDatabases;
+    }
 }

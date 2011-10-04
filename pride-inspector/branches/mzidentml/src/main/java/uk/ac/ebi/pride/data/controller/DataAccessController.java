@@ -222,6 +222,13 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     public Collection<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() throws  DataAccessException;
 
     /**
+     * Get ProteinDetection Protocol
+     * @return Protocol is a Protein Detection Protocol.
+     * @throws DataAccessException
+     */
+    public Protocol getProteinDetectionProtocol() throws DataAccessException;
+
+    /**
      * Get a Provider for a File
      * @return
      * @throws DataAccessException
@@ -277,7 +284,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
      * @return
      * @throws DataAccessException
      */
-    public Collection<SearchDataBase> getSearchDataBase() throws DataAccessException;
+    public Collection<SearchDataBase> getSearchDataBases() throws DataAccessException;
 
     /**
      * Get all modification presented in the Experiment

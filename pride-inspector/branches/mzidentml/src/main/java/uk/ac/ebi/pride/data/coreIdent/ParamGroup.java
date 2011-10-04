@@ -64,12 +64,16 @@ public class ParamGroup implements MassSpecObject {
      * @param userParam
      */
     public ParamGroup(CvParam cvParam, UserParam userParam){
-        List<CvParam> cvParams = new ArrayList<CvParam>();
-        cvParams.add(cvParam);
-        List<UserParam> userParams = new ArrayList<UserParam>();
-        userParams.add(userParam);
-        setCvParams(cvParams);
-        setUserParams(userParams);
+        if(cvParam != null){
+            List<CvParam> cvParams = new ArrayList<CvParam>();
+            cvParams.add(cvParam);
+            setCvParams(cvParams);
+        }
+        if(userParam != null){
+            List<UserParam> userParams = new ArrayList<UserParam>();
+            userParams.add(userParam);
+            setUserParams(userParams);
+        }
     }
 
     /**

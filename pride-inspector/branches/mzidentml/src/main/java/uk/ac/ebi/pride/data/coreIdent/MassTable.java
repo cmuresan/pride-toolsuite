@@ -8,18 +8,17 @@ import java.util.Map;
  * User: local_admin
  * Date: 05/08/11
  * Time: 16:40
- * To change this template use File | Settings | File Templates.
  */
 public class MassTable extends ParamGroup{
 
     private List<Integer> msLevel = null;
 
-    private Map<String,Double> residues = null;
+    private Map<String,Float> residues = null;
 
     private Map<String,ParamGroup> ambiguousResidues = null;
 
 
-    public MassTable(List<Integer> msLevel, Map<String, Double> residueList, Map<String, ParamGroup> ambiguousResidueList) {
+    public MassTable(List<Integer> msLevel, Map<String, Float> residueList, Map<String, ParamGroup> ambiguousResidueList) {
         this.msLevel = msLevel;
         this.residues = residueList;
         this.ambiguousResidues = ambiguousResidueList;
@@ -33,11 +32,11 @@ public class MassTable extends ParamGroup{
         this.msLevel = msLevel;
     }
 
-    public Map<String, Double> getResidues() {
+    public Map<String, Float> getResidues() {
         return residues;
     }
 
-    public void setResidues(Map<String, Double> residues) {
+    public void setResidues(Map<String, Float> residues) {
         this.residues = residues;
     }
 

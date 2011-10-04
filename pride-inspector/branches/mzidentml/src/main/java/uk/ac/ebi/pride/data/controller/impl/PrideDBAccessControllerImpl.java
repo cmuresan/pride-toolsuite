@@ -285,7 +285,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             } catch (SQLException e) {
                 logger.error("Failed to query contacts", e);
             } finally {
-                DBUtilities.releaseResources(null, st, rs);
+                DBUtilities.releaseResources(connection, st, rs);
             }
         }
         return metadata.getPersonList();
@@ -318,7 +318,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             } catch (SQLException e) {
                 logger.error("Failed to query contacts", e);
             } finally {
-                DBUtilities.releaseResources(null, st, rs);
+                DBUtilities.releaseResources(connection, st, rs);
             }
         }
         return metadata.getOrganizationList();
@@ -398,9 +398,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             }
             return softwares;
         }
-
         return metaData.getSoftwareList();
-
     }
 
     private List<ParamGroup> getAnalyzerList(Connection connection, int mz_data_id) throws DataAccessException {
@@ -600,7 +598,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return new ExperimentProtocol(null,PROTOCOL_ID, protocol_name, paramGroup);
     }
 
-    private List<Reference> getReferences(Connection connection) throws DataAccessException {
+
+    private List<Reference> getReferences() throws DataAccessException {
 
         List<Reference> references = new ArrayList<Reference>();
         List<UserParam> userParams;
@@ -608,8 +607,10 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
         PreparedStatement st = null;
         ResultSet rs = null;
-
+        Connection connection = null;
         try {
+            logger.debug("Getting data processings");
+            connection = PooledConnectionFactory.getConnection();
             st = connection.prepareStatement("SELECT reference_line, pr.reference_id FROM pride_experiment pe, pride_reference pr, pride_reference_exp_link pl WHERE " +
                     "pe.accession = ? AND pl.reference_id = pr.reference_id AND pl.experiment_id = pe.experiment_id");
             st.setInt(1, Integer.parseInt(foregroundExperimentAcc.toString()));
@@ -623,7 +624,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         } catch (SQLException e) {
             logger.error("Failed to query references", e);
         } finally {
-            DBUtilities.releaseResources(null, st, rs);
+            DBUtilities.releaseResources(connection, st, rs);
         }
 
         return references;
@@ -698,7 +699,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 List<SourceFile> sourceFiles = getSourceFiles(connection);
                 List<Person> persons = getPersonContacts();
                 List<Organization> organizations = getOrganizationContacts();
-                List<Reference> references = getReferences(connection);
+                List<Reference> references = getReferences();
                 metaData = new ExperimentMetaData(additional,accession,null,version,shortLabel,samples,software,persons,sourceFiles,null,organizations,references,null,null,protocol);
                 // store in cache
                 cache.store(CacheCategory.EXPERIMENT_METADATA, metaData);

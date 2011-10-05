@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.gui.component.table.model;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Extend this table model to update data progressively.

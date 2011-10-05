@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.data.coreIdent;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Description of the way in which a List of Software were used. This structure is used by mzMl to store

@@ -7,8 +7,6 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.coreIdent.Chromatogram;
 import uk.ac.ebi.pride.data.coreIdent.Identification;
 import uk.ac.ebi.pride.data.coreIdent.Spectrum;
-import uk.ac.ebi.pride.gui.PrideInspector;
-import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 

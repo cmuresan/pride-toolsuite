@@ -2,12 +2,15 @@ package uk.ac.ebi.pride.gui.component.metadata;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
-import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.coreIdent.ExperimentMetaData;
+import uk.ac.ebi.pride.data.coreIdent.ExperimentProtocol;
+import uk.ac.ebi.pride.data.coreIdent.Parameter;
+import uk.ac.ebi.pride.data.coreIdent.Sample;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 /*
  * Created by JFormDesigner on Sat Jul 23 10:52:41 BST 2011

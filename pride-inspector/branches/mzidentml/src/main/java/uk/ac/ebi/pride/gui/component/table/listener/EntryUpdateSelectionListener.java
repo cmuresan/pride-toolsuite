@@ -5,7 +5,6 @@ import uk.ac.ebi.pride.gui.utils.EDTUtils;
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import java.awt.*;
 
 /**
  * This listener set the default selection on a table.

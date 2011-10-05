@@ -5,20 +5,13 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.coreIdent.QuantitativeSample;
-import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.action.impl.ExportQuantitativeDataAction;
-import uk.ac.ebi.pride.gui.action.impl.RetrieveExtraProteinDetailAction;
-import uk.ac.ebi.pride.gui.action.impl.SetRefSampleAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
-import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
-import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 
 import javax.help.CSH;
 import javax.swing.*;
 import java.awt.*;
-import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.

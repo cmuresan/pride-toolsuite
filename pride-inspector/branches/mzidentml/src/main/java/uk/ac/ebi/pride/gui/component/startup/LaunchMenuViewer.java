@@ -9,7 +9,6 @@ import uk.ac.ebi.pride.gui.action.impl.OpenReviewAction;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
 /**

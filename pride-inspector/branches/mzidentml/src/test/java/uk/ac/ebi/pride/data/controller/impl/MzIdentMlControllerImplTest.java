@@ -133,8 +133,6 @@ public class MzIdentMlControllerImplTest {
 
     }
 
-
-
     @Test
     public void testGetIdentificationIDs() throws DataAccessException {
         List<Comparable> identifications = new ArrayList<Comparable>(mzIdentMlController.getIdentificationIds());
@@ -143,6 +141,8 @@ public class MzIdentMlControllerImplTest {
         assertEquals("The id of the first identification should be PDH_psu|NC_LIV_020800_0",identifications.get(0).toString(),"PDH_psu|NC_LIV_020800_0");
 
     }
+
+
 
 
 }

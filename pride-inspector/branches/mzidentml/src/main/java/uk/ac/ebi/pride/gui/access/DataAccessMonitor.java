@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.gui.access;
 import org.bushe.swing.event.EventBus;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
-import uk.ac.ebi.pride.gui.event.CentralContentPaneLockEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.RemoveDataSourceEvent;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;

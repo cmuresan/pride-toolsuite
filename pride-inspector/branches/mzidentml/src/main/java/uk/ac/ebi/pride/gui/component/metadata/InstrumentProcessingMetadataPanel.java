@@ -3,11 +3,10 @@ package uk.ac.ebi.pride.gui.component.metadata;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 import uk.ac.ebi.pride.data.coreIdent.DataProcessing;
-import uk.ac.ebi.pride.data.coreIdent.InstrumentConfiguration;
 import uk.ac.ebi.pride.data.coreIdent.ExperimentMetaData;
+import uk.ac.ebi.pride.data.coreIdent.InstrumentConfiguration;
 import uk.ac.ebi.pride.data.coreIdent.ProcessingMethod;
 
-import javax.sound.midi.Instrument;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;

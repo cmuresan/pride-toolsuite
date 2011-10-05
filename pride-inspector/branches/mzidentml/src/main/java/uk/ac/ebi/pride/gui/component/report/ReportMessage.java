@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.gui.component.report;
 
-import javax.swing.*;
-
 /**
  * Created by IntelliJ IDEA.
  * User: rwang

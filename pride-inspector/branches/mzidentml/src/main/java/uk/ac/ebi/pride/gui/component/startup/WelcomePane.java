@@ -4,8 +4,6 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.impl.*;
 import uk.ac.ebi.pride.gui.component.PrideInspectorPanel;
-import uk.ac.ebi.pride.gui.component.message.MessageBoard;
-import uk.ac.ebi.pride.gui.desktop.*;
 import uk.ac.ebi.pride.gui.listener.MouseOverListener;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
@@ -21,7 +19,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**

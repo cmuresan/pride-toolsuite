@@ -3,22 +3,11 @@ package uk.ac.ebi.pride.gui.action.impl;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.table.TableColumnModelExt;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
-import uk.ac.ebi.pride.gui.desktop.Desktop;
-import uk.ac.ebi.pride.gui.task.TaskListener;
-import uk.ac.ebi.pride.gui.task.impl.RetrieveProteinDetailTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
-import uk.ac.ebi.pride.util.InternetChecker;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import java.awt.event.ActionEvent;
-import java.util.*;
+import java.util.List;
 
 /**
  * Retrieve additional peptide details

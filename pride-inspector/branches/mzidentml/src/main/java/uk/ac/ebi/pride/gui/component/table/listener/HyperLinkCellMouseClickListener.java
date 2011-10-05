@@ -4,10 +4,10 @@ import uk.ac.ebi.pride.gui.url.HttpUtilities;
 import uk.ac.ebi.pride.gui.url.HyperLinkGenerator;
 
 import javax.swing.*;
-import javax.swing.JTable;import javax.swing.table.TableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.Point;import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;import java.lang.Object;import java.lang.Override;import java.lang.String;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Created by IntelliJ IDEA.

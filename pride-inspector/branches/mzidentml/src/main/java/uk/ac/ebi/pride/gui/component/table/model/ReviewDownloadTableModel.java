@@ -4,9 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
-import javax.swing.text.NumberFormatter;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.*;
 
 /**

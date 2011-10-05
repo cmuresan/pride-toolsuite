@@ -4,7 +4,6 @@ import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventSubscriber;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.desktop.*;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 
 import javax.swing.*;

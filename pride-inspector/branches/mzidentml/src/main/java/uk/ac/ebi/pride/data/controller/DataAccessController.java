@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.data.controller;
 
 import uk.ac.ebi.pride.data.controller.access.*;
 import uk.ac.ebi.pride.data.coreIdent.*;
-import uk.ac.ebi.pride.data.coreIdent.ExperimentMetaData;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHandler;
 
 import java.beans.PropertyChangeListener;

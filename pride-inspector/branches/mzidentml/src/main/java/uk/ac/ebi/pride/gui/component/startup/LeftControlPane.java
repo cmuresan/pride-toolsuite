@@ -1,21 +1,13 @@
 package uk.ac.ebi.pride.gui.component.startup;
 
-import org.jdesktop.layout.*;
 import org.jdesktop.swingx.border.DropShadowBorder;
-import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportViewer;
-import uk.ac.ebi.pride.gui.task.TaskEvent;
-import uk.ac.ebi.pride.gui.task.TaskListener;
 
 import javax.swing.*;
-import javax.swing.GroupLayout;
-import javax.swing.LayoutStyle;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.util.List;
 
 /**
  * DataSourceBrowser is an aggregate component, it contains three components:

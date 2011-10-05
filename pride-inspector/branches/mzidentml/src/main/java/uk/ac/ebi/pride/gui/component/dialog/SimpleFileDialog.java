@@ -3,8 +3,6 @@ package uk.ac.ebi.pride.gui.component.dialog;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 

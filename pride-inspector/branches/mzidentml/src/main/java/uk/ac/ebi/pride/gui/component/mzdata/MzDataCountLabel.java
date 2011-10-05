@@ -1,10 +1,10 @@
 package uk.ac.ebi.pride.gui.component.mzdata;
 
 import uk.ac.ebi.pride.data.Tuple;
-import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
+import uk.ac.ebi.pride.gui.utils.Constants;
 
 import javax.swing.*;
 import java.text.MessageFormat;

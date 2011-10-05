@@ -172,6 +172,11 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     @Override
+    public Collection<SpectraData> getSpectraDataFiles() throws DataAccessException{
+        return Collections.emptyList();
+    }
+
+    @Override
     public Provider getProvider() throws DataAccessException {
         return null;
     }

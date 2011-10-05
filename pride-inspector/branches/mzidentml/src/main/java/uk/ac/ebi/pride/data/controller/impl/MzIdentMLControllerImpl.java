@@ -359,6 +359,29 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return metaData;
     }
 
+    @Override
+    public List<SpectraData> getSpectraDataFiles() throws DataAccessException{
+        MzGraphMetaData metaData = super.getMzGraphMetaData();
+        if(metaData == null){
+            List<SpectraData> spectraDatas = MzIdentMLTransformer.transformToSpectraData(unmarshaller.getSpectraData());
+            return spectraDatas;
+        }
+        return metaData.getSpectraDataList();
+    }
+
+    @Override
+    public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
+        MzGraphMetaData metaData = super.getMzGraphMetaData();
+        if(metaData == null){
+            List<ScanSetting> scanSettings = null;
+            List<InstrumentConfiguration> instrumentConfigurations = null;
+            List<DataProcessing> dataProcessingList = null;
+            List<SpectraData> spectraDataList = getSpectraDataFiles();
+            metaData = new MzGraphMetaData(null,null,null,scanSettings,instrumentConfigurations,dataProcessingList,spectraDataList);
+        }
+        return metaData;    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
     /**
      * Get spectrum using a spectrum id, gives the option to choose whether to use cache.
      * This implementation provides a way of by passing the cache.

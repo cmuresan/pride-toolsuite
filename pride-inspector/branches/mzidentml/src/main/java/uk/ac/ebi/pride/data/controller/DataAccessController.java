@@ -307,6 +307,13 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
      */
     public ParamGroup getAdditional() throws DataAccessException;
 
+    /**
+     * Get all SpectraDataFiles From mzIdentMl File
+     * @return
+     * @throws DataAccessException
+     */
+    public Collection<SpectraData> getSpectraDataFiles() throws DataAccessException;
+
 
     //Todo: getDefaultInstrument() from mzML's run element
     //Todo: getDefaultSample() from mzML's run element

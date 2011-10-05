@@ -686,4 +686,25 @@ public class MzIdentMLTransformer {
         }
         return searchDataBases;
     }
+
+    private static SpectraData transformToSpectraData(uk.ac.ebi.jmzidml.model.mzidml.SpectraData oldSpectraData){
+        SpectraData spectraData = null;
+        if(oldSpectraData != null){
+            CvParam fileFormat = (oldSpectraData.getFileFormat() == null)?null:transformToCvParam(oldSpectraData.getFileFormat().getCvParam());
+            CvParam spectrumId = (oldSpectraData.getSpectrumIDFormat().getCvParam()==null)?null:transformToCvParam(oldSpectraData.getSpectrumIDFormat().getCvParam());
+            spectraData = new SpectraData(oldSpectraData.getId(),oldSpectraData.getName(),oldSpectraData.getLocation(),fileFormat,oldSpectraData.getExternalFormatDocumentation(),spectrumId);
+        }
+        return spectraData;
+    }
+
+    public static List<SpectraData> transformToSpectraData(List<uk.ac.ebi.jmzidml.model.mzidml.SpectraData> oldSpectraDatas) {
+        List<SpectraData> spectraDatas = null;
+        if(oldSpectraDatas != null){
+            spectraDatas = new ArrayList<SpectraData>();
+            for (uk.ac.ebi.jmzidml.model.mzidml.SpectraData oldSpectraData: oldSpectraDatas){
+                spectraDatas.add(transformToSpectraData(oldSpectraData));
+            }
+        }
+        return spectraDatas;
+    }
 }

@@ -75,6 +75,20 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
         this.dataProcessingList = dataProcessingList;
     }
 
+    public MzGraphMetaData(ParamGroup params,
+                           Comparable id,
+                           String name,
+                           List<ScanSetting> scanSettings,
+                           List<InstrumentConfiguration> instrumentConfigurations,
+                           List<DataProcessing> dataProcessingList,
+                           List<SpectraData> spectraDataList) {
+        super(params, id, name);
+        this.scanSettings = scanSettings;
+        this.instrumentConfigurations = instrumentConfigurations;
+        this.dataProcessingList = dataProcessingList;
+        this.spectraDataList = spectraDataList;
+    }
+
     public ParamGroup getFileContent() {
         return new ParamGroup(this.getCvParams(),this.getUserParams());
     }
@@ -108,4 +122,11 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
         this.dataProcessingList = dataProcessingList;
     }
 
+    public List<SpectraData> getSpectraDataList() {
+        return spectraDataList;
+    }
+
+    public void setSpectraDataList(List<SpectraData> spectraDataList) {
+        this.spectraDataList = spectraDataList;
+    }
 }

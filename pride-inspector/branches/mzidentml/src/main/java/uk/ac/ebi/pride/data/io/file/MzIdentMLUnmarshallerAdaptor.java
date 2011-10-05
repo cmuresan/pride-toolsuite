@@ -150,4 +150,9 @@ public class MzIdentMLUnmarshallerAdaptor {
         List<SearchDatabase> oldSearchDatabases = dc.getSearchDatabase();
         return oldSearchDatabases;
     }
+
+    public List<SpectraData> getSpectraData() {
+        Inputs dc = unmarshaller.unmarshal(Inputs.class);
+        return dc.getSpectraData();
+    }
 }

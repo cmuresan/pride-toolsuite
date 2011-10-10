@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.data.controller.impl;
 
 
-import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.*;

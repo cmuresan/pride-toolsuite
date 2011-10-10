@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.utils;
 
-import uk.ac.ebi.pride.data.coreIdent.CvParam;
+import uk.ac.ebi.pride.data.core.CvParam;
 
 /**
  * Holds the cvParams to report quantitative information

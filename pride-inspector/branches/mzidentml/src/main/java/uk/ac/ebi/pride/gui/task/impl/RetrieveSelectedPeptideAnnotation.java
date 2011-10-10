@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.gui.task.impl;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.coreIdent.Modification;
+import uk.ac.ebi.pride.data.core.Modification;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PTMAnnotation;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideAnnotation;

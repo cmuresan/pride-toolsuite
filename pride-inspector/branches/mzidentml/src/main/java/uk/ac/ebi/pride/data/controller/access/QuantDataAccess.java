@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.data.controller.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.coreIdent.Quantitation;
-import uk.ac.ebi.pride.data.coreIdent.QuantitativeSample;
+import uk.ac.ebi.pride.data.core.Quantitation;
+import uk.ac.ebi.pride.data.core.QuantitativeSample;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 
 import java.util.Collection;

@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.gui.component.mzgraph;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.coreIdent.MzGraph;
-import uk.ac.ebi.pride.data.coreIdent.Parameter;
+import uk.ac.ebi.pride.data.core.MzGraph;
+import uk.ac.ebi.pride.data.core.Parameter;
 import uk.ac.ebi.pride.gui.component.metadata.CollapsiblePane;
 
 import javax.swing.*;

@@ -2,8 +2,8 @@ package uk.ac.ebi.pride.gui.component.metadata;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
-import uk.ac.ebi.pride.data.coreIdent.ProcessingMethod;
-import uk.ac.ebi.pride.data.coreIdent.Software;
+import uk.ac.ebi.pride.data.core.ProcessingMethod;
+import uk.ac.ebi.pride.data.core.Software;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 
 import javax.swing.*;

@@ -2,10 +2,10 @@ package uk.ac.ebi.pride.gui.component.metadata;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
-import uk.ac.ebi.pride.data.coreIdent.ExperimentMetaData;
-import uk.ac.ebi.pride.data.coreIdent.ExperimentProtocol;
-import uk.ac.ebi.pride.data.coreIdent.Parameter;
-import uk.ac.ebi.pride.data.coreIdent.Sample;
+import uk.ac.ebi.pride.data.core.ExperimentMetaData;
+import uk.ac.ebi.pride.data.core.ExperimentProtocol;
+import uk.ac.ebi.pride.data.core.Parameter;
+import uk.ac.ebi.pride.data.core.Sample;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 
 import javax.swing.*;

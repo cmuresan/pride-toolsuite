@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.gui.component.metadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.coreIdent.ExperimentMetaData;
+import uk.ac.ebi.pride.data.core.ExperimentMetaData;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;

@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.chart.graphics.implementation.charts.MZHistogramChartSpec
 import uk.ac.ebi.pride.chart.model.implementation.*;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
-import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 

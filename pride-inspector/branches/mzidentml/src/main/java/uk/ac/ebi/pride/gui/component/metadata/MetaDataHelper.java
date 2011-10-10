@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
-import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.util.NumberUtilities;
 import uk.ac.ebi.pride.util.RegExUtilities;

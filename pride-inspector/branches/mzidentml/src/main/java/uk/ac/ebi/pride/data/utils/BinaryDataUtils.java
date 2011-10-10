@@ -26,6 +26,14 @@ import java.util.zip.Inflater;
 public class BinaryDataUtils {
     private static final Logger logger = LoggerFactory.getLogger(BinaryDataUtils.class);
 
+    /**
+     * Convert a byte array to a number array
+     *
+     * @param arr      byte array
+     * @param dataType data type
+     * @param order    endianess
+     * @return Number[]    number array
+     */
     public static Number[] toNumberArray(byte[] arr, CvTermReference dataType, ByteOrder order) {
         int numOfByte = getNumOfByte(dataType);
         int arrLength = arr.length;
@@ -62,6 +70,14 @@ public class BinaryDataUtils {
         return results;
     }
 
+    /**
+     * Convert to double array
+     *
+     * @param arr      byte array
+     * @param dataType data type
+     * @param order    endianess
+     * @return double[] double array
+     */
     public static double[] toDoubleArray(byte[] arr, CvTermReference dataType, ByteOrder order) {
         Number[] numArr = toNumberArray(arr, dataType, order);
         double[] doubleArr = new double[numArr.length];
@@ -72,6 +88,12 @@ public class BinaryDataUtils {
         return doubleArr;
     }
 
+    /**
+     * Get the number of bytes on a given data type
+     *
+     * @param dataType data type
+     * @return int number of bytes
+     */
     private static int getNumOfByte(CvTermReference dataType) {
         int numOfByte;
 
@@ -98,6 +120,12 @@ public class BinaryDataUtils {
         return numOfByte;
     }
 
+    /**
+     * Decompress a compressed byte array
+     *
+     * @param compressedData compressed byte array
+     * @return byte[]  decompressed data
+     */
     public static byte[] decompress(byte[] compressedData) {
         byte[] decompressedData;
 
@@ -130,6 +158,12 @@ public class BinaryDataUtils {
         return decompressedData;
     }
 
+    /**
+     * Compress byte array
+     *
+     * @param uncompressedData uncompressed byte array
+     * @return byte[]  compressed byte array
+     */
     public static byte[] compress(byte[] uncompressedData) {
         byte[] data;// Decompress the data
 

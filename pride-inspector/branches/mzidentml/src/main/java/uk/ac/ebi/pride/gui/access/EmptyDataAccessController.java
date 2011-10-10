@@ -5,9 +5,9 @@ import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.cache.Cache;
 import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;
 import uk.ac.ebi.pride.data.controller.impl.AbstractDataAccessController;
-import uk.ac.ebi.pride.data.coreIdent.Chromatogram;
-import uk.ac.ebi.pride.data.coreIdent.Identification;
-import uk.ac.ebi.pride.data.coreIdent.Spectrum;
+import uk.ac.ebi.pride.data.core.Chromatogram;
+import uk.ac.ebi.pride.data.core.Identification;
+import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.gui.component.chart.PrideChartManager;
 
 import java.util.ArrayList;

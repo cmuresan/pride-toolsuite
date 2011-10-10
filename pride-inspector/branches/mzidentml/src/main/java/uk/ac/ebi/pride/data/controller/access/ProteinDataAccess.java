@@ -1,10 +1,10 @@
 package uk.ac.ebi.pride.data.controller.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.coreIdent.DBSequence;
-import uk.ac.ebi.pride.data.coreIdent.Identification;
-import uk.ac.ebi.pride.data.coreIdent.SearchDataBase;
-import uk.ac.ebi.pride.data.coreIdent.SearchEngine;
+import uk.ac.ebi.pride.data.core.DBSequence;
+import uk.ac.ebi.pride.data.core.Identification;
+import uk.ac.ebi.pride.data.core.SearchDataBase;
+import uk.ac.ebi.pride.data.core.SearchEngine;
 
 import java.util.Collection;
 

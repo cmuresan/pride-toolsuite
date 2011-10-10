@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.utils;
 
-import uk.ac.ebi.pride.data.coreIdent.FragmentIon;
-import uk.ac.ebi.pride.data.coreIdent.Modification;
+import uk.ac.ebi.pride.data.core.FragmentIon;
+import uk.ac.ebi.pride.data.core.Modification;
 import uk.ac.ebi.pride.mol.*;
 import uk.ac.ebi.pride.mol.ion.FragmentIonType;
 import uk.ac.ebi.pride.mol.ion.FragmentIonUtilities;
@@ -84,7 +84,7 @@ public class AnnotationUtils {
     public static Map<Integer, List<PTModification>> createModificationMap(List<Modification> mods, int peptideLength) {
         Map<Integer, List<PTModification>> modMap
                 = new HashMap<Integer, List<PTModification>>();
-        for (uk.ac.ebi.pride.data.coreIdent.Modification mod : mods) {
+        for (uk.ac.ebi.pride.data.core.Modification mod : mods) {
             int location = mod.getLocation();
             // merge the N-terminus modification to the first amino acid
             location = location == 0 ? 1 : location;

@@ -12,7 +12,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.cache.impl.PrideDBCacheBuilder;
-import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.db.DBUtilities;
 import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;

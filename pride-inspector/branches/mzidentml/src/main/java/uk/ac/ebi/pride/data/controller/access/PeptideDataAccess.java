@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.data.controller.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.core.*;
 
 import java.util.Collection;
 

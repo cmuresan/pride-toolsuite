@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
-import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.engine.SearchEngineType;

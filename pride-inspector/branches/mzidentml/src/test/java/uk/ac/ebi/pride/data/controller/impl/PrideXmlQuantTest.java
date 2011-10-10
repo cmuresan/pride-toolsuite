@@ -2,9 +2,9 @@ package uk.ac.ebi.pride.data.controller.impl;
 
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.ebi.pride.data.coreIdent.CvParam;
-import uk.ac.ebi.pride.data.coreIdent.Quantitation;
-import uk.ac.ebi.pride.data.coreIdent.QuantitativeSample;
+import uk.ac.ebi.pride.data.core.CvParam;
+import uk.ac.ebi.pride.data.core.Quantitation;
+import uk.ac.ebi.pride.data.core.QuantitativeSample;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 

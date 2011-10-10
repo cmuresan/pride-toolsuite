@@ -6,7 +6,7 @@ import org.bushe.swing.event.EventSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.coreIdent.Chromatogram;
+import uk.ac.ebi.pride.data.core.Chromatogram;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.action.impl.OpenHelpAction;

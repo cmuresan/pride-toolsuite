@@ -5,7 +5,7 @@ import org.bushe.swing.event.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.coreIdent.Peptide;
+import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;

@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.data.controller.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
-import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;

@@ -9,7 +9,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.cache.impl.MzIdentMLCacheBuilder;
-import uk.ac.ebi.pride.data.coreIdent.*;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
 

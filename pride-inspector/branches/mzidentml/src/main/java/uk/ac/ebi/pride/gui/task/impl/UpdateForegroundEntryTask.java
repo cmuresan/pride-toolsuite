@@ -1,10 +1,10 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.coreIdent.Chromatogram;
-import uk.ac.ebi.pride.data.coreIdent.ExperimentMetaData;
-import uk.ac.ebi.pride.data.coreIdent.Identification;
-import uk.ac.ebi.pride.data.coreIdent.Spectrum;
+import uk.ac.ebi.pride.data.core.Chromatogram;
+import uk.ac.ebi.pride.data.core.ExperimentMetaData;
+import uk.ac.ebi.pride.data.core.Identification;
+import uk.ac.ebi.pride.data.core.Spectrum;
 
 /**
  * Retrieve foreground entry using data access controller

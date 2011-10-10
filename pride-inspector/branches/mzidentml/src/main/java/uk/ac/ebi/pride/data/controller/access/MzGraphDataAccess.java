@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.data.controller.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.coreIdent.Chromatogram;
-import uk.ac.ebi.pride.data.coreIdent.Spectrum;
+import uk.ac.ebi.pride.data.core.Chromatogram;
+import uk.ac.ebi.pride.data.core.Spectrum;
 
 import java.util.Collection;
 

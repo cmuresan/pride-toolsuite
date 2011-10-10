@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
-import uk.ac.ebi.pride.data.coreIdent.CvParam;
-import uk.ac.ebi.pride.data.coreIdent.ParamGroup;
-import uk.ac.ebi.pride.data.coreIdent.Parameter;
-import uk.ac.ebi.pride.data.coreIdent.UserParam;
+import uk.ac.ebi.pride.data.core.CvParam;
+import uk.ac.ebi.pride.data.core.ParamGroup;
+import uk.ac.ebi.pride.data.core.Parameter;
+import uk.ac.ebi.pride.data.core.UserParam;
 
 import java.util.ArrayList;
 import java.util.Collection;

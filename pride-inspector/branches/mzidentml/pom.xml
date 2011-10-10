@@ -45,6 +45,17 @@
             </roles>
             <timezone>0</timezone>
         </developer>
+
+        <developer>
+            <id>yperez</id>
+            <name>Yasset Perez-Riverol</name>
+            <organization>Proteomics Services Team, PANDA Group, EMBL-European Bioinformatics Institute</organization>
+            <organizationUrl>http://www.ebi.ac.uk/pride</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
     </developers>
 
     <properties>

@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 public class QuantitativeSample {
 
     public static final int MAX_SUB_SAMPLE_SIZE = 8;
-
     private static final Pattern SUB_SAMPLE_PATTERN = Pattern.compile("[^\\d]+([\\d]+)[^\\d]*");
 
     /**

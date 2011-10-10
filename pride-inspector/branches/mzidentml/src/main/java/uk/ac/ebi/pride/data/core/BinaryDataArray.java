@@ -47,8 +47,8 @@ public class BinaryDataArray extends ParamGroup {
     public BinaryDataArray(DataProcessing dataProcessing, double[] binaryDoubleArr, ParamGroup params) {
         super(params);
         setDataProcessing(dataProcessing);
-        setDoubleArray(binaryDoubleArr);
-    }
+           setDoubleArray(binaryDoubleArr);
+ }
 
     public double[] getDoubleArray() {
         return Arrays.copyOf(binaryDoubleArray, binaryDoubleArray.length);

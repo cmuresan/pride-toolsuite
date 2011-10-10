@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class Chromatogram extends MzGraph {
 
+
     public Chromatogram(Comparable id, String name, int index, DataProcessing defaultDataProcessing, int defaultArrayLength, List<BinaryDataArray> binaryDataArrays) {
         super(id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays);
     }

@@ -17,6 +17,7 @@ public class MD5Utils {
      * Generate md5 hash from a given string
      * @param msg   input string
      * @return  String  md5 hash
+     * @throws java.security.NoSuchAlgorithmException
      */
     public static String generateHash(String msg) throws NoSuchAlgorithmException {
         if (msg == null) {

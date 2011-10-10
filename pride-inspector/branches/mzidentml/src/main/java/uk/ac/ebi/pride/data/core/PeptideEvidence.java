@@ -170,6 +170,7 @@ public class PeptideEvidence extends IdentifiableParamGroup {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         PeptideEvidence that = (PeptideEvidence) o;
 
@@ -179,24 +180,27 @@ public class PeptideEvidence extends IdentifiableParamGroup {
         if (postResidue != that.postResidue) return false;
         if (preResidue != that.preResidue) return false;
         if (startPosition != that.startPosition) return false;
-        if (!dbSequence.equals(that.dbSequence)) return false;
-        if (!peptideSequence.equals(that.peptideSequence)) return false;
-        if (!translationTable.equals(that.translationTable)) return false;
+        if (dbSequence != null ? !dbSequence.equals(that.dbSequence) : that.dbSequence != null) return false;
+        if (peptideSequence != null ? !peptideSequence.equals(that.peptideSequence) : that.peptideSequence != null)
+            return false;
+        if (translationTable != null ? !translationTable.equals(that.translationTable) : that.translationTable != null)
+            return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = startPosition;
+        int result = super.hashCode();
+        result = 31 * result + startPosition;
         result = 31 * result + endPosition;
         result = 31 * result + (int) preResidue;
         result = 31 * result + (int) postResidue;
-        result = 31 * result + translationTable.hashCode();
+        result = 31 * result + (translationTable != null ? translationTable.hashCode() : 0);
         result = 31 * result + frame;
         result = 31 * result + (decoy ? 1 : 0);
-        result = 31 * result + peptideSequence.hashCode();
-        result = 31 * result + dbSequence.hashCode();
+        result = 31 * result + (peptideSequence != null ? peptideSequence.hashCode() : 0);
+        result = 31 * result + (dbSequence != null ? dbSequence.hashCode() : 0);
         return result;
     }
 }

@@ -178,9 +178,11 @@ public class PeptideSequence extends IdentifiableParamGroup {
 
         PeptideSequence that = (PeptideSequence) o;
 
-        if (!modificationList.equals(that.modificationList)) return false;
-        if (!sequence.equals(that.sequence)) return false;
-        if (!substitutionModificationList.equals(that.substitutionModificationList)) return false;
+        if (modificationList != null ? !modificationList.equals(that.modificationList) : that.modificationList != null)
+            return false;
+        if (sequence != null ? !sequence.equals(that.sequence) : that.sequence != null) return false;
+        if (substitutionModificationList != null ? !substitutionModificationList.equals(that.substitutionModificationList) : that.substitutionModificationList != null)
+            return false;
 
         return true;
     }
@@ -188,9 +190,9 @@ public class PeptideSequence extends IdentifiableParamGroup {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + sequence.hashCode();
-        result = 31 * result + modificationList.hashCode();
-        result = 31 * result + substitutionModificationList.hashCode();
+        result = 31 * result + (sequence != null ? sequence.hashCode() : 0);
+        result = 31 * result + (modificationList != null ? modificationList.hashCode() : 0);
+        result = 31 * result + (substitutionModificationList != null ? substitutionModificationList.hashCode() : 0);
         return result;
     }
 }

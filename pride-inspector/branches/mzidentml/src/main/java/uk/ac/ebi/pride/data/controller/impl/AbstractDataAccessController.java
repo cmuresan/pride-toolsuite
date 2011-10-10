@@ -26,6 +26,9 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractDataAccessController.class);
 
+    /**
+     * Unique id to identify the data access controller
+     */
     private String uid = null;
 
     private String name = null;

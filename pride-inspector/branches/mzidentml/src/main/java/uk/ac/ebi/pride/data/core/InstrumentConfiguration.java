@@ -1,6 +1,9 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
+
 /**
  * Description of a particular hardware configuration of a mass spectrometer.
  * each instrument can only contain three components : source, analyser, detector.
@@ -23,30 +26,36 @@ import java.util.List;
  * Time: 15:59:50
  */
 public class InstrumentConfiguration extends ParamGroup {
-    /**
-     * identifier of this instrument
-     */
-    private String id = null;
-    /**
-     * scan settings
-     */
-    private ScanSetting scanSetting = null;
-    /**
-     * software used
-     */
-    private Software software = null;
-    /**
-     * only one source
-     */
-    private List<InstrumentComponent> source = null;
+
     /**
      * only one analyzer
      */
     private List<InstrumentComponent> analyzer = null;
+
     /**
      * only one detector
      */
     private List<InstrumentComponent> detector = null;
+
+    /**
+     * identifier of this instrument
+     */
+    private String id = null;
+
+    /**
+     * scan settings
+     */
+    private ScanSetting scanSetting = null;
+
+    /**
+     * software used
+     */
+    private Software software = null;
+
+    /**
+     * only one source
+     */
+    private List<InstrumentComponent> source = null;
 
     /**
      * Constructor
@@ -59,13 +68,9 @@ public class InstrumentConfiguration extends ParamGroup {
      * @param detector    required.
      * @param params      optional.
      */
-    public InstrumentConfiguration(String id,
-                                   ScanSetting scanSetting,
-                                   Software software,
-                                   List<InstrumentComponent> source,
-                                   List<InstrumentComponent> analyzer,
-                                   List<InstrumentComponent> detector,
-                                   ParamGroup params) {
+    public InstrumentConfiguration(String id, ScanSetting scanSetting, Software software,
+                                   List<InstrumentComponent> source, List<InstrumentComponent> analyzer,
+                                   List<InstrumentComponent> detector, ParamGroup params) {
         super(params);
         setId(id);
         setScanSetting(scanSetting);
@@ -123,3 +128,6 @@ public class InstrumentConfiguration extends ParamGroup {
         this.detector = detector;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

@@ -1,10 +1,15 @@
 package uk.ac.ebi.pride.data.controller;
 
+//~--- non-JDK imports --------------------------------------------------------
+
 import uk.ac.ebi.pride.data.controller.access.*;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHandler;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.beans.PropertyChangeListener;
+
 import java.util.Collection;
 
 /**
@@ -16,20 +21,14 @@ import java.util.Collection;
  * Date: 09-Apr-2010
  * Time: 14:25:49
  */
-public interface DataAccessController extends MzGraphDataAccess, ProteinDataAccess,
-        TrackDataAccess, PeptideDataAccess, QuantDataAccess,
-        ChartAccess, PropertyChangeHandler,
-        PropertyChangeListener {
+public interface DataAccessController
+        extends MzGraphDataAccess, ProteinDataAccess, TrackDataAccess, PeptideDataAccess, QuantDataAccess, ChartAccess,
+                PropertyChangeHandler, PropertyChangeListener {
+
     /**
-     * Type indicates the I/O of the data source.
-     * There are two types of data access controller at the moment:
-     * <p/>
-     * DATABASE means connection to a database
-     * XML_FILE means reading the data from a file.
+     * fired when data controller is closed
      */
-    public enum Type {
-        DATABASE, XML_FILE
-    }
+    public static final String DATA_SOURCE_CLOSED = "dataSourceClosed";
 
     /**
      * ContentCategory defines the type of content a data access controller should have.
@@ -40,11 +39,15 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     }
 
     /**
-     * fired when data controller is closed
+     * Type indicates the I/O of the data source.
+     * There are two types of data access controller at the moment:
+     * <p/>
+     * DATABASE means connection to a database
+     * XML_FILE means reading the data from a file.
      */
-    public static final String DATA_SOURCE_CLOSED = "dataSourceClosed";
+    public enum Type { DATABASE, XML_FILE }
 
-    /** ========================================= Description section =========================================*/
+    /** ========================================= Description section ========================================= */
 
     /**
      * Get the unique id represent the uniqueness of the data source
@@ -149,7 +152,8 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
      */
     public void close();
 
-    /** ========================================= Metadata accession section =========================================*/
+    /** ========================================= Metadata accession section ========================================= */
+
     /**
      * Get an collection of experiment ids from data source
      *
@@ -168,6 +172,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
 
     /**
      * Get the MetaData Information for Identification Object.
+     *
      * @return
      * @throws DataAccessException
      */
@@ -175,6 +180,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
 
     /**
      * Get MetaData Information for Spectrum Experiment Object
+     *
      * @return
      * @throws DataAccessException
      */
@@ -190,6 +196,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
 
     /**
      * Get File Content Object
+     *
      * @return ParamGroup
      * @throws DataAccessException
      */
@@ -213,13 +220,15 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
 
     /**
      * Get the Collection of the SpectrumIdentification Protocol
+     *
      * @return Collection<SpectrumIdentificationProtocol>  a Collection of SpectrumIdentification Protocol
      * @throws DataAccessException
      */
-    public Collection<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() throws  DataAccessException;
+    public Collection<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() throws DataAccessException;
 
     /**
      * Get ProteinDetection Protocol
+     *
      * @return Protocol is a Protein Detection Protocol.
      * @throws DataAccessException
      */
@@ -227,6 +236,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
 
     /**
      * Get a Provider for a File
+     *
      * @return
      * @throws DataAccessException
      */
@@ -242,6 +252,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
 
     /**
      * Get the List of Persons Related with the Experiment
+     *
      * @return
      * @throws DataAccessException
      */
@@ -249,10 +260,12 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
 
     /**
      * Get the Collection of Organizations
+     *
      * @return
      * @throws DataAccessException
      */
     public Collection<Organization> getOrganizationContacts() throws DataAccessException;
+
     /**
      * Get an collection of scan settings.
      *
@@ -268,6 +281,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
      * @throws DataAccessException throw a exception when there is an error accessing the data source
      */
     public Collection<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException;
+
     /**
      * Get an collection of data processings.
      *
@@ -278,6 +292,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
 
     /**
      * Get all the Search Databases used in the Experiment
+     *
      * @return
      * @throws DataAccessException
      */
@@ -285,6 +300,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
 
     /**
      * Get all modification presented in the Experiment
+     *
      * @return
      * @throws DataAccessException
      */
@@ -292,6 +308,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
 
     /**
      * Get all Source Files
+     *
      * @return
      * @throws DataAccessException
      */
@@ -299,21 +316,25 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
 
     /**
      * Get experimental additional params
-     * @return  ParamGroup  experimental additional param
-     * @throws DataAccessException  throw a exception when there is an error accessing the data source
+     *
+     * @return ParamGroup  experimental additional param
+     * @throws DataAccessException throw a exception when there is an error accessing the data source
      */
     public ParamGroup getAdditional() throws DataAccessException;
 
     /**
      * Get all SpectraDataFiles From mzIdentMl File
+     *
      * @return
      * @throws DataAccessException
      */
     public Collection<SpectraData> getSpectraDataFiles() throws DataAccessException;
 
-
-    //Todo: getDefaultInstrument() from mzML's run element
-    //Todo: getDefaultSample() from mzML's run element
-    //Todo: getDefaultSpectrumDataProcessing() from mzML's spectrumList element
-    //Todo: getDefaultChromatogramDataProcessing() from mzML's chromatogramList element
+    // Todo: getDefaultInstrument() from mzML's run element
+    // Todo: getDefaultSample() from mzML's run element
+    // Todo: getDefaultSpectrumDataProcessing() from mzML's spectrumList element
+    // Todo: getDefaultChromatogramDataProcessing() from mzML's chromatogramList element
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

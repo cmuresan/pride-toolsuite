@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +15,13 @@ import java.util.Map;
  * Date: 08/08/11
  * Time: 14:01
  */
-public class IonType extends CvParam{
+public class IonType extends CvParam {
+
+    /**
+     * The charge of the identified fragmentation ions.
+     */
+    private int charge = -1;
+
     /**
      * The index of ions identified as integers, following standard notation for
      * a-c, x-z e.g. if b3 b5 and b6 have been identified, the index would store
@@ -25,16 +33,12 @@ public class IonType extends CvParam{
      * given.
      */
     List<Integer> index = null;
-    /**
-     * The charge of the identified fragmentation ions.
-     */
-    private int charge = -1;
+
     /**
      * An array of values for a given type of measure and for a particular ion
      * type, in parallel to the index of ions identified.
      */
     private Map<IdentifiableParamGroup, List<Integer>> measureListHashMap = null;
-
 
     /**
      * Constructor
@@ -47,12 +51,7 @@ public class IonType extends CvParam{
      * @param unitName       optional.
      * @param unitCVLookupID optional.
      */
-    public IonType(String accession,
-                   String name,
-                   String cvLookupID,
-                   String value,
-                   String unitAcc,
-                   String unitName,
+    public IonType(String accession, String name, String cvLookupID, String value, String unitAcc, String unitName,
                    String unitCVLookupID) {
         super(accession, name, cvLookupID, value, unitAcc, unitName, unitCVLookupID);
     }
@@ -81,3 +80,6 @@ public class IonType extends CvParam{
         this.measureListHashMap = measureListHashMap;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

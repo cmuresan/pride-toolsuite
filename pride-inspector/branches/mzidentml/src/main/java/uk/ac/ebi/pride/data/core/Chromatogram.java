@@ -1,7 +1,10 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- non-JDK imports --------------------------------------------------------
 
 import uk.ac.ebi.pride.term.CvTermReference;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.util.List;
 
@@ -22,16 +25,15 @@ import java.util.List;
  * Time: 09:07:38
  */
 public class Chromatogram extends MzGraph {
-
-
-    public Chromatogram(Comparable id, String name, int index, DataProcessing defaultDataProcessing, int defaultArrayLength, List<BinaryDataArray> binaryDataArrays) {
+    public Chromatogram(Comparable id, String name, int index, DataProcessing defaultDataProcessing,
+                        int defaultArrayLength, List<BinaryDataArray> binaryDataArrays) {
         super(id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays);
     }
 
-    public Chromatogram(ParamGroup params, Comparable id, String name, int index, DataProcessing defaultDataProcessing, int defaultArrayLength, List<BinaryDataArray> binaryDataArrays) {
+    public Chromatogram(ParamGroup params, Comparable id, String name, int index, DataProcessing defaultDataProcessing,
+                        int defaultArrayLength, List<BinaryDataArray> binaryDataArrays) {
         super(params, id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays);
     }
-
 
     public BinaryDataArray getIntensityArray() {
         return getBinaryDataArray(CvTermReference.INTENSITY_ARRAY.getAccession());
@@ -41,3 +43,6 @@ public class Chromatogram extends MzGraph {
         return getBinaryDataArray(CvTermReference.TIME_ARRAY.getAccession());
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

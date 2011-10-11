@@ -1,11 +1,13 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
 
 /**
  * Reference is added by PRIDE XML 2.0., also a generic reference for mzIdentML References.
  * <p/>
- *  This object represents the information for MzIdentMl and PRIDE Reference Objects.
+ * This object represents the information for MzIdentMl and PRIDE Reference Objects.
  * <p/>
  * User: rwang
  * Date: 27-Jan-2010
@@ -14,141 +16,113 @@ import java.util.List;
 public class Reference extends IdentifiableParamGroup {
 
     /**
+     * The names of the authors of the reference.
+     */
+    private String authors = null;
+
+    /**
      * The DOI of the referenced publication.
      */
     private String doi = null;
-    /**
-     * The title of the BibliographicReference.
-     */
-    private String title = null;
-    /**
-     * The page numbers.
-     */
-    private String pages = null;
-    /**
-     * The issue name or number.
-     */
-    private String issue = null;
-    /**
-     * The volume name or number.
-     */
-    private String volume = null;
-    /**
-     * The year of publication.
-     */
-    private String year = null;
+
     /**
      * The editor(s) of the reference.
      */
     private String editor = null;
-    /**
-     * The publisher of the publication.
-     */
-    private String publisher = null;
-    /**
-     * The name of the journal, book etc.
-     */
-    private String publication = null;
-    /**
-     * The names of the authors of the reference.
-     */
-    private String authors = null;
 
     /**
      * the full reference line used by PRIDE XML Objects
      */
     private String fullReference = null;
 
+    /**
+     * The issue name or number.
+     */
+    private String issue = null;
 
-    public Reference(String id,
-                     String name,
-                     String doi,
-                     String title,
-                     String pages,
-                     String issue,
-                     String volume,
-                     String year,
-                     String editor,
-                     String publisher,
-                     String publication,
-                     String authors,
-                     String fullReference) {
-        this(null, id, name, doi, title, pages, issue, volume,
-                year, editor, publisher, publication, authors, fullReference);
-    }
+    /**
+     * The page numbers.
+     */
+    private String pages = null;
 
-    public Reference(List<CvParam> cvParams,
-                     List<UserParam> userParams,
-                     String id,
-                     String name,
-                     String doi,
-                     String title,
-                     String pages,
-                     String issue,
-                     String volume,
-                     String year,
-                     String editor,
-                     String publisher,
-                     String publication,
-                     String authors,
-                     String fullReference) {
-        this(new ParamGroup(cvParams, userParams), id, name, doi, title, pages, issue, volume,
-                year, editor, publisher, publication, authors, fullReference);
-    }
+    /**
+     * The name of the journal, book etc.
+     */
+    private String publication = null;
+
+    /**
+     * The publisher of the publication.
+     */
+    private String publisher = null;
+
+    /**
+     * The title of the BibliographicReference.
+     */
+    private String title = null;
+
+    /**
+     * The volume name or number.
+     */
+    private String volume = null;
+
+    /**
+     * The year of publication.
+     */
+    private String year = null;
 
     /**
      * Constructors for PRIDE XML Reference Object
+     *
      * @param params
      * @param fullReference
      */
     public Reference(ParamGroup params, String fullReference) {
-        this(params, null, null, null, null, null, null, null,
-                null, null, null, null, null, fullReference);
+        this(params, null, null, null, null, null, null, null, null, null, null, null, null, fullReference);
     }
 
     /**
      * Constructors for PRIDE XML Reference Object
+     *
      * @param cvParams
      * @param userParams
      * @param id
      * @param name
      * @param fullReference
      */
-    public Reference(List<CvParam> cvParams,
-                     List<UserParam> userParams,
-                     String id,
-                     String name,
-                     String fullReference) {
-        this(new ParamGroup(cvParams, userParams), id, name, null, null, null, null, null,
-                null, null, null, null, null, fullReference);
+    public Reference(List<CvParam> cvParams, List<UserParam> userParams, String id, String name, String fullReference) {
+        this(new ParamGroup(cvParams, userParams), id, name, null, null, null, null, null, null, null, null, null,
+             null, fullReference);
     }
 
-    public Reference(ParamGroup params,
-                     String id,
-                     String name,
-                     String doi,
-                     String title,
-                     String pages,
-                     String issue,
-                     String volume,
-                     String year,
-                     String editor,
-                     String publisher,
-                     String publication,
-                     String authors,
+    public Reference(String id, String name, String doi, String title, String pages, String issue, String volume,
+                     String year, String editor, String publisher, String publication, String authors,
+                     String fullReference) {
+        this(null, id, name, doi, title, pages, issue, volume, year, editor, publisher, publication, authors,
+             fullReference);
+    }
+
+    public Reference(ParamGroup params, String id, String name, String doi, String title, String pages, String issue,
+                     String volume, String year, String editor, String publisher, String publication, String authors,
                      String fullReference) {
         super(params, id, name);
-        this.doi = doi;
-        this.title = title;
-        this.pages = pages;
-        this.issue = issue;
-        this.volume = volume;
-        this.year = year;
-        this.editor = editor;
-        this.publisher = publisher;
-        this.publication = publication;
-        this.authors = authors;
+        this.doi           = doi;
+        this.title         = title;
+        this.pages         = pages;
+        this.issue         = issue;
+        this.volume        = volume;
+        this.year          = year;
+        this.editor        = editor;
+        this.publisher     = publisher;
+        this.publication   = publication;
+        this.authors       = authors;
         this.fullReference = fullReference;
+    }
+
+    public Reference(List<CvParam> cvParams, List<UserParam> userParams, String id, String name, String doi,
+                     String title, String pages, String issue, String volume, String year, String editor,
+                     String publisher, String publication, String authors, String fullReference) {
+        this(new ParamGroup(cvParams, userParams), id, name, doi, title, pages, issue, volume, year, editor, publisher,
+             publication, authors, fullReference);
     }
 
     public String getFullReference() {
@@ -239,3 +213,6 @@ public class Reference extends IdentifiableParamGroup {
         this.authors = authors;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

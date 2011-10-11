@@ -22,7 +22,7 @@ import java.util.*;
  * Date: 03-Feb-2010
  * Time: 12:22:24
  */
-public abstract class AbstractDataAccessController extends PropertyChangeHelper   implements DataAccessController {
+public abstract class AbstractDataAccessController extends PropertyChangeHelper implements DataAccessController {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractDataAccessController.class);
 
@@ -263,12 +263,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     @Override
-    public Protocol getProteinDetectionProtocol() throws DataAccessException{
+    public Protocol getProteinDetectionProtocol() throws DataAccessException {
         return null;
     }
 
     @Override
-    public Collection<SpectraData> getSpectraDataFiles() throws DataAccessException{
+    public Collection<SpectraData> getSpectraDataFiles() throws DataAccessException {
         return Collections.emptyList();
     }
 
@@ -700,9 +700,9 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
 
     @Override
     public DBSequence getIdentificationSequence(Comparable identId) throws DataAccessException {
-        DBSequence dbSequence= null;
+        DBSequence dbSequence = null;
         Identification ident = getIdentificationById(identId);
-        if(ident != null){
+        if (ident != null) {
             dbSequence = ident.getDbSequence();
         }
         return dbSequence;
@@ -726,7 +726,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     /**
-     * Get search database using identfication id
+     * Get search database using identification id
      *
      * @param identId identification id.
      * @return String search database
@@ -745,8 +745,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get search engine has been used.
      *
-     * @return  SearchEngine    search engine
-     * @throws DataAccessException  data access exception
+     * @return SearchEngine    search engine
+     * @throws DataAccessException data access exception
      */
     @Override
     public SearchEngine getSearchEngine() throws DataAccessException {
@@ -837,8 +837,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
 
     @Override
     public Collection<PeptideEvidence> getPeptideEvidences(Comparable identId, Comparable peptideId) throws DataAccessException {
-        Peptide peptide = getPeptideById(identId,peptideId);
-        return  peptide.getPeptideEvidenceList();
+        Peptide peptide = getPeptideById(identId, peptideId);
+        return peptide.getPeptideEvidenceList();
     }
 
     /**
@@ -941,7 +941,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     @Override
     public Collection<Modification> getModification() throws DataAccessException {
         return Collections.emptyList();
-        //Todo: Think About how we can report all of the modifciations reported in the file.
+        //Todo: Think About how we can report all of the modifications reported in the file.
     }
 
     @Override
@@ -1666,7 +1666,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
                             }
                         }
                     }
-                    cnt --;
+                    cnt--;
                     if (cnt == 0) {
                         break;
                     }
@@ -1680,7 +1680,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get quantitative sample details
      *
-     * @return QuantitativeSample  quantitatve sample
+     * @return QuantitativeSample  quantitative sample
      * @throws DataAccessException data access exception
      */
     @Override

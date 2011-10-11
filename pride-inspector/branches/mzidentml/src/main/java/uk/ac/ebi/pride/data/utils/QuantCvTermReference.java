@@ -288,9 +288,9 @@ public enum QuantCvTermReference {
     public static boolean isLabelFreeMethod(CvParam cvParam) {
         String accession = cvParam.getAccession();
         return EMPAI_VALUE.getAccession().equals(accession) ||
-               EMPAI_QUANTIFIED.getAccession().equals(accession) ||
-               TIC_VALUE.getAccession().equals(accession) ||
-               TIC_QUANTIFIED.getAccession().equals(accession);
+                EMPAI_QUANTIFIED.getAccession().equals(accession) ||
+                TIC_VALUE.getAccession().equals(accession) ||
+                TIC_QUANTIFIED.getAccession().equals(accession);
     }
 
     public static QuantCvTermReference getLabelFreeMethod(CvParam cvParam) {
@@ -326,28 +326,28 @@ public enum QuantCvTermReference {
         String accession = cvParam.getAccession();
 
         return ITRAQ_113_REAGENT.getAccession().equals(accession) ||
-               ITRAQ_114_REAGENT.getAccession().equals(accession) ||
-               ITRAQ_115_REAGENT.getAccession().equals(accession) ||
-               ITRAQ_116_REAGENT.getAccession().equals(accession) ||
-               ITRAQ_117_REAGENT.getAccession().equals(accession) ||
-               ITRAQ_118_REAGENT.getAccession().equals(accession) ||
-               ITRAQ_119_REAGENT.getAccession().equals(accession) ||
-               ITRAQ_121_REAGENT.getAccession().equals(accession) ||
-               TMT_126_REAGENT.getAccession().equals(accession) ||
-               TMT_127_REAGENT.getAccession().equals(accession) ||
-               TMT_128_REAGENT.getAccession().equals(accession) ||
-               TMT_129_REAGENT.getAccession().equals(accession) ||
-               TMT_130_REAGENT.getAccession().equals(accession) ||
-               TMT_131_REAGENT.getAccession().equals(accession) ||
-               SILAC_HEAVY_REAGENT.getAccession().equals(accession) ||
-               SILAC_MEDIUM_REAGENT.getAccession().equals(accession) ||
-               SILAC_LIGHT_REAGENT.getAccession().equals(accession) ||
-               ICAT_HEAVY_REAGENT.getAccession().equals(accession) ||
-               ICAT_LIGHT_REAGENT.getAccession().equals(accession) ||
-               ICPL_0_REAGENT.getAccession().equals(accession) ||
-               ICPL_4_REAGENT.getAccession().equals(accession) ||
-               ICPL_6_REAGENT.getAccession().equals(accession) ||
-               ICPL_10_REAGENT.getAccession().equals(accession);
+                ITRAQ_114_REAGENT.getAccession().equals(accession) ||
+                ITRAQ_115_REAGENT.getAccession().equals(accession) ||
+                ITRAQ_116_REAGENT.getAccession().equals(accession) ||
+                ITRAQ_117_REAGENT.getAccession().equals(accession) ||
+                ITRAQ_118_REAGENT.getAccession().equals(accession) ||
+                ITRAQ_119_REAGENT.getAccession().equals(accession) ||
+                ITRAQ_121_REAGENT.getAccession().equals(accession) ||
+                TMT_126_REAGENT.getAccession().equals(accession) ||
+                TMT_127_REAGENT.getAccession().equals(accession) ||
+                TMT_128_REAGENT.getAccession().equals(accession) ||
+                TMT_129_REAGENT.getAccession().equals(accession) ||
+                TMT_130_REAGENT.getAccession().equals(accession) ||
+                TMT_131_REAGENT.getAccession().equals(accession) ||
+                SILAC_HEAVY_REAGENT.getAccession().equals(accession) ||
+                SILAC_MEDIUM_REAGENT.getAccession().equals(accession) ||
+                SILAC_LIGHT_REAGENT.getAccession().equals(accession) ||
+                ICAT_HEAVY_REAGENT.getAccession().equals(accession) ||
+                ICAT_LIGHT_REAGENT.getAccession().equals(accession) ||
+                ICPL_0_REAGENT.getAccession().equals(accession) ||
+                ICPL_4_REAGENT.getAccession().equals(accession) ||
+                ICPL_6_REAGENT.getAccession().equals(accession) ||
+                ICPL_10_REAGENT.getAccession().equals(accession);
     }
 
     public static QuantCvTermReference getReagent(CvParam cvParam) {
@@ -462,41 +462,43 @@ public enum QuantCvTermReference {
         String accession = cvParam.getAccession();
 
         return SUBSAMPLE1_DESCRIPTION.getAccession().equals(accession) ||
-               SUBSAMPLE2_DESCRIPTION.getAccession().equals(accession) ||
-               SUBSAMPLE3_DESCRIPTION.getAccession().equals(accession) ||
-               SUBSAMPLE4_DESCRIPTION.getAccession().equals(accession) ||
-               SUBSAMPLE5_DESCRIPTION.getAccession().equals(accession) ||
-               SUBSAMPLE6_DESCRIPTION.getAccession().equals(accession) ||
-               SUBSAMPLE7_DESCRIPTION.getAccession().equals(accession) ||
-               SUBSAMPLE8_DESCRIPTION.getAccession().equals(accession);
+                SUBSAMPLE2_DESCRIPTION.getAccession().equals(accession) ||
+                SUBSAMPLE3_DESCRIPTION.getAccession().equals(accession) ||
+                SUBSAMPLE4_DESCRIPTION.getAccession().equals(accession) ||
+                SUBSAMPLE5_DESCRIPTION.getAccession().equals(accession) ||
+                SUBSAMPLE6_DESCRIPTION.getAccession().equals(accession) ||
+                SUBSAMPLE7_DESCRIPTION.getAccession().equals(accession) ||
+                SUBSAMPLE8_DESCRIPTION.getAccession().equals(accession);
     }
 
     /**
      * Checks whether the passed quantification method
      * contains peptide quantification values
+     *
      * @return
      */
     public static boolean containsPeptideQuantification(QuantCvTermReference cvTerm) {
         String accession = cvTerm.getAccession();
 
-    	return O18_QUANTIFIED.getAccession().equals(accession) ||
-               AQUA_QUANTIFIED.getAccession().equals(accession) ||
-               ICAT_QUANTIFIED.getAccession().equals(accession) ||
-               ICPL_QUANTIFIED.getAccession().equals(accession) ||
-               SILAC_QUANTIFIED.getAccession().equals(accession) ||
-               TMT_QUANTIFIED.getAccession().equals(accession) ||
-               ITRAQ_QUANTIFIED.getAccession().equals(accession) ||
-               TIC_QUANTIFIED.getAccession().equals(accession);
+        return O18_QUANTIFIED.getAccession().equals(accession) ||
+                AQUA_QUANTIFIED.getAccession().equals(accession) ||
+                ICAT_QUANTIFIED.getAccession().equals(accession) ||
+                ICPL_QUANTIFIED.getAccession().equals(accession) ||
+                SILAC_QUANTIFIED.getAccession().equals(accession) ||
+                TMT_QUANTIFIED.getAccession().equals(accession) ||
+                ITRAQ_QUANTIFIED.getAccession().equals(accession) ||
+                TIC_QUANTIFIED.getAccession().equals(accession);
     }
 
     /**
      * Checks whether the passed quantification method
      * contains protein quantification values
-     * @return  boolean
+     *
+     * @return boolean
      */
     public static boolean containsProteinQuantification(QuantCvTermReference cvTerm) {
-    	// all quantification methods can be reported for the protein level.
-    	return true;
+        // all quantification methods can be reported for the protein level.
+        return true;
     }
 
 
@@ -518,8 +520,9 @@ public enum QuantCvTermReference {
 
     /**
      * Check whether the passed cv param is a QuantCvTermReference
-     * @param cvParam   given cvParam
-     * @return  boolean true means it is a quantitative param
+     *
+     * @param cvParam given cvParam
+     * @return boolean true means it is a quantitative param
      */
     public static boolean isQuantitativeParam(CvParam cvParam) {
         String accession = cvParam.getAccession();

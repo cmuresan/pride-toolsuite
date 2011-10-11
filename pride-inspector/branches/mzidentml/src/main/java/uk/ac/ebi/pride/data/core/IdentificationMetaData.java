@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
 
 /**
@@ -9,71 +11,71 @@ import java.util.List;
  * User: yperez
  * Date: 19/08/11
  * Time: 11:56
- *
  */
-public class IdentificationMetaData extends IdentifiableParamGroup{
-    /**
-     * List of the parameters and settings of a SpectrumIdentification analysis.
-     */
-    private List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = null;
+public class IdentificationMetaData extends IdentifiableParamGroup {
+
     /**
      * The parameters and settings of a ProteinDetection process.
      */
     private Protocol proteinDetectionProtocol = null;
+
     /**
      * List of database for searching mass spectra. Examples include a set of amino acid sequence entries, or annotated spectra libraries.
      */
     private List<SearchDataBase> searchDataBaseList = null;
+
+    /**
+     * List of the parameters and settings of a SpectrumIdentification analysis.
+     */
+    private List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = null;
+
     /**
      * List of all modifications listed in the experiment.
      */
+
     /**
-     *
      * @param id
      * @param name
      * @param spectrumIdentificationProtocolList
+     *
      * @param proteinDetectionProtocol
      * @param searchDataBaseList
      */
-    public IdentificationMetaData(Comparable id,
-                                  String name,
+    public IdentificationMetaData(Comparable id, String name,
                                   List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList,
-                                  Protocol proteinDetectionProtocol,
-                                  List<SearchDataBase> searchDataBaseList) {
+                                  Protocol proteinDetectionProtocol, List<SearchDataBase> searchDataBaseList) {
         super(id, name);
         this.spectrumIdentificationProtocolList = spectrumIdentificationProtocolList;
-        this.proteinDetectionProtocol = proteinDetectionProtocol;
-        this.searchDataBaseList = searchDataBaseList;
+        this.proteinDetectionProtocol           = proteinDetectionProtocol;
+        this.searchDataBaseList                 = searchDataBaseList;
     }
 
     /**
-     *
      * @param params
      * @param id
      * @param name
      * @param spectrumIdentificationProtocolList
+     *
      * @param proteinDetectionProtocol
      * @param searchDataBaseList
      * @param modificationList
      */
-    public IdentificationMetaData(ParamGroup params,
-                                  Comparable id,
-                                  String name,
+    public IdentificationMetaData(ParamGroup params, Comparable id, String name,
                                   List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList,
-                                  Protocol proteinDetectionProtocol,
-                                  List<SearchDataBase> searchDataBaseList,
+                                  Protocol proteinDetectionProtocol, List<SearchDataBase> searchDataBaseList,
                                   List<Modification> modificationList) {
         super(params, id, name);
         this.spectrumIdentificationProtocolList = spectrumIdentificationProtocolList;
-        this.proteinDetectionProtocol = proteinDetectionProtocol;
-        this.searchDataBaseList = searchDataBaseList;
+        this.proteinDetectionProtocol           = proteinDetectionProtocol;
+        this.searchDataBaseList                 = searchDataBaseList;
     }
 
     public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocolList() {
         return spectrumIdentificationProtocolList;
     }
 
-    public void setSpectrumIdentificationProtocolList(List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList) {
+    public void setSpectrumIdentificationProtocolList(
+            List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList) {
         this.spectrumIdentificationProtocolList = spectrumIdentificationProtocolList;
     }
 
@@ -93,3 +95,6 @@ public class IdentificationMetaData extends IdentifiableParamGroup{
         this.searchDataBaseList = searchDataBaseList;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

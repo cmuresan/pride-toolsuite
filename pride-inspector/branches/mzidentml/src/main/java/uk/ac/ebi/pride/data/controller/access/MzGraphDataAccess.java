@@ -1,8 +1,12 @@
 package uk.ac.ebi.pride.data.controller.access;
 
+//~--- non-JDK imports --------------------------------------------------------
+
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Chromatogram;
 import uk.ac.ebi.pride.data.core.Spectrum;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.util.Collection;
 
@@ -16,18 +20,21 @@ import java.util.Collection;
  * Time: 17:58:19
  */
 public interface MzGraphDataAccess {
-    /**
-     * fired when a mz graph object has changed
-     */
-    public static final String MZGRAPH_TYPE = "MzGraph";
-    /**
-     * fired when a spectrum object has changed
-     */
-    public static final String SPECTRUM_TYPE = "Spectrum";
+
     /**
      * fired when a chromatogram object has changed
      */
     public static final String CHROMATOGRAM_TYPE = "Chromatogram";
+
+    /**
+     * fired when a mz graph object has changed
+     */
+    public static final String MZGRAPH_TYPE = "MzGraph";
+
+    /**
+     * fired when a spectrum object has changed
+     */
+    public static final String SPECTRUM_TYPE = "Spectrum";
 
     /**
      * Whether this controller contains spectra
@@ -105,7 +112,6 @@ public interface MzGraphDataAccess {
      */
     public boolean isIdentifiedSpectrum(Comparable specId) throws DataAccessException;
 
-
     /**
      * Get the number peaks of a spectrum
      *
@@ -123,7 +129,6 @@ public interface MzGraphDataAccess {
      * @throws DataAccessException data access exception.
      */
     public int getMsLevel(Comparable specId) throws DataAccessException;
-
 
     /**
      * Get the precursor charge of a spectrum.
@@ -206,3 +211,6 @@ public interface MzGraphDataAccess {
      */
     public Collection<Chromatogram> getChromatogramByIndex(int index, int offset) throws DataAccessException;
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

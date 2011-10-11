@@ -8,6 +8,7 @@ package uk.ac.ebi.pride.data.controller.cache;
  * Time: 15:09:02
  */
 public interface CacheBuilder {
+
     /**
      * initialize the cache, it should clear the previous cache first,
      * then createAttributedSequence the new cache.
@@ -16,3 +17,6 @@ public interface CacheBuilder {
      */
     public void populate() throws Exception;
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

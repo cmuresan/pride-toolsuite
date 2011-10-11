@@ -13,6 +13,7 @@ public class CvParam extends Parameter {
      * Cv term accession
      */
     private String accession = null;
+
     /**
      * Id of the referenced CvLookup object
      */
@@ -29,12 +30,7 @@ public class CvParam extends Parameter {
      * @param unitName       optional.
      * @param unitCVLookupID optional.
      */
-    public CvParam(String accession,
-                   String name,
-                   String cvLookupID,
-                   String value,
-                   String unitAcc,
-                   String unitName,
+    public CvParam(String accession, String name, String cvLookupID, String value, String unitAcc, String unitName,
                    String unitCVLookupID) {
         super(name, value, unitAcc, unitName, unitCVLookupID);
         setAccession(accession);
@@ -56,5 +52,7 @@ public class CvParam extends Parameter {
     public String getAccession() {
         return accession;
     }
-
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

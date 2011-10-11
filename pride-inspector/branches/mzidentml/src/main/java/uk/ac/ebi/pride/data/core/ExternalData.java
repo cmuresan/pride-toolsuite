@@ -9,14 +9,12 @@ package uk.ac.ebi.pride.data.core;
  * Time: 14:35
  */
 public class ExternalData extends Identifiable {
-    /**
-     * The location of the data file.
-     */
-    private String location = null;
+
     /**
      * The format of the ExternalData file, for example "tiff" for image files.
      */
     private CvParam FileFormat = null;
+
     /**
      * A URI to access documentation and tools to interpret the external format
      * of the ExternalData instance. For example, XML Schema or static libraries
@@ -25,17 +23,22 @@ public class ExternalData extends Identifiable {
     private String externalFormatDocumentationURI = null;
 
     /**
-     *
+     * The location of the data file.
+     */
+    private String location = null;
+
+    /**
      * @param id
      * @param name
      * @param location
      * @param fileFormat
      * @param externalFormatDocumentationURI
      */
-    public ExternalData(String id, String name, String location, CvParam fileFormat, String externalFormatDocumentationURI) {
+    public ExternalData(String id, String name, String location, CvParam fileFormat,
+                        String externalFormatDocumentationURI) {
         super(id, name);
-        this.location = location;
-        FileFormat = fileFormat;
+        this.location                       = location;
+        FileFormat                          = fileFormat;
         this.externalFormatDocumentationURI = externalFormatDocumentationURI;
     }
 
@@ -63,3 +66,6 @@ public class ExternalData extends Identifiable {
         this.externalFormatDocumentationURI = externalFormatDocumentationURI;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

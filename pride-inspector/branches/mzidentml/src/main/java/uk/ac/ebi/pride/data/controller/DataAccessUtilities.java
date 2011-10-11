@@ -296,9 +296,8 @@ public class DataAccessUtilities {
      * @return boolean true if peptide contains fragment ion information.
      */
     public static boolean hasFragmentIon(Peptide peptide) {
-       // List<FragmentIon> ions = peptide.getFragmentIons();
-       List<FragmentIon> ions = new ArrayList<FragmentIon>();
-        return ions != null && !ions.isEmpty();
+        List<FragmentIon> ions = peptide.getFragmentation();
+        return !ions.isEmpty();
     }
 
     /**
@@ -333,6 +332,7 @@ public class DataAccessUtilities {
 
     /**
      * Get the number of the modification of a peptide
+     *
      * @param peptide
      * @return
      */
@@ -347,6 +347,7 @@ public class DataAccessUtilities {
 
     /**
      * Get the number of substitution modification of a peptide
+     *
      * @param peptide
      * @return
      */
@@ -358,6 +359,7 @@ public class DataAccessUtilities {
         }
         return cnt;
     }
+
     /**
      * Get peptide score from a peptide object.
      *
@@ -446,16 +448,17 @@ public class DataAccessUtilities {
 
     /**
      * Create a List of Cv Params
+     *
      * @param value
      * @param cvLabel
      * @param accession
      * @return
      */
-    public static List<CvParam> getCvParam(String name, String cvLabel, String accession, String value){
-       List<CvParam> cvParams  = new ArrayList<CvParam>();
-       CvParam cvParam = new CvParam(accession,name,cvLabel,value,null,null,null);
-       cvParams.add(cvParam);
-       return cvParams;
+    public static List<CvParam> getCvParam(String name, String cvLabel, String accession, String value) {
+        List<CvParam> cvParams = new ArrayList<CvParam>();
+        CvParam cvParam = new CvParam(accession, name, cvLabel, value, null, null, null);
+        cvParams.add(cvParam);
+        return cvParams;
     }
 
     /**
@@ -493,17 +496,17 @@ public class DataAccessUtilities {
     }
 
     public static Map<PeptideEvidence, List<Peptide>> getPeptideEvidence(List<Peptide> peptides) {
-        HashMap<PeptideEvidence,List<Peptide>> peptideEvidences = new HashMap<PeptideEvidence, List<Peptide>>();
-        for(Peptide peptide: peptides){
-            for (PeptideEvidence peptideEvidence: peptide.getPeptideEvidenceList()){
-                if(peptideEvidences.containsKey(peptideEvidence)){
+        HashMap<PeptideEvidence, List<Peptide>> peptideEvidences = new HashMap<PeptideEvidence, List<Peptide>>();
+        for (Peptide peptide : peptides) {
+            for (PeptideEvidence peptideEvidence : peptide.getPeptideEvidenceList()) {
+                if (peptideEvidences.containsKey(peptideEvidence)) {
                     List<Peptide> peptidesIn = peptideEvidences.get(peptideEvidence);
                     peptidesIn.add(peptide);
-                    peptideEvidences.put(peptideEvidence,peptidesIn);
-                }else{
+                    peptideEvidences.put(peptideEvidence, peptidesIn);
+                } else {
                     List<Peptide> peptidesIn = new ArrayList<Peptide>();
                     peptidesIn.add(peptide);
-                    peptideEvidences.put(peptideEvidence,peptidesIn);
+                    peptideEvidences.put(peptideEvidence, peptidesIn);
                 }
             }
         }

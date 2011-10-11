@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
 
 /**
@@ -10,59 +12,58 @@ import java.util.List;
  * Time: 16:35
  */
 public class Person extends AbstractContact {
-    /**
-     * The Person's last/family name.
-     */
-    private String lastname = null;
-    /**
-     * The Person's first name.
-     */
-    private String firstname = null;
-    /**
-     * The Person's middle initial.
-     */
-    private String midInitials = null;
+
     /**
      * The organization a person belongs to.
      */
     private List<Organization> affiliation = null;
+
+    /**
+     * The Person's first name.
+     */
+    private String firstname = null;
+
+    /**
+     * The Person's last/family name.
+     */
+    private String lastname = null;
+
     /**
      * mail
      */
     private String mail = null;
 
     /**
-     *
-     * @param id
-     * @param name
-     * @param lastname
-     * @param firstname
-     * @param midInitials
-     * @param affiliation
-     * @param mail
+     * The Person's middle initial.
      */
-    public Person(Comparable id,
-                  String name,
-                  String lastname,
-                  String firstname,
-                  String midInitials,
-                  List<Organization> affiliation,
-                  String mail) {
-        this(null, id, name, lastname, firstname, midInitials, affiliation, mail);
-    }
+    private String midInitials = null;
 
     /**
      * Constructor for MzMl and Pride Person Contact
+     *
      * @param params
      * @param firstname
      * @param mail
      */
-    public Person(ParamGroup params, String firstname, String mail){
+    public Person(ParamGroup params, String firstname, String mail) {
         this(params, null, null, null, firstname, null, null, mail);
     }
 
     /**
-     *
+     * @param id
+     * @param name
+     * @param lastname
+     * @param firstname
+     * @param midInitials
+     * @param affiliation
+     * @param mail
+     */
+    public Person(Comparable id, String name, String lastname, String firstname, String midInitials,
+                  List<Organization> affiliation, String mail) {
+        this(null, id, name, lastname, firstname, midInitials, affiliation, mail);
+    }
+
+    /**
      * @param params
      * @param id
      * @param name
@@ -72,13 +73,14 @@ public class Person extends AbstractContact {
      * @param affiliation
      * @param mail
      */
-    public Person(ParamGroup params, Comparable id, String name, String lastname, String firstname, String midInitials, List<Organization> affiliation, String mail) {
+    public Person(ParamGroup params, Comparable id, String name, String lastname, String firstname, String midInitials,
+                  List<Organization> affiliation, String mail) {
         super(params, id, name);
-        this.lastname = lastname;
-        this.firstname = firstname;
+        this.lastname    = lastname;
+        this.firstname   = firstname;
         this.midInitials = midInitials;
         this.affiliation = affiliation;
-        this.mail = mail;
+        this.mail        = mail;
     }
 
     public String getLastname() {
@@ -121,3 +123,6 @@ public class Person extends AbstractContact {
         this.mail = mail;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

@@ -1,9 +1,13 @@
 package uk.ac.ebi.pride.data.controller.access;
 
+//~--- non-JDK imports --------------------------------------------------------
+
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Quantitation;
 import uk.ac.ebi.pride.data.core.QuantitativeSample;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.util.Collection;
 
@@ -195,3 +199,6 @@ public interface QuantDataAccess {
      */
     public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException;
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

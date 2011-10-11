@@ -363,7 +363,8 @@ public class QuantitativeSample {
 
     /**
      * Get whether description exists
-     * @return  boolean true means exist
+     *
+     * @return boolean true means exist
      */
     public boolean hasDescription() {
         for (SubSample sample : samples) {

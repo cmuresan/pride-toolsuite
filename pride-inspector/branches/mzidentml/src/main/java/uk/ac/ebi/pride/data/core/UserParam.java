@@ -9,6 +9,7 @@ package uk.ac.ebi.pride.data.core;
  * Time: 09:34:30
  */
 public class UserParam extends Parameter {
+
     /**
      * the data type of the parameter
      */
@@ -24,13 +25,7 @@ public class UserParam extends Parameter {
      * @param unitName       optional.
      * @param unitCVLookupID optional.
      */
-    public UserParam(String name,
-                     String type,
-                     String value,
-                     String unitAcc,
-                     String unitName,
-                     String unitCVLookupID) {
-
+    public UserParam(String name, String type, String value, String unitAcc, String unitName, String unitCVLookupID) {
         super(name, value, unitAcc, unitName, unitCVLookupID);
         this.type = type;
     }
@@ -43,3 +38,6 @@ public class UserParam extends Parameter {
         this.type = type;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

@@ -27,11 +27,11 @@ public class ProcessingMethod extends ParamGroup {
      * order of steps
      */
     private int order = -1;
+
     /**
      * software type
      */
     private Software software = null;
-
 
     /**
      * Constructor
@@ -40,11 +40,9 @@ public class ProcessingMethod extends ParamGroup {
      * @param software required.
      * @param params   optional.
      */
-    public ProcessingMethod(int order,
-                            Software software,
-                            ParamGroup params) {
+    public ProcessingMethod(int order, Software software, ParamGroup params) {
         super(params);
-        this.order = order;
+        this.order    = order;
         this.software = software;
     }
 
@@ -64,3 +62,6 @@ public class ProcessingMethod extends ParamGroup {
         this.software = software;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

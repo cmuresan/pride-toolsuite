@@ -1,24 +1,37 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- non-JDK imports --------------------------------------------------------
+
 import uk.ac.ebi.pride.engine.SearchEngineType;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * SearchEngine store the original search engine title and identified search engine types.
- *
+ * <p/>
  * User: rwang, yperez
  * Date: Dec 2, 2010
  * Time: 10:12:31 AM
  */
-public class SearchEngine extends Identifiable{
+public class SearchEngine extends Identifiable {
+
     /**
      * Identified search engine types using the data source
      */
     private List<SearchEngineType> searchEngineTypes = new ArrayList<SearchEngineType>();
+
     /**
-     *
+     * @param searchengine
+     */
+    public SearchEngine(SearchEngine searchengine) {
+        super(searchengine.getId(), searchengine.getName());
+        this.searchEngineTypes = searchengine.getSearchEngineTypes();
+    }
+
+    /**
      * @param id
      * @param name
      */
@@ -28,24 +41,13 @@ public class SearchEngine extends Identifiable{
     }
 
     /**
-     *
-     * @param searchengine
-     */
-    public SearchEngine(SearchEngine searchengine){
-        super(searchengine.getId(), searchengine.getName());
-        this.searchEngineTypes = searchengine.getSearchEngineTypes();
-    }
-
-    /**
-     *
      * @param id
      * @param name
      * @param searchEngineTypes
      */
-    public SearchEngine(Comparable id,
-                        String name,
-                        List<SearchEngineType> searchEngineTypes) {
+    public SearchEngine(Comparable id, String name, List<SearchEngineType> searchEngineTypes) {
         super(id, name);
+
         if (searchEngineTypes != null) {
             this.searchEngineTypes.addAll(searchEngineTypes);
         }
@@ -62,6 +64,7 @@ public class SearchEngine extends Identifiable{
 
     /**
      * Set search engine types
+     *
      * @param searchEngineTypes a list of search engine types
      */
     public void setSearchEngineTypes(List<SearchEngineType> searchEngineTypes) {
@@ -72,9 +75,12 @@ public class SearchEngine extends Identifiable{
     /**
      * Add search engine type
      *
-     * @param searchEngineType  search engine type
+     * @param searchEngineType search engine type
      */
     public void addSearchEngineType(SearchEngineType searchEngineType) {
         this.searchEngineTypes.add(searchEngineType);
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

@@ -1,7 +1,11 @@
 package uk.ac.ebi.pride.data.io.db;
 
+//~--- non-JDK imports --------------------------------------------------------
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -10,13 +14,14 @@ import java.sql.Statement;
 
 /**
  * DBUtilities provides methods for database access.
- *
+ * <p/>
  * User: rwang
  * Date: 01-Oct-2010
  * Time: 12:01:27
  */
 public class DBUtilities {
     private static final Logger logger = LoggerFactory.getLogger(DBUtilities.class);
+
     /**
      * It is a good idea to call this method in the finally block.
      *
@@ -50,3 +55,6 @@ public class DBUtilities {
         }
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

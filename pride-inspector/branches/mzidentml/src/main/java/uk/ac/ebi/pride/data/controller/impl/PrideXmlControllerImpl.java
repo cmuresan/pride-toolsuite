@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * Date: 02-Feb-2010
  * Time: 12:31:30
  */
-public class  PrideXmlControllerImpl extends CachedDataAccessController {
+public class PrideXmlControllerImpl extends CachedDataAccessController {
     private static final Logger logger = LoggerFactory.getLogger(PrideXmlControllerImpl.class);
     /**
      * Pattern for match pride xml format
@@ -134,7 +134,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
         try {
             cvLookups.addAll(PrideXmlTransformer.transformCvLookups(reader.getCvLookups()));
         } catch (Exception ex) {
-            String msg  = "Error while getting cv lookups";
+            String msg = "Error while getting cv lookups";
             logger.error(msg, ex);
             throw new DataAccessException(msg, ex);
         }
@@ -159,7 +159,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                 sourceFiles.add(sourceFile);
             }
         } catch (Exception ex) {
-            String msg  = "Error while getting source files";
+            String msg = "Error while getting source files";
             logger.error(msg, ex);
             throw new DataAccessException(msg, ex);
         }
@@ -174,7 +174,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
         try {
             organizationList.addAll(PrideXmlTransformer.transformContactToOrganization(reader.getAdmin()));
         } catch (Exception ex) {
-            String msg  = "Error while getting organizational contacts";
+            String msg = "Error while getting organizational contacts";
             logger.error(msg, ex);
             throw new DataAccessException(msg, ex);
         }
@@ -188,7 +188,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
         try {
             personList.addAll(PrideXmlTransformer.transformContactToPerson(reader.getAdmin()));
         } catch (Exception ex) {
-            String msg  = "Error while getting person contacts";
+            String msg = "Error while getting person contacts";
             logger.error(msg, ex);
             throw new DataAccessException(msg, ex);
         }
@@ -215,7 +215,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                 }
                 return samples;
             } catch (Exception ex) {
-                String msg  = "Error while getting samples";
+                String msg = "Error while getting samples";
                 logger.error(msg, ex);
                 throw new DataAccessException(msg, ex);
             }
@@ -244,7 +244,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                 }
                 return softwares;
             } catch (Exception ex) {
-                String msg  = "Error while getting software list";
+                String msg = "Error while getting software list";
                 logger.error(msg, ex);
                 throw new DataAccessException(msg, ex);
             }
@@ -270,7 +270,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                 configs.addAll(PrideXmlTransformer.transformInstrument(reader.getInstrument(), reader.getDataProcessing()));
                 return configs;
             } catch (Exception ex) {
-                String msg  = "Error while getting instrument configurations";
+                String msg = "Error while getting instrument configurations";
                 logger.error(msg, ex);
                 throw new DataAccessException(msg, ex);
             }
@@ -299,7 +299,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                 }
                 return dataProcessings;
             } catch (Exception ex) {
-                String msg  = "Error while getting data processings";
+                String msg = "Error while getting data processings";
                 logger.error(msg, ex);
                 throw new DataAccessException(msg, ex);
             }
@@ -322,7 +322,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
         try {
             refs.addAll(PrideXmlTransformer.transformReferences(reader.getReferences()));
         } catch (Exception ex) {
-            String msg  = "Error while getting references";
+            String msg = "Error while getting references";
             logger.error(msg, ex);
             throw new DataAccessException(msg, ex);
         }
@@ -342,7 +342,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
         try {
             return PrideXmlTransformer.transformProtocol(reader.getProtocol());
         } catch (Exception ex) {
-            String msg  = "Error while getting protocol";
+            String msg = "Error while getting protocol";
             logger.error(msg, ex);
             throw new DataAccessException(msg, ex);
         }
@@ -363,7 +363,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
             try {
                 return PrideXmlTransformer.transformAdditional(reader.getAdditionalParams());
             } catch (Exception ex) {
-                String msg  = "Error while getting additional params";
+                String msg = "Error while getting additional params";
                 logger.error(msg, ex);
                 throw new DataAccessException(msg, ex);
             }
@@ -410,11 +410,11 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                 // Get References From the Experiment
                 List<Reference> references = getReferences();
 
-                metaData = new ExperimentMetaData(additional,accession,title,version,shortLabel,samples,softwares,persons,sources,null,organizations,references,null,null,protocol);
+                metaData = new ExperimentMetaData(additional, accession, title, version, shortLabel, samples, softwares, persons, sources, null, organizations, references, null, null, protocol);
                 // store it in the cache
                 getCache().store(CacheCategory.EXPERIMENT_METADATA, metaData);
             } catch (Exception ex) {
-                String msg  = "Error while getting experiment meta data";
+                String msg = "Error while getting experiment meta data";
                 logger.error(msg, ex);
                 throw new DataAccessException(msg, ex);
             }
@@ -426,7 +426,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
     @Override
     public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
         IdentificationMetaData metaData = super.getIdentificationMetaData();
-        if(metaData == null){
+        if (metaData == null) {
             List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = null;
             //Todo: Try to convert the CVTerms in Pride to SpectrumIdentificationProtocol
             Protocol proteinDetectionProtocol = null;
@@ -435,7 +435,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
             //Todo: We need to search in the peptides Identifications all of the Search Databases Used.
             //Todo: We need to search all of the possible modifications presented in the experiment.
 
-            metaData = new IdentificationMetaData(null,null,spectrumIdentificationProtocolList,proteinDetectionProtocol,searchDataBaseList);
+            metaData = new IdentificationMetaData(null, null, spectrumIdentificationProtocolList, proteinDetectionProtocol, searchDataBaseList);
         }
         return metaData;
     }
@@ -443,11 +443,11 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
     @Override
     public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
-        if(metaData == null){
+        if (metaData == null) {
             List<ScanSetting> scanSettings = null;
             List<DataProcessing> dataProcessings = getDataProcessings();
             List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
-            metaData = new MzGraphMetaData(null,null,scanSettings,instrumentConfigurations,dataProcessings);
+            metaData = new MzGraphMetaData(null, null, scanSettings, instrumentConfigurations, dataProcessings);
         }
         return metaData;
     }
@@ -472,7 +472,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                     getCache().store(CacheCategory.SPECTRUM, id, spectrum);
                 }
             } catch (Exception ex) {
-                String msg  = "Error while getting spectrum: " + id;
+                String msg = "Error while getting spectrum: " + id;
                 logger.error(msg, ex);
                 throw new DataAccessException(msg, ex);
             }
@@ -521,7 +521,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                     }
                 }
             } catch (Exception ex) {
-                String msg  = "Error while getting identification: " + id;
+                String msg = "Error while getting identification: " + id;
                 logger.error(msg, ex);
                 throw new DataAccessException(msg, ex);
             }

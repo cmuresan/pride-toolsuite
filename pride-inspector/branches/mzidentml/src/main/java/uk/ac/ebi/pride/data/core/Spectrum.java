@@ -1,7 +1,10 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- non-JDK imports --------------------------------------------------------
 
 import uk.ac.ebi.pride.term.CvTermReference;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.util.List;
 
@@ -28,32 +31,36 @@ import java.util.List;
 public class Spectrum extends MzGraph {
 
     /**
-     * the identifier for the spot on a MALDI or similar on
-     */
-    private String spotID = null;
-    /**
-     * source file
-     */
-    private SourceFile sourceFile = null;
-    /**
-     * list and descriptions of scans
-     */
-    private ScanList scanList = null;
-    /**
-     * list and descriptions of precursor isolations to this spectrum
-     */
-    private List<Precursor> precursors = null;
-    /**
-     * list and descriptions of product isolations to this spectrum
-     */
-    private List<ParamGroup> products = null;
-    /**
      * peptide associate with this spectrum
      */
     private Peptide peptide = null;
 
     /**
-     *
+     * list and descriptions of precursor isolations to this spectrum
+     */
+    private List<Precursor> precursors = null;
+
+    /**
+     * list and descriptions of product isolations to this spectrum
+     */
+    private List<ParamGroup> products = null;
+
+    /**
+     * list and descriptions of scans
+     */
+    private ScanList scanList = null;
+
+    /**
+     * source file
+     */
+    private SourceFile sourceFile = null;
+
+    /**
+     * the identifier for the spot on a MALDI or similar on
+     */
+    private String spotID = null;
+
+    /**
      * @param id
      * @param name
      * @param index
@@ -67,24 +74,15 @@ public class Spectrum extends MzGraph {
      * @param products
      * @param peptide
      */
-    public Spectrum(Comparable id,
-                    String name,
-                    int index,
-                    DataProcessing defaultDataProcessing,
-                    int defaultArrayLength,
-                    List<BinaryDataArray> binaryDataArrays,
-                    String spotID,
-                    SourceFile sourceFile,
-                    ScanList scanList,
-                    List<Precursor> precursors,
-                    List<ParamGroup> products,
+    public Spectrum(Comparable id, String name, int index, DataProcessing defaultDataProcessing,
+                    int defaultArrayLength, List<BinaryDataArray> binaryDataArrays, String spotID,
+                    SourceFile sourceFile, ScanList scanList, List<Precursor> precursors, List<ParamGroup> products,
                     Peptide peptide) {
-         this(null, id, name, index, defaultDataProcessing, defaultArrayLength,
-                binaryDataArrays, spotID, sourceFile, scanList, precursors, products, peptide);
+        this(null, id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays, spotID, sourceFile,
+             scanList, precursors, products, peptide);
     }
 
     /**
-     *
      * @param params
      * @param id
      * @param name
@@ -98,23 +96,14 @@ public class Spectrum extends MzGraph {
      * @param precursors
      * @param products
      */
-    public Spectrum(ParamGroup params,
-                    Comparable id,
-                    String name,
-                    int index,
-                    DataProcessing defaultDataProcessing,
-                    int defaultArrayLength,
-                    List<BinaryDataArray> binaryDataArrays,
-                    String spotID,
-                    SourceFile sourceFile,
-                    ScanList scanList,
-                    List<Precursor> precursors,
-                    List<ParamGroup> products) {
-        this(params, id, name, index, defaultDataProcessing, defaultArrayLength,
-                binaryDataArrays, spotID, sourceFile, scanList, precursors, products, null);
+    public Spectrum(ParamGroup params, Comparable id, String name, int index, DataProcessing defaultDataProcessing,
+                    int defaultArrayLength, List<BinaryDataArray> binaryDataArrays, String spotID,
+                    SourceFile sourceFile, ScanList scanList, List<Precursor> precursors, List<ParamGroup> products) {
+        this(params, id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays, spotID, sourceFile,
+             scanList, precursors, products, null);
     }
+
     /**
-     *
      * @param params
      * @param id
      * @param name
@@ -129,26 +118,17 @@ public class Spectrum extends MzGraph {
      * @param products
      * @param peptide
      */
-    public Spectrum(ParamGroup params,
-                    Comparable id,
-                    String name,
-                    int index,
-                    DataProcessing defaultDataProcessing,
-                    int defaultArrayLength,
-                    List<BinaryDataArray> binaryDataArrays,
-                    String spotID,
-                    SourceFile sourceFile,
-                    ScanList scanList,
-                    List<Precursor> precursors,
-                    List<ParamGroup> products,
+    public Spectrum(ParamGroup params, Comparable id, String name, int index, DataProcessing defaultDataProcessing,
+                    int defaultArrayLength, List<BinaryDataArray> binaryDataArrays, String spotID,
+                    SourceFile sourceFile, ScanList scanList, List<Precursor> precursors, List<ParamGroup> products,
                     Peptide peptide) {
         super(params, id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays);
-        this.spotID = spotID;
+        this.spotID     = spotID;
         this.sourceFile = sourceFile;
-        this.scanList = scanList;
+        this.scanList   = scanList;
         this.precursors = precursors;
-        this.products = products;
-        this.peptide = peptide;
+        this.products   = products;
+        this.peptide    = peptide;
     }
 
     public String getSpotID() {
@@ -207,3 +187,6 @@ public class Spectrum extends MzGraph {
         this.peptide = peptide;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
 
 /**
@@ -14,41 +16,15 @@ import java.util.List;
  * Time: 09:43:20
  */
 public class ExperimentProtocol extends IdentifiableParamGroup {
-   /**
+
+    /**
      * Global Protocol steps for a PRIDE Experiment
      */
     private List<ParamGroup> protocolSteps;
 
     /**
-     *
-     * @param params
-     * @param id
-     * @param name
-     * @param protocolSteps
-     */
-    public ExperimentProtocol(ParamGroup params,
-                              String id,
-                              String name,
-                              List<ParamGroup> protocolSteps) {
-        super(params, id, name);
-        this.protocolSteps = protocolSteps;
-    }
-
-    /**
-     *
-      * @param id
-     * @param name
-     * @param protocolSteps
-     */
-    public ExperimentProtocol(Comparable id,
-                              String name,
-                              List<ParamGroup> protocolSteps) {
-        super(id, name);
-        this.protocolSteps = protocolSteps;
-    }
-
-    /**
      * Pride Protocol Constructor
+     *
      * @param id
      * @param name
      */
@@ -57,7 +33,27 @@ public class ExperimentProtocol extends IdentifiableParamGroup {
     }
 
     /**
-     *
+     * @param id
+     * @param name
+     * @param protocolSteps
+     */
+    public ExperimentProtocol(Comparable id, String name, List<ParamGroup> protocolSteps) {
+        super(id, name);
+        this.protocolSteps = protocolSteps;
+    }
+
+    /**
+     * @param params
+     * @param id
+     * @param name
+     * @param protocolSteps
+     */
+    public ExperimentProtocol(ParamGroup params, String id, String name, List<ParamGroup> protocolSteps) {
+        super(params, id, name);
+        this.protocolSteps = protocolSteps;
+    }
+
+    /**
      * @return
      */
     public List<ParamGroup> getProtocolSteps() {
@@ -66,9 +62,13 @@ public class ExperimentProtocol extends IdentifiableParamGroup {
 
     /**
      * Set the CvTerms for Each Step of the Pride Experiment
+     *
      * @param protocolSteps
      */
     public void setProtocolSteps(List<ParamGroup> protocolSteps) {
         this.protocolSteps = protocolSteps;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

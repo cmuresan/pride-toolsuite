@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
 
 /**
@@ -11,14 +13,17 @@ import java.util.List;
  * Time: 11:00:53
  */
 public class ScanSetting extends ParamGroup {
+
     /**
      * identifier of the scan setting
      */
     private String id = null;
+
     /**
      * source file
      */
     private List<SourceFile> sourceFile = null;
+
     /**
      * target list
      */
@@ -32,14 +37,11 @@ public class ScanSetting extends ParamGroup {
      * @param targets    optional.
      * @param params     optional.
      */
-    public ScanSetting(String id,
-                       List<SourceFile> sourceFile,
-                       List<ParamGroup> targets,
-                       ParamGroup params) {
+    public ScanSetting(String id, List<SourceFile> sourceFile, List<ParamGroup> targets, ParamGroup params) {
         super(params);
-        this.id = id;
+        this.id         = id;
         this.sourceFile = sourceFile;
-        this.targets = targets;
+        this.targets    = targets;
     }
 
     public String getId() {
@@ -66,3 +68,6 @@ public class ScanSetting extends ParamGroup {
         this.targets = targets;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

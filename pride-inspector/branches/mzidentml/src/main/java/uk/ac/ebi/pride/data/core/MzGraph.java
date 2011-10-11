@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
-
+//~--- JDK imports ------------------------------------------------------------
 
 import java.util.List;
 
@@ -16,24 +16,26 @@ import java.util.List;
 public abstract class MzGraph extends IdentifiableParamGroup {
 
     /**
-     * zero-based, consecutive index
-     */
-    private int index = -1;
-    /**
-     * appropriate data processing method
-     */
-    private DataProcessing defaultDataProcessing = null;
-    /**
-     * default length of binary data arrays
-     */
-    private int defaultArrayLength = -1;
-    /**
      * list of binary data arrays
      */
     private List<BinaryDataArray> binaryDataArrays = null;
 
     /**
-     *
+     * default length of binary data arrays
+     */
+    private int defaultArrayLength = -1;
+
+    /**
+     * appropriate data processing method
+     */
+    private DataProcessing defaultDataProcessing = null;
+
+    /**
+     * zero-based, consecutive index
+     */
+    private int index = -1;
+
+    /**
      * @param id
      * @param name
      * @param index
@@ -41,21 +43,16 @@ public abstract class MzGraph extends IdentifiableParamGroup {
      * @param defaultArrayLength
      * @param binaryDataArrays
      */
-    protected MzGraph(Comparable id,
-                      String name,
-                      int index,
-                      DataProcessing defaultDataProcessing,
-                      int defaultArrayLength,
-                      List<BinaryDataArray> binaryDataArrays) {
+    protected MzGraph(Comparable id, String name, int index, DataProcessing defaultDataProcessing,
+                      int defaultArrayLength, List<BinaryDataArray> binaryDataArrays) {
         super(id, name);
-        this.index = index;
+        this.index                 = index;
         this.defaultDataProcessing = defaultDataProcessing;
-        this.defaultArrayLength = defaultArrayLength;
-        this.binaryDataArrays = binaryDataArrays;
+        this.defaultArrayLength    = defaultArrayLength;
+        this.binaryDataArrays      = binaryDataArrays;
     }
 
     /**
-     *
      * @param params
      * @param id
      * @param name
@@ -64,18 +61,13 @@ public abstract class MzGraph extends IdentifiableParamGroup {
      * @param defaultArrayLength
      * @param binaryDataArrays
      */
-    protected MzGraph(ParamGroup params,
-                      Comparable id,
-                      String name,
-                      int index,
-                      DataProcessing defaultDataProcessing,
-                      int defaultArrayLength,
-                      List<BinaryDataArray> binaryDataArrays) {
+    protected MzGraph(ParamGroup params, Comparable id, String name, int index, DataProcessing defaultDataProcessing,
+                      int defaultArrayLength, List<BinaryDataArray> binaryDataArrays) {
         super(params, id, name);
-        this.index = index;
+        this.index                 = index;
         this.defaultDataProcessing = defaultDataProcessing;
-        this.defaultArrayLength = defaultArrayLength;
-        this.binaryDataArrays = binaryDataArrays;
+        this.defaultArrayLength    = defaultArrayLength;
+        this.binaryDataArrays      = binaryDataArrays;
     }
 
     public List<BinaryDataArray> getBinaryDataArrays() {
@@ -93,14 +85,16 @@ public abstract class MzGraph extends IdentifiableParamGroup {
      * @return BinaryDataArray  data array.
      */
     protected BinaryDataArray getBinaryDataArray(String cvAcc) {
-        BinaryDataArray arr = null;
-
+        BinaryDataArray       arr      = null;
         List<BinaryDataArray> binaries = getBinaryDataArrays();
+
         if (binaries != null) {
             for (BinaryDataArray binary : binaries) {
                 List<CvParam> cvParams = binary.getCvParams();
+
                 for (CvParam cvParam : cvParams) {
                     String accession = cvParam.getAccession();
+
                     if (cvAcc.equals(accession)) {
                         arr = binary;
                     }
@@ -135,3 +129,6 @@ public abstract class MzGraph extends IdentifiableParamGroup {
         this.index = index;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

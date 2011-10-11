@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.controller.cache;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -15,18 +17,18 @@ import java.util.Map;
  */
 public class CachedMap<K, V> extends LinkedHashMap<K, V> {
     public static final int DEFAULT_CAPACITY = 10;
-    private int maxCapacity;
+    private int             maxCapacity;
 
     public CachedMap() {
         this(DEFAULT_CAPACITY);
     }
 
     public CachedMap(int maxCapacity) {
+
         // 0.75f indicates the capacity threshold for resizing.
         // true indicates the access order
         super(maxCapacity + 1, .75F, true);
         this.maxCapacity = maxCapacity;
-
     }
 
     @Override
@@ -34,3 +36,6 @@ public class CachedMap<K, V> extends LinkedHashMap<K, V> {
         return size() > maxCapacity;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

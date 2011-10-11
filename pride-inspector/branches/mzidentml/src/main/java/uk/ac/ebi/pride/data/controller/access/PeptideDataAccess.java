@@ -1,7 +1,11 @@
 package uk.ac.ebi.pride.data.controller.access;
 
+//~--- non-JDK imports --------------------------------------------------------
+
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.*;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.util.Collection;
 
@@ -16,6 +20,7 @@ import java.util.Collection;
  * Time: 10:37:47
  */
 public interface PeptideDataAccess {
+
     /**
      * Whether this controller contains peptides
      *
@@ -168,7 +173,6 @@ public interface PeptideDataAccess {
      * @return int  number of ptms
      * @throws DataAccessException data access exception
      */
-
     public int getNumberOfSubstitutionPTMs(Comparable identId, Comparable peptideId) throws DataAccessException;
 
     /**
@@ -179,7 +183,8 @@ public interface PeptideDataAccess {
      * @return Collection<Modification> a collection of ptms
      * @throws DataAccessException data access exception
      */
-    public Collection<SubstitutionModification> getSubstitutionPTMs(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public Collection<SubstitutionModification> getSubstitutionPTMs(Comparable identId, Comparable peptideId)
+            throws DataAccessException;
 
     /**
      * Get the number of fragment ions for a peptide
@@ -206,21 +211,22 @@ public interface PeptideDataAccess {
      *
      * @param identId   identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
-     * @return  PeptideScore  peptide score
-     * @throws DataAccessException  data access exception
+     * @return PeptideScore  peptide score
+     * @throws DataAccessException data access exception
      */
     public PeptideScore getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException;
 
     /**
      * Get all Peptide Evidence for a Peptide Identification
+     *
      * @param identId   identification id
-     * @param peptideId  peptide id, can be the index of the peptide as well.
+     * @param peptideId peptide id, can be the index of the peptide as well.
      * @return Collection<PeptideEvidence> collection of peptide Evidences.
      * @throws DataAccessException
      */
-    public Collection<PeptideEvidence> getPeptideEvidences(Comparable identId, Comparable peptideId) throws DataAccessException;
-
-
-
-
+    public Collection<PeptideEvidence> getPeptideEvidences(Comparable identId, Comparable peptideId)
+            throws DataAccessException;
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

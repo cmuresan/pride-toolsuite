@@ -1,7 +1,11 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- non-JDK imports --------------------------------------------------------
+
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.util.List;
 
@@ -16,40 +20,48 @@ import java.util.List;
  * Time: 11:33:37
  */
 public class FragmentIon extends ParamGroup {
-    // todo: incorrect default values
-    /**
-     * m/z value
-     */
-    private double mz = -1;
-    /**
-     * intensity of the fragment ion
-     */
-    private double intensity = -1;
-    /**
-     * mass error margin of the fragment ion
-     */
-    private double massError = -1;
-    /**
-     * retention time error margin of the fragment ion
-     */
-    private double retentionTimeError = -1;
+
     /**
      * charge of the fragment ion
      */
     private int charge = 0;
+
+    /**
+     * intensity of the fragment ion
+     */
+    private double intensity = -1;
+
     /**
      * ion type
      */
     private String ionType = null;
-    /**
-     * location
-     */
-    private int location = -1;
+
     /**
      * ion type accession
      */
     private String ionTypeAccession = null;
 
+    /**
+     * location
+     */
+    private int location = -1;
+
+    /**
+     * mass error margin of the fragment ion
+     */
+    private double massError = -1;
+
+    // todo: incorrect default values
+
+    /**
+     * m/z value
+     */
+    private double mz = -1;
+
+    /**
+     * retention time error margin of the fragment ion
+     */
+    private double retentionTimeError = -1;
 
     /**
      * Constructor
@@ -66,30 +78,41 @@ public class FragmentIon extends ParamGroup {
 
         for (CvParam cvParam : cvParams) {
             String accession = cvParam.getAccession();
-            String value = cvParam.getValue();
+            String value     = cvParam.getValue();
 
             if (CvTermReference.PRODUCT_ION_MZ.getAccession().equals(accession)
                     || CvTermReference.PRODUCT_ION_MZ_PLGS.getAccession().equals(accession)) {
-                mz = NumberUtilities.isNumber(value) ? Double.parseDouble(value) : mz;
+                mz = NumberUtilities.isNumber(value)
+                     ? Double.parseDouble(value)
+                     : mz;
             } else if (CvTermReference.PRODUCT_ION_INTENSITY.getAccession().equals(accession)
-                    || CvTermReference.PRODUCT_ION_INTENSITY_PLGS.getAccession().equals(accession)) {
-                intensity = NumberUtilities.isNumber(value) ? Double.parseDouble(value) : intensity;
+                       || CvTermReference.PRODUCT_ION_INTENSITY_PLGS.getAccession().equals(accession)) {
+                intensity = NumberUtilities.isNumber(value)
+                            ? Double.parseDouble(value)
+                            : intensity;
             } else if (CvTermReference.PRODUCT_ION_MASS_ERROR.getAccession().equals(accession)
-                    || CvTermReference.PRODUCT_ION_MASS_ERROR_PLGS.getAccession().equals(accession)) {
-                massError = NumberUtilities.isNumber(value) ? Double.parseDouble(value) : massError;
+                       || CvTermReference.PRODUCT_ION_MASS_ERROR_PLGS.getAccession().equals(accession)) {
+                massError = NumberUtilities.isNumber(value)
+                            ? Double.parseDouble(value)
+                            : massError;
             } else if (CvTermReference.PRODUCT_ION_RETENTION_TIME_ERROR.getAccession().equals(accession)
-                    || CvTermReference.PRODUCT_ION_RETENTION_TIME_ERROR_PLGS.getAccession().equals(accession)) {
-                retentionTimeError = NumberUtilities.isNumber(value) ? Double.parseDouble(value) : retentionTimeError;
+                       || CvTermReference.PRODUCT_ION_RETENTION_TIME_ERROR_PLGS.getAccession().equals(accession)) {
+                retentionTimeError = NumberUtilities.isNumber(value)
+                                     ? Double.parseDouble(value)
+                                     : retentionTimeError;
             } else if (CvTermReference.PRODUCT_ION_CHARGE.getAccession().equals(accession)) {
-                charge = NumberUtilities.isInteger(value) ? Integer.parseInt(value) : charge;
+                charge = NumberUtilities.isInteger(value)
+                         ? Integer.parseInt(value)
+                         : charge;
             } else if (ionType == null) {
                 if (cvParam.getName().contains("ion")) {
-                    ionType = cvParam.getName();
-                    location = NumberUtilities.isInteger(value) ? Integer.parseInt(value) : location;
+                    ionType          = cvParam.getName();
+                    location         = NumberUtilities.isInteger(value)
+                                       ? Integer.parseInt(value)
+                                       : location;
                     ionTypeAccession = accession;
                 }
             }
-
         }
     }
 
@@ -157,3 +180,6 @@ public class FragmentIon extends ParamGroup {
         this.location = location;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

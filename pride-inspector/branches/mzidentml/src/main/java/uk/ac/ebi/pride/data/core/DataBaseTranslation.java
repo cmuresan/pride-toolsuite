@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
 
 /**
@@ -8,16 +10,12 @@ import java.util.List;
  * Date: 05/08/11
  * Time: 17:36
  */
-
 public class DataBaseTranslation {
-
-    List<Integer> alowedFrames = null;
-
+    List<Integer>                alowedFrames         = null;
     List<IdentifiableParamGroup> translationTableList = null;
 
-    public DataBaseTranslation(List<Integer> alowedFrames,
-                               List<IdentifiableParamGroup> translationTableList) {
-        this.alowedFrames = alowedFrames;
+    public DataBaseTranslation(List<Integer> alowedFrames, List<IdentifiableParamGroup> translationTableList) {
+        this.alowedFrames         = alowedFrames;
         this.translationTableList = translationTableList;
     }
 
@@ -37,3 +35,6 @@ public class DataBaseTranslation {
         this.translationTableList = translationTableList;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

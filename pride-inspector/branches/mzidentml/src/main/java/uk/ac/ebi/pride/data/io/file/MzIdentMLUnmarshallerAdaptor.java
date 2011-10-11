@@ -12,11 +12,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * ToDo: document this class
+ *
  * User: yperez
  * Date: 23/09/11
  * Time: 15:28
- * To change this template use File | Settings | File Templates.
  */
 public class MzIdentMLUnmarshallerAdaptor {
 
@@ -80,7 +80,7 @@ public class MzIdentMLUnmarshallerAdaptor {
     }
 
     public SpectrumIdentificationItem getPeptideIdentificationById(Comparable IdentId, Comparable index) {
-        ProteinDetectionHypothesis protein = null;
+        ProteinDetectionHypothesis protein;
         try {
             protein = unmarshaller.unmarshal(ProteinDetectionHypothesis.class, (String) IdentId);
             List<PeptideHypothesis> peptideHypothesises = protein.getPeptideHypothesis();

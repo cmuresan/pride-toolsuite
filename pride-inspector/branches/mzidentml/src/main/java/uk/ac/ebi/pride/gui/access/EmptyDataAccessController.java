@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;
 import uk.ac.ebi.pride.data.controller.impl.AbstractDataAccessController;
 import uk.ac.ebi.pride.data.core.Chromatogram;
 import uk.ac.ebi.pride.data.core.Identification;
+import uk.ac.ebi.pride.data.core.ParamGroup;
 import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.gui.component.chart.PrideChartManager;
 
@@ -38,36 +39,12 @@ public class EmptyDataAccessController extends AbstractDataAccessController {
     }
 
     @Override
+    public ParamGroup getAdditional() throws DataAccessException {
+        throw new UnsupportedOperationException("This is a empty data access controller");
+    }
+
+    @Override
     public List<PrideChartManager> getChartData() throws DataAccessException {
-        throw new UnsupportedOperationException("This is a empty data access controller");
-    }
-
-    @Override
-    public Cache getCache() {
-        throw new UnsupportedOperationException("This is a empty data access controller");
-    }
-
-    @Override
-    public void setCache(Cache cache) {
-        throw new UnsupportedOperationException("This is a empty data access controller");
-    }
-
-    @Override
-    public CacheBuilder getCacheBuilder() {
-        throw new UnsupportedOperationException("This is a empty data access controller");
-    }
-
-    @Override
-    public void setCacheBuilder(CacheBuilder builder) {
-        throw new UnsupportedOperationException("This is a empty data access controller");
-    }
-
-    @Override
-    public void clearCache() {
-    }
-
-    @Override
-    public void populateCache() throws DataAccessException {
         throw new UnsupportedOperationException("This is a empty data access controller");
     }
 

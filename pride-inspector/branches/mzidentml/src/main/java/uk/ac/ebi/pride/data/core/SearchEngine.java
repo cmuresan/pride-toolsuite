@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * SearchEngine store the original search engine title and identified search engine types.
  *
- * User: rwang
+ * User: rwang, yperez
  * Date: Dec 2, 2010
  * Time: 10:12:31 AM
  */

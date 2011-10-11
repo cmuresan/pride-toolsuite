@@ -18,14 +18,12 @@ import java.util.Collection;
  */
 public interface ProteinDataAccess {
     /**
-     * fired when an identification object has changed
+     * The name for two dimensional identification
      */
-    public static final String IDENTIFICATION_TYPE = "Identification";
-
-    public static final String IDENTIFICATION_ID = "Identification ID";
-
     public static final String TWO_DIM_IDENTIFICATION_TYPE = "Two Dimensional";
-
+    /**
+     * The name for gel free identification
+     */
     public static final String GEL_FREE_IDENTIFICATION_TYPE = "Gel Free";
 
     /**

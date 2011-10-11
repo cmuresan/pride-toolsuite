@@ -4,7 +4,6 @@ import java.util.List;
 
 /**
  * The class Peptide Manage the information for peptide Identifications
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 08/08/11
  * Time: 12:39
@@ -67,7 +66,7 @@ public class Peptide extends IdentifiableParamGroup {
     /**
      * The product ions identified in this result.
      */
-    List<FragmentIon> fragmentation = null;
+    private List<FragmentIon> fragmentation = null;
     /**
      * PeptideScore stores a number of peptide scores for a list of search engines.
      */
@@ -118,21 +117,8 @@ public class Peptide extends IdentifiableParamGroup {
                    PeptideScore peptideScore,
                    Spectrum spectrum,
                    SpectraData spectraData) {
-        super(id, name);
-        this.chargeState = chargeState;
-        this.experimentalMassToCharge = experimentalMassToCharge;
-        this.calculatedMassToCharge = calculatedMassToCharge;
-        this.calculatedPI = calculatedPI;
-        this.peptideSequence = peptideSequence;
-        this.rank = rank;
-        this.passThreshold = passThreshold;
-        this.massTableRef = massTableRef;
-        this.sample = sample;
-        this.peptideEvidenceList = peptideEvidenceList;
-        this.fragmentation = fragmentation;
-        this.peptideScore = peptideScore;
-        this.spectrum = spectrum;
-        this.spectraData = spectraData;
+        this(null, id, name, chargeState, experimentalMassToCharge, calculatedMassToCharge, calculatedPI, peptideSequence, rank,
+                passThreshold, massTableRef, sample, peptideEvidenceList, fragmentation, peptideScore, spectrum, spectraData);
     }
 
     public Peptide(ParamGroup params,

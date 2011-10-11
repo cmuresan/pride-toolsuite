@@ -14,7 +14,6 @@ package uk.ac.ebi.pride.data.core;
  *     - frame: The translation frame of this sequence if this is PeptideEvidence derived from nucleic acid sequence.
  *     - Translation Table: A reference to the translation table used if this is PeptideEvidence derived from nucleic acid sequence
  * </p>
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 04/08/11
  * Time: 14:48
@@ -70,12 +69,7 @@ public class PeptideEvidence extends IdentifiableParamGroup {
                            boolean decoy,
                            PeptideSequence peptideSequence,
                            DBSequence dbSequence) {
-        super(id, name);
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
-        this.decoy = decoy;
-        this.peptideSequence = peptideSequence;
-        this.dbSequence = dbSequence;
+        this(null, id, name, startPosition, endPosition, decoy, peptideSequence, dbSequence);
     }
 
     public PeptideEvidence(ParamGroup params,

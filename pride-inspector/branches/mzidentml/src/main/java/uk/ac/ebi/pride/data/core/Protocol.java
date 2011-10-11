@@ -6,11 +6,9 @@ package uk.ac.ebi.pride.data.core;
  *     This class Represent the information for MzIdentMl Experiments at the Protein and Spectrum Level
  * </p>
  *
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 08/08/11
  * Time: 11:32
- * To change this template use File | Settings | File Templates.
  */
 public class Protocol extends IdentifiableParamGroup {
     /**

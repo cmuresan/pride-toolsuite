@@ -7,7 +7,7 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 /**
- * CacheAccessor provides a implementation of cache.
+ * CacheAccessor is the implementation of cache.
  * <p/>
  * User: rwang
  * Date: 07-Sep-2010
@@ -69,6 +69,7 @@ public class CacheAccessor implements Cache {
                 logger.error(errMsg);
                 throw new IllegalArgumentException(errMsg);
             }
+            ((Collection)content).add(key);
         } else {
             String errMsg = "Cannot store key-value pair to a data structure other than map";
             logger.error(errMsg);

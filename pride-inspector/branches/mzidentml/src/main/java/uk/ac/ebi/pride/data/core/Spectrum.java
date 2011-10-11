@@ -79,15 +79,40 @@ public class Spectrum extends MzGraph {
                     List<Precursor> precursors,
                     List<ParamGroup> products,
                     Peptide peptide) {
-        super(id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays);
-        this.spotID = spotID;
-        this.sourceFile = sourceFile;
-        this.scanList = scanList;
-        this.precursors = precursors;
-        this.products = products;
-        this.peptide = peptide;
+         this(null, id, name, index, defaultDataProcessing, defaultArrayLength,
+                binaryDataArrays, spotID, sourceFile, scanList, precursors, products, peptide);
     }
 
+    /**
+     *
+     * @param params
+     * @param id
+     * @param name
+     * @param index
+     * @param defaultDataProcessing
+     * @param defaultArrayLength
+     * @param binaryDataArrays
+     * @param spotID
+     * @param sourceFile
+     * @param scanList
+     * @param precursors
+     * @param products
+     */
+    public Spectrum(ParamGroup params,
+                    Comparable id,
+                    String name,
+                    int index,
+                    DataProcessing defaultDataProcessing,
+                    int defaultArrayLength,
+                    List<BinaryDataArray> binaryDataArrays,
+                    String spotID,
+                    SourceFile sourceFile,
+                    ScanList scanList,
+                    List<Precursor> precursors,
+                    List<ParamGroup> products) {
+        this(params, id, name, index, defaultDataProcessing, defaultArrayLength,
+                binaryDataArrays, spotID, sourceFile, scanList, precursors, products, null);
+    }
     /**
      *
      * @param params
@@ -125,41 +150,6 @@ public class Spectrum extends MzGraph {
         this.products = products;
         this.peptide = peptide;
     }
-    /**
-         *
-         * @param params
-         * @param id
-         * @param name
-         * @param index
-         * @param defaultDataProcessing
-         * @param defaultArrayLength
-         * @param binaryDataArrays
-         * @param spotID
-         * @param sourceFile
-         * @param scanList
-         * @param precursors
-         * @param products
-         */
-        public Spectrum(ParamGroup params,
-                        Comparable id,
-                        String name,
-                        int index,
-                        DataProcessing defaultDataProcessing,
-                        int defaultArrayLength,
-                        List<BinaryDataArray> binaryDataArrays,
-                        String spotID,
-                        SourceFile sourceFile,
-                        ScanList scanList,
-                        List<Precursor> precursors,
-                        List<ParamGroup> products) {
-            super(params, id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays);
-            this.spotID = spotID;
-            this.sourceFile = sourceFile;
-            this.scanList = scanList;
-            this.precursors = precursors;
-            this.products = products;
-        }
-
 
     public String getSpotID() {
         return spotID;

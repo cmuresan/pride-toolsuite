@@ -50,12 +50,12 @@ public class Precursor implements MassSpecObject {
                      ParamGroup isolationWindow,
                      List<ParamGroup> selectedIon,
                      ParamGroup activation) {
-        setSpectrum(spectrum);
-        setSourceFile(sourceFile);
-        setExternalSpectrumID(externalSpectrumID);
-        setIsolationWindow(isolationWindow);
-        setSelectedIons(selectedIon);
-        setActivation(activation);
+        this.spectrum = spectrum;
+        this.sourceFile = sourceFile;
+        this.externalSpectrumID = externalSpectrumID;
+        this.isolationWindow = isolationWindow;
+        this.selectedIons = selectedIon;
+        this.activation = activation;
     }
 
     public ParamGroup getActivation() {

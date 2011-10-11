@@ -1,11 +1,11 @@
 package uk.ac.ebi.pride.data.core;
 
 /**
- * Created by IntelliJ IDEA.
+ * ToDo: document this class
+ *
  * User: yperez
  * Date: 05/08/11
  * Time: 15:28
- * To change this template use File | Settings | File Templates.
  */
 public class ProtocolApplication extends Identifiable {
 

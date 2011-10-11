@@ -37,9 +37,9 @@ public class ScanSetting extends ParamGroup {
                        List<ParamGroup> targets,
                        ParamGroup params) {
         super(params);
-        setId(id);
-        setSourceFile(sourceFile);
-        setTargets(targets);
+        this.id = id;
+        this.sourceFile = sourceFile;
+        this.targets = targets;
     }
 
     public String getId() {

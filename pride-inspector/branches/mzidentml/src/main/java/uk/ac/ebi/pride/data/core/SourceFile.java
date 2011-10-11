@@ -3,6 +3,8 @@ package uk.ac.ebi.pride.data.core;
 import java.util.List;
 
 /**
+ * ToDo: too many constructors
+ *
  * Description of source file, including identification file, location and type.
  * the attributes fileFormat is used to manage the cvterm for file format in MzIdentMl
  * and the externalFormatDocumentURI is used to store the information of the external shcema.

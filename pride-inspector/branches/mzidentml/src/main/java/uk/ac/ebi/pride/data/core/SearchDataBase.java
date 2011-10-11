@@ -11,11 +11,9 @@ import java.util.List;
  *     - name of the database: CvTerms and CvParm
  *     - Description of the DataBase.
  * </p>
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 08/08/11
  * Time: 11:52
- * To change this template use File | Settings | File Templates.
  */
 public class SearchDataBase extends ExternalData{
     /**

@@ -10,6 +10,7 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
+import uk.ac.ebi.pride.data.controller.access.CacheAccess;
 import uk.ac.ebi.pride.data.controller.cache.Cache;
 import uk.ac.ebi.pride.data.controller.cache.CacheAccessor;
 import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;
@@ -34,8 +35,7 @@ import java.util.*;
  * Date: 13-Sep-2010
  * Time: 14:26:03
  */
-public abstract class CachedDataAccessController extends AbstractDataAccessController {
-
+public abstract class CachedDataAccessController extends AbstractDataAccessController implements CacheAccess {
     private static final Logger logger = LoggerFactory.getLogger(CachedDataAccessController.class);
     /**
      * the default data access mode is to use both cache and data source
@@ -48,22 +48,30 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     /**
      * Note: this cache is related to each experiment, must be reset when switching experiment.
      */
-    protected Cache cache;
+    private Cache cache;
     /**
      * builder is responsible for initializing the Cache
      */
-    protected CacheBuilder cacheBuilder;
+    private CacheBuilder cacheBuilder;
 
+    /**
+     * Construct a data access controller to use both the cache and the source
+     */
     public CachedDataAccessController() {
         this(null, DEFAULT_ACCESS_MODE);
     }
 
+    /**
+     * Construct a data access controller using a given access mode
+     *
+     * @param mode
+     */
     public CachedDataAccessController(DataAccessMode mode) {
         this(null, mode);
     }
 
     /**
-     * Constructor for CachedDataAccessController.
+     * Constructor a data access controller using a given data source and access mode.
      *
      * @param source data source
      * @param mode   DataAccessMode
@@ -754,6 +762,14 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return mods;
     }
 
+    /**
+     * Get the number of fragment ions in a given peptide
+     *
+     * @param identId   identification id
+     * @param peptideId peptide id, can be the index of the peptide as well.
+     * @return int number of fragment ions
+     * @throws DataAccessException data access controller
+     */
     @Override
     public int getNumberOfFragmentIons(Comparable identId, Comparable peptideId) throws DataAccessException {
         Integer num = (Integer) cache.get(CacheCategory.NUMBER_OF_FRAGMENT_IONS, peptideId);
@@ -763,6 +779,14 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return num == null ? 0 : num;
     }
 
+    /**
+     * Get peptide score from search engine
+     *
+     * @param identId   identification id
+     * @param peptideId peptide id, can be the index of the peptide as well.
+     * @return PeptideScore    peptide score from search engine
+     * @throws DataAccessException data access exception
+     */
     @Override
     public PeptideScore getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException {
         PeptideScore score = null;
@@ -779,26 +803,31 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return score;
     }
 
+    /**
+     * Get search engine type
+     *
+     * @return SearchEngine    search engine
+     * @throws DataAccessException data access exception
+     */
     @Override
     public SearchEngine getSearchEngine() throws DataAccessException {
-        if (searchEngine == null) {
-            Collection<Comparable> identIds = this.getIdentificationIds();
-            Comparable identId = CollectionUtils.getElement(identIds, 0);
-            Identification ident = (Identification) cache.get(CacheCategory.IDENTIFICATION, identId);
-            if (ident != null) {
-                searchEngine = new SearchEngine(ident.getSearchEngine());
-                // check the search engine types from the data source
-                List<Peptide> peptides = ident.getIdentifiedPeptides();
-                Peptide peptide = peptides.get(0);
-                List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide);
-                searchEngine.setSearchEngineTypes(types);
-            } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
-                super.getSearchEngine();
-            }
+        Collection<SearchEngine> searchEngines = (Collection<SearchEngine>) cache.get(CacheCategory.SEARCH_ENGINE_TYPE);
+
+        if (searchEngines != null && !searchEngines.isEmpty()) {
+            return CollectionUtils.getElement(searchEngines, 0);
+        } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
+            return super.getSearchEngine();
         }
-        return searchEngine;
+
+        return null;
     }
 
+    /**
+     * Get chart data for generating chart component
+     *
+     * @return List<PrideChartManager> a list of chart data
+     * @throws DataAccessException data access exception
+     */
     @Override
     public List<PrideChartManager> getChartData() throws DataAccessException {
         ExperimentSummaryData spectralSummaryData;
@@ -844,5 +873,14 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
             return CollectionUtils.getElement(metaDatas, 0);
         }
         return null;
+    }
+
+        /**
+     * Close data access controller by clearing the cache first
+     */
+    @Override
+    public void close() {
+        clearCache();
+        super.close();
     }
 }

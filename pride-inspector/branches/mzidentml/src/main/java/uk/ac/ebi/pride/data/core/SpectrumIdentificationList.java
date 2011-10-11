@@ -4,7 +4,6 @@ import java.util.List;
 
 /**
  * Represents the set of all search results from SpectrumIdentification.
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 08/08/11
  * Time: 12:14
@@ -35,10 +34,7 @@ public class SpectrumIdentificationList extends IdentifiableParamGroup {
                                       int numSequenceSearched,
                                       List<IdentifiableParamGroup> fragmentationTable,
                                       List<Peptide> spectrumIdentificationList) {
-        super(id, name);
-        this.numSequenceSearched = numSequenceSearched;
-        this.fragmentationTable = fragmentationTable;
-        this.spectrumIdentificationList = spectrumIdentificationList;
+       this(null, id, name, numSequenceSearched, fragmentationTable, spectrumIdentificationList);
     }
 
     public SpectrumIdentificationList(ParamGroup params,

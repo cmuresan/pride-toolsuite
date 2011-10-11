@@ -8,7 +8,8 @@ import java.util.Collection;
 
 /**
  * MzGraphDataAccess defines the interface for accessing mzgraph data.
- * It also defines mzgraph related property changing event.
+ * It also defines mzgraph related property changing event messages.
+ * <p/>
  * <p/>
  * User: rwang
  * Date: 29-Aug-2010
@@ -69,9 +70,9 @@ public interface MzGraphDataAccess {
     /**
      * Get the index of a spectrum using its id
      *
-     * @param id    spectrum id
+     * @param id spectrum id
      * @return int  spectrum index
-     * @throws DataAccessException  data access exception
+     * @throws DataAccessException data access exception
      */
     public int getSpectrumIndex(Comparable id) throws DataAccessException;
 
@@ -98,9 +99,9 @@ public interface MzGraphDataAccess {
     /**
      * Check whether the given spectrum is identified.
      *
-     * @param specId    spectrum id
-     * @return  boolean true is identified
-     * @throws DataAccessException  throw a exception when there is an error accessing the data source.
+     * @param specId spectrum id
+     * @return boolean true is identified
+     * @throws DataAccessException throw a exception when there is an error accessing the data source.
      */
     public boolean isIdentifiedSpectrum(Comparable specId) throws DataAccessException;
 
@@ -179,9 +180,9 @@ public interface MzGraphDataAccess {
     /**
      * Get the index of a chromatogram by its id
      *
-     * @param id    chromatogram id
+     * @param id chromatogram id
      * @return int  chromatogram index
-     * @throws DataAccessException  data access exception
+     * @throws DataAccessException data access exception
      */
     public int getChromatogramIndex(Comparable id) throws DataAccessException;
 
@@ -204,5 +205,4 @@ public interface MzGraphDataAccess {
      * @throws DataAccessException throw a exception when there is an error accessing the data source.
      */
     public Collection<Chromatogram> getChromatogramByIndex(int index, int offset) throws DataAccessException;
-
 }

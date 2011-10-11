@@ -8,7 +8,8 @@ import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
+ * ToDo: document this class
+ *
  * User: yperez
  * Date: 19/09/11
  * Time: 16:44
@@ -32,9 +33,6 @@ public class MzIdentMLCacheBuilder extends AbstractAccessCacheBuilder{
         // clear and add metadata
         cache.clear(CacheCategory.EXPERIMENT_METADATA);
         controller.getExperimentMetaData();
-        // clear and add spectrum ids
-        //cache.clear(CacheCategory.SPECTRUM_ID);
-        //cache.storeInBatch(CacheCategory.SPECTRUM_ID, new ArrayList<Comparable>(unmarshaller.getSpectrumIds()));
         // clear and add peptide ids
         cache.clear(CacheCategory.IDENTIFICATION_ID);
         cache.storeInBatch(CacheCategory.IDENTIFICATION_ID, new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.ProteinDetectionHypothesis)));

@@ -7,7 +7,8 @@ import uk.ac.ebi.pride.term.CvTermReference;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * ToDo: document this class
+ *
  * User: yperez
  * Date: 19/09/11
  * Time: 16:08
@@ -106,7 +107,6 @@ public class MzIdentMLTransformer {
 
     public static Person transformToPerson(uk.ac.ebi.jmzidml.model.mzidml.Person oldPerson) {
         if(oldPerson != null){
-            List<uk.ac.ebi.jmzidml.model.mzidml.Affiliation> oldAffiliation = oldPerson.getAffiliation();
             List<Organization> affiliation = transformAffiliationToOrganization(oldPerson.getAffiliation());
                 //Todo: Take from Cv Params the value of the mail.
             return new Person(new ParamGroup(transformToCvParam(oldPerson.getCvParam()),transformToUserParam(oldPerson.getUserParam())),oldPerson.getId(),oldPerson.getName(),oldPerson.getLastName(),oldPerson.getFirstName(),oldPerson.getMidInitials(),affiliation,null);
@@ -255,7 +255,6 @@ public class MzIdentMLTransformer {
             FragmentationTable = transformToFragmentationTable(oldFragmentationTable);
         }
         if(oldIdent != null){
-            SearchDataBase database = transformToSeachDatabase(oldIdent.getDBSequence().getSearchDatabase());
             Map<PeptideEvidence, List<Peptide>> peptides = transformToPeptideIdentifications(oldIdent.getPeptideHypothesis(),oldFragmentationTable);
             ident = new GelFreeIdentification(oldIdent.getId(),oldIdent.getName(),transformToDBSequence(oldIdent.getDBSequence()),oldIdent.isPassThreshold(),peptides,-1,-1,null,-1);
             //Todo: SearchEngine information, score, threshold and sequence coverage
@@ -281,6 +280,7 @@ public class MzIdentMLTransformer {
             for(uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis oldPeptideHypothesis: peptideHypothesis){
                 PeptideEvidence peptideEvidence = transformToPeptideEvidence(oldPeptideHypothesis.getPeptideEvidence());
                 List<Peptide> peptideIdentified = transformToPeptideIdentification(oldPeptideHypothesis.getSpectrumIdentificationItemRef(), oldFragmentationTable);
+                peptides.put(peptideEvidence, peptideIdentified);
             }
        }
        return peptides;
@@ -346,8 +346,8 @@ public class MzIdentMLTransformer {
                    //mz
                    for (uk.ac.ebi.jmzidml.model.mzidml.FragmentArray fragArr : ionType.getFragmentArray()){
                        uk.ac.ebi.jmzidml.model.mzidml.Measure oldMeasure = fragArr.getMeasure();
-                       CvParam cvParam = null;
-                       CvTermReference cvMz = null;
+                       CvParam cvParam;
+                       CvTermReference cvMz;
                        cvMz = CvTermReference.PRODUCT_ION_MZ;
                        cvParam = getCvParamByID(oldMeasure.getCvParam(),cvMz.getAccession(),fragArr.getValues().get(index).toString());
                        if(cvParam == null){
@@ -556,8 +556,6 @@ public class MzIdentMLTransformer {
     public static SpectrumIdentificationProtocol transformToSpectrumIdentificationProtocol(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationProtocol oldProtocol){
         SpectrumIdentificationProtocol spectrumIdentificationProtocol = null;
         if(oldProtocol != null){
-            Comparable id = oldProtocol.getId();
-            String name = oldProtocol.getName();
             Software analysisSoftware = transformToSoftware(oldProtocol.getAnalysisSoftware());
             ParamGroup threshold = new ParamGroup(transformToCvParam(oldProtocol.getThreshold().getCvParam()),transformToUserParam(oldProtocol.getThreshold().getUserParam()));
             ParamGroup searchType = new ParamGroup(transformToCvParam(oldProtocol.getSearchType().getCvParam()),transformToUserParam(oldProtocol.getSearchType().getUserParam()));

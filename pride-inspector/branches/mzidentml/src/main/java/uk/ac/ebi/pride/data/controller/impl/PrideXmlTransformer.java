@@ -77,7 +77,7 @@ public class PrideXmlTransformer {
             // get spectrum id
             Integer specId = rawSpec.getId();
 
-            spectrum = new Spectrum(params,specId,null,-1, null,defaultArrLength,dataArr,null,null,scanList,precursors,null,null);
+            spectrum = new Spectrum(params, specId, null, -1, null, defaultArrLength, dataArr, null, null, scanList, precursors, null, null);
         }
 
         return spectrum;
@@ -356,7 +356,7 @@ public class PrideXmlTransformer {
                     peptides.add(transformPeptide(rawPeptide));
                 }
             }
-            Map<PeptideEvidence,List<Peptide>> peptideEvidences = DataAccessUtilities.getPeptideEvidence(peptides);
+            Map<PeptideEvidence, List<Peptide>> peptideEvidences = DataAccessUtilities.getPeptideEvidence(peptides);
 
             // spectrum
             Spectrum spectrum = transformSpectrum(rawIdent.getSpectrum());
@@ -379,9 +379,9 @@ public class PrideXmlTransformer {
             Double threshold = rawIdent.getThreshold();
             double thresholdVal = threshold == null ? -1 : threshold;
 
-            SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(),rawIdent.getDatabaseVersion());
-            DBSequence dbSequence = new DBSequence(rawIdent.getAccession(),searchDataBase,rawIdent.getAccessionVersion(),rawIdent.getSpliceIsoform());
-            ident = new TwoDimIdentification(params,rawIdent.getId(),null,dbSequence,false, peptideEvidences,scoreVal,thresholdVal,null,seqConverageVal,gel);
+            SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
+            DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
+            ident = new TwoDimIdentification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, scoreVal, thresholdVal, null, seqConverageVal, gel);
         }
 
         return ident;
@@ -407,7 +407,7 @@ public class PrideXmlTransformer {
                 }
             }
 
-            Map<PeptideEvidence,List<Peptide>> peptideEvidences = DataAccessUtilities.getPeptideEvidence(peptides);
+            Map<PeptideEvidence, List<Peptide>> peptideEvidences = DataAccessUtilities.getPeptideEvidence(peptides);
 
             // spectrum
             Spectrum spectrum = transformSpectrum(rawIdent.getSpectrum());
@@ -423,9 +423,9 @@ public class PrideXmlTransformer {
             Double threshold = rawIdent.getThreshold();
             double thresholdVal = threshold == null ? -1 : threshold;
 
-            SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(),rawIdent.getDatabaseVersion());
-            DBSequence dbSequence = new DBSequence(rawIdent.getAccession(),searchDataBase,rawIdent.getAccessionVersion(),rawIdent.getSpliceIsoform());
-            return new GelFreeIdentification(params,rawIdent.getId(),null,dbSequence,false,peptideEvidences,scoreVal,thresholdVal,null,seqConverageVal);
+            SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
+            DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
+            return new GelFreeIdentification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, scoreVal, thresholdVal, null, seqConverageVal);
 
         }
 
@@ -509,10 +509,10 @@ public class PrideXmlTransformer {
             stopPos = stop.intValue();
         }
 
-        PeptideSequence peptideSequence = new PeptideSequence(null,null,rawPeptide.getSequence(),modifications);
+        PeptideSequence peptideSequence = new PeptideSequence(null, null, rawPeptide.getSequence(), modifications);
         List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
-        peptideEvidences.add(new PeptideEvidence(null,null,startPos,stopPos,false, peptideSequence,null));
-        return new Peptide(params,null,null,-1,0.0,0.0,0.0,peptideSequence,-1,false,null,null,peptideEvidences,fragmentIons,null,spectrum,null);
+        peptideEvidences.add(new PeptideEvidence(null, null, startPos, stopPos, false, peptideSequence, null));
+        return new Peptide(params, null, null, -1, 0.0, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
         //Todo : We need to capture the experimental Mass Value at this level, also the theoretical Mass Value
         //return new Peptide(params, rawPeptide.getSequence(), startPos, stopPos,  modifications, fragmentIons, spectrum);
     }
@@ -554,7 +554,7 @@ public class PrideXmlTransformer {
         if (rawLocation != null) {
             location = rawLocation.intValue();
         }
-        return new Modification(params, rawMod.getModAccession(),null,location,null, avgDelta,monoDelta,rawMod.getModDatabase(),rawMod.getModDatabaseVersion());
+        return new Modification(params, rawMod.getModAccession(), null, location, null, avgDelta, monoDelta, rawMod.getModDatabase(), rawMod.getModDatabaseVersion());
     }
 
     /**
@@ -699,7 +699,7 @@ public class PrideXmlTransformer {
 
         if (rawAdmin != null) {
             ParamGroup params = transformParamGroup(rawAdmin.getSampleDescription());
-            sample = new Sample(params,SAMPLE_ID, rawAdmin.getSampleName());
+            sample = new Sample(params, SAMPLE_ID, rawAdmin.getSampleName());
         }
 
         return sample;
@@ -727,7 +727,7 @@ public class PrideXmlTransformer {
             if (completionTime != null) {
                 userParams.add(new UserParam(COMPLETION_TIME, null, completionTime.toString(), null, null, null));
             }
-            software = new Software(new ParamGroup(cvParams, userParams),null,rawSoftware.getName(), rawSoftware.getVersion(), null);
+            software = new Software(new ParamGroup(cvParams, userParams), null, rawSoftware.getName(), rawSoftware.getVersion(), null);
         }
 
         return software;
@@ -921,21 +921,21 @@ public class PrideXmlTransformer {
             List<Person> persons = new ArrayList<Person>();
             List<uk.ac.ebi.pride.jaxb.model.Contact> rawContacts = rawAdmin.getContact();
             for (uk.ac.ebi.pride.jaxb.model.Contact rawContact : rawContacts) {
-              CvTermReference contactTerm = CvTermReference.CONTACT_NAME;
-              List<CvParam> cvParams =  DataAccessUtilities.getCvParam(rawContact.getName(), contactTerm.getCvLabel(), contactTerm.getAccession(), contactTerm.getName());
-              CvTermReference contactOrg = CvTermReference.CONTACT_ORG;
-              cvParams.add(new CvParam(contactOrg.getAccession(), contactOrg.getName(), contactOrg.getCvLabel(), rawContact.getInstitution(), null, null, null));
-              List<UserParam> userParams = null;
-              String contactInfo = rawContact.getContactInfo();
-              if (contactInfo != null) {
-                  userParams = new ArrayList<UserParam>();
-                  userParams.add(new UserParam(CONTACT_INFO, null, contactInfo, null, null, null));
-              }
-              List<Organization> affiliation = new ArrayList<Organization>();
-              affiliation.add(new Organization(null, rawContact.getInstitution(),null,null));
-              ParamGroup contact = new ParamGroup(cvParams, userParams);
-              Person contactPerson = new Person(contact,null,rawContact.getName(),null,null,null,affiliation,null);
-              persons.add(contactPerson);
+                CvTermReference contactTerm = CvTermReference.CONTACT_NAME;
+                List<CvParam> cvParams = DataAccessUtilities.getCvParam(rawContact.getName(), contactTerm.getCvLabel(), contactTerm.getAccession(), contactTerm.getName());
+                CvTermReference contactOrg = CvTermReference.CONTACT_ORG;
+                cvParams.add(new CvParam(contactOrg.getAccession(), contactOrg.getName(), contactOrg.getCvLabel(), rawContact.getInstitution(), null, null, null));
+                List<UserParam> userParams = null;
+                String contactInfo = rawContact.getContactInfo();
+                if (contactInfo != null) {
+                    userParams = new ArrayList<UserParam>();
+                    userParams.add(new UserParam(CONTACT_INFO, null, contactInfo, null, null, null));
+                }
+                List<Organization> affiliation = new ArrayList<Organization>();
+                affiliation.add(new Organization(null, rawContact.getInstitution(), null, null));
+                ParamGroup contact = new ParamGroup(cvParams, userParams);
+                Person contactPerson = new Person(contact, null, rawContact.getName(), null, null, null, affiliation, null);
+                persons.add(contactPerson);
             }
             return persons;
         }
@@ -954,13 +954,13 @@ public class PrideXmlTransformer {
             List<Organization> organizations = new ArrayList<Organization>();
             List<uk.ac.ebi.pride.jaxb.model.Contact> rawContacts = rawAdmin.getContact();
             for (uk.ac.ebi.pride.jaxb.model.Contact rawContact : rawContacts) {
-              CvTermReference contactOrg = CvTermReference.CONTACT_ORG;
-              List<CvParam> cvParams = new ArrayList<CvParam>();
-              cvParams.add(new CvParam(contactOrg.getAccession(), contactOrg.getName(), contactOrg.getCvLabel(), rawContact.getInstitution(), null, null, null));
-              List<UserParam> userParams = null;
-              ParamGroup contact = new ParamGroup(cvParams, userParams);
-              Organization contactOrganization = new Organization(contact,null,rawContact.getInstitution(),null,null);
-              organizations.add(contactOrganization);
+                CvTermReference contactOrg = CvTermReference.CONTACT_ORG;
+                List<CvParam> cvParams = new ArrayList<CvParam>();
+                cvParams.add(new CvParam(contactOrg.getAccession(), contactOrg.getName(), contactOrg.getCvLabel(), rawContact.getInstitution(), null, null, null));
+                List<UserParam> userParams = null;
+                ParamGroup contact = new ParamGroup(cvParams, userParams);
+                Organization contactOrganization = new Organization(contact, null, rawContact.getInstitution(), null, null);
+                organizations.add(contactOrganization);
             }
             return organizations;
         }
@@ -987,7 +987,7 @@ public class PrideXmlTransformer {
                 String rawFileType = rawSourceFile.getFileType();
                 ParamGroup params = new ParamGroup();
                 params.addUserParam(new UserParam(SOURCE_FILE_TYPE, null, rawFileType, null, null, null));
-                sourceFile = new SourceFile(params, SOURCE_FILE_ID,  rawSourceFile.getNameOfFile(), rawSourceFile.getPathToFile());
+                sourceFile = new SourceFile(params, SOURCE_FILE_ID, rawSourceFile.getNameOfFile(), rawSourceFile.getPathToFile());
             }
         }
 
@@ -1006,7 +1006,7 @@ public class PrideXmlTransformer {
         if (rawReferences != null) {
             references = new ArrayList<Reference>();
             for (uk.ac.ebi.pride.jaxb.model.Reference rawReference : rawReferences) {
-                references.add(new Reference(transformParamGroup(rawReference.getAdditional()).getCvParams(),transformParamGroup(rawReference.getAdditional()).getUserParams(),null,null,rawReference.getRefLine()));
+                references.add(new Reference(transformParamGroup(rawReference.getAdditional()).getCvParams(), transformParamGroup(rawReference.getAdditional()).getUserParams(), null, null, rawReference.getRefLine()));
             }
         }
 

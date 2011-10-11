@@ -196,8 +196,9 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
     /**
      * Get a list of person contacts
-     * @return  List<Person>    list of persons
-     * @throws DataAccessException  data access exception
+     *
+     * @return List<Person>    list of persons
+     * @throws DataAccessException data access exception
      */
     @Override
     public List<Person> getPersonContacts() throws DataAccessException {
@@ -214,7 +215,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
     @Override
     public List<Organization> getOrganizationContacts() throws DataAccessException {
-         try {
+        try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
             // List of Persons
             return MzMLTransformer.transformFileDescriptionOrganization(rawFileDesc);
@@ -240,7 +241,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
 
     @Override
-    public ParamGroup getFileContent() throws DataAccessException{
+    public ParamGroup getFileContent() throws DataAccessException {
         try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
             // List of Persons
@@ -425,7 +426,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
-        if(metaData == null){
+        if (metaData == null) {
             // id , accession and version
             String id = unmarshaller.getMzMLId();
             String accession = unmarshaller.getMzMLAccession();
@@ -442,7 +443,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
             List<Software> softwares = getSoftwareList();
             // ScanSettings list
             ParamGroup fileContent = getFileContent();
-            metaData = new ExperimentMetaData(fileContent,id,accession,version,null,samples,softwares,personList,sourceFileList,null,organizationList,null,null,null,null);
+            metaData = new ExperimentMetaData(fileContent, id, accession, version, null, samples, softwares, personList, sourceFileList, null, organizationList, null, null, null, null);
         }
         return metaData;
     }
@@ -450,11 +451,11 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     @Override
     public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
-        if(metaData == null){
+        if (metaData == null) {
             List<ScanSetting> scanSettings = getScanSettings();
             List<DataProcessing> dataProcessings = getDataProcessings();
             List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
-            metaData = new MzGraphMetaData(null,null,scanSettings,instrumentConfigurations,dataProcessings);
+            metaData = new MzGraphMetaData(null, null, scanSettings, instrumentConfigurations, dataProcessings);
         }
         return metaData;
     }

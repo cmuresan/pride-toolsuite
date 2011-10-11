@@ -8,26 +8,31 @@ package uk.ac.ebi.pride.data.core;
  * Time: 12:36:55
  */
 public class Gel extends ParamGroup {
+
     /**
      * link to the image of a gel
      */
     private String gelLink = null;
-    /**
-     * x coordinate
-     */
-    private double xCoordinate = -1;
-    /**
-     * y coordinate
-     */
-    private double yCoordinate = -1;
+
     /**
      * molecular weight
      */
     private double molecularWeight = -1;
+
     /**
      * pI value
      */
     private double pI = -1;
+
+    /**
+     * x coordinate
+     */
+    private double xCoordinate = -1;
+
+    /**
+     * y coordinate
+     */
+    private double yCoordinate = -1;
 
     /**
      * Constructor
@@ -39,11 +44,7 @@ public class Gel extends ParamGroup {
      * @param molecularWeight optional.
      * @param pI              optional.
      */
-    public Gel(ParamGroup params,
-               String gelLink,
-               double xCoordinate,
-               double yCoordinate,
-               double molecularWeight,
+    public Gel(ParamGroup params, String gelLink, double xCoordinate, double yCoordinate, double molecularWeight,
                double pI) {
         super(params);
         setGelLink(gelLink);
@@ -93,3 +94,6 @@ public class Gel extends ParamGroup {
         this.pI = pI;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

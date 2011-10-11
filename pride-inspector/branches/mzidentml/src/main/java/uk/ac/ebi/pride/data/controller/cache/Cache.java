@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.controller.cache;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -59,7 +61,7 @@ public interface Cache {
      * Get data from cache using CacheCategory and a collections of keys
      *
      * @param type cache category
-     * @param keys  keys
+     * @param keys keys
      * @return Object value
      */
     public Collection getInBatch(CacheCategory type, Collection keys);
@@ -67,7 +69,7 @@ public interface Cache {
     /**
      * Check whether the cache already has the cache category
      *
-     * @param type  CacheCategory
+     * @param type CacheCategory
      * @return boolean  true if the category exists
      */
     public boolean hasCacheCategory(CacheCategory type);
@@ -92,3 +94,6 @@ public interface Cache {
      */
     public void clear();
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

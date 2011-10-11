@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.io.Serializable;
 
 /**
@@ -10,6 +12,7 @@ import java.io.Serializable;
  * Date: 10-May-2010
  * Time: 16:42:06
  */
-public interface MassSpecObject extends Serializable{
+public interface MassSpecObject extends Serializable {}
 
-}
+
+//~ Formatted by Jindent --- http://www.jindent.com

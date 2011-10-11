@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
 
 /**
@@ -21,22 +23,17 @@ import java.util.List;
  * Time: 18:58:53
  */
 public class Scan extends ParamGroup {
+
     /**
      * external spectrum reference
      */
     private String externalSpecRef = null;
-    /**
-     * spectrum reference
-     */
-    private String spectrumRef = null;
-    /**
-     * source file, it must refer to the file which contains externalSpecRef
-     */
-    private SourceFile sourceFile = null;
+
     /**
      * Instrument configuration
      */
     private InstrumentConfiguration instrumentConfiguration = null;
+
     /**
      * collection of scan windows
      * <p/>
@@ -54,6 +51,16 @@ public class Scan extends ParamGroup {
     private List<ParamGroup> scanWindows = null;
 
     /**
+     * source file, it must refer to the file which contains externalSpecRef
+     */
+    private SourceFile sourceFile = null;
+
+    /**
+     * spectrum reference
+     */
+    private String spectrumRef = null;
+
+    /**
      * Constructor
      *
      * @param spectrumRef             optional.
@@ -63,18 +70,14 @@ public class Scan extends ParamGroup {
      * @param scanWindows             optional.
      * @param params                  optional.
      */
-    public Scan(String spectrumRef,
-                String externalSpecRef,
-                SourceFile sourceFile,
-                InstrumentConfiguration instrumentConfiguration,
-                List<ParamGroup> scanWindows,
-                ParamGroup params) {
+    public Scan(String spectrumRef, String externalSpecRef, SourceFile sourceFile,
+                InstrumentConfiguration instrumentConfiguration, List<ParamGroup> scanWindows, ParamGroup params) {
         super(params);
-        this.spectrumRef = spectrumRef;
-        this.externalSpecRef = externalSpecRef;
-        this.sourceFile = sourceFile;
+        this.spectrumRef             = spectrumRef;
+        this.externalSpecRef         = externalSpecRef;
+        this.sourceFile              = sourceFile;
         this.instrumentConfiguration = instrumentConfiguration;
-        this.scanWindows = scanWindows;
+        this.scanWindows             = scanWindows;
     }
 
     public String getExternalSpecRef() {
@@ -117,3 +120,6 @@ public class Scan extends ParamGroup {
         this.scanWindows = scanWindows;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

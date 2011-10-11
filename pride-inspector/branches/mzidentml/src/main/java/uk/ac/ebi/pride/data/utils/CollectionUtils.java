@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.utils;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.Collection;
 
 /**
@@ -19,29 +21,37 @@ public class CollectionUtils {
      */
     public static <T> int getIndex(Collection<T> collection, T element) {
         int index = -1;
+
         if (collection != null) {
             int count = 0;
+
             for (T entry : collection) {
                 if (entry.equals(element)) {
                     index = count;
                 }
+
                 count++;
             }
         }
+
         return index;
     }
 
     public static <T> T getElement(Collection<T> collection, int index) {
         T element = null;
+
         if (collection != null) {
             int count = 0;
+
             for (T entry : collection) {
                 if (count == index) {
                     element = entry;
                 }
+
                 count++;
             }
         }
+
         return element;
     }
 
@@ -49,3 +59,6 @@ public class CollectionUtils {
         return getElement(collection, collection.size() - 1);
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

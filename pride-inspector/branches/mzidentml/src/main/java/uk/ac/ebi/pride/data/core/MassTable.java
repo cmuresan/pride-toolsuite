@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
 import java.util.Map;
 
@@ -9,18 +11,15 @@ import java.util.Map;
  * Date: 05/08/11
  * Time: 16:40
  */
-public class MassTable extends ParamGroup{
+public class MassTable extends ParamGroup {
+    private Map<String, ParamGroup> ambiguousResidues = null;
+    private List<Integer>           msLevel           = null;
+    private Map<String, Float>      residues          = null;
 
-    private List<Integer> msLevel = null;
-
-    private Map<String,Float> residues = null;
-
-    private Map<String,ParamGroup> ambiguousResidues = null;
-
-
-    public MassTable(List<Integer> msLevel, Map<String, Float> residueList, Map<String, ParamGroup> ambiguousResidueList) {
-        this.msLevel = msLevel;
-        this.residues = residueList;
+    public MassTable(List<Integer> msLevel, Map<String, Float> residueList,
+                     Map<String, ParamGroup> ambiguousResidueList) {
+        this.msLevel           = msLevel;
+        this.residues          = residueList;
         this.ambiguousResidues = ambiguousResidueList;
     }
 
@@ -48,3 +47,6 @@ public class MassTable extends ParamGroup{
         this.ambiguousResidues = ambiguousResidues;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

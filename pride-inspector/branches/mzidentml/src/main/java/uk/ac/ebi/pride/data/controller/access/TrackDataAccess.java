@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.controller.access;
 
+//~--- non-JDK imports --------------------------------------------------------
+
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Chromatogram;
 import uk.ac.ebi.pride.data.core.Identification;
@@ -15,22 +17,26 @@ import uk.ac.ebi.pride.data.core.Spectrum;
  * Time: 18:14:16
  */
 public interface TrackDataAccess {
-    /**
-     * fired when foreground experiment has changed
-     */
-    public static final String FOREGROUND_EXPERIMENT_CHANGED = "foregroundExperiment";
-    /**
-     * fired when foreground spectrum has changed
-     */
-    public static final String FOREGROUND_SPECTRUM_CHANGED = "foregroundSpectrum";
+
     /**
      * fired when foreground chromatogram has changed
      */
     public static final String FOREGROUND_CHROMATOGRAM_CHANGED = "foregroundChromatogram";
+
+    /**
+     * fired when foreground experiment has changed
+     */
+    public static final String FOREGROUND_EXPERIMENT_CHANGED = "foregroundExperiment";
+
     /**
      * fired when foreground identification has changed
      */
     public static final String FOREGROUND_IDENTIFICATION_CHANGED = "foregroundIdentification";
+
+    /**
+     * fired when foreground spectrum has changed
+     */
+    public static final String FOREGROUND_SPECTRUM_CHANGED = "foregroundSpectrum";
 
     /**
      * Get the current foreground experiment id
@@ -101,3 +107,6 @@ public interface TrackDataAccess {
      */
     public void setForegroundIdentificationById(Comparable identId) throws DataAccessException;
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

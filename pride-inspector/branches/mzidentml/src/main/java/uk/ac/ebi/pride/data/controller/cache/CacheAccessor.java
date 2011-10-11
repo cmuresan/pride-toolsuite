@@ -1,9 +1,14 @@
 package uk.ac.ebi.pride.data.controller.cache;
 
+//~--- non-JDK imports --------------------------------------------------------
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.lang.reflect.Constructor;
+
 import java.util.*;
 
 /**
@@ -14,8 +19,8 @@ import java.util.*;
  * Time: 11:22:43
  */
 public class CacheAccessor implements Cache {
-
     private static final Logger logger = LoggerFactory.getLogger(CacheAccessor.class);
+
     /**
      * All data are stored in here.
      */
@@ -49,30 +54,38 @@ public class CacheAccessor implements Cache {
     @Override
     @SuppressWarnings("unchecked")
     public void store(CacheCategory type, Object key, Object value) {
-
-
         Object content = createIfNotExist(type);
 
         // put into a map if underlying data structure is map
         if (content instanceof Map) {
+
             // must do this check here
-            if (key == null || value == null) {
+            if ((key == null) || (value == null)) {
                 String errMsg = "Key and value cannot be null (key: " + key + ", value: " + value + ")";
+
                 logger.error(errMsg);
+
                 throw new IllegalArgumentException(errMsg);
             }
+
             ((Map) content).put(key, value);
-        } else if (content instanceof  Collection) {
+        } else if (content instanceof Collection) {
+
             // must do this check here
             if (key == null) {
                 String errMsg = "Key cannot be null (key: " + key + ")";
+
                 logger.error(errMsg);
+
                 throw new IllegalArgumentException(errMsg);
             }
-            ((Collection)content).add(key);
+
+            ((Collection) content).add(key);
         } else {
             String errMsg = "Cannot store key-value pair to a data structure other than map";
+
             logger.error(errMsg);
+
             throw new IllegalArgumentException(errMsg);
         }
     }
@@ -88,7 +101,9 @@ public class CacheAccessor implements Cache {
     public void storeInBatch(CacheCategory type, Map values) {
         if (values == null) {
             String errMsg = "Map values cannot be null";
+
             logger.error(errMsg);
+
             throw new IllegalArgumentException(errMsg);
         }
 
@@ -112,7 +127,9 @@ public class CacheAccessor implements Cache {
     public void storeInBatch(CacheCategory type, Collection values) {
         if (values == null) {
             String errMsg = "Collection values cannot be null";
+
             logger.error(errMsg);
+
             throw new IllegalArgumentException(errMsg);
         }
 
@@ -148,12 +165,15 @@ public class CacheAccessor implements Cache {
     @Override
     public Collection getInBatch(CacheCategory type, Collection keys) {
         Collection<Object> results = new ArrayList<Object>();
+
         for (Object key : keys) {
             Object val = retrieveContent(type, key);
+
             if (val != null) {
                 results.add(val);
             }
         }
+
         return results;
     }
 
@@ -200,17 +220,19 @@ public class CacheAccessor implements Cache {
     @SuppressWarnings("unchecked")
     private Object createIfNotExist(CacheCategory type) {
         Object content = contents.get(type);
+
         if (content == null) {
-            Class className = type.getDataStructType();
-            Integer size = type.getSize();
+            Class   className = type.getDataStructType();
+            Integer size      = type.getSize();
+
             // create a new data structure with the specified size
             try {
                 if (size != null) {
-
                     Constructor constructor = className.getDeclaredConstructor(int.class);
-                    content = constructor.newInstance(size);
 
+                    content = constructor.newInstance(size);
                 } else {
+
                     // create a new instance of the data structure
                     content = type.getDataStructType().newInstance();
                 }
@@ -230,14 +252,17 @@ public class CacheAccessor implements Cache {
                 contents.put(type, content);
             }
         }
+
         return content;
     }
 
     @SuppressWarnings("unchecked")
     private Object retrieveContent(CacheCategory type, Object key) {
-        Object result = null;
+        Object result  = null;
         Object content = contents.get(type);
+
         if (content != null) {
+
             // get the value
             if (key == null) {
                 result = content;
@@ -250,20 +275,22 @@ public class CacheAccessor implements Cache {
             }
         }
 
-
         // return a new data structure which contains all the elements
         if (result instanceof Map) {
             Map temp = new LinkedHashMap();
+
             temp.putAll((Map) result);
             result = temp;
         } else if (result instanceof Collection) {
             List temp = new ArrayList();
+
             temp.addAll((Collection) result);
             result = temp;
         }
 
         return result;
     }
-
 }
 
+
+//~ Formatted by Jindent --- http://www.jindent.com

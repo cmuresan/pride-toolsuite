@@ -17,7 +17,6 @@ import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
-import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.gui.component.chart.PrideChartManager;
 
 import java.util.*;
@@ -523,11 +522,11 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
         if (useCache) {
             // check whether the identification exist in the cache already
-            Identification ident = (Identification)cache.get(CacheCategory.IDENTIFICATION, identId);
+            Identification ident = (Identification) cache.get(CacheCategory.IDENTIFICATION, identId);
             if (ident != null) {
                 int indexInt = Integer.parseInt(index.toString());
                 List<Peptide> peptides = ident.getIdentifiedPeptides();
-                if (indexInt >=0  && indexInt < peptides.size()) {
+                if (indexInt >= 0 && indexInt < peptides.size()) {
                     pep = peptides.get(indexInt);
                 }
             } else {
@@ -753,7 +752,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
                 Integer location = ptm.getValue();
                 Modification mod = (Modification) cache.get(CacheCategory.MODIFICATION, modAcc);
                 //Modification newMod = new Modification(mod, modAcc, mod.getModDatabase(), mod.getModDatabaseVersion(), mod.getMonoisotopicMassDelta(), mod.getAvgMassDelta(), location);
-                Modification newMod = new Modification(modAcc,mod.getName(),location,mod.getResidues(),mod.getAvgMassDelta(),mod.getMonoisotopicMassDelta(),mod.getModDatabase(),mod.getModDatabaseVersion());
+                Modification newMod = new Modification(modAcc, mod.getName(), location, mod.getResidues(), mod.getAvgMassDelta(), mod.getMonoisotopicMassDelta(), mod.getModDatabase(), mod.getModDatabaseVersion());
                 mods.add(newMod);
             }
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
@@ -791,7 +790,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     public PeptideScore getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException {
         PeptideScore score = null;
         // get peptide additional parameters
-        ParamGroup paramGroup = (ParamGroup)cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
+        ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
         if (paramGroup != null) {
             // get peptide score
             SearchEngine se = this.getSearchEngine();
@@ -848,7 +847,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
     @Override
     public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
-        Collection<ExperimentMetaData> metaDatas = (Collection<ExperimentMetaData>)cache.get(CacheCategory.EXPERIMENT_METADATA);
+        Collection<ExperimentMetaData> metaDatas = (Collection<ExperimentMetaData>) cache.get(CacheCategory.EXPERIMENT_METADATA);
 
         if (metaDatas != null && !metaDatas.isEmpty()) {
             return CollectionUtils.getElement(metaDatas, 0);
@@ -858,7 +857,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
     @Override
     public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
-        Collection<IdentificationMetaData> metaDatas = (Collection<IdentificationMetaData>)cache.get(CacheCategory.IDENTIFICATION_METADATA);
+        Collection<IdentificationMetaData> metaDatas = (Collection<IdentificationMetaData>) cache.get(CacheCategory.IDENTIFICATION_METADATA);
         if (metaDatas != null && !metaDatas.isEmpty()) {
             return CollectionUtils.getElement(metaDatas, 0);
         }
@@ -867,7 +866,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
     @Override
     public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
-        Collection<MzGraphMetaData> metaDatas = (Collection<MzGraphMetaData>)cache.get(CacheCategory.MZGRAPH_METADATA);
+        Collection<MzGraphMetaData> metaDatas = (Collection<MzGraphMetaData>) cache.get(CacheCategory.MZGRAPH_METADATA);
 
         if (metaDatas != null && !metaDatas.isEmpty()) {
             return CollectionUtils.getElement(metaDatas, 0);
@@ -875,7 +874,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return null;
     }
 
-        /**
+    /**
      * Close data access controller by clearing the cache first
      */
     @Override

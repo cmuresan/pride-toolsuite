@@ -8,35 +8,54 @@ package uk.ac.ebi.pride.data.core;
  * Date: 04/08/11
  * Time: 13:47
  */
-
 public class DBSequence extends IdentifiableParamGroup {
-    /**
-     * The length of the sequence as a number of bases or residues.
-     */
-    private int length = -1;
+
     /**
      * The unique accession of this sequence.
      */
     private String accessionId = null;
-    /**
-     * The source database of this sequence.
-     */
-    private SearchDataBase searchDataBase = null;
-    /**
-     * The actual sequence of amino acids or nucleic acid.
-     */
-    private String sequence = null;
+
     /**
      * protein accession version
      */
     private String accessionVersion = null;
+
+    /**
+     * The length of the sequence as a number of bases or residues.
+     */
+    private int length = -1;
+
+    /**
+     * The source database of this sequence.
+     */
+    private SearchDataBase searchDataBase = null;
+
+    /**
+     * The actual sequence of amino acids or nucleic acid.
+     */
+    private String sequence = null;
+
     /**
      * optional splice isoform
      */
     private String spliceIsoform = null;
 
     /**
+     * Constructor for PRIDE DBSequence Objects
+     *
+     * @param accessionId
+     * @param searchDataBase
+     * @param accessionVersion
+     * @param spliceIsoform
+     */
+    public DBSequence(String accessionId, SearchDataBase searchDataBase, String accessionVersion,
+                      String spliceIsoform) {
+        this(null, null, null, -1, accessionId, searchDataBase, null, accessionVersion, spliceIsoform);
+    }
+
+    /**
      * Constructor without ParamGroup Information
+     *
      * @param id
      * @param name
      * @param length
@@ -46,19 +65,14 @@ public class DBSequence extends IdentifiableParamGroup {
      * @param accessionVersion
      * @param spliceIsoform
      */
-    public DBSequence(Comparable id,
-                      String name,
-                      int length,
-                      String accessionId,
-                      SearchDataBase searchDataBase,
-                      String sequence,
-                      String accessionVersion,
-                      String spliceIsoform) {
-        this(null,id,name,length,accessionId,searchDataBase,sequence,accessionVersion,spliceIsoform);
+    public DBSequence(Comparable id, String name, int length, String accessionId, SearchDataBase searchDataBase,
+                      String sequence, String accessionVersion, String spliceIsoform) {
+        this(null, id, name, length, accessionId, searchDataBase, sequence, accessionVersion, spliceIsoform);
     }
 
     /**
      * Constructor with ParamGroup Information
+     *
      * @param params
      * @param id
      * @param name
@@ -69,37 +83,15 @@ public class DBSequence extends IdentifiableParamGroup {
      * @param accessionVersion
      * @param spliceIsoform
      */
-    public DBSequence(ParamGroup params,
-                      Comparable id,
-                      String name,
-                      int length,
-                      String accessionId,
-                      SearchDataBase searchDataBase,
-                      String sequence,
-                      String accessionVersion,
-                      String spliceIsoform) {
+    public DBSequence(ParamGroup params, Comparable id, String name, int length, String accessionId,
+                      SearchDataBase searchDataBase, String sequence, String accessionVersion, String spliceIsoform) {
         super(params, id, name);
-        this.length = length;
-        this.accessionId = accessionId;
-        this.searchDataBase = searchDataBase;
-        this.sequence = sequence;
+        this.length           = length;
+        this.accessionId      = accessionId;
+        this.searchDataBase   = searchDataBase;
+        this.sequence         = sequence;
         this.accessionVersion = accessionVersion;
-        this.spliceIsoform = spliceIsoform;
-    }
-
-    /**
-     * Constructor for PRIDE DBSequence Objects
-     * @param accessionId
-     * @param searchDataBase
-     * @param accessionVersion
-     * @param spliceIsoform
-     */
-    public DBSequence(String accessionId,
-                      SearchDataBase searchDataBase,
-                      String accessionVersion,
-                      String spliceIsoform){
-     this(null,null,null,-1,accessionId,searchDataBase,null,accessionVersion,spliceIsoform);
-
+        this.spliceIsoform    = spliceIsoform;
     }
 
     public int getLength() {
@@ -152,17 +144,39 @@ public class DBSequence extends IdentifiableParamGroup {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if ((o == null) || (getClass() != o.getClass())) {
+            return false;
+        }
 
         DBSequence that = (DBSequence) o;
 
-        if (length != that.length) return false;
-        if (!accessionId.equals(that.accessionId)) return false;
-        if (!accessionVersion.equals(that.accessionVersion)) return false;
-        if (!searchDataBase.equals(that.searchDataBase)) return false;
-        if (!sequence.equals(that.sequence)) return false;
-        if (!spliceIsoform.equals(that.spliceIsoform)) return false;
+        if (length != that.length) {
+            return false;
+        }
+
+        if (!accessionId.equals(that.accessionId)) {
+            return false;
+        }
+
+        if (!accessionVersion.equals(that.accessionVersion)) {
+            return false;
+        }
+
+        if (!searchDataBase.equals(that.searchDataBase)) {
+            return false;
+        }
+
+        if (!sequence.equals(that.sequence)) {
+            return false;
+        }
+
+        if (!spliceIsoform.equals(that.spliceIsoform)) {
+            return false;
+        }
 
         return true;
     }
@@ -170,11 +184,16 @@ public class DBSequence extends IdentifiableParamGroup {
     @Override
     public int hashCode() {
         int result = length;
+
         result = 31 * result + accessionId.hashCode();
         result = 31 * result + searchDataBase.hashCode();
         result = 31 * result + sequence.hashCode();
         result = 31 * result + accessionVersion.hashCode();
         result = 31 * result + spliceIsoform.hashCode();
+
         return result;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

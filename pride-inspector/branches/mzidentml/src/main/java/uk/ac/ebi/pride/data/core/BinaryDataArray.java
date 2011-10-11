@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.Arrays;
 
 /**
@@ -29,13 +31,14 @@ import java.util.Arrays;
 public class BinaryDataArray extends ParamGroup {
 
     /**
-     * DataProcessing Object
-     */
-    private DataProcessing dataProcessing = null;
-    /**
      * Binary double array
      */
     private double[] binaryDoubleArray = null;
+
+    /**
+     * DataProcessing Object
+     */
+    private DataProcessing dataProcessing = null;
 
     /**
      * Constructor
@@ -47,8 +50,8 @@ public class BinaryDataArray extends ParamGroup {
     public BinaryDataArray(DataProcessing dataProcessing, double[] binaryDoubleArr, ParamGroup params) {
         super(params);
         setDataProcessing(dataProcessing);
-           setDoubleArray(binaryDoubleArr);
- }
+        setDoubleArray(binaryDoubleArr);
+    }
 
     public double[] getDoubleArray() {
         return Arrays.copyOf(binaryDoubleArray, binaryDoubleArray.length);
@@ -66,3 +69,6 @@ public class BinaryDataArray extends ParamGroup {
         this.dataProcessing = dataProcessing;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

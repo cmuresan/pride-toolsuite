@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.data.core;
 
-
 /**
  * InstrumentComponent is key to keep the order of different instrument
  * component.
@@ -35,3 +34,6 @@ public class InstrumentComponent extends ParamGroup {
         this.order = order;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

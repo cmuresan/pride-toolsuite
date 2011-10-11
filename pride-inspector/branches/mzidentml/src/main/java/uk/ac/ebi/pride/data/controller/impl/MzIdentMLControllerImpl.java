@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 /**
  * ToDo: document this class
- *
+ * <p/>
  * User: yperez
  * Date: 19/09/11
  * Time: 16:08
@@ -64,14 +64,14 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 ContentCategory.INSTRUMENT,
                 ContentCategory.SOFTWARE,
                 ContentCategory.DATA_PROCESSING
-                );
+        );
         // set cache builder
         setCacheBuilder(new MzIdentMLCacheBuilder(this));
         // populate cache
         populateCache();
     }
 
-    public MzIdentMLUnmarshallerAdaptor getUnmarshaller(){
+    public MzIdentMLUnmarshallerAdaptor getUnmarshaller() {
         return unmarshaller;
     }
 
@@ -135,7 +135,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public List<Person> getPersonContacts() throws DataAccessException {
         List<Person> personList;
         try {
-            personList= MzIdentMLTransformer.transformToPerson(unmarshaller.getPersonContacts());
+            personList = MzIdentMLTransformer.transformToPerson(unmarshaller.getPersonContacts());
         } catch (Exception ex) {
             throw new DataAccessException("Failed to retrieve person contacts", ex);
         }
@@ -165,13 +165,14 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
     /**
      * Get provider of the experiment
-     * @return  Provider    data provider
-     * @throws DataAccessException  data access exception
+     *
+     * @return Provider    data provider
+     * @throws DataAccessException data access exception
      */
     @Override
     public Provider getProvider() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
-        if(metaData == null){
+        if (metaData == null) {
             return MzIdentMLTransformer.transformToProvider(unmarshaller.getProvider());
 
         }
@@ -182,7 +183,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * Get a list of software
      *
      * @return List<Software>   a list of software objects.
-     * @throws DataAccessException  data access exception
+     * @throws DataAccessException data access exception
      */
     @Override
     public List<Software> getSoftwareList() throws DataAccessException {
@@ -203,8 +204,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * Get a list of references
      *
      * @return List<Reference>  a list of reference objects
-     * @throws DataAccessException  data access exception
-     *
+     * @throws DataAccessException data access exception
      */
     private List<Reference> getReferences() throws DataAccessException {
         List<Reference> refs;
@@ -221,13 +221,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * Get the protocol object
      *
      * @return Protocol protocol object.
-     * @throws DataAccessException  data access exception
-     *
+     * @throws DataAccessException data access exception
      */
     private ExperimentProtocol getProtocol() throws DataAccessException {
         try {
-          // ToDo: implementation needed
-          //  return PrideXmlTransformer.transformProtocol(reader.getProtocol());
+            // ToDo: implementation needed
+            //  return PrideXmlTransformer.transformProtocol(reader.getProtocol());
         } catch (Exception ex) {
             throw new DataAccessException("Failed to retrieve protocol", ex);
         }
@@ -246,8 +245,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         ExperimentMetaData metaData = super.getExperimentMetaData();
         if (metaData == null) {
             try {
-               // ToDo: implementation needed
-               // return PrideXmlTransformer.transformAdditional(reader.getAdditionalParams());
+                // ToDo: implementation needed
+                // return PrideXmlTransformer.transformAdditional(reader.getAdditionalParams());
             } catch (Exception ex) {
                 throw new DataAccessException("Failed to retrieve additional information", ex);
             }
@@ -290,7 +289,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 // Get the Experiment Title
                 String title = unmarshaller.getMzIdentMLName();
                 // Get The Experiment Short Label, in case of mzidentml we decided to show the same value of the Id.
-                String shortLabel =  unmarshaller.getMzIdentMLId();
+                String shortLabel = unmarshaller.getMzIdentMLId();
                 //Get Experiment Protocol
                 //Todo: We need to think if it would be possible to convert the protocols to a ExperimentProtocol see Johannes Code
                 ExperimentProtocol protocol = getProtocol();
@@ -299,7 +298,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 // Get the provider object of the MzIdentMl file
                 Provider provider = getProvider();
 
-                metaData = new ExperimentMetaData(additional,accession,title,version,shortLabel,samples,softwares,persons,sources,provider,organizations,references,null,null,protocol);
+                metaData = new ExperimentMetaData(additional, accession, title, version, shortLabel, samples, softwares, persons, sources, provider, organizations, references, null, null, protocol);
                 // store it in the cache
                 getCache().store(CacheCategory.EXPERIMENT_METADATA, metaData);
             } catch (Exception ex) {
@@ -314,26 +313,26 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() throws DataAccessException {
         IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
 
-        if(identificationMetaData == null){
+        if (identificationMetaData == null) {
             return MzIdentMLTransformer.transformToSpectrumIdentificationProtocol(unmarshaller.getSpectrumIdentificationProtcol());
         }
         return identificationMetaData.getSpectrumIdentificationProtocolList();
     }
 
     @Override
-    public Protocol getProteinDetectionProtocol() throws DataAccessException{
+    public Protocol getProteinDetectionProtocol() throws DataAccessException {
         IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
-        if(identificationMetaData == null){
+        if (identificationMetaData == null) {
             return MzIdentMLTransformer.transformToProteinDetectionProtocol(unmarshaller.getProteinDetectionProtocol());
         }
         return identificationMetaData.getProteinDetectionProtocol();
     }
 
     @Override
-    public List<SearchDataBase> getSearchDataBases() throws DataAccessException{
+    public List<SearchDataBase> getSearchDataBases() throws DataAccessException {
         IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
-        if(identificationMetaData == null){
-             return MzIdentMLTransformer.transformToSearchDataBase(unmarshaller.getSearchDatabases());
+        if (identificationMetaData == null) {
+            return MzIdentMLTransformer.transformToSearchDataBase(unmarshaller.getSearchDatabases());
         }
         return identificationMetaData.getSearchDataBaseList();
     }
@@ -341,7 +340,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     @Override
     public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
         IdentificationMetaData metaData = super.getIdentificationMetaData();
-        if(metaData == null){
+        if (metaData == null) {
             List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = getSpectrumIdentificationProtocol();
             //Todo: Try to convert the CVTerms in Pride to SpectrumIdentificationProtocol
             Protocol proteinDetectionProtocol = getProteinDetectionProtocol();
@@ -350,15 +349,15 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             //Todo: We need to search in the peptides Identifications all of the Search Databases Used.
             //Todo: We need to search all of the possible modifications presented in the experiment.
 
-            metaData = new IdentificationMetaData(null,null,spectrumIdentificationProtocolList,proteinDetectionProtocol,searchDataBaseList);
+            metaData = new IdentificationMetaData(null, null, spectrumIdentificationProtocolList, proteinDetectionProtocol, searchDataBaseList);
         }
         return metaData;
     }
 
     @Override
-    public List<SpectraData> getSpectraDataFiles() throws DataAccessException{
+    public List<SpectraData> getSpectraDataFiles() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
-        if(metaData == null){
+        if (metaData == null) {
             return MzIdentMLTransformer.transformToSpectraData(unmarshaller.getSpectraData());
         }
         return metaData.getSpectraDataList();
@@ -367,9 +366,9 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     @Override
     public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
-        if(metaData == null){
+        if (metaData == null) {
             List<SpectraData> spectraDataList = getSpectraDataFiles();
-            metaData = new MzGraphMetaData(null,null,null,null,null,null,spectraDataList);
+            metaData = new MzGraphMetaData(null, null, null, null, null, null, spectraDataList);
         }
         return metaData;
     }
@@ -461,7 +460,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         Peptide peptide = super.getPeptideById(null, index, useCache);
         if (peptide == null) {
             logger.debug("Get new peptide from file: {}", index);
-            peptide = MzIdentMLTransformer.transformToPeptideIdentification(unmarshaller.getPeptideIdentificationById(identId,index),unmarshaller.getFragmentationTable());
+            peptide = MzIdentMLTransformer.transformToPeptideIdentification(unmarshaller.getPeptideIdentificationById(identId, index), unmarshaller.getFragmentationTable());
             if (useCache && peptide != null) {
                 // store peptide
                 getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, index), peptide);
@@ -533,9 +532,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
         return valid;
     }
-
-
-
 
 
 }

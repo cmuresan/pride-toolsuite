@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
 
 /**
@@ -9,30 +11,36 @@ import java.util.List;
  * Time: 14:03:21
  */
 public class Precursor implements MassSpecObject {
-    /**
-     * precursor spectrum
-     */
-    private Spectrum spectrum = null;
-    /**
-     * source file
-     */
-    private SourceFile sourceFile = null;
-    /**
-     * For precursor spectra that are external to this document
-     */
-    private String externalSpectrumID = null;
-    /**
-     * the isolation window configured to isolate one or more ions
-     */
-    private ParamGroup isolationWindow = null;
-    /**
-     * a list of ions selected
-     */
-    private List<ParamGroup> selectedIons = null;
+
     /**
      * the type and energy level used for activation
      */
     private ParamGroup activation = null;
+
+    /**
+     * For precursor spectra that are external to this document
+     */
+    private String externalSpectrumID = null;
+
+    /**
+     * the isolation window configured to isolate one or more ions
+     */
+    private ParamGroup isolationWindow = null;
+
+    /**
+     * a list of ions selected
+     */
+    private List<ParamGroup> selectedIons = null;
+
+    /**
+     * source file
+     */
+    private SourceFile sourceFile = null;
+
+    /**
+     * precursor spectrum
+     */
+    private Spectrum spectrum = null;
 
     /**
      * Constructor
@@ -44,18 +52,14 @@ public class Precursor implements MassSpecObject {
      * @param selectedIon        optional.
      * @param activation         required.
      */
-    public Precursor(Spectrum spectrum,
-                     SourceFile sourceFile,
-                     String externalSpectrumID,
-                     ParamGroup isolationWindow,
-                     List<ParamGroup> selectedIon,
-                     ParamGroup activation) {
-        this.spectrum = spectrum;
-        this.sourceFile = sourceFile;
+    public Precursor(Spectrum spectrum, SourceFile sourceFile, String externalSpectrumID, ParamGroup isolationWindow,
+                     List<ParamGroup> selectedIon, ParamGroup activation) {
+        this.spectrum           = spectrum;
+        this.sourceFile         = sourceFile;
         this.externalSpectrumID = externalSpectrumID;
-        this.isolationWindow = isolationWindow;
-        this.selectedIons = selectedIon;
-        this.activation = activation;
+        this.isolationWindow    = isolationWindow;
+        this.selectedIons       = selectedIon;
+        this.activation         = activation;
     }
 
     public ParamGroup getActivation() {
@@ -108,3 +112,4 @@ public class Precursor implements MassSpecObject {
 }
 
 
+//~ Formatted by Jindent --- http://www.jindent.com

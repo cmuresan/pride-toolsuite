@@ -1,10 +1,14 @@
 package uk.ac.ebi.pride.data.controller.access;
 
+//~--- non-JDK imports --------------------------------------------------------
+
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.DBSequence;
 import uk.ac.ebi.pride.data.core.Identification;
 import uk.ac.ebi.pride.data.core.SearchDataBase;
 import uk.ac.ebi.pride.data.core.SearchEngine;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.util.Collection;
 
@@ -17,14 +21,16 @@ import java.util.Collection;
  * Time: 17:59:20
  */
 public interface ProteinDataAccess {
-    /**
-     * The name for two dimensional identification
-     */
-    public static final String TWO_DIM_IDENTIFICATION_TYPE = "Two Dimensional";
+
     /**
      * The name for gel free identification
      */
     public static final String GEL_FREE_IDENTIFICATION_TYPE = "Gel Free";
+
+    /**
+     * The name for two dimensional identification
+     */
+    public static final String TWO_DIM_IDENTIFICATION_TYPE = "Two Dimensional";
 
     /**
      * Whether this controller contains identifications
@@ -147,13 +153,13 @@ public interface ProteinDataAccess {
 
     /**
      * Get the sequence of the Identified Protein
+     *
      * @param identId identification Id
      * @return Sequence Object in the Database
      * @throws DataAccessException
      */
     public DBSequence getIdentificationSequence(Comparable identId) throws DataAccessException;
-
-
-
-
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

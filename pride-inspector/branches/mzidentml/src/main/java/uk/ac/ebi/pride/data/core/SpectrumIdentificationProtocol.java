@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
 
 import java.util.List;
 
@@ -8,49 +9,59 @@ import java.util.List;
  * User: yperez
  * Date: 05/08/11
  * Time: 15:56
- * */
+ */
 public class SpectrumIdentificationProtocol extends Protocol {
-    /**
-     * The type of search performed e.g. PMF, Tag searches, MS-MS
-     */
-    private ParamGroup searchType = null;
-    /**
-     * The specification of static/variable modifications
-     * (e.g. Oxidation of Methionine) that are to be considered in the spectra search.
-     */
-    private List<SearchModification> searchModificationList = null;
-    /**
-     * If there are multiple enzymes specified, this attribute is set to true if
-     * cleavage with different enzymes is performed independently.
-     */
-    private boolean enzymeIndependent = false;
-    /**
-     * The list of enzymes used in experiment
-     */
-    private List<Enzyme> enzymeList = null;
-    /**
-     * The masses of residues used in the search.
-     */
-    private List<MassTable> massTableList = null;
-    /**
-     * The tolerance of the search given as a plus and minus value with units.
-     */
-    private List<CvParam> fragmentTolerance = null;
-    /**
-     * The tolerance of the search given as a plus and minus value with units.
-     */
-    private List<CvParam> parentTolerance = null;
-    /**
-     * The specification of filters applied to the database searched.
-     */
-    private List<Filter> filterList = null;
+
     /**
      * A specification of how a nucleic acid sequence database was translated for searching.
      */
     private DataBaseTranslation dataBaseTranslation = null;
 
     /**
+     * The list of enzymes used in experiment
+     */
+    private List<Enzyme> enzymeList = null;
+
+    /**
+     * The specification of filters applied to the database searched.
+     */
+    private List<Filter> filterList = null;
+
+    /**
+     * The tolerance of the search given as a plus and minus value with units.
+     */
+    private List<CvParam> fragmentTolerance = null;
+
+    /**
+     * The masses of residues used in the search.
+     */
+    private List<MassTable> massTableList = null;
+
+    /**
+     * The tolerance of the search given as a plus and minus value with units.
+     */
+    private List<CvParam> parentTolerance = null;
+
+    /**
+     * The specification of static/variable modifications
+     * (e.g. Oxidation of Methionine) that are to be considered in the spectra search.
+     */
+    private List<SearchModification> searchModificationList = null;
+
+    /**
+     * The type of search performed e.g. PMF, Tag searches, MS-MS
+     */
+    private ParamGroup searchType = null;
+
+    /**
+     * If there are multiple enzymes specified, this attribute is set to true if
+     * cleavage with different enzymes is performed independently.
+     */
+    private boolean enzymeIndependent = false;
+
+    /**
      * SpectrumIdentificationProtocol Constructor
+     *
      * @param id
      * @param name
      * @param analysisSoftware
@@ -66,48 +77,30 @@ public class SpectrumIdentificationProtocol extends Protocol {
      * @param filterList
      * @param dataBaseTranslation
      */
-    public SpectrumIdentificationProtocol(Comparable id,
-                                          String name,
-                                          Software analysisSoftware,
-                                          ParamGroup analysisParam,
-                                          ParamGroup threshold,
-                                          ParamGroup searchType,
-                                          List<SearchModification> searchModificationList,
-                                          boolean enzymeIndependent,
-                                          List<Enzyme> enzymeList,
-                                          List<MassTable> massTableList,
-                                          List<CvParam> fragmentTolerance,
-                                          List<CvParam> parentTolerance,
-                                          List<Filter> filterList,
-                                          DataBaseTranslation dataBaseTranslation) {
-        this(null, id, name, analysisSoftware, threshold, searchType, searchModificationList,
-                enzymeIndependent, enzymeList, massTableList, fragmentTolerance, parentTolerance, filterList, dataBaseTranslation);
+    public SpectrumIdentificationProtocol(Comparable id, String name, Software analysisSoftware,
+            ParamGroup analysisParam, ParamGroup threshold, ParamGroup searchType,
+            List<SearchModification> searchModificationList, boolean enzymeIndependent, List<Enzyme> enzymeList,
+            List<MassTable> massTableList, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
+            List<Filter> filterList, DataBaseTranslation dataBaseTranslation) {
+        this(null, id, name, analysisSoftware, threshold, searchType, searchModificationList, enzymeIndependent,
+             enzymeList, massTableList, fragmentTolerance, parentTolerance, filterList, dataBaseTranslation);
     }
 
-    public SpectrumIdentificationProtocol(ParamGroup analysisParam,
-                                          Comparable id,
-                                          String name,
-                                          Software analysisSoftware,
-                                          ParamGroup threshold,
-                                          ParamGroup searchType,
-                                          List<SearchModification> searchModificationList,
-                                          boolean enzymeIndependent,
-                                          List<Enzyme> enzymeList,
-                                          List<MassTable> massTableList,
-                                          List<CvParam> fragmentTolerance,
-                                          List<CvParam> parentTolerance,
-                                          List<Filter> filterList,
-                                          DataBaseTranslation dataBaseTranslation) {
+    public SpectrumIdentificationProtocol(ParamGroup analysisParam, Comparable id, String name,
+            Software analysisSoftware, ParamGroup threshold, ParamGroup searchType,
+            List<SearchModification> searchModificationList, boolean enzymeIndependent, List<Enzyme> enzymeList,
+            List<MassTable> massTableList, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
+            List<Filter> filterList, DataBaseTranslation dataBaseTranslation) {
         super(analysisParam, id, name, analysisSoftware, threshold);
-        this.searchType = searchType;
+        this.searchType             = searchType;
         this.searchModificationList = searchModificationList;
-        this.enzymeIndependent = enzymeIndependent;
-        this.enzymeList = enzymeList;
-        this.massTableList = massTableList;
-        this.fragmentTolerance = fragmentTolerance;
-        this.parentTolerance = parentTolerance;
-        this.filterList = filterList;
-        this.dataBaseTranslation = dataBaseTranslation;
+        this.enzymeIndependent      = enzymeIndependent;
+        this.enzymeList             = enzymeList;
+        this.massTableList          = massTableList;
+        this.fragmentTolerance      = fragmentTolerance;
+        this.parentTolerance        = parentTolerance;
+        this.filterList             = filterList;
+        this.dataBaseTranslation    = dataBaseTranslation;
     }
 
     public ParamGroup getSearchType() {
@@ -182,3 +175,6 @@ public class SpectrumIdentificationProtocol extends Protocol {
         this.dataBaseTranslation = dataBaseTranslation;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

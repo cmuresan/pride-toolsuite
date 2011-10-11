@@ -3,19 +3,21 @@ package uk.ac.ebi.pride.data.core;
 /**
  * The collection of protocols which include the parameters and settings of the performed analyses.
  * <p>
- *     This class Represent the information for MzIdentMl Experiments at the Protein and Spectrum Level
+ * This class Represent the information for MzIdentMl Experiments at the Protein and Spectrum Level
  * </p>
- *
+ * <p/>
  * User: yperez
  * Date: 08/08/11
  * Time: 11:32
  */
 public class Protocol extends IdentifiableParamGroup {
+
     /**
      * The protein or Spectrum detection software used,
      * given as a reference to the SoftwareCollection section.
      */
     private Software analysisSoftware = null;
+
     /**
      * The threshold(s) applied to determine that a result is significant.
      * If multiple terms are used it is assumed that all conditions are satisfied
@@ -24,31 +26,28 @@ public class Protocol extends IdentifiableParamGroup {
     private ParamGroup threshold = null;
 
     /**
-     * Detection Protocol for MzIdentMl Experiments at the Protein and Spectrum Level.
-     * @param id
-     * @param name
-     * @param analysisSoftware
-     * @param analysisParam
-     * @param threshold
-     */
-    public Protocol(ParamGroup analysisParam, Comparable id,
-                    String name,
-                    Software analysisSoftware,
-                    ParamGroup threshold) {
-        super(analysisParam, id, name);
-        this.analysisSoftware = analysisSoftware;
-        this.threshold = threshold;
-    }
-
-    /**
-     *
      * @param id
      * @param name
      * @param analysisParam
      */
     public Protocol(Comparable id, String name, ParamGroup analysisParam) {
         super(analysisParam, id, name);
+    }
 
+    /**
+     * Detection Protocol for MzIdentMl Experiments at the Protein and Spectrum Level.
+     *
+     * @param id
+     * @param name
+     * @param analysisSoftware
+     * @param analysisParam
+     * @param threshold
+     */
+    public Protocol(ParamGroup analysisParam, Comparable id, String name, Software analysisSoftware,
+                    ParamGroup threshold) {
+        super(analysisParam, id, name);
+        this.analysisSoftware = analysisSoftware;
+        this.threshold        = threshold;
     }
 
     public Software getAnalysisSoftware() {
@@ -60,7 +59,7 @@ public class Protocol extends IdentifiableParamGroup {
     }
 
     public ParamGroup getAnalysisParam() {
-        return new ParamGroup(this.getCvParams(),this.getUserParams());
+        return new ParamGroup(this.getCvParams(), this.getUserParams());
     }
 
     public void setAnalysisParam(ParamGroup analysisParam) {
@@ -76,3 +75,6 @@ public class Protocol extends IdentifiableParamGroup {
         this.threshold = threshold;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.Map;
 
 /**
@@ -10,7 +12,6 @@ import java.util.Map;
  * Time: 09:24:33
  */
 public class ReferenceableParamGroup implements MassSpecObject {
-
     private Map<String, ParamGroup> refMap = null;
 
     /**
@@ -30,7 +31,6 @@ public class ReferenceableParamGroup implements MassSpecObject {
         this.refMap = refMap;
     }
 
-
     public void addRefParamGroup(String ref, ParamGroup params) {
         refMap.put(ref, params);
     }
@@ -43,3 +43,6 @@ public class ReferenceableParamGroup implements MassSpecObject {
         return refMap.get(ref);
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

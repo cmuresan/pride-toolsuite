@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,31 +13,18 @@ import java.util.Map;
  * Time: 16:38:43
  */
 public class GelFreeIdentification extends Identification {
-
-    public GelFreeIdentification(Comparable id,
-                                 String name,
-                                 DBSequence dbSequence,
-                                 boolean passThreshold,
-                                 Map<PeptideEvidence,List<Peptide>> peptides,
-                                 double score,
-                                 double threshold,
-                                 SearchEngine searchEngine,
-                                 double sequenceCoverage) {
+    public GelFreeIdentification(Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
+                                 Map<PeptideEvidence, List<Peptide>> peptides, double score, double threshold,
+                                 SearchEngine searchEngine, double sequenceCoverage) {
         super(id, name, dbSequence, passThreshold, peptides, score, threshold, searchEngine, sequenceCoverage);
     }
 
-    public GelFreeIdentification(ParamGroup params,
-                                 Comparable id,
-                                 String name,
-                                 DBSequence dbSequence,
-                                 boolean passThreshold,
-                                 Map<PeptideEvidence, List<Peptide>> peptides,
-                                 double score,
-                                 double threshold,
-                                 SearchEngine searchEngine,
-                                 double sequenceCoverage) {
+    public GelFreeIdentification(ParamGroup params, Comparable id, String name, DBSequence dbSequence,
+                                 boolean passThreshold, Map<PeptideEvidence, List<Peptide>> peptides, double score,
+                                 double threshold, SearchEngine searchEngine, double sequenceCoverage) {
         super(params, id, name, dbSequence, passThreshold, peptides, score, threshold, searchEngine, sequenceCoverage);
     }
-
-
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

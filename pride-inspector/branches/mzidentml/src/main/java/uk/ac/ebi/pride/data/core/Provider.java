@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
 /**
- *  Provider object.
+ * Provider object.
  * <p/>
  * In mzIdentML 1.1.0., the following the description of this object:
  * <p/>
@@ -13,39 +13,36 @@ package uk.ac.ebi.pride.data.core;
  * Date: 04/08/11
  * Time: 11:11
  */
-
 public class Provider extends Identifiable {
-    /**
-     * The Software that produced the document instance. mzIdentML
-     */
-    private Software software = null;
+
     /**
      * A reference to the Contact person that provide the mzIdentMl File.
      * (mzIndetMl description: When a ContactRole is used, it specifies which Contact the role is associated with.
      */
-    private AbstractContact contact  = null;
+    private AbstractContact contact = null;
+
     /*
      * Role in CvParam
      */
     private CvParam role = null;
 
     /**
-     *
+     * The Software that produced the document instance. mzIdentML
+     */
+    private Software software = null;
+
+    /**
      * @param id
      * @param name
      * @param software
      * @param contact
      * @param role
      */
-    public Provider(Comparable id,
-                    String name,
-                    Software software,
-                    AbstractContact contact,
-                    CvParam role) {
+    public Provider(Comparable id, String name, Software software, AbstractContact contact, CvParam role) {
         super(id, name);
         this.software = software;
-        this.contact = contact;
-        this.role = role;
+        this.contact  = contact;
+        this.role     = role;
     }
 
     public Software getSoftware() {
@@ -72,3 +69,6 @@ public class Provider extends Identifiable {
         this.role = role;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

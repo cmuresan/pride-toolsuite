@@ -1,8 +1,12 @@
 package uk.ac.ebi.pride.data.io.file;
 
+//~--- non-JDK imports --------------------------------------------------------
+
 import uk.ac.ebi.jmzml.model.mzml.*;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshaller;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.util.Set;
 
@@ -14,7 +18,6 @@ import java.util.Set;
  * Time: 10:37:45
  */
 public class MzMLUnmarshallerAdaptor {
-
     private MzMLUnmarshaller unmarshaller = null;
 
     public MzMLUnmarshallerAdaptor(MzMLUnmarshaller um) {
@@ -81,3 +84,6 @@ public class MzMLUnmarshallerAdaptor {
         return unmarshaller.getChromatogramById(id);
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

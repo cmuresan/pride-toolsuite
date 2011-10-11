@@ -1,33 +1,30 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
 
 /**
  * ToDo: document this class
- *
+ * <p/>
  * User: yperez
  * Date: 05/08/11
  * Time: 16:04
- *
  */
 public class SearchModification {
-
-    private boolean fixedMod = false;
-
-    private double massDelta = 0.0;
-
-    private List<String> specificityList = null;
-
+    private List<CvParam> cvParamList         = null;
+    private boolean       fixedMod            = false;
+    private double        massDelta           = 0.0;
+    private List<String>  specificityList     = null;
     private List<CvParam> specificityRuleList = null;
 
-    private List<CvParam> cvParamList = null;
-
-    public SearchModification(boolean fixedMod, double massDelta, List<String> specificityList, List<CvParam> specificityRuleList, List<CvParam> cvParamList) {
-        this.fixedMod = fixedMod;
-        this.massDelta = massDelta;
-        this.specificityList = specificityList;
+    public SearchModification(boolean fixedMod, double massDelta, List<String> specificityList,
+                              List<CvParam> specificityRuleList, List<CvParam> cvParamList) {
+        this.fixedMod            = fixedMod;
+        this.massDelta           = massDelta;
+        this.specificityList     = specificityList;
         this.specificityRuleList = specificityRuleList;
-        this.cvParamList = cvParamList;
+        this.cvParamList         = cvParamList;
     }
 
     public boolean isFixedMod() {
@@ -70,3 +67,6 @@ public class SearchModification {
         this.cvParamList = cvParamList;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

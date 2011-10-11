@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.util.List;
 
 /**
@@ -36,3 +38,6 @@ public class ScanList extends ParamGroup {
         this.scans = scans;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

@@ -11,21 +11,24 @@ package uk.ac.ebi.pride.data.core;
 public class CVLookup implements MassSpecObject {
 
     /**
+     * The URI for the controlled vocabulary
+     */
+    private String address = null;
+
+    /**
      * Cv Label name, it is also the Id for this CVLookup
      */
     private String cvLabel = null;
+
     /**
      * The full name of the controlled vocabulary
      */
     private String fullName = null;
+
     /**
      * The version of the controlled vocabulary
      */
     private String version = null;
-    /**
-     * The URI for the controlled vocabulary
-     */
-    private String address = null;
 
     /**
      * Constructor
@@ -35,8 +38,7 @@ public class CVLookup implements MassSpecObject {
      * @param version  optional.
      * @param address  required.
      */
-    public CVLookup(String cvLabel, String fullName,
-                    String version, String address) {
+    public CVLookup(String cvLabel, String fullName, String version, String address) {
         setCvLabel(cvLabel);
         setFullName(fullName);
         setVersion(version);
@@ -75,3 +77,6 @@ public class CVLookup implements MassSpecObject {
         this.version = version;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

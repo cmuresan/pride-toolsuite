@@ -182,7 +182,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 userParams.add(new UserParam(rs.getString("name"), "", rs.getString("value"), "", "", ""));
             }
         } catch (SQLException e) {
-            logger.error("Failed to query user params from {}", table_name, e);
+            logger.error("Failed to query user params from {}", table_name, e.getMessage());
         } finally {
             DBUtilities.releaseResources(newConnection ? connection : null, st, rs);
         }
@@ -255,7 +255,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     @Override
     public List<Person> getPersonContacts() throws DataAccessException {
         ExperimentMetaData metadata = super.getExperimentMetaData();
-        if(metadata == null){
+        if (metadata == null) {
             List<Person> persons = new ArrayList<Person>();
             Connection connection = null;
             PreparedStatement st = null;
@@ -266,7 +266,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 st = connection.prepareStatement("SELECT contact_name, institution, contact_info FROM mzdata_contact sf, mzdata_mz_data mz " + "WHERE mz.accession_number= ? and mz.mz_data_id=sf.mz_data_id");
                 st.setString(1, getForegroundExperimentAcc().toString());
                 rs = st.executeQuery();
-                while (rs.next()){
+                while (rs.next()) {
                     List<CvParam> cvParams = new ArrayList<CvParam>();
                     CvTermReference contactName = CvTermReference.CONTACT_NAME;
                     cvParams.add(new CvParam(contactName.getAccession(), contactName.getName(), contactName.getCvLabel(), rs.getString("contact_name"), null, null, null));
@@ -280,8 +280,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                         userParams.add(new UserParam(CONTACT_INFO, null, contactInfo, null, null, null));
                     }
                     List<Organization> affiliation = new ArrayList<Organization>();
-                    affiliation.add(new Organization(null,rs.getString("institution"),null,null));
-                    Person contactPerson = new Person(new ParamGroup(cvParams, userParams),null,rs.getString("contact_name"),null,null,null,affiliation,null);
+                    affiliation.add(new Organization(null, rs.getString("institution"), null, null));
+                    Person contactPerson = new Person(new ParamGroup(cvParams, userParams), null, rs.getString("contact_name"), null, null, null, affiliation, null);
                     persons.add(contactPerson);
                 }
                 return persons;
@@ -297,7 +297,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     @Override
     public List<Organization> getOrganizationContacts() throws DataAccessException {
         ExperimentMetaData metadata = super.getExperimentMetaData();
-        if(metadata == null){
+        if (metadata == null) {
             Set<Organization> organizations = new HashSet<Organization>();
             Connection connection = null;
             PreparedStatement st = null;
@@ -308,13 +308,13 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 st = connection.prepareStatement("SELECT contact_name, institution, contact_info FROM mzdata_contact sf, mzdata_mz_data mz " + "WHERE mz.accession_number= ? and mz.mz_data_id=sf.mz_data_id");
                 st.setString(1, getForegroundExperimentAcc().toString());
                 rs = st.executeQuery();
-                while (rs.next()){
+                while (rs.next()) {
                     List<CvParam> cvParams = new ArrayList<CvParam>();
                     CvTermReference contactOrg = CvTermReference.CONTACT_ORG;
                     cvParams.add(new CvParam(contactOrg.getAccession(), contactOrg.getName(), contactOrg.getCvLabel(), rs.getString("institution"), null, null, null));
                     //ToDo: extract email, address information into CvParams?
                     List<UserParam> userParams = null;
-                    Organization organization = new Organization(new ParamGroup(cvParams, userParams),rs.getString("institution"),null);
+                    Organization organization = new Organization(new ParamGroup(cvParams, userParams), rs.getString("institution"), null);
                     organizations.add(organization);
                 }
                 return new ArrayList<Organization>(organizations);
@@ -352,7 +352,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     String sample_name = rs.getString("sample_name");
                     userParam = getUserParams(connection, "mzdata_sample_param", mz_data_id);
                     cvParam = getCvParams(connection, "mzdata_sample_param", mz_data_id);
-                    samples.add(new Sample(new ParamGroup(cvParam, userParam),SAMPLE_ID, sample_name));
+                    samples.add(new Sample(new ParamGroup(cvParam, userParam), SAMPLE_ID, sample_name));
                 }
             } catch (SQLException e) {
                 logger.error("Failed to query samples", e);
@@ -391,7 +391,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     if (completionTime != null) {
                         userParams.add(new UserParam(COMPLETION_TIME, null, completionTime, null, null, null));
                     }
-                    softwares.add(new Software(new ParamGroup(cvParams, userParams),null,rs.getString("software_name"), rs.getString("software_version")));
+                    softwares.add(new Software(new ParamGroup(cvParams, userParams), null, rs.getString("software_name"), rs.getString("software_version")));
                 }
 
             } catch (SQLException e) {
@@ -474,7 +474,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     //create source object
                     int sourceOrder = 1;
                     InstrumentComponent sourceInstrument = new InstrumentComponent(sourceOrder, new ParamGroup(getCvParams(connection, "mzdata_instrument_source_param", mz_data_id), getUserParams(connection, "mzdata_instrument_source_param", mz_data_id)));
-                    List<InstrumentComponent> sources  = new ArrayList<InstrumentComponent>();
+                    List<InstrumentComponent> sources = new ArrayList<InstrumentComponent>();
                     sources.add(sourceInstrument);
                     //create detector
                     int detectorOrder = getAnalyzerList(connection, mz_data_id).size() + 2;
@@ -487,9 +487,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     int orderCnt = 2;
                     for (ParamGroup analyzer : paramGroupAnalyzers) {
                         InstrumentComponent analyzerInstrument = new InstrumentComponent(orderCnt, analyzer);
-                         analyzers.add(analyzerInstrument);
+                        analyzers.add(analyzerInstrument);
                     }
-                    instrumentConfigurations.add(new InstrumentConfiguration(rs.getString("instrument_name"), null, software, sources, analyzers, detectors,params));
+                    instrumentConfigurations.add(new InstrumentConfiguration(rs.getString("instrument_name"), null, software, sources, analyzers, detectors, params));
                 }
             } catch (SQLException e) {
                 logger.error("Failed to query instrument configuration", e);
@@ -609,7 +609,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             paramGroup.add(new ParamGroup(cvParams, userParams));
         }
 
-        return new ExperimentProtocol(null,PROTOCOL_ID, protocol_name, paramGroup);
+        return new ExperimentProtocol(null, PROTOCOL_ID, protocol_name, paramGroup);
     }
 
 
@@ -631,7 +631,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             while (rs.next()) {
                 userParams = getUserParams(connection, "pride_reference_param", rs.getInt("pr.reference_id"));
                 cvParams = getCvParams(connection, "pride_reference_param", rs.getInt("pr.reference_id"));
-                references.add(new Reference( new ParamGroup(cvParams, userParams),rs.getString("reference_line")));
+                references.add(new Reference(new ParamGroup(cvParams, userParams), rs.getString("reference_line")));
             }
 
         } catch (SQLException e) {
@@ -715,11 +715,11 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 List<Person> persons = getPersonContacts();
                 List<Organization> organizations = getOrganizationContacts();
                 List<Reference> references = getReferences();
-                metaData = new ExperimentMetaData(additional,accession,null,version,shortLabel,samples,software,persons,sourceFiles,null,organizations,references,null,null,protocol);
+                metaData = new ExperimentMetaData(additional, accession, title, version, shortLabel, samples, software, persons, sourceFiles, null, organizations, references, null, null, protocol);
                 // store in cache
                 getCache().store(CacheCategory.EXPERIMENT_METADATA, metaData);
             } catch (SQLException e) {
-                logger.error("Failed to query experiment metadata", this, e);
+                logger.error("Failed to query experiment metadata", this, e.getMessage());
             } finally {
                 DBUtilities.releaseResources(connection, st, rs);
             }
@@ -938,7 +938,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             }
 
         } catch (SQLException e) {
-            logger.error("Failed to query spectrum descritpion", this, e);
+            logger.error("Failed to query spectrum description", this, e.getMessage());
         } finally {
             DBUtilities.releaseResources(null, st, rs);
         }
@@ -1039,7 +1039,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     spectrumParams.addUserParams(getUserParams(connection, "mzdata_spectrum_instrument_param", value));
                     // add comments
                     spectrumParams.addUserParams(getSpectrumDesc(connection, value));
-                    spectrum = new Spectrum(spectrumParams,rs.getInt("spectrum_id"),null,index,null,defaultArrLength,binaryArray,null,null,scanList,precursors,null);
+                    spectrum = new Spectrum(spectrumParams, rs.getInt("spectrum_id"), null, index, null, defaultArrLength, binaryArray, null, null, scanList, precursors, null);
                     //spectrum = new Spectrum(Integer.toString(rs.getInt("spectrum_id")), index, null, null, defaultArrLength, null, scanList, precursors, null, binaryArray, spectrumParams);
 
                     if (useCache) {
@@ -1102,7 +1102,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                         rs.getInt("modification_id")));
                 monoMassDeltas = getDeltaValues(connection, rs.getInt("modification_id"), "uk.ac.ebi.pride.rdbms.ojb.model.core.MonoMassDeltaBean");
                 avgMassDeltas = getDeltaValues(connection, rs.getInt("modification_id"), "uk.ac.ebi.pride.rdbms.ojb.model.core.AverageMassDeltaBean");
-                modifications.add(new Modification(params,rs.getString("accession"),null,rs.getInt("location"),null,avgMassDeltas,monoMassDeltas,rs.getString("mod_database"), rs.getString("mod_database_version")));
+                modifications.add(new Modification(params, rs.getString("accession"), null, rs.getInt("location"), null, avgMassDeltas, monoMassDeltas, rs.getString("mod_database"), rs.getString("mod_database_version")));
             }
         } catch (SQLException e) {
             logger.error("Failed to query modifications", e);
@@ -1212,10 +1212,10 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 modifications = getModificationsPeptide(connection, rs.getInt("peptide_id"));
                 fragmentIons = getFragmentIons(connection, rs.getInt("peptide_id"));
                 spectrum = getSpectrumByPeptide(connection, experiment_id, rs.getInt("spectrum_ref"));
-                PeptideSequence peptideSequence = new PeptideSequence(null,null,rs.getString("sequence"),modifications);
+                PeptideSequence peptideSequence = new PeptideSequence(null, null, rs.getString("sequence"), modifications);
                 List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
-                peptideEvidences.add(new PeptideEvidence(null,null,rs.getInt("pep_start"),rs.getInt("pep_end"),false,peptideSequence,null));
-                peptides.add(new Peptide(params,null,null,-1,0.0,0.0,0.0,peptideSequence,-1,false,null,null,peptideEvidences,fragmentIons,null,spectrum,null));
+                peptideEvidences.add(new PeptideEvidence(null, null, rs.getInt("pep_start"), rs.getInt("pep_end"), false, peptideSequence, null));
+                peptides.add(new Peptide(params, null, null, -1, 0.0, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null));
             }
         } catch (SQLException e) {
             logger.error("Failed to query peptides", e);
@@ -1288,13 +1288,13 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     peptides = getPeptideIdentification(connection, rs.getInt("identification_id"), rs.getInt("pi.experiment_id"));
                     spectrum = getSpectrumByRef(connection, rs.getString("spectrum_ref"));
                     String className = rs.getString("classname");
-                    DBSequence dbSequence = new DBSequence(null,null,-1,accession,new SearchDataBase(rs.getString("search_database"),rs.getString("database_version")),null,rs.getString("accession_version"),rs.getString("splice_isoform"));
-                    Map<PeptideEvidence,List<Peptide>> peptideEvidences = DataAccessUtilities.getPeptideEvidence(peptides);
+                    DBSequence dbSequence = new DBSequence(null, null, -1, accession, new SearchDataBase(rs.getString("search_database"), rs.getString("database_version")), null, rs.getString("accession_version"), rs.getString("splice_isoform"));
+                    Map<PeptideEvidence, List<Peptide>> peptideEvidences = DataAccessUtilities.getPeptideEvidence(peptides);
                     if ("uk.ac.ebi.pride.rdbms.ojb.model.core.TwoDimensionalIdentificationBean".equals(className)) {
                         gel = getPeptideGel(connection, rs.getInt("gel_id"), rs.getDouble("x_coordinate"), rs.getDouble("y_coordinate"), rs.getDouble("molecular_weight"), rs.getDouble("pi"));
-                        identification = new TwoDimIdentification(params,Integer.toString(rs.getInt("identification_id")),null,dbSequence,false,peptideEvidences,0.0,rs.getDouble("threshold"),new SearchEngine(null,rs.getString("search_engine")),seqConverage,gel);
+                        identification = new TwoDimIdentification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptideEvidences, 0.0, rs.getDouble("threshold"), new SearchEngine(null, rs.getString("search_engine")), seqConverageVal, gel);
                     } else if ("uk.ac.ebi.pride.rdbms.ojb.model.core.GelFreeIdentificationBean".equals(className)) {
-                        identification = new GelFreeIdentification(params,Integer.toString(rs.getInt("identification_id")),null,dbSequence,false,peptideEvidences,0.0,rs.getDouble("threshold"),new SearchEngine(null,rs.getString("search_engine")),seqConverage);
+                        identification = new GelFreeIdentification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptideEvidences, 0.0, rs.getDouble("threshold"), new SearchEngine(null, rs.getString("search_engine")), seqConverageVal);
                     }
 
                     if (useCache) {
@@ -1371,10 +1371,10 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             if (specId != null) {
                 spectrum = getSpectrumById(specId);
             }
-            PeptideSequence peptideSequence = new PeptideSequence(null,null,sequence,modifications);
+            PeptideSequence peptideSequence = new PeptideSequence(null, null, sequence, modifications);
             List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
-            peptideEvidences.add(new PeptideEvidence(null,null,start,end,false,peptideSequence,null));
-            peptide = new Peptide(params,null,null,-1,0.0,0.0,0.0,peptideSequence,-1,false,null,null,peptideEvidences,fragmentIons,null,spectrum,null);
+            peptideEvidences.add(new PeptideEvidence(null, null, start, end, false, peptideSequence, null));
+            peptide = new Peptide(params, null, null, -1, 0.0, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
 
             if (useCache) {
                 getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, peptideId), peptide);
@@ -1403,7 +1403,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 st.setString(1, identId.toString());
                 rs = st.executeQuery();
                 if (rs.next()) {
-                    searchEngine = new SearchEngine(null,rs.getString("search_engine"));
+                    searchEngine = new SearchEngine(null, rs.getString("search_engine"));
                 }
 
                 // get search engine types

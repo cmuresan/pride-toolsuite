@@ -7,17 +7,14 @@ package uk.ac.ebi.pride.data.core;
  * Time: 17:11
  */
 public class Filter {
-
+    private ParamGroup exclude    = null;
     private ParamGroup filterType = null;
-
-    private ParamGroup include = null;
-
-    private ParamGroup exclude = null;
+    private ParamGroup include    = null;
 
     public Filter(ParamGroup filterType, ParamGroup include, ParamGroup exclude) {
         this.filterType = filterType;
-        this.include = include;
-        this.exclude = exclude;
+        this.include    = include;
+        this.exclude    = exclude;
     }
 
     public ParamGroup getFilterType() {
@@ -44,3 +41,6 @@ public class Filter {
         this.exclude = exclude;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

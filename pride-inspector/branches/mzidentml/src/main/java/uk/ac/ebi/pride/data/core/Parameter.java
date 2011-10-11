@@ -13,22 +13,26 @@ public abstract class Parameter implements MassSpecObject {
      * The name of cv term
      */
     private String name = null;
-    /**
-     * The value of cv term
-     */
-    private String value = null;
+
     /**
      * The unit accession number from controlled vocabulary
      */
     private String unitAcc = null;
-    /**
-     * The unit name of unit cv term
-     */
-    private String unitName = null;
+
     /**
      * The cvlookup id for unit
      */
     private String unitCVLookupID = null;
+
+    /**
+     * The unit name of unit cv term
+     */
+    private String unitName = null;
+
+    /**
+     * The value of cv term
+     */
+    private String value = null;
 
     /**
      * Constructor
@@ -39,15 +43,11 @@ public abstract class Parameter implements MassSpecObject {
      * @param unitName       optional.
      * @param unitCVLookupID optional.
      */
-    public Parameter(String name,
-                     String value,
-                     String unitAcc,
-                     String unitName,
-                     String unitCVLookupID) {
-        this.name = name;
-        this.value = value;
-        this.unitAcc = unitAcc;
-        this.unitName = unitName;
+    public Parameter(String name, String value, String unitAcc, String unitName, String unitCVLookupID) {
+        this.name           = name;
+        this.value          = value;
+        this.unitAcc        = unitAcc;
+        this.unitName       = unitName;
         this.unitCVLookupID = unitCVLookupID;
     }
 
@@ -91,3 +91,6 @@ public abstract class Parameter implements MassSpecObject {
         unitCVLookupID = unitCVRef;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

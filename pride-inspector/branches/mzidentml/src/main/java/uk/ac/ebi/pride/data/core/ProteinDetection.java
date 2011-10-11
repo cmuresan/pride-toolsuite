@@ -6,25 +6,29 @@ package uk.ac.ebi.pride.data.core;
  * Date: 05/08/11
  * Time: 15:27
  */
-public class ProteinDetection extends ProtocolApplication{
+public class ProteinDetection extends ProtocolApplication {
+
     /**
      * A reference to the ProteinDetectionList.
      */
     private ProteinDetectionList proteinDetectionListRef = null;
+
     /**
      * A reference to the detection protocol used for this ProteinDetection.
      */
     private Protocol proteinDetectionProtocolRef = null;
+
     /**
      * A reference to the list of spectrum identifications that were input to the process.
      */
     private SpectrumIdentificationList spectrumIdentificationListRef = null;
 
-
-    public ProteinDetection(String id, String name, String activeDate, ProteinDetectionList proteinDetectionListRef, Protocol proteinDetectionProtocolRef, SpectrumIdentificationList spectrumIdentificationListRef) {
+    public ProteinDetection(String id, String name, String activeDate, ProteinDetectionList proteinDetectionListRef,
+                            Protocol proteinDetectionProtocolRef,
+                            SpectrumIdentificationList spectrumIdentificationListRef) {
         super(id, name, activeDate);
-        this.proteinDetectionListRef = proteinDetectionListRef;
-        this.proteinDetectionProtocolRef = proteinDetectionProtocolRef;
+        this.proteinDetectionListRef       = proteinDetectionListRef;
+        this.proteinDetectionProtocolRef   = proteinDetectionProtocolRef;
         this.spectrumIdentificationListRef = spectrumIdentificationListRef;
     }
 
@@ -52,3 +56,6 @@ public class ProteinDetection extends ProtocolApplication{
         this.spectrumIdentificationListRef = spectrumIdentificationListRef;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

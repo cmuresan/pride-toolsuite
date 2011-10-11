@@ -2,28 +2,24 @@ package uk.ac.ebi.pride.data.core;
 
 /**
  * ToDo: document this class
- *
+ * <p/>
  * User: yperez
  * Date: 04/08/11
  * Time: 14:18
  */
 public class SubstitutionModification {
-
-    private String originalResidue = null;
-
-    private String replacementResidue = null;
-
-    private int location = -1;
-
-    private double avgMassDelta = 0.0;
-
+    private double avgMassDelta          = 0.0;
+    private int    location              = -1;
     private double monoisotopicMassDelta = 0.0;
+    private String originalResidue       = null;
+    private String replacementResidue    = null;
 
-    public SubstitutionModification(String originalResidue, String replacementResidue, int location, double avgMassDelta, double monoisotopicMassDelta) {
-        this.originalResidue = originalResidue;
-        this.replacementResidue = replacementResidue;
-        this.location = location;
-        this.avgMassDelta = avgMassDelta;
+    public SubstitutionModification(String originalResidue, String replacementResidue, int location,
+                                    double avgMassDelta, double monoisotopicMassDelta) {
+        this.originalResidue       = originalResidue;
+        this.replacementResidue    = replacementResidue;
+        this.location              = location;
+        this.avgMassDelta          = avgMassDelta;
         this.monoisotopicMassDelta = monoisotopicMassDelta;
     }
 
@@ -67,3 +63,6 @@ public class SubstitutionModification {
         this.monoisotopicMassDelta = monoisotopicMassDelta;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

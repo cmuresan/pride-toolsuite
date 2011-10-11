@@ -9,21 +9,22 @@ package uk.ac.ebi.pride.data.core;
  * User: yperez, rwang
  * Date: 08/08/11
  * Time: 16:11
- * */
+ */
+public class Identifiable implements MassSpecObject {
 
-public class Identifiable implements MassSpecObject{
     /**
      * An identifier is an unambiguous string that is unique within the scope
      * (i.e. a document, a set of related documents, or a repository) of its use.
      */
     private Comparable id = null;
+
     /**
      * The potentially ambiguous common identifier, such as a human-readable name for the instance.
      */
     String name = null;
 
     public Identifiable(Comparable id, String name) {
-        this.id = id;
+        this.id   = id;
         this.name = name;
     }
 
@@ -43,3 +44,6 @@ public class Identifiable implements MassSpecObject{
         this.id = id;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

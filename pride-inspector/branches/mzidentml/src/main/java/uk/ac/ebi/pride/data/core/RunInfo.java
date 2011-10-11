@@ -2,46 +2,52 @@ package uk.ac.ebi.pride.data.core;
 
 /**
  * ToDo: document this class
- *
+ * <p/>
  * User: rwang, yperez
  * Date: 03/08/11
  * Time: 10:23
- *
  */
-public class RunInfo extends ParamGroup{
-    /**
-     * identifier of each run
-     */
-    private String id = null;
+public class RunInfo extends ParamGroup {
+    private MzGraphList chromatogramList = null;
+
     /**
      * default instrument configuration, important to have an overview of the instrument
      * configuration used in the experiment
      */
     private InstrumentConfiguration defaultInstrumentConfiguration = null;
+
     /**
      * Source file used to extract all the mass spectrum or chromatograms.
      */
     private SourceFile defaultSourceFile = null;
+
+    /**
+     * identifier of each run
+     */
+    private String id = null;
+
     /**
      * Reference to the sample used to obtain these spectrum or chromatograms list.
-     *
-     * */
-    private Sample sampleRef = null;
+     */
+    private Sample      sampleRef    = null;
+    private MzGraphList spectrumList = null;
+
     /**
      * Timedate of the experiment measure
      */
     private String timeStamp = null;
 
     public RunInfo(ParamGroup params, String id, InstrumentConfiguration defaultInstrumentConfiguration,
-                   SourceFile defaultSourceFile, Sample sampleRef, String timeStamp, MzGraphList spectrumList, MzGraphList chromatogramList) {
+                   SourceFile defaultSourceFile, Sample sampleRef, String timeStamp, MzGraphList spectrumList,
+                   MzGraphList chromatogramList) {
         super(params);
-        this.id = id;
+        this.id                             = id;
         this.defaultInstrumentConfiguration = defaultInstrumentConfiguration;
-        this.defaultSourceFile = defaultSourceFile;
-        this.sampleRef = sampleRef;
-        this.timeStamp = timeStamp;
-        this.spectrumList = spectrumList;
-        this.chromatogramList = chromatogramList;
+        this.defaultSourceFile              = defaultSourceFile;
+        this.sampleRef                      = sampleRef;
+        this.timeStamp                      = timeStamp;
+        this.spectrumList                   = spectrumList;
+        this.chromatogramList               = chromatogramList;
     }
 
     public MzGraphList getSpectrumList() {
@@ -59,11 +65,6 @@ public class RunInfo extends ParamGroup{
     public void setChromatogramList(MzGraphList chromatogramList) {
         this.chromatogramList = chromatogramList;
     }
-
-    private MzGraphList spectrumList = null;
-
-    private MzGraphList chromatogramList = null;
-
 
     public String getId() {
         return id;
@@ -105,3 +106,6 @@ public class RunInfo extends ParamGroup{
         this.timeStamp = timeStamp;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

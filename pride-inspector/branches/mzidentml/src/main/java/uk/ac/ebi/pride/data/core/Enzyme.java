@@ -7,34 +7,25 @@ package uk.ac.ebi.pride.data.core;
  * Time: 16:16
  */
 public class Enzyme {
+    private String     cTermGain       = null;
+    private ParamGroup enzymeName      = null;
+    private String     id              = null;
+    private int        minDistance     = 0;
+    private int        missedCleavages = 0;
+    private String     nTermGain       = null;
+    private String     name            = null;
+    private boolean    semiSpecific    = false;
+    private String     siteRegExp      = null;
 
-    private String id = null;
-
-    private String name = null;
-
-    private boolean semiSpecific = false;
-
-    private int missedCleavages = 0;
-
-    private int minDistance = 0;
-
-    private ParamGroup enzymeName = null;
-
-    private String siteRegExp = null;
-
-    private String nTermGain = null;
-
-    private String cTermGain = null;
-
-
-    public Enzyme(String id, String name, boolean semiSpecific, int missedCleavages, int minDistance, ParamGroup enzymeName, String siteRegExp) {
-        this.id = id;
-        this.name = name;
-        this.semiSpecific = semiSpecific;
+    public Enzyme(String id, String name, boolean semiSpecific, int missedCleavages, int minDistance,
+                  ParamGroup enzymeName, String siteRegExp) {
+        this.id              = id;
+        this.name            = name;
+        this.semiSpecific    = semiSpecific;
         this.missedCleavages = missedCleavages;
-        this.minDistance = minDistance;
-        this.enzymeName = enzymeName;
-        this.siteRegExp = siteRegExp;
+        this.minDistance     = minDistance;
+        this.enzymeName      = enzymeName;
+        this.siteRegExp      = siteRegExp;
     }
 
     public String getSiteRegExp() {
@@ -109,3 +100,6 @@ public class Enzyme {
         this.cTermGain = cTermGain;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Created by IntelliJ IDEA.
- * User: local_admin
+ * User: yperez
  * Date: 28/09/11
  * Time: 09:55
  */

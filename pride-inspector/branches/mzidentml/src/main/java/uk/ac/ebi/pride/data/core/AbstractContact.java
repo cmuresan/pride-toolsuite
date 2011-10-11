@@ -7,7 +7,7 @@ package uk.ac.ebi.pride.data.core;
  * from the IdentifiableParamGroup.
  *
  * Created by IntelliJ IDEA.
- * User: local_admin
+ * User: yperez
  * Date: 19/08/11
  * Time: 15:31
  * To change this template use File | Settings | File Templates.

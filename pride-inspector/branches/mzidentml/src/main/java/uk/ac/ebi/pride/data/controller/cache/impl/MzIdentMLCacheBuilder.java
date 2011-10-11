@@ -9,10 +9,9 @@ import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
- * User: local_admin
+ * User: yperez
  * Date: 19/09/11
  * Time: 16:44
- * To change this template use File | Settings | File Templates.
  */
 public class MzIdentMLCacheBuilder extends AbstractAccessCacheBuilder{
 

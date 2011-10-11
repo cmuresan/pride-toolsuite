@@ -4,11 +4,11 @@ import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
- * User: local_admin
+ * User: yperez
  * Date: 05/08/11
  * Time: 17:36
- * To change this template use File | Settings | File Templates.
  */
+
 public class DataBaseTranslation {
 
     List<Integer> alowedFrames = null;

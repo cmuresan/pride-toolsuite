@@ -6,7 +6,7 @@ import java.util.List;
  * This class is used to manage and store the information of the metadata for protein and spectrum
  * identifications.
  * Created by IntelliJ IDEA.
- * User: local_admin
+ * User: yperez
  * Date: 19/08/11
  * Time: 11:56
  *

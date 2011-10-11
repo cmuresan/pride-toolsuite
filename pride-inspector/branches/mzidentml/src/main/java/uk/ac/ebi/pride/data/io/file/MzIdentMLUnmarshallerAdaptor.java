@@ -13,7 +13,7 @@ import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
- * User: local_admin
+ * User: yperez
  * Date: 23/09/11
  * Time: 15:28
  * To change this template use File | Settings | File Templates.
@@ -48,32 +48,27 @@ public class MzIdentMLUnmarshallerAdaptor {
 
     public List<Sample> getSampleList()  {
         uk.ac.ebi.jmzidml.model.mzidml.AnalysisSampleCollection asc =  unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AnalysisSampleCollection.class);
-        List<uk.ac.ebi.jmzidml.model.mzidml.Sample> oldSamples = asc.getSample();
-        return oldSamples;
+        return asc.getSample();
     }
 
     public List<SourceFile> getSourceFiles(){
         uk.ac.ebi.jmzidml.model.mzidml.Inputs dc =  unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.Inputs.class);
-        List<uk.ac.ebi.jmzidml.model.mzidml.SourceFile> oldSourceFiles = dc.getSourceFile();
-        return oldSourceFiles;
+        return dc.getSourceFile();
     }
 
     public List<AnalysisSoftware> getSoftwares() {
         uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftwareList asl = unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftwareList.class);
-        List<uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftware> oldSoftwares = asl.getAnalysisSoftware();
-        return oldSoftwares;
+        return asl.getAnalysisSoftware();
     }
 
     public List<Person> getPersonContacts(){
         uk.ac.ebi.jmzidml.model.mzidml.AuditCollection ac  = unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AuditCollection.class);
-        List<uk.ac.ebi.jmzidml.model.mzidml.Person> oldPersons = ac.getPerson();
-        return oldPersons;
+        return ac.getPerson();
     }
 
     public List<Organization> getOrganizationContacts(){
         uk.ac.ebi.jmzidml.model.mzidml.AuditCollection ac  = unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AuditCollection.class);
-        List<uk.ac.ebi.jmzidml.model.mzidml.Organization> oldOrganizations = ac.getOrganization();
-        return oldOrganizations;
+        return ac.getOrganization();
     }
 
     public Iterator<BibliographicReference> getReferences(){
@@ -147,8 +142,7 @@ public class MzIdentMLUnmarshallerAdaptor {
 
     public List<SearchDatabase> getSearchDatabases() {
         uk.ac.ebi.jmzidml.model.mzidml.Inputs dc =  unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.Inputs.class);
-        List<SearchDatabase> oldSearchDatabases = dc.getSearchDatabase();
-        return oldSearchDatabases;
+        return dc.getSearchDatabase();
     }
 
     public List<SpectraData> getSpectraData() {

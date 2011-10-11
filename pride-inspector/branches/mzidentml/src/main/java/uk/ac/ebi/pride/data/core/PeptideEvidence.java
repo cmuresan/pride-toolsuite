@@ -15,7 +15,7 @@ package uk.ac.ebi.pride.data.core;
  *     - Translation Table: A reference to the translation table used if this is PeptideEvidence derived from nucleic acid sequence
  * </p>
  * Created by IntelliJ IDEA.
- * User: local_admin
+ * User: yperez
  * Date: 04/08/11
  * Time: 14:48
  * */

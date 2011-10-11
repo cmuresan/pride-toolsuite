@@ -223,8 +223,7 @@ public class MzIdentMLTransformer {
             }else if(oldSoftware.getContactRole().getPerson() != null){
                 contact = transformToPerson(oldSoftware.getContactRole().getPerson());
             }
-            Software software = new Software(oldSoftware.getId(),oldSoftware.getName(),oldSoftware.getVersion(),oldSoftware.getUri(),contact,oldSoftware.getCustomizations());
-            return software;
+            return new Software(oldSoftware.getId(),oldSoftware.getName(),oldSoftware.getVersion(),oldSoftware.getUri(),contact,oldSoftware.getCustomizations());
         }
         return null;
     }

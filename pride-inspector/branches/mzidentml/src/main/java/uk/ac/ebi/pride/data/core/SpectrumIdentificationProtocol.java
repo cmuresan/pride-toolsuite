@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * The parameters and settings of a SpectrumIdentification analysis.
  * Created by IntelliJ IDEA.
- * User: local_admin
+ * User: yperez
  * Date: 05/08/11
  * Time: 15:56
  * */

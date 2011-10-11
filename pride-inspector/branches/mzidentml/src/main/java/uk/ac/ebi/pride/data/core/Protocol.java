@@ -62,8 +62,7 @@ public class Protocol extends IdentifiableParamGroup {
     }
 
     public ParamGroup getAnalysisParam() {
-        ParamGroup analysisParam = new ParamGroup(this.getCvParams(),this.getUserParams());
-        return analysisParam;
+        return new ParamGroup(this.getCvParams(),this.getUserParams());
     }
 
     public void setAnalysisParam(ParamGroup analysisParam) {

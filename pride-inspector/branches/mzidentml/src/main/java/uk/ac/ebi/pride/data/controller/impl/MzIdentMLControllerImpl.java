@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
- * User: local_admin
+ * User: yperez
  * Date: 19/09/11
  * Time: 16:08
  */
@@ -101,9 +101,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      */
     @Override
     public List<CVLookup> getCvLookups() throws DataAccessException {
-        List<CVLookup> cvLookups = MzIdentMLTransformer.transformCVList(unmarshaller.getCvList());
-        return cvLookups;
-
+        return MzIdentMLTransformer.transformCVList(unmarshaller.getCvList());
     }
 
     /**
@@ -158,8 +156,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
         if (metaData == null) {
             try {
-                List<Sample> samples = MzIdentMLTransformer.transformToSample(unmarshaller.getSampleList());
-                return samples;
+                return MzIdentMLTransformer.transformToSample(unmarshaller.getSampleList());
             } catch (Exception ex) {
                 throw new DataAccessException("Failed to retrieve samples", ex);
             }
@@ -172,8 +169,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public Provider getProvider() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
         if(metaData == null){
-            Provider provider = MzIdentMLTransformer.transformToProvider(unmarshaller.getProvider());
-            return provider;
+            return MzIdentMLTransformer.transformToProvider(unmarshaller.getProvider());
+
         }
         return metaData.getProvider();
     }
@@ -190,8 +187,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
         if (metaData == null) {
             try {
-                List<Software> softwares = MzIdentMLTransformer.transformToSoftware(unmarshaller.getSoftwares());
-                return softwares;
+                return MzIdentMLTransformer.transformToSoftware(unmarshaller.getSoftwares());
             } catch (Exception ex) {
                 throw new DataAccessException("Failed to retrieve software", ex);
             }
@@ -217,8 +213,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
         return refs;
     }
-
-
 
     /**
      * Get the protocol object
@@ -316,8 +310,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
 
         if(identificationMetaData == null){
-            List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = MzIdentMLTransformer.transformToSpectrumIdentificationProtocol(unmarshaller.getSpectrumIdentificationProtcol());
-            return spectrumIdentificationProtocolList;
+            return MzIdentMLTransformer.transformToSpectrumIdentificationProtocol(unmarshaller.getSpectrumIdentificationProtcol());
         }
         return identificationMetaData.getSpectrumIdentificationProtocolList();
     }
@@ -326,8 +319,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public Protocol getProteinDetectionProtocol() throws DataAccessException{
         IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
         if(identificationMetaData == null){
-            Protocol proteinDetectionProtocol = MzIdentMLTransformer.transformToProteinDetectionProtocol(unmarshaller.getProteinDetectionProtocol());
-            return proteinDetectionProtocol;
+            return MzIdentMLTransformer.transformToProteinDetectionProtocol(unmarshaller.getProteinDetectionProtocol());
         }
         return identificationMetaData.getProteinDetectionProtocol();
     }
@@ -336,8 +328,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public List<SearchDataBase> getSearchDataBases() throws DataAccessException{
         IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
         if(identificationMetaData == null){
-             List<SearchDataBase> searchDataBases = MzIdentMLTransformer.transformToSearchDataBase(unmarshaller.getSearchDatabases());
-             return searchDataBases;
+             return MzIdentMLTransformer.transformToSearchDataBase(unmarshaller.getSearchDatabases());
         }
         return identificationMetaData.getSearchDataBaseList();
     }
@@ -363,8 +354,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public List<SpectraData> getSpectraDataFiles() throws DataAccessException{
         MzGraphMetaData metaData = super.getMzGraphMetaData();
         if(metaData == null){
-            List<SpectraData> spectraDatas = MzIdentMLTransformer.transformToSpectraData(unmarshaller.getSpectraData());
-            return spectraDatas;
+            return MzIdentMLTransformer.transformToSpectraData(unmarshaller.getSpectraData());
         }
         return metaData.getSpectraDataList();
     }

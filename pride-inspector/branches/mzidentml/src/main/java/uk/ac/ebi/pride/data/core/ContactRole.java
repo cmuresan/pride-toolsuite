@@ -8,7 +8,7 @@ package uk.ac.ebi.pride.data.core;
  * the use of a Contact in a certain manner. Examples might include a provider, or a data analyst.
  *
  * Created by IntelliJ IDEA.
- * User: local_admin
+ * User: yperez
  * Date: 19/08/11
  * Time: 15:40
  * To change this template use File | Settings | File Templates.

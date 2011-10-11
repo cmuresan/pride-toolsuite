@@ -559,8 +559,7 @@ public class MzMLTransformer {
      */
     public static ParamGroup transformFileDescriptionToFileContent(FileDescription rawFileDescription){
            if (rawFileDescription != null) {
-               ParamGroup fileContent = transformParamGroup(rawFileDescription.getFileContent());
-               return fileContent;
+               return transformParamGroup(rawFileDescription.getFileContent());
            }
         return null;
     }
@@ -573,8 +572,7 @@ public class MzMLTransformer {
     public static List<SourceFile> transformFileDescriptionToFileSource(FileDescription rawFileDescription){
         if(rawFileDescription != null){
             uk.ac.ebi.jmzml.model.mzml.SourceFileList rawSourceFileList = rawFileDescription.getSourceFileList();
-            List<SourceFile> sourceFiles = transformSourceFileList(rawSourceFileList);
-            return sourceFiles;
+            return transformSourceFileList(rawSourceFileList);
         }
         return null;
     }

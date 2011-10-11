@@ -2,10 +2,9 @@ package uk.ac.ebi.pride.data.core;
 
 /**
  * Created by IntelliJ IDEA.
- * User: local_admin
+ * User: yperez
  * Date: 05/08/11
  * Time: 17:11
- * To change this template use File | Settings | File Templates.
  */
 public class Filter {
 

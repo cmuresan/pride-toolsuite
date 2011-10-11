@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.data.core;
 
 /**
  * Created by IntelliJ IDEA.
- * User: local_admin
+ * User: yperez
  * Date: 04/08/11
  * Time: 14:18
  * To change this template use File | Settings | File Templates.

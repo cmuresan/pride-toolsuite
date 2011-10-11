@@ -143,8 +143,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
             // List of Persons
-            List<Person> personList = MzMLTransformer.transformFileDescriptionToPerson(rawFileDesc);
-            return personList;
+            return MzMLTransformer.transformFileDescriptionToPerson(rawFileDesc);
         } catch (MzMLUnmarshallerException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -156,9 +155,8 @@ public class MzMLControllerImpl extends CachedDataAccessController {
          try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
             // List of Persons
-            List<Organization> organizationList = MzMLTransformer.transformFileDescriptionOrganization(rawFileDesc);
-            return organizationList;
-        } catch (MzMLUnmarshallerException e) {
+            return MzMLTransformer.transformFileDescriptionOrganization(rawFileDesc);
+         } catch (MzMLUnmarshallerException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         return null;
@@ -169,8 +167,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
             // List of Persons
-            List<SourceFile> sourceFileList = MzMLTransformer.transformFileDescriptionToFileSource(rawFileDesc);
-            return sourceFileList;
+            return MzMLTransformer.transformFileDescriptionToFileSource(rawFileDesc);
         } catch (MzMLUnmarshallerException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

@@ -17,13 +17,13 @@ import java.util.Collection;
  * Time: 14:25:49
  */
 public interface DataAccessController extends MzGraphDataAccess, ProteinDataAccess,
-                                              TrackDataAccess, PeptideDataAccess, QuantDataAccess,
-                                              CacheAccess, ChartAccess, PropertyChangeHandler,
-                                              PropertyChangeListener {
+        TrackDataAccess, PeptideDataAccess, QuantDataAccess,
+        ChartAccess, PropertyChangeHandler,
+        PropertyChangeListener {
     /**
-     * Type indicates the type of the data source.
+     * Type indicates the I/O of the data source.
      * There are two types of data access controller at the moment:
-     *
+     * <p/>
      * DATABASE means connection to a database
      * XML_FILE means reading the data from a file.
      */
@@ -36,13 +36,9 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
      * Note: this does not automatically mean they must have them.
      */
     public enum ContentCategory {
-        SPECTRUM, CHROMATOGRAM, PROTEIN, PEPTIDE, QUANTIFICATION, SAMPLE, PROTOCOL, SOFTWARE, INSTRUMENT, DATA_PROCESSING,QUANTITATION;
+        SPECTRUM, CHROMATOGRAM, PROTEIN, PEPTIDE, QUANTITATION, SAMPLE, PROTOCOL, SOFTWARE, INSTRUMENT, DATA_PROCESSING
     }
 
-    /**
-     * fired when data controller is reloaded
-     */
-    public static final String DATA_SOURCE_RELOADED = "dataSourceReloaded";
     /**
      * fired when data controller is closed
      */
@@ -53,12 +49,14 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     /**
      * Get the unique id represent the uniqueness of the data source
      *
-      * @return String    uid
+     * @return String    uid
      */
     public String getUid();
 
     /**
      * Set a unique id
+     *
+     * @param uid unique id
      */
     public void setUid(String uid);
 
@@ -100,9 +98,9 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     /**
      * Add a array of content categories.
      *
-     * @param categories    a array of categories.
+     * @param categories a array of categories.
      */
-    public void setContentCategories(ContentCategory ... categories);
+    public void setContentCategories(ContentCategory... categories);
 
     /**
      * Get the description for this controller, for GUI
@@ -161,7 +159,7 @@ public interface DataAccessController extends MzGraphDataAccess, ProteinDataAcce
     public Collection<Comparable> getExperimentAccs() throws DataAccessException;
 
     /**
-     * Get a MetaData Information for the Experiment Object
+     * Get a meta object
      *
      * @return MetaData meta data object
      * @throws DataAccessException throw a exception when there is an error accessing the data source

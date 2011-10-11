@@ -5,11 +5,9 @@ import java.util.List;
 /**
  * One (poly)peptide (a sequence with modifications).
  * The combination of Peptide sequence and modifications must be unique in the file.
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 04/08/11
  * Time: 10:29
- * To change this template use File | Settings | File Templates.
  */
 
 public class PeptideSequence extends IdentifiableParamGroup {
@@ -40,9 +38,7 @@ public class PeptideSequence extends IdentifiableParamGroup {
                            String name,
                            String sequence,
                            List<Modification> modificationList) {
-        super(id, name);
-        this.sequence = sequence;
-        this.modificationList = modificationList;
+        this(null, id, name, sequence, modificationList, null);
     }
 
     /**
@@ -58,9 +54,7 @@ public class PeptideSequence extends IdentifiableParamGroup {
                            String name,
                            String sequence,
                            List<Modification> modificationList) {
-        super(params, id, name);
-        this.sequence = sequence;
-        this.modificationList = modificationList;
+        this(params, id, name, sequence, modificationList, null);
     }
 
     /**
@@ -78,9 +72,7 @@ public class PeptideSequence extends IdentifiableParamGroup {
                            String name,
                            String sequence,
                            List<Modification> modificationList) {
-        super(cvParams, userParams, id, name);
-        this.sequence = sequence;
-        this.modificationList = modificationList;
+        this(new ParamGroup(cvParams, userParams), id, name, sequence, modificationList, null);
     }
 
     /**
@@ -96,31 +88,7 @@ public class PeptideSequence extends IdentifiableParamGroup {
                            String sequence,
                            List<Modification> modificationList,
                            List<SubstitutionModification> substitutionModificationList) {
-        super(id, name);
-        this.sequence = sequence;
-        this.modificationList = modificationList;
-        this.substitutionModificationList = substitutionModificationList;
-    }
-
-    /**
-     * Constructor for peptides with SubstitutionModificationList
-     * @param params
-     * @param id
-     * @param name
-     * @param sequence
-     * @param modificationList
-     * @param substitutionModificationList
-     */
-    public PeptideSequence(ParamGroup params,
-                           String id,
-                           String name,
-                           String sequence,
-                           List<Modification> modificationList,
-                           List<SubstitutionModification> substitutionModificationList) {
-        super(params, id, name);
-        this.sequence = sequence;
-        this.modificationList = modificationList;
-        this.substitutionModificationList = substitutionModificationList;
+        this(null, id, name, sequence, modificationList, substitutionModificationList);
     }
 
     /**
@@ -140,7 +108,25 @@ public class PeptideSequence extends IdentifiableParamGroup {
                            String sequence,
                            List<Modification> modificationList,
                            List<SubstitutionModification> substitutionModificationList) {
-        super(cvParams, userParams, id, name);
+        this(new ParamGroup(cvParams, userParams), id, name, sequence, modificationList, substitutionModificationList);
+    }
+
+    /**
+     * Constructor for peptides with SubstitutionModificationList
+     * @param params
+     * @param id
+     * @param name
+     * @param sequence
+     * @param modificationList
+     * @param substitutionModificationList
+     */
+    public PeptideSequence(ParamGroup params,
+                           String id,
+                           String name,
+                           String sequence,
+                           List<Modification> modificationList,
+                           List<SubstitutionModification> substitutionModificationList) {
+        super(params, id, name);
         this.sequence = sequence;
         this.modificationList = modificationList;
         this.substitutionModificationList = substitutionModificationList;

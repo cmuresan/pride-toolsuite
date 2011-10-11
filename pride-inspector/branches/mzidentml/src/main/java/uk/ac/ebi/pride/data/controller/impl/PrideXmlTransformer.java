@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.controller.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
@@ -16,13 +14,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * User: rwang
+ * PrideXmlTransformer contains a list of static methods which convert pride-jaxb objects to pride inspector core objects
+ * <p/>
  * Date: 17-Mar-2010
  * Time: 14:14:12
  */
 public class PrideXmlTransformer {
-    private static final Logger logger = LoggerFactory.getLogger(PrideXmlTransformer.class);
 
+    /**
+     * These are a list of default names to be used for the conversion
+     */
     private final static String SAMPLE_ID = "sample1";
     private final static String COMMENTS = "comments";
     private final static String COMPLETION_TIME = "completion time";
@@ -33,18 +34,13 @@ public class PrideXmlTransformer {
     private final static String PROTOCOL_ID = "protocol1";
     private final static int PROCESSING_METHOD_ORDER = 1;
 
-    private static List<Comparable> spectrumIds = new ArrayList<Comparable>();
-
-    public static void setSpectrumIds(List<Comparable> specIds) {
-        spectrumIds.clear();
-        spectrumIds.addAll(specIds);
-    }
-
     /**
+     * Convert spectrum
+     * <p/>
      * Note: supDes, supDataArrayBinary are ignored.
      *
-     * @param rawSpec
-     * @return
+     * @param rawSpec pride xml spectrum
+     * @return Spectrum    spectrum
      */
     public static Spectrum transformSpectrum(uk.ac.ebi.pride.jaxb.model.Spectrum rawSpec) {
         Spectrum spectrum = null;
@@ -81,9 +77,7 @@ public class PrideXmlTransformer {
             // get spectrum id
             Integer specId = rawSpec.getId();
 
-            // spectrum index
-            int index = spectrumIds.indexOf(specId);
-            spectrum = new Spectrum(params,specId,null,index, null,defaultArrLength,dataArr,null,null,scanList,precursors,null,null);
+            spectrum = new Spectrum(params,specId,null,-1, null,defaultArrLength,dataArr,null,null,scanList,precursors,null,null);
         }
 
         return spectrum;
@@ -248,8 +242,10 @@ public class PrideXmlTransformer {
     }
 
     /**
-     * @param rawPrecursors
-     * @return
+     * Convert precursor list
+     *
+     * @param rawPrecursors pride xml precursor list
+     * @return List<Precursor> a list of precursors
      */
     public static List<Precursor> transformPrecursorList(uk.ac.ebi.pride.jaxb.model.PrecursorList rawPrecursors) {
         List<Precursor> precursors = null;
@@ -271,8 +267,8 @@ public class PrideXmlTransformer {
      * Note: In MzData schema, there are experimentRef, this is not included
      * in pride xml schema.
      *
-     * @param rawPrecursor
-     * @return
+     * @param rawPrecursor pride xml precursor
+     * @return Precursor   precursor
      */
     public static Precursor transformPrecursor(uk.ac.ebi.pride.jaxb.model.Precursor rawPrecursor) {
 
@@ -296,9 +292,9 @@ public class PrideXmlTransformer {
     /**
      * Transform BinaryDataArray from pride xml to core data model
      *
-     * @param rawArr     binary data array
-     * @param binaryType
-     * @return
+     * @param rawArr     pride xml binary data array
+     * @param binaryType binary type
+     * @return BinaryDataArray binary data array
      */
     public static BinaryDataArray transformBinaryDataArray(uk.ac.ebi.pride.jaxb.model.PeakListBinary rawArr,
                                                            CvTermReference binaryType) {
@@ -327,6 +323,12 @@ public class PrideXmlTransformer {
     }
 
 
+    /**
+     * Convert protein identification
+     *
+     * @param identification pride xml protein identification
+     * @return Identification  protein identification
+     */
     public static Identification transformIdentification(uk.ac.ebi.pride.jaxb.model.Identification identification) {
         return identification instanceof uk.ac.ebi.pride.jaxb.model.TwoDimensionalIdentification ?
                 transformTwoDimIdent((uk.ac.ebi.pride.jaxb.model.TwoDimensionalIdentification) identification) :
@@ -334,10 +336,12 @@ public class PrideXmlTransformer {
     }
 
     /**
+     * Convert two dimensional identification
+     * <p/>
      * ToDo: there are code dupliation between transformTwoDimIdent and transformGelFreeIdent
      *
-     * @param rawIdent
-     * @return
+     * @param rawIdent pride xml two dimensional identification
+     * @return TwoDimIdentification    two dimentional identification
      */
     public static TwoDimIdentification transformTwoDimIdent(uk.ac.ebi.pride.jaxb.model.TwoDimensionalIdentification rawIdent) {
         TwoDimIdentification ident = null;
@@ -378,12 +382,17 @@ public class PrideXmlTransformer {
             SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(),rawIdent.getDatabaseVersion());
             DBSequence dbSequence = new DBSequence(rawIdent.getAccession(),searchDataBase,rawIdent.getAccessionVersion(),rawIdent.getSpliceIsoform());
             ident = new TwoDimIdentification(params,rawIdent.getId(),null,dbSequence,false, peptideEvidences,scoreVal,thresholdVal,null,seqConverageVal,gel);
-
         }
 
         return ident;
     }
 
+    /**
+     * Convert gel free protein identification
+     *
+     * @param rawIdent pride xml protein identification
+     * @return GelFreeIdentification   gel free identification
+     */
     public static GelFreeIdentification transformGelFreeIdent(uk.ac.ebi.pride.jaxb.model.GelFreeIdentification rawIdent) {
         GelFreeIdentification ident = null;
 
@@ -598,6 +607,12 @@ public class PrideXmlTransformer {
         return params;
     }
 
+    /**
+     * Convert a list of user params
+     *
+     * @param rawUserParams pride xml user params
+     * @return List<UserParam> a list of user params
+     */
     public static List<UserParam> transformUserParams(List<uk.ac.ebi.pride.jaxb.model.UserParam> rawUserParams) {
         List<UserParam> userParams = new ArrayList<UserParam>();
         if (rawUserParams != null) {
@@ -621,6 +636,12 @@ public class PrideXmlTransformer {
                 null, null, null);
     }
 
+    /**
+     * Convert a list of cv params
+     *
+     * @param rawCvParams pride xml cv params
+     * @return List<CvParam>   a list of cv params
+     */
     public static List<CvParam> transformCvParams(List<uk.ac.ebi.pride.jaxb.model.CvParam> rawCvParams) {
         List<CvParam> cvParams = new ArrayList<CvParam>();
         if (rawCvParams != null) {

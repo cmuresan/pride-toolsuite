@@ -3,11 +3,12 @@ package uk.ac.ebi.pride.data.core;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * ToDo: document this class
+ * ToDo: finish implementating this class or remove this class
+ *
  * User: yperez
  * Date: 08/08/11
  * Time: 14:36
- * To change this template use File | Settings | File Templates.
  */
 public class ProteinAmbiguityGroup extends ParamGroup{
     String id = null;

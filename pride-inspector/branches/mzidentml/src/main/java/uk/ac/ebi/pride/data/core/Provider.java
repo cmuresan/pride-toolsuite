@@ -9,7 +9,6 @@ package uk.ac.ebi.pride.data.core;
  * This object contains a reference to the last software used to generate the file
  * this software is called the provider.
  * <p/>
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 04/08/11
  * Time: 11:11

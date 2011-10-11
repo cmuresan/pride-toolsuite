@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  * The parameters and settings of a SpectrumIdentification analysis.
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 05/08/11
  * Time: 15:56
@@ -81,16 +80,8 @@ public class SpectrumIdentificationProtocol extends Protocol {
                                           List<CvParam> parentTolerance,
                                           List<Filter> filterList,
                                           DataBaseTranslation dataBaseTranslation) {
-        super(analysisParam,id, name, analysisSoftware, threshold);
-        this.searchType = searchType;
-        this.searchModificationList = searchModificationList;
-        this.enzymeIndependent = enzymeIndependent;
-        this.enzymeList = enzymeList;
-        this.massTableList = massTableList;
-        this.fragmentTolerance = fragmentTolerance;
-        this.parentTolerance = parentTolerance;
-        this.filterList = filterList;
-        this.dataBaseTranslation = dataBaseTranslation;
+        this(null, id, name, analysisSoftware, threshold, searchType, searchModificationList,
+                enzymeIndependent, enzymeList, massTableList, fragmentTolerance, parentTolerance, filterList, dataBaseTranslation);
     }
 
     public SpectrumIdentificationProtocol(ParamGroup analysisParam,

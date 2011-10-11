@@ -19,8 +19,9 @@ public enum CacheCategory {
     PEPTIDE (CachedMap.class, 10), // Map<Tuple<Comparable, Comparable>, Peptide>
     EXPERIMENT_ACC(ArrayList.class, null), // List<Experiement Accession>
     EXPERIMENT_METADATA(ArrayList.class, null), // List<Experiment Metadata>
-    IDENTIFICATION_METADATA(ArrayList.class,null),
-    MZGRAPH_METADATA(ArrayList.class,null),
+    IDENTIFICATION_METADATA(ArrayList.class,null),  // ToDo: document
+    MZGRAPH_METADATA(ArrayList.class,null), // ToDo: document
+    SEARCH_ENGINE_TYPE(ArrayList.class, null), // List<SearchEngine>
     SPECTRUM_ID(ArrayList.class, null), // List<Spectrum id>
     CHROMATOGRAM_ID(ArrayList.class, null), // List<Chromatogram id>
     IDENTIFICATION_ID(ArrayList.class, null), // List<Identification id>
@@ -48,7 +49,6 @@ public enum CacheCategory {
 
     private Class dataStructType;
     private Integer size;
-
 
     private CacheCategory(Class dataStructType, Integer size) {
         this.dataStructType = dataStructType;

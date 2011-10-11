@@ -17,11 +17,6 @@ import java.util.Collection;
  */
 public interface PeptideDataAccess {
     /**
-     * fired when a peptide object has changed
-     */
-    public static final String PEPTIDE_TYPE = "Peptide";
-
-    /**
      * Whether this controller contains peptides
      *
      * @return boolean  return true if peptide exists

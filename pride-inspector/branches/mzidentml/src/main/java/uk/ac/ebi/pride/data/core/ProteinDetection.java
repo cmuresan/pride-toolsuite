@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.data.core;
 
 /**
  * An Analysis which assembles a set of peptides (e.g. from a spectra search analysis) to proteins.
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 05/08/11
  * Time: 15:27

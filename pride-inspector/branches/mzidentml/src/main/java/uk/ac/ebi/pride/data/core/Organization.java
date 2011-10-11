@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.data.core;
 /**
  * Organizations are entities like companies, universities, government agencies. Any additional information such as the address,
  * email etc. should be supplied either as CV parameters or as user parameters.
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 04/08/11
  * Time: 11:46
@@ -29,6 +28,16 @@ public class Organization extends AbstractContact {
     }
 
     /**
+     * Create a PRIDE and MZML Organization Objects
+     * @param params
+     * @param name
+     * @param mail
+     */
+    public Organization(ParamGroup params, String name, String mail){
+        this(params, null, name, null, mail);
+    }
+
+    /**
      * Organization Constructor
      * @param params
      * @param id
@@ -42,18 +51,6 @@ public class Organization extends AbstractContact {
                         String mail) {
         super(params, id, name);
         this.parentOrganization = parentOrganization;
-        this.mail = mail;
-    }
-
-    /**
-     * Create a PRIDE and MZML Organization Objects
-     * @param params
-     * @param name
-     * @param mail
-     */
-    public Organization(ParamGroup params, String name, String mail){
-        super(params,null,name);
-        this.parentOrganization = null;
         this.mail = mail;
     }
 

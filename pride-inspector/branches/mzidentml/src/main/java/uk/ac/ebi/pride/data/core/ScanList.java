@@ -25,7 +25,7 @@ public class ScanList extends ParamGroup {
      */
     public ScanList(List<Scan> scans, ParamGroup params) {
         super(params);
-        setScans(scans);
+        this.scans = scans;
     }
 
     public List<Scan> getScans() {

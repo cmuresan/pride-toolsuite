@@ -138,7 +138,6 @@ public class PooledConnectionFactory {
     public static synchronized Connection getConnection() throws SQLException {
 
         if (getInstance().getConnectionPool() != null) {
-            //System.out.println(getInstance().getConnectionPool().getNumBusyConnections());
             return getInstance().getConnectionPool().getConnection();
         } else {
             String msg = "PooledConnectionFactory DataSource not initialized";

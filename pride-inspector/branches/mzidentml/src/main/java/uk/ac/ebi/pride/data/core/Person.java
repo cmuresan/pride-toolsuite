@@ -5,11 +5,9 @@ import java.util.List;
 /**
  * A person's name and contact details. Any additional information such as the address, contact email etc.
  * should be supplied using CV parameters or user parameters.
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 08/08/11
  * Time: 16:35
- * To change this template use File | Settings | File Templates.
  */
 public class Person extends AbstractContact {
     /**
@@ -50,12 +48,17 @@ public class Person extends AbstractContact {
                   String midInitials,
                   List<Organization> affiliation,
                   String mail) {
-        super(id, name);
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.midInitials = midInitials;
-        this.affiliation = affiliation;
-        this.mail = mail;
+        this(null, id, name, lastname, firstname, midInitials, affiliation, mail);
+    }
+
+    /**
+     * Constructor for MzMl and Pride Person Contact
+     * @param params
+     * @param firstname
+     * @param mail
+     */
+    public Person(ParamGroup params, String firstname, String mail){
+        this(params, null, null, null, firstname, null, null, mail);
     }
 
     /**
@@ -76,22 +79,6 @@ public class Person extends AbstractContact {
         this.midInitials = midInitials;
         this.affiliation = affiliation;
         this.mail = mail;
-    }
-
-    /**
-     * Constructor for MzMl and Pride Person Contact
-     * @param params
-     * @param firstname
-     * @param mail
-     */
-    public Person(ParamGroup params, String firstname, String mail){
-        super(params, null,null);
-        this.firstname = firstname;
-        this.mail = mail;
-        this.lastname = null;
-        this.firstname = firstname;
-        this.midInitials = null;
-        this.affiliation = null;
     }
 
     public String getLastname() {

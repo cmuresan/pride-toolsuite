@@ -32,7 +32,7 @@ public class UserParam extends Parameter {
                      String unitCVLookupID) {
 
         super(name, value, unitAcc, unitName, unitCVLookupID);
-        setType(type);
+        this.type = type;
     }
 
     public String getType() {

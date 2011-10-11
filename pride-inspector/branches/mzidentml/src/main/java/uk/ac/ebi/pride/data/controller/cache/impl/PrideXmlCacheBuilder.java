@@ -30,9 +30,6 @@ public class PrideXmlCacheBuilder extends AbstractAccessCacheBuilder {
         super.populate();
         // get a reference to xml reader
         PrideXmlReader reader = ((PrideXmlControllerImpl)controller).getReader();
-        // clear and add metadata
-        cache.clear(CacheCategory.EXPERIMENT_METADATA);
-        controller.getExperimentMetaData();
         // clear and add spectrum ids
         cache.clear(CacheCategory.SPECTRUM_ID);
         cache.storeInBatch(CacheCategory.SPECTRUM_ID, new ArrayList<Comparable>(reader.getSpectrumIds()));

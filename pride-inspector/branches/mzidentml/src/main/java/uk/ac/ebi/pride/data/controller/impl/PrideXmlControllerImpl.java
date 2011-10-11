@@ -30,22 +30,43 @@ import java.util.regex.Pattern;
  * Time: 12:31:30
  */
 public class  PrideXmlControllerImpl extends CachedDataAccessController {
-
     private static final Logger logger = LoggerFactory.getLogger(PrideXmlControllerImpl.class);
-
+    /**
+     * Pattern for match pride xml format
+     */
     private static final Pattern prideXmlHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<ExperimentCollection [^>]*>", Pattern.MULTILINE);
-
+    /**
+     * Reader to get information from pride xml file
+     */
     private PrideXmlReader reader = null;
 
+    /**
+     * Construct a data access controller to read a pride xml
+     *
+     * @param file pride xml
+     * @throws DataAccessException data access controller
+     */
     public PrideXmlControllerImpl(File file) throws DataAccessException {
         this(file, null);
     }
 
+    /**
+     * Construct a data access controller with a pride xml and a given data access mode
+     *
+     * @param file pride xml file
+     * @param mode data access mode
+     * @throws DataAccessException data access exception
+     */
     public PrideXmlControllerImpl(File file, DataAccessMode mode) throws DataAccessException {
         super(file, mode);
         initialize();
     }
 
+    /**
+     * Initialize data access controller
+     *
+     * @throws DataAccessException data access exception
+     */
     protected void initialize() throws DataAccessException {
         // create pride access utils
         File file = (File) getSource();
@@ -68,14 +89,22 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
         setCacheBuilder(new PrideXmlCacheBuilder(this));
         // populate cache
         populateCache();
-        // create pride xml transformer
-        PrideXmlTransformer.setSpectrumIds(new ArrayList<Comparable>(this.getSpectrumIds()));
     }
 
+    /**
+     * Get the pride xml reader
+     *
+     * @return PrideXmlReader  pride xml reader
+     */
     public PrideXmlReader getReader() {
         return reader;
     }
 
+    /**
+     * Get md5 hash unique id
+     *
+     * @return String  unique id
+     */
     @Override
     public String getUid() {
         String uid = super.getUid();
@@ -96,18 +125,22 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
      * Get a list of cv lookup objects.
      *
      * @return List<CVLookup>   a list of cvlookup objects.
-     * @throws DataAccessException
+     * @throws DataAccessException data access exception
      */
     @Override
     public List<CVLookup> getCvLookups() throws DataAccessException {
+        logger.debug("Get cv lookups");
         List<CVLookup> cvLookups = new ArrayList<CVLookup>();
         try {
             cvLookups.addAll(PrideXmlTransformer.transformCvLookups(reader.getCvLookups()));
         } catch (Exception ex) {
-            throw new DataAccessException("Failed to retrieve cv lookups", ex);
+            String msg  = "Error while getting cv lookups";
+            logger.error(msg, ex);
+            throw new DataAccessException(msg, ex);
         }
         return cvLookups;
     }
+
 
     /**
      * Get a list of source files.
@@ -126,7 +159,9 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                 sourceFiles.add(sourceFile);
             }
         } catch (Exception ex) {
-            throw new DataAccessException("Failed to retrieve source files", ex);
+            String msg  = "Error while getting source files";
+            logger.error(msg, ex);
+            throw new DataAccessException(msg, ex);
         }
 
         return sourceFiles;
@@ -134,22 +169,28 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
 
     @Override
     public List<Organization> getOrganizationContacts() throws DataAccessException {
+        logger.debug("Get organizational contact");
         List<Organization> organizationList = new ArrayList<Organization>();
         try {
             organizationList.addAll(PrideXmlTransformer.transformContactToOrganization(reader.getAdmin()));
         } catch (Exception ex) {
-            throw new DataAccessException("Failed to retrieve contacts", ex);
+            String msg  = "Error while getting organizational contacts";
+            logger.error(msg, ex);
+            throw new DataAccessException(msg, ex);
         }
         return organizationList;
     }
 
     @Override
     public List<Person> getPersonContacts() throws DataAccessException {
+        logger.debug("Get person contacts");
         List<Person> personList = new ArrayList<Person>();
         try {
             personList.addAll(PrideXmlTransformer.transformContactToPerson(reader.getAdmin()));
         } catch (Exception ex) {
-            throw new DataAccessException("Failed to retrieve contacts", ex);
+            String msg  = "Error while getting person contacts";
+            logger.error(msg, ex);
+            throw new DataAccessException(msg, ex);
         }
         return personList;
     }
@@ -165,6 +206,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
+            logger.error("Get samples");
             List<Sample> samples = new ArrayList<Sample>();
             try {
                 Sample sample = PrideXmlTransformer.transformSample(reader.getAdmin());
@@ -173,7 +215,9 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                 }
                 return samples;
             } catch (Exception ex) {
-                throw new DataAccessException("Failed to retrieve samples", ex);
+                String msg  = "Error while getting samples";
+                logger.error(msg, ex);
+                throw new DataAccessException(msg, ex);
             }
         } else {
             return metaData.getSampleList();
@@ -191,6 +235,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
+            logger.debug("Get software");
             List<Software> softwares = new ArrayList<Software>();
             try {
                 Software software = PrideXmlTransformer.transformSoftware(reader.getDataProcessing());
@@ -199,7 +244,9 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                 }
                 return softwares;
             } catch (Exception ex) {
-                throw new DataAccessException("Failed to retrieve software", ex);
+                String msg  = "Error while getting software list";
+                logger.error(msg, ex);
+                throw new DataAccessException(msg, ex);
             }
         } else {
             return metaData.getSoftwareList();
@@ -217,12 +264,15 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
+            logger.debug("Get instrument configurations");
             List<InstrumentConfiguration> configs = new ArrayList<InstrumentConfiguration>();
             try {
                 configs.addAll(PrideXmlTransformer.transformInstrument(reader.getInstrument(), reader.getDataProcessing()));
                 return configs;
             } catch (Exception ex) {
-                throw new DataAccessException("Failed to retrieve isntrument configuration", ex);
+                String msg  = "Error while getting instrument configurations";
+                logger.error(msg, ex);
+                throw new DataAccessException(msg, ex);
             }
         } else {
             return metaData.getInstrumentConfigurations();
@@ -240,6 +290,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
+            logger.debug("Get data processings");
             List<DataProcessing> dataProcessings = new ArrayList<DataProcessing>();
             try {
                 DataProcessing dataProcessing = PrideXmlTransformer.transformDataProcessing(reader.getDataProcessing());
@@ -248,7 +299,9 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                 }
                 return dataProcessings;
             } catch (Exception ex) {
-                throw new DataAccessException("Failed to retrieve data processings", ex);
+                String msg  = "Error while getting data processings";
+                logger.error(msg, ex);
+                throw new DataAccessException(msg, ex);
             }
         } else {
             return metaData.getDataProcessingList();
@@ -263,12 +316,15 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
      *
      */
     private List<Reference> getReferences() throws DataAccessException {
+        logger.debug("Get references");
         List<Reference> refs = new ArrayList<Reference>();
 
         try {
             refs.addAll(PrideXmlTransformer.transformReferences(reader.getReferences()));
         } catch (Exception ex) {
-            throw new DataAccessException("Failed to retrieve references", ex);
+            String msg  = "Error while getting references";
+            logger.error(msg, ex);
+            throw new DataAccessException(msg, ex);
         }
 
         return refs;
@@ -282,10 +338,13 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
      *
      */
     private ExperimentProtocol getProtocol() throws DataAccessException {
+        logger.debug("Get protocol");
         try {
             return PrideXmlTransformer.transformProtocol(reader.getProtocol());
         } catch (Exception ex) {
-            throw new DataAccessException("Failed to retrieve protocol", ex);
+            String msg  = "Error while getting protocol";
+            logger.error(msg, ex);
+            throw new DataAccessException(msg, ex);
         }
     }
 
@@ -300,10 +359,13 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
     public ParamGroup getAdditional() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
         if (metaData == null) {
+            logger.debug("Get additional params");
             try {
                 return PrideXmlTransformer.transformAdditional(reader.getAdditionalParams());
             } catch (Exception ex) {
-                throw new DataAccessException("Failed to retrieve additional information", ex);
+                String msg  = "Error while getting additional params";
+                logger.error(msg, ex);
+                throw new DataAccessException(msg, ex);
             }
         } else {
             return metaData;
@@ -321,6 +383,7 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
+            logger.debug("Get metadata");
             try {
                 // Get Accession for Pride XML Object
                 String accession = reader.getExpAccession();
@@ -332,8 +395,6 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                 List<Sample> samples = getSamples();
                 // Get all the softwares related with the object
                 List<Software> softwares = getSoftwareList();
-                // Ge instrument Configuration
-                List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
                 // Get Contact Persons
                 List<Person> persons = getPersonContacts();
                 // Get the Contact Organization
@@ -351,9 +412,11 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
 
                 metaData = new ExperimentMetaData(additional,accession,title,version,shortLabel,samples,softwares,persons,sources,null,organizations,references,null,null,protocol);
                 // store it in the cache
-                cache.store(CacheCategory.EXPERIMENT_METADATA, metaData);
+                getCache().store(CacheCategory.EXPERIMENT_METADATA, metaData);
             } catch (Exception ex) {
-                throw new DataAccessException("Failed to retrieve meta data", ex);
+                String msg  = "Error while getting experiment meta data";
+                logger.error(msg, ex);
+                throw new DataAccessException(msg, ex);
             }
         }
 
@@ -406,10 +469,12 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
             try {
                 spectrum = PrideXmlTransformer.transformSpectrum(reader.getSpectrumById(id.toString()));
                 if (useCache && spectrum != null) {
-                    cache.store(CacheCategory.SPECTRUM, id, spectrum);
+                    getCache().store(CacheCategory.SPECTRUM, id, spectrum);
                 }
             } catch (Exception ex) {
-                throw new DataAccessException("Failed to retrieve spectrum: " + id, ex);
+                String msg  = "Error while getting spectrum: " + id;
+                logger.error(msg, ex);
+                throw new DataAccessException(msg, ex);
             }
         }
         return spectrum;
@@ -445,18 +510,20 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
                 ident = PrideXmlTransformer.transformIdentification(reader.getIdentById(id.toString()));
                 if (useCache && ident != null) {
                     // store identification into cache
-                    cache.store(CacheCategory.IDENTIFICATION, id, ident);
+                    getCache().store(CacheCategory.IDENTIFICATION, id, ident);
                     // store precursor charge and m/z
                     for (Peptide peptide : ident.getIdentifiedPeptides()) {
                         Spectrum spectrum = peptide.getSpectrum();
                         if (spectrum != null) {
-                            cache.store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
-                            cache.store(CacheCategory.PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+                            getCache().store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
+                            getCache().store(CacheCategory.PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
                         }
                     }
                 }
             } catch (Exception ex) {
-                throw new DataAccessException("Failed to retrieve identification: " + id, ex);
+                String msg  = "Error while getting identification: " + id;
+                logger.error(msg, ex);
+                throw new DataAccessException(msg, ex);
             }
         }
         return ident;
@@ -480,12 +547,12 @@ public class  PrideXmlControllerImpl extends CachedDataAccessController {
             peptide = PrideXmlTransformer.transformPeptide(reader.getPeptide(identId.toString(), Integer.parseInt(index.toString())));
             if (useCache && peptide != null) {
                 // store peptide
-                cache.store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, index), peptide);
+                getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, index), peptide);
                 // store precursor charge and m/z
                 Spectrum spectrum = peptide.getSpectrum();
                 if (spectrum != null) {
-                    cache.store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
-                    cache.store(CacheCategory.PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+                    getCache().store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
+                    getCache().store(CacheCategory.PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
                 }
             }
         }

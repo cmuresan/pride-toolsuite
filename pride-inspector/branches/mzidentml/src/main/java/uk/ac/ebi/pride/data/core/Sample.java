@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * ToDo: too many constructors
+ *
  * Description of the sample used to generate the Dataset.
  * This Sample class represent the basic information contained in the mzMl files.
  * If the Object instance is MzMl Sample the Sample parent and the contactRoleList must be null;
@@ -33,9 +35,61 @@ public class Sample extends IdentifiableParamGroup {
                   String name,
                   List<Sample> subSamples,
                   Map<AbstractContact, CvParam> contactRoleList) {
-        super(id, name);
-        this.subSamples = subSamples;
-        this.contactRoleList = contactRoleList;
+        this(null, id, name, subSamples, contactRoleList);
+    }
+
+    /**
+     * Constructor for MZIndentMl Sample.
+     * @param cvParams
+     * @param userParams
+     * @param id
+     * @param name
+     * @param subSamples
+     * @param contactRoleList
+     */
+    public Sample(List<CvParam> cvParams,
+                  List<UserParam> userParams,
+                  String id,
+                  String name,
+                  List<Sample> subSamples,
+                  Map<AbstractContact,CvParam> contactRoleList) {
+        this(new ParamGroup(cvParams, userParams), id, name, subSamples, contactRoleList);
+    }
+
+    /**
+     * Constructor for MzML Sample Pride Object.
+     * @param id
+     * @param name
+     */
+    public Sample(String id,
+                  String name) {
+        this(null, id, name, null, null);
+    }
+
+    /**
+     * Constructor for MzML Sample Pride Object
+     * @param params
+     * @param id
+     * @param name
+     */
+    public Sample(ParamGroup params,
+                  String id,
+                  String name) {
+        this(params, id, name, null, null);
+    }
+
+    /**
+     * Constructor for MzML Sample Object.
+     * @param cvParams
+     * @param userParams
+     * @param id
+     * @param name
+     */
+    public Sample(List<CvParam> cvParams,
+                  List<UserParam> userParams,
+                  String id,
+                  String name) {
+        this(new ParamGroup(cvParams, userParams), id, name, null, null);
     }
 
     /**
@@ -54,62 +108,6 @@ public class Sample extends IdentifiableParamGroup {
         super(params, id, name);
         this.subSamples = subSamples;
         this.contactRoleList = contactRoleList;
-    }
-
-    /**
-     * Constructor for MZIndentMl Sample.
-     * @param cvParams
-     * @param userParams
-     * @param id
-     * @param name
-     * @param subSamples
-     * @param contactRoleList
-     */
-    public Sample(List<CvParam> cvParams,
-                  List<UserParam> userParams,
-                  String id,
-                  String name,
-                  List<Sample> subSamples,
-                  Map<AbstractContact,CvParam> contactRoleList) {
-        super(cvParams, userParams, id, name);
-        this.subSamples = subSamples;
-        this.contactRoleList = contactRoleList;
-    }
-
-    /**
-     * Constructor for MzML Sample Pride Object.
-     * @param id
-     * @param name
-     */
-    public Sample(String id,
-                  String name) {
-        super(id, name);
-    }
-
-    /**
-     * Constructor for MzML Sample Pride Object
-     * @param params
-     * @param id
-     * @param name
-     */
-    public Sample(ParamGroup params,
-                  String id,
-                  String name) {
-        super(params, id, name);
-    }
-
-    /**
-     * Constructor for MzML Sample Object.
-     * @param cvParams
-     * @param userParams
-     * @param id
-     * @param name
-     */
-    public Sample(List<CvParam> cvParams,
-                  List<UserParam> userParams,
-                  String id,
-                  String name) {
-        super(cvParams, userParams, id, name);
     }
 
     public List<Sample> getParentSample() {

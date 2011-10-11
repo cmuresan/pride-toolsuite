@@ -70,11 +70,11 @@ public class Scan extends ParamGroup {
                 List<ParamGroup> scanWindows,
                 ParamGroup params) {
         super(params);
-        setSpectrumRef(spectrumRef);
-        setExternalSpecRef(externalSpecRef);
-        setSourceFile(sourceFile);
-        setInstrumentConfiguration(instrumentConfiguration);
-        setScanWindows(scanWindows);
+        this.spectrumRef = spectrumRef;
+        this.externalSpecRef = externalSpecRef;
+        this.sourceFile = sourceFile;
+        this.instrumentConfiguration = instrumentConfiguration;
+        this.scanWindows = scanWindows;
     }
 
     public String getExternalSpecRef() {

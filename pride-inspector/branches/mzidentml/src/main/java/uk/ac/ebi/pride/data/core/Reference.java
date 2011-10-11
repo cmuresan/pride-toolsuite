@@ -58,7 +58,6 @@ public class Reference extends IdentifiableParamGroup {
      * the full reference line used by PRIDE XML Objects
      */
     private String fullReference = null;
-    //ToDo: toHTML() ?
 
 
     public Reference(String id,
@@ -74,18 +73,54 @@ public class Reference extends IdentifiableParamGroup {
                      String publication,
                      String authors,
                      String fullReference) {
-        super(id, name);
-        this.doi = doi;
-        this.title = title;
-        this.pages = pages;
-        this.issue = issue;
-        this.volume = volume;
-        this.year = year;
-        this.editor = editor;
-        this.publisher = publisher;
-        this.publication = publication;
-        this.authors = authors;
-        this.fullReference = fullReference;
+        this(null, id, name, doi, title, pages, issue, volume,
+                year, editor, publisher, publication, authors, fullReference);
+    }
+
+    public Reference(List<CvParam> cvParams,
+                     List<UserParam> userParams,
+                     String id,
+                     String name,
+                     String doi,
+                     String title,
+                     String pages,
+                     String issue,
+                     String volume,
+                     String year,
+                     String editor,
+                     String publisher,
+                     String publication,
+                     String authors,
+                     String fullReference) {
+        this(new ParamGroup(cvParams, userParams), id, name, doi, title, pages, issue, volume,
+                year, editor, publisher, publication, authors, fullReference);
+    }
+
+    /**
+     * Constructors for PRIDE XML Reference Object
+     * @param params
+     * @param fullReference
+     */
+    public Reference(ParamGroup params, String fullReference) {
+        this(params, null, null, null, null, null, null, null,
+                null, null, null, null, null, fullReference);
+    }
+
+    /**
+     * Constructors for PRIDE XML Reference Object
+     * @param cvParams
+     * @param userParams
+     * @param id
+     * @param name
+     * @param fullReference
+     */
+    public Reference(List<CvParam> cvParams,
+                     List<UserParam> userParams,
+                     String id,
+                     String name,
+                     String fullReference) {
+        this(new ParamGroup(cvParams, userParams), id, name, null, null, null, null, null,
+                null, null, null, null, null, fullReference);
     }
 
     public Reference(ParamGroup params,
@@ -113,62 +148,6 @@ public class Reference extends IdentifiableParamGroup {
         this.publisher = publisher;
         this.publication = publication;
         this.authors = authors;
-        this.fullReference = fullReference;
-    }
-
-    public Reference(List<CvParam> cvParams,
-                     List<UserParam> userParams,
-                     String id,
-                     String name,
-                     String doi,
-                     String title,
-                     String pages,
-                     String issue,
-                     String volume,
-                     String year,
-                     String editor,
-                     String publisher,
-                     String publication,
-                     String authors,
-                     String fullReference) {
-        super(cvParams, userParams, id, name);
-        this.doi = doi;
-        this.title = title;
-        this.pages = pages;
-        this.issue = issue;
-        this.volume = volume;
-        this.year = year;
-        this.editor = editor;
-        this.publisher = publisher;
-        this.publication = publication;
-        this.authors = authors;
-        this.fullReference = fullReference;
-    }
-
-    /**
-     * Constructors for PRIDE XML Reference Object
-     * @param params
-     * @param fullReference
-     */
-    public Reference(ParamGroup params, String fullReference) {
-        super(params, null, null);
-        this.fullReference = fullReference;
-    }
-
-    /**
-     * Constructors for PRIDE XML Reference Object
-     * @param cvParams
-     * @param userParams
-     * @param id
-     * @param name
-     * @param fullReference
-     */
-    public Reference(List<CvParam> cvParams,
-                     List<UserParam> userParams,
-                     String id,
-                     String name,
-                     String fullReference) {
-        super(cvParams, userParams, id, name);
         this.fullReference = fullReference;
     }
 

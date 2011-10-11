@@ -41,8 +41,8 @@ public class ParamGroup implements MassSpecObject {
      */
     public ParamGroup(ParamGroup params) {
         if (params != null) {
-            setCvParams(params.getCvParams());
-            setUserParams(params.getUserParams());
+            this.cvParams = params.getCvParams();
+            this.userParams = params.getUserParams();
         }
     }
 
@@ -54,8 +54,8 @@ public class ParamGroup implements MassSpecObject {
      */
     public ParamGroup(List<CvParam> cvParams,
                       List<UserParam> userParams) {
-        setCvParams(cvParams);
-        setUserParams(userParams);
+        this.cvParams = cvParams;
+        this.userParams = userParams;
     }
 
     /**
@@ -67,12 +67,12 @@ public class ParamGroup implements MassSpecObject {
         if(cvParam != null){
             List<CvParam> cvParams = new ArrayList<CvParam>();
             cvParams.add(cvParam);
-            setCvParams(cvParams);
+            this.cvParams = cvParams;
         }
         if(userParam != null){
             List<UserParam> userParams = new ArrayList<UserParam>();
             userParams.add(userParam);
-            setUserParams(userParams);
+            this.userParams = userParams;
         }
     }
 

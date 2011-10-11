@@ -14,7 +14,6 @@ import java.util.*;
  * Time: 9:02:05 AM
  */
 public class PeptideScore {
-
     private Map<SearchEngineType, Map<CvTermReference, Number>> scores;
 
     /**

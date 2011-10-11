@@ -5,7 +5,6 @@ import java.util.List;
 /**
  * An Analysis which tries to identify peptides in input spectra, referencing the database searched,
  * the input spectra, the output results and the protocol that is run.
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 05/08/11
  * Time: 15:49

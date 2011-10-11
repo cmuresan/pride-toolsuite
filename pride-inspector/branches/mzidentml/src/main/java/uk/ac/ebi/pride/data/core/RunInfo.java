@@ -1,7 +1,8 @@
 package uk.ac.ebi.pride.data.core;
 
 /**
- * Created by IntelliJ IDEA.
+ * ToDo: document this class
+ *
  * User: rwang, yperez
  * Date: 03/08/11
  * Time: 10:23
@@ -18,11 +19,11 @@ public class RunInfo extends ParamGroup{
      */
     private InstrumentConfiguration defaultInstrumentConfiguration = null;
     /**
-     * Source file used to extract all the mass spectrum or cromatograms.
+     * Source file used to extract all the mass spectrum or chromatograms.
      */
     private SourceFile defaultSourceFile = null;
     /**
-     * Reference to the sample used to obtain these spectrum or cromatograms list.
+     * Reference to the sample used to obtain these spectrum or chromatograms list.
      *
      * */
     private Sample sampleRef = null;
@@ -31,6 +32,17 @@ public class RunInfo extends ParamGroup{
      */
     private String timeStamp = null;
 
+    public RunInfo(ParamGroup params, String id, InstrumentConfiguration defaultInstrumentConfiguration,
+                   SourceFile defaultSourceFile, Sample sampleRef, String timeStamp, MzGraphList spectrumList, MzGraphList chromatogramList) {
+        super(params);
+        this.id = id;
+        this.defaultInstrumentConfiguration = defaultInstrumentConfiguration;
+        this.defaultSourceFile = defaultSourceFile;
+        this.sampleRef = sampleRef;
+        this.timeStamp = timeStamp;
+        this.spectrumList = spectrumList;
+        this.chromatogramList = chromatogramList;
+    }
 
     public MzGraphList getSpectrumList() {
         return spectrumList;

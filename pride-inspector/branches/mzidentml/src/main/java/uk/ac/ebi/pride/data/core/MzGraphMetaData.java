@@ -5,7 +5,6 @@ import java.util.List;
 /**
  * This class storage the information related with metadata at the spectrum level. the object that are support by this
  * class are PRIDE Object, mzML, mgf, etc.
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 15/08/11
  * Time: 11:35
@@ -48,10 +47,7 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
                            List<ScanSetting> scanSettings,
                            List<InstrumentConfiguration> instrumentConfigurations,
                            List<DataProcessing> dataProcessingList) {
-        super(id, name);
-        this.scanSettings = scanSettings;
-        this.instrumentConfigurations = instrumentConfigurations;
-        this.dataProcessingList = dataProcessingList;
+        this(null, id, name, scanSettings, instrumentConfigurations, dataProcessingList, null);
     }
 
     /**
@@ -69,10 +65,7 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
                            List<ScanSetting> scanSettings,
                            List<InstrumentConfiguration> instrumentConfigurations,
                            List<DataProcessing> dataProcessingList) {
-        super(params, id, name);
-        this.scanSettings = scanSettings;
-        this.instrumentConfigurations = instrumentConfigurations;
-        this.dataProcessingList = dataProcessingList;
+        this(params, id, name, scanSettings, instrumentConfigurations, dataProcessingList, null);
     }
 
     public MzGraphMetaData(ParamGroup params,

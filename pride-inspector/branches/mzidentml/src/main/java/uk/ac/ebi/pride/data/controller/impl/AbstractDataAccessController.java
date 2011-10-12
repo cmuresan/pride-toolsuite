@@ -676,7 +676,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         String type = null;
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
-            type = ident instanceof TwoDimIdentification ? TWO_DIM_IDENTIFICATION_TYPE : GEL_FREE_IDENTIFICATION_TYPE;
+            type = (ident.getGel() != null) ? TWO_DIM_IDENTIFICATION_TYPE : GEL_FREE_IDENTIFICATION_TYPE;
         }
         return type;
     }

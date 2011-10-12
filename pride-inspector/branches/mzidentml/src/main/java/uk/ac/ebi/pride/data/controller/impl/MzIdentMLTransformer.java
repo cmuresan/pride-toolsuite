@@ -255,7 +255,7 @@ public class MzIdentMLTransformer {
         }
         if (oldIdent != null) {
             Map<PeptideEvidence, List<Peptide>> peptides = transformToPeptideIdentifications(oldIdent.getPeptideHypothesis(), oldFragmentationTable);
-            ident = new GelFreeIdentification(oldIdent.getId(), oldIdent.getName(), transformToDBSequence(oldIdent.getDBSequence()), oldIdent.isPassThreshold(), peptides, -1, -1, null, -1);
+            ident = new Identification(oldIdent.getId(), oldIdent.getName(), transformToDBSequence(oldIdent.getDBSequence()), oldIdent.isPassThreshold(), peptides, -1, -1, null, -1,null);
             //Todo: SearchEngine information, score, threshold and sequence coverage
         }
         return ident;

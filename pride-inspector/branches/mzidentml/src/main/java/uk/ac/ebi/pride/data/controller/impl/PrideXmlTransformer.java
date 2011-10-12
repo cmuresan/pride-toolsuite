@@ -343,8 +343,8 @@ public class PrideXmlTransformer {
      * @param rawIdent pride xml two dimensional identification
      * @return TwoDimIdentification    two dimentional identification
      */
-    public static TwoDimIdentification transformTwoDimIdent(uk.ac.ebi.pride.jaxb.model.TwoDimensionalIdentification rawIdent) {
-        TwoDimIdentification ident = null;
+    public static Identification transformTwoDimIdent(uk.ac.ebi.pride.jaxb.model.TwoDimensionalIdentification rawIdent) {
+        Identification ident = null;
 
         if (rawIdent != null) {
             // peptides
@@ -381,7 +381,7 @@ public class PrideXmlTransformer {
 
             SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
             DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
-            ident = new TwoDimIdentification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, scoreVal, thresholdVal, null, seqConverageVal, gel);
+            ident = new Identification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, scoreVal, thresholdVal, null, seqConverageVal, gel);
         }
 
         return ident;
@@ -393,8 +393,8 @@ public class PrideXmlTransformer {
      * @param rawIdent pride xml protein identification
      * @return GelFreeIdentification   gel free identification
      */
-    public static GelFreeIdentification transformGelFreeIdent(uk.ac.ebi.pride.jaxb.model.GelFreeIdentification rawIdent) {
-        GelFreeIdentification ident = null;
+    public static Identification transformGelFreeIdent(uk.ac.ebi.pride.jaxb.model.GelFreeIdentification rawIdent) {
+        Identification ident = null;
 
         if (rawIdent != null) {
             // peptides
@@ -425,7 +425,7 @@ public class PrideXmlTransformer {
 
             SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
             DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
-            return new GelFreeIdentification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, scoreVal, thresholdVal, null, seqConverageVal);
+            return new Identification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, scoreVal, thresholdVal, null, seqConverageVal,null);
 
         }
 

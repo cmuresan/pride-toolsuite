@@ -14,7 +14,7 @@ import java.util.Map;
  * Date: 03-Feb-2010
  * Time: 12:21:57
  */
-public abstract class Identification extends IdentifiableParamGroup {
+public class Identification extends IdentifiableParamGroup {
 
     /**
      * DEB Sequence
@@ -52,19 +52,24 @@ public abstract class Identification extends IdentifiableParamGroup {
     private double threshold = -1;
 
     /**
+     * Gel related details
+     */
+    private Gel gel = null;
+
+    /**
      * The group in wich we can find the Protein Identification
      */
     IdentifiableParamGroup proteinAmbiguityGroup = null;
 
     public Identification(Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
                           Map<PeptideEvidence, List<Peptide>> peptides, double score, double threshold,
-                          SearchEngine searchEngine, double sequenceCoverage) {
-        this(null, id, name, dbSequence, passThreshold, peptides, score, threshold, searchEngine, sequenceCoverage);
+                          SearchEngine searchEngine, double sequenceCoverage, Gel gel) {
+        this(null, id, name, dbSequence, passThreshold, peptides, score, threshold, searchEngine, sequenceCoverage, gel);
     }
 
     public Identification(ParamGroup params, Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
                           Map<PeptideEvidence, List<Peptide>> peptides, double score, double threshold,
-                          SearchEngine searchEngine, double sequenceCoverage) {
+                          SearchEngine searchEngine, double sequenceCoverage, Gel gel) {
         super(params, id, name);
         this.dbSequence       = dbSequence;
         this.passThreshold    = passThreshold;
@@ -73,6 +78,7 @@ public abstract class Identification extends IdentifiableParamGroup {
         this.threshold        = threshold;
         this.searchEngine     = searchEngine;
         this.sequenceCoverage = sequenceCoverage;
+        this.gel = gel;
     }
 
     public DBSequence getDbSequence() {
@@ -150,6 +156,22 @@ public abstract class Identification extends IdentifiableParamGroup {
         }
 
         return identifiedPeptides;
+    }
+
+    public Gel getGel() {
+        return gel;
+    }
+
+    public void setGel(Gel gel) {
+        this.gel = gel;
+    }
+
+    public IdentifiableParamGroup getProteinAmbiguityGroup() {
+        return proteinAmbiguityGroup;
+    }
+
+    public void setProteinAmbiguityGroup(IdentifiableParamGroup proteinAmbiguityGroup) {
+        this.proteinAmbiguityGroup = proteinAmbiguityGroup;
     }
 }
 

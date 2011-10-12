@@ -1292,9 +1292,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     Map<PeptideEvidence, List<Peptide>> peptideEvidences = DataAccessUtilities.getPeptideEvidence(peptides);
                     if ("uk.ac.ebi.pride.rdbms.ojb.model.core.TwoDimensionalIdentificationBean".equals(className)) {
                         gel = getPeptideGel(connection, rs.getInt("gel_id"), rs.getDouble("x_coordinate"), rs.getDouble("y_coordinate"), rs.getDouble("molecular_weight"), rs.getDouble("pi"));
-                        identification = new TwoDimIdentification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptideEvidences, 0.0, rs.getDouble("threshold"), new SearchEngine(null, rs.getString("search_engine")), seqConverageVal, gel);
+                        identification = new Identification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptideEvidences, 0.0, rs.getDouble("threshold"), new SearchEngine(null, rs.getString("search_engine")), seqConverageVal, gel);
                     } else if ("uk.ac.ebi.pride.rdbms.ojb.model.core.GelFreeIdentificationBean".equals(className)) {
-                        identification = new GelFreeIdentification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptideEvidences, 0.0, rs.getDouble("threshold"), new SearchEngine(null, rs.getString("search_engine")), seqConverageVal);
+                        identification = new Identification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptideEvidences, 0.0, rs.getDouble("threshold"), new SearchEngine(null, rs.getString("search_engine")), seqConverageVal,null);
                     }
 
                     if (useCache) {

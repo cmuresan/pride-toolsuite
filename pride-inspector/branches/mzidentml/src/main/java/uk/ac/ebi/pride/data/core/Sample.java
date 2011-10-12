@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * ToDo: too many constructors
  * <p/>
  * Description of the sample used to generate the Dataset.
  * This Sample class represent the basic information contained in the mzMl files.
@@ -28,80 +27,32 @@ public class Sample extends IdentifiableParamGroup {
      */
     private List<Sample> subSamples = null;
 
-    /**
-     * Constructor for MzML Sample Pride Object.
-     *
-     * @param id
-     * @param name
-     */
-    public Sample(String id, String name) {
-        this(null, id, name, null, null);
-    }
 
     /**
      * Constructor for MzML Sample Pride Object
      *
-     * @param params
-     * @param id
-     * @param name
+     * @param params  ParamGroup
+     * @param id      ID
+     * @param name    Name
      */
     public Sample(ParamGroup params, String id, String name) {
         this(params, id, name, null, null);
     }
 
     /**
-     * Constructor for MzML Sample Object.
-     *
-     * @param cvParams
-     * @param userParams
-     * @param id
-     * @param name
-     */
-    public Sample(List<CvParam> cvParams, List<UserParam> userParams, String id, String name) {
-        this(new ParamGroup(cvParams, userParams), id, name, null, null);
-    }
-
-    /**
      * Constructor for MZIndentMl Sample.
      *
-     * @param id
-     * @param name
-     * @param subSamples
-     * @param contactRoleList
-     */
-    public Sample(String id, String name, List<Sample> subSamples, Map<AbstractContact, CvParam> contactRoleList) {
-        this(null, id, name, subSamples, contactRoleList);
-    }
-
-    /**
-     * Constructor for MZIndentMl Sample.
-     *
-     * @param params
-     * @param id
-     * @param name
-     * @param subSamples
-     * @param contactRoleList
+     * @param params ParamGroup
+     * @param id     ID
+     * @param name   Name
+     * @param subSamples  SubSamples
+     * @param contactRoleList List of Contact Role
      */
     public Sample(ParamGroup params, String id, String name, List<Sample> subSamples,
                   Map<AbstractContact, CvParam> contactRoleList) {
         super(params, id, name);
         this.subSamples      = subSamples;
         this.contactRoleList = contactRoleList;
-    }
-
-    /**
-     * Constructor for MZIndentMl Sample.
-     *
-     * @param cvParams
-     * @param userParams
-     * @param id
-     * @param name
-     * @param subSamples
-     * @param contactRoleList
-     */
-    public Sample(List<CvParam> cvParams, List<UserParam> userParams, String id, String name, List<Sample> subSamples,
-                  Map<AbstractContact, CvParam> contactRoleList) {
-        this(new ParamGroup(cvParams, userParams), id, name, subSamples, contactRoleList);
     }
 
     public List<Sample> getParentSample() {
@@ -122,4 +73,4 @@ public class Sample extends IdentifiableParamGroup {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

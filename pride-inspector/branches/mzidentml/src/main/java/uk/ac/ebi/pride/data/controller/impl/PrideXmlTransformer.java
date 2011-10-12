@@ -580,7 +580,7 @@ public class PrideXmlTransformer {
                     }
                 }
             }
-            protocol = new ExperimentProtocol(PROTOCOL_ID, rawProt.getProtocolName(), protocolSteps);
+            protocol = new ExperimentProtocol(null, PROTOCOL_ID, rawProt.getProtocolName(), protocolSteps);
         }
         return protocol;
     }
@@ -727,7 +727,7 @@ public class PrideXmlTransformer {
             if (completionTime != null) {
                 userParams.add(new UserParam(COMPLETION_TIME, null, completionTime.toString(), null, null, null));
             }
-            software = new Software(new ParamGroup(cvParams, userParams), null, rawSoftware.getName(), rawSoftware.getVersion(), null);
+            software = new Software(new ParamGroup(cvParams, userParams), null, rawSoftware.getName(), null,null,null,rawSoftware.getVersion());
         }
 
         return software;

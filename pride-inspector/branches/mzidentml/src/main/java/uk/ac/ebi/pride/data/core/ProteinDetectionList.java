@@ -14,8 +14,8 @@ import java.util.List;
 public class ProteinDetectionList extends ParamGroup {
     String                      id                        = null;
     String                      name                      = null;
-    List<ProteinAmbiguityGroup> proteinAmbiguityGroupList = null;
+    //List<ProteinAmbiguityGroup> proteinAmbiguityGroupList = null;
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

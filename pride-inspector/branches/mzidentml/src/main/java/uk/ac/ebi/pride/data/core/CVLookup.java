@@ -79,4 +79,4 @@ public class CVLookup implements MassSpecObject {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

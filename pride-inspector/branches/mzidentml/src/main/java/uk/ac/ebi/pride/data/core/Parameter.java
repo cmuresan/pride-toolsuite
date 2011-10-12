@@ -93,4 +93,4 @@ public abstract class Parameter implements MassSpecObject {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

@@ -223,7 +223,7 @@ public class MzIdentMLTransformer {
             } else if (oldSoftware.getContactRole().getPerson() != null) {
                 contact = transformToPerson(oldSoftware.getContactRole().getPerson());
             }
-            return new Software(oldSoftware.getId(), oldSoftware.getName(), oldSoftware.getVersion(), oldSoftware.getUri(), contact, oldSoftware.getCustomizations());
+            return new Software(oldSoftware.getId(), oldSoftware.getName(), contact,oldSoftware.getCustomizations(), oldSoftware.getUri(), oldSoftware.getVersion());
         }
         return null;
     }
@@ -454,7 +454,7 @@ public class MzIdentMLTransformer {
             monoMasses.add(oldModification.getMonoisotopicMassDelta());
             List<Double> avgMasses = new ArrayList<Double>();
             avgMasses.add(oldModification.getAvgMassDelta());
-            modification = new Modification(null, null, oldModification.getLocation(), oldModification.getResidues(), avgMasses, monoMasses);
+            modification = new Modification(null, null, oldModification.getLocation(), oldModification.getResidues(), avgMasses, monoMasses,null,null);
         }
         return modification;
     }
@@ -481,7 +481,7 @@ public class MzIdentMLTransformer {
     private static DBSequence transformToDBSequence(uk.ac.ebi.jmzidml.model.mzidml.DBSequence oldDbSequence) {
         DBSequence dbSequence = null;
         if (oldDbSequence != null) {
-            dbSequence = new DBSequence(oldDbSequence.getId(), oldDbSequence.getName(), oldDbSequence.getLength(), oldDbSequence.getAccession(), transformToSeachDatabase(oldDbSequence.getSearchDatabase()), oldDbSequence.getSeq(), null, null);
+            dbSequence = new DBSequence(null,oldDbSequence.getId(), oldDbSequence.getName(), oldDbSequence.getLength(), oldDbSequence.getAccession(), transformToSeachDatabase(oldDbSequence.getSearchDatabase()), oldDbSequence.getSeq(), null, null);
         }
         return dbSequence;
     }

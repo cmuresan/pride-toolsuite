@@ -202,4 +202,4 @@ public class PeptideSequence extends IdentifiableParamGroup {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

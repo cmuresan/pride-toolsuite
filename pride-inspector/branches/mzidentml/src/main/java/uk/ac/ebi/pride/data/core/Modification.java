@@ -71,76 +71,16 @@ public class Modification extends IdentifiableParamGroup {
     private List<String> residues = null;
 
     /**
-     * Constructor for MzIdentMl Modification Object
-     *
-     * @param id
-     * @param name
-     * @param location
-     * @param residues
-     * @param avgMassDelta
-     * @param monoisotopicMassDelta
-     */
-    public Modification(String id, String name, int location, List<String> residues, List<Double> avgMassDelta,
-                        List<Double> monoisotopicMassDelta) {
-        super(id, name);
-        this.location              = location;
-        this.residues              = residues;
-        this.avgMassDelta          = avgMassDelta;
-        this.monoisotopicMassDelta = monoisotopicMassDelta;
-    }
-
-    /**
-     * Constructor for MzIdentMl Modification Object
-     *
-     * @param params
-     * @param id
-     * @param name
-     * @param location
-     * @param residues
-     * @param avgMassDelta
-     * @param monoisotopicMassDelta
-     */
-    public Modification(ParamGroup params, String id, String name, int location, List<String> residues,
-                        List<Double> avgMassDelta, List<Double> monoisotopicMassDelta) {
-        super(params, id, name);
-        this.location              = location;
-        this.residues              = residues;
-        this.avgMassDelta          = avgMassDelta;
-        this.monoisotopicMassDelta = monoisotopicMassDelta;
-    }
-
-    /**
-     * Constructor for MzIdentMl Modification Object
-     *
-     * @param cvParams
-     * @param userParams
-     * @param id
-     * @param name
-     * @param location
-     * @param residues
-     * @param avgMassDelta
-     * @param monoisotopicMassDelta
-     */
-    public Modification(List<CvParam> cvParams, List<UserParam> userParams, String id, String name, int location,
-                        List<String> residues, List<Double> avgMassDelta, List<Double> monoisotopicMassDelta) {
-        super(cvParams, userParams, id, name);
-        this.location              = location;
-        this.residues              = residues;
-        this.avgMassDelta          = avgMassDelta;
-        this.monoisotopicMassDelta = monoisotopicMassDelta;
-    }
-
-    /**
      * Constructor for PRIDE Modification Object
      *
-     * @param id
-     * @param name
-     * @param location
-     * @param residues
-     * @param avgMassDelta
-     * @param monoisotopicMassDelta
-     * @param modDatabase
-     * @param modDatabaseVersion
+     * @param id ID
+     * @param name Name
+     * @param location Location
+     * @param residues List of the possible residues where the modification is present
+     * @param avgMassDelta List of Possible Average Mass Delta
+     * @param monoisotopicMassDelta List of Possible MonoIsotopic Mass Delta
+     * @param modDatabase DataBase Name
+     * @param modDatabaseVersion DataBase Version
      */
     public Modification(String id, String name, int location, List<String> residues, List<Double> avgMassDelta,
                         List<Double> monoisotopicMassDelta, String modDatabase, String modDatabaseVersion) {
@@ -154,17 +94,17 @@ public class Modification extends IdentifiableParamGroup {
     }
 
     /**
-     * Constructor for PRIDE Modification Object
+     * Constructor for Modification Objects
      *
-     * @param params
-     * @param id
-     * @param name
-     * @param location
-     * @param residues
-     * @param avgMassDelta
-     * @param monoisotopicMassDelta
-     * @param modDatabase
-     * @param modDatabaseVersion
+     * @param params ParamGroup (CvTerms and User Params)
+     * @param id ID
+     * @param name Name
+     * @param location Location
+     * @param residues List of the possible residues where the modification is present
+     * @param avgMassDelta List of Possible Average Mass Delta
+     * @param monoisotopicMassDelta List of Possible MonoIsotopic Mass Delta
+     * @param modDatabase DataBase Name
+     * @param modDatabaseVersion DataBase Version
      */
     public Modification(ParamGroup params, String id, String name, int location, List<String> residues,
                         List<Double> avgMassDelta, List<Double> monoisotopicMassDelta, String modDatabase,
@@ -179,79 +119,113 @@ public class Modification extends IdentifiableParamGroup {
     }
 
     /**
-     * Constructor for PRIDE Modification Object
+     * Get Location of the Modification
      *
-     * @param cvParams
-     * @param userParams
-     * @param id
-     * @param name
-     * @param location
-     * @param residues
-     * @param avgMassDelta
-     * @param monoisotopicMassDelta
-     * @param modDatabase
-     * @param modDatabaseVersion
+     * @return Location
      */
-    public Modification(List<CvParam> cvParams, List<UserParam> userParams, String id, String name, int location,
-                        List<String> residues, List<Double> avgMassDelta, List<Double> monoisotopicMassDelta,
-                        String modDatabase, String modDatabaseVersion) {
-        super(cvParams, userParams, id, name);
-        this.location              = location;
-        this.residues              = residues;
-        this.avgMassDelta          = avgMassDelta;
-        this.monoisotopicMassDelta = monoisotopicMassDelta;
-        this.modDatabase           = modDatabase;
-        this.modDatabaseVersion    = modDatabaseVersion;
-    }
-
     public int getLocation() {
         return location;
     }
 
+    /**
+     * Set Location of the Modification
+     *
+     * @param location Location
+     */
     public void setLocation(int location) {
         this.location = location;
     }
 
+    /**
+     * Get the Amino Acids associated with this modification
+     *
+     * @return List of Residues (Amino Acids)
+     */
     public List<String> getResidues() {
         return residues;
     }
 
+    /**
+     * Set the Amino Acids associated with this modification
+     *
+     * @param residues List of Residues (Amino Acids)
+     */
     public void setResidues(List<String> residues) {
         this.residues = residues;
     }
 
+    /**
+     * Get Modification DataBase Name
+     *
+     * @return DataBase Name
+     */
     public String getModDatabase() {
         return modDatabase;
     }
 
+    /**
+     * Set Modification DataBase Name
+     *
+     * @param modDatabase DataBase Name
+     */
     public void setModDatabase(String modDatabase) {
         this.modDatabase = modDatabase;
     }
 
+    /**
+     * Get Modification DataBase Version
+     *
+     * @return DataBase Version
+     */
     public String getModDatabaseVersion() {
         return modDatabaseVersion;
     }
 
+    /**
+     * Set Modification DataBase Version
+     *
+     * @param modDatabaseVersion DataBase Version
+     */
     public void setModDatabaseVersion(String modDatabaseVersion) {
         this.modDatabaseVersion = modDatabaseVersion;
     }
 
+    /**
+     * Get Average Mass Delta List
+     *
+     * @return Average Mass Delta List
+     */
     public List<Double> getAvgMassDelta() {
         return avgMassDelta;
     }
 
+    /**
+     * Get Average Mass Delta List
+     *
+     * @param avgMassDelta Average Mass Delta List
+     */
     public void setAvgMassDelta(List<Double> avgMassDelta) {
         this.avgMassDelta = avgMassDelta;
     }
 
+    /**
+     * Get monoisotopic Mass Delta List
+     *
+     * @return monoisotopic Mass Delta List
+     */
     public List<Double> getMonoisotopicMassDelta() {
         return monoisotopicMassDelta;
     }
 
+    /**
+     * Set monoisotopic mass delta List
+     *
+     * @param monoisotopicMassDelta monoisotopic mass delta List
+     */
     public void setMonoisotopicMassDelta(List<Double> monoisotopicMassDelta) {
         this.monoisotopicMassDelta = monoisotopicMassDelta;
     }
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

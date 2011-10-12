@@ -5,7 +5,6 @@ package uk.ac.ebi.pride.data.core;
 import java.util.List;
 
 /**
- * ToDo: too many constructors
  * <p/>
  * Description of source file, including identification file, location and type.
  * the attributes fileFormat is used to manage the cvterm for file format in MzIdentMl
@@ -47,8 +46,8 @@ public class SourceFile extends IdentifiableParamGroup {
     /**
      * Constructor for special cases were you don't have and Id
      *
-     * @param name
-     * @param path
+     * @param name Name
+     * @param path location
      */
     public SourceFile(String name, String path) {
 
@@ -60,22 +59,10 @@ public class SourceFile extends IdentifiableParamGroup {
     /**
      * Constructor to the MzMl File Source
      *
-     * @param id
-     * @param name
-     * @param path
-     */
-    public SourceFile(String id, String name, String path) {
-        super(id, name);
-        this.path = path;
-    }
-
-    /**
-     * Constructor to the MzMl File Source
-     *
-     * @param params
-     * @param id
-     * @param name
-     * @param path
+     * @param params ParamGroup (CvTerms and User Params)
+     * @param id  ID
+     * @param name Name
+     * @param path location of the source File
      */
     public SourceFile(ParamGroup params, String id, String name, String path) {
         super(params, id, name);
@@ -83,44 +70,14 @@ public class SourceFile extends IdentifiableParamGroup {
     }
 
     /**
-     * Constructor to the MzMl File Source
-     *
-     * @param cvParams
-     * @param userParams
-     * @param id
-     * @param name
-     * @param path
-     */
-    public SourceFile(List<CvParam> cvParams, List<UserParam> userParams, String id, String name, String path) {
-        super(cvParams, userParams, id, name);
-        this.path = path;
-    }
-
-    /**
      * Constructor of MzIdentMl source File
      *
-     * @param id
-     * @param name
-     * @param path
-     * @param fileFormat
-     * @param externalFormatDocumentationURI
-     */
-    public SourceFile(String id, String name, String path, CvParam fileFormat, String externalFormatDocumentationURI) {
-        super(id, name);
-        this.path                           = path;
-        this.fileFormat                     = fileFormat;
-        this.externalFormatDocumentationURI = externalFormatDocumentationURI;
-    }
-
-    /**
-     * Constructor of MzIdentMl source File
-     *
-     * @param params
-     * @param id
-     * @param name
-     * @param path
-     * @param fileFormat
-     * @param externalFormatDocumentationURI
+     * @param params ParamGroup (CvTerms and User Params)
+     * @param id  ID
+     * @param name Name
+     * @param path location of the source File
+     * @param fileFormat CvTerm to define the FileFormat
+     * @param externalFormatDocumentationURI the external uri of the Format Documentation
      */
     public SourceFile(ParamGroup params, String id, String name, String path, CvParam fileFormat,
                       String externalFormatDocumentationURI) {
@@ -131,48 +88,59 @@ public class SourceFile extends IdentifiableParamGroup {
     }
 
     /**
-     * Constructor of MzIdentMl source File
+     * Get the location of the File
      *
-     * @param cvParams
-     * @param userParams
-     * @param id
-     * @param name
-     * @param path
-     * @param fileFormat
-     * @param externalFormatDocumentationURI
+     * @return location
      */
-    public SourceFile(List<CvParam> cvParams, List<UserParam> userParams, String id, String name, String path,
-                      CvParam fileFormat, String externalFormatDocumentationURI) {
-        super(cvParams, userParams, id, name);
-        this.path                           = path;
-        this.fileFormat                     = fileFormat;
-        this.externalFormatDocumentationURI = externalFormatDocumentationURI;
-    }
-
     public String getPath() {
         return path;
     }
 
+    /**
+     * Set the location
+     *
+     * @param path location of the file
+     */
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     * Get CvParam to define the File Format
+     *
+     * @return CvParam
+     */
     public CvParam getFileFormat() {
         return fileFormat;
     }
 
+    /**
+     * Set CvParam to define the File Format
+     *
+     * @param fileFormat CvParam
+     */
     public void setFileFormat(CvParam fileFormat) {
         this.fileFormat = fileFormat;
     }
 
+    /**
+     * Get the external uri of the File Format Documentation
+     *
+     * @return uri of the File Format Documentation
+     */
     public String getExternalFormatDocumentationURI() {
         return externalFormatDocumentationURI;
     }
 
+    /**
+     * Get the external uri of the File Format Documentation
+     *
+     * @param externalFormatDocumentationURI uri of the File Format Documentation
+     */
     public void setExternalFormatDocumentationURI(String externalFormatDocumentationURI) {
         this.externalFormatDocumentationURI = externalFormatDocumentationURI;
     }
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

@@ -1185,7 +1185,6 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     @Override
     public void setForegroundExperimentAcc(Comparable expAcc) throws DataAccessException {
         logger.debug("Set foreground experiment accession: {}", expAcc);
-
         Comparable acc = foregroundExperimentAcc;
         if (!expAcc.equals(acc)) {
             Comparable oldExp, newExp;
@@ -1720,8 +1719,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      * <p/>
      * Note: this method will scan through first 10 identifications
      *
-     * @return
-     * @throws DataAccessException
+     * @return Quantitation Cv Terms
+     * @throws DataAccessException Exception related with the retrieve of the data
      */
     @Override
     public QuantCvTermReference getProteinQuantUnit() throws DataAccessException {

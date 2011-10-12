@@ -22,8 +22,8 @@ public class DataProcessing extends Identifiable {
     private List<ProcessingMethod> processingMethods = null;
 
     /**
-     * @param id
-     * @param processingMethods
+     * @param id  ID of the DataProcessing Object
+     * @param processingMethods Processing Method List
      */
     public DataProcessing(Comparable id, List<ProcessingMethod> processingMethods) {
         super(id, null);
@@ -31,23 +31,35 @@ public class DataProcessing extends Identifiable {
     }
 
     /**
-     * @param id
-     * @param name
-     * @param processingMethods
+     * Create of a DataProcessing Object
+     *
+     * @param id ID of the DataProcessing Object
+     * @param name Name of the DataProcessing Object
+     * @param processingMethods Processing Method List
      */
     public DataProcessing(Comparable id, String name, List<ProcessingMethod> processingMethods) {
         super(id, name);
         this.processingMethods = processingMethods;
     }
 
+    /**
+     * Get List of Processing Methods
+     *
+     * @return List<ProcessingMethod>
+     */
     public List<ProcessingMethod> getProcessingMethods() {
         return processingMethods;
     }
 
+    /**
+     * Set a List of Processing Methods
+     *
+     * @param processingMethods A list of Processing Methods
+     */
     public void setProcessingMethods(List<ProcessingMethod> processingMethods) {
         this.processingMethods = processingMethods;
     }
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

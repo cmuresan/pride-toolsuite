@@ -58,4 +58,4 @@ public class ProteinDetection extends ProtocolApplication {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

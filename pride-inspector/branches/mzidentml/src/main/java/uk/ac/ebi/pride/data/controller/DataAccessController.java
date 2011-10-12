@@ -173,16 +173,16 @@ public interface DataAccessController
     /**
      * Get the MetaData Information for Identification Object.
      *
-     * @return
-     * @throws DataAccessException
+     * @return IdentificationMetaData
+     * @throws DataAccessException DataAccessException
      */
     public IdentificationMetaData getIdentificationMetaData() throws DataAccessException;
 
     /**
      * Get MetaData Information for Spectrum Experiment Object
      *
-     * @return
-     * @throws DataAccessException
+     * @return MzGraphMetaData
+     * @throws DataAccessException DataAccessException
      */
     public MzGraphMetaData getMzGraphMetaData() throws DataAccessException;
 
@@ -198,7 +198,7 @@ public interface DataAccessController
      * Get File Content Object
      *
      * @return ParamGroup
-     * @throws DataAccessException
+     * @throws DataAccessException DataAccessException
      */
     public ParamGroup getFileContent() throws DataAccessException;
 
@@ -222,7 +222,7 @@ public interface DataAccessController
      * Get the Collection of the SpectrumIdentification Protocol
      *
      * @return Collection<SpectrumIdentificationProtocol>  a Collection of SpectrumIdentification Protocol
-     * @throws DataAccessException
+     * @throws DataAccessException DataAccessException
      */
     public Collection<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() throws DataAccessException;
 
@@ -230,15 +230,15 @@ public interface DataAccessController
      * Get ProteinDetection Protocol
      *
      * @return Protocol is a Protein Detection Protocol.
-     * @throws DataAccessException
+     * @throws DataAccessException DataAccessException
      */
     public Protocol getProteinDetectionProtocol() throws DataAccessException;
 
     /**
      * Get a Provider for a File
      *
-     * @return
-     * @throws DataAccessException
+     * @return Provider The last software that provide the mzidentml file
+     * @throws DataAccessException DataAccessException
      */
     public Provider getProvider() throws DataAccessException;
 
@@ -253,16 +253,16 @@ public interface DataAccessController
     /**
      * Get the List of Persons Related with the Experiment
      *
-     * @return
-     * @throws DataAccessException
+     * @return Collection<Person> Collection of person contacts
+     * @throws DataAccessException DataAccessException
      */
     public Collection<Person> getPersonContacts() throws DataAccessException;
 
     /**
      * Get the Collection of Organizations
      *
-     * @return
-     * @throws DataAccessException
+     * @return Collection<Organization> Collection of Organization Contacts
+     * @throws DataAccessException DataAccessException
      */
     public Collection<Organization> getOrganizationContacts() throws DataAccessException;
 
@@ -293,24 +293,24 @@ public interface DataAccessController
     /**
      * Get all the Search Databases used in the Experiment
      *
-     * @return
-     * @throws DataAccessException
+     * @return Collection<SearchDataBase> Collection of SearchDatabases uses in the Identification
+     * @throws DataAccessException DataAccessException
      */
     public Collection<SearchDataBase> getSearchDataBases() throws DataAccessException;
 
     /**
      * Get all modification presented in the Experiment
      *
-     * @return
-     * @throws DataAccessException
+     * @return Collection<Modification> Collection of the Modification Present in the Experiment
+     * @throws DataAccessException DataAccessException
      */
     public Collection<Modification> getModification() throws DataAccessException;
 
     /**
      * Get all Source Files
      *
-     * @return
-     * @throws DataAccessException
+     * @return Collection<SourceFile> Collection of all of the Source Files in the Experiment
+     * @throws DataAccessException DataAccessException
      */
     public Collection<SourceFile> getSourceFiles() throws DataAccessException;
 
@@ -325,8 +325,8 @@ public interface DataAccessController
     /**
      * Get all SpectraDataFiles From mzIdentMl File
      *
-     * @return
-     * @throws DataAccessException
+     * @return Collection<SpectraData> Collection of all SpectraData (Reference to the source file where spectra data is store)
+     * @throws DataAccessException DataAccessException
      */
     public Collection<SpectraData> getSpectraDataFiles() throws DataAccessException;
 
@@ -336,5 +336,3 @@ public interface DataAccessController
     // Todo: getDefaultChromatogramDataProcessing() from mzML's chromatogramList element
 }
 
-
-//~ Formatted by Jindent --- http://www.jindent.com

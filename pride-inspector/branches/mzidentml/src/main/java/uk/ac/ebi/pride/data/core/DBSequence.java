@@ -43,10 +43,10 @@ public class DBSequence extends IdentifiableParamGroup {
     /**
      * Constructor for PRIDE DBSequence Objects
      *
-     * @param accessionId
-     * @param searchDataBase
-     * @param accessionVersion
-     * @param spliceIsoform
+     * @param accessionId The accession in the DataBase of the Sequence
+     * @param searchDataBase The Search DataBase that contains the current Sequence
+     * @param accessionVersion  The version of the accession
+     * @param spliceIsoform  Splice Isoform
      */
     public DBSequence(String accessionId, SearchDataBase searchDataBase, String accessionVersion,
                       String spliceIsoform) {
@@ -54,34 +54,17 @@ public class DBSequence extends IdentifiableParamGroup {
     }
 
     /**
-     * Constructor without ParamGroup Information
-     *
-     * @param id
-     * @param name
-     * @param length
-     * @param accessionId
-     * @param searchDataBase
-     * @param sequence
-     * @param accessionVersion
-     * @param spliceIsoform
-     */
-    public DBSequence(Comparable id, String name, int length, String accessionId, SearchDataBase searchDataBase,
-                      String sequence, String accessionVersion, String spliceIsoform) {
-        this(null, id, name, length, accessionId, searchDataBase, sequence, accessionVersion, spliceIsoform);
-    }
-
-    /**
      * Constructor with ParamGroup Information
      *
-     * @param params
-     * @param id
-     * @param name
-     * @param length
-     * @param accessionId
-     * @param searchDataBase
-     * @param sequence
-     * @param accessionVersion
-     * @param spliceIsoform
+     * @param params  ParamGroup (List of CvTerms and User Params)
+     * @param id      ID of the DBSequence Object
+     * @param name    Name
+     * @param length  The Length of the sequence
+     * @param accessionId The accession in the DataBase of the Sequence
+     * @param searchDataBase The Search DataBase that contains the current Sequence
+     * @param sequence       Sequence
+     * @param accessionVersion  The version of the accession
+     * @param spliceIsoform  Splice Isoform
      */
     public DBSequence(ParamGroup params, Comparable id, String name, int length, String accessionId,
                       SearchDataBase searchDataBase, String sequence, String accessionVersion, String spliceIsoform) {
@@ -94,50 +77,109 @@ public class DBSequence extends IdentifiableParamGroup {
         this.spliceIsoform    = spliceIsoform;
     }
 
+    /**
+     * Get the length of the Sequence
+     *
+     * @return Length of the Sequence
+     */
     public int getLength() {
         return length;
     }
 
+    /**
+     * Set the length of the Sequence
+     *
+     * @param length Length of the Sequence
+     */
     public void setLength(int length) {
         this.length = length;
     }
 
+    /**
+     *  Get the Accession ID of the Sequence in the DataBase
+     *
+     * @return Accession ID of the Sequence in the DataBase
+     */
     public String getAccessionId() {
         return accessionId;
     }
 
+    /**
+     * Set the Accession ID of the Sequence in the DataBase
+     *
+     * @param accessionId Accession ID of the Sequence in the DataBase
+     */
     public void setAccessionId(String accessionId) {
         this.accessionId = accessionId;
     }
 
+    /**
+     * Get the Search DataBase that contains the Sequence
+     *
+     * @return Search DataBase that contains the Sequence
+     */
     public SearchDataBase getSearchDataBase() {
         return searchDataBase;
     }
 
+    /**
+     * Set the Search DataBase that contains the Sequence
+     *
+     * @param searchDataBase Search DataBase that contains the Sequence
+     */
     public void setSearchDataBase(SearchDataBase searchDataBase) {
         this.searchDataBase = searchDataBase;
     }
 
+    /**
+     * Get the Sequence of the Protein in the Database
+     *
+     * @return Sequence
+     */
     public String getSequence() {
         return sequence;
     }
 
+    /**
+     * Set the Sequence of the Protein in the Database
+     *
+     * @param sequence Sequence
+     */
     public void setSequence(String sequence) {
         this.sequence = sequence;
     }
 
+    /**
+     * Get the Accession Version of the Sequence in the DataBase
+     *
+     * @return Accession Version of the Sequence in the DataBase
+     */
     public String getAccessionVersion() {
         return accessionVersion;
     }
 
+    /**
+     * Set the Accession Version of the Sequence in the DataBase
+     *
+     * @param accessionVersion Accession Version of the Sequence in the DataBase
+     */
     public void setAccessionVersion(String accessionVersion) {
         this.accessionVersion = accessionVersion;
     }
 
+    /**
+     * Get the Splice Isoform
+     * @return spliceIsoform (String)
+     */
     public String getSpliceIsoform() {
         return spliceIsoform;
     }
 
+    /**
+     *  Set the Splice Isoform
+     *
+     * @param spliceIsoform Splice Isoform
+     */
     public void setSpliceIsoform(String spliceIsoform) {
         this.spliceIsoform = spliceIsoform;
     }
@@ -196,4 +238,4 @@ public class DBSequence extends IdentifiableParamGroup {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

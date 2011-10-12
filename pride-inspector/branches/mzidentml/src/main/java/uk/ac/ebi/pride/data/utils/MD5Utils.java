@@ -21,7 +21,7 @@ public class MD5Utils {
      *
      * @param msg input string
      * @return String  md5 hash
-     * @throws java.security.NoSuchAlgorithmException
+     * @throws java.security.NoSuchAlgorithmException java.security.NoSuchAlgorithmException
      *
      */
     public static String generateHash(String msg) throws NoSuchAlgorithmException {
@@ -48,4 +48,4 @@ public class MD5Utils {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

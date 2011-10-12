@@ -27,6 +27,7 @@ public class DBUtilities {
      *
      * @param stmt statement
      * @param rs   result set
+     * @param connection Connection Object to the Database
      */
     @SuppressWarnings("unchecked")
     public static void releaseResources(Connection connection, Statement stmt, ResultSet rs) {
@@ -57,4 +58,4 @@ public class DBUtilities {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

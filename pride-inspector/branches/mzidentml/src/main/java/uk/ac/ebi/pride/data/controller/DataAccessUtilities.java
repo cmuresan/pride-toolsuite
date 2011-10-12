@@ -318,6 +318,11 @@ public class DataAccessUtilities {
         return cnt;
     }
 
+    /**
+     * Get the number of Substitution PTMs for an specific Protein Identification
+     * @param ident ID of the Protein Identification
+     * @return Total number of Substitution PTMs
+     */
     public static int getNumberOfSubstitutionPTMs(Identification ident) {
         int cnt = 0;
         List<Peptide> peptides = ident.getIdentifiedPeptides();
@@ -333,8 +338,8 @@ public class DataAccessUtilities {
     /**
      * Get the number of the modification of a peptide
      *
-     * @param peptide
-     * @return
+     * @param peptide  Peptide Object
+     * @return Total number of PTMs
      */
     public static int getNumberOfPTMs(Peptide peptide) {
         int cnt = 0;
@@ -348,8 +353,8 @@ public class DataAccessUtilities {
     /**
      * Get the number of substitution modification of a peptide
      *
-     * @param peptide
-     * @return
+     * @param peptide Peptide
+     * @return Total number of Substitution PTMs
      */
     public static int getNumberOfSubstitutionPTMs(Peptide peptide) {
         int cnt = 0;
@@ -449,10 +454,11 @@ public class DataAccessUtilities {
     /**
      * Create a List of Cv Params
      *
-     * @param value
-     * @param cvLabel
-     * @param accession
-     * @return
+     * @param value Value of the CvParam
+     * @param cvLabel Label of the CvParam
+     * @param accession Accession of the CvParam
+     * @param name Name
+     * @return List<CvParam>
      */
     public static List<CvParam> getCvParam(String name, String cvLabel, String accession, String value) {
         List<CvParam> cvParams = new ArrayList<CvParam>();
@@ -465,7 +471,7 @@ public class DataAccessUtilities {
      * Get a list parameters using a given name.
      *
      * @param paramGroup parameter group
-     * @param name       name string
+     * @param name name string
      * @return List<Parameter> a list of parameters
      */
     public static List<Parameter> getParamByName(ParamGroup paramGroup, String name) {
@@ -495,6 +501,12 @@ public class DataAccessUtilities {
         return params;
     }
 
+    /**
+     * Get peptide Evidence for a Lis of Peptide Identifications
+     *
+     * @param peptides List of Peptide Identifications
+     * @return Map with Peptide Evidence an the List of Peptide Identifications related with this peptide Evidence
+     */
     public static Map<PeptideEvidence, List<Peptide>> getPeptideEvidence(List<Peptide> peptides) {
         HashMap<PeptideEvidence, List<Peptide>> peptideEvidences = new HashMap<PeptideEvidence, List<Peptide>>();
         for (Peptide peptide : peptides) {

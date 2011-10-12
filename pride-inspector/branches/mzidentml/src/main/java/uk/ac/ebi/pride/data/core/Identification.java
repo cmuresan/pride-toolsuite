@@ -51,6 +51,11 @@ public abstract class Identification extends IdentifiableParamGroup {
      */
     private double threshold = -1;
 
+    /**
+     * The group in wich we can find the Protein Identification
+     */
+    IdentifiableParamGroup proteinAmbiguityGroup = null;
+
     public Identification(Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
                           Map<PeptideEvidence, List<Peptide>> peptides, double score, double threshold,
                           SearchEngine searchEngine, double sequenceCoverage) {
@@ -149,4 +154,4 @@ public abstract class Identification extends IdentifiableParamGroup {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

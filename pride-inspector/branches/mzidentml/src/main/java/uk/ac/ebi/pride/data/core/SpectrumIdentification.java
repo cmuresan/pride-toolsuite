@@ -88,4 +88,4 @@ public class SpectrumIdentification extends ProtocolApplication {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

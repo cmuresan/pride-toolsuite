@@ -13,7 +13,6 @@ import static junit.framework.Assert.assertEquals;
  * User: rwang
  * Date: 03/03/11
  * Time: 10:42
- * To change this template use File | Settings | File Templates.
  */
 public class AccessionUtilsTest {
 

@@ -577,9 +577,8 @@ public class MzMLTransformer {
             if (oldSoftware.getCvParam().size() > 0) {
                 name = oldSoftware.getCvParam().get(0).getName();
             }
-            //Todo: Ask to Rui the id and the Name problem in Software Object
             ParamGroup paramGroup = transformParamGroup(oldSoftware);
-            newSoftware = new Software(paramGroup, id, name, version);
+            newSoftware = new Software(paramGroup, id, name, null,null,null,version);
         }
         return newSoftware;
     }

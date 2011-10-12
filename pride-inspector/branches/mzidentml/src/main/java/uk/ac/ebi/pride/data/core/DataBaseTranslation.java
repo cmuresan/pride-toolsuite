@@ -37,4 +37,4 @@ public class DataBaseTranslation {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

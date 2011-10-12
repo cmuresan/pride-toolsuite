@@ -112,4 +112,4 @@ public class Precursor implements MassSpecObject {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

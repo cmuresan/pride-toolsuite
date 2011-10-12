@@ -5,17 +5,25 @@ package uk.ac.ebi.pride.data.core;
 import java.util.List;
 
 /**
- * ToDo: document this class
+ * Search Modification is the variable or fixed modification defined in the Identification Search
+ * by the user. This modification is close related with the parameters of the Spectrum protocol
+ * Identification.
+ *
  * <p/>
  * User: yperez
  * Date: 05/08/11
  * Time: 16:04
  */
 public class SearchModification {
+
     private List<CvParam> cvParamList         = null;
+
     private boolean       fixedMod            = false;
+
     private double        massDelta           = 0.0;
+
     private List<String>  specificityList     = null;
+
     private List<CvParam> specificityRuleList = null;
 
     public SearchModification(boolean fixedMod, double massDelta, List<String> specificityList,
@@ -69,4 +77,4 @@ public class SearchModification {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

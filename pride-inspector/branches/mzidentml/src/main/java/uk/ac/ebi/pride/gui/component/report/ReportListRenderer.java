@@ -11,7 +11,7 @@ import java.awt.*;
  * User: rwang
  * Date: 03/06/11
  * Time: 15:03
- * To change this template use File | Settings | File Templates.
+
  */
 public class ReportListRenderer implements ListCellRenderer{
     private static final int DEFAULT_HEIGHT = 30;

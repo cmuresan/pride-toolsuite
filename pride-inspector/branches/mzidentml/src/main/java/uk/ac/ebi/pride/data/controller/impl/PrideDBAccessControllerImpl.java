@@ -391,7 +391,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     if (completionTime != null) {
                         userParams.add(new UserParam(COMPLETION_TIME, null, completionTime, null, null, null));
                     }
-                    softwares.add(new Software(new ParamGroup(cvParams, userParams), null, rs.getString("software_name"), rs.getString("software_version")));
+                    softwares.add(new Software(new ParamGroup(cvParams, userParams), null, rs.getString("software_name"), null,null,null,rs.getString("software_version")));
                 }
 
             } catch (SQLException e) {
@@ -1288,7 +1288,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     peptides = getPeptideIdentification(connection, rs.getInt("identification_id"), rs.getInt("pi.experiment_id"));
                     spectrum = getSpectrumByRef(connection, rs.getString("spectrum_ref"));
                     String className = rs.getString("classname");
-                    DBSequence dbSequence = new DBSequence(null, null, -1, accession, new SearchDataBase(rs.getString("search_database"), rs.getString("database_version")), null, rs.getString("accession_version"), rs.getString("splice_isoform"));
+                    DBSequence dbSequence = new DBSequence(null, null, null, -1, accession, new SearchDataBase(rs.getString("search_database"), rs.getString("database_version")), null, rs.getString("accession_version"), rs.getString("splice_isoform"));
                     Map<PeptideEvidence, List<Peptide>> peptideEvidences = DataAccessUtilities.getPeptideEvidence(peptides);
                     if ("uk.ac.ebi.pride.rdbms.ojb.model.core.TwoDimensionalIdentificationBean".equals(className)) {
                         gel = getPeptideGel(connection, rs.getInt("gel_id"), rs.getDouble("x_coordinate"), rs.getDouble("y_coordinate"), rs.getDouble("molecular_weight"), rs.getDouble("pi"));

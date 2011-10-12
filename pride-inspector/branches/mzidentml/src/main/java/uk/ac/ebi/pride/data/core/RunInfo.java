@@ -8,6 +8,7 @@ package uk.ac.ebi.pride.data.core;
  * Time: 10:23
  */
 public class RunInfo extends ParamGroup {
+
     private MzGraphList chromatogramList = null;
 
     /**
@@ -30,6 +31,7 @@ public class RunInfo extends ParamGroup {
      * Reference to the sample used to obtain these spectrum or chromatograms list.
      */
     private Sample      sampleRef    = null;
+
     private MzGraphList spectrumList = null;
 
     /**
@@ -108,4 +110,4 @@ public class RunInfo extends ParamGroup {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

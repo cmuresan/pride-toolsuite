@@ -12,7 +12,9 @@ import java.util.List;
  * Time: 10:16
  */
 public class MzGraphList {
+
     private DataProcessing defaultDataProcessingRef = null;
+
     private List<MzGraph>  mzGraphList              = null;
 
     public MzGraphList(DataProcessing defaultDataProcessingRef, List<MzGraph> mzGraphList) {
@@ -38,4 +40,4 @@ public class MzGraphList {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

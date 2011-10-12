@@ -45,4 +45,4 @@ public class Chromatogram extends MzGraph {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

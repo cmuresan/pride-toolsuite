@@ -63,7 +63,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     /**
      * Construct a data access controller using a given access mode
      *
-     * @param mode
+     * @param mode DataAccessMode (CACHE_ONLY or CACHE_AND_SOURCE)
      */
     public CachedDataAccessController(DataAccessMode mode) {
         this(null, mode);
@@ -845,6 +845,11 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return list;
     }
 
+    /**
+     * Get the Experiment Meta Data
+     * @return ExperimentMetaData
+     * @throws DataAccessException
+     */
     @Override
     public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
         Collection<ExperimentMetaData> metaDatas = (Collection<ExperimentMetaData>) cache.get(CacheCategory.EXPERIMENT_METADATA);
@@ -855,6 +860,11 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return null;
     }
 
+    /**
+     * Get Identification Meta Data
+     * @return IdentificationMetaData
+     * @throws DataAccessException
+     */
     @Override
     public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
         Collection<IdentificationMetaData> metaDatas = (Collection<IdentificationMetaData>) cache.get(CacheCategory.IDENTIFICATION_METADATA);
@@ -864,6 +874,11 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return null;
     }
 
+    /**
+     * Get MzGraph Meta Data. The Meta Data at the Spectras Level
+     * @return MzGraphMetaData
+     * @throws DataAccessException
+     */
     @Override
     public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
         Collection<MzGraphMetaData> metaDatas = (Collection<MzGraphMetaData>) cache.get(CacheCategory.MZGRAPH_METADATA);

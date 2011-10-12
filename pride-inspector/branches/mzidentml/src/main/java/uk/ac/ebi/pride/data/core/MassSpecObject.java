@@ -15,4 +15,4 @@ import java.io.Serializable;
 public interface MassSpecObject extends Serializable {}
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

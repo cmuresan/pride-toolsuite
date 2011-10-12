@@ -70,4 +70,4 @@ public class ScanSetting extends ParamGroup {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

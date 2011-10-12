@@ -277,4 +277,4 @@ public class Peptide extends IdentifiableParamGroup {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

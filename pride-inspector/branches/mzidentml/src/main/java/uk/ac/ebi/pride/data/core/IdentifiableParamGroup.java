@@ -29,8 +29,8 @@ public class IdentifiableParamGroup extends ParamGroup {
     /**
      * Constructor without param groups
      *
-     * @param id
-     * @param name
+     * @param id ID
+     * @param name Name
      */
     public IdentifiableParamGroup(Comparable id, String name) {
         super(null);
@@ -38,38 +38,61 @@ public class IdentifiableParamGroup extends ParamGroup {
         this.name = name;
     }
 
-    public IdentifiableParamGroup(List<CvParam> cvParams, Comparable id, String name) {
-        this(cvParams, null, id, name);
-    }
-
+    /**
+     * Constructor using the ParamGroup (CvTerms and User Params)
+     *
+     * @param params ParamGroup (CvTerms and User Params)
+     * @param id ID
+     * @param name Name
+     */
     public IdentifiableParamGroup(ParamGroup params, Comparable id, String name) {
         super(params);
         this.id   = id;
         this.name = name;
     }
 
-    public IdentifiableParamGroup(List<CvParam> cvParams, List<UserParam> userParams, Comparable id, String name) {
-        super(cvParams, userParams);
-        this.id   = id;
-        this.name = name;
-    }
-
+    /**
+     * Get Name
+     *
+     * @return Name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set Name
+     *
+     * @param name Name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Get Comparable ID
+     *
+     * @return Comparable
+     */
     public Comparable getId() {
         return id;
     }
 
+    /**
+     * Set Comparable ID
+     *
+     * @param id ID
+     */
     public void setId(Comparable id) {
         this.id = id;
     }
 
+    /**
+     * Get true if the input object is equal to the current object
+     *
+     * @param o IdentifiableParamGroup Objetc
+     * @return boolean
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -97,6 +120,11 @@ public class IdentifiableParamGroup extends ParamGroup {
         return true;
     }
 
+    /**
+     * Get an Integer number (hashcode of the Object)
+     *
+     * @return hashcode
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();
@@ -113,4 +141,4 @@ public class IdentifiableParamGroup extends ParamGroup {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

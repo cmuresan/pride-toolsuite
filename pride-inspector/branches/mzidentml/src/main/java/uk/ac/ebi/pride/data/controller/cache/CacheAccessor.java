@@ -74,9 +74,7 @@ public class CacheAccessor implements Cache {
             // must do this check here
             if (key == null) {
                 String errMsg = "Key cannot be null (key: " + key + ")";
-
                 logger.error(errMsg);
-
                 throw new IllegalArgumentException(errMsg);
             }
 
@@ -293,4 +291,4 @@ public class CacheAccessor implements Cache {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

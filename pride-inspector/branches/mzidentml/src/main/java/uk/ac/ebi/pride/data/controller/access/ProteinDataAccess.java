@@ -162,4 +162,4 @@ public interface ProteinDataAccess {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

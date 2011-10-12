@@ -16,4 +16,4 @@ package uk.ac.ebi.pride.data.controller;
 public enum DataAccessMode { CACHE_ONLY, CACHE_AND_SOURCE, }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

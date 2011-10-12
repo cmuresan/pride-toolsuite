@@ -1,17 +1,25 @@
 package uk.ac.ebi.pride.data.core;
 
 /**
- * ToDo: document this class
+ * Substitution Modification is a Modification where One amino acid is replaced by another amino acid.
+ * For example Deamidation Post-Translational Modification is a Substitution Modification where the amino
+ * acid Asparagine (N) is replaced by Aspartic Acid (D)
+ *
  * <p/>
  * User: yperez
  * Date: 04/08/11
  * Time: 14:18
  */
 public class SubstitutionModification {
+
     private double avgMassDelta          = 0.0;
+
     private int    location              = -1;
+
     private double monoisotopicMassDelta = 0.0;
+
     private String originalResidue       = null;
+
     private String replacementResidue    = null;
 
     public SubstitutionModification(String originalResidue, String replacementResidue, int location,
@@ -65,4 +73,4 @@ public class SubstitutionModification {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

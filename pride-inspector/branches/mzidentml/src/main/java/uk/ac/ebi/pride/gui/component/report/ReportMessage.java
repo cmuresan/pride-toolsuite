@@ -5,7 +5,7 @@ package uk.ac.ebi.pride.gui.component.report;
  * User: rwang
  * Date: 25/05/11
  * Time: 12:28
- * To change this template use File | Settings | File Templates.
+
  */
 public class ReportMessage {
     public static enum Type {SUCCESS, WARNING, ERROR, PLAIN}

@@ -16,8 +16,8 @@ public abstract class AbstractContact extends IdentifiableParamGroup {
     /**
      * To create an instance just with Id and Name
      *
-     * @param id
-     * @param name
+     * @param id ID of the AbstractContact
+     * @param name Name of the AbstractContact
      */
     public AbstractContact(Comparable id, String name) {
         super(id, name);
@@ -26,9 +26,9 @@ public abstract class AbstractContact extends IdentifiableParamGroup {
     /**
      * To create an Instance with Id, name and ParamGroup
      *
-     * @param params
-     * @param id
-     * @param name
+     * @param params ParamGroup (Cv Terms and User Parameters)
+     * @param id     ID of the AbstractContact
+     * @param name   Name of the AbstractContact
      */
     protected AbstractContact(ParamGroup params, Comparable id, String name) {
         super(params, id, name);
@@ -36,4 +36,4 @@ public abstract class AbstractContact extends IdentifiableParamGroup {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

@@ -18,7 +18,7 @@ import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
 
 /**
- * ToDo: document this class
+ * MzMLIdentMLUnmarshallerAdaptor provides a list of convenient methods to access mzidentML files
  * <p/>
  * User: yperez
  * Date: 23/09/11
@@ -181,4 +181,4 @@ public class MzIdentMLUnmarshallerAdaptor {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

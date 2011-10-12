@@ -16,7 +16,6 @@ import java.awt.*;
  * User: rwang
  * Date: 25/05/11
  * Time: 11:21
- * To change this template use File | Settings | File Templates.
  */
 public class LaunchMenuViewer extends JPanel {
 

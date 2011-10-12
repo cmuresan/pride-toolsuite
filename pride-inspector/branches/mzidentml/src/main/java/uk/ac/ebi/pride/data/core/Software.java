@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
 /**
- * ToDo: too many constructors
  * <p/>
  * Software details.
  * <p/>
@@ -38,77 +37,50 @@ public class Software extends IdentifiableParamGroup {
     private String version = null;
 
     /**
-     * Pride Software Object
+     * Constructor of Software Object without ParamGroup
      *
-     * @param id
-     * @param name
-     * @param version
-     * @param customization or comments
+     * @param id ID
+     * @param name Name
+     * @param contact Contact (Person or Organization)
+     * @param customization Customization Description
+     * @param uri UrI of the Software
+     * @param version Version
      */
-    public Software(Comparable id, String name, String version, String customization) {
+    public Software(Comparable id,
+                    String name,
+                    AbstractContact contact,
+                    String customization,
+                    String uri,
+                    String version) {
         super(id, name);
-        this.version       = version;
+        this.contact = contact;
         this.customization = customization;
-    }
-
-    public Software(ParamGroup params, Comparable id, String name, String version) {
-        super(params, id, name);
-        this.version       = version;
-        this.uri           = null;
-        this.contact       = null;
-        this.customization = null;
+        this.uri = uri;
+        this.version = version;
     }
 
     /**
-     * Pride Software Object
+     * Constructor with (CvParam List and User Param List) Information
      *
-     * @param params
-     * @param id
-     * @param name
-     * @param version
-     * @param customization
+     * @param params ParamGroup (CvParam List and User Param List)
+     * @param id ID
+     * @param name Name
+     * @param contact Contact (Person or Organization)
+     * @param customization Customization Description
+     * @param uri UrI of the Software
+     * @param version Version
      */
-    public Software(ParamGroup params, Comparable id, String name, String version, String customization) {
+    public Software(ParamGroup params,
+                    Comparable id,
+                    String name,
+                    AbstractContact contact,
+                    String customization,
+                    String uri, String version) {
         super(params, id, name);
-        this.version       = version;
+        this.contact = contact;
         this.customization = customization;
-    }
-
-    /**
-     * @param id
-     * @param name
-     * @param version
-     * @param uri
-     * @param contact
-     * @param customization
-     */
-    public Software(Comparable id, String name, String version, String uri, AbstractContact contact,
-                    String customization) {
-        super(id, name);
-        this.version       = version;
-        this.uri           = uri;
-        this.contact       = contact;
-        this.customization = customization;
-    }
-
-    /**
-     * mZIdentMl Software Object
-     *
-     * @param params
-     * @param id
-     * @param name
-     * @param version
-     * @param uri
-     * @param contact
-     * @param customization or comments
-     */
-    public Software(ParamGroup params, Comparable id, String name, String version, String uri, AbstractContact contact,
-                    String customization) {
-        super(params, id, name);
-        this.version       = version;
-        this.uri           = uri;
-        this.contact       = contact;
-        this.customization = customization;
+        this.uri = uri;
+        this.version = version;
     }
 
     public String getUri() {
@@ -145,4 +117,4 @@ public class Software extends IdentifiableParamGroup {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

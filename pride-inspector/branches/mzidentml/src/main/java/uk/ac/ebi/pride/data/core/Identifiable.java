@@ -46,4 +46,4 @@ public class Identifiable implements MassSpecObject {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

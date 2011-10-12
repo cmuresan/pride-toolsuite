@@ -33,4 +33,4 @@ public class SpectraData extends ExternalData {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

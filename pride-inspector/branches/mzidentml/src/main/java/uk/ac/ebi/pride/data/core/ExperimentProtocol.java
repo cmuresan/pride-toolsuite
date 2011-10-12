@@ -25,28 +25,20 @@ public class ExperimentProtocol extends IdentifiableParamGroup {
     /**
      * Pride Protocol Constructor
      *
-     * @param id
-     * @param name
+     * @param id  ID Experiment Protocol
+     * @param name Name of the Experiment Protocol
      */
     public ExperimentProtocol(Comparable id, String name) {
         super(id, name);
     }
 
     /**
-     * @param id
-     * @param name
-     * @param protocolSteps
-     */
-    public ExperimentProtocol(Comparable id, String name, List<ParamGroup> protocolSteps) {
-        super(id, name);
-        this.protocolSteps = protocolSteps;
-    }
-
-    /**
-     * @param params
-     * @param id
-     * @param name
-     * @param protocolSteps
+     * Constructor of the Experiment Protcol
+     *
+     * @param params ParamGroup
+     * @param id     ID
+     * @param name   Name
+     * @param protocolSteps A list of ParamGroup that define the current Experiment Protocol
      */
     public ExperimentProtocol(ParamGroup params, String id, String name, List<ParamGroup> protocolSteps) {
         super(params, id, name);
@@ -54,7 +46,9 @@ public class ExperimentProtocol extends IdentifiableParamGroup {
     }
 
     /**
-     * @return
+     * Get Experiment Protocol Steps. A list of ParamGroup
+     *
+     * @return List of ParamGroup
      */
     public List<ParamGroup> getProtocolSteps() {
         return protocolSteps;
@@ -63,7 +57,7 @@ public class ExperimentProtocol extends IdentifiableParamGroup {
     /**
      * Set the CvTerms for Each Step of the Pride Experiment
      *
-     * @param protocolSteps
+     * @param protocolSteps A list of ParamGroup that define the different steps in the Protocol
      */
     public void setProtocolSteps(List<ParamGroup> protocolSteps) {
         this.protocolSteps = protocolSteps;
@@ -71,4 +65,4 @@ public class ExperimentProtocol extends IdentifiableParamGroup {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
  * User: yperez
  * Date: 15/09/11
  * Time: 17:20
- * To change this template use File | Settings | File Templates.
  */
 public class PrideDataBaseControllerImplTest {
 

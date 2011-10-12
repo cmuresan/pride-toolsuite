@@ -12,6 +12,7 @@ package uk.ac.ebi.pride.data.core;
  * Date: 19/08/11
  * Time: 15:40
  */
+
 public class ContactRole {
 
     /**
@@ -25,30 +26,46 @@ public class ContactRole {
     CvParam role = null;
 
     /**
-     * @param contact
-     * @param role
+     * Constructor for a Contact Role
+     * @param contact An AbstractContact (Person or Organization)
+     * @param role The role of the AbstractContact (CvTerms)
      */
     public ContactRole(AbstractContact contact, CvParam role) {
         this.contact = contact;
         this.role    = role;
     }
 
+    /**
+     * Get an AbstractContact
+     * @return AbstractContact
+     */
     public AbstractContact getContact() {
         return contact;
     }
 
+    /**
+     * Set and AbstractContact
+     * @param contact AbstractContact
+     */
     public void setContact(AbstractContact contact) {
         this.contact = contact;
     }
 
+    /**
+     * Get the role of the AbstractContact
+     * @return CvParam
+     */
     public CvParam getRole() {
         return role;
     }
 
+    /**
+     * Set a role for an AbstractContact
+     * @param role CvParam
+     */
     public void setRole(CvParam role) {
         this.role = role;
     }
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

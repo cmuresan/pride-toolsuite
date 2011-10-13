@@ -51,8 +51,6 @@ public class FragmentIon extends ParamGroup {
      */
     private double massError = -1;
 
-    // todo: incorrect default values
-
     /**
      * m/z value
      */

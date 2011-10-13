@@ -35,11 +35,11 @@ public class PeptideTabPane extends PrideInspectorTabPane {
     /**
      * resize weight for inner split pane
      */
-    private static final double INNER_SPLIT_PANE_RESIZE_WEIGHT = 0.5;
+    private static final double INNER_SPLIT_PANE_RESIZE_WEIGHT = 0.6;
     /**
      * resize weight for outer split pane
      */
-    private static final double OUTER_SPLIT_PANE_RESIZE_WEIGHT = 0.7;
+    private static final double OUTER_SPLIT_PANE_RESIZE_WEIGHT = 0.6;
     /**
      * the size of the divider for split pane
      */
@@ -134,7 +134,6 @@ public class PeptideTabPane extends PrideInspectorTabPane {
 
         // peptide selection pane
         peptidePTMPane = new PeptidePTMPane(controller);
-        peptidePTMPane.setMinimumSize(new Dimension(200, 150));
         innerSplitPane.setTopComponent(peptidePTMPane);
 
 

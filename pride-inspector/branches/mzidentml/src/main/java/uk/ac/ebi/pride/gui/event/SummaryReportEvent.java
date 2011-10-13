@@ -25,23 +25,15 @@ public class SummaryReportEvent extends AbstractEventServiceEvent {
      */
     public SummaryReportEvent(Object source, DataAccessController controller, ReportMessage msg) {
         super(source);
-        setDataSource(controller);
-        setMessage(msg);
+        this.dataSource = controller;
+        this.message = msg;
     }
 
     public DataAccessController getDataSource() {
         return dataSource;
     }
 
-    public void setDataSource(DataAccessController dataSource) {
-        this.dataSource = dataSource;
-    }
-
     public ReportMessage getMessage() {
         return message;
-    }
-
-    public void setMessage(ReportMessage message) {
-        this.message = message;
     }
 }

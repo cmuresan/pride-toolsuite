@@ -106,6 +106,8 @@ public class MzDataVizPane extends DataAccessControllerPane implements EventBusS
         public void onEvent(SpectrumEvent event) {
             MzDataVizPane.this.removeAll();
             MzDataVizPane.this.add(spectrumViewPane);
+            MzDataVizPane.this.revalidate();
+            MzDataVizPane.this.repaint();
         }
     }
 
@@ -115,6 +117,8 @@ public class MzDataVizPane extends DataAccessControllerPane implements EventBusS
         public void onEvent(ChromatogramEvent event) {
             MzDataVizPane.this.removeAll();
             MzDataVizPane.this.add(chromaViewPane);
+            MzDataVizPane.this.revalidate();
+            MzDataVizPane.this.repaint();
         }
     }
 }

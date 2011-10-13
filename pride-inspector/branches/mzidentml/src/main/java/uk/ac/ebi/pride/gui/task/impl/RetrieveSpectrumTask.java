@@ -14,6 +14,7 @@ import uk.ac.ebi.pride.gui.component.message.MessageType;
  * User: rwang
  * Date: 10/06/11
  * Time: 15:34
+ * To change this template use File | Settings | File Templates.
  */
 public class RetrieveSpectrumTask extends AbstractDataAccessTask<Spectrum, Void> {
     private static final Logger logger = LoggerFactory.getLogger(RetrievePeptideTask.class);

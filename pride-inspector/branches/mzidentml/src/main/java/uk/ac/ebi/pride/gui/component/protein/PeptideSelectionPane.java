@@ -151,6 +151,15 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
         this.add(scrollPane, BorderLayout.CENTER);
     }
 
+    /**
+     * Get peptide table
+     *
+     * @return  peptide table
+     */
+    public JTable getPeptideTable() {
+        return pepTable;
+    }
+
     @Override
     public void subscribeToEventBus(EventService eventBus) {
         // get local event bus
@@ -282,7 +291,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
                     Collection<Modification> mods = controller.getPTMs(identId, peptideId);
                     for (Modification mod : mods) {
                         // get accession
-                        String accession = mod.getId().toString();
+                        String accession = mod.getAccession();
                         Map<String, Double> aminoAcidMap = modMap.get(accession);
                         if (aminoAcidMap == null) {
                             aminoAcidMap = new HashMap<String, Double>();
@@ -295,9 +304,9 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
                             String aminoAcid = String.valueOf(seq.charAt(location - 1));
                             // get delta mass (monoisotopic)
                             double massDelta = -1;
-                            java.util.List<Double> massDeltas = mod.getMonoisotopicMassDelta();
+                            java.util.List<Double> massDeltas = mod.getMonoMassDeltas();
                             if (massDeltas != null && !massDeltas.isEmpty()) {
-                                massDelta = mod.getMonoisotopicMassDelta().get(0);
+                                massDelta = mod.getMonoMassDeltas().get(0);
                             }
                             aminoAcidMap.put(aminoAcid, massDelta);
                         }

@@ -1,21 +1,19 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
 import org.bushe.swing.event.EventBus;
+import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.startup.WelcomePane;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.ShowWelcomePaneEvent;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 
-import javax.swing.*;
-import java.awt.*;
-
 /**
  * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 01/06/11
  * Time: 11:38
-
+ * To change this template use File | Settings | File Templates.
  */
 public class OpenWelcomePaneTask extends TaskAdapter<Void, Void> {
     private static final String DEFAULT_TASK_TITLE = "Open welcome panel";
@@ -40,12 +38,7 @@ public class OpenWelcomePaneTask extends TaskAdapter<Void, Void> {
                 }
             };
 
-
-            if (SwingUtilities.isEventDispatchThread()) {
-                code.run();
-            } else {
-                EventQueue.invokeAndWait(code);
-            }
+            EDTUtils.invokeAndWait(code);
         }
 
         EventBus.publish(new ShowWelcomePaneEvent(null));

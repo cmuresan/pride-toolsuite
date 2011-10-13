@@ -1,13 +1,8 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
-import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
-import uk.ac.ebi.pride.gui.desktop.Desktop;
-import uk.ac.ebi.pride.gui.task.Task;
-import uk.ac.ebi.pride.gui.task.impl.RetrieveSequenceCoverageTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.mol.IsoelectricPointUtils;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import java.util.ArrayList;
@@ -34,12 +29,14 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
         PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
         PROTEIN_STATUS("Status", "Status Of The Protein Accession"),
         PROTEIN_SEQUENCE_COVERAGE("Coverage", "Protein Sequence Coverage"),
+        THEORITICAL_ISOELECTRIC_POINT_COLUMN("pI", "Theoritical isoelectric point"),
         IDENTIFICATION_SCORE_COLUMN("Score", "PRIDE Protein Score"),
         IDENTIFICATION_THRESHOLD_COLUMN("Threshold", "PRIDE Protein Threshold"),
         NUMBER_OF_PEPTIDES("# Peptides", "Number of Peptides"),
         NUMBER_OF_UNIQUE_PEPTIDES("# Distinct Peptides", "Number of Distinct Peptides"),
         NUMBER_OF_PTMS("# PTMs", "Number of PTMs"),
-        IDENTIFICATION_ID("Identification ID", "Identification ID");
+        IDENTIFICATION_ID("Identification ID", "Identification ID"),
+        ADDITIONAL("More", "Additional Details");
 
         private final String header;
         private final String toolTip;
@@ -56,19 +53,6 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
         public String getToolTip() {
             return toolTip;
         }
-    }
-
-    /**
-     * the data access controller related to this model
-     */
-    private DataAccessController controller;
-
-    public AbstractProteinTableModel() {
-        this(null);
-    }
-
-    public AbstractProteinTableModel(DataAccessController controller) {
-        this.controller = controller;
     }
 
     @Override
@@ -95,7 +79,7 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
      *
      * @param newData protein detail map
      */
-    protected void addProteinDetailData(Object newData) {
+    void addProteinDetailData(Object newData) {
         // column index for mapped protein accession column
         int mappedAccIndex = getColumnIndex(TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
         // column index for protein name
@@ -104,6 +88,8 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
         int identStatusIndex = getColumnIndex(TableHeader.PROTEIN_STATUS.getHeader());
         // column index for protein identification id
         int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
+        // column index for isoelectric point
+        int isoelectricIndex = getColumnIndex(TableHeader.THEORITICAL_ISOELECTRIC_POINT_COLUMN.getHeader());
 
         // get a map of protein accession to protein details
         Map<String, Protein> proteins = (Map<String, Protein>) newData;
@@ -122,6 +108,9 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
                     content.set(identNameIndex, protein.getName());
                     // set protein status
                     content.set(identStatusIndex, protein.getStatus().name());
+                    // set isoelectric point
+                    String sequence = protein.getSequenceString();
+                    content.set(isoelectricIndex, sequence == null ? null : IsoelectricPointUtils.calculate(sequence));
                     // add protein identification id to the list
                     identIds.add((Comparable) content.get(identIdIndex));
                     // notify a row change
@@ -129,12 +118,6 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
                 }
             }
         }
-
-        // retrieve protein sequence coverages
-        Task task = new RetrieveSequenceCoverageTask(identIds, controller);
-        task.addTaskListener(this);
-        task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-        Desktop.getInstance().getDesktopContext().addTask(task);
     }
 
     /**
@@ -142,7 +125,7 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
      *
      * @param newData sequence coverage map
      */
-    protected void addSequenceCoverageData(Object newData) {
+    void addSequenceCoverageData(Object newData) {
         // column index for protein identification id
         int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
         // column index for protein sequence coverage

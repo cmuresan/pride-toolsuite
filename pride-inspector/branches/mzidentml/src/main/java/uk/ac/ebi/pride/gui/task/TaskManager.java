@@ -261,7 +261,7 @@ public class TaskManager extends PropertyChangeHelper {
      */
     public void cancelTasksByOwner(Object owner) {
         for (Task task : tasks) {
-            task.removeOwner(owner);
+            task.removeByOwner(owner);
         }
     }
 

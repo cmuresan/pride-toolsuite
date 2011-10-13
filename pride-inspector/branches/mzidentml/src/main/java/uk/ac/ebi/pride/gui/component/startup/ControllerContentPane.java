@@ -13,7 +13,7 @@ import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
 import uk.ac.ebi.pride.gui.component.protein.ProteinTabPane;
 import uk.ac.ebi.pride.gui.component.quant.QuantTabPane;
-import uk.ac.ebi.pride.gui.component.report.ReportMessage;
+import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.table.model.ProgressiveListTableModel;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
@@ -49,6 +49,13 @@ public class ControllerContentPane extends DataAccessControllerPane {
     private int peptideTabIndex;
     private int quantTabIndex;
     private int chartTabIndex;
+
+    private boolean metaDataTabEnabled;
+    private boolean mzDataTabEnabled;
+    private boolean proteinTabEnabled;
+    private boolean peptideTabEnabled;
+    private boolean quantTabEnabled;
+    private boolean chartTabEnabled;
 
     /**
      * This indicates the index for the latest tab
@@ -91,6 +98,9 @@ public class ControllerContentPane extends DataAccessControllerPane {
         try {
             Collection<DataAccessController.ContentCategory> categories = controller.getContentCategories();
 
+            // metadata tab is always visible
+            metaDataTabEnabled = true;
+
             if (!categories.isEmpty()) {
                 if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)
                         || categories.contains(DataAccessController.ContentCategory.CHROMATOGRAM)) {
@@ -98,49 +108,59 @@ public class ControllerContentPane extends DataAccessControllerPane {
                     boolean hasChromatogram = controller.hasChromatogram();
 
                     contentTabPane.setEnabledAt(mzDataTabIndex, hasSpectrum || hasChromatogram);
+                    mzDataTabEnabled = hasSpectrum || hasChromatogram;
 
                     // check spectrum
                     if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)) {
                         if (hasSpectrum) {
-                            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Spectra found", "This data source contains spectra")));
+                            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Spectra found", "This data source contains spectra")));
                         } else {
-                            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Spectra not found", "This data source does not contain spectra")));
+                            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.ERROR, "Spectra not found", "This data source does not contain spectra")));
                         }
                     }
 
                     // check chromatogram
                     if (categories.contains(DataAccessController.ContentCategory.CHROMATOGRAM)) {
                         if (hasChromatogram) {
-                            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Chromatograms found", "This data source contains Chromatograms")));
+                            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Chromatograms found", "This data source contains Chromatograms")));
                         } else {
-                            EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Chromatograms not found", "This data source does not contain Chromatograms")));
+                            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.ERROR, "Chromatograms not found", "This data source does not contain Chromatograms")));
                         }
                     }
                 }
 
                 if (categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
-                    boolean hasProtein = controller.hasIdentification();
-                    contentTabPane.setEnabledAt(proteinTabIndex, hasProtein);
-                    if (hasProtein) {
-                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Protein identifications found", "This data source contains protein identifications")));
+                    proteinTabEnabled = controller.hasIdentification();
+                    contentTabPane.setEnabledAt(proteinTabIndex, proteinTabEnabled);
+                    if (proteinTabEnabled) {
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Proteins found", "This data source contains protein identifications")));
                     } else {
-                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Protein identifications not found", "This data source does not contain protein identifications")));
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.ERROR, "Proteins not found", "This data source does not contain protein identifications")));
                     }
                 }
 
                 if (categories.contains(DataAccessController.ContentCategory.PEPTIDE)) {
-                    boolean hasPeptide = controller.hasPeptide();
-                    contentTabPane.setEnabledAt(peptideTabIndex, hasPeptide);
-                    if (hasPeptide) {
-                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.SUCCESS, "Peptides found", "This data source contains peptides")));
+                    peptideTabEnabled = controller.hasPeptide();
+                    contentTabPane.setEnabledAt(peptideTabIndex, peptideTabEnabled);
+                    if (peptideTabEnabled) {
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Peptides found", "This data source contains peptides")));
                     } else {
-                        EventBus.publish(new SummaryReportEvent(this, controller, new ReportMessage(ReportMessage.Type.ERROR, "Peptides not found", "This data source does not contain peptides")));
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.ERROR, "Peptides not found", "This data source does not contain peptides")));
+                    }
+                }
+
+                if (categories.contains(DataAccessController.ContentCategory.QUANTITATION)) {
+                    quantTabEnabled = controller.hasQuantData();
+                    contentTabPane.setEnabledAt(quantTabIndex, quantTabEnabled);
+                    if (quantTabEnabled) {
+                        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Quantifications found", "This data source contains quantitative data")));
                     }
                 }
 
                 if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)
                         || categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
-                    contentTabPane.setEnabledAt(chartTabIndex, controller.hasSpectrum() || controller.hasIdentification());
+                    chartTabEnabled = controller.hasSpectrum() || controller.hasIdentification();
+                    contentTabPane.setEnabledAt(chartTabIndex, chartTabEnabled);
                 }
 
                 contentTabPane.setSelectedIndex(metaDataTabIndex);
@@ -188,16 +208,12 @@ public class ControllerContentPane extends DataAccessControllerPane {
                 mzDataTab.populate();
             }
 
-            // quant data tabe
-            try {
-                if (categories.contains(DataAccessController.ContentCategory.QUANTITATION) && controller.hasQuantData()) {
-                    quantTabPane = new QuantTabPane(controller, this);
-                    quantTabIndex = indexCount++;
-                    contentTabPane.insertTab(quantTabPane.getTitle(), quantTabPane.getIcon(), quantTabPane, quantTabPane.getTitle(), quantTabIndex);
-                    quantTabPane.populate();
-                }
-            } catch (DataAccessException e) {
-                logger.error("Failed to create quantitative tab pane");
+            // quant data tab
+            if (categories.contains(DataAccessController.ContentCategory.QUANTITATION)) {
+                quantTabPane = new QuantTabPane(controller, this);
+                quantTabIndex = indexCount++;
+                contentTabPane.insertTab(quantTabPane.getTitle(), quantTabPane.getIcon(), quantTabPane, quantTabPane.getTitle(), quantTabIndex);
+                quantTabPane.populate();
             }
 
             // chart tab
@@ -237,12 +253,16 @@ public class ControllerContentPane extends DataAccessControllerPane {
             retrieveTask.addTaskListener((ProgressiveListTableModel) peptideTable.getModel());
 
             // register quantitative tab as a task listener
-            if (quantTabPane != null) {
-                retrieveTask.addTaskListener(quantTabPane);
+            try {
+                if (controller.hasQuantData()) {
+                    retrieveTask.addTaskListener(quantTabPane);
 
-                // register quantitative protein table model as a task listener
-                JTable quantProteinTable = quantTabPane.getQuantProteinSelectionPane().getQuantProteinTable();
-                retrieveTask.addTaskListener((ProgressiveListTableModel) quantProteinTable.getModel());
+                    // register quantitative protein table model as a task listener
+                    JTable quantProteinTable = quantTabPane.getQuantProteinSelectionPane().getQuantProteinTable();
+                    retrieveTask.addTaskListener((ProgressiveListTableModel) quantProteinTable.getModel());
+                }
+            } catch (DataAccessException e) {
+                logger.error("Failed to check the availability of quantitative data", e);
             }
 
             // start the task
@@ -313,7 +333,8 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
     /**
      * Retrun quantitative tab pane
-     * @return  QuantTabPane    quantitative tab pane
+     *
+     * @return QuantTabPane    quantitative tab pane
      */
     public QuantTabPane getQuantTabPane() {
         return quantTabPane;
@@ -357,6 +378,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
     /**
      * Tab index of the quantitative tab
+     *
      * @return
      */
     public int getQuantTabIndex() {
@@ -370,5 +392,53 @@ public class ControllerContentPane extends DataAccessControllerPane {
      */
     public int getChartTabIndex() {
         return chartTabIndex;
+    }
+
+    /**
+     * Whether meta data tab is enabled
+     * @return  boolean true means enabled
+     */
+    public boolean isMetaDataTabEnabled() {
+        return metaDataTabEnabled;
+    }
+
+    /**
+     * Whether mz data tab is enabled
+     * @return  boolean true means enabled
+     */
+    public boolean isMzDataTabEnabled() {
+        return mzDataTabEnabled;
+    }
+
+    /**
+     * Whether protein tab is enabled
+     * @return  boolean true means enabled
+     */
+    public boolean isProteinTabEnabled() {
+        return proteinTabEnabled;
+    }
+
+    /**
+     * Whether peptide tab is enabled
+     * @return  boolean true means enabled
+     */
+    public boolean isPeptideTabEnabled() {
+        return peptideTabEnabled;
+    }
+
+    /**
+     * Whether quantitative data tab is enabled
+     * @return  boolean true means enabled
+     */
+    public boolean isQuantTabEnabled() {
+        return quantTabEnabled;
+    }
+
+    /**
+     * Whether chart tab is enabled
+     * @return  boolean true means enabled
+     */
+    public boolean isChartTabEnabled() {
+        return chartTabEnabled;
     }
 }

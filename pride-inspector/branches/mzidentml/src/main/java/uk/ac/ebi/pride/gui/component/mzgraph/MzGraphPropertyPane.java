@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.component.mzgraph;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.MzGraph;
 import uk.ac.ebi.pride.data.core.Parameter;
+import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.component.metadata.CollapsiblePane;
 
 import javax.swing.*;
@@ -14,7 +15,6 @@ import java.beans.PropertyChangeListener;
 import java.util.Collection;
 
 /**
- *
  * User: rwang
  * Date: 21-Apr-2010
  * Time: 10:17:44
@@ -40,7 +40,7 @@ public class MzGraphPropertyPane extends JPanel implements PropertyChangeListene
         comboBox = new JComboBox();
         PropertyPaneModel.CategoryComboBoxModel comboBoxDataModel = dataModel.getCategoryComboBoxModel();
         comboBox.setModel(comboBoxDataModel);
-        
+
         // create property pane
         PropertyContentPane propPane = new PropertyContentPane();
         comboBoxDataModel.addPropertyChangeListener(propPane);
@@ -62,13 +62,13 @@ public class MzGraphPropertyPane extends JPanel implements PropertyChangeListene
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (DataAccessController.MZGRAPH_TYPE.equals(evt.getPropertyName())) {
-            dataModel.setMzGraph((MzGraph)evt.getNewValue());
+            dataModel.setMzGraph((MzGraph) evt.getNewValue());
         }
     }
 
     private class PropertyContentPane extends JPanel implements ActionListener, PropertyChangeListener {
 
-        private  JPanel contentPane = null;
+        private JPanel contentPane = null;
         private JScrollPane scrollPane = null;
 
         private PropertyContentPane() {
@@ -92,12 +92,12 @@ public class MzGraphPropertyPane extends JPanel implements PropertyChangeListene
 
         public void updateContentPane() {
             contentPane.removeAll();
-            
+
             // get category
-            String category = (String)comboBox.getSelectedItem();
+            String category = (String) comboBox.getSelectedItem();
             if (category == null && comboBox.getModel().getSize() > 0) {
                 comboBox.setSelectedIndex(0);
-                category = (String)comboBox.getSelectedItem();
+                category = (String) comboBox.getSelectedItem();
             }
 
             if (category != null) {
@@ -113,24 +113,20 @@ public class MzGraphPropertyPane extends JPanel implements PropertyChangeListene
                         contentPane.add(collapsePane);
                     }
                 }
-                contentPane.revalidate();
-                contentPane.repaint();
             }
+            this.revalidate();
+            this.repaint();
         }
 
         public void etdUpdate() {
-            if (SwingUtilities.isEventDispatchThread()) {
-                updateContentPane();
-            } else {
-                Runnable eventDispatcher = new Runnable() {
-                    public void run() {
-                        updateContentPane();
-                    }
-                };
-                EventQueue.invokeLater(eventDispatcher);
-            }
+            Runnable eventDispatcher = new Runnable() {
+                public void run() {
+                    updateContentPane();
+                }
+            };
+            EDTUtils.invokeLater(eventDispatcher);
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             etdUpdate();

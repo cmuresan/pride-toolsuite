@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.gui.component.table.listener;
 
-import uk.ac.ebi.pride.gui.utils.EDTUtils;
+import uk.ac.ebi.pride.gui.EDTUtils;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;

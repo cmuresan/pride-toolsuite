@@ -7,6 +7,8 @@ import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
+import uk.ac.ebi.pride.gui.utils.Constants;
+import uk.ac.ebi.pride.mol.IsoelectricPointUtils;
 import uk.ac.ebi.pride.mol.MoleculeUtilities;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 import uk.ac.ebi.pride.tools.utils.AccessionResolver;
@@ -41,8 +43,7 @@ public class TableDataRetriever {
         // peptide sequence with modifications
         List<Modification> mods = new ArrayList<Modification>(controller.getPTMs(identId, peptideId));
         String sequence = controller.getPeptideSequence(identId, peptideId);
-        Peptide peptide = new Peptide(null,null,-1,-1,0.0,0.0,new PeptideSequence(null,null,sequence,mods),-1,false,null,null,null,null,null,null,null);
-        content.add(peptide);
+        content.add(new Peptide(null, sequence, 0, 0, mods, null, null));
 
         // start and end position
         int start = controller.getPeptideSequenceStart(identId, peptideId);
@@ -52,11 +53,11 @@ public class TableDataRetriever {
         // Original Protein Accession
         String protAcc = controller.getProteinAccession(identId);
         String protAccVersion = controller.getProteinAccessionVersion(identId);
-        String database = controller.getSearchDatabase(identId).getName();
+        String database = controller.getSearchDatabase(identId);
         content.add(protAcc);
 
         // Mapped Protein Accession
-        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database);
+        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
         String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
         content.add(mappedProtAcc);
 
@@ -100,16 +101,16 @@ public class TableDataRetriever {
             double mz = controller.getPrecursorMz(specId);
             List<Double> ptmMasses = new ArrayList<Double>();
             for (Modification mod : mods) {
-                List<Double> monoMasses = mod.getMonoisotopicMassDelta();
+                List<Double> monoMasses = mod.getMonoMassDeltas();
                 if (monoMasses != null && !monoMasses.isEmpty()) {
                     ptmMasses.add(monoMasses.get(0));
                 }
             }
             Double deltaMass = MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
-            content.add(deltaMass == null ? null : NumberUtilities.scaleDouble(deltaMass, 4));
+            content.add(deltaMass == null ? null : NumberUtilities.scaleDouble(deltaMass, 2));
 
             // precursor m/z
-            content.add(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 4));
+            content.add(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 2));
         } else {
             content.add(null);
             content.add(null);
@@ -137,14 +138,14 @@ public class TableDataRetriever {
             if (massDiffs == null) {
                 massDiffs = new ArrayList<Double>();
                 locationMap.put(location, massDiffs);
-                List<Double> md = mod.getMonoisotopicMassDelta();
+                List<Double> md = mod.getMonoMassDeltas();
                 if (md != null && !md.isEmpty()) {
                     massDiffs.add(md.get(0));
                 }
             }
 
             // store the accession
-            String accession = mod.getId().toString();
+            String accession = mod.getAccession();
             Integer cnt = accessionCntMap.get(accession);
             cnt = cnt == null ? 1 : cnt + 1;
             accessionCntMap.put(accession, cnt);
@@ -224,6 +225,9 @@ public class TableDataRetriever {
         // peptide index
         content.add(peptideId);
 
+        // additional details
+        content.add(identId + Constants.COMMA + peptideId);
+
         return content;
     }
 
@@ -242,11 +246,11 @@ public class TableDataRetriever {
         // Original Protein Accession
         String protAcc = controller.getProteinAccession(identId);
         String protAccVersion = controller.getProteinAccessionVersion(identId);
-        String database = controller.getSearchDatabase(identId).getName();
+        String database = controller.getSearchDatabase(identId);
         content.add(protAcc);
 
         // Mapped Protein Accession
-        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database);
+        AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
         String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
         content.add(mappedProtAcc);
 
@@ -266,6 +270,18 @@ public class TableDataRetriever {
         Double coverage = PrideInspectorCacheManager.getInstance().getSequenceCoverage(controller.getUid(), identId);
         content.add(coverage);
 
+        // isoelectric points
+        if (protein != null) {
+            String sequence = protein.getSequenceString();
+            if (sequence != null) {
+                content.add(IsoelectricPointUtils.calculate(protein.getSequenceString()));
+            } else {
+                content.add(null);
+            }
+        } else {
+            content.add(null);
+        }
+
         // Score
         double score = controller.getIdentificationScore(identId);
         content.add(score == -1 ? null : score);
@@ -284,6 +300,9 @@ public class TableDataRetriever {
         content.add(controller.getNumberOfPTMs(identId));
 
         // unique id for identification
+        content.add(identId);
+
+        // additional details is always null
         content.add(identId);
 
         return content;
@@ -448,11 +467,11 @@ public class TableDataRetriever {
     /**
      * Retrieve a row for identification quantitative table
      *
-     * @param controller data access controller
-     * @param identId    identification id
-     * @param referenceSubSampleIndex   reference sub sample index
+     * @param controller              data access controller
+     * @param identId                 identification id
+     * @param referenceSubSampleIndex reference sub sample index
      * @return List<Object> a list of results
-     * @throws DataAccessException  data access exception
+     * @throws DataAccessException data access exception
      */
     public static List<Object> getProteinQuantTableRow(DataAccessController controller,
                                                        Comparable identId,
@@ -464,12 +483,13 @@ public class TableDataRetriever {
 
     /**
      * Retrieve a row for peptide quantitative table
-     * @param controller    data access controller
-     * @param identId   identification id
-     * @param peptideId peptide id
-     * @param referenceSubSampleIndex   reference sub sample index
-     * @return  List<Object>    a list of results
-     * @throws DataAccessException  data access exception
+     *
+     * @param controller              data access controller
+     * @param identId                 identification id
+     * @param peptideId               peptide id
+     * @param referenceSubSampleIndex reference sub sample index
+     * @return List<Object>    a list of results
+     * @throws DataAccessException data access exception
      */
     public static List<Object> getPeptideQuantTableRow(DataAccessController controller,
                                                        Comparable identId,
@@ -483,7 +503,7 @@ public class TableDataRetriever {
      * Get table header for quantitative data
      *
      * @param controller     data access controller
-     * @param quant quantitative data
+     * @param quant          quantitative data
      * @param refSampleIndex reference sub sample index
      * @param isProteinIdent whether it is protein identification or peptide identification
      * @return List<String>    a list of quantitative table headers
@@ -509,9 +529,10 @@ public class TableDataRetriever {
 
     /**
      * Get label free quantitative data
-     * @param methods   label free methods
-     * @param quant quantitative object
-     * @return  List<Double>    a list of label free results
+     *
+     * @param methods label free methods
+     * @param quant   quantitative object
+     * @return List<Double>    a list of label free results
      */
     private static List<Double> getLabelFreeQuantData(Collection<QuantCvTermReference> methods, Quantitation quant) {
         return quant.getLabelFreeResults(methods);
@@ -519,13 +540,14 @@ public class TableDataRetriever {
 
     /**
      * Get isotope labeling quantitative data
-     * @param methods   isotople labelling methods
-     * @param controller    data access controller
-     * @param quant quantitative object
-     * @param refSampleIndex    reference sub sample index
-     * @param isProteinIdent    whether is protein identification or peptide identification
-     * @return  List<Object>    a list of results
-     * @throws DataAccessException  data access exception
+     *
+     * @param methods        isotople labelling methods
+     * @param controller     data access controller
+     * @param quant          quantitative object
+     * @param refSampleIndex reference sub sample index
+     * @param isProteinIdent whether is protein identification or peptide identification
+     * @return List<Object>    a list of results
+     * @throws DataAccessException data access exception
      */
     private static List<Object> getIsotopeLabellingQuantData(Collection<QuantCvTermReference> methods, DataAccessController controller,
                                                              Quantitation quant, int refSampleIndex, boolean isProteinIdent) throws DataAccessException {
@@ -560,9 +582,10 @@ public class TableDataRetriever {
 
     /**
      * Get total intensities
-     * @param sample    quantitative sample
-     * @param quant quantitative data
-     * @return  List<Object>    a list of total intensities
+     *
+     * @param sample quantitative sample
+     * @param quant  quantitative data
+     * @return List<Object>    a list of total intensities
      */
     private static List<Object> getTotalIntensityQuantData(QuantitativeSample sample, Quantitation quant) {
         List<Object> contents = new ArrayList<Object>();
@@ -580,10 +603,11 @@ public class TableDataRetriever {
 
     /**
      * Get reagent quantitative data
-     * @param sample    quantitative sample
-     * @param quant quantitative data
-     * @param refSampleIndex    reference sub sample index
-     * @return  List<Object>    a list of reagent ratio data
+     *
+     * @param sample         quantitative sample
+     * @param quant          quantitative data
+     * @param refSampleIndex reference sub sample index
+     * @return List<Object>    a list of reagent ratio data
      */
     private static List<Object> getReagentRatioQuantData(QuantitativeSample sample,
                                                          Quantitation quant,

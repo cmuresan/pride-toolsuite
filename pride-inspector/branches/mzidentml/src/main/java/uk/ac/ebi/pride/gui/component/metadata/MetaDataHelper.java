@@ -22,24 +22,24 @@ public class MetaDataHelper {
      * @param metaData
      * @return
      */
-    public static Collection<Parameter> getGeneralContent(ExperimentMetaData metaData) {
+    public static Collection<Parameter> getGeneralContent(MetaData metaData) {
         Collection<Parameter> params = new ArrayList<Parameter>();
 
         // id
         addUserParam(params, Constants.ID, metaData.getId());
 
         // accession
-        addUserParam(params, Constants.ACCESSION, metaData.getId().toString());
+        addUserParam(params, Constants.ACCESSION, metaData.getAccession());
 
         // version
         addUserParam(params, Constants.VERSION, metaData.getVersion());
 
         // add experiment related meta data
-        if (metaData instanceof ExperimentMetaData) {
-            addUserParam(params, Constants.TITLE, ((ExperimentMetaData) metaData).getName());
-            addUserParam(params, Constants.SHORT_LABEL, ((ExperimentMetaData) metaData).getShortLabel());
-            addUserParam(params, Constants.CREATION_DATE, ((ExperimentMetaData) metaData).getCreationDate());
-            addUserParam(params, Constants.PUBLIC_DATE, ((ExperimentMetaData) metaData).getPublicDate());
+        if (metaData instanceof Experiment) {
+            addUserParam(params, Constants.TITLE, ((Experiment) metaData).getTitle());
+            addUserParam(params, Constants.SHORT_LABEL, ((Experiment) metaData).getShortLabel());
+            addUserParam(params, Constants.CREATION_DATE, ((Experiment) metaData).getCreationDate());
+            addUserParam(params, Constants.PUBLIC_DATE, ((Experiment) metaData).getPublicDate());
         }
 
         // additional parameters
@@ -150,7 +150,7 @@ public class MetaDataHelper {
         }
         // source
         // source order
-        InstrumentComponent source = instrument.getSource().get(0);
+        InstrumentComponent source = instrument.getSource();
         if (source != null) {
             String sourcePrefix = Constants.SOURCE + " - ";
             //addUserParam(params, sourcePrefix + SharedLabels.ORDER, source.getOrder());
@@ -158,7 +158,7 @@ public class MetaDataHelper {
         }
 
         // analyzer
-        InstrumentComponent analyzer = instrument.getAnalyzer().get(0);
+        InstrumentComponent analyzer = instrument.getAnalyzer();
         if (analyzer != null) {
             String analyzerPrefix = Constants.ANALYZER + " - ";
             //addUserParam(params, analyzerPrefix + SharedLabels.ORDER, analyzer.getOrder());
@@ -166,7 +166,7 @@ public class MetaDataHelper {
         }
 
         // source
-        InstrumentComponent detector = instrument.getDetector().get(0);
+        InstrumentComponent detector = instrument.getDetector();
         if (detector != null) {
             String detectorPrefix = Constants.DETECTOR + " - ";
             //addUserParam(params, detectorPrefix + SharedLabels.ORDER, detector.getOrder());
@@ -212,9 +212,7 @@ public class MetaDataHelper {
         // name
         addUserParam(params, Constants.NAME, protocol.getName());
         // protocol steps
-        //List<ParamGroup> steps = protocol.getProtocolSteps();
-        //Todo: How we are working now with protocols
-        List<ParamGroup> steps =null;
+        List<ParamGroup> steps = protocol.getProtocolSteps();
         if (steps != null) {
             for (int i = 0; i < steps.size(); i++) {
                 String prefix = Constants.PROTOCOL_STEP + " " + (i + 1) + " - ";

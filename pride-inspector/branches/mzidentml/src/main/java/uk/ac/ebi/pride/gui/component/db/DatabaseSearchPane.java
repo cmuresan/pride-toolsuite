@@ -9,6 +9,7 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.DatabaseSearchTableModel;
+import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
 import uk.ac.ebi.pride.gui.search.Criteria;
 import uk.ac.ebi.pride.gui.search.SearchEntry;
@@ -41,6 +42,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
     private JTextField searchTextField;
     private JButton searchButton;
     private JCheckBox searchResultCheckBox;
+    private JButton resetSearchButton;
     private JTable searchResultTable;
     private JPanel resultSummaryPanel;
     private JButton closeButton;
@@ -80,6 +82,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
         searchTextField = new JTextField();
         searchButton = new JButton();
         searchResultCheckBox = new JCheckBox();
+        resetSearchButton = GUIUtilities.createLabelLikeButton(null, "Reset");
         JPanel panel4 = new JPanel();
         JScrollPane scrollPane1 = new JScrollPane();
         searchResultTable = TableFactory.createDatabaseSearchTable();
@@ -101,7 +104,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
 
         //-------- help button -----------
         helpButton.setToolTipText("Help on " + PANE_TITLE);
-        CSH.setHelpIDString(helpButton, "help.browse.mzgraph");
+        CSH.setHelpIDString(helpButton, "help.pridedb");
         helpButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
         helpButtonPanel.add(helpButton);
         helpButtonPanel.setPreferredSize(new Dimension(200, 30));
@@ -152,6 +155,18 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                     searchResultCheckBox.setOpaque(false);
                     searchResultCheckBox.setEnabled(false);
 
+                    //---- resetSearchButton ----
+                    resetSearchButton.setForeground(Color.blue);
+                    resetSearchButton.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            searchResultCheckBox.setSelected(false);
+                            searchTextField.setText(null);
+                            search();
+                        }
+                    });
+
                     GroupLayout panel3Layout = new GroupLayout(panel3);
                     panel3.setLayout(panel3Layout);
                     panel3Layout.setHorizontalGroup(
@@ -162,30 +177,34 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                                             .addPreferredGap(LayoutStyle.RELATED)
                                             .add(categoryComboBox, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
                                             .add(12, 12, 12)
-                                            .add(criteriaComboBox, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
+                                            .add(criteriaComboBox, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(LayoutStyle.RELATED)
-                                            .add(searchTextField, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(LayoutStyle.RELATED)
-                                            .add(searchButton)
-                                            .addContainerGap())
-                                    .add(GroupLayout.TRAILING, panel3Layout.createSequentialGroup()
-                                            .addContainerGap(451, Short.MAX_VALUE)
-                                            .add(searchResultCheckBox, GroupLayout.PREFERRED_SIZE, 180, GroupLayout.PREFERRED_SIZE)
+                                            .add(panel3Layout.createParallelGroup()
+                                                    .add(GroupLayout.TRAILING, panel3Layout.createSequentialGroup()
+                                                            .add(searchResultCheckBox, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
+                                                            .add(10, 10, 10)
+                                                            .add(resetSearchButton))
+                                                    .add(panel3Layout.createSequentialGroup()
+                                                            .add(searchTextField, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
+                                                            .addPreferredGap(LayoutStyle.RELATED)
+                                                            .add(searchButton)))
                                             .addContainerGap())
                     );
                     panel3Layout.setVerticalGroup(
-                            panel3Layout.createParallelGroup()
-                                    .add(GroupLayout.TRAILING, panel3Layout.createSequentialGroup()
-                                            .addContainerGap()
-                                            .add(panel3Layout.createParallelGroup(GroupLayout.BASELINE)
-                                                    .add(searchButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .add(searchTextField)
-                                                    .add(categoryComboBox)
-                                                    .add(searchLabel)
-                                                    .add(criteriaComboBox))
-                                            .add(9, 9, 9)
-                                            .add(searchResultCheckBox)
-                                            .addContainerGap())
+                        panel3Layout.createParallelGroup()
+                            .add(GroupLayout.TRAILING, panel3Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .add(panel3Layout.createParallelGroup(GroupLayout.BASELINE)
+                                    .add(searchButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(searchTextField)
+                                    .add(categoryComboBox)
+                                    .add(searchLabel)
+                                    .add(criteriaComboBox))
+                                .addPreferredGap(LayoutStyle.UNRELATED)
+                                .add(panel3Layout.createParallelGroup(GroupLayout.BASELINE)
+                                    .add(resetSearchButton)
+                                    .add(searchResultCheckBox))
+                                .add(18, 18, 18))
                     );
                 }
 
@@ -286,6 +305,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                 searchResultLabel.setIcon(icon);
                 break;
             case COMPLETE:
+                searchResultTable.setRowSorter(new NumberTableRowSorter(searchResultTable.getModel()));
                 searchResultLabel.setIcon(null);
                 break;
             case RESULT:

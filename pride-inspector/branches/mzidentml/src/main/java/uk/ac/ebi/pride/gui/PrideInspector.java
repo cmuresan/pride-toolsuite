@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui;
 
+import com.jtattoo.plaf.mint.MintLookAndFeel;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Properties;
 
 /**
  * This is the main class to call to run PRIDE GUI
@@ -166,7 +168,6 @@ public class PrideInspector extends Desktop {
         try {
             context.loadSystemProps(this.getClass().getClassLoader().getResourceAsStream("prop/gui.prop"));
             context.loadSystemProps(this.getClass().getClassLoader().getResourceAsStream("prop/settings.prop"));
-            context.loadSystemProps(this.getClass().getClassLoader().getResourceAsStream("prop/database.prop"));
         } catch (IOException e) {
             logger.error("Error while loading properties", e);
         }
@@ -195,6 +196,11 @@ public class PrideInspector extends Desktop {
         mainFrame.setIconImage(icon.getImage());
         try {
 //            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            Properties props = new Properties();
+
+            props.put("logoString", "PRIDE");
+
+            MintLookAndFeel.setTheme(props);
             UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
 
         } catch (Exception e) {
@@ -239,7 +245,7 @@ public class PrideInspector extends Desktop {
 
         // close
         String closeDesc = context.getProperty("close.source.title");
-        String closeAllDesc = context.getProperty("close.all.soruce.title");
+        String closeAllDesc = context.getProperty("close.all.source.title");
         PrideAction closeAction = new CloseControllerAction(closeDesc, null);
         PrideAction closeAllAction = new CloseAllControllersAction(closeAllDesc, null);
 
@@ -262,6 +268,10 @@ public class PrideInspector extends Desktop {
         }
         PrideAction openMzMLExampleAction = new OpenFileAction(openMzMLExampleDesc, null, mzMLFiles);
         openMzMLExampleAction.setEnabled(mzMLExampleFile != null && mzMLExampleFile.exists());
+
+        // try more samples
+        String openMoreExampleDesc = context.getProperty("open.more.example.title");
+        PrideAction openMoreExampleAction = new OpenUrlAction(openMoreExampleDesc, null, context.getProperty("pride.inspector.download.website"));
 
         // help
         Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
@@ -289,6 +299,10 @@ public class PrideInspector extends Desktop {
         //export
         String exportDesc = context.getProperty("export.title");
         PrideAction exportAction = new ExportSpectrumAction(exportDesc, null);
+
+        // export pride xml
+        String exportPrideXml = context.getProperty("export.pride.xml.title");
+        PrideAction exportPrideXmlAction = new ExportPrideXmlAction(exportPrideXml, null);
 
         // export identification
         String exportIdentDesc = context.getProperty("export.identification.title");
@@ -337,13 +351,15 @@ public class PrideInspector extends Desktop {
 
         // try samples
         JMenu trySampleMenu = MenuFactory.createMenu("Examples",
-                openPrideXmlExampleAction, openMzMLExampleAction);
+                openPrideXmlExampleAction, openMzMLExampleAction, openMoreExampleAction);
         trySampleMenu.setMnemonic(java.awt.event.KeyEvent.VK_X);
         menuBar.add(trySampleMenu);
 
         // export menu
         JMenu exportMenu = MenuFactory.createMenu("Export",
-                exportAction, exportSpectrumDescAction, exportIdentAction, exportIdentDescAction, exportPeptideAction);
+                exportPrideXmlAction, exportAction,
+                exportSpectrumDescAction, exportIdentAction,
+                exportIdentDescAction, exportPeptideAction);
         exportMenu.setMnemonic(java.awt.event.KeyEvent.VK_E);
         menuBar.add(exportMenu);
 

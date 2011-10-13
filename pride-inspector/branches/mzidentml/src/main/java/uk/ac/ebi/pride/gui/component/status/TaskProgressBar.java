@@ -1,11 +1,11 @@
 package uk.ac.ebi.pride.gui.component.status;
 
+import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.List;
 
 /**
@@ -74,17 +74,12 @@ public class TaskProgressBar extends JProgressBar implements TaskListener<Object
      * @param msg message.
      */
     private void updateMessage(final String msg) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            this.setString(msg);
-        } else {
-            Runnable eventDispatcher = new Runnable() {
-                public void run() {
-                    TaskProgressBar.this.setString(msg);
-                }
-            };
-            EventQueue.invokeLater(eventDispatcher);
-        }
-
+        Runnable eventDispatcher = new Runnable() {
+            public void run() {
+                TaskProgressBar.this.setString(msg);
+            }
+        };
+        EDTUtils.invokeLater(eventDispatcher);
     }
 
 }

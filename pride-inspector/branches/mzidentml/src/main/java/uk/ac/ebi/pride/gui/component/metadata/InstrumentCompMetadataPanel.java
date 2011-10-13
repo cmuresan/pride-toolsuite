@@ -25,7 +25,7 @@ public class InstrumentCompMetadataPanel extends JPanel {
 
     private void populateComponents(InstrumentConfiguration instrument) {
         // ion source
-        InstrumentComponent ionSource = instrument.getSource().get(0);
+        InstrumentComponent ionSource = instrument.getSource();
         if (ionSource != null) {
             ionSourceTable = TableFactory.createParamTable(ionSource);
         } else {
@@ -33,7 +33,7 @@ public class InstrumentCompMetadataPanel extends JPanel {
         }
 
         // analyzers
-        InstrumentComponent analyzer = instrument.getAnalyzer().get(0);
+        InstrumentComponent analyzer = instrument.getAnalyzer();
         if (analyzer != null) {
             analyzerTable = TableFactory.createParamTable(analyzer);
         } else {
@@ -41,7 +41,7 @@ public class InstrumentCompMetadataPanel extends JPanel {
         }
 
         // detector
-        InstrumentComponent detector = instrument.getDetector().get(0);
+        InstrumentComponent detector = instrument.getDetector();
         if (analyzer != null) {
             detectorTable = TableFactory.createParamTable(detector);
         } else {

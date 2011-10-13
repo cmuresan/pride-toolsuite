@@ -5,6 +5,7 @@ import org.bushe.swing.event.annotation.EventSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.CentralContentPaneLockEvent;
@@ -13,7 +14,6 @@ import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ShowWelcomePaneEvent;
 import uk.ac.ebi.pride.gui.task.impl.OpenWelcomePaneTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.EDTUtils;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
@@ -99,8 +99,12 @@ public class CentralContentPane extends JPanel {
                 setLocked(false);
             }
         } else {
-            ControllerContentPane dataContentPane = getControllerContentPane(controller);
-            setContentPane(dataContentPane);
+            if (controller == null) {
+                showWelcomePane();
+            } else {
+                ControllerContentPane dataContentPane = getControllerContentPane(controller);
+                setContentPane(dataContentPane);
+            }
             setLocked(false);
         }
     }
@@ -122,10 +126,8 @@ public class CentralContentPane extends JPanel {
 
     @EventSubscriber(eventClass = DatabaseSearchEvent.class)
     public void onDatabaseSearchEvent(DatabaseSearchEvent evt) {
-        // todo: why this is called many times?
-        logger.debug("Database search pane is to be displayed");
-
         if (DatabaseSearchEvent.Status.SHOW.equals(evt.getStatus())) {
+            logger.debug("Database search pane is to be displayed, event status: " + evt.getStatus().name());
             // show database search pane
             setContentPane(inspectorContext.getDatabaseSearchPane());
             // lock the central content panel
@@ -133,6 +135,7 @@ public class CentralContentPane extends JPanel {
             // deselect the foreground data access controller
             inspectorContext.setForegroundDataAccessController(null);
         } else if (DatabaseSearchEvent.Status.HIDE.equals(evt.getStatus())) {
+            logger.debug("Database search pane is to be replaced by the welcome pane, event status: " + evt.getStatus().name());
             // hide database search pane
             showWelcomePane();
         }

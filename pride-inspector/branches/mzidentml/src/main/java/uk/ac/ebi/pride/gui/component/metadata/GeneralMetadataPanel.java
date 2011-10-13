@@ -2,16 +2,24 @@ package uk.ac.ebi.pride.gui.component.metadata;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
+import org.jdesktop.swingx.table.TableColumnExt;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
+import uk.ac.ebi.pride.gui.component.table.listener.HyperLinkCellMouseClickListener;
+import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
+import uk.ac.ebi.pride.gui.component.table.model.ParamTableModel;
+import uk.ac.ebi.pride.gui.component.table.renderer.HyperLinkCellRenderer;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 /*
  * Created by JFormDesigner on Sat Jul 23 08:30:00 BST 2011
  */
@@ -22,7 +30,7 @@ import java.util.Set;
  */
 public class GeneralMetadataPanel extends JPanel {
 
-    public GeneralMetadataPanel(ExperimentMetaData metaData) {
+    public GeneralMetadataPanel(MetaData metaData) {
         populateComponents(metaData);
         initComponents();
     }
@@ -32,9 +40,9 @@ public class GeneralMetadataPanel extends JPanel {
      *
      * @param metaData meta data
      */
-    private void populateComponents(ExperimentMetaData metaData) {
+    private void populateComponents(MetaData metaData) {
         // get accession
-        String accession = (String) metaData.getId();
+        String accession = metaData.getAccession();
         accessionField = new JTextField();
         if (accession != null) {
             accessionField.setText(accession);
@@ -42,18 +50,21 @@ public class GeneralMetadataPanel extends JPanel {
 
         expTitleField = new JTextField();
         shortLabelField = new JTextField();
-        if (metaData instanceof ExperimentMetaData) {
+
+        if (metaData instanceof Experiment) {
             // get experiment title
-            String expTitle = ((ExperimentMetaData) metaData).getName();
+            String expTitle = ((Experiment) metaData).getTitle();
             if (expTitle != null) {
                 expTitleField.setText(expTitle);
             }
             // get short label
-            String sl = ((ExperimentMetaData) metaData).getShortLabel();
+            String sl = ((Experiment) metaData).getShortLabel();
             if (sl != null) {
                 shortLabelField.setText(sl);
             }
         }
+        expTitleField.setCaretPosition(0);
+        shortLabelField.setCaretPosition(0);
 
         projectField = new JTextField();
         expDescArea = new JTextPane();
@@ -69,6 +80,8 @@ public class GeneralMetadataPanel extends JPanel {
                 }
             }
         }
+        projectField.setCaretPosition(0);
+        expDescArea.setCaretPosition(0);
 
         // species field
         speciesField = new JTextField();
@@ -77,7 +90,7 @@ public class GeneralMetadataPanel extends JPanel {
         String tissues = "";
         Set<String> tissuesAcc = new HashSet<String>();
 
-        List<Sample> samples = metaData.getSampleList();
+        List<Sample> samples = metaData.getSamples();
         if (samples != null) {
             for (Sample sample : samples) {
                 for (CvParam cvParam : sample.getCvParams()) {
@@ -100,26 +113,28 @@ public class GeneralMetadataPanel extends JPanel {
         }
 
         speciesField.setText(species);
+        speciesField.setCaretPosition(0);
 
         // tissue field
         tissueField = new JTextField();
         tissueField.setText(tissues);
+        tissueField.setCaretPosition(0);
 
 
         // instrument field
         instrumentField = new JTextField();
         String instrumentStr = "";
-        /*List<InstrumentConfiguration> instruments = metaData.getInstrumentConfigurations();
+        List<InstrumentConfiguration> instruments = metaData.getInstrumentConfigurations();
         for (InstrumentConfiguration instrument : instruments) {
             instrumentStr += instrument.getId();
         }
         instrumentField.setText(instrumentStr);
-        */
-        //Todo: Changes to Compile Instrument Configurations
+        instrumentField.setCaretPosition(0);
+
 
         // reference
-        if (metaData instanceof ExperimentMetaData && ((ExperimentMetaData) metaData).getReferences() != null) {
-            List<Reference> references = ((ExperimentMetaData) metaData).getReferences();
+        if (metaData instanceof Experiment && ((Experiment) metaData).getReferences() != null) {
+            List<Reference> references = ((Experiment) metaData).getReferences();
             referenceTable = TableFactory.createReferenceTable(references);
         } else {
             referenceTable = TableFactory.createReferenceTable(new ArrayList<Reference>());
@@ -127,19 +142,18 @@ public class GeneralMetadataPanel extends JPanel {
 
         // contact
 
-        //List<ParamGroup> contacts = metaData.getFileDescription().getContacts();
-        List<ParamGroup> contacts  = null;
+        List<ParamGroup> contacts = metaData.getFileDescription().getContacts();
         contactTable = TableFactory.createContactTable(contacts == null ? new ArrayList<ParamGroup>() : contacts);
-        //Todo: Changes to Compile Contacts
 
         // additional params
         ParamGroup paramGroup = new ParamGroup();
         List<CvParam> cvParams = metaData.getCvParams();
         if (cvParams != null) {
-            for (CvParam cvParam : metaData.getCvParams()) {
+            for (CvParam cvParam : cvParams) {
+                String acc = cvParam.getAccession();
                 // get project name
-                if (!CvTermReference.PROJECT_NAME.getAccession().equals(cvParam.getAccession()) &&
-                        !CvTermReference.EXPERIMENT_DESCRIPTION.getAccession().equals(cvParam.getAccession())) {
+                if (!CvTermReference.PROJECT_NAME.getAccession().equals(acc) &&
+                        !CvTermReference.EXPERIMENT_DESCRIPTION.getAccession().equals(acc)) {
                     paramGroup.addCvParam(cvParam);
                 }
             }
@@ -147,10 +161,19 @@ public class GeneralMetadataPanel extends JPanel {
 
         List<UserParam> userParams = metaData.getUserParams();
         if (userParams != null) {
-            paramGroup.addUserParams(metaData.getUserParams());
+            paramGroup.addUserParams(userParams);
         }
 
         additionalTable = TableFactory.createParamTable(paramGroup);
+        // hyperlink ontology accessions
+        String valColumnHeader = ParamTableModel.TableHeader.VALUE.getHeader();
+        TableColumnExt accColumn = (TableColumnExt) additionalTable.getColumn(valColumnHeader);
+        accColumn.setCellRenderer(new HyperLinkCellRenderer(Pattern.compile("http.*"), true));
+
+        // add mouse motion listener
+        additionalTable.addMouseMotionListener(new TableCellMouseMotionListener(additionalTable, valColumnHeader));
+        additionalTable.addMouseListener(new HyperLinkCellMouseClickListener(additionalTable, valColumnHeader, null));
+
     }
 
     private void initComponents() {

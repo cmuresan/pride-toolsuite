@@ -1,9 +1,15 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
+import org.jdesktop.swingx.table.TableColumnExt;
+import org.jdesktop.swingx.table.TableColumnModelExt;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
+import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
+import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveProteinDetailTask;
@@ -12,6 +18,7 @@ import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.util.InternetChecker;
 
 import javax.swing.*;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -25,29 +32,26 @@ import java.util.List;
  * Date: 25/08/2011
  * Time: 10:29
  */
-public abstract class ExtraProteinDetailAction extends PrideAction {
-    /**
-     * JTable where protein name will be displayed
-     */
-    private JTable table;
-
+public class ExtraProteinDetailAction extends PrideAction {
     /**
      * data access controller
      */
     private DataAccessController controller;
+    /**
+     * Pride Inspector context
+     */
+    private PrideInspectorContext appContext;
 
     /**
      * Constructor
      *
-     * @param table      protein table
      * @param controller data access controller
      */
-    public ExtraProteinDetailAction(JTable table,
-                                    DataAccessController controller) {
+    public ExtraProteinDetailAction(DataAccessController controller) {
         super(Desktop.getInstance().getDesktopContext().getProperty("load.protein.detail.title"),
                 GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("load.protein.detail.small.icon")));
-        this.table = table;
         this.controller = controller;
+        this.appContext = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
     }
 
     @Override
@@ -65,26 +69,65 @@ public abstract class ExtraProteinDetailAction extends PrideAction {
     }
 
     /**
-     * Get the table where the details will be added
-     * @return  JTable  data table
-     */
-    public JTable getTable() {
-        return table;
-    }
-
-    /**
-     * Get data access controller who owns this task and action
-     * @return  DataAccessController    data access controller
-     */
-    public DataAccessController getController() {
-        return controller;
-    }
-
-    /**
      * Set hidden columns visible
      * such as: protein name and protein sequence coverage
      */
-    protected abstract void setColumnVisible();
+    private void setColumnVisible() {
+        // get the main GUI component for this controller
+        ControllerContentPane contentPane = (ControllerContentPane) appContext.getDataContentPane(controller);
+
+        // set protein tab table columns to visible
+        JTable proteinTable = contentPane.getProteinTabPane().getIdentificationPane().getIdentificationTable();
+        TableColumnModelExt showHideColModel = (TableColumnModelExt) proteinTable.getColumnModel();
+        List<TableColumn> columns = showHideColModel.getColumns(true);
+        for (TableColumn column : columns) {
+            Object header = column.getHeaderValue();
+            if (ProteinTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(header) ||
+                    ProteinTableModel.TableHeader.PROTEIN_STATUS.getHeader().equals(header) ||
+                    ProteinTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(header)) {
+                ((TableColumnExt) column).setVisible(true);
+            }
+        }
+
+        // set protein tab's peptide table columns to visible
+        JTable proteinPeptideTable = contentPane.getProteinTabPane().getPeptidePane().getPeptideTable();
+        showHideColModel = (TableColumnModelExt) proteinPeptideTable.getColumnModel();
+        columns = showHideColModel.getColumns(true);
+        for (TableColumn column : columns) {
+            Object header = column.getHeaderValue();
+            if (PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader().equals(header)) {
+                ((TableColumnExt) column).setVisible(true);
+            }
+        }
+
+        // set peptide tab table columns to visible
+        JTable peptideTable = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
+        showHideColModel = (TableColumnModelExt) peptideTable.getColumnModel();
+        columns = showHideColModel.getColumns(true);
+        for (TableColumn column : columns) {
+            Object header = column.getHeaderValue();
+            if (PeptideTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(header) ||
+                    PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader().equals(header)) {
+                ((TableColumnExt) column).setVisible(true);
+            }
+        }
+
+        // set quantitative tab table columns to visible
+        if (contentPane.isQuantTabEnabled()) {
+            JTable quantTable = contentPane.getQuantTabPane().getQuantProteinSelectionPane().getQuantProteinTable();
+            showHideColModel = (TableColumnModelExt) quantTable.getColumnModel();
+            columns = showHideColModel.getColumns(true);
+            for (TableColumn column : columns) {
+                Object header = column.getHeaderValue();
+                if (QuantProteinTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(header) ||
+                        QuantProteinTableModel.TableHeader.PROTEIN_STATUS.getHeader().equals(header) ||
+                        QuantProteinTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(header)) {
+                    ((TableColumnExt) column).setVisible(true);
+                }
+            }
+        }
+
+    }
 
     /**
      * Start the task to retrieve protein details
@@ -103,6 +146,11 @@ public abstract class ExtraProteinDetailAction extends PrideAction {
      * @return List<String>  a list of protein accessions.
      */
     private List<String> getMappedProteinAccs() {
+
+        // get the main GUI component for this controller
+        ControllerContentPane contentPane = (ControllerContentPane) appContext.getDataContentPane(controller);
+        JTable table = contentPane.getProteinTabPane().getIdentificationPane().getIdentificationTable();
+
         List<String> accs = new ArrayList<String>();
 
         int rowCount = table.getRowCount();
@@ -134,7 +182,7 @@ public abstract class ExtraProteinDetailAction extends PrideAction {
     private void runRetrieveProteinNameTask(Collection<String> mappedProteinAcces) {
 
         // create a task to retrieve protein name
-        RetrieveProteinDetailTask task = new RetrieveProteinDetailTask(mappedProteinAcces);
+        RetrieveProteinDetailTask task = new RetrieveProteinDetailTask(controller);
 
         // set task name, indicates which data access controller it is from
         task.setName(task.getName() + " (" + controller.getName() + ")");
@@ -142,11 +190,25 @@ public abstract class ExtraProteinDetailAction extends PrideAction {
         // assign this task to a controller
         task.addOwner(controller);
 
+        // get the main GUI component for this controller
+        ControllerContentPane contentPane = (ControllerContentPane) appContext.getDataContentPane(controller);
+
         // add table model as a task listener
+        // protein tab
+        JTable table = contentPane.getProteinTabPane().getIdentificationPane().getIdentificationTable();
         TableModel tableModel = table.getModel();
-        if (tableModel instanceof TaskListener) {
+        task.addTaskListener((TaskListener) tableModel);
+        // peptide tab
+        table = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
+        tableModel = table.getModel();
+        task.addTaskListener((TaskListener) tableModel);
+        // quant tab
+        if (contentPane.isQuantTabEnabled()) {
+            table = contentPane.getQuantTabPane().getQuantProteinSelectionPane().getQuantProteinTable();
+            tableModel = table.getModel();
             task.addTaskListener((TaskListener) tableModel);
         }
+
 
         // gui blocker
         task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));

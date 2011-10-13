@@ -76,7 +76,7 @@ public class ReferenceTableModel extends ListTableModel<Reference> {
                 String name = cv.getName();
                 String value = cv.getValue();
                 if (cv.getCvLookupID().toLowerCase().equals("pubmed") || cv.getName().toLowerCase().equals("pubmed")) {
-                    pubmed = (name != null && !"".equals(name)) ? name : value;
+                    pubmed = cv.getAccession();
                 } else if (cv.getCvLookupID().toLowerCase().equals("doi") || cv.getName().toLowerCase().equals("doi")) {
                     doi = (name != null && !"".equals(name)) ? name : value;
                 }

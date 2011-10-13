@@ -28,7 +28,7 @@ import static uk.ac.ebi.pride.gui.utils.Constants.MGF_FILE;
  * User: dani
  * Date: 23-Aug-2010
  * Time: 11:38:26
-
+ * To change this template use File | Settings | File Templates.
  */
 public class ExportSpectrumAction extends PrideAction {
     private static final Logger logger = LoggerFactory.getLogger(ExportSpectrumAction.class);

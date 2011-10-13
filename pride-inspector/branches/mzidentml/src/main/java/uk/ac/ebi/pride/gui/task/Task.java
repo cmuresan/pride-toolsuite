@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.gui.task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
@@ -122,7 +123,7 @@ public abstract class Task<T, V> extends SwingWorker<T, V> {
      *
      * @param owner owner of the task
      */
-    public void removeOwner(Object owner) {
+    public synchronized void removeByOwner(Object owner) {
         if (!isDone() && owners.contains(owner)) {
             this.cancel(true);
         }
@@ -338,27 +339,27 @@ public abstract class Task<T, V> extends SwingWorker<T, V> {
          */
         private void taskDone() {
             EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (isCancelled())
-                        cancelled();
-                    else
-                        succeed(get());
-                } catch (InterruptedException iex) {
-                    interrupted(iex);
-                } catch (ExecutionException eex) {
-                    failed(eex.getCause());
-                } finally {
-                    finished();
+                @Override
+                public void run() {
                     try {
-                        fireCompletionListeners();
+                        if (isCancelled())
+                            cancelled();
+                        else
+                            succeed(get());
+                    } catch (InterruptedException iex) {
+                        interrupted(iex);
+                    } catch (ExecutionException eex) {
+                        failed(eex.getCause());
                     } finally {
-                        firePropertyChange(COMPLETED_PROP, false, true);
+                        finished();
+                        try {
+                            fireCompletionListeners();
+                        } finally {
+                            firePropertyChange(COMPLETED_PROP, false, true);
+                        }
                     }
                 }
-            }
-        });
+            });
         }
     }
 }

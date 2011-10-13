@@ -29,9 +29,16 @@ import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.event.QuantSelectionEvent;
 import uk.ac.ebi.pride.gui.event.ReferenceSampleChangeEvent;
+import uk.ac.ebi.pride.gui.io.FileExtension;
+import uk.ac.ebi.pride.gui.io.SaveComponentUtils;
+import uk.ac.ebi.pride.gui.io.SaveImageDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -147,7 +154,94 @@ public class QuantProteinComparisonChart extends DataAccessControllerPane implem
 
         ChartPanel chartPanel = new ChartPanel(chart, false);
         chartPanel.setBorder(null);
+        chartPanel.setMouseZoomable(true, true);
+        chartPanel.setZoomAroundAnchor(true);
+        chartPanel.setDisplayToolTips(true);
+        // change the scaling of the chart
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        // get screen size
+        Dimension screenDim = toolkit.getScreenSize();
+        chartPanel.setMaximumDrawWidth(screenDim.width);
+        chartPanel.setMaximumDrawHeight(screenDim.height);
+        // not popup menu
+        chartPanel.setPopupMenu(createPopupMenu(chartPanel));
         this.add(chartPanel, BorderLayout.CENTER);
+    }
+
+    /**
+     * Create a popup menu for saving and zoom out the jfreechart
+     *
+     * @param chartPanel
+     * @return  JPopupMenu
+     */
+    private JPopupMenu createPopupMenu(final ChartPanel chartPanel) {
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem saveMenuItem = new JMenuItem("Save...");
+        saveMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SaveImageDialog saveImageDialog = new SaveImageDialog(new File(appContext.getOpenFilePath()), "");
+                int result = saveImageDialog.showSaveDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    String outputFile = saveImageDialog.getSelectedFile().getAbsolutePath();
+                    String extensionDesc = saveImageDialog.getFileFilter().getDescription();
+                    try {
+                        if (FileExtension.PDF.getExtensionDescription().equals(extensionDesc)) {
+                            if (!outputFile.endsWith(FileExtension.PDF.getExtension())) {
+                                outputFile += FileExtension.PDF.getExtension();
+                            }
+                            SaveComponentUtils.writeAsPDF(new File(outputFile), chartPanel);
+                        } else if (FileExtension.SVG.getExtensionDescription().equals(extensionDesc)) {
+                            if (!outputFile.endsWith(FileExtension.SVG.getExtension())) {
+                                outputFile += FileExtension.SVG.getExtension();
+                            }
+                            SaveComponentUtils.writeAsSVG(new File(outputFile), chartPanel);
+                        } else if (FileExtension.PNG.getExtensionDescription().equals(extensionDesc)) {
+                            if (!outputFile.endsWith(FileExtension.PNG.getExtension())) {
+                                outputFile += FileExtension.PNG.getExtension();
+                            }
+                            SaveComponentUtils.writeAsPNG(new File(outputFile), chartPanel);
+                        } else if (FileExtension.JPEG.getExtensionDescription().equals(extensionDesc)) {
+                            if (!outputFile.endsWith(FileExtension.JPEG.getExtension())) {
+                                outputFile += FileExtension.JPEG.getExtension();
+                            }
+                            SaveComponentUtils.writeAsJPEG(new File(outputFile), chartPanel);
+                        } else if (FileExtension.GIF.getExtensionDescription().equals(extensionDesc)) {
+                            if (!outputFile.endsWith(FileExtension.GIF.getExtension())) {
+                                outputFile += FileExtension.GIF.getExtension();
+                            }
+                            SaveComponentUtils.writeAsGIF(new File(outputFile), chartPanel);
+                        }
+                    } catch (IOException ioe) {
+                        logger.error("Failed to save the protein quantitative comparison chart");
+                    }
+                }
+            }
+        });
+        popupMenu.add(saveMenuItem);
+
+        JMenuItem printMenuItem = new JMenuItem("Print");
+        printMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chartPanel.createChartPrintJob();
+            }
+        });
+        popupMenu.add(printMenuItem);
+
+        popupMenu.add(new JSeparator());
+
+        JMenuItem zoomOutMenuItem = new JMenuItem("Zoom out");
+        zoomOutMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chartPanel.restoreAutoBounds();
+            }
+        });
+        popupMenu.add(zoomOutMenuItem);
+
+        return popupMenu;
     }
 
     @Override
@@ -276,35 +370,30 @@ public class QuantProteinComparisonChart extends DataAccessControllerPane implem
             if (referenceSampleIndex < 1) {
                 referenceSampleIndex = controller.getReferenceSubSampleIndex();
             }
-            // checks whether it contains isotope labelling methods
-            if (quantitation.hasIsotopeLabellingMethod()) {
-                // get reference reagent
-                Double referenceReagentResult = quantitation.getIsotopeLabellingResult(referenceSampleIndex);
-                CvParam referenceReagent = sample.getReagent(referenceSampleIndex);
-                // get short label for the reagent
-                for (int i = 1; i < QuantitativeSample.MAX_SUB_SAMPLE_SIZE; i++) {
-                    if (referenceSampleIndex != i) {
-                        CvParam reagent = sample.getReagent(i);
-                        if (reagent != null) {
-                            Double reagentResult = quantitation.getIsotopeLabellingResult(i);
-                            if (referenceReagentResult != null && reagentResult != null) {
-                                double value = reagentResult / referenceReagentResult;
-                                Comparable column = QuantCvTermReference.getReagentShortLabel(reagent)
-                                        + "/" + QuantCvTermReference.getReagentShortLabel(referenceReagent);
-                                dataset.addValue(value, proteinAcc, id, column);
-                                java.util.List<Comparable> columns = idMapping.get(id);
-                                if (columns == null) {
-                                    columns = new ArrayList<Comparable>();
-                                    idMapping.put(id, columns);
-                                }
-                                columns.add(column);
-                            }
+            // get reference reagent
+            Double referenceReagentResult = quantitation.getIsotopeLabellingResult(referenceSampleIndex);
+            CvParam referenceReagent = sample.getReagent(referenceSampleIndex);
+            // get short label for the reagent
+            for (int i = 1; i < QuantitativeSample.MAX_SUB_SAMPLE_SIZE; i++) {
+                if (referenceSampleIndex != i) {
+                    CvParam reagent = sample.getReagent(i);
+                    if (reagent != null) {
+                        Double reagentResult = quantitation.getIsotopeLabellingResult(i);
+                        double value = (referenceReagentResult == null || reagentResult == null) ? 0 : (reagentResult / referenceReagentResult);
+                        Comparable column = QuantCvTermReference.getReagentShortLabel(reagent)
+                                + "/" + QuantCvTermReference.getReagentShortLabel(referenceReagent);
+                        dataset.addValue(value, proteinAcc, id, column);
+                        java.util.List<Comparable> columns = idMapping.get(id);
+                        if (columns == null) {
+                            columns = new ArrayList<Comparable>();
+                            idMapping.put(id, columns);
                         }
+                        columns.add(column);
                     }
                 }
             }
         } catch (DataAccessException e) {
-            logger.error("Failed to retrieve quantitation data", e);
+            logger.error("Failed to retrieve quantitative data", e);
         }
     }
 

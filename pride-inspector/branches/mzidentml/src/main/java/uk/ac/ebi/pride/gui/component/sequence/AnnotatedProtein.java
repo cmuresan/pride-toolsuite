@@ -285,11 +285,8 @@ public class AnnotatedProtein extends Protein {
 
         AnnotatedProtein that = (AnnotatedProtein) o;
 
-        if (!annotations.equals(that.annotations)) return false;
-        if (selectedAnnotation != null ? !selectedAnnotation.equals(that.selectedAnnotation) : that.selectedAnnotation != null)
-            return false;
+        return annotations.equals(that.annotations) && !(selectedAnnotation != null ? !selectedAnnotation.equals(that.selectedAnnotation) : that.selectedAnnotation != null);
 
-        return true;
     }
 
     @Override

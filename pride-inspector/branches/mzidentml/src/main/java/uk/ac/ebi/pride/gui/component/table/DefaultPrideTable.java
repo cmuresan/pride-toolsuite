@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.component.table;
 
+import org.jdesktop.swingx.search.SearchFactory;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.table.listener.EntryUpdateSelectionListener;
 import uk.ac.ebi.pride.gui.component.table.model.ListTableModel;
@@ -43,6 +44,11 @@ public class DefaultPrideTable extends AlterRowColorTable implements ActionListe
      * Action command for deselect all
      */
     private static final String DESELECT_ALL_ACTION = "Deselect All";
+
+    /**
+     * Action command for search table
+     */
+    private static final String FIND = "find";
 
     /**
      * popup menu for copy and paste
@@ -142,6 +148,16 @@ public class DefaultPrideTable extends AlterRowColorTable implements ActionListe
         // create a popup menu
         popMenu = new JPopupMenu();
 
+        // search table
+        JMenuItem findItem = new JMenuItem(context.getProperty("search.table.title"),
+                GUIUtilities.loadIcon(context.getProperty("search.table.small.icon")));
+        findItem.setActionCommand(FIND);
+        findItem.addActionListener(this);
+        popMenu.add(findItem);
+
+        // separator
+        popMenu.add(new JSeparator());
+
         // select all rows
         JMenuItem selectAllItem = new JMenuItem(context.getProperty("select.all.title"));
         selectAllItem.setActionCommand(SELECT_ALL_ACTION);
@@ -200,6 +216,9 @@ public class DefaultPrideTable extends AlterRowColorTable implements ActionListe
             selectAllRows();
         } else if (DESELECT_ALL_ACTION.equals(evtCmd)) {
             deselectAllRows();
+        } else if (FIND.equals(evtCmd)) {
+            SearchFactory.getInstance()
+                        .showFindInput(this , getSearchable());
         }
     }
 

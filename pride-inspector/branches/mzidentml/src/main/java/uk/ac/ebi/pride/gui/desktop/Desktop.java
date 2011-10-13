@@ -2,12 +2,12 @@ package uk.ac.ebi.pride.gui.desktop;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.component.status.StatusBar;
 import uk.ac.ebi.pride.gui.listeners.ExitListener;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 
 import javax.swing.*;
-import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.EventObject;
@@ -55,14 +55,14 @@ public abstract class Desktop extends PropertyChangeHelper {
                 }
             }
         };
-        EventQueue.invokeLater(mainThread);
+        EDTUtils.invokeLater(mainThread);
     }
 
     private static <V extends DesktopContext> V buildAppContext(Class<V> appContextClass) throws Exception {
         Constructor<V> cstruct = appContextClass.getDeclaredConstructor();
         V appContext = cstruct.newInstance();
         appContext.setDesktop(desktop);
-        return appContext;  //To change body of created methods use File | Settings | File Templates.
+        return appContext;
     }
 
     private static <T extends Desktop> T buildApp(final Class<T> appClass) throws Exception{
@@ -124,7 +124,7 @@ public abstract class Desktop extends PropertyChangeHelper {
                 }
             }
         };
-        EventQueue.invokeLater(exitThread);
+        EDTUtils.invokeLater(exitThread);
     }
 
     public final DesktopContext getDesktopContext() {

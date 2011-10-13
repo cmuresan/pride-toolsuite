@@ -15,8 +15,7 @@ import java.util.*;
  * Time: 16:27
  */
 public class AccessionUtils {
-    public static final String COMMA_SEPARATOR = ",";
-    public static final String RANGE_SEPARATOR = "-";
+    private static final String RANGE_SEPARATOR = "-";
 
     /**
      * Expand a string into a list of accessions
@@ -33,7 +32,7 @@ public class AccessionUtils {
         Set<Comparable> accs = new LinkedHashSet<Comparable>();
 
         // split the input string
-        String[] parts = accStr.split(COMMA_SEPARATOR);
+        String[] parts = accStr.split(Constants.COMMA);
         for (String part : parts) {
 
             String errMsg = "Input string contains illegal accession range: " + part;
@@ -102,7 +101,7 @@ public class AccessionUtils {
                 if (!accStr.endsWith(accsInt.get(i - 1).toString())) {
                     accStr += RANGE_SEPARATOR + accsInt.get(i - 1);
                 }
-                accStr += COMMA_SEPARATOR + accsInt.get(i);
+                accStr += Constants.COMMA + accsInt.get(i);
             } else if (i == accsInt.size() -1 ) {
                 accStr += RANGE_SEPARATOR + accsInt.get(i);
             }

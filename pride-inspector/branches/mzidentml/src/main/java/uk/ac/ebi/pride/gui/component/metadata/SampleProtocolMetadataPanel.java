@@ -2,10 +2,7 @@ package uk.ac.ebi.pride.gui.component.metadata;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
-import uk.ac.ebi.pride.data.core.ExperimentMetaData;
-import uk.ac.ebi.pride.data.core.ExperimentProtocol;
-import uk.ac.ebi.pride.data.core.Parameter;
-import uk.ac.ebi.pride.data.core.Sample;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 
 import javax.swing.*;
@@ -21,17 +18,17 @@ import java.util.List;
  * @author User #2
  */
 public class SampleProtocolMetadataPanel extends JPanel {
-    public SampleProtocolMetadataPanel(ExperimentMetaData metaData) {
+    public SampleProtocolMetadataPanel(MetaData metaData) {
         populateComponents(metaData);
         initComponents();
     }
 
-    private void populateComponents(ExperimentMetaData metaData) {
+    private void populateComponents(MetaData metaData) {
         // add samples
         sampleTabbedPane = new JTabbedPane();
         sampleTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
         // add each sample
-        List<Sample> samples = metaData.getSampleList();
+        List<Sample> samples = metaData.getSamples();
         if (samples != null) {
             for (Sample sample : samples) {
                 String sampleName = sample.getName();
@@ -46,10 +43,10 @@ public class SampleProtocolMetadataPanel extends JPanel {
 
         // protocol
         protocolNameField = new JLabel();
-        if (metaData instanceof ExperimentMetaData && ((ExperimentMetaData) metaData).getProtocol() != null
-                && ((ExperimentMetaData) metaData).getProtocol().getProtocolSteps() != null) {
+        if (metaData instanceof Experiment && ((Experiment) metaData).getProtocol() != null
+                && ((Experiment) metaData).getProtocol().getProtocolSteps() != null) {
             // get protocol
-            ExperimentProtocol protocol = ((ExperimentMetaData) metaData).getProtocol();
+            Protocol protocol = ((Experiment) metaData).getProtocol();
             // protocol name
             String protName = protocol.getName();
             protocolNameField.setText(protName);
@@ -95,7 +92,7 @@ public class SampleProtocolMetadataPanel extends JPanel {
                                         .add(GroupLayout.LEADING, scrollPane2, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
                                         .add(GroupLayout.LEADING, sampleTabbedPane, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
                                         .add(GroupLayout.LEADING, layout.createSequentialGroup()
-                                                .add(protocolLabel, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE)
+                                                .add(protocolLabel, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(LayoutStyle.UNRELATED)
                                                 .add(protocolNameField, GroupLayout.PREFERRED_SIZE, 400, GroupLayout.PREFERRED_SIZE))
                                         .add(GroupLayout.LEADING, sampleLabel, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))

@@ -152,7 +152,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
             } else if (proteinModel.getSequenceString() == null) {
                 // protein sequence can not be download
                 String msg = appContext.getProperty("protein.sequence.unavailable.title") +
-                        ", " + proteinModel.getAccession() + " is " + proteinModel.getStatus().toString();
+                        ", " + proteinModel.getAccession() + " is either changed or deleted";
                 JPanel panel = createWarningPanel(msg, false);
                 this.add(panel, BorderLayout.NORTH);
             }

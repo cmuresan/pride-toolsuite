@@ -17,8 +17,6 @@ import java.text.AttributedString;
  */
 public class PeptideSequenceCellRenderer extends JLabel implements TableCellRenderer {
     private static final Color PTM_COLOR = new Color(255, 0, 0, 150);
-    public final static Font DEFAULT_FONT = new Font(Font.MONOSPACED, Font.PLAIN, 16);
-    public final static Font DEFAULT_FONT_BOLD = new Font(Font.MONOSPACED, Font.BOLD, 16);
     private AttributedString ptmString = null;
 
     public PeptideSequenceCellRenderer() {
@@ -34,11 +32,11 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
             Peptide peptide = (Peptide) value;
             ptmString = getPTMString(peptide);
             // get the modifications
-            java.util.List<Modification> mods = peptide.getPeptideSequence().getModificationList();
+            java.util.List<Modification> mods = peptide.getModifications();
             // set the ptm string
             // set tooltips
             if (mods != null) {
-                String tooltip = getToolTipText(mods, peptide.getPeptideSequence().getSequence().length());
+                String tooltip = getToolTipText(mods, peptide.getSequence().length());
                 if (!tooltip.trim().equals("")) {
                     this.setToolTipText(tooltip);
                 }
@@ -68,10 +66,9 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
     }
 
     private AttributedString getPTMString(Peptide peptide) {
-        String sequence = peptide.getPeptideSequence().getSequence();
-        java.util.List<Modification> mods = peptide.getPeptideSequence().getModificationList();
+        String sequence = peptide.getSequence();
+        java.util.List<Modification> mods = peptide.getModifications();
         AttributedString str = new AttributedString(sequence);
-        str.addAttribute(TextAttribute.FONT, DEFAULT_FONT);
         if (mods != null) {
             int seqLength = sequence.length();
             for (Modification mod : mods) {
@@ -79,7 +76,6 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
                 location = location == 0 ? 1 : location;
                 if (seqLength + 1 > location && location > 0) {
                     str.addAttribute(TextAttribute.FOREGROUND, PTM_COLOR, location - 1, location);
-                    str.addAttribute(TextAttribute.FONT, DEFAULT_FONT_BOLD, location - 1, location);
                 }
             }
         }
@@ -93,7 +89,7 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
             for (Modification mod : mods) {
                 tip.append("<p>");
                 tip.append("<b><font size=\"3\" color=\"red\">");
-                tip.append(mod.getId().toString());
+                tip.append(mod.getAccession());
                 tip.append("</font></b><br>");
                 tip.append("<b>Name</b>:");
                 tip.append(mod.getName());
@@ -108,7 +104,7 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
                     tip.append(location);
                 }
                 tip.append("<br>");
-                java.util.List<Double> avgs = mod.getAvgMassDelta();
+                java.util.List<Double> avgs = mod.getAvgMassDeltas();
                 if (avgs != null) {
                     for (Double avg : avgs) {
                         tip.append("<b>Average Mass Delta</b>:");
@@ -116,7 +112,7 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
                         tip.append("<br>");
                     }
                 }
-                java.util.List<Double> monos = mod.getMonoisotopicMassDelta();
+                java.util.List<Double> monos = mod.getMonoMassDeltas();
                 if (monos != null) {
                     for (Double mono : monos) {
                         tip.append("<b>Mono Mass Delta</b>:");

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.access.DataAccessMonitor;
+import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.db.DatabaseSearchPane;
 import uk.ac.ebi.pride.gui.component.report.ReportListModel;
 import uk.ac.ebi.pride.gui.component.startup.WelcomePane;
@@ -49,6 +50,11 @@ public class PrideInspectorContext extends DesktopContext {
     private final Map<DataAccessController, JComponent> dataContentPaneCache;
 
     /**
+     * This map maintains a reference between DataAccessController and its action
+     */
+    private final Map<DataAccessController, Map<Class<? extends PrideAction>, PrideAction>> sharedActionCache;
+
+    /**
      * data source browser visibility
      */
     private boolean leftControlPaneVisible;
@@ -92,6 +98,9 @@ public class PrideInspectorContext extends DesktopContext {
 
         // data content pane cache
         this.dataContentPaneCache = Collections.synchronizedMap(new HashMap<DataAccessController, JComponent>());
+
+        // action map
+        this.sharedActionCache = Collections.synchronizedMap(new HashMap<DataAccessController, Map<Class<? extends PrideAction>, PrideAction>>());
 
         // summary report tracker
         this.summaryReportTracker = Collections.synchronizedMap(new HashMap<DataAccessController, ListModel>());
@@ -204,6 +213,9 @@ public class PrideInspectorContext extends DesktopContext {
         // remove gui component associated with this data access controller
         removeDataContentPane(controller);
 
+        // remove pride action
+        removePrideAction(controller);
+
         // remove summary report
         summaryReportTracker.remove(controller);
 
@@ -229,6 +241,9 @@ public class PrideInspectorContext extends DesktopContext {
         // remove gui component
         removeDataContentPane(original);
 
+        // remove pride action
+        removePrideAction(original);
+
         // remove summary report for the original data access controller
         summaryReportTracker.remove(original);
 
@@ -252,8 +267,9 @@ public class PrideInspectorContext extends DesktopContext {
 
     /**
      * Add a new data access controller, and set it foreground status
-     * @param controller    data access controller
-     * @param foreground    foreground status
+     *
+     * @param controller data access controller
+     * @param foreground foreground status
      */
     public final synchronized void addDataAccessController(DataAccessController controller, boolean foreground) {
         // initialize summary report model
@@ -298,6 +314,61 @@ public class PrideInspectorContext extends DesktopContext {
      */
     public final void removeDataContentPane(DataAccessController controller) {
         dataContentPaneCache.remove(controller);
+    }
+
+    /**
+     * Get pride action of a given data access controller and pride action class
+     *
+     * @param controller  data access controller
+     * @param actionClass pride action class
+     * @return PrideAction pride action
+     */
+    public final synchronized PrideAction getPrideAction(DataAccessController controller, Class<? extends PrideAction> actionClass) {
+        Map<Class<? extends PrideAction>, PrideAction> actionMap = sharedActionCache.get(controller);
+        if (actionMap != null) {
+            return actionMap.get(actionClass);
+        }
+        return null;
+    }
+
+    /**
+     * Add a pride action of a given data access controller
+     *
+     * @param controller data access controller
+     * @param action     pride action
+     */
+    public final void addPrideAction(DataAccessController controller, PrideAction action) {
+        Map<Class<? extends PrideAction>, PrideAction> actionMap = sharedActionCache.get(controller);
+        if (actionMap == null) {
+            actionMap = new HashMap<Class<? extends PrideAction>, PrideAction>();
+            sharedActionCache.put(controller, actionMap);
+        }
+        actionMap.put(action.getClass(), action);
+    }
+
+    /**
+     * Remove a pride action of a given data access controller
+     *
+     * @param controller  data access controller
+     * @param actionClass pride action class
+     */
+    public final void removePrideAction(DataAccessController controller, Class<? extends PrideAction> actionClass) {
+        Map<Class<? extends PrideAction>, PrideAction> actionMap = sharedActionCache.get(controller);
+        if (actionMap != null) {
+            actionMap.remove(actionClass);
+            if (actionMap.isEmpty()) {
+                sharedActionCache.remove(controller);
+            }
+        }
+    }
+
+    /**
+     * Remove all the pride actions related to a given data access controller
+     *
+     * @param controller data access controller
+     */
+    public final void removePrideAction(DataAccessController controller) {
+        sharedActionCache.remove(controller);
     }
 
     /**
@@ -373,8 +444,8 @@ public class PrideInspectorContext extends DesktopContext {
     /**
      * Get the summary report model for a given data access controller
      *
-     * @param controller    data access controller
-     * @return  ListModel   summary report model
+     * @param controller data access controller
+     * @return ListModel   summary report model
      */
     public ListModel getSummaryReportModel(DataAccessController controller) {
         ListModel model = summaryReportTracker.get(controller);

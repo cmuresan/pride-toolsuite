@@ -5,12 +5,12 @@ import org.bushe.swing.event.annotation.EventSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
-import uk.ac.ebi.pride.gui.utils.EDTUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -203,7 +203,7 @@ public class DataSourceViewer extends JPanel {
 
         @Override
         public String getToolTipText(MouseEvent event) {
-            String tooltip;
+            String tooltip = null;
 
             Point p = event.getPoint();
             int rowIndex = rowAtPoint(p);
@@ -211,7 +211,10 @@ public class DataSourceViewer extends JPanel {
             int realColIndex = convertColumnIndexToModel(colIndex);
             TableModel model = getModel();
             if (realColIndex == 0 && model != null) {
-                tooltip = model.getValueAt(rowIndex, colIndex).toString();
+                Object value = model.getValueAt(rowIndex, 0);
+                if (value != null) {
+                    tooltip = value.toString();
+                }
             } else {
                 tooltip = super.getToolTipText(event);
             }

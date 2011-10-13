@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
-import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.SearchEngine;
 
 import java.util.ArrayList;
@@ -17,8 +16,8 @@ import java.util.List;
 public class PeptideTableModel extends AbstractPeptideTableModel {
 
 
-    public PeptideTableModel(SearchEngine se, DataAccessController controller) {
-        super(se, controller);
+    public PeptideTableModel(SearchEngine se) {
+        super(se);
     }
 
     @Override

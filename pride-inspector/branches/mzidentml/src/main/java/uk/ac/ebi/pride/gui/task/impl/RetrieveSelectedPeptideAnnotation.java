@@ -77,12 +77,12 @@ public class RetrieveSelectedPeptideAnnotation extends AbstractDataAccessTask<Vo
             PTMAnnotation ptmAnnotation = new PTMAnnotation();
 
             // copy all the values from ptm to ptm annotation
-            ptmAnnotation.setAccession(ptm.getId().toString());
+            ptmAnnotation.setAccession(ptm.getAccession());
             ptmAnnotation.setLocation(ptm.getLocation());
             ptmAnnotation.setModDatabaseVersion(ptm.getModDatabaseVersion());
             ptmAnnotation.setName(ptm.getName());
-            ptmAnnotation.setAvgMassDeltas(ptm.getAvgMassDelta());
-            ptmAnnotation.setMonoMassDeltas(ptm.getMonoisotopicMassDelta());
+            ptmAnnotation.setAvgMassDeltas(ptm.getAvgMassDeltas());
+            ptmAnnotation.setMonoMassDeltas(ptm.getMonoMassDeltas());
 
             peptide.addPtmAnnotation(ptmAnnotation);
         }

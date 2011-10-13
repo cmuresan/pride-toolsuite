@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
-import uk.ac.ebi.pride.data.controller.DataAccessController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +13,6 @@ import java.util.List;
  * Time: 15:58:04
  */
 public class ProteinTableModel extends AbstractProteinTableModel {
-
-    public ProteinTableModel() {
-        this(null);
-    }
-
-    public ProteinTableModel(DataAccessController controller) {
-        super(controller);
-    }
 
     @Override
     public void initializeTableModel() {

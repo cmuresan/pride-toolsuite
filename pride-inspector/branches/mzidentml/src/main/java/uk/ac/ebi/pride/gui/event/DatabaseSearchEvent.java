@@ -12,7 +12,6 @@ import org.bushe.swing.event.AbstractEventServiceEvent;
 public class DatabaseSearchEvent<T> extends AbstractEventServiceEvent{
     public static enum Status {SHOW,
                                START,
-                               HEADER,
                                RESULT,
                                COMPLETE,
                                HIDE}

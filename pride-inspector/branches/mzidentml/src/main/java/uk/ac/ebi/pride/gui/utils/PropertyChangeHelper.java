@@ -14,7 +14,7 @@ import java.beans.PropertyChangeSupport;
  */
 public class PropertyChangeHelper implements PropertyChangeHandler {
 
-    private final PropertyChangeSupport supporter; 
+    private final PropertyChangeSupport supporter;
 
     public PropertyChangeHelper() {
         supporter = new ImprovedPropertyChangerSupport(this);
@@ -27,7 +27,7 @@ public class PropertyChangeHelper implements PropertyChangeHandler {
     /**
      * Check whether property change listener exists
      *
-     * @param listener  property change listener
+     * @param listener property change listener
      * @return boolean  true if exists
      */
     public boolean hasPropertyChangeListener(PropertyChangeListener listener) {
@@ -78,13 +78,13 @@ public class PropertyChangeHelper implements PropertyChangeHandler {
         supporter.firePropertyChange(propName, oldValue, newValue);
     }
 
-    private static class ImprovedPropertyChangerSupport extends PropertyChangeSupport {
+    private class ImprovedPropertyChangerSupport extends PropertyChangeSupport {
         public ImprovedPropertyChangerSupport(Object o) {
             super(o);
         }
 
         @Override
-        public void firePropertyChange(final PropertyChangeEvent event){
+        public void firePropertyChange(final PropertyChangeEvent event) {
             if (SwingUtilities.isEventDispatchThread()) {
                 super.firePropertyChange(event);
             } else {

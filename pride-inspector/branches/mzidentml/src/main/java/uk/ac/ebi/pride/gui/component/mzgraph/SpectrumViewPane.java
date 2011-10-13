@@ -186,7 +186,7 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
                 int peptideLength = peptide.getSequenceLength();
                 Map<Integer, java.util.List<PTModification>> modifications = AnnotationUtils.createModificationMap(peptide.getModifications(), peptideLength);
                 spectrumBrowser.setAminoAcidAnnotationParameters(peptide.getSequenceLength(), modifications);
-                java.util.List<IonAnnotation> ions = AnnotationUtils.convertToIonAnnotations(peptide.getFragmentation());
+                java.util.List<IonAnnotation> ions = AnnotationUtils.convertToIonAnnotations(peptide.getFragmentIons());
                 spectrumBrowser.addFragmentIons(ions);
                 if (showSidePanel && !ions.isEmpty()) {
                     spectrumBrowser.enableAnnotationControl(true);

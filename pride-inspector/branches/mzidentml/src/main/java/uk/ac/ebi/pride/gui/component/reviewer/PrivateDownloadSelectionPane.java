@@ -26,13 +26,12 @@ import java.util.Map;
 /**
  * PrivateDownloadSelectionPane display both a list of experiments to be downloaded
  * and where it is going to be stored.
- *
+ * <p/>
  * User: rwang
  * Date: 24/01/11
  * Time: 11:08
  */
 public class PrivateDownloadSelectionPane extends JPanel implements ActionListener, TableModelListener, TaskListener<List<Map<String, String>>, String> {
-    private static final String DOWNLOAD_TITLE = "Experiment Download";
     private static final String SAVE_TO_TITLE = "Save to";
     private static final String BROWSE_BUTTON = "Browse";
     private static final String SELECTION_ALL_BUTTON = "Select All";
@@ -56,7 +55,7 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
     private JButton deselectAllButton;
     private JButton downloadButton;
     private String currentUserName;
-    private char[] currentPassWord;
+    private String currentPassWord;
     private JCheckBox openAfterDownloadCheckbox;
     private PrideInspectorContext context;
 
@@ -64,17 +63,12 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
         this(parent, toDispose, null, null);
     }
 
-    public PrivateDownloadSelectionPane(Component parent, boolean toDispose, String username, char[] password) {
+    public PrivateDownloadSelectionPane(Component parent, boolean toDispose, String username, String password) {
         this.parent = parent;
         this.toDispose = toDispose;
         this.currentUserName = username;
-        if (password == null) {
-            this.currentPassWord = null;
-        } else {
-            this.currentPassWord = new char[password.length];
-            System.arraycopy(password, 0, currentPassWord, 0, password.length);
-        }
-        this.context = (PrideInspectorContext)uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
+        this.currentPassWord = password;
+        this.context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
 
         // setup the main GUI components
         setupMainPane();
@@ -88,17 +82,12 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
         this.currentUserName = currentUserName;
     }
 
-    public char[] getCurrentPassWord() {
+    public String getCurrentPassWord() {
         return currentPassWord;
     }
 
-    public void setCurrentPassWord(char[] currentPassWord) {
-        if (currentPassWord == null) {
-            this.currentPassWord = null;
-        } else {
-            this.currentPassWord = new char[currentPassWord.length];
-            System.arraycopy(currentPassWord, 0, currentPassWord, 0, currentPassWord.length);
-        }
+    public void setCurrentPassWord(String currentPassWord) {
+        this.currentPassWord = currentPassWord;
     }
 
     public void addExperimentMetaData(List<Map<String, String>> metadata) {
@@ -110,8 +99,19 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
      * Set up all the main GUI components
      */
     private void setupMainPane() {
-        this.setBorder(BorderFactory.createTitledBorder(DOWNLOAD_TITLE));
         this.setLayout(new BorderLayout());
+
+        // create download table
+        downloadTable = new JXTable();
+        downloadTableModel = new ReviewDownloadTableModel();
+        downloadTableModel.addTableModelListener(this);
+        downloadTable.setModel(downloadTableModel);
+        downloadTable.setColumnControlVisible(true);
+        downloadTable.setFillsViewportHeight(true);
+        downloadTable.setCellEditor(new DefaultCellEditor(new JCheckBox()));
+        JScrollPane scrollPane = new JScrollPane(downloadTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        this.add(scrollPane, BorderLayout.CENTER);
+
         // create file browser pane
         JPanel dirPane = new JPanel();
         dirPane.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -128,18 +128,6 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
         dirPane.add(saveToLabel);
         dirPane.add(pathField);
         dirPane.add(browseButton);
-        this.add(dirPane, BorderLayout.NORTH);
-
-        // create download table
-        downloadTable = new JXTable();
-        downloadTableModel = new ReviewDownloadTableModel();
-        downloadTableModel.addTableModelListener(this);
-        downloadTable.setModel(downloadTableModel);
-        downloadTable.setColumnControlVisible(true);
-        downloadTable.setFillsViewportHeight(true);
-        downloadTable.setCellEditor(new DefaultCellEditor(new JCheckBox()));
-        JScrollPane scrollPane = new JScrollPane(downloadTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.add(scrollPane, BorderLayout.CENTER);
 
         // create button panel
         JPanel buttonPanel = new JPanel();
@@ -161,7 +149,11 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
         buttonPanel.add(selectAllButton);
         buttonPanel.add(deselectAllButton);
         buttonPanel.add(downloadButton);
-        this.add(buttonPanel, BorderLayout.SOUTH);
+
+        JPanel container = new JPanel(new BorderLayout());
+        container.add(dirPane, BorderLayout.NORTH);
+        container.add(buttonPanel, BorderLayout.CENTER);
+        this.add(container, BorderLayout.SOUTH);
     }
 
     @Override

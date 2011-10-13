@@ -7,7 +7,8 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
-import uk.ac.ebi.pride.data.core.ExperimentMetaData;
+import uk.ac.ebi.pride.data.core.MetaData;
+import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
@@ -17,7 +18,6 @@ import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.task.impl.ExportTableDataTask;
 import uk.ac.ebi.pride.gui.url.HttpUtilities;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.EDTUtils;
 import uk.ac.ebi.pride.gui.utils.EnsemblSpeciesMapper;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.util.NumberUtilities;
@@ -93,7 +93,7 @@ public class QuantExportDialog extends JDialog {
         helpButton = GUIUtilities.createLabelLikeButton(helpIcon, null);
         helpButton.setToolTipText("Help");
         helpButton.setForeground(Color.blue);
-        CSH.setHelpIDString(helpButton, "help.browse.protein");
+        CSH.setHelpIDString(helpButton, "help.export.quant");
         helpButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
 
         //======== this ========
@@ -109,7 +109,7 @@ public class QuantExportDialog extends JDialog {
             }
 
             //---- ensemblButton ----
-            ensemblButton.setText("Ensembl");
+            ensemblButton.setText("Ensembl View");
 
             //---- exportButton ----
             exportButton.setText("Export");
@@ -129,8 +129,8 @@ public class QuantExportDialog extends JDialog {
                                                     .add(scrollPane2, GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
                                                     .addPreferredGap(LayoutStyle.RELATED)
                                                     .add(panel1Layout.createParallelGroup(GroupLayout.TRAILING)
-                                                            .add(ensemblButton, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
-                                                            .add(exportButton, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE))))
+                                                            .add(ensemblButton, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
+                                                            .add(exportButton, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE))))
                                     .addContainerGap())
             );
             panel1Layout.setVerticalGroup(
@@ -290,7 +290,7 @@ public class QuantExportDialog extends JDialog {
      * @return JTable  a new jtable
      */
     private JTable createProteinTable() {
-        QuantProteinTableModel tableModel = new QuantProteinTableModel(controller);
+        QuantProteinTableModel tableModel = new QuantProteinTableModel();
         tableModel.removeAllColumns();
 
         // get the existing quant protein table model
@@ -315,7 +315,7 @@ public class QuantExportDialog extends JDialog {
             tableModel.addRow(row);
         }
 
-        return TableFactory.createQuantProteinTable(tableModel);
+        return TableFactory.createQuantProteinTable(controller, tableModel);
     }
 
     /**
@@ -399,7 +399,7 @@ public class QuantExportDialog extends JDialog {
             String url = null;
 
             try {
-                ExperimentMetaData metaData = controller.getExperimentMetaData();
+                MetaData metaData = controller.getMetaData();
                 java.util.List<String> speciesIds = DataAccessUtilities.getTaxonomy(metaData);
                 if (speciesIds.size() > 0) {
                     url = appContext.getProperty("ensembl.genome.browser.url");
@@ -546,7 +546,7 @@ public class QuantExportDialog extends JDialog {
         }
 
         @Override
-        public boolean include(Entry<? extends Object, ? extends Object> entry) {
+        public boolean include(Entry<?, ?> entry) {
             Object entryValue = entry.getValue(columnIndex);
 
             if (entryValue != null) {

@@ -5,12 +5,12 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.PrideDBAccessControllerImpl;
+import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.access.EmptyDataAccessController;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
-import uk.ac.ebi.pride.gui.utils.EDTUtils;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -142,7 +142,7 @@ public class OpenPrideDatabaseTask extends TaskAdapter<DataAccessController, Voi
             EmptyDataAccessController dummy = null;
             if (acc != null) {
                 dummy = new EmptyDataAccessController();
-                dummy.setName("Pride Experiment " + acc);
+                dummy.setName("PRIDE Experiment " + acc);
                 dummy.setType(DataAccessController.Type.DATABASE);
                 // add a closure hook
                 this.addOwner(dummy);
@@ -152,7 +152,7 @@ public class OpenPrideDatabaseTask extends TaskAdapter<DataAccessController, Voi
             //connect to database
             dbAccessController = new PrideDBAccessControllerImpl(acc);
             if (acc != null) {
-                dbAccessController.setName("Pride Experiment " + acc);
+                dbAccessController.setName("PRIDE Experiment " + acc);
                 // this is important for cancelling
                 if (Thread.interrupted()) {
                     context.removeDataAccessController(dummy, false);

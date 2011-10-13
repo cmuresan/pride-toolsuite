@@ -11,7 +11,7 @@ import java.awt.*;
  * User: rwang
  * Date: 03/06/11
  * Time: 15:03
-
+ * To change this template use File | Settings | File Templates.
  */
 public class ReportListRenderer implements ListCellRenderer{
     private static final int DEFAULT_HEIGHT = 30;
@@ -26,8 +26,8 @@ public class ReportListRenderer implements ListCellRenderer{
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        ReportMessage item = (ReportMessage) value;
-        ReportMessage.Type type = item.getType();
+        SummaryReportMessage item = (SummaryReportMessage) value;
+        SummaryReportMessage.Type type = item.getType();
 
         RoundCornerLabel label= new RoundCornerLabel(getIcon(type), item.getMessage(), getBackgroundPaint(type), getBorderPaint(type));
         label.setPreferredSize(new Dimension(50, DEFAULT_HEIGHT));
@@ -41,7 +41,7 @@ public class ReportListRenderer implements ListCellRenderer{
      * @param type  message type
      * @return  Icon    message icon
      */
-    private Icon getIcon(ReportMessage.Type type) {
+    private Icon getIcon(SummaryReportMessage.Type type) {
         switch(type) {
             case SUCCESS:
                 return GUIUtilities.loadIcon(context.getProperty("report.item.success.icon.small"));
@@ -49,7 +49,7 @@ public class ReportListRenderer implements ListCellRenderer{
                 return GUIUtilities.loadIcon(context.getProperty("report.item.error.icon.small"));
             case WARNING:
                 return GUIUtilities.loadIcon(context.getProperty("report.item.warning.icon.small"));
-            case PLAIN:
+            case INFO:
                 return GUIUtilities.loadIcon(context.getProperty("report.item.plain.icon.small"));
             default:
                 return GUIUtilities.loadIcon(context.getProperty("report.item.plain.icon.small"));
@@ -61,7 +61,7 @@ public class ReportListRenderer implements ListCellRenderer{
      * @param type  message type
      * @return  Paint   background
      */
-    private Paint getBackgroundPaint(ReportMessage.Type type) {
+    private Paint getBackgroundPaint(SummaryReportMessage.Type type) {
         switch(type) {
             case SUCCESS:
                 return new GradientPaint(0, 0, new Color(40, 175, 99, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(40, 175, 99, STOP_ALPHA), true);
@@ -69,7 +69,7 @@ public class ReportListRenderer implements ListCellRenderer{
                 return new GradientPaint(0, 0, new Color(215, 39, 41, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(215, 39, 41, STOP_ALPHA), true);
             case WARNING:
                 return new GradientPaint(0, 0, new Color(251, 182, 1, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(251, 182, 1, STOP_ALPHA), true);
-            case PLAIN:
+            case INFO:
                 return new GradientPaint(0, 0, new Color(27, 106, 165, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(27, 106, 165, STOP_ALPHA), true);
             default:
                 return new GradientPaint(0, 0, new Color(27, 106, 165, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(27, 106, 165, STOP_ALPHA), true);
@@ -82,7 +82,7 @@ public class ReportListRenderer implements ListCellRenderer{
      * @param type  message type
      * @return  Paint   border color
      */
-    private Paint getBorderPaint(ReportMessage.Type type) {
+    private Paint getBorderPaint(SummaryReportMessage.Type type) {
         switch(type) {
             case SUCCESS:
                 return new Color(40, 175, 99);
@@ -90,7 +90,7 @@ public class ReportListRenderer implements ListCellRenderer{
                 return new Color(215, 39, 41);
             case WARNING:
                 return new Color(251, 182, 1);
-            case PLAIN:
+            case INFO:
                 return new Color(27, 106, 165);
             default:
                 return new Color(27, 106, 165);

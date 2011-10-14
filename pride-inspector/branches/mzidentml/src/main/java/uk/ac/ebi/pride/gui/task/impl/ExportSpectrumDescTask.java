@@ -70,7 +70,7 @@ public class ExportSpectrumDescTask extends AbstractDataAccessTask<Void, Void> {
             }
 
             // accession if exist
-            String acc = exp.getId().toString();
+            String acc = (exp.getId() !=null)?exp.getId().toString():null;
             if (acc != null) {
                 writer.println("# PRIDE accession: " + acc);
             }

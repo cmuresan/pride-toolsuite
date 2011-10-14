@@ -93,7 +93,7 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
                         Collection<Modification> mods = controller.getPTMs(identId, peptideId);
                         if (mods != null) {
                             for (Modification mod : mods) {
-                                String accession = mod.getId().toString();
+                                String accession = (mod.getId() !=null)?mod.getId().toString():null;
                                 String name = mod.getName();
                                 if (!ptmMap.containsKey(accession)) {
                                     EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.INFO, "PTM: " + accession,

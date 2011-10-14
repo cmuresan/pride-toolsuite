@@ -71,7 +71,8 @@ public class ShowParamDialogTask extends TaskAdapter<Void, Void> {
         final String title;
         if (peptideId == null) {
             Identification protIdent = controller.getIdentificationById(protId);
-            title = "Additional Protein Parameters: " + protIdent.getId().toString();
+            String name = (protIdent.getId() !=null)?protIdent.getId().toString():null;
+            title = "Additional Protein Parameters: " + name;
             params = protIdent;
         } else {
             Peptide peptide = controller.getPeptideById(protId, peptideId);

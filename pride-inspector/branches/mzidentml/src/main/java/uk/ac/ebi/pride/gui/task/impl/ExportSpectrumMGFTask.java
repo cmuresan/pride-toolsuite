@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.Experiment;
+import uk.ac.ebi.pride.data.core.ExperimentMetaData;
 import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
@@ -57,7 +57,7 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
 
         try {
             writer = new PrintWriter(new FileWriter(new File(outputFilePath)));
-            Experiment exp = (Experiment) controller.getMetaData();
+            ExperimentMetaData exp = (ExperimentMetaData) controller.getExperimentMetaData();
 
             //------- Comment section -------
 
@@ -69,12 +69,12 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
             }
 
             // accession if exist
-            String acc = exp.getAccession();
+            String acc = exp.getId().toString();
             if (acc != null) {
                 writer.println("# PRIDE accession: " + acc);
             }
 
-            String title = exp.getTitle();
+            String title = exp.getName();
             if (title != null) {
                 writer.println("# Experiment title: " + title);
             }

@@ -43,7 +43,7 @@ public class TableDataRetriever {
         // peptide sequence with modifications
         List<Modification> mods = new ArrayList<Modification>(controller.getPTMs(identId, peptideId));
         String sequence = controller.getPeptideSequence(identId, peptideId);
-        content.add(new Peptide(null, sequence, 0, 0, mods, null, null));
+        content.add(new PeptideSequence(null,null, sequence,mods, null));
 
         // start and end position
         int start = controller.getPeptideSequenceStart(identId, peptideId);
@@ -53,7 +53,7 @@ public class TableDataRetriever {
         // Original Protein Accession
         String protAcc = controller.getProteinAccession(identId);
         String protAccVersion = controller.getProteinAccessionVersion(identId);
-        String database = controller.getSearchDatabase(identId);
+        String database = controller.getSearchDatabase(identId).getName();
         content.add(protAcc);
 
         // Mapped Protein Accession
@@ -101,7 +101,7 @@ public class TableDataRetriever {
             double mz = controller.getPrecursorMz(specId);
             List<Double> ptmMasses = new ArrayList<Double>();
             for (Modification mod : mods) {
-                List<Double> monoMasses = mod.getMonoMassDeltas();
+                List<Double> monoMasses = mod.getMonoisotopicMassDelta();
                 if (monoMasses != null && !monoMasses.isEmpty()) {
                     ptmMasses.add(monoMasses.get(0));
                 }
@@ -138,14 +138,14 @@ public class TableDataRetriever {
             if (massDiffs == null) {
                 massDiffs = new ArrayList<Double>();
                 locationMap.put(location, massDiffs);
-                List<Double> md = mod.getMonoMassDeltas();
+                List<Double> md = mod.getMonoisotopicMassDelta();
                 if (md != null && !md.isEmpty()) {
                     massDiffs.add(md.get(0));
                 }
             }
 
             // store the accession
-            String accession = mod.getAccession();
+            String accession = mod.getId().toString();
             Integer cnt = accessionCntMap.get(accession);
             cnt = cnt == null ? 1 : cnt + 1;
             accessionCntMap.put(accession, cnt);
@@ -246,7 +246,7 @@ public class TableDataRetriever {
         // Original Protein Accession
         String protAcc = controller.getProteinAccession(identId);
         String protAccVersion = controller.getProteinAccessionVersion(identId);
-        String database = controller.getSearchDatabase(identId);
+        String database = controller.getSearchDatabase(identId).getName();
         content.add(protAcc);
 
         // Mapped Protein Accession

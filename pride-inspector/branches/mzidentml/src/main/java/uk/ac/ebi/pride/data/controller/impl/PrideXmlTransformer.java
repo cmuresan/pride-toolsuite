@@ -425,7 +425,9 @@ public class PrideXmlTransformer {
 
             SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
             DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
-            return new Identification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, scoreVal, thresholdVal, null, seqConverageVal,null);
+            //Todo: Search Engine Types
+            SearchEngine searchEngine = new SearchEngine(null, rawIdent.getSearchEngine(),null);
+            return new Identification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, scoreVal, thresholdVal, searchEngine, seqConverageVal,null);
 
         }
 

@@ -79,7 +79,7 @@ public class RetrieveProteinDetailModelTask extends AbstractDataAccessTask<Annot
         // get formmatted protein accession
         String protAcc = controller.getProteinAccession(identId);
         String protAccVersion = controller.getProteinAccessionVersion(identId);
-        String database = controller.getSearchDatabase(identId);
+        String database = controller.getSearchDatabase(identId).getName();
         AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
         String mappedProtAcc = resolver.isValidAccession()? resolver.getAccession() : null;
 
@@ -127,12 +127,12 @@ public class RetrieveProteinDetailModelTask extends AbstractDataAccessTask<Annot
             PTMAnnotation ptmAnnotation = new PTMAnnotation();
 
             // copy all the values from ptm to ptm annotation
-            ptmAnnotation.setAccession(ptm.getAccession());
+            ptmAnnotation.setAccession(ptm.getId().toString());
             ptmAnnotation.setLocation(ptm.getLocation());
             ptmAnnotation.setModDatabaseVersion(ptm.getModDatabaseVersion());
             ptmAnnotation.setName(ptm.getName());
-            ptmAnnotation.setAvgMassDeltas(ptm.getAvgMassDeltas());
-            ptmAnnotation.setMonoMassDeltas(ptm.getMonoMassDeltas());
+            ptmAnnotation.setAvgMassDeltas(ptm.getAvgMassDelta());
+            ptmAnnotation.setMonoMassDeltas(ptm.getMonoisotopicMassDelta());
 
             peptide.addPtmAnnotation(ptmAnnotation);
         }

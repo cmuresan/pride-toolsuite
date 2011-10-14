@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  */
 public class GeneralMetadataPanel extends JPanel {
 
-    public GeneralMetadataPanel(MetaData metaData) {
+    public GeneralMetadataPanel(ExperimentMetaData metaData) {
         populateComponents(metaData);
         initComponents();
     }
@@ -40,9 +40,9 @@ public class GeneralMetadataPanel extends JPanel {
      *
      * @param metaData meta data
      */
-    private void populateComponents(MetaData metaData) {
+    private void populateComponents(ExperimentMetaData metaData) {
         // get accession
-        String accession = metaData.getAccession();
+        String accession = metaData.getId().toString();
         accessionField = new JTextField();
         if (accession != null) {
             accessionField.setText(accession);
@@ -51,14 +51,14 @@ public class GeneralMetadataPanel extends JPanel {
         expTitleField = new JTextField();
         shortLabelField = new JTextField();
 
-        if (metaData instanceof Experiment) {
+        if (metaData instanceof ExperimentMetaData) {
             // get experiment title
-            String expTitle = ((Experiment) metaData).getTitle();
+            String expTitle = ((ExperimentMetaData) metaData).getName();
             if (expTitle != null) {
                 expTitleField.setText(expTitle);
             }
             // get short label
-            String sl = ((Experiment) metaData).getShortLabel();
+            String sl = ((ExperimentMetaData) metaData).getShortLabel();
             if (sl != null) {
                 shortLabelField.setText(sl);
             }
@@ -90,7 +90,7 @@ public class GeneralMetadataPanel extends JPanel {
         String tissues = "";
         Set<String> tissuesAcc = new HashSet<String>();
 
-        List<Sample> samples = metaData.getSamples();
+        List<Sample> samples = metaData.getSampleList();
         if (samples != null) {
             for (Sample sample : samples) {
                 for (CvParam cvParam : sample.getCvParams()) {
@@ -124,7 +124,9 @@ public class GeneralMetadataPanel extends JPanel {
         // instrument field
         instrumentField = new JTextField();
         String instrumentStr = "";
-        List<InstrumentConfiguration> instruments = metaData.getInstrumentConfigurations();
+        //List<InstrumentConfiguration> instruments = metaData.getInstrumentConfigurations();
+        List<InstrumentConfiguration> instruments = null;
+        //Todo: Fixed
         for (InstrumentConfiguration instrument : instruments) {
             instrumentStr += instrument.getId();
         }
@@ -133,8 +135,8 @@ public class GeneralMetadataPanel extends JPanel {
 
 
         // reference
-        if (metaData instanceof Experiment && ((Experiment) metaData).getReferences() != null) {
-            List<Reference> references = ((Experiment) metaData).getReferences();
+        if (metaData instanceof ExperimentMetaData && ((ExperimentMetaData) metaData).getReferences() != null) {
+            List<Reference> references = ((ExperimentMetaData) metaData).getReferences();
             referenceTable = TableFactory.createReferenceTable(references);
         } else {
             referenceTable = TableFactory.createReferenceTable(new ArrayList<Reference>());
@@ -142,8 +144,8 @@ public class GeneralMetadataPanel extends JPanel {
 
         // contact
 
-        List<ParamGroup> contacts = metaData.getFileDescription().getContacts();
-        contactTable = TableFactory.createContactTable(contacts == null ? new ArrayList<ParamGroup>() : contacts);
+        List<Person> contacts = metaData.getPersonList();
+        contactTable = TableFactory.createContactTable(contacts == null ? new ArrayList<Person>() : contacts);
 
         // additional params
         ParamGroup paramGroup = new ParamGroup();

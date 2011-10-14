@@ -139,53 +139,29 @@ public class SearchDataBase extends ExternalData {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if ((o == null) || (getClass() != o.getClass())) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         SearchDataBase that = (SearchDataBase) o;
 
-        if (numDatabaseResidue != that.numDatabaseResidue) {
-            return false;
-        }
-
-        if (numDatabaseSequence != that.numDatabaseSequence) {
-            return false;
-        }
-
-        if (!description.equals(that.description)) {
-            return false;
-        }
-
-        if (!nameDatabase.equals(that.nameDatabase)) {
-            return false;
-        }
-
-        if (!releaseDate.equals(that.releaseDate)) {
-            return false;
-        }
-
-        if (!version.equals(that.version)) {
-            return false;
-        }
+        if (numDatabaseResidue != that.numDatabaseResidue) return false;
+        if (numDatabaseSequence != that.numDatabaseSequence) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (nameDatabase != null ? !nameDatabase.equals(that.nameDatabase) : that.nameDatabase != null) return false;
+        if (releaseDate != null ? !releaseDate.equals(that.releaseDate) : that.releaseDate != null) return false;
+        if (version != null ? !version.equals(that.version) : that.version != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = version.hashCode();
-
-        result = 31 * result + releaseDate.hashCode();
-        result = 31 * result + numDatabaseSequence;
+        int result = description != null ? description.hashCode() : 0;
+        result = 31 * result + (nameDatabase != null ? nameDatabase.hashCode() : 0);
         result = 31 * result + (int) (numDatabaseResidue ^ (numDatabaseResidue >>> 32));
-        result = 31 * result + nameDatabase.hashCode();
-        result = 31 * result + description.hashCode();
-
+        result = 31 * result + numDatabaseSequence;
+        result = 31 * result + (releaseDate != null ? releaseDate.hashCode() : 0);
+        result = 31 * result + (version != null ? version.hashCode() : 0);
         return result;
     }
 }

@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.impl.AbstractDataAccessController;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.component.chart.PrideChartManager;
+import uk.ac.ebi.pride.model.interfaces.core.Experiment;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -33,18 +34,13 @@ public class EmptyDataAccessController extends AbstractDataAccessController {
     }
 
     @Override
-    public MetaData getMetaData() throws DataAccessException {
+    public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
         return null;
     }
 
     @Override
     public Collection<CVLookup> getCvLookups() throws DataAccessException {
         return Collections.emptyList();
-    }
-
-    @Override
-    public FileDescription getFileDescription() throws DataAccessException {
-        return null;
     }
 
     @Override
@@ -58,7 +54,7 @@ public class EmptyDataAccessController extends AbstractDataAccessController {
     }
 
     @Override
-    public Collection<Software> getSoftware() throws DataAccessException {
+    public Collection<Software> getSoftwareList() throws DataAccessException {
         return Collections.emptyList();
     }
 

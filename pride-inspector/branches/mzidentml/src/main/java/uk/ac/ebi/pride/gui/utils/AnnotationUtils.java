@@ -97,7 +97,7 @@ public class AnnotationUtils {
                 modMap.put(mod.getLocation(), subMods);
             }
             subMods.add(new PTModification(mod.getName(), mod.getModDatabase(),
-                    mod.getName(), mod.getMonoMassDeltas(), mod.getAvgMassDeltas()));
+                    mod.getName(), mod.getMonoisotopicMassDelta(), mod.getAvgMassDelta()));
         }
         return modMap;
     }
@@ -106,7 +106,7 @@ public class AnnotationUtils {
         List<PTModification> newMods = new ArrayList<PTModification>();
         for (Modification mod : modifications) {
             newMods.add(new PTModification(mod.getName(), mod.getModDatabase(),
-                    mod.getName(), mod.getMonoMassDeltas(), mod.getAvgMassDeltas()));
+                    mod.getName(), mod.getMonoisotopicMassDelta(), mod.getAvgMassDelta()));
         }
         return newMods;
     }

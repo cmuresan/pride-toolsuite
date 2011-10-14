@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.core.CvParam;
 import uk.ac.ebi.pride.data.core.ParamGroup;
+import uk.ac.ebi.pride.data.core.Person;
 import uk.ac.ebi.pride.data.core.UserParam;
 import uk.ac.ebi.pride.term.CvTermReference;
 
@@ -45,14 +46,14 @@ public class ContactTableModel extends ListTableModel<ParamGroup> {
     }
 
     private static final String CONTACT_INFORMATION = "contact information";
-    private List<ParamGroup> contacts;
+    private List<Person> contacts;
 
-    public ContactTableModel(Collection<ParamGroup> contacts) {
-        this.contacts = new ArrayList<ParamGroup>(contacts);
+    public ContactTableModel(Collection<Person> contacts) {
+        this.contacts = new ArrayList<Person>();
 
         // add contacts
-        for (ParamGroup contact : contacts) {
-            addData(contact);
+        for (Person contact : contacts) {
+            addData(new ParamGroup(contact.getCvParams(),contact.getUserParams()));
         }
     }
 

@@ -28,11 +28,17 @@
     <mapID target="help.browse.protein" url="html/usage/browse/protein.html"/>
     <mapID target="help.browse.peptide" url="html/usage/browse/peptide.html"/>
     <mapID target="help.browse.mzgraph" url="html/usage/browse/mzgraph.html"/>
+    <mapID target="help.browse.quant" url="html/usage/browse/quant.html"/>
     <mapID target="help.browse.chart" url="html/usage/browse/quality_chart.html"/>
 
     <mapID target="help.mzgraph" url="html/usage/vis_mzgraph.html"/>
     <mapID target="help.mzgraph.spectra" url="html/usage/mzgraph/spectra.html"/>
     <mapID target="help.mzgraph.chroma" url="html/usage/mzgraph/chromatogram.html"/>
+
+    <mapID target="help.protein" url="html/usage/vis_protein.html"/>
+    <mapID target="help.protein.details" url="html/usage/protein/obtain_protein_details.html"/>
+    <mapID target="help.protein.viewer" url="html/usage/protein/protein_sequence_viewer.html"/>
+    <mapID target="help.protein.decoy" url="html/usage/protein/decoy_filter.html"/>
 
     <mapID target="help.chart" url="html/usage/view_chart.html"/>
     <mapID target="help.chart.1" url="html/usage/chart/chart_1.html"/>
@@ -49,7 +55,13 @@
 
     <mapID target="help.examples" url="html/usage/try_examples.html"/>
 
-    <mapID target="help.exprot" url="html/usage/export.html"/>
+    <mapID target="help.export" url="html/usage/export.html"/>
+
+    <mapID target="help.export.quant" url="html/usage/export_quant.html"/>
+
+    <mapID target="help.export.quant.principle" url="html/usage/quant_principle.html"/>
+
+    <mapID target="help.isoelectric.point" url="html/usage/isoelectric_point.html"/>
 
     <mapID target="help.pridedb" url="html/usage/connect_pride_db.html"/>
 

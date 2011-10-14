@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.MetaData;
+import uk.ac.ebi.pride.data.core.ExperimentMetaData;
 import uk.ac.ebi.pride.data.core.UserParam;
 import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
@@ -19,6 +19,7 @@ import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveMetaDataTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.model.interfaces.core.Experiment;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
@@ -37,7 +38,7 @@ import java.lang.reflect.InvocationTargetException;
  * Date: 05-Mar-2010
  * Time: 15:12:07
  */
-public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> implements ActionListener {
+public class MetaDataTabPane extends DataAccessControllerPane<ExperimentMetaData, Void> implements ActionListener {
     private static final Logger logger = LoggerFactory.getLogger(MetaDataTabPane.class);
 
     private static final String GENERAL = "Experiment General";
@@ -84,8 +85,8 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
     }
 
     @Override
-    public void succeed(TaskEvent<MetaData> metaDataTaskEvent) {
-        final MetaData metaData = metaDataTaskEvent.getValue();
+    public void succeed(TaskEvent<ExperimentMetaData> metaDataTaskEvent) {
+        final ExperimentMetaData metaData = metaDataTaskEvent.getValue();
 
         Runnable run = new Runnable() {
 
@@ -133,7 +134,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
      *
      * @param metaData Experimental metadata
      */
-    private void notifyKeyInfo(MetaData metaData) {
+    private void notifyKeyInfo(ExperimentMetaData metaData) {
         java.util.List<CvParam> cvParams = metaData.getCvParams();
         if (cvParams != null) {
             for (CvParam cvParam : cvParams) {
@@ -279,7 +280,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
         generalButton.setSelected(true);
     }
 
-    private void createMetaDataPanels(MetaData metaData) {
+    private void createMetaDataPanels(ExperimentMetaData metaData) {
         generalMetadataPanel = new GeneralMetadataPanel(metaData);
         sampleProtocolMetadataPanel = new SampleProtocolMetadataPanel(metaData);
         instrumentProcMetadataPanel = new InstrumentProcessingMetadataPanel(metaData);

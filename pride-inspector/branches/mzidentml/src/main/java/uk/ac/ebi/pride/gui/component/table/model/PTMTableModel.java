@@ -65,7 +65,7 @@ public class PTMTableModel extends ProgressiveListTableModel<Void, Peptide> {
                 // row number
                 content.add(this.getRowCount() + 1);
                 // accession
-                content.add(mod.getAccession());
+                content.add(mod.getId().toString());
                 // name
                 content.add(mod.getName());
                 // location
@@ -87,14 +87,14 @@ public class PTMTableModel extends ProgressiveListTableModel<Void, Peptide> {
                     content.add(null);
                 }
                 // mono mass
-                List<Double> monoMasses = mod.getMonoMassDeltas();
+                List<Double> monoMasses = mod.getMonoisotopicMassDelta();
                 if (monoMasses != null && !monoMasses.isEmpty()) {
                     content.add(monoMasses.get(0));
                 } else {
                     content.add(null);
                 }
                 // average mass
-                List<Double> avgMasses = mod.getAvgMassDeltas();
+                List<Double> avgMasses = mod.getAvgMassDelta();
                 if (avgMasses != null && !avgMasses.isEmpty()) {
                     content.add(avgMasses.get(0));
                 } else {

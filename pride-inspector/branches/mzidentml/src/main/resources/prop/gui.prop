@@ -1,17 +1,17 @@
 open.file.title=Open File(s)
-open.file.tooltip=Open mzML or Pride XML Files
+open.file.tooltip=Open mzML or PRIDE XML Files
 open.file.icon.small=icon/16x16/open_file.gif
 open.file.icon.medium=icon/32x32/open_file.png
 open.file.icon.large=icon/48x48/open_file.png
 
-open.database.title=Connect PRIDE
-open.database.tooltip=Connect to PRIDE Public Database
+open.database.title=Search PRIDE
+open.database.tooltip=Connect and Search PRIDE Public Database
 open.database.icon.small=icon/16x16/open_database.gif
 open.database.icon.medium=icon/32x32/connect_database.png
 open.database.icon.large=icon/48x48/connect_database.png
 
 close.source.title=Close
-close.all.soruce.title=Close All
+close.all.source.title=Close All
 close.source.tooltip=Close file/database connection
 close.individual.source.enable.icon.small=icon/16x16/close_data_source.gif
 close.source.enable.icon.small=icon/16x16/delete_enable.gif
@@ -49,6 +49,7 @@ exit.title=Exit
 # try samples
 open.pride.xml.example.title=PRIDE XML
 open.mzml.example.title=mzML
+open.more.example.title=More examples...
 
 data.source.title=Experiments
 data.source.small.icon=icon/16x16/data_source.gif
@@ -90,6 +91,8 @@ export.enabled.small.icon=icon/16x16/export_enable.gif
 export.disabled.small.icon=icon/16x16/export_disable.gif
 export.title=Spectra (.mgf)
 export.tooltip=Export spectra into MGF format
+
+export.pride.xml.title = PRIDE XML
 
 export.identification.title=Protein-Peptide Mappings
 export.identification.tooltip=Export proteins and Peptides into tab delimited format.
@@ -163,13 +166,17 @@ copy.cell.small.icon=icon/16x16/copy_cell.gif
 copy.row.title=Copy Rows
 copy.row.small.icon=icon/16x16/copy_row.png
 
-# icons for popup menu select all
+# icons for table popup menu
+search.table.title = Find
+search.table.small.icon = icon/16x16/find_experiment.png
+print.table.title = Print
 select.all.title=Select All
 deselect.all.title=Deselect All
 
 # icon for welcome pane
 puzzle.bulletin.icon.medium=icon/48x48/puzzle.png
-puzzle.bulletin.icon.small=icon/16x16/puzzle.png
+puzzle.bulletin.icon.small=icon/16x16/help_doc.png
+feedback.icon.small=icon/16x16/feedback.png
 
 # pride logo
 pride.main.large.logo=logo/prideInspector-medium.png
@@ -184,7 +191,7 @@ load.next.mzdata.small.icon=icon/16x16/load_next.png
 
 #download protein name
 load.protein.detail.small.icon=icon/16x16/load_next.png
-load.protein.detail.title=Protein Details
+load.protein.detail.title=Obtain Protein Details
 
 # set control sample
 set.control.sample.title=Set Control Sample
@@ -289,7 +296,7 @@ chart.warning.message=It may take some time to compute these summary charts for 
 chart.time.warning.message=Calculating summary charts requires a full file scan, this may take a few minutes, thank you for waiting.
 no.protein.selection.warning.message=Select Proteins Using Checkbox Above
 no.spectrum.warning.message = Spectrum Not Available
-out.of.memory.message=Pride Inspector has run out memory.\nYou can increase the memory limit in ./config/config.props.\nCheck out the FAQ section in the help document for details.
+out.of.memory.message=PRIDE Inspector has run out memory.\nYou can increase the memory limit in ./config/config.props.\nCheck out the FAQ section in the help document for details.
 
 
 # export quantitative data
@@ -301,6 +308,19 @@ export.quantitative.data.small.icon= icon/16x16/export_enable.gif
 quant.histogram.title =  Protein Quantification
 quant.histogram.x.axis = Reagent
 quant.histogram.y.axis = Ratio
+
+# decoy filter
+decoy.filter.title = Decoy Filter
+decoy.filter.tooltip = Decoy Filter
+decoy.filter.small.icon = icon/16x16/filter.png
+
+# menu related icons
+menu.selection.tick.small.icon = icon/16x16/tick.png
+menu.setting.small.icon = icon/16x16/configuration.png
+
+# table related icons
+add.experiment.small.icon = icon/16x16/plus.png
+view.detail.small.icon = icon/16x16/detail.png
 
            
 

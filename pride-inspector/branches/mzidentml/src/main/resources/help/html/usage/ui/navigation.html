@@ -32,15 +32,17 @@
             PRIDE Inspector can open multiple files and public experiments from the PRIDE database simultaneously.
 
             The <span class="keyword">Navigation Panel</span> is organising the opened data
-            sources. This panel can be hidden/shown by clicking <img src="../../../../icon/16x16/data_source.gif" alt=""> 
+            sources. This panel can be hidden/shown by clicking <img src="../../../../icon/16x16/data_source.gif"
+                                                                     alt="">
             on the left toolbar.
         </p>
         <br>
 
         <p>The Navigation Panel consists of two main sub panels: </p>
         <ul>
+            <li><a href="#actions">Menu</a></li>
             <li><a href="#data_sources">Data Sources</a></li>
-            <li><a href="#experiments">Experiments</a></li>
+            <li><a href="#summary">Experiment Summary</a></li>
         </ul>
     </div>
 
@@ -48,6 +50,20 @@
     <div id="content">
         <div class="section">
             <div class="piProcedureSteps">
+                <a name="actions"></a>
+
+                <h3>Menu</h3>
+
+                <p>
+                    This panel is being displayed by default, all four main functions of the PRIDE Inspector are listed:
+                <ul>
+                    <li>Open local files</li>
+                    <li>Connect to PRIDE public instance</li>
+                    <li>Download private experiments</li>
+                    <li>Access the help document</li>
+                </ul>
+                </p>
+
                 <a name="data_sources"></a>
 
                 <h3>Data Sources</h3>
@@ -55,24 +71,22 @@
                 <p>
                     This panel is being displayed by default, all opened data sources are shown here.
                     You
-                    can view the content of the data source by clicking on the entry in the panel. Furthermore, you can close
+                    can view the content of the data source by clicking on the entry in the panel. Furthermore, you can
+                    close
                     the
                     data source by clicking on <img src="../../../../icon/16x16/close_data_source.gif" alt="">. A
                     separate
                     is created for every opened file or public PRIDE experiment.
                 </p>
 
-                <a name="experiments"></a>
+                <a name="summary"></a>
 
-                <h3>Experiments</h3>
+                <h3>Experiment Summary</h3>
 
                 <p>
-                    This panel is hidden by default, it is only shown when a connection to the PRIDE database has
-                    been
-                    established. Once shown, a list of public experiments is displayed, each experiment identified
-                    by
-                    its PRIDE accession. To view an experiment, one can click on the accession in the panel, or directly 
-                    type the accession in the <span class="keyword">Jump To</span> text box.
+                    This panel is the key component for assessing the data quality of the experiment, each item in this
+                    component indicates on aspect of the experiment, for instance, if the spectra are missing, a red
+                    error message will be displayed. This component gives you a quick overview of your data.
                 </p>
             </div>
         </div>

@@ -291,7 +291,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
                     Collection<Modification> mods = controller.getPTMs(identId, peptideId);
                     for (Modification mod : mods) {
                         // get accession
-                        String accession = mod.getAccession();
+                        String accession = mod.getId().toString();
                         Map<String, Double> aminoAcidMap = modMap.get(accession);
                         if (aminoAcidMap == null) {
                             aminoAcidMap = new HashMap<String, Double>();
@@ -304,9 +304,9 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
                             String aminoAcid = String.valueOf(seq.charAt(location - 1));
                             // get delta mass (monoisotopic)
                             double massDelta = -1;
-                            java.util.List<Double> massDeltas = mod.getMonoMassDeltas();
+                            java.util.List<Double> massDeltas = mod.getMonoisotopicMassDelta();
                             if (massDeltas != null && !massDeltas.isEmpty()) {
-                                massDelta = mod.getMonoMassDeltas().get(0);
+                                massDelta = mod.getMonoisotopicMassDelta().get(0);
                             }
                             aminoAcidMap.put(aminoAcid, massDelta);
                         }

@@ -348,7 +348,7 @@ public class TableFactory {
      * @param contacts given list of contacts
      * @return JTable  contact table
      */
-    public static JTable createContactTable(Collection<ParamGroup> contacts) {
+    public static JTable createContactTable(Collection<Person> contacts) {
         ContactTableModel tableModel = new ContactTableModel(contacts);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable contactTable = new DefaultPrideTable(tableModel, columnModel);

@@ -42,7 +42,7 @@ public class GeneralMetadataPanel extends JPanel {
      */
     private void populateComponents(ExperimentMetaData metaData) {
         // get accession
-        String accession = metaData.getId().toString();
+        String accession = (metaData.getId() != null)?metaData.getId().toString():null;
         accessionField = new JTextField();
         if (accession != null) {
             accessionField.setText(accession);
@@ -127,9 +127,10 @@ public class GeneralMetadataPanel extends JPanel {
         //List<InstrumentConfiguration> instruments = metaData.getInstrumentConfigurations();
         List<InstrumentConfiguration> instruments = null;
         //Todo: Fixed
+        if(instruments != null){
         for (InstrumentConfiguration instrument : instruments) {
             instrumentStr += instrument.getId();
-        }
+        }                       }
         instrumentField.setText(instrumentStr);
         instrumentField.setCaretPosition(0);
 

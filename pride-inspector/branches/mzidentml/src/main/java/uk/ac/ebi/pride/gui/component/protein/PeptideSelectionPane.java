@@ -291,7 +291,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
                     Collection<Modification> mods = controller.getPTMs(identId, peptideId);
                     for (Modification mod : mods) {
                         // get accession
-                        String accession = mod.getId().toString();
+                        String accession = (mod.getId() != null)?mod.getId().toString():null;
                         Map<String, Double> aminoAcidMap = modMap.get(accession);
                         if (aminoAcidMap == null) {
                             aminoAcidMap = new HashMap<String, Double>();

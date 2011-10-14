@@ -145,7 +145,7 @@ public class TableDataRetriever {
             }
 
             // store the accession
-            String accession = mod.getId().toString();
+            String accession = (mod.getId() != null)?mod.getId().toString():null;
             Integer cnt = accessionCntMap.get(accession);
             cnt = cnt == null ? 1 : cnt + 1;
             accessionCntMap.put(accession, cnt);

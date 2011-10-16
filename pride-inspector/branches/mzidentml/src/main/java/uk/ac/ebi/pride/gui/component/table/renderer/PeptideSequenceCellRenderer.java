@@ -68,6 +68,7 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
     private AttributedString getPTMString(Peptide peptide) {
         String sequence = peptide.getSequence();
         java.util.List<Modification> mods = peptide.getModifications();
+        System.out.println("trace:" + mods.size());
         AttributedString str = new AttributedString(sequence);
         if (mods != null) {
             int seqLength = sequence.length();

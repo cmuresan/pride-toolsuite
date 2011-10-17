@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.gui.component.table.renderer;
 
 import uk.ac.ebi.pride.data.core.Modification;
 import uk.ac.ebi.pride.data.core.Peptide;
+import uk.ac.ebi.pride.data.core.PeptideSequence;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -27,12 +28,12 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                    boolean hasFocus, int row, int column) {
 
-        if (value != null && value instanceof Peptide) {
+        if (value != null && value instanceof PeptideSequence) {
 
-            Peptide peptide = (Peptide) value;
+            PeptideSequence peptide = (PeptideSequence) value;
             ptmString = getPTMString(peptide);
             // get the modifications
-            java.util.List<Modification> mods = peptide.getModifications();
+            java.util.List<Modification> mods = peptide.getModificationList();
             // set the ptm string
             // set tooltips
             if (mods != null) {
@@ -65,10 +66,9 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
         g2.dispose();
     }
 
-    private AttributedString getPTMString(Peptide peptide) {
+    private AttributedString getPTMString(PeptideSequence peptide) {
         String sequence = peptide.getSequence();
-        java.util.List<Modification> mods = peptide.getModifications();
-        System.out.println("trace:" + mods.size());
+        java.util.List<Modification> mods = peptide.getModificationList();
         AttributedString str = new AttributedString(sequence);
         if (mods != null) {
             int seqLength = sequence.length();

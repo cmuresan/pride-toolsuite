@@ -367,7 +367,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public Collection<ScanSetting> getScanSettings() throws DataAccessException {
+    public List<ScanSetting> getScanSettings() throws DataAccessException {
         throw new UnsupportedOperationException("This method is unsupported");
     }
 

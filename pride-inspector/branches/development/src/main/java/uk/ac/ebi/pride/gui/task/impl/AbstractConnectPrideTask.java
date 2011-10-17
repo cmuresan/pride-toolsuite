@@ -23,7 +23,7 @@ import java.util.zip.GZIPInputStream;
  */
 public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<String, String>>, String> {
     private static final Logger logger = LoggerFactory.getLogger(DownloadExperimentTask.class);
-    private static final int BUFFER_SIZE = 2048;
+    private static final int BUFFER_SIZE = 1024;
 
     /**
      * Create http connection to pride download
@@ -118,7 +118,6 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
                 setProgress(100);
             }
             boutStream.flush();
-            boutStream.close();
             publish("Download has finished");
         } catch (IOException ex) {
             String msg = ex.getMessage();

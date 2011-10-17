@@ -12,6 +12,10 @@
 
 ----
 == News ==
+*_October 17. 2011:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.2.1] is now available:*
+ * Bug fix for downloading PRIDE XML files through PRIDE web service.
+ * Bug fix for inconsistent number of unique peptides. 
+
 *_September 30. 2011:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.2.0] is now available:*
  * This version is a major update.
  * New search and download feature for experiments in the PRIDE public database.

@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.jaxb.xml.PrideXmlReader;
 import java.util.ArrayList;
 
 /**
- * PrideXmlAcccessCacheBuilder initialize the cache for pride xml reading.
+ * PrideXmlAccessCacheBuilder initialize the cache for pride xml reading.
  * <p/>
  * User: rwang
  * Date: 06-Sep-2010

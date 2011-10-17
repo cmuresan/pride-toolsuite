@@ -223,14 +223,17 @@ public class AnnotatedProtein extends Protein {
             setNumOfValidPeptides(numOfValidPeptides);
 
             // keep only unique peptides
-            Set<PeptideAnnotation> uniquePeptides = new LinkedHashSet<PeptideAnnotation>();
-            uniquePeptides.addAll(peptides);
-            setNumOfUniquePeptides(uniquePeptides.size());
+            Set<String> uniquePeptideSequences = new HashSet<String>();
+            for (PeptideAnnotation peptide : peptides) {
+                uniquePeptideSequences.add(peptide.getSequence());
+            }
+            this.setNumOfUniquePeptides(uniquePeptideSequences.size());
 
             // peptide coverage array
             // it is the length of the protein sequence, and contains the count of sequence coverage for each position
             int length = sequence == null ? 0 : sequence.length();
             int[] coverageArr = new int[length];
+            Set<PeptideAnnotation> uniquePeptides = new LinkedHashSet<PeptideAnnotation>(peptides);
             for (PeptideAnnotation uniquePeptide : uniquePeptides) {
                 Set<Integer> startingPos = new HashSet<Integer>();
                 boolean strictValidPeptideAnnotation = isStrictValidPeptideAnnotation(uniquePeptide);

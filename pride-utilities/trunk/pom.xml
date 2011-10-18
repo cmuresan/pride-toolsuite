@@ -6,7 +6,7 @@
 
     <groupId>uk.ac.ebi.pride.util</groupId>
     <artifactId>pride-utilities</artifactId>
-    <version>0.1.11</version>
+    <version>0.1.12</version>
 
     <dependencies>
         <!-- logging dependencies -->

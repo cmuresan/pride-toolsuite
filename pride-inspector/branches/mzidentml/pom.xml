@@ -86,7 +86,7 @@
             <version>0.9.24</version>
         </dependency>
         <dependency>
-            <groupId>ms-data-core-api</groupId>
+            <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>ms-data-core-api</artifactId>
             <version>0.1</version>
         </dependency>

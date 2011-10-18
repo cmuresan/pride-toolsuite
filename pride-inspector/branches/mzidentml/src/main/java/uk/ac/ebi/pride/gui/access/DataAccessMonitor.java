@@ -5,7 +5,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.RemoveDataSourceEvent;
-import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
+import uk.ac.ebi.pride.gui.prop.PropertyChangeHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;

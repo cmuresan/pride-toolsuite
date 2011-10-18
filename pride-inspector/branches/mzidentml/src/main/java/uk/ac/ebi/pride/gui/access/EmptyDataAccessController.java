@@ -3,9 +3,8 @@ package uk.ac.ebi.pride.gui.access;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.impl.AbstractDataAccessController;
+import uk.ac.ebi.pride.data.controller.impl.PrideChartManager;
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.gui.component.chart.PrideChartManager;
-import uk.ac.ebi.pride.model.interfaces.core.Experiment;
 
 import java.util.Collection;
 import java.util.Collections;

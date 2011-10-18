@@ -4,6 +4,7 @@ import org.jfree.ui.tabbedui.VerticalLayout;
 import uk.ac.ebi.pride.chart.graphics.implementation.PrideChart;
 import uk.ac.ebi.pride.chart.graphics.implementation.data.DataSeriesType;
 import uk.ac.ebi.pride.chart.graphics.interfaces.PrideChartSpectraOptions;
+import uk.ac.ebi.pride.data.controller.impl.PrideChartManager;
 
 import javax.swing.*;
 import java.awt.*;

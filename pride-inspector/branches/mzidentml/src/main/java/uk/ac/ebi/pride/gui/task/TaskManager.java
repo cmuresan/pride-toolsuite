@@ -2,8 +2,8 @@ package uk.ac.ebi.pride.gui.task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.gui.prop.PropertyChangeHelper;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
-import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.component.status.StatusBar;
 import uk.ac.ebi.pride.gui.listeners.ExitListener;
-import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
+import uk.ac.ebi.pride.gui.prop.PropertyChangeHelper;
 
 import javax.swing.*;
 import java.lang.reflect.Constructor;

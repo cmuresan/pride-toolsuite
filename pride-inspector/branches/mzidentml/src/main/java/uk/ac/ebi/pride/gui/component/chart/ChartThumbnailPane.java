@@ -4,6 +4,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import uk.ac.ebi.pride.chart.graphics.implementation.PrideChartException;
 import uk.ac.ebi.pride.chart.graphics.implementation.PrideChartFactory;
+import uk.ac.ebi.pride.data.controller.impl.PrideChartManager;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.prop.PropertyManager;

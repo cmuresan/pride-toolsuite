@@ -107,7 +107,7 @@ public class TableDataRetriever {
                 }
             }
             Double deltaMass = MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
-            content.add(deltaMass == null ? null : NumberUtilities.scaleDouble(deltaMass, 2));
+            content.add(deltaMass == null ? null : deltaMass);
 
             // precursor m/z
             content.add(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 2));

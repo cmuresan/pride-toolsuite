@@ -3,7 +3,12 @@ package uk.ac.ebi.pride.gui.component.metadata;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 import org.jdesktop.swingx.table.TableColumnExt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.listener.HyperLinkCellMouseClickListener;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
@@ -13,12 +18,8 @@ import uk.ac.ebi.pride.term.CvTermReference;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 /*
  * Created by JFormDesigner on Sat Jul 23 08:30:00 BST 2011
@@ -29,8 +30,12 @@ import java.util.regex.Pattern;
  * @author User #2
  */
 public class GeneralMetadataPanel extends JPanel {
+    private static final Logger logger = LoggerFactory.getLogger(GeneralMetadataPanel.class);
 
-    public GeneralMetadataPanel(MetaData metaData) {
+    private DataAccessController controller;
+
+    public GeneralMetadataPanel(MetaData metaData, DataAccessController controller) {
+        this.controller = controller;
         populateComponents(metaData);
         initComponents();
     }
@@ -131,6 +136,31 @@ public class GeneralMetadataPanel extends JPanel {
         instrumentField.setText(instrumentStr);
         instrumentField.setCaretPosition(0);
 
+        // search engine field
+        searchEngineField = new JTextField();
+        // search database field
+        searchDatabaseField = new JTextField();
+
+        Comparable identId = null;
+        try {
+            Collection<Comparable> identIds = controller.getIdentificationIds();
+            identId = CollectionUtils.getElement(identIds, 0);
+            Object engine = identId == null ? "Unknown" : controller.getSearchEngine().getOriginalTitle();
+            engine = engine == null ? "Unknown" : engine;
+            searchEngineField.setText(engine.toString());
+            searchEngineField.setCaretPosition(0);
+        }catch (DataAccessException e) {
+            logger.error("Failed to retrieve search engine", e);
+        }
+
+        try {
+            Object database = identId == null ? "Unknown" : controller.getSearchDatabase(identId);
+            database = database == null ? "Unknown" : database;
+            searchDatabaseField.setText(database.toString());
+            searchDatabaseField.setCaretPosition(0);
+        } catch (DataAccessException e) {
+            logger.error("Failed to retrieve search database", e);
+        }
 
         // reference
         if (metaData instanceof Experiment && ((Experiment) metaData).getReferences() != null) {
@@ -194,6 +224,8 @@ public class GeneralMetadataPanel extends JPanel {
         speciesLabel = new JLabel();
         tissueLabel = new JLabel();
         instrumentLabel = new JLabel();
+        searchEngineLabel = new JLabel();
+        searchDatabaseLabel = new JLabel();
 
         //======== this ========
         setFocusable(false);
@@ -201,22 +233,27 @@ public class GeneralMetadataPanel extends JPanel {
         //---- accessionLabel ----
         accessionLabel.setText("Experiment Accession");
         accessionLabel.setFont(accessionLabel.getFont().deriveFont(accessionLabel.getFont().getStyle() | Font.BOLD));
+        accessionLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
         //---- expTitleLabel ----
         expTitleLabel.setText("Experiment Title");
         expTitleLabel.setFont(expTitleLabel.getFont().deriveFont(expTitleLabel.getFont().getStyle() | Font.BOLD));
+        expTitleLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
         //---- shortLabel ----
         shortLabel.setText("Experiment Label");
         shortLabel.setFont(shortLabel.getFont().deriveFont(shortLabel.getFont().getStyle() | Font.BOLD));
+        shortLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
         //---- projectLabel ----
         projectLabel.setText("Project Name");
         projectLabel.setFont(projectLabel.getFont().deriveFont(projectLabel.getFont().getStyle() | Font.BOLD));
+        projectLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
         //---- expDescLabel ----
         expDescLabel.setText("Experiment Description");
         expDescLabel.setFont(expDescLabel.getFont().deriveFont(expDescLabel.getFont().getStyle() | Font.BOLD));
+        expDescLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
         //---- accessionField ----
         accessionField.setEditable(false);
@@ -278,6 +315,7 @@ public class GeneralMetadataPanel extends JPanel {
         //---- speciesLabel ----
         speciesLabel.setText("Species");
         speciesLabel.setFont(speciesLabel.getFont().deriveFont(speciesLabel.getFont().getStyle() | Font.BOLD));
+        speciesLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
         //---- speciesField ----
         speciesField.setEditable(false);
@@ -285,7 +323,7 @@ public class GeneralMetadataPanel extends JPanel {
         //---- tissueLabel ----
         tissueLabel.setText("Tissue");
         tissueLabel.setFont(tissueLabel.getFont().deriveFont(tissueLabel.getFont().getStyle() | Font.BOLD));
-        tissueLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        tissueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
         //---- tissueField ----
         tissueField.setEditable(false);
@@ -293,9 +331,28 @@ public class GeneralMetadataPanel extends JPanel {
         //---- instrumentLabel ----
         instrumentLabel.setText("Instrument");
         instrumentLabel.setFont(instrumentLabel.getFont().deriveFont(instrumentLabel.getFont().getStyle() | Font.BOLD));
+        instrumentLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
         //---- instrumentField ----
         instrumentField.setEditable(false);
+
+        //---- searchEngineLabel ----
+        searchEngineLabel.setText("Search Engine");
+        searchEngineLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
+        searchEngineLabel.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        searchEngineLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        //---- searchEngineField ----
+        searchEngineField.setEditable(false);
+
+        //---- searchDatabaseLabel ----
+        searchDatabaseLabel.setText("Search Database");
+        searchDatabaseLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+        searchDatabaseLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        searchDatabaseLabel.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+
+        //---- searchDatabaseField ----
+        searchDatabaseField.setEditable(false);
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -305,46 +362,60 @@ public class GeneralMetadataPanel extends JPanel {
                                 .addContainerGap()
                                 .add(layout.createParallelGroup()
                                         .add(layout.createSequentialGroup()
-                                                .add(projectLabel)
-                                                .addContainerGap(701, Short.MAX_VALUE))
-                                        .add(instrumentLabel, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
-                                        .add(layout.createSequentialGroup()
-                                                .add(contactLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
-                                                .addContainerGap(625, Short.MAX_VALUE))
-                                        .add(layout.createSequentialGroup()
-                                                .add(referenceLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
-                                                .addContainerGap(625, Short.MAX_VALUE))
-                                        .add(layout.createSequentialGroup()
-                                                .add(additionalLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
-                                                .addContainerGap(625, Short.MAX_VALUE))
+                                                .add(scrollPane4, GroupLayout.DEFAULT_SIZE, 770, Short.MAX_VALUE)
+                                                .addContainerGap())
                                         .add(GroupLayout.TRAILING, layout.createSequentialGroup()
-                                                .add(layout.createParallelGroup(GroupLayout.TRAILING)
-                                                        .add(GroupLayout.LEADING, scrollPane4, GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE)
-                                                        .add(GroupLayout.LEADING, scrollPane3, GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE)
-                                                        .add(GroupLayout.LEADING, scrollPane2, GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE)
+                                                .add(layout.createParallelGroup()
+                                                        .add(speciesLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
+                                                        .add(shortLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
+                                                        .add(expTitleLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
+                                                        .add(accessionLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
+                                                        .add(projectLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
+                                                        .add(instrumentLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
+                                                        .add(searchEngineLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
+                                                        .add(expDescLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(LayoutStyle.RELATED)
+                                                .add(layout.createParallelGroup()
+                                                        .add(layout.createSequentialGroup()
+                                                                .add(scrollPane1, GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE)
+                                                                .addContainerGap())
                                                         .add(layout.createSequentialGroup()
                                                                 .add(layout.createParallelGroup()
-                                                                        .add(accessionLabel)
-                                                                        .add(expTitleLabel)
-                                                                        .add(layout.createParallelGroup(GroupLayout.TRAILING, false)
-                                                                                .add(GroupLayout.LEADING, speciesLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                                                .add(GroupLayout.LEADING, shortLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                                                        .add(expDescLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE))
-                                                                .addPreferredGap(LayoutStyle.RELATED)
-                                                                .add(layout.createParallelGroup(GroupLayout.TRAILING)
-                                                                        .add(GroupLayout.LEADING, scrollPane1, GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
-                                                                        .add(GroupLayout.LEADING, layout.createSequentialGroup()
+                                                                        .add(layout.createSequentialGroup()
+                                                                                .add(searchEngineField, GroupLayout.PREFERRED_SIZE, 228, GroupLayout.PREFERRED_SIZE)
+                                                                                .add(18, 18, 18)
+                                                                                .add(searchDatabaseLabel, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
+                                                                                .addPreferredGap(LayoutStyle.RELATED)
+                                                                                .add(searchDatabaseField, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE))
+                                                                        .add(layout.createSequentialGroup()
                                                                                 .add(speciesField, GroupLayout.PREFERRED_SIZE, 224, GroupLayout.PREFERRED_SIZE)
                                                                                 .add(18, 18, 18)
                                                                                 .add(tissueLabel, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
                                                                                 .addPreferredGap(LayoutStyle.RELATED)
-                                                                                .add(tissueField, GroupLayout.PREFERRED_SIZE, 224, GroupLayout.PREFERRED_SIZE))
-                                                                        .add(GroupLayout.LEADING, expTitleField, GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
-                                                                        .add(GroupLayout.LEADING, accessionField, GroupLayout.PREFERRED_SIZE, 224, GroupLayout.PREFERRED_SIZE)
-                                                                        .add(GroupLayout.LEADING, projectField, GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
-                                                                        .add(GroupLayout.LEADING, shortLabelField, GroupLayout.PREFERRED_SIZE, 224, GroupLayout.PREFERRED_SIZE)
-                                                                        .add(instrumentField, GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE))))
-                                                .add(11, 11, 11))))
+                                                                                .add(tissueField, GroupLayout.PREFERRED_SIZE, 233, GroupLayout.PREFERRED_SIZE))
+                                                                        .add(expTitleField, GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
+                                                                        .add(accessionField, GroupLayout.PREFERRED_SIZE, 224, GroupLayout.PREFERRED_SIZE)
+                                                                        .add(shortLabelField, GroupLayout.PREFERRED_SIZE, 224, GroupLayout.PREFERRED_SIZE)
+                                                                        .add(projectField, GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE))
+                                                                .add(11, 11, 11))
+                                                        .add(layout.createSequentialGroup()
+                                                                .add(instrumentField, GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE)
+                                                                .addContainerGap())))
+                                        .add(layout.createSequentialGroup()
+                                                .add(additionalLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
+                                                .addContainerGap(625, Short.MAX_VALUE))
+                                        .add(layout.createSequentialGroup()
+                                                .add(scrollPane3, GroupLayout.DEFAULT_SIZE, 770, Short.MAX_VALUE)
+                                                .addContainerGap())
+                                        .add(layout.createSequentialGroup()
+                                                .add(contactLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
+                                                .addContainerGap(625, Short.MAX_VALUE))
+                                        .add(layout.createSequentialGroup()
+                                                .add(scrollPane2, GroupLayout.DEFAULT_SIZE, 770, Short.MAX_VALUE)
+                                                .addContainerGap())
+                                        .add(layout.createSequentialGroup()
+                                                .add(referenceLabel, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
+                                                .addContainerGap(625, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup()
@@ -371,30 +442,38 @@ public class GeneralMetadataPanel extends JPanel {
                                         .add(speciesField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                         .add(tissueLabel)
                                         .add(tissueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                .add(23, 23, 23)
+                                .add(17, 17, 17)
                                 .add(layout.createParallelGroup(GroupLayout.BASELINE)
-                                        .add(instrumentLabel)
-                                        .add(instrumentField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .add(instrumentField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .add(instrumentLabel))
+                                .add(18, 18, 18)
+                                .add(layout.createParallelGroup(GroupLayout.BASELINE)
+                                        .add(searchEngineField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .add(searchEngineLabel)
+                                        .add(searchDatabaseLabel, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+                                        .add(searchDatabaseField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .add(18, 18, 18)
                                 .add(layout.createParallelGroup()
                                         .add(layout.createSequentialGroup()
-                                                .add(34, 34, 34)
-                                                .add(expDescLabel))
+                                                .add(layout.createParallelGroup()
+                                                        .add(layout.createSequentialGroup()
+                                                                .add(77, 77, 77)
+                                                                .add(referenceLabel))
+                                                        .add(scrollPane1, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(LayoutStyle.RELATED)
+                                                .add(scrollPane2, GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                                                .addPreferredGap(LayoutStyle.RELATED)
+                                                .add(contactLabel)
+                                                .addPreferredGap(LayoutStyle.RELATED)
+                                                .add(scrollPane3, GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                                                .addPreferredGap(LayoutStyle.RELATED)
+                                                .add(additionalLabel)
+                                                .addPreferredGap(LayoutStyle.RELATED)
+                                                .add(scrollPane4, GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                                                .add(4, 4, 4))
                                         .add(layout.createSequentialGroup()
-                                                .add(27, 27, 27)
-                                                .add(scrollPane1, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(referenceLabel)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(scrollPane2, GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(contactLabel)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(scrollPane3, GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(additionalLabel)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(scrollPane4, GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
-                                .add(26, 26, 26))
+                                                .add(expDescLabel)
+                                                .addContainerGap(243, Short.MAX_VALUE))))
         );
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
@@ -427,5 +506,9 @@ public class GeneralMetadataPanel extends JPanel {
     private JTextField tissueField;
     private JLabel instrumentLabel;
     private JTextField instrumentField;
+    private JLabel searchEngineLabel;
+    private JTextField searchEngineField;
+    private JLabel searchDatabaseLabel;
+    private JTextField searchDatabaseField;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

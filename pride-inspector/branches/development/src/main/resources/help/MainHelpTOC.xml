@@ -56,6 +56,7 @@
             <tocitem text="What is mzML Format?" target="help.faq.mzml"/>
             <tocitem text="What to do when PRIDE Inspector run out of memory?" target="help.faq.memory"/>
             <tocitem text="How does PRIDE Inspector calculate delta m/z?" target="help.faq.deltamz"/>
+            <tocitem text="The problem with shared peptides?" target="help.faq.shared.peptide"/>
         </tocitem>
 
         <tocitem text="Feedback Page" target="help.feedback"/>

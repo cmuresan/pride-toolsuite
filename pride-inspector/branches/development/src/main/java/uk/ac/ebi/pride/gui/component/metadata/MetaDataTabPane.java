@@ -280,7 +280,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<MetaData, Void> im
     }
 
     private void createMetaDataPanels(MetaData metaData) {
-        generalMetadataPanel = new GeneralMetadataPanel(metaData);
+        generalMetadataPanel = new GeneralMetadataPanel(metaData, controller);
         sampleProtocolMetadataPanel = new SampleProtocolMetadataPanel(metaData);
         instrumentProcMetadataPanel = new InstrumentProcessingMetadataPanel(metaData);
         // set default panel

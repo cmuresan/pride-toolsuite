@@ -127,23 +127,6 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
             metaDataPanel.add(identLabel);
             metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
-            // search engine
-            Object engine = identId == null ? "Unknown" : controller.getSearchEngine().getOriginalTitle();
-            engine = engine == null ? "Unknown" : engine;
-            JLabel dbLabel = new JLabel("<html><b>Search Engine</b>: " + engine + "</htlm>");
-            dbLabel.setToolTipText(engine.toString());
-            metaDataPanel.add(dbLabel);
-            metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
-
-            // search database
-            Object database = identId == null ? "Unknown" : controller.getSearchDatabase(identId);
-            database = database == null ? "Unknown" : database;
-            JLabel engineLabel = new JLabel("<html><b>Search Database</b>: </html>");
-            JLabel engineValLabel = new JLabel(database.toString());
-            engineValLabel.setPreferredSize(new Dimension(200, 15));
-            engineValLabel.setToolTipText(database.toString());
-            metaDataPanel.add(engineLabel);
-            metaDataPanel.add(engineValLabel);
         } catch (DataAccessException e) {
             String msg = "Failed to createAttributedSequence meta data pane for identifications";
             logger.error(msg, e);
@@ -182,6 +165,18 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
         }
         decoyFilterButton.setAction(action);
         toolBar.add(decoyFilterButton);
+
+        // add gap
+        toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
+
+        // shared peptide warning
+        Icon sharedPeptideIcon = GUIUtilities.loadIcon(appContext.getProperty("shared.peptide.icon.small"));
+        JButton sharedPeptideButton = GUIUtilities.createLabelLikeButton(sharedPeptideIcon, appContext.getProperty("shared.peptide.title"));
+        sharedPeptideButton.setToolTipText(appContext.getProperty("shared.peptide.tooltip"));
+        sharedPeptideButton.setForeground(Color.blue);
+        CSH.setHelpIDString(sharedPeptideButton, "help.faq.shared.peptide");
+        sharedPeptideButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
+        toolBar.add(sharedPeptideButton);
 
         // add gap
         toolBar.add(Box.createRigidArea(new Dimension(10, 10)));

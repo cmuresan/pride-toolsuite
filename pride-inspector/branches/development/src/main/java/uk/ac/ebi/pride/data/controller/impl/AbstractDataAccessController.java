@@ -624,7 +624,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      *
      * @param identId identification id.
      * @return String search database
-     * @throws DataAccessException data accession exception
+     * @throws DataAccessException data access exception
      */
     @Override
     public String getSearchDatabase(Comparable identId) throws DataAccessException {
@@ -634,6 +634,23 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
             database = ident.getSearchDatabase();
         }
         return database;
+    }
+
+    /**
+     * Get search database version for a given protein identification
+     *
+     * @param identId identification id
+     * @return String  search database version
+     * @throws DataAccessException data access exception
+     */
+    @Override
+    public String getSearchDatabaseVersion(Comparable identId) throws DataAccessException {
+        String version = null;
+        Identification ident = getIdentificationById(identId);
+        if (ident != null) {
+            version = ident.getSearchDatabaseVersion();
+        }
+        return version;
     }
 
     /**

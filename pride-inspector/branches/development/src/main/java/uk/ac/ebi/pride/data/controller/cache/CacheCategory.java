@@ -30,6 +30,7 @@ public enum CacheCategory {
     PROTEIN_ACCESSION(HashMap.class, null), // Map<Identification id, Protein accession>
     PROTEIN_ACCESSION_VERSION(HashMap.class, null), // Map<Identification id, Protein accession version>
     PROTEIN_SEARCH_DATABASE(HashMap.class, null), // Map<Identification id, Protein search database>
+    PROTEIN_SEARCH_DATABASE_VERSION(HashMap.class, null), // Map<Identification id, Protein search database version>
     SCORE(HashMap.class, null), // Map<Identification id, Score>
     THRESHOLD(HashMap.class, null), // Map<Identification id, Threshold>
     IDENTIFICATION_TO_PARAM(HashMap.class, null), // Map<Identification id, ParamGroup>

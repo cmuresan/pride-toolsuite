@@ -135,6 +135,15 @@ public interface ProteinDataAccess {
      */
     public String getSearchDatabase(Comparable identId) throws DataAccessException;
 
+
+    /**
+     * Get the search database version of a identification
+     * @param identId   identification id
+     * @return  String  search database version
+     * @throws DataAccessException  data access exception
+     */
+    public String getSearchDatabaseVersion(Comparable identId) throws DataAccessException;
+
     /**
      * Get the search engine of a identification
      *

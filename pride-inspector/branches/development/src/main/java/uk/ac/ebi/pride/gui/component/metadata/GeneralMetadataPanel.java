@@ -156,7 +156,9 @@ public class GeneralMetadataPanel extends JPanel {
         try {
             Object database = identId == null ? "Unknown" : controller.getSearchDatabase(identId);
             database = database == null ? "Unknown" : database;
-            searchDatabaseField.setText(database.toString());
+            Object version = identId == null ? "" : controller.getSearchDatabaseVersion(identId);
+            version = version == null ? "" : version;
+            searchDatabaseField.setText(database.toString() + " " + version);
             searchDatabaseField.setCaretPosition(0);
         } catch (DataAccessException e) {
             logger.error("Failed to retrieve search database", e);

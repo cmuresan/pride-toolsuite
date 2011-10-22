@@ -26,7 +26,7 @@ public class DeltaMZRenderer extends JLabel implements TableCellRenderer {
         setOpaque(true);
         this.minLimit = min;
         this.maxLimit = max;
-        this.formatter = new DecimalFormat("0.###E0");
+        this.formatter = new DecimalFormat("#####.####");
     }
 
     @Override

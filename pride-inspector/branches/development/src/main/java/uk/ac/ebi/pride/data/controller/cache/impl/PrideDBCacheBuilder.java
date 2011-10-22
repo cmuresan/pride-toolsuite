@@ -175,6 +175,8 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         Map<Comparable, String> protAccVersions = new HashMap<Comparable, String>();
         // database map
         Map<Comparable, String> databases = new HashMap<Comparable, String>();
+        // database version map
+        Map<Comparable, String> versions = new HashMap<Comparable, String>();
         // scores map
         Map<Comparable, Double> scores = new HashMap<Comparable, Double>();
         // thresholds map
@@ -187,7 +189,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         try {
             connection = PooledConnectionFactory.getConnection();
             // get mz data array id
-            st = connection.prepareStatement("select identification_id, accession_number, accession_version, search_database, score, threshold from pride_identification " +
+            st = connection.prepareStatement("select identification_id, accession_number, accession_version, search_database, database_version, score, threshold from pride_identification " +
                     "join pride_experiment using(experiment_id) where accession=?");
             st.setString(1, expAcc.toString());
             rs = st.executeQuery();
@@ -196,12 +198,14 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
                 String acc = rs.getString("accession_number");
                 String accVersion = rs.getString("accession_version");
                 String database = rs.getString("search_database");
+                String databaseVersion = rs.getString("database_version");
                 Double sc = rs.getDouble("score");
                 Double thd = rs.getDouble("threshold");
                 identIds.add(id);
                 protAccs.put(id, acc);
                 protAccVersions.put(id, accVersion);
                 databases.put(id, database);
+                versions.put(id, databaseVersion);
                 scores.put(id, sc);
                 threholds.put(id, thd);
             }
@@ -217,6 +221,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         cache.storeInBatch(CacheCategory.PROTEIN_ACCESSION, protAccs);
         cache.storeInBatch(CacheCategory.PROTEIN_ACCESSION_VERSION, protAccVersions);
         cache.storeInBatch(CacheCategory.PROTEIN_SEARCH_DATABASE, databases);
+        cache.storeInBatch(CacheCategory.PROTEIN_SEARCH_DATABASE_VERSION, versions);
         cache.storeInBatch(CacheCategory.SCORE, scores);
         cache.storeInBatch(CacheCategory.THRESHOLD, threholds);
     }

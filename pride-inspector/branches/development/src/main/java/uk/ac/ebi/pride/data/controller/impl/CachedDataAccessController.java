@@ -511,6 +511,25 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     }
 
     /**
+     * Get search database version using identification id
+     *
+     * @param identId identification id.
+     * @return String search database version
+     * @throws DataAccessException data accession exception
+     */
+    @Override
+    public String getSearchDatabaseVersion(Comparable identId) throws DataAccessException {
+        String version = (String) cache.get(CacheCategory.PROTEIN_SEARCH_DATABASE_VERSION, identId);
+        if (!DataAccessMode.CACHE_ONLY.equals(mode) && version == null) {
+            version = super.getSearchDatabase(identId);
+            if (version != null) {
+                cache.store(CacheCategory.PROTEIN_SEARCH_DATABASE_VERSION, identId, version);
+            }
+        }
+        return version;
+    }
+
+    /**
      * Get peptide ids using identification id.
      * This implementation will check cache first.
      *

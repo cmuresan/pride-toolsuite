@@ -56,19 +56,13 @@ public class CacheAccessor implements Cache {
         // put into a map if underlying data structure is map
         if (content instanceof Map) {
             // must do this check here
-            if (key == null || value == null) {
-                String errMsg = "Key and value cannot be null (key: " + key + ", value: " + value + ")";
+            if (key == null) {
+                String errMsg = "Key cannot be null (key: " + key + ", value: " + value + ")";
                 logger.error(errMsg);
                 throw new IllegalArgumentException(errMsg);
             }
             ((Map) content).put(key, value);
         } else if (content instanceof  Collection) {
-            // must do this check here
-            if (key == null) {
-                String errMsg = "Key cannot be null (key: " + key + ")";
-                logger.error(errMsg);
-                throw new IllegalArgumentException(errMsg);
-            }
             ((Collection)content).add(key);
         } else {
             String errMsg = "Cannot store key-value pair to a data structure other than map";

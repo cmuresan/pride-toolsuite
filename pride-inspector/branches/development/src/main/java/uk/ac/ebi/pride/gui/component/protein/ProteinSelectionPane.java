@@ -167,7 +167,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
         toolBar.add(decoyFilterButton);
 
         // add gap
-        toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
+        toolBar.add(Box.createRigidArea(new Dimension(20, 10)));
 
         // shared peptide warning
         Icon sharedPeptideIcon = GUIUtilities.loadIcon(appContext.getProperty("shared.peptide.icon.small"));
@@ -177,9 +177,6 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
         CSH.setHelpIDString(sharedPeptideButton, "help.faq.shared.peptide");
         sharedPeptideButton.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
         toolBar.add(sharedPeptideButton);
-
-        // add gap
-        toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
 
         // expand button
         Icon expandIcon = GUIUtilities.loadIcon(appContext.getProperty("expand.table.icon.small"));

@@ -104,11 +104,9 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
         // add spectrum help pane
         Icon helpIcon = GUIUtilities.loadIcon(appContext.getProperty("help.icon.small"));
         String helpTooltip = appContext.getProperty("help.tooltip");
-        PrideAction helpAction = new OpenHelpAction(null, helpIcon);
+        PrideAction helpAction = new OpenHelpAction(null, helpIcon, "help.mzgraph.spectra");
         helpAction.putValue(Action.SHORT_DESCRIPTION, helpTooltip);
-        AbstractButton button = (AbstractButton) spectrumBrowser.getSidePane().addAction(helpAction, false);
-        CSH.setHelpIDString(button, "help.mzgraph.spectra");
-        button.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
+        spectrumBrowser.getSidePane().addAction(helpAction, false);
 
         this.add(spectrumBrowser, BorderLayout.CENTER);
     }

@@ -17,15 +17,25 @@ import java.awt.event.ActionListener;
  * Time: 11:41:13
  */
 public class OpenHelpAction extends PrideAction {
-    public OpenHelpAction(String name, Icon icon) {
+    private String helpIndex;
+
+    public OpenHelpAction(String name, Icon icon, String helpIndex) {
         super(name, icon);
-        setAccelerator(java.awt.event.KeyEvent.VK_F1);
+        this.helpIndex = helpIndex;
     }
+
+    public OpenHelpAction(String name, Icon icon, String helpIndex, int acceleratorKey) {
+        super(name, icon);
+        setAccelerator(acceleratorKey);
+        this.helpIndex = helpIndex;
+    }
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
         PrideInspectorContext context = (PrideInspectorContext)PrideInspector.getInstance().getDesktopContext();
-        CSH.setHelpIDString(PrideInspector.getInstance().getMainComponent(), "help.index");
+        CSH.setHelpIDString(PrideInspector.getInstance().getMainComponent(), helpIndex);
         ActionListener listener = new CSH.DisplayHelpFromSource(context.getMainHelpBroker());
         listener.actionPerformed(e);
     }

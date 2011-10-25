@@ -17,6 +17,7 @@ import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
+import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.component.chart.PrideChartManager;
 
 import java.util.*;
@@ -879,6 +880,44 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
             list.add(new PrideChartManager(prideChart));
         }
         return list;
+    }
+
+    /**
+     * Get protein quantification unit
+     *
+     * @return QuantCvTermReference    quantification unit
+     * @throws DataAccessException data access exception
+     */
+    @Override
+    public QuantCvTermReference getProteinQuantUnit() throws DataAccessException {
+        Collection<QuantCvTermReference> units = (Collection<QuantCvTermReference>) cache.get(CacheCategory.PROTEIN_QUANT_UNIT);
+
+        if (units != null && !units.isEmpty()) {
+            return CollectionUtils.getElement(units, 0);
+        } else {
+            QuantCvTermReference unit = super.getProteinQuantUnit();
+            cache.store(CacheCategory.PROTEIN_QUANT_UNIT, unit);
+            return unit;
+        }
+    }
+
+    /**
+     * Get peptide quantification unit
+     *
+     * @return QuantCvTermReference    quantification unit
+     * @throws DataAccessException data access exception
+     */
+    @Override
+    public QuantCvTermReference getPeptideQuantUnit() throws DataAccessException {
+        Collection<QuantCvTermReference> units = (Collection<QuantCvTermReference>) cache.get(CacheCategory.PEPTIDE_QUANT_UNIT);
+
+        if (units != null && !units.isEmpty()) {
+            return CollectionUtils.getElement(units, 0);
+        } else {
+            QuantCvTermReference unit = super.getPeptideQuantUnit();
+            cache.store(CacheCategory.PEPTIDE_QUANT_UNIT, unit);
+            return unit;
+        }
     }
 
     /**

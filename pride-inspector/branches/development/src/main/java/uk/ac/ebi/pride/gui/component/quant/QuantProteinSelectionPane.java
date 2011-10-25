@@ -10,10 +10,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.action.PrideAction;
-import uk.ac.ebi.pride.gui.action.impl.DecoyFilterAction;
-import uk.ac.ebi.pride.gui.action.impl.ExportQuantitativeDataAction;
-import uk.ac.ebi.pride.gui.action.impl.ExtraProteinDetailAction;
-import uk.ac.ebi.pride.gui.action.impl.SetRefSampleAction;
+import uk.ac.ebi.pride.gui.action.impl.*;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
@@ -231,7 +228,7 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
         toolBar.add(decoyFilterButton);
 
         // add gap
-        toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
+        toolBar.add(Box.createRigidArea(new Dimension(20, 10)));
 
         moreButton = GUIUtilities.createLabelLikeButton(null, "More...");
         moreButton.setForeground(Color.blue);
@@ -269,6 +266,13 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
         JMenuItem exportMenuItem = new JMenuItem();
         exportMenuItem.setAction(new ExportQuantitativeDataAction(proteinTable, controller));
         menu.add(exportMenuItem);
+
+        // Disclaimer
+        JMenuItem disclaimerItem = new JMenuItem();
+        Icon sharedPeptideIcon = GUIUtilities.loadIcon(appContext.getProperty("shared.peptide.icon.small"));
+        String sharedPeptideTitle = appContext.getProperty("shared.peptide.title");
+        disclaimerItem.setAction(new OpenHelpAction(sharedPeptideTitle, sharedPeptideIcon, "help.faq.shared.peptide"));
+        menu.add(disclaimerItem);
 
         return menu;
     }

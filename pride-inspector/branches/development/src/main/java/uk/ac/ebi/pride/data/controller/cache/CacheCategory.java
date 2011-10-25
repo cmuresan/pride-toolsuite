@@ -44,7 +44,9 @@ public enum CacheCategory {
     PEPTIDE_TO_MODIFICATION(HashMap.class, null), // Map<Peptide Id, List<Tuple<Accession, location>>>
     MODIFICATION(HashMap.class, null), // Map<Accession, Modification>, a light weight implementation
     SUM_OF_INTENSITY(HashMap.class, null), // Map<Spectrum id, sum of all intensity>
-    NUMBER_OF_PEAKS(HashMap.class, null); // Map<Spectrum id, number of peaks>
+    NUMBER_OF_PEAKS(HashMap.class, null), // Map<Spectrum id, number of peaks>
+    PROTEIN_QUANT_UNIT(ArrayList.class, null), //List<QuantCvTermReference>
+    PEPTIDE_QUANT_UNIT(ArrayList.class, null); // List<QuantCvTermReference>
 
     private Class dataStructType;
     private Integer size;

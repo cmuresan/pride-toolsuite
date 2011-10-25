@@ -147,7 +147,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
         toolBar.add(decoyFilterButton);
 
         // add gap
-        toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
+        toolBar.add(Box.createRigidArea(new Dimension(20, 10)));
 
         // expand button
         Icon expandIcon = GUIUtilities.loadIcon(appContext.getProperty("expand.table.icon.small"));

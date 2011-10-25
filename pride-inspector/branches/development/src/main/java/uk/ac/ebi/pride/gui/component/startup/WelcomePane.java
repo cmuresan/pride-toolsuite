@@ -235,7 +235,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         // open help button
         c.gridx = 1;
         Icon openHelpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.large"));
-        Action openHelpAction = new OpenHelpAction(GETTING_HELP, openHelpIcon);
+        Action openHelpAction = new OpenHelpAction(GETTING_HELP, openHelpIcon, "help.index");
         JButton openHelpButton = createLabelLikeButton(openHelpAction);
         buttonPanel.add(openHelpButton, c);
 

@@ -66,11 +66,9 @@ public class ChromatogramViewPane extends DataAccessControllerPane<Chromatogram,
         // add spectrum help pane
         Icon helpIcon = GUIUtilities.loadIcon(appContext.getProperty("help.icon.small"));
         String helpTooltip = appContext.getProperty("help.tooltip");
-        PrideAction helpAction = new OpenHelpAction(null, helpIcon);
+        PrideAction helpAction = new OpenHelpAction(null, helpIcon, "help.mzgraph.chroma");
         helpAction.putValue(Action.SHORT_DESCRIPTION, helpTooltip);
-        AbstractButton button = (AbstractButton) chromaBrowser.getSidePane().addAction(helpAction, false);
-        CSH.setHelpIDString(button, "help.mzgraph.chroma");
-        button.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
+        chromaBrowser.getSidePane().addAction(helpAction, false);
 
         this.add(chromaBrowser, BorderLayout.CENTER);
     }

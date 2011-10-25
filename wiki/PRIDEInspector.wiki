@@ -9,6 +9,7 @@
   * [#Installation_Requirements Installation Requirements]
   * [#Launch_via_Webstart Launch via Webstart]
   * [#Download Download]
+ * [#Disclaimer Disclaimer]
  * [#FAQs FAQs]
  * [#Getting_Help Getting Help]
  * [#Source_Code Source Code]
@@ -74,6 +75,15 @@ If this fails, try to download and install Java 1.5 or above, as explained in th
 
 The zip file contains also an `examples` folder with 2 sample files: one in mzML format (`mzml-example.mzML`) and the other in PRIDE xml format (`pride-example.xml`) so you can upload them in pride inspector and try the application. There is and additional folder, `config`, that contains a file called `config.props` where you can modify the amount of memory assigned to your application (only change if you are trying to view files and is causing the software crash because of a "Out of memory..." exception). The additional 2 directories, `lib` and `log`, contain all the java libraries necessary for the application to run and some debugging information if the application crashes.
 
+[PRIDEInspector top of page]
+
+----
+
+==Disclaimer==
+  # *Disclaimer on shared peptide problem*
+  Please be aware that usually only one of the possible peptide to protein mappings are kept in PRIDE. In shotgun proteomics experiments, protein inference needs to be taken into account when interpreting protein identifications reported that are based on non-ambiguous (or shared) peptides.  
+  
+ 
 [PRIDEInspector top of page]
 
 ----

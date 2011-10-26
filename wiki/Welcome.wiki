@@ -12,6 +12,13 @@
 
 ----
 == News ==
+*_October 26. 2011:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.2.2] is now available:*
+ * Bug fix on loading TMT quantification dataset.
+ * Bug fix on setting control sample for quantification dataset.
+ * Added new field to display search engine and database in the Overview tab.
+ * Added a disclaimer on shared peptides problem in both the Protein tab and the Quantification Tab.
+ * Bug fix on missing decimal point of delta m/z values.
+
 *_October 17. 2011:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.2.1] is now available:*
  * Bug fix for downloading PRIDE XML files through PRIDE web service.
  * Bug fix for inconsistent number of unique peptides. 

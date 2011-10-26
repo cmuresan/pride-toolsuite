@@ -315,9 +315,9 @@ decoy.filter.tooltip = Decoy Filter
 decoy.filter.small.icon = icon/16x16/filter.gif
 
 # shared peptide
-shared.peptide.title = Disclaimer
-shared.peptide.tooltip = Disclaimer on shared peptide issues
-shared.peptide.icon.small = icon/16x16/flag.png
+shared.peptide.title = Shared Peptides Disclaimer
+shared.peptide.tooltip = Disclaimer on shared peptides issues
+shared.peptide.icon.small = icon/16x16/disclaimer.png
 
 # menu related icons
 menu.selection.tick.small.icon = icon/16x16/tick.png

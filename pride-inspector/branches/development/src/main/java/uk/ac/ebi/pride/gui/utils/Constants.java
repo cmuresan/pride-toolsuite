@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.gui.utils;
 
 import java.awt.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 /**
  * Constants shared by all classes
@@ -90,6 +92,11 @@ public interface Constants {
     public static final String NOT_AVAILABLE = "N/A";
 
     /**
+     * Quantification
+     */
+    public static final String QUANTIFICATION_RATIO_CHAR = "/";
+
+    /**
      * Colours
      */
     public static final Color PTM_BACKGROUND_COLOUR = new Color(215, 39, 41, 100);
@@ -102,10 +109,24 @@ public interface Constants {
 
 
     public final static Color NOT_FIT_PEPTIDE_BACKGROUND_COLOUR = new Color(215, 39, 41, 100);
-    /** color for tables */
+    /**
+     * color for tables
+     */
     public static final Color ALTER_ROW_COLOUR = new Color(214, 241, 249);
     public static final Color ROW_SELECTION_BACKGROUD = new Color(193, 210, 238);
     public static final Color ROW_SELECTION_FOREGROUND = Color.black;
     public static final Color DELTA_MZ_WARNING = new Color(215, 39, 41, 100);
     public static final Color DELTA_MZ_NORMAL = new Color(40, 175, 99, 100);
+
+    /**
+     * Number Formatter
+     */
+    public static final DecimalFormat LARGE_DECIMAL_NUMBER_FORMATTER = new DecimalFormat("0.###E0");
+    public static final NumberFormat DECIMAL_FORMATTER = NumberFormat.getInstance();
+
+    /**
+     * Scientific number threshold
+     */
+    public static final double MAX_NON_SCIENTIFIC_NUMBER = 999;
+    public static final double MIN_MON_SCIENTIFIC_NUMBER = 0.001;
 }

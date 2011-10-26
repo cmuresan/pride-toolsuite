@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table.renderer;
 
+import uk.ac.ebi.pride.gui.utils.Constants;
+
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
@@ -15,11 +17,6 @@ import java.text.NumberFormat;
  * Time: 10:03
  */
 public class BarChartRenderer extends JLabel implements TableCellRenderer {
-    private static final double MAX_NON_SCIENTIFIC_NUMBER = 999;
-    private static final double MIN_MON_SCIENTIFIC_NUMBER = 0.001;
-    private static final DecimalFormat NUMBER_FORMATTER = new DecimalFormat("0.###E0");
-
-
     private static final float DEFAULT_REFERENCE_VALUE = 0;
     private static final float DEFAULT_MAXIMUM_VALUE = 10;
     private static final float DEFAULT_MINIMUM_VALUE = 0;
@@ -105,9 +102,12 @@ public class BarChartRenderer extends JLabel implements TableCellRenderer {
 
             // draw text
             if (numberAndChart) {
-                String str = value.toString();
-                if (((Number) value).doubleValue() > MAX_NON_SCIENTIFIC_NUMBER || ((Number) value).doubleValue() < MIN_MON_SCIENTIFIC_NUMBER) {
-                    str = NUMBER_FORMATTER.format(value);
+                String str;
+                if (((Number) value).doubleValue() > Constants.MAX_NON_SCIENTIFIC_NUMBER
+                        || ((Number) value).doubleValue() < Constants.MIN_MON_SCIENTIFIC_NUMBER) {
+                    str = Constants.LARGE_DECIMAL_NUMBER_FORMATTER.format(value);
+                } else {
+                    str = Constants.DECIMAL_FORMATTER.format(value);
                 }
                 g2.drawString(str, xPos, height - fontDescent);
 

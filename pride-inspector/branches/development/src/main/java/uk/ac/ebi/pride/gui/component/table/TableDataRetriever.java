@@ -456,7 +456,7 @@ public class TableDataRetriever {
             if (refSampleIndex != i) {
                 CvParam reagent = sample.getReagent(i);
                 if (reagent != null) {
-                    headers.add(QuantCvTermReference.getReagentShortLabel(reagent) + "/" + shortenedReferenceReagent);
+                    headers.add(QuantCvTermReference.getReagentShortLabel(reagent) + Constants.QUANTIFICATION_RATIO_CHAR + shortenedReferenceReagent);
                 }
             }
         }

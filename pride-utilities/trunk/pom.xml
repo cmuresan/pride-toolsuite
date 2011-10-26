@@ -6,7 +6,7 @@
 
     <groupId>uk.ac.ebi.pride.util</groupId>
     <artifactId>pride-utilities</artifactId>
-    <version>0.1.12</version>
+    <version>0.1.13</version>
 
     <dependencies>
         <!-- logging dependencies -->
@@ -68,6 +68,17 @@
                     <overWriteSnapshots>true</overWriteSnapshots>
                     <excludeTransitive>false</excludeTransitive>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-source</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

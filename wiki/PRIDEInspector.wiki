@@ -80,7 +80,7 @@ The zip file contains also an `examples` folder with 2 sample files: one in mzML
 ----
 
 ==Disclaimer==
-  # *Disclaimer on shared peptide problem*
+  # *Disclaimer on shared peptides problem*
   Please be aware that usually only one of the possible peptide to protein mappings are kept in PRIDE. In shotgun proteomics experiments, protein inference needs to be taken into account when interpreting protein identifications reported that are based on non-ambiguous (or shared) peptides.  
   
  

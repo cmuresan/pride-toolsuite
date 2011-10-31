@@ -88,23 +88,25 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
                 String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
 
 
-                // get existing protein details
-                Protein protDetails = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
-                if (protDetails != null) {
-                    proteins.put(mappedProtAcc, protDetails);
-                    continue;
-                }
+                if (mappedProtAcc != null) {
+                    // get existing protein details
+                    Protein protDetails = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
+                    if (protDetails != null) {
+                        proteins.put(mappedProtAcc, protDetails);
+                        continue;
+                    }
 
-                accBuffer.put(protIdentId, mappedProtAcc);
-                if (accBuffer.size() == MAX_BATCH_DOWNLOAD_SIZE) {
-                    // fetch and publish protein details
-                    fetchAndPublish(accBuffer, proteins);
+                    accBuffer.put(protIdentId, mappedProtAcc);
+                    if (accBuffer.size() == MAX_BATCH_DOWNLOAD_SIZE) {
+                        // fetch and publish protein details
+                        fetchAndPublish(accBuffer, proteins);
 
-                    // clear accession buffer
-                    accBuffer.clear();
+                        // clear accession buffer
+                        accBuffer.clear();
 
-                    // clear protein map
-                    proteins = new HashMap<String, Protein>();
+                        // clear protein map
+                        proteins = new HashMap<String, Protein>();
+                    }
                 }
             }
 

@@ -1,0 +1,18 @@
+#summary Description of how to generate mzTab files to pass quantitative data to PRIDE Converter.
+
+= Introduction =
+
+PRIDE Converter can report quantitative data in PRIDE XML files. Unfortunately, this data is generally not present in the search engines' output files. Therefore, it is possible to submit quantitative data to the conversion process using mzTab files.
+
+= Step-by-Step description =
+
+== 1.) Generate skeleton mzTab file ==
+
+PRIDE Converter can be used to generate a skeleton mzTab file that can then be used to add the quantitative data. When using the command line version of PRIDE Converter simply set the mode to "mztab" to generate an mzTab file.
+{{{
+java -jar pride-converter-2.0.jar -engine [USED SEARCH ENGINE] -sourcefile [PATH TO FILE] -mode mztab
+}}}
+
+== 2.) Add quantitative data ==
+
+PRIDE Converter expects several fields to be present in a mzTab file to be able to insert the quantitative data.

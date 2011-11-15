@@ -12,7 +12,7 @@ The parameters taken by the *Mascot DAO* are very similar / identical to the one
 
 *Ignore Below Ion Score*: Peptides with a lower expect ratio (of being false positives) will be ignored completely. Set to 1 to deactivate.
 
-*Decoy Accession Precursor*: An accession precursor that identifies decoy hits. Every protein with an accession starting with this precursor will be flagged as decoy hit.
+*Decoy Accession Prefix*: An accession prefix that identifies decoy hits. Every protein with an accession starting with this prefix will be flagged as decoy hit. Furthermore, any decoy hit who's accession does not start with this prefix will be altered accordingly.
 
 *Use MudPIT Scoring*: Indicates whether MudPIT or normal scoring should be used.
 

@@ -34,7 +34,7 @@ Some fields / values can be supplied using defined optional columns. The more "s
 
 ===Quantiative data===
 
-Quantitative data should be reported as defined by the mzTab format specification. This information is then automatically parsed by PRIDE Converter.
+Quantitative data should be reported as defined by the mzTab format specification. This information is then automatically parsed by PRIDE Converter. Detailed information about what kind of data needs to be present can be found in QuantitativeMzTabFiles.
 
 ===Gel-based data===
 

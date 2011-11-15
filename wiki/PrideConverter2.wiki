@@ -42,4 +42,4 @@ This section is currently missing.
 
 = Known Issues =
 
-  * *Duplicate protein entries:* The Mascot DAO can report indistinguishable accessions for a protein identification. In case a protein's accession is not found in the provided mzTab file but one of the indistinguishable once is the protein's accession and this indistinguishable one are replaced. In rare cases PRIDE XML files might already contain an entry with such an accession and two protein entries with the same accession but different peptides will be present.
+  * *Duplicate protein entries:* The Mascot DAO can report indistinguishable accessions for a protein identification. In case a protein's accession is not found in the provided mzTab file but one of the indistinguishable ones is the protein's accession and this indistinguishable accession are replaced. In rare cases PRIDE XML files might already contain an entry with such an accession. This results in two protein entries with the same accession but different peptides in the PRIDE XML file.

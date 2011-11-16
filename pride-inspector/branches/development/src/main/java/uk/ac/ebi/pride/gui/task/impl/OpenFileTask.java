@@ -106,7 +106,7 @@ public class OpenFileTask<D extends DataAccessController> extends TaskAdapter<Vo
     private void createNewDataAccessController(File file) {
         try {
             // create dummy
-            EmptyDataAccessController dummy = new EmptyDataAccessController();
+            EmptyDataAccessController dummy = new EmptyDataAccessController(file);
             dummy.setName(inputFile.getName());
             dummy.setType(DataAccessController.Type.XML_FILE);
             // add a closure hook

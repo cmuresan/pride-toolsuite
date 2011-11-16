@@ -4,7 +4,7 @@
     <groupId>uk.ac.ebi.pride.gui</groupId>
     <artifactId>pride-inspector</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <name>pride-inspector</name>
     <url>http://code.google.com/p/pride-toolsuite/wiki/PRIDEInspector</url>
 
@@ -67,12 +67,12 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>0.9.24</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>0.9.24</version>
+            <version>1.0.0</version>
         </dependency>
         <!-- mzML dependencies -->
         <dependency>
@@ -122,6 +122,12 @@
             <groupId>c3p0</groupId>
             <artifactId>c3p0</artifactId>
             <version>0.9.1</version>
+        </dependency>
+        <!--spring jdbc template-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>3.0.6.RELEASE</version>
         </dependency>
         <!-- javaHelp -->
         <dependency>

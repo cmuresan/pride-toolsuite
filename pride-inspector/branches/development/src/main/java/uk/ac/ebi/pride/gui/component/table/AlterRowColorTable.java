@@ -17,7 +17,7 @@ import java.util.Vector;
  * Date: 22-Aug-2010
  * Time: 10:02:32
  */
-public class AlterRowColorTable extends JXTable {
+public class  AlterRowColorTable extends JXTable {
 
     private Color alterRowColor = Constants.ALTER_ROW_COLOUR;
 

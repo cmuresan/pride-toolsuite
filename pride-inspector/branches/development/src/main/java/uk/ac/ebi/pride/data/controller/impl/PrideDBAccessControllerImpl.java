@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.data.controller.impl;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
 import uk.ac.ebi.pride.chart.controller.PrideChartSummaryData;
 import uk.ac.ebi.pride.chart.graphics.implementation.PrideChart;
 import uk.ac.ebi.pride.chart.graphics.implementation.PrideChartFactory;
@@ -13,8 +14,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.cache.impl.PrideDBCacheBuilder;
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.data.io.db.DBUtilities;
-import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
+import uk.ac.ebi.pride.data.io.db.*;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
@@ -27,9 +27,6 @@ import java.math.BigDecimal;
 import java.nio.ByteOrder;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -48,13 +45,13 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
      */
     private static final DataAccessMode DEFAULT_ACCESS_MODE = DataAccessMode.CACHE_ONLY;
 
-    private final static String CONTACT_INFO = "contact information";
-    private final static String SAMPLE_ID = "sample1";
     private final static String COMMENTS = "comments";
-    private final static String COMPLETION_TIME = "completion time";
+    private final static String SAMPLE_ID = "sample1";
     private final static int PROCESSING_METHOD_ORDER = 1;
     private final static String DATA_PROCESSING_ID = "dataprocessing1";
     private final static String PROTOCOL_ID = "protocol1";
+
+    private final JdbcTemplate jdbcTemplate;
 
     public PrideDBAccessControllerImpl() throws DataAccessException {
         this(DEFAULT_ACCESS_MODE, null);
@@ -83,6 +80,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
      */
     public PrideDBAccessControllerImpl(DataAccessMode mode, Comparable experimentAcc) throws DataAccessException {
         super(mode);
+        this.jdbcTemplate = new JdbcTemplate(PooledConnectionFactory.getInstance().getConnectionPool());
         initialize(experimentAcc);
     }
 
@@ -130,126 +128,41 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return uid;
     }
 
-    private List<CvParam> getCvParams(Connection connection, String table_name, int parent_element_id) throws DataAccessException {
-        List<CvParam> cvParams = new ArrayList<CvParam>();
-        boolean newConnection = false;
+    private List<CvParam> getCvParams(String table_name, int parent_element_id) {
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try {
-            if (connection == null) {
-                logger.debug("Getting a connection for Cv Params");
-                connection = PooledConnectionFactory.getConnection();
-                newConnection = true;
-            }
-            st = connection.prepareStatement("SELECT accession, name, value, cv_label FROM " + table_name
-                    + " WHERE parent_element_fk = ? AND cv_label is not null");
-            st.setInt(1, parent_element_id);
-            rs = st.executeQuery();
-            while (rs.next()) {
-                cvParams.add(new CvParam(rs.getString("accession"), rs.getString("name"),
-                        rs.getString("cv_label"), rs.getString("value"), "", "", ""));
-            }
-        } catch (SQLException e) {
-            String errMsg = "Failed to query cv params from " + table_name;
-            logger.error(errMsg, e);
-            throw new DataAccessException(errMsg, e);
-        } finally {
-            DBUtilities.releaseResources(newConnection ? connection : null, st, rs);
-        }
-        return cvParams;
-    }
+        String query = "SELECT accession, name, value, cv_label FROM " + table_name
+                + " WHERE parent_element_fk = ? AND cv_label is not null";
 
-    //same as before, but returns a list of UserParam
-
-    private List<UserParam> getUserParams(Connection connection, String table_name, int parent_element_id) {
-        List<UserParam> userParams = new ArrayList<UserParam>();
-        boolean newConnection = false;
-
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try {
-            if (connection == null) {
-                logger.debug("Getting a connection for User Params");
-                connection = PooledConnectionFactory.getConnection();
-                newConnection = true;
-            }
-            st = connection.prepareStatement("SELECT name, value FROM " + table_name +
-                    " WHERE parent_element_fk = ? AND cv_label is null");
-            st.setInt(1, parent_element_id);
-            rs = st.executeQuery();
-            while (rs.next()) {
-                userParams.add(new UserParam(rs.getString("name"), "", rs.getString("value"), "", "", ""));
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query user params from {}", table_name, e);
-        } finally {
-            DBUtilities.releaseResources(newConnection ? connection : null, st, rs);
-        }
-
-        return userParams;
+        return jdbcTemplate.query(query, new CvParamRowMapper(), parent_element_id);
     }
 
 
-    private List<SourceFile> getSourceFiles(Connection connection) {
+    private List<UserParam> getUserParams(String table_name, int parent_element_id) {
+
+        String query = "SELECT name, value FROM " + table_name +
+                " WHERE parent_element_fk = ? AND cv_label is null";
+
+        return jdbcTemplate.query(query, new UserParamRowMapper(), parent_element_id);
+    }
+
+
+    private List<SourceFile> getSourceFiles() {
         logger.debug("Get source files");
-        List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try {
-            st = connection.prepareStatement("SELECT sf.name_of_file, sf.path_to_file FROM mzdata_source_file sf, mzdata_mz_data mz " +
-                    "WHERE mz.accession_number= ? and mz.source_file_id=sf.source_file_id");
-            st.setString(1, getForegroundExperimentAcc().toString());
-            rs = st.executeQuery();
-            while (rs.next()) {
-                //there should be a single source file per spectrum
-                SourceFile sourceFile = new SourceFile("", rs.getString("name_of_file"), rs.getString("path_to_file"), null);
-                sourceFiles.add(sourceFile);
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query source files", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
-        }
+        String query = "SELECT sf.name_of_file, sf.path_to_file FROM mzdata_source_file sf, mzdata_mz_data mz " +
+                "WHERE mz.accession_number= ? and mz.source_file_id=sf.source_file_id";
 
-        return sourceFiles;
+        return jdbcTemplate.query(query, new SourceFileRowMapper(), getForegroundExperimentAcc());
     }
 
 
-    private List<ParamGroup> getContacts(Connection connection) {
+    private List<ParamGroup> getContacts() {
         logger.debug("Get contacts");
-        List<ParamGroup> contacts = new ArrayList<ParamGroup>();
-        PreparedStatement st = null;
-        ResultSet rs = null;
 
-        try {
-            st = connection.prepareStatement("SELECT contact_name, institution, contact_info FROM mzdata_contact sf, mzdata_mz_data mz " +
-                    "WHERE mz.accession_number= ? and mz.mz_data_id=sf.mz_data_id");
-            st.setString(1, getForegroundExperimentAcc().toString());
-            rs = st.executeQuery();
-            while (rs.next()) {
-                //there should be a single source file per spectrum
-                List<CvParam> cvParams = new ArrayList<CvParam>();
-                CvTermReference contactName = CvTermReference.CONTACT_NAME;
-                cvParams.add(new CvParam(contactName.getAccession(), contactName.getName(), contactName.getCvLabel(), rs.getString("contact_name"), null, null, null));
-                CvTermReference contactOrg = CvTermReference.CONTACT_ORG;
-                cvParams.add(new CvParam(contactOrg.getAccession(), contactOrg.getName(), contactOrg.getCvLabel(), rs.getString("institution"), null, null, null));
-                //ToDo: extract email, address information into CvParams?
-                List<UserParam> userParams = null;
-                String contactInfo = rs.getString("contact_info");
-                if (contactInfo != null) {
-                    userParams = new ArrayList<UserParam>();
-                    userParams.add(new UserParam(CONTACT_INFO, null, contactInfo, null, null, null));
-                }
-                contacts.add(new ParamGroup(cvParams, userParams));
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query contacts", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
-        }
-        return contacts;
+        String query = "SELECT contact_name, institution, contact_info FROM mzdata_contact sf, mzdata_mz_data mz " +
+                "WHERE mz.accession_number= ? and mz.mz_data_id=sf.mz_data_id";
+
+        return jdbcTemplate.query(query, new ContactRowMapper(), getForegroundExperimentAcc());
     }
 
     @Override
@@ -263,21 +176,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             CvParam cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), null, null, null, null);
             cvParams.add(cvParam);
             ParamGroup fileContent = new ParamGroup(cvParams, null);
-
-            Connection connection = null;
-            List<SourceFile> sourceFiles = null;
-            List<ParamGroup> contacts = null;
-            try {
-                connection = PooledConnectionFactory.getConnection();
-                sourceFiles = getSourceFiles(connection);
-                contacts = getContacts(connection);
-            } catch (SQLException e) {
-                logger.error("Failed to query file description", e);
-            } finally {
-                DBUtilities.releaseResources(connection, null, null);
-            }
-
-            return new FileDescription(fileContent, sourceFiles, contacts);
+            return new FileDescription(fileContent, getSourceFiles(), getContacts());
         } else {
             return metaData.getFileDescription();
         }
@@ -294,32 +193,21 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
         if (metaData == null) {
             logger.debug("Get samples");
+
+            String query = "SELECT mz_data_id, sample_name FROM mzdata_mz_data mz WHERE mz.accession_number= ?";
+
+            List<Map<String, Object>> results = jdbcTemplate.queryForList(query, getForegroundExperimentAcc());
+
             List<Sample> samples = new ArrayList<Sample>();
 
-            List<CvParam> cvParam;
-            List<UserParam> userParam;
-
-            Connection connection = null;
-            PreparedStatement st = null;
-            ResultSet rs = null;
-
-            try {
-                connection = PooledConnectionFactory.getConnection();
-                st = connection.prepareStatement("SELECT mz_data_id, sample_name FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
-                st.setString(1, getForegroundExperimentAcc().toString());
-                rs = st.executeQuery();
-                while (rs.next()) {
-                    int mz_data_id = rs.getInt("mz_data_id");
-                    String sample_name = rs.getString("sample_name");
-                    userParam = getUserParams(connection, "mzdata_sample_param", mz_data_id);
-                    cvParam = getCvParams(connection, "mzdata_sample_param", mz_data_id);
-                    samples.add(new Sample(SAMPLE_ID, sample_name, new ParamGroup(cvParam, userParam)));
-                }
-            } catch (SQLException e) {
-                logger.error("Failed to query samples", e);
-            } finally {
-                DBUtilities.releaseResources(connection, st, rs);
+            for (Map<String, Object> result : results) {
+                int mz_data_id = ((Long) result.get("mz_data_id")).intValue();
+                String sample_name = (String) result.get("sample_name");
+                List<UserParam> userParam = getUserParams("mzdata_sample_param", mz_data_id);
+                List<CvParam> cvParam = getCvParams("mzdata_sample_param", mz_data_id);
+                samples.add(new Sample(SAMPLE_ID, sample_name, new ParamGroup(cvParam, userParam)));
             }
+
             return samples;
         } else {
             return metaData.getSamples();
@@ -332,35 +220,10 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
         if (metaData == null) {
             logger.debug("Getting software");
-            List<Software> softwares = new ArrayList<Software>();
 
-            Connection connection = null;
-            PreparedStatement st = null;
-            ResultSet rs = null;
+            String query = "SELECT software_name, software_version, software_completion_time, software_comments FROM mzdata_mz_data mz WHERE mz.accession_number= ?";
 
-            try {
-                connection = PooledConnectionFactory.getConnection();
-                st = connection.prepareStatement("SELECT software_name, software_version, software_completion_time, software_comments FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
-                st.setString(1, getForegroundExperimentAcc().toString());
-                rs = st.executeQuery();
-                while (rs.next()) {
-                    List<CvParam> cvParams = new ArrayList<CvParam>();
-                    //ToDo: semantic support, need to add a child term of MS:1000531 (software)
-                    List<UserParam> userParams = new ArrayList<UserParam>();
-                    userParams.add(new UserParam(COMMENTS, null, rs.getString("software_comments"), null, null, null));
-                    String completionTime = rs.getString("software_completion_time");
-                    if (completionTime != null) {
-                        userParams.add(new UserParam(COMPLETION_TIME, null, completionTime, null, null, null));
-                    }
-                    softwares.add(new Software(rs.getString("software_name"), rs.getString("software_version"), new ParamGroup(cvParams, userParams)));
-                }
-
-            } catch (SQLException e) {
-                logger.error("Failed to query software", e);
-            } finally {
-                DBUtilities.releaseResources(connection, st, rs);
-            }
-            return softwares;
+            return jdbcTemplate.query(query, new SoftwareRowMapper(), getForegroundExperimentAcc());
         } else {
             return metaData.getSoftwares();
         }
@@ -371,32 +234,19 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         throw new UnsupportedOperationException("This method is unsupported");
     }
 
-    private List<ParamGroup> getAnalyzerList(Connection connection, int mz_data_id) throws DataAccessException {
+    private List<ParamGroup> getAnalyzerList(int mz_data_id) {
         logger.debug("Get analyzer list");
 
         List<ParamGroup> analyzerList = new ArrayList<ParamGroup>();
-        List<UserParam> userParams;
-        List<CvParam> cvParams;
-        ParamGroup params;
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        String query = "SELECT analyzer_id FROM mzdata_analyzer WHERE mz_data_id = ?";
+        List<Integer> analyzerIds = jdbcTemplate.queryForList(query, Integer.class, mz_data_id);
 
-        try {
-            st = connection.prepareStatement("SELECT analyzer_id FROM mzdata_analyzer WHERE mz_data_id = ?");
-            st.setInt(1, mz_data_id);
-            rs = st.executeQuery();
-            while (rs.next()) {
-                userParams = getUserParams(connection, "mzdata_analyzer_param", rs.getInt("analyzer_id"));
-                cvParams = getCvParams(connection, "mzdata_analyzer_param", rs.getInt("analyzer_id"));
-                params = new ParamGroup(cvParams, userParams);
-                analyzerList.add(params);
-
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query param groups", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
+        for (Integer analyzerId : analyzerIds) {
+            List<UserParam> userParams = getUserParams("mzdata_analyzer_param", analyzerId);
+            List<CvParam> cvParams = getCvParams("mzdata_analyzer_param", analyzerId);
+            ParamGroup params = new ParamGroup(cvParams, userParams);
+            analyzerList.add(params);
         }
 
         return analyzerList;
@@ -416,44 +266,35 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 software = getSoftware().get(0);
             }
 
-            Connection connection = null;
-            PreparedStatement st = null;
-            ResultSet rs = null;
-            try {
-                connection = PooledConnectionFactory.getConnection();
-                st = connection.prepareStatement("SELECT instrument_name, mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
-                st.setString(1, getForegroundExperimentAcc().toString());
-                rs = st.executeQuery();
-                while (rs.next()) {
-                    int mz_data_id = rs.getInt("mz_data_id");
-                    //instrument params
-                    // ParamGroup params = new ParamGroup(getCvParams("mzdata_instrument_param", mz_data_id), getUserParams("mzdata_instrument_param", mz_data_id));
-                    ParamGroup params = new ParamGroup();
-                    CvTermReference cvTerm = CvTermReference.INSTRUMENT_MODEL;
-                    params.addCvParam(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
-                            rs.getString("instrument_name"), null, null, null));
-                    // create instrument components
-                    //create source
-                    //create source object
-                    int sourceOrder = 1;
-                    InstrumentComponent source = new InstrumentComponent(sourceOrder, new ParamGroup(getCvParams(connection, "mzdata_instrument_source_param", mz_data_id), getUserParams(connection, "mzdata_instrument_source_param", mz_data_id)));
-                    //create detector
-                    int detectorOrder = getAnalyzerList(connection, mz_data_id).size() + 2;
-                    InstrumentComponent detector = new InstrumentComponent(detectorOrder, new ParamGroup(getCvParams(connection, "mzdata_instrument_detector_param", mz_data_id), getUserParams(connection, "mzdata_instrument_detector_param", mz_data_id)));
-                    //create analyzer
-                    List<ParamGroup> analyzers = getAnalyzerList(connection, mz_data_id);
-                    int orderCnt = 2;
-                    for (ParamGroup analyzer : analyzers) {
-                        InstrumentComponent analyzerInstrument = new InstrumentComponent(orderCnt, analyzer);
-                        instrumentConfigurations.add(new InstrumentConfiguration(rs.getString("instrument_name"), null, software, source, analyzerInstrument, detector, params));
-                        orderCnt++;
-                    }
+            // get instrument
+            String query = "SELECT instrument_name, mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?";
+
+            List<Map<String, Object>> results = jdbcTemplate.queryForList(query, getForegroundExperimentAcc());
+            for (Map<String, Object> result : results) {
+                int mz_data_id = ((Long) result.get("mz_data_id")).intValue();
+                //instrument params
+                ParamGroup params = new ParamGroup();
+                CvTermReference cvTerm = CvTermReference.INSTRUMENT_MODEL;
+                params.addCvParam(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
+                        (String) result.get("instrument_name"), null, null, null));
+                // create instrument components
+                //create source
+                //create source object
+                int sourceOrder = 1;
+                InstrumentComponent source = new InstrumentComponent(sourceOrder, new ParamGroup(getCvParams("mzdata_instrument_source_param", mz_data_id), getUserParams("mzdata_instrument_source_param", mz_data_id)));
+                //create detector
+                int detectorOrder = getAnalyzerList(mz_data_id).size() + 2;
+                InstrumentComponent detector = new InstrumentComponent(detectorOrder, new ParamGroup(getCvParams("mzdata_instrument_detector_param", mz_data_id), getUserParams("mzdata_instrument_detector_param", mz_data_id)));
+                //create analyzer
+                List<ParamGroup> analyzers = getAnalyzerList(mz_data_id);
+                int orderCnt = 2;
+                for (ParamGroup analyzer : analyzers) {
+                    InstrumentComponent analyzerInstrument = new InstrumentComponent(orderCnt, analyzer);
+                    instrumentConfigurations.add(new InstrumentConfiguration((String) result.get("instrument_name"), null, software, source, analyzerInstrument, detector, params));
+                    orderCnt++;
                 }
-            } catch (SQLException e) {
-                logger.error("Failed to query instrument configuration", e);
-            } finally {
-                DBUtilities.releaseResources(connection, st, rs);
             }
+
             return instrumentConfigurations;
         } else {
             return metaData.getInstrumentConfigurations();
@@ -467,39 +308,28 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         if (metaData == null) {
             logger.debug("Getting data processings");
 
-            List<CvParam> cvParams;
-            List<UserParam> userParams;
-            List<ProcessingMethod> procMethods = new ArrayList<ProcessingMethod>();
-            List<DataProcessing> dataProcessings = new ArrayList<DataProcessing>();
             Software software = null;
             if (getSoftware().size() > 0) {
                 software = getSoftware().get(0);
             }
 
-            Connection connection = null;
-            PreparedStatement st = null;
-            ResultSet rs = null;
+            List<DataProcessing> dataProcessings = new ArrayList<DataProcessing>();
+            List<ProcessingMethod> procMethods = new ArrayList<ProcessingMethod>();
 
-            try {
-                connection = PooledConnectionFactory.getConnection();
-                st = connection.prepareStatement("SELECT mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?");
-                st.setString(1, getForegroundExperimentAcc().toString());
-                rs = st.executeQuery();
-                while (rs.next()) {
-                    int mz_data_id = rs.getInt("mz_data_id");
-                    userParams = getUserParams(connection, "mzdata_processing_method_param", mz_data_id);
-                    cvParams = getCvParams(connection, "mzdata_processing_method_param", mz_data_id);
-                    ParamGroup params = new ParamGroup(cvParams, userParams);
+            String query = "SELECT mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?";
+            List<Map<String, Object>> results = jdbcTemplate.queryForList(query, getForegroundExperimentAcc());
+
+            for (Map<String, Object> result : results) {
+                int mz_data_id = ((Long) result.get("mz_data_id")).intValue();
+                List<UserParam> userParams = getUserParams("mzdata_processing_method_param", mz_data_id);
+                List<CvParam> cvParams = getCvParams("mzdata_processing_method_param", mz_data_id);
+                ParamGroup params = new ParamGroup(cvParams, userParams);
 //                CvTermReference cvTerm = CvTermReference.CONVERSION_TO_MZML;
 //                params.addCvParam(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), null, null, null, null));
-                    procMethods.add(new ProcessingMethod(PROCESSING_METHOD_ORDER, software, params));
-                    dataProcessings.add(new DataProcessing(DATA_PROCESSING_ID, procMethods));
-                }
-            } catch (SQLException e) {
-                logger.error("Failed to query data processings", e);
-            } finally {
-                DBUtilities.releaseResources(connection, st, rs);
+                procMethods.add(new ProcessingMethod(PROCESSING_METHOD_ORDER, software, params));
+                dataProcessings.add(new DataProcessing(DATA_PROCESSING_ID, procMethods));
             }
+
             return dataProcessings;
         } else {
             return metaData.getDataProcessings();
@@ -508,98 +338,64 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     //for a given experimentId, will return the protocol_steps_id sorted by index
 
-    private List<Integer> getProtocolStepsById(Connection connection, int experimentId) {
+    private List<Integer> getProtocolStepsById(int experimentId) {
         logger.debug("Get protocol steps");
 
-        List<Integer> protocol_steps = new ArrayList<Integer>();
+        String query = "SELECT protocol_step_id FROM pride_protocol_step pp, pride_experiment pe WHERE " +
+                "pe.experiment_id = pp.experiment_id AND pe.accession = ? ORDER BY protocol_step_index";
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
-
-        try {
-            st = connection.prepareStatement("SELECT protocol_step_id FROM pride_protocol_step pp, pride_experiment pe WHERE " +
-                    "pe.experiment_id = pp.experiment_id AND pe.accession = ? ORDER BY protocol_step_index");
-            st.setInt(1, experimentId);
-            rs = st.executeQuery();
-            while (rs.next()) {
-                protocol_steps.add(rs.getInt("protocol_step_id"));
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query protocol steps", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
-        }
-
-        return protocol_steps;
+        return jdbcTemplate.queryForList(query, Integer.class, experimentId);
     }
 
-    private Protocol getProtocol(Connection connection) throws DataAccessException {
+    private Protocol getProtocol() {
         logger.debug("Get protocol");
 
-        List<Integer> protocol_steps;
-        List<UserParam> userParams;
-        List<CvParam> cvParams;
-        List<ParamGroup> paramGroup = new ArrayList<ParamGroup>();
-        String protocol_name = null;
+        // protocol name
+        String query = "SELECT protocol_name FROM pride_experiment WHERE accession= ?";
+        String protocol_name = jdbcTemplate.queryForObject(query, String.class, getForegroundExperimentAcc());
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
-
-        try {
-            st = connection.prepareStatement("SELECT protocol_name FROM pride_experiment WHERE accession= ?");
-            st.setString(1, getForegroundExperimentAcc().toString());
-            rs = st.executeQuery();
-            while (rs.next()) {
-                protocol_name = rs.getString("protocol_name");
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query protocol", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
-        }
-
-        protocol_steps = getProtocolStepsById(connection, Integer.parseInt(getForegroundExperimentAcc().toString()));
+        List<Integer> protocol_steps = getProtocolStepsById(Integer.parseInt(getForegroundExperimentAcc().toString()));
 
         //for each protocol_step, get the paramGroup
+        List<ParamGroup> paramGroup = new ArrayList<ParamGroup>();
         for (int protocol_step_id : protocol_steps) {
-            cvParams = getCvParams(connection, "pride_protocol_param", protocol_step_id);
-            userParams = getUserParams(connection, "pride_protocol_param", protocol_step_id);
+            List<CvParam> cvParams = getCvParams("pride_protocol_param", protocol_step_id);
+            List<UserParam> userParams = getUserParams("pride_protocol_param", protocol_step_id);
             paramGroup.add(new ParamGroup(cvParams, userParams));
         }
 
         return new Protocol(PROTOCOL_ID, protocol_name, paramGroup, null);
     }
 
-    private List<Reference> getReferences(Connection connection) throws DataAccessException {
+    /**
+     * Get a list of references
+     *
+     * @return List<Reference> a list of references
+     */
+    private List<Reference> getReferences() {
         logger.debug("Get references");
 
         List<Reference> references = new ArrayList<Reference>();
-        List<UserParam> userParams;
-        List<CvParam> cvParams;
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        String query = "SELECT reference_line, pr.reference_id FROM pride_experiment pe, pride_reference pr, pride_reference_exp_link pl WHERE " +
+                "pe.accession = ? AND pl.reference_id = pr.reference_id AND pl.experiment_id = pe.experiment_id";
 
-        try {
-            st = connection.prepareStatement("SELECT reference_line, pr.reference_id FROM pride_experiment pe, pride_reference pr, pride_reference_exp_link pl WHERE " +
-                    "pe.accession = ? AND pl.reference_id = pr.reference_id AND pl.experiment_id = pe.experiment_id");
-            st.setInt(1, Integer.parseInt(getForegroundExperimentAcc().toString()));
-            rs = st.executeQuery();
-            while (rs.next()) {
-                userParams = getUserParams(connection, "pride_reference_param", rs.getInt("pr.reference_id"));
-                cvParams = getCvParams(connection, "pride_reference_param", rs.getInt("pr.reference_id"));
-                references.add(new Reference(rs.getString("reference_line"), new ParamGroup(cvParams, userParams)));
-            }
-
-        } catch (SQLException e) {
-            logger.error("Failed to query references", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(query, getForegroundExperimentAcc());
+        for (Map<String, Object> result : results) {
+            List<UserParam> userParams = getUserParams("pride_reference_param", ((Long) result.get("reference_id")).intValue());
+            List<CvParam> cvParams = getCvParams("pride_reference_param", ((Long) result.get("reference_id")).intValue());
+            references.add(new Reference((String) result.get("reference_line"), new ParamGroup(cvParams, userParams)));
         }
 
         return references;
     }
 
+    /**
+     * Get experiment additional params
+     *
+     * @return ParamGroup  experiment additional params
+     * @throws DataAccessException data access exception
+     */
     @Override
     public ParamGroup getAdditional() throws DataAccessException {
         MetaData metaData = super.getMetaData();
@@ -607,80 +403,58 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         if (metaData == null) {
             logger.debug("Get additional params");
 
-            ParamGroup additional = null;
-            List<CvParam> cvParam;
-            List<UserParam> userParam;
-
-            PreparedStatement st = null;
-            ResultSet rs = null;
-            Connection connection = null;
-
-            try {
-                connection = PooledConnectionFactory.getConnection();
-                st = connection.prepareStatement("SELECT experiment_id FROM pride_experiment WHERE accession= ?");
-                st.setString(1, getForegroundExperimentAcc().toString());
-                rs = st.executeQuery();
-                while (rs.next()) {
-                    int experiment_id = rs.getInt("experiment_id");
-                    userParam = getUserParams(connection, "pride_experiment_param", experiment_id);
-                    cvParam = getCvParams(connection, "pride_experiment_param", experiment_id);
-                    additional = new ParamGroup(cvParam, userParam);
-                }
-            } catch (SQLException e) {
-                logger.error("Failed to query additional params", e);
-            } finally {
-                DBUtilities.releaseResources(connection, st, rs);
-            }
-            return additional;
+            int experiment_id = getExperimentId(getForegroundExperimentAcc());
+            List<UserParam> userParam = getUserParams("pride_experiment_param", experiment_id);
+            List<CvParam> cvParam = getCvParams("pride_experiment_param", experiment_id);
+            return new ParamGroup(cvParam, userParam);
         } else {
             return metaData;
         }
     }
 
+    /**
+     * Get PRIDE internal experiment id
+     *
+     * @param accession PRIDE experiment accession
+     * @return int PRIDE internal experiment id
+     */
+    private int getExperimentId(Comparable accession) {
+        String query = "SELECT experiment_id FROM pride_experiment WHERE accession= ?";
+        return jdbcTemplate.queryForInt(query, accession);
+    }
+
+    /**
+     * @return
+     * @throws DataAccessException
+     */
     @Override
     public MetaData getMetaData() throws DataAccessException {
         MetaData metaData = super.getMetaData();
         if (metaData == null) {
             logger.debug("Getting meta data");
-            String accession = "";
+
+            String query = "SELECT pe.title, pe.accession, pe.short_label FROM pride_experiment pe WHERE pe.accession = ?";
+            Map<String, Object> result = jdbcTemplate.queryForMap(query, getForegroundExperimentAcc());
+
+            String accession = (String) result.get("accession");
             String version = "2.1";
-            String title = "";
-            String shortLabel = "";
+            String title = (String) result.get("title");
+            String shortLabel = (String) result.get("short_label");
 
-            Connection connection = null;
-            PreparedStatement st = null;
-            ResultSet rs = null;
-
-            try {
-                connection = PooledConnectionFactory.getConnection();
-                st = connection.prepareStatement("SELECT pe.title, pe.accession, pe.short_label FROM pride_experiment pe WHERE pe.accession = ?");
-                st.setString(1, getForegroundExperimentAcc().toString());
-                rs = st.executeQuery();
-                while (rs.next()) {
-                    accession = rs.getString("pe.accession");
-                    title = rs.getString("pe.title");
-                    shortLabel = rs.getString("pe.short_label");
-                }
-
-                FileDescription fileDesc = getFileDescription();
-                List<Sample> samples = getSamples();
-                List<Software> software = getSoftware();
-                List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
-                List<DataProcessing> dataProcessings = getDataProcessings();
-                ParamGroup additional = getAdditional();
-                Protocol protocol = getProtocol(connection);
-                List<Reference> references = getReferences(connection);
-                metaData = new Experiment(null, accession, version, fileDesc,
-                        samples, software, null, instrumentConfigurations,
-                        dataProcessings, additional, title, shortLabel,
-                        protocol, references, null, null);
-                // store in cache
-                getCache().store(CacheCategory.EXPERIMENT_METADATA, metaData);
-            } catch (SQLException e) {
-                logger.error("Failed to query experiment metadata", this, e);
-            } finally {
-                DBUtilities.releaseResources(connection, st, rs);
-            }
+            FileDescription fileDesc = getFileDescription();
+            List<Sample> samples = getSamples();
+            List<Software> software = getSoftware();
+            List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
+            List<DataProcessing> dataProcessings = getDataProcessings();
+            ParamGroup additional = getAdditional();
+            Protocol protocol = getProtocol();
+            List<Reference> references = getReferences();
+            metaData = new Experiment(null, accession, version, fileDesc,
+                    samples, software, null, instrumentConfigurations,
+                    dataProcessings, additional, title, shortLabel,
+                    protocol, references, null, null);
+            // store in cache
+            getCache().store(CacheCategory.EXPERIMENT_METADATA, metaData);
         }
 
         return metaData;
@@ -689,86 +463,43 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     @Override
     public List<CVLookup> getCvLookups() throws DataAccessException {
         logger.debug("Getting cv lookups");
-        List<CVLookup> cvLookups = new ArrayList<CVLookup>();
 
-        Connection connection = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        String query = "SELECT cv_label, version, address, full_name FROM mzdata_cv_lookup sf, mzdata_mz_data mz WHERE mz.accession_number= ? and mz.mzdata_id=sf.mzdata_id";
 
-        try {
-            connection = PooledConnectionFactory.getConnection();
-            st = connection.prepareStatement("SELECT cv_label, version, address, full_name FROM mzdata_cv_lookup sf, mzdata_mz_data mz WHERE mz.accession_number= ? and mz.mzdata_id=sf.mzdata_id");
-            st.setString(1, getForegroundExperimentAcc().toString());
-            rs = st.executeQuery();
-            while (rs.next()) {
-                CVLookup cvLookup = new CVLookup(rs.getString("cv_label"), rs.getString("full_name"), rs.getString("version"), rs.getString("address"));
-                cvLookups.add(cvLookup);
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query cvlookups", e);
-        } finally {
-            DBUtilities.releaseResources(connection, st, rs);
-        }
-
-        return cvLookups;
+        return jdbcTemplate.query(query, new CVLookupRowMapper(), getForegroundExperimentAcc());
     }
 
-    private BinaryDataArray getBinaryDataArray(Connection connection, int array_binary_id, CvTermReference binaryType) throws UnsupportedEncodingException {
-        BinaryDataArray binaryDataArray = null;
-        CvTermReference dataType = null;
-        ByteOrder order = null;
-        String total_array = null;
+    private BinaryDataArray getBinaryDataArray(int array_binary_id, CvTermReference binaryType) throws UnsupportedEncodingException {
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        String precisionQuery = "SELECT data_precision, data_endian FROM mzdata_binary_array WHERE binary_array_id = ?";
+        Map<String, Object> precisionResult = jdbcTemplate.queryForMap(precisionQuery, array_binary_id);
 
-        try {
-            st = connection.prepareStatement("SELECT data_precision, data_endian FROM mzdata_binary_array WHERE binary_array_id = ?");
-            st.setInt(1, array_binary_id);
-            rs = st.executeQuery();
-            //first get precision and order of the binary data
-            while (rs.next()) {
-                dataType = "32".equals(rs.getString("data_precision")) ? CvTermReference.FLOAT_32_BIT : CvTermReference.FLOAT_64_BIT;
-                order = "big".equals(rs.getString("data_endian")) ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
-            }
-            st.close();
-            rs.close();
+        CvTermReference dataType = "32".equals(precisionResult.get("data_precision")) ? CvTermReference.FLOAT_32_BIT : CvTermReference.FLOAT_64_BIT;
+        ByteOrder order = "big".equals(precisionResult.get("data_endian")) ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
 
-            st = connection.prepareStatement("SELECT base_64_data FROM mzdata_base_64_data WHERE binary_array_id = ?");
-            st.setInt(1, array_binary_id);
-            rs = st.executeQuery();
-            //then get the binary string
-            while (rs.next()) {
-                total_array = rs.getString("base_64_data");
-            }
+        String baseQuery = "SELECT base_64_data FROM mzdata_base_64_data WHERE binary_array_id = ?";
+        String total_array = jdbcTemplate.queryForObject(baseQuery, String.class, array_binary_id);
 
-            double[] binaryDoubleArr;
-            if (total_array != null) {
-                binaryDoubleArr = BinaryDataUtils.toDoubleArray(Base64.decodeBase64(total_array.getBytes("ASCII")), dataType, order);
-            } else {
-                binaryDoubleArr = BinaryDataUtils.toDoubleArray(null, dataType, order);
-            }
-
-            // create param group
-            ParamGroup params = new ParamGroup();
-            // add precision
-            if (dataType != null) {
-                params.addCvParam(new CvParam(dataType.getAccession(), dataType.getName(), dataType.getCvLabel(), null, null, null, null));
-            }
-            // add compression type
-            CvTermReference compressionTerm = CvTermReference.NO_COMPRESSION;
-            params.addCvParam(new CvParam(compressionTerm.getAccession(), compressionTerm.getName(), compressionTerm.getCvLabel(), null, null, null, null));
-            params.addCvParam(new CvParam(binaryType.getAccession(), binaryType.getName(), binaryType.getCvLabel(), null, null, null, null));
-
-
-            binaryDataArray = new BinaryDataArray(null, binaryDoubleArr, params);
-        } catch (SQLException e) {
-            logger.error("Failed to query binary data array", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
+        double[] binaryDoubleArr;
+        if (total_array != null) {
+            binaryDoubleArr = BinaryDataUtils.toDoubleArray(Base64.decodeBase64(total_array.getBytes("ASCII")), dataType, order);
+        } else {
+            binaryDoubleArr = BinaryDataUtils.toDoubleArray(null, dataType, order);
         }
 
-        return binaryDataArray;
+        // create param group
+        ParamGroup params = new ParamGroup();
+        // add precision
+        if (dataType != null) {
+            params.addCvParam(new CvParam(dataType.getAccession(), dataType.getName(), dataType.getCvLabel(), null, null, null, null));
+        }
+        // add compression type
+        CvTermReference compressionTerm = CvTermReference.NO_COMPRESSION;
+        params.addCvParam(new CvParam(compressionTerm.getAccession(), compressionTerm.getName(), compressionTerm.getCvLabel(), null, null, null, null));
+        params.addCvParam(new CvParam(binaryType.getAccession(), binaryType.getName(), binaryType.getCvLabel(), null, null, null, null));
+
+
+        return new BinaryDataArray(null, binaryDoubleArr, params);
     }
 
     private List<ParamGroup> getScanWindows(BigDecimal mz_range_start, BigDecimal mz_range_stop) {
@@ -792,66 +523,43 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return scanWindows;
     }
 
-    private List<Scan> getScanList(Connection connection, int acq_specification_id, List<ParamGroup> scanWindows) throws DataAccessException {
+    private List<Scan> getScanList(int acq_specification_id, List<ParamGroup> scanWindows) {
         List<Scan> scanList = new ArrayList<Scan>();
-        ParamGroup params = null;
-        List<CvParam> cvParams;
-        List<UserParam> userParams;
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        String query = "SELECT acquisition_id FROM mzdata_acquisition WHERE acq_specification_id = ?";
+        Map<String, Object> result = jdbcTemplate.queryForMap(query, acq_specification_id);
 
-        try {
-            st = connection.prepareStatement("SELECT acquisition_id FROM mzdata_acquisition WHERE acq_specification_id = ?");
-            st.setInt(1, acq_specification_id);
-            rs = st.executeQuery();
-            while (rs.next()) {
-                cvParams = getCvParams(connection, "mzdata_acquisition_param", rs.getInt("acquisition_id"));
-                userParams = getUserParams(connection, "mzdata_acquisition_param", rs.getInt("acquisition_id"));
-                params = new ParamGroup(cvParams, userParams);
-            }
+        List<CvParam> cvParams = getCvParams("mzdata_acquisition_param", (Integer) result.get("acquisition_id"));
 
-            scanList.add(new Scan(null, null, null, null, scanWindows, params));
-        } catch (SQLException e) {
-            logger.error("Failed to query scan list", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
-        }
+        List<UserParam> userParams = getUserParams("mzdata_acquisition_param", (Integer) result.get("acquisition_id"));
+        ParamGroup params = new ParamGroup(cvParams, userParams);
+
+        scanList.add(new Scan(null, null, null, null, scanWindows, params));
 
         return scanList;
     }
 
-    private List<Precursor> getPrecursorsBySpectrum_id(Connection connection, int spectrum_id) throws DataAccessException {
+    private List<Precursor> getPrecursorsBySpectrum_id(int spectrum_id) throws DataAccessException {
         logger.debug("Get precursors");
 
         List<Precursor> precursors = new ArrayList<Precursor>();
         List<ParamGroup> selectedIon = new ArrayList<ParamGroup>();
-        Spectrum spectrum;
-        List<CvParam> cvParams;
-        List<UserParam> userParams;
-        ParamGroup activation;
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        String query = "SELECT precursor_id, precursor_spectrum_id FROM mzdata_precursor WHERE spectrum_id = ?";
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(query, spectrum_id);
 
-        try {
-            st = connection.prepareStatement("SELECT precursor_id, precursor_spectrum_id FROM mzdata_precursor WHERE spectrum_id = ?");
-            st.setInt(1, spectrum_id);
-            rs = st.executeQuery();
-            while (rs.next()) {
-                cvParams = getCvParams(connection, "mzdata_activation_param", rs.getInt("precursor_id"));
-                userParams = getUserParams(connection, "mzdata_activation_param", rs.getInt("precursor_id"));
-                spectrum = getSpectrumById(Integer.toString(rs.getInt("precursor_spectrum_id")));
-                activation = new ParamGroup(cvParams, userParams);
-                cvParams = getCvParams(connection, "mzdata_ion_selection_param", rs.getInt("precursor_id"));
-                userParams = getUserParams(connection, "mzdata_ion_selection_param", rs.getInt("precursor_id"));
-                selectedIon.add(new ParamGroup(cvParams, userParams));
-                precursors.add(new Precursor(spectrum, null, null, null, selectedIon, activation));
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query precursors", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
+        for (Map<String, Object> result : results) {
+            int precursorId = ((Long) result.get("precursor_id")).intValue();
+            String spectrumId = ((Long) result.get("precursor_spectrum_id")).toString();
+            List<CvParam> actCvParams = getCvParams("mzdata_activation_param", precursorId);
+            List<UserParam> actUserParams = getUserParams("mzdata_activation_param", precursorId);
+            Spectrum spectrum = getSpectrumById(spectrumId);
+            ParamGroup activation = new ParamGroup(actCvParams, actUserParams);
+
+            List<CvParam> selCvParams = getCvParams("mzdata_ion_selection_param", precursorId);
+            List<UserParam> selUserParams = getUserParams("mzdata_ion_selection_param", precursorId);
+            selectedIon.add(new ParamGroup(selCvParams, selUserParams));
+            precursors.add(new Precursor(spectrum, null, null, null, selectedIon, activation));
         }
 
         return precursors;
@@ -879,26 +587,16 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return cvParam;
     }
 
-    private List<UserParam> getSpectrumDesc(Connection connection, int spectrum_id) {
+    private List<UserParam> getSpectrumDesc(int spectrum_id) {
         logger.debug("Get spectrum description");
 
         List<UserParam> userParams = new ArrayList<UserParam>();
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        String query = "SELECT comment_text FROM mzdata_spectrum_desc_comment WHERE spectrum_id = ?";
+        List<String> results = jdbcTemplate.queryForList(query, String.class, spectrum_id);
 
-        try {
-            st = connection.prepareStatement("SELECT comment_text FROM mzdata_spectrum_desc_comment WHERE spectrum_id = ?");
-            st.setInt(1, spectrum_id);
-            rs = st.executeQuery();
-            while (rs.next()) {
-                userParams.add(new UserParam(COMMENTS, null, rs.getString("comment_text"), null, null, null));
-            }
-
-        } catch (SQLException e) {
-            logger.error("Failed to query spectrum descritpion", this, e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
+        for (String result : results) {
+            userParams.add(new UserParam(COMMENTS, null, result, null, null, null));
         }
 
         return userParams;
@@ -941,27 +639,23 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 return spectrum;
             }
 
-            Connection connection = null;
-            PreparedStatement st = null;
-            ResultSet rs = null;
-            //first get spectrum information from mzdata_spectrum
-            try {
-                connection = PooledConnectionFactory.getConnection();
-                st = connection.prepareStatement("SELECT spectrum_id, mz_data_id, mz_range_start, " +
-                        "mz_range_stop, ms_level, mz_array_binary_id, inten_array_binary_id, spectrum_type, method_of_combination, ms.acq_specification_id " +
-                        "FROM mzdata_spectrum ms LEFT JOIN mzdata_acq_specification ma ON ms.acq_specification_id = ma.acq_specification_id WHERE spectrum_id = ?");
-                int value = Integer.parseInt(id.toString());
-                st.setInt(1, value);
-                rs = st.executeQuery();
-                while (rs.next()) {
-                    int index = CollectionUtils.getIndex(getSpectrumIds(), id);
+            String query = "SELECT spectrum_id, mz_data_id, mz_range_start, " +
+                    "mz_range_stop, ms_level, mz_array_binary_id, inten_array_binary_id, spectrum_type, method_of_combination, ms.acq_specification_id " +
+                    "FROM mzdata_spectrum ms LEFT JOIN mzdata_acq_specification ma ON ms.acq_specification_id = ma.acq_specification_id WHERE spectrum_id = ?";
+
+            int idInt = Integer.parseInt(id.toString());
+            List<Map<String, Object>> results = jdbcTemplate.queryForList(query, idInt);
+            for (Map<String, Object> result : results) {
+                try {
+                    int index = CollectionUtils.getIndex(getSpectrumIds(), idInt);
 
                     //do scanlist
-                    List<ParamGroup> scanWindows = getScanWindows(rs.getBigDecimal("mz_range_start"), rs.getBigDecimal("mz_range_stop"));
-                    if (rs.getInt("ms.acq_specification_id") != 0) {
+                    List<ParamGroup> scanWindows = getScanWindows((BigDecimal) result.get("mz_range_start"), (BigDecimal) result.get("mz_range_stop"));
+                    int msAcqSpecId = ((Long) result.get("acq_specification_id")).intValue();
+                    if (msAcqSpecId != 0) {
                         // add method of combination
-                        scanParams.addCvParam(getMethodOfCombination(rs.getString("method_of_combination")));
-                        scans.addAll(getScanList(connection, rs.getInt("ms.acq_specification_id"), scanWindows));
+                        scanParams.addCvParam(getMethodOfCombination((String) result.get("method_of_combination")));
+                        scans.addAll(getScanList(msAcqSpecId, scanWindows));
 
                     } else {
                         // add method of combination cv param to param group
@@ -973,10 +667,12 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     // assemble scan list object
                     scanList = new ScanList(scans, scanParams);
 
-                    precursors = getPrecursorsBySpectrum_id(connection, value);
+                    precursors = getPrecursorsBySpectrum_id(idInt);
 
-                    BinaryDataArray mz = getBinaryDataArray(connection, rs.getInt("mz_array_binary_id"), CvTermReference.MZ_ARRAY);
-                    BinaryDataArray inten = getBinaryDataArray(connection, rs.getInt("inten_array_binary_id"), CvTermReference.INTENSITY_ARRAY);
+                    int mzArrBinId = ((Long)result.get("mz_array_binary_id")).intValue();
+                    int intenArrBinId = ((Long)result.get("inten_array_binary_id")).intValue();
+                    BinaryDataArray mz = getBinaryDataArray(mzArrBinId, CvTermReference.MZ_ARRAY);
+                    BinaryDataArray inten = getBinaryDataArray(intenArrBinId, CvTermReference.INTENSITY_ARRAY);
                     binaryArray.add(mz);
                     binaryArray.add(inten);
                     defaultArrLength = mz.getDoubleArray().length;
@@ -984,232 +680,140 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     // add ms level
                     CvTermReference msLevelCv = CvTermReference.MS_LEVEL;
                     spectrumParams.addCvParam(new CvParam(msLevelCv.getAccession(), msLevelCv.getName(), msLevelCv.getCvLabel(),
-                            rs.getInt("ms_level") + "", null, null, null));
+                            ((Long) result.get("ms_level")).intValue() + "", null, null, null));
                     // add spectrum type
                     CvTermReference massSpecCv = CvTermReference.MASS_SPECTRUM;
                     spectrumParams.addCvParam(new CvParam(massSpecCv.getAccession(), massSpecCv.getName(), massSpecCv.getCvLabel(),
                             null, null, null, null));
-                    if (rs.getString("spectrum_type") != null) {
-                        spectrumParams.addCvParam(getSpectrumType(rs.getString("spectrum_type")));
+                    if ((String) result.get("spectrum_type") != null) {
+                        spectrumParams.addCvParam(getSpectrumType((String) result.get("spectrum_type")));
                     }
                     // add spectrum instrument
-                    spectrumParams.addCvParams(getCvParams(connection, "mzdata_spectrum_instrument_param", value));
-                    spectrumParams.addUserParams(getUserParams(connection, "mzdata_spectrum_instrument_param", value));
+                    spectrumParams.addCvParams(getCvParams("mzdata_spectrum_instrument_param", idInt));
+                    spectrumParams.addUserParams(getUserParams("mzdata_spectrum_instrument_param", idInt));
                     // add comments
-                    spectrumParams.addUserParams(getSpectrumDesc(connection, value));
-                    spectrum = new Spectrum(Integer.toString(rs.getInt("spectrum_id")), index, null, null, defaultArrLength, null,
+                    spectrumParams.addUserParams(getSpectrumDesc(idInt));
+                    spectrum = new Spectrum(((Long) result.get("spectrum_id")).toString(), index, null, null, defaultArrLength, null,
                             scanList, precursors, null, binaryArray, spectrumParams);
 
                     if (useCache) {
                         getCache().store(CacheCategory.SPECTRUM, id, spectrum);
                     }
+                } catch (UnsupportedEncodingException e) {
+                    logger.error("Failed to decode binary data array", e);
                 }
-            } catch (SQLException e) {
-                logger.error("Failed to query spectrum", e);
-            } catch (UnsupportedEncodingException e) {
-                logger.error("Failed to decode binary data array", e);
-            } finally {
-                DBUtilities.releaseResources(connection, st, rs);
             }
         }
         return spectrum;
     }
 
-    private List<Double> getDeltaValues(Connection connection, int modification_id, String deltaType) {
+    private List<Double> getDeltaValues(int modification_id, String deltaType) {
         logger.debug("Get delta values");
 
-        List<Double> deltas = new ArrayList<Double>();
-
-        PreparedStatement st = null;
-        ResultSet rs = null;
-
-        try {
-            st = connection.prepareStatement("SELECT mass_delta_value FROM pride_mass_delta WHERE modification_id = ? AND classname = ?");
-            st.setInt(1, modification_id);
-            st.setString(2, deltaType);
-            rs = st.executeQuery();
-            while (rs.next()) {
-                deltas.add(rs.getDouble("mass_delta_value"));
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query delta values", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
-        }
-
-        return deltas;
+        String query = "SELECT mass_delta_value FROM pride_mass_delta WHERE modification_id = ? AND classname = ?";
+        return jdbcTemplate.queryForList(query, Double.class, modification_id, deltaType);
     }
 
-    private List<Modification> getModificationsPeptide(Connection connection, int peptide_id) throws DataAccessException {
+    private List<Modification> getModificationsPeptide(int peptide_id) {
         logger.debug("Get a list of modifications, peptide {}", peptide_id);
 
         List<Modification> modifications = new ArrayList<Modification>();
-        List<Double> monoMassDeltas;
-        List<Double> avgMassDeltas;
-        ParamGroup params;
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        String query = "SELECT modification_id, accession, mod_database, mod_database_version, location FROM pride_modification WHERE peptide_id = ?";
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(query, peptide_id);
 
-        try {
-            st = connection.prepareStatement("SELECT modification_id, accession, mod_database, mod_database_version, location FROM pride_modification WHERE peptide_id = ?");
-            st.setInt(1, peptide_id);
-            rs = st.executeQuery();
-            while (rs.next()) {
-                params = new ParamGroup(getCvParams(connection, "pride_modification_param", rs.getInt("modification_id")), getUserParams(connection, "pride_modification_param",
-                        rs.getInt("modification_id")));
-                monoMassDeltas = getDeltaValues(connection, rs.getInt("modification_id"), "uk.ac.ebi.pride.rdbms.ojb.model.core.MonoMassDeltaBean");
-                avgMassDeltas = getDeltaValues(connection, rs.getInt("modification_id"), "uk.ac.ebi.pride.rdbms.ojb.model.core.AverageMassDeltaBean");
-                modifications.add(new Modification(params, rs.getString("accession"), rs.getString("mod_database"), rs.getString("mod_database_version"), monoMassDeltas, avgMassDeltas,
-                        rs.getInt("location")));
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query modifications", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
+        for (Map<String, Object> result : results) {
+            ParamGroup params = new ParamGroup(getCvParams("pride_modification_param", (Integer) result.get("modification_id")), getUserParams("pride_modification_param",
+                    (Integer) result.get("modification_id")));
+            List<Double> monoMassDeltas = getDeltaValues((Integer) result.get("modification_id"), "uk.ac.ebi.pride.rdbms.ojb.model.core.MonoMassDeltaBean");
+            List<Double> avgMassDeltas = getDeltaValues((Integer) result.get("modification_id"), "uk.ac.ebi.pride.rdbms.ojb.model.core.AverageMassDeltaBean");
+            modifications.add(new Modification(params, (String) result.get("accession"), (String) result.get("mod_database"), (String) result.get("mod_database_version"), monoMassDeltas, avgMassDeltas,
+                    (Integer) result.get("location")));
         }
 
         return modifications;
     }
 
-    private List<FragmentIon> getFragmentIons(Connection connection, int peptide_id) throws DataAccessException {
+    private List<FragmentIon> getFragmentIons(int peptide_id) {
         logger.debug("Get list of fragment ions for peptide {}", peptide_id);
 
         List<FragmentIon> fragmentIons = new ArrayList<FragmentIon>();
 
+        String query = "SELECT fragment_ion_id, mz, intensity, mass_error, retention_time_error, accession_ion_type, ion_type_name, fragment_ion_number, ion_charge FROM pride_fragment_ion WHERE peptide_id = ?";
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(query, peptide_id);
 
-        boolean newConnection = false;
-
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try {
-            if (connection == null) {
-                logger.debug("Getting a connection for fragment ions");
-                connection = PooledConnectionFactory.getConnection();
-                newConnection = true;
-            }
-            st = connection.prepareStatement("SELECT fragment_ion_id, mz, intensity, mass_error, retention_time_error, accession_ion_type, ion_type_name, fragment_ion_number, ion_charge FROM pride_fragment_ion WHERE peptide_id = ?");
-            st.setInt(1, peptide_id);
-            rs = st.executeQuery();
-            while (rs.next()) {
-                List<CvParam> cvParams = new ArrayList<CvParam>();
-                //add mz param
-                CvTermReference cvTerm = CvTermReference.PRODUCT_ION_MZ;
-                cvParams.add(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
-                        Double.toString(rs.getDouble("mz")), null, null, null));
-                cvTerm = CvTermReference.PRODUCT_ION_INTENSITY;
-                cvParams.add(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
-                        Double.toString(rs.getDouble("intensity")), null, null, null));
-                cvTerm = CvTermReference.PRODUCT_ION_MASS_ERROR;
-                cvParams.add(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
-                        Double.toString(rs.getDouble("mass_error")), null, null, null));
-                cvTerm = CvTermReference.PRODUCT_ION_RETENTION_TIME_ERROR;
-                cvParams.add(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
-                        Double.toString(rs.getDouble("retention_time_error")), null, null, null));
-                cvTerm = CvTermReference.PRODUCT_ION_TYPE;
-                cvParams.add(new CvParam(rs.getString("accession_ion_type"), rs.getString("ion_type_name"), cvTerm.getCvLabel(),
-                        rs.getString("fragment_ion_number"), null, null, null));
-                cvTerm = CvTermReference.PRODUCT_ION_CHARGE;
-                cvParams.add(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
-                        rs.getString("ion_charge"), null, null, null));
-                //get the charge
-                cvParams.addAll(getCvParams(connection, "pride_fragment_ion_param", rs.getInt("fragment_ion_id")));
-                fragmentIons.add(new FragmentIon(new ParamGroup(cvParams, null)));
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query fragment ions", e);
-        } finally {
-            DBUtilities.releaseResources(newConnection ? connection : null, st, rs);
+        for (Map<String, Object> result : results) {
+            List<CvParam> cvParams = new ArrayList<CvParam>();
+            //add mz param
+            CvTermReference cvTerm = CvTermReference.PRODUCT_ION_MZ;
+            cvParams.add(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
+                    result.get("mz") == null ? null : result.get("mz").toString(), null, null, null));
+            cvTerm = CvTermReference.PRODUCT_ION_INTENSITY;
+            cvParams.add(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
+                    result.get("intensity") == null ? null : result.get("intensity").toString(), null, null, null));
+            cvTerm = CvTermReference.PRODUCT_ION_MASS_ERROR;
+            cvParams.add(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
+                    result.get("mass_error") == null ? null : result.get("mass_error").toString(), null, null, null));
+            cvTerm = CvTermReference.PRODUCT_ION_RETENTION_TIME_ERROR;
+            cvParams.add(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
+                    result.get("retention_time_error") == null ? null : result.get("retention_time_error").toString(), null, null, null));
+            cvTerm = CvTermReference.PRODUCT_ION_TYPE;
+            cvParams.add(new CvParam((String) result.get("accession_ion_type"), (String) result.get("ion_type_name"), cvTerm.getCvLabel(),
+                    result.get("fragment_ion_number") == null ? null : result.get("fragment_ion_number").toString(), null, null, null));
+            cvTerm = CvTermReference.PRODUCT_ION_CHARGE;
+            cvParams.add(new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(),
+                    result.get("ion_charge") == null ? null : result.get("ion_charge").toString(), null, null, null));
+            //get the charge
+            cvParams.addAll(getCvParams("pride_fragment_ion_param", ((Long) result.get("fragment_ion_id")).intValue()));
+            fragmentIons.add(new FragmentIon(new ParamGroup(cvParams, null)));
         }
 
         return fragmentIons;
     }
 
-    private Spectrum getSpectrumByPeptide(Connection connection, int experiment_id, int spectrum_ref) throws DataAccessException {
+    private Spectrum getSpectrumByPeptide(int experiment_id, int spectrum_ref) throws DataAccessException {
         logger.debug("Get spectrum by spectrum reference {}", spectrum_ref);
 
-        Spectrum spectrum = null;
+        String query = "SELECT spectrum_id FROM pride_experiment pe, mzdata_spectrum ms WHERE pe.experiment_id = ? AND " +
+                "pe.mz_data_id = ms.mz_data_id AND ms.spectrum_identifier = ?";
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        String spectrumId = jdbcTemplate.queryForObject(query, String.class, experiment_id, spectrum_ref);
 
-        try {
-            st = connection.prepareStatement("SELECT spectrum_id FROM pride_experiment pe, mzdata_spectrum ms WHERE pe.experiment_id = ? AND " +
-                    "pe.mz_data_id = ms.mz_data_id AND ms.spectrum_identifier = ?");
-            st.setInt(1, experiment_id);
-            st.setInt(2, spectrum_ref);
-            rs = st.executeQuery();
-            while (rs.next()) {
-                spectrum = getSpectrumById(Integer.toString(rs.getInt("spectrum_id")));
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query spectrum by peptide", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
-        }
-
-        return spectrum;
+        return getSpectrumById(spectrumId);
     }
 
-    private List<Peptide> getPeptideIdentification(Connection connection, int identification_id, int experiment_id) throws DataAccessException {
+    private List<Peptide> getPeptideIdentification(int identification_id, int experiment_id) throws DataAccessException {
         logger.debug("Get a list of peptides for identification {}", identification_id);
         List<Peptide> peptides = new ArrayList<Peptide>();
-        List<Modification> modifications;
-        List<FragmentIon> fragmentIons;
-        Spectrum spectrum;
-        ParamGroup params;
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        String query = "SELECT peptide_id, sequence, pep_start, pep_end, spectrum_ref FROM pride_peptide WHERE identification_id = ?";
 
-        try {
-            st = connection.prepareStatement("SELECT peptide_id, sequence, pep_start, pep_end, spectrum_ref FROM pride_peptide WHERE identification_id = ?");
-            st.setInt(1, identification_id);
-            rs = st.executeQuery();
-            while (rs.next()) {
-                params = new ParamGroup(getCvParams(connection, "pride_peptide_param", rs.getInt("peptide_id")), getUserParams(connection, "pride_peptide_param", rs.getInt("peptide_id")));
-                modifications = getModificationsPeptide(connection, rs.getInt("peptide_id"));
-                fragmentIons = getFragmentIons(connection, rs.getInt("peptide_id"));
-                spectrum = getSpectrumByPeptide(connection, experiment_id, rs.getInt("spectrum_ref"));
-                peptides.add(new Peptide(params, rs.getString("sequence"), rs.getInt("pep_start"),
-                        rs.getInt("pep_end"), modifications, fragmentIons, spectrum));
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query peptides", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(query, identification_id);
+
+        for (Map<String, Object> result : results) {
+            ParamGroup params = new ParamGroup(getCvParams("pride_peptide_param", (Integer) result.get("peptide_id")),
+                    getUserParams("pride_peptide_param", (Integer) result.get("peptide_id")));
+            List<Modification> modifications = getModificationsPeptide((Integer) result.get("peptide_id"));
+            List<FragmentIon> fragmentIons = getFragmentIons((Integer) result.get("peptide_id"));
+            Spectrum spectrum = getSpectrumByPeptide(experiment_id, (Integer) result.get("spectrum_ref"));
+            peptides.add(new Peptide(params, (String) result.get("sequence"), (Integer) result.get("pep_start"),
+                    (Integer) result.get("pep_end"), modifications, fragmentIons, spectrum));
         }
 
         return peptides;
     }
 
 
-    private Gel getPeptideGel(Connection connection, int gel_id, double x_coordinate, double y_coordinate, double molecular_weight, double pi) throws DataAccessException {
+    private Gel getPeptideGel(int gel_id, double x_coordinate, double y_coordinate, double molecular_weight, double pi) {
         logger.debug("Get peptide gel {}", gel_id);
 
-        Gel gel;
-        ParamGroup params = null;
-        String gelLink = null;
+        String query = "SELECT gel_link FROM pride_gel WHERE gel_id = ?";
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        String gelLink = jdbcTemplate.queryForObject(query, String.class, gel_id);
 
-        try {
-            st = connection.prepareStatement("SELECT gel_link FROM pride_gel WHERE gel_id = ?");
-            st.setInt(1, gel_id);
-            rs = st.executeQuery();
-            while (rs.next()) {
-                params = new ParamGroup(getCvParams(connection, "pride_gel_param", gel_id), getUserParams(connection, "pride_gel_param", gel_id));
-                gelLink = rs.getString("gel_link");
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query gel", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
-        }
+        ParamGroup params = new ParamGroup(getCvParams("pride_gel_param", gel_id), getUserParams("pride_gel_param", gel_id));
 
-        gel = new Gel(params, gelLink, x_coordinate, y_coordinate, molecular_weight, pi);
-        return gel;
+        return new Gel(params, gelLink, x_coordinate, y_coordinate, molecular_weight, pi);
     }
 
     @Override
@@ -1218,82 +822,53 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         if (identification == null) {
             logger.debug("Get protein identification {}", id);
 
-            List<Peptide> peptides;
-            Spectrum spectrum;
-            ParamGroup params;
-            Gel gel;
+            String query = "SELECT identification_id, accession_number, accession_version, score, search_database, database_version, " +
+                    "search_engine, sequence_coverage, splice_isoform, threshold, gel_id, x_coordinate, y_coordinate, " +
+                    "molecular_weight, pi, identification_id, pi.experiment_id, pi.classname, pi.spectrum_ref FROM pride_identification pi, pride_experiment pe " +
+                    "WHERE pe.accession = ? AND pi.experiment_id = pe.experiment_id AND pi.identification_id = ?";
+            List<Map<String, Object>> results = jdbcTemplate.queryForList(query, id, getForegroundExperimentAcc());
 
-            Connection connection = null;
-            PreparedStatement st = null;
-            ResultSet rs = null;
+            for (Map<String, Object> result : results) {
+                String accession = (String) result.get("accession_number");
+                logger.debug("Getting a identification from database: {}", accession);
+                Double seqConverage = (Double) result.get("sequence_coverage");
+                double seqConverageVal = seqConverage == 0 ? -1 : seqConverage;
+                ParamGroup params = new ParamGroup(getCvParams("pride_identification_param", (Integer) result.get("identification_id")),
+                        getUserParams("pride_identification_param", (Integer) result.get("identification_id")));
 
-            try {
-                connection = PooledConnectionFactory.getConnection();
-                st = connection.prepareStatement("SELECT identification_id, accession_number, accession_version, score, search_database, database_version, " +
-                        "search_engine, sequence_coverage, splice_isoform, threshold, gel_id, x_coordinate, y_coordinate, " +
-                        "molecular_weight, pi, identification_id, pi.experiment_id, pi.classname, pi.spectrum_ref FROM pride_identification pi, pride_experiment pe " +
-                        "WHERE pe.accession = ? AND pi.experiment_id = pe.experiment_id AND pi.identification_id = ?");
-                st.setString(2, id.toString());
-                st.setString(1, getForegroundExperimentAcc().toString());
-                rs = st.executeQuery();
-                while (rs.next()) {
-                    String accession = rs.getString("accession_number");
-                    logger.debug("Getting a identification from database: {}", accession);
-                    Double seqConverage = rs.getDouble("sequence_coverage");
-                    double seqConverageVal = seqConverage == 0 ? -1 : seqConverage;
-                    params = new ParamGroup(getCvParams(connection, "pride_identification_param", rs.getInt("identification_id")), getUserParams(connection, "pride_identification_param", rs.getInt("identification_id")));
-                    peptides = getPeptideIdentification(connection, rs.getInt("identification_id"), rs.getInt("pi.experiment_id"));
-                    spectrum = getSpectrumByRef(connection, rs.getString("spectrum_ref"));
-                    String className = rs.getString("classname");
-                    if ("uk.ac.ebi.pride.rdbms.ojb.model.core.TwoDimensionalIdentificationBean".equals(className)) {
-                        gel = getPeptideGel(connection, rs.getInt("gel_id"), rs.getDouble("x_coordinate"), rs.getDouble("y_coordinate"), rs.getDouble("molecular_weight"), rs.getDouble("pi"));
-                        identification = new TwoDimIdentification(Integer.toString(rs.getInt("identification_id")), accession, rs.getString("accession_version"), peptides, rs.getDouble("score"),
-                                rs.getString("search_database"), rs.getString("database_version"), rs.getString("search_engine"), seqConverageVal,
-                                spectrum, rs.getString("splice_isoform"), rs.getDouble("threshold"), params, gel);
-                    } else if ("uk.ac.ebi.pride.rdbms.ojb.model.core.GelFreeIdentificationBean".equals(className)) {
-                        identification = new GelFreeIdentification(Integer.toString(rs.getInt("identification_id")), accession, rs.getString("accession_version"), peptides, rs.getDouble("score"),
-                                rs.getString("search_database"), rs.getString("database_version"), rs.getString("search_engine"), seqConverageVal,
-                                spectrum, rs.getString("splice_isoform"), rs.getDouble("threshold"), params);
-                    }
+                List<Peptide> peptides = getPeptideIdentification((Integer) result.get("identification_id"), (Integer) result.get("pi.experiment_id"));
 
-                    if (useCache) {
-                        getCache().store(CacheCategory.IDENTIFICATION, id, identification);
-                    }
+                Spectrum spectrum = getSpectrumByRef((String) result.get("spectrum_ref"));
+
+                String className = (String) result.get("classname");
+                if ("uk.ac.ebi.pride.rdbms.ojb.model.core.TwoDimensionalIdentificationBean".equals(className)) {
+                    Gel gel = getPeptideGel((Integer) result.get("gel_id"), (Double) result.get("x_coordinate"), (Double) result.get("y_coordinate"), (Double) result.get("molecular_weight"), (Double) result.get("pi"));
+                    identification = new TwoDimIdentification((String) result.get("identification_id"), accession, (String) result.get("accession_version"), peptides, (Double) result.get("score"),
+                            (String) result.get("search_database"), (String) result.get("database_version"), (String) result.get("search_engine"), seqConverageVal,
+                            spectrum, (String) result.get("splice_isoform"), (Double) result.get("threshold"), params, gel);
+                } else if ("uk.ac.ebi.pride.rdbms.ojb.model.core.GelFreeIdentificationBean".equals(className)) {
+                    identification = new GelFreeIdentification((String) result.get("identification_id"), accession, (String) result.get("accession_version"), peptides, (Double) result.get("score"),
+                            (String) result.get("search_database"), (String) result.get("database_version"), (String) result.get("search_engine"), seqConverageVal,
+                            spectrum, (String) result.get("splice_isoform"), (Double) result.get("threshold"), params);
                 }
-            } catch (SQLException e) {
-                logger.error("Failed to query identifications", e);
-            } finally {
-                DBUtilities.releaseResources(connection, st, rs);
+
+                if (useCache) {
+                    getCache().store(CacheCategory.IDENTIFICATION, id, identification);
+                }
             }
         }
         return identification;
     }
 
 
-    private Spectrum getSpectrumByRef(Connection connection, String spectrum_ref) throws DataAccessException {
+    private Spectrum getSpectrumByRef(String spectrum_ref) throws DataAccessException {
         logger.debug("Get spectrum by spectrum reference {}", spectrum_ref);
 
-        Spectrum spectrum = null;
+        String query = "SELECT ms.spectrum_id FROM mzdata_spectrum ms, mzdata_mz_data mz WHERE " +
+                "mz.accession_number = ? AND mz.mz_data_id = ms.mz_data_id AND ms.spectrum_identifier = ?";
+        String spectrumId = jdbcTemplate.queryForObject(query, String.class, spectrum_ref);
 
-        PreparedStatement st = null;
-        ResultSet rs = null;
-
-        try {
-            st = connection.prepareStatement("SELECT ms.spectrum_id FROM mzdata_spectrum ms, mzdata_mz_data mz WHERE " +
-                    "mz.accession_number = ? AND mz.mz_data_id = ms.mz_data_id AND ms.spectrum_identifier = ?");
-            st.setString(1, getForegroundExperimentAcc().toString());
-            st.setString(2, spectrum_ref);
-            rs = st.executeQuery();
-            if (rs.next()) {
-                spectrum = getSpectrumById(Integer.toString(rs.getInt("ms.spectrum_id")));
-            }
-        } catch (SQLException e) {
-            logger.error("Failed to query spectrum by spectrum reference", e);
-        } finally {
-            DBUtilities.releaseResources(null, st, rs);
-        }
-
-        return spectrum;
+        return getSpectrumById(spectrumId);
     }
 
     /**
@@ -1322,9 +897,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             Integer start = (Integer) getCache().get(CacheCategory.PEPTIDE_START, peptideId);
             Integer end = (Integer) getCache().get(CacheCategory.PEPTIDE_END, peptideId);
             int pid = Integer.parseInt(peptideId.toString());
-            ParamGroup params = new ParamGroup(getCvParams(null, "pride_peptide_param", pid), getUserParams(null, "pride_peptide_param", pid));
+            ParamGroup params = new ParamGroup(getCvParams("pride_peptide_param", pid), getUserParams("pride_peptide_param", pid));
             List<Modification> modifications = this.getPTMs(identId, peptideId);
-            List<FragmentIon> fragmentIons = getFragmentIons(null, pid);
+            List<FragmentIon> fragmentIons = getFragmentIons(pid);
             Spectrum spectrum = null;
             Comparable specId = this.getPeptideSpectrumId(identId, peptideId);
             if (specId != null) {
@@ -1345,38 +920,19 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         // check with cache if exists then use the in-memory ident object
         SearchEngine searchEngine = super.getSearchEngine();
         if (searchEngine == null && hasIdentification()) {
-            Connection connection = null;
-            PreparedStatement st = null;
-            ResultSet rs = null;
-            // if not exists then use query the engine directly
-            try {
-                logger.debug("Getting search engine");
-                Comparable identId = CollectionUtils.getElement(getIdentificationIds(), 0);
-                connection = PooledConnectionFactory.getConnection();
+            String query = "select search_engine from pride_identification where identification_id=?";
+            Comparable identId = CollectionUtils.getElement(getIdentificationIds(), 0);
+            String seStr = jdbcTemplate.queryForObject(query, String.class, identId);
+            searchEngine = new SearchEngine(seStr);
 
-                // get mz data array id
-                st = connection.prepareStatement("select search_engine from pride_identification where identification_id=?");
-                st.setString(1, identId.toString());
-                rs = st.executeQuery();
-                if (rs.next()) {
-                    searchEngine = new SearchEngine(rs.getString("search_engine"));
-                }
-
-                // get search engine types
-                Map<Comparable, ParamGroup> params = (Map<Comparable, ParamGroup>) getCache().get(CacheCategory.PEPTIDE_TO_PARAM);
-                if (params != null && !params.isEmpty()) {
-                    Collection<ParamGroup> paramGroups = params.values();
-                    ParamGroup paramGroup = CollectionUtils.getElement(paramGroups, 0);
-                    searchEngine.setSearchEngineTypes(DataAccessUtilities.getSearchEngineTypes(paramGroup));
-                }
-                getCache().store(CacheCategory.SEARCH_ENGINE_TYPE, searchEngine);
-            } catch (SQLException e) {
-                String errMsg = "Failed to query search engine for identification";
-                logger.error(errMsg, e);
-                throw new DataAccessException(errMsg, e);
-            } finally {
-                DBUtilities.releaseResources(connection, st, rs);
+            // get search engine types
+            Map<Comparable, ParamGroup> params = (Map<Comparable, ParamGroup>) getCache().get(CacheCategory.PEPTIDE_TO_PARAM);
+            if (params != null && !params.isEmpty()) {
+                Collection<ParamGroup> paramGroups = params.values();
+                ParamGroup paramGroup = CollectionUtils.getElement(paramGroups, 0);
+                searchEngine.setSearchEngineTypes(DataAccessUtilities.getSearchEngineTypes(paramGroup));
             }
+            getCache().store(CacheCategory.SEARCH_ENGINE_TYPE, searchEngine);
         }
 
         return searchEngine;
@@ -1384,32 +940,11 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     @Override
     public String getIdentificationType(Comparable identId) throws DataAccessException {
-        String type = null;
 
-        Connection connection = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        String query = "select classname from pride_identification where identification_id=?";
+        String className = jdbcTemplate.queryForObject(query, String.class, identId);
 
-        try {
-            logger.debug("Getting identification type");
-            connection = PooledConnectionFactory.getConnection();
-            // get mz data array id
-            st = connection.prepareStatement("select classname from pride_identification where identification_id=?");
-            st.setString(1, identId.toString());
-            rs = st.executeQuery();
-            if (rs.next()) {
-                String className = rs.getString("classname");
-                type = className.contains("TwoDimensionalIdentificationBean") ? TWO_DIM_IDENTIFICATION_TYPE : GEL_FREE_IDENTIFICATION_TYPE;
-            }
-        } catch (SQLException e) {
-            String errMsg = "Failed to query identification type";
-            logger.error(errMsg, e);
-            throw new DataAccessException(errMsg, e);
-        } finally {
-            DBUtilities.releaseResources(connection, st, rs);
-        }
-
-        return type;
+        return className.contains("TwoDimensionalIdentificationBean") ? TWO_DIM_IDENTIFICATION_TYPE : GEL_FREE_IDENTIFICATION_TYPE;
     }
 
     @Override
@@ -1422,38 +957,24 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             if (spectrum != null) {
                 cnt = DataAccessUtilities.getNumberOfPeaks(spectrum);
             } else {
-                Connection connection = null;
-                PreparedStatement st = null;
-                ResultSet rs = null;
+                logger.debug("Getting number of peaks");
+                String query = "select mz_array_binary_id from mzdata_spectrum where spectrum_id=?";
+                Integer mzArrIdObj = jdbcTemplate.queryForObject(query, Integer.class, specId);
+                int mzArrId = mzArrIdObj == null ? -1 : mzArrIdObj;
 
-                // if not exists then use query the database directly
-                try {
-                    logger.debug("Getting number of peaks");
-                    connection = PooledConnectionFactory.getConnection();
-                    // get mz data array id
-                    st = connection.prepareStatement("select mz_array_binary_id from mzdata_spectrum where spectrum_id=?");
-                    st.setString(1, specId.toString());
-                    rs = st.executeQuery();
-                    int mzArrId = -1;
-                    if (rs.next()) {
-                        mzArrId = rs.getInt("mz_array_binary_id");
-                    }
-                    // get binary data array
-                    if (mzArrId != -1) {
-                        BinaryDataArray mzBinaryArray = getBinaryDataArray(connection, mzArrId, CvTermReference.MZ_ARRAY);
+                // get binary data array
+                if (mzArrId != -1) {
+                    BinaryDataArray mzBinaryArray = null;
+                    try {
+                        mzBinaryArray = getBinaryDataArray(mzArrId, CvTermReference.MZ_ARRAY);
                         cnt = mzBinaryArray.getDoubleArray().length;
                         getCache().store(CacheCategory.NUMBER_OF_PEAKS, specId, cnt);
+                    } catch (UnsupportedEncodingException e) {
+                        String errMsg = "Failed to query number of peaks during decoding of the binary data array";
+                        logger.error(errMsg, e);
+                        throw new DataAccessException(errMsg, e);
                     }
-                } catch (SQLException e) {
-                    String errMsg = "Failed to query number of peaks for spectrum";
-                    logger.error(errMsg, e);
-                    throw new DataAccessException(errMsg, e);
-                } catch (UnsupportedEncodingException e) {
-                    String errMsg = "Failed to query number of peaks during decoding of the binary data array";
-                    logger.error(errMsg, e);
-                    throw new DataAccessException(errMsg, e);
-                } finally {
-                    DBUtilities.releaseResources(connection, st, rs);
+
                 }
             }
         } else {
@@ -1472,24 +993,15 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             if (spectrum != null) {
                 sum = DataAccessUtilities.getSumOfIntensity(spectrum);
             } else {
-                Connection connection = null;
-                PreparedStatement st = null;
-                ResultSet rs = null;
-                // if not exists then use query the database directly
-                try {
-                    logger.debug("Getting sum of intensity: spectrum id[{}]", specId);
-                    connection = PooledConnectionFactory.getConnection();
-                    // get mz data array id
-                    st = connection.prepareStatement("select inten_array_binary_id from mzdata_spectrum where spectrum_id=?");
-                    st.setString(1, specId.toString());
-                    rs = st.executeQuery();
-                    int mzArrId = -1;
-                    if (rs.next()) {
-                        mzArrId = rs.getInt("inten_array_binary_id");
-                    }
-                    // get binary data array
-                    if (mzArrId != -1) {
-                        BinaryDataArray intentBinaryArray = getBinaryDataArray(connection, mzArrId, CvTermReference.MZ_ARRAY);
+                logger.debug("Getting sum of intensity: spectrum id[{}]", specId);
+                String query = "select inten_array_binary_id from mzdata_spectrum where spectrum_id=?";
+                Integer mzArrIdObj = jdbcTemplate.queryForObject(query, Integer.class, specId);
+                int mzArrId = mzArrIdObj == null ? -1 : mzArrIdObj;
+
+                // get binary data array
+                if (mzArrId != -1) {
+                    try {
+                        BinaryDataArray intentBinaryArray = getBinaryDataArray(mzArrId, CvTermReference.MZ_ARRAY);
                         if (intentBinaryArray != null) {
                             double[] originalIntentArr = intentBinaryArray.getDoubleArray();
                             for (double intent : originalIntentArr) {
@@ -1498,17 +1010,11 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                             getCache().store(CacheCategory.SUM_OF_INTENSITY, specId, sum);
                             getCache().store(CacheCategory.NUMBER_OF_PEAKS, specId, intentBinaryArray.getDoubleArray().length);
                         }
+                    } catch (UnsupportedEncodingException e) {
+                        String errMsg = "Failed to query sum of intensity while decoding the binary data array";
+                        logger.error(errMsg, e);
+                        throw new DataAccessException(errMsg, e);
                     }
-                } catch (SQLException e) {
-                    String errMsg = "Failed to query sum of intensity for spectrum";
-                    logger.error(errMsg, e);
-                    throw new DataAccessException(errMsg, e);
-                } catch (UnsupportedEncodingException e) {
-                    String errMsg = "Failed to query sum of intensity while decoding the binary data array";
-                    logger.error(errMsg, e);
-                    throw new DataAccessException(errMsg, e);
-                } finally {
-                    DBUtilities.releaseResources(connection, st, rs);
                 }
             }
         } else {
@@ -1544,43 +1050,30 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     public List<PrideChartManager> getChartData() throws DataAccessException {
         List<PrideChartManager> list = new ArrayList<PrideChartManager>();
 
-        Connection connection = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try {
-            connection = PooledConnectionFactory.getConnection();
-            st = connection.prepareStatement(
-                    "select c.chart_type, c.intermediate_data " +
-                            "from pride_chart_data c, pride_experiment e " +
-                            "where c.experiment_id = e.experiment_id and " +
-                            "   e.accession = ? and " +
-                            "   c.intermediate_data is not null " +
-                            "order by c.chart_type");
-            st.setString(1, getForegroundExperimentAcc().toString());
+        String query = "select c.chart_type, c.intermediate_data " +
+                "from pride_chart_data c, pride_experiment e " +
+                "where c.experiment_id = e.experiment_id and " +
+                "   e.accession = ? and " +
+                "   c.intermediate_data is not null " +
+                "order by c.chart_type";
 
-            Map<Integer, PrideChartManager> map = new HashMap<Integer, PrideChartManager>();
-            rs = st.executeQuery();
-            while (rs.next()) {
-                int type = rs.getInt("chart_type");
-                String jsonData = rs.getString("intermediate_data");
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(query, getForegroundExperimentAcc());
+        Map<Integer, PrideChartManager> map = new HashMap<Integer, PrideChartManager>();
+        for (Map<String, Object> result : results) {
+            int type = ((Long) result.get("chart_type")).intValue();
+            String jsonData = (String) result.get("intermediate_data");
 
-                PrideChart prideChart = PrideChartFactory.getChart(type, jsonData);
-                map.put(type, new PrideChartManager(prideChart));
-            }
-            rs.close();
-
-            if (!map.isEmpty())
-                for (Integer id : PrideChartFactory.getChartOrder())
-                    if (map.containsKey(id)) list.add(map.get(id));
-
-        } catch (Exception e) {
-            String errMsg = "Charts intermediate data could not be retrieved from database";
-            logger.error(errMsg, e);
-        } finally {
-            DBUtilities.releaseResources(connection, st, rs);
+            PrideChart prideChart = PrideChartFactory.getChart(type, jsonData);
+            map.put(type, new PrideChartManager(prideChart));
         }
 
+        if (!map.isEmpty())
+            for (Integer id : PrideChartFactory.getChartOrder())
+                if (map.containsKey(id)) list.add(map.get(id));
+
+
         //If the list is empty means that the intermediate data has not been retrieved for some reason
+        Connection connection = null;
         if (list.isEmpty()) {
             try {
                 /**
@@ -1602,7 +1095,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException(errMsg, e);
             } finally {
                 //ToDo: what to use instead of st and rs (because they are from previous try)
-                DBUtilities.releaseResources(connection, st, rs);
+                DBUtilities.releaseResources(connection, null, null);
             }
         }
 

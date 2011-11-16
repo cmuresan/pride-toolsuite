@@ -172,7 +172,7 @@ public class PooledConnectionFactory {
      *
      * @return ComboPooledDataSource   connection pool
      */
-    private ComboPooledDataSource getConnectionPool() {
+    public ComboPooledDataSource getConnectionPool() {
         return connectionPool;
     }
 

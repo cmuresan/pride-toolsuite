@@ -12,6 +12,11 @@
 
 ----
 == News ==
+*_October 26. 2011:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.2.3] is now available:*
+ * Problem on download protein details on Uniprot accessions, this was due to a change on Uniprot web service.
+ * Bug fix on opening duplicated experiments from database.
+ * Enabled Close All button when doing database search. 
+
 *_October 26. 2011:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.2.2] is now available:*
  * Bug fix on loading TMT quantification dataset.
  * Bug fix on setting control sample for quantification dataset.

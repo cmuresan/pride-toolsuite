@@ -244,7 +244,6 @@ public class CacheAccessor implements Cache {
             }
         }
 
-
         // return a new data structure which contains all the elements
         if (result instanceof Map) {
             Map temp = new LinkedHashMap();

@@ -66,7 +66,6 @@ public class DBMetadataExtractor {
             writer.println("Experiment Accession\tTitle\tProject\tSpecies\tTaxonomy ID\tTissue\tBRENDA ID (Tissue)\t#Spectra\t#Proteins\t#Peptides\tReference\tPubMed ID");
 
             for (Integer accession : accessions) {
-                System.out.println(accession);
 
                 // Data access controller
                 PrideDBAccessControllerImpl controller = new PrideDBAccessControllerImpl(accession);

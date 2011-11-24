@@ -38,9 +38,13 @@ public class PrideXmlExtractor {
      */
     private static final Pattern TAG_PATTERN = Pattern.compile("<[^>]+>\\s*([^<>]+)\\s*</[^>]+>", Pattern.CASE_INSENSITIVE);
     /**
+     * pattern to match ms level
+     */
+    private static final Pattern MS_LEVEL_PATTERN = Pattern.compile("\\smslevel\\s*=\\s*['\"]([^'\"]*)['\"]", Pattern.CASE_INSENSITIVE);
+    /**
      * This is used to access accessions or ids
      */
-    private static final int XML_CHAR_INCREMENT = 100;
+    private static final int XML_CHAR_INCREMENT = 150;
 
     /**
      * These maps provide quick mapping from id/accession to their byte range in the input file
@@ -286,6 +290,23 @@ public class PrideXmlExtractor {
      */
     public Map<String, IndexElement> getSpectrumIndices() {
         return new HashMap<String, IndexElement>(spectrumIdMap);
+    }
+
+    /**
+     * Get the ms level of a given spectrum
+     *
+     * @param id    spectrum id
+     * @return  int ms level
+     */
+    public int getSpectrumMsLevel(String id) {
+        int msLevel = -1;
+
+        if (spectrumIdMap != null && spectrumIdMap.containsKey(id)) {
+            String msLevelStr = getIDByPattern(spectrumIdMap.get(id), MS_LEVEL_PATTERN, true);
+            msLevel = Integer.parseInt(msLevelStr);
+        }
+
+        return msLevel;
     }
 
     /**

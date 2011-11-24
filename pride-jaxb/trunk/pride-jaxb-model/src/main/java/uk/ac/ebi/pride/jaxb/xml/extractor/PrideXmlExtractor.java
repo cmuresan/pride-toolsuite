@@ -49,7 +49,7 @@ public class PrideXmlExtractor {
     private Map<String, IndexElement> gelFreeAccMap = null;
     private Map<String, IndexElement> twoDimAccMap = null;
     private Map<String, List<IndexElement>> identToPeptideMap = null;
-    private List<String> identifiedSpectrumList =  null;
+    private List<String> identifiedSpectrumList = null;
 
     /**
      * Pride xml extractor
@@ -194,7 +194,7 @@ public class PrideXmlExtractor {
         String id = null;
         for (Map.Entry<String, IndexElement> entry : mappings.entrySet()) {
             IndexElement identElement = entry.getValue();
-            if (identElement.getStart() <= element.getStart() && identElement.getStop()>=element.getStop()) {
+            if (identElement.getStart() <= element.getStart() && identElement.getStop() >= element.getStop()) {
                 id = entry.getKey();
                 break;
             }
@@ -280,9 +280,19 @@ public class PrideXmlExtractor {
     }
 
     /**
+     * Get all the spectrum id, index element map
+     *
+     * @return Map<String, IndexElement>   spectrum id to index element map
+     */
+    public Map<String, IndexElement> getSpectrumIndices() {
+        return new HashMap<String, IndexElement>(spectrumIdMap);
+    }
+
+    /**
      * Check whether the spectrum has been used to identify a peptide
-     * @param id    spectrum id
-     * @return  boolean true if it is an identified spectrum.
+     *
+     * @param id spectrum id
+     * @return boolean true if it is an identified spectrum.
      */
     public boolean isIdentifiedSpectrum(String id) {
         return identifiedSpectrumList.contains(id);
@@ -359,7 +369,7 @@ public class PrideXmlExtractor {
     /**
      * Get number of peptides for an identification
      *
-     * @param identId   identification id
+     * @param identId identification id
      * @return int  number of peptide
      */
     public int getNumberOfPeptides(String identId) {
@@ -376,15 +386,15 @@ public class PrideXmlExtractor {
     /**
      * Get the corresponding xml string for a peptide.
      *
-     * @param identId   identification id.
-     * @param index peptide index within the identification
+     * @param identId identification id.
+     * @param index   peptide index within the identification
      * @return String   xml string
      */
     public String getPeptideXmlString(String identId, int index) {
         String xml = null;
 
         List<IndexElement> elements = identToPeptideMap.get(identId);
-        if (elements != null && index >=0 && index < elements.size()) {
+        if (elements != null && index >= 0 && index < elements.size()) {
             xml = indexer.getXmlByIndexElement(elements.get(index));
         }
 
@@ -394,7 +404,7 @@ public class PrideXmlExtractor {
     /**
      * Get all peptide xml strings within an identifiation.
      *
-     * @param identId   identificatio id
+     * @param identId identificatio id
      * @return List<String> a list of peptide xml strings
      */
     public List<String> getPeptideXmlStrings(String identId) {

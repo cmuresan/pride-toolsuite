@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.jaxb.xml;
 
 import org.apache.log4j.Logger;
+import psidev.psi.tools.xxindex.index.IndexElement;
 import uk.ac.ebi.pride.jaxb.model.*;
 import uk.ac.ebi.pride.jaxb.utils.FileUtils;
 import uk.ac.ebi.pride.jaxb.xml.adapter.SpectrumAdapter;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -158,6 +160,10 @@ public class PrideXmlReader {
     public Spectrum getSpectrumById(String id) {
         return this.<Spectrum>unmarshalXmlToPrideObject(extractor.getSpectrumXmlString(id),
                 PrideXmlXpath.MZDATA_SPECTRUM.getClassType());
+    }
+
+    public Map<String, IndexElement> getSpectrumIndices() {
+        return extractor.getSpectrumIndices();
     }
 
     public boolean isIdentifiedSpectrum(String id) {

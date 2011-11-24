@@ -162,6 +162,10 @@ public class PrideXmlReader {
                 PrideXmlXpath.MZDATA_SPECTRUM.getClassType());
     }
 
+    public int getSpectrumMsLevel(String id) {
+        return extractor.getSpectrumMsLevel(id);
+    }
+
     public Map<String, IndexElement> getSpectrumIndices() {
         return extractor.getSpectrumIndices();
     }

@@ -96,7 +96,7 @@
 				<spectrum id="2">
 					<spectrumDesc>
 						<spectrumSettings>
-							<spectrumInstrument mzRangeStop="1555.0" mzRangeStart="321.0" msLevel="2" />
+							<spectrumInstrument mzRangeStop="1555.0" mzRangeStart="321.0" msLevel="0" />
 						</spectrumSettings>
 						<precursorList count="1">
 							<precursor msLevel="1" spectrumRef="0">

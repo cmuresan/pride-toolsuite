@@ -279,4 +279,9 @@ public class PrideXmlReaderTest {
         // check the protein accession version
         assertEquals("Protein two's accession version should be 2", ident2.getAccessionVersion(), "2");
     }
+
+    @Test
+    public void testMsLevel() throws Exception {
+        assertEquals(0, ac.getSpectrumMsLevel("2"));
+    }
 }

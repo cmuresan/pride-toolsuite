@@ -206,7 +206,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @return List<Reference>  a list of reference objects
      * @throws DataAccessException data access exception
      */
-    private List<Reference> getReferences() throws DataAccessException {
+    public List<Reference> getReferences() throws DataAccessException {
         List<Reference> refs;
         try {
             refs = MzIdentMLTransformer.transformToReference(unmarshaller.getReferences());
@@ -223,7 +223,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @return Protocol protocol object.
      * @throws DataAccessException data access exception
      */
-    private ExperimentProtocol getProtocol() throws DataAccessException {
+    public ExperimentProtocol getProtocol() throws DataAccessException {
         try {
             // ToDo: implementation needed
             //  return PrideXmlTransformer.transformProtocol(reader.getProtocol());

@@ -315,7 +315,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *
      */
-    private List<Reference> getReferences() throws DataAccessException {
+    public List<Reference> getReferences() throws DataAccessException {
         logger.debug("Get references");
         List<Reference> refs = new ArrayList<Reference>();
 
@@ -337,7 +337,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *
      */
-    private ExperimentProtocol getProtocol() throws DataAccessException {
+    public ExperimentProtocol getProtocol() throws DataAccessException {
         logger.debug("Get protocol");
         try {
             return PrideXmlTransformer.transformProtocol(reader.getProtocol());

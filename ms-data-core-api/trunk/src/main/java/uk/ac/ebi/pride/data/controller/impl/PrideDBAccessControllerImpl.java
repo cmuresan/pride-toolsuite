@@ -609,7 +609,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
 
-    private List<Reference> getReferences() throws DataAccessException {
+    public List<Reference> getReferences() throws DataAccessException {
         logger.debug("Get references");
         List<Reference> references = new ArrayList<Reference>();
         List<UserParam> userParams;
@@ -809,7 +809,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return binaryDataArray;
     }
 
-    private List<ParamGroup> getScanWindows(BigDecimal mz_range_start, BigDecimal mz_range_stop) {
+    public List<ParamGroup> getScanWindows(BigDecimal mz_range_start, BigDecimal mz_range_stop) {
         List<ParamGroup> scanWindows = null;
 
         // mz range start/stop are optional in pride xml
@@ -830,7 +830,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return scanWindows;
     }
 
-    private List<Scan> getScanList(Connection connection, int acq_specification_id, List<ParamGroup> scanWindows) throws DataAccessException {
+    public List<Scan> getScanList(Connection connection, int acq_specification_id, List<ParamGroup> scanWindows) throws DataAccessException {
         List<Scan> scanList = new ArrayList<Scan>();
         ParamGroup params = null;
         List<CvParam> cvParams;

@@ -11,6 +11,7 @@ package uk.ac.ebi.pride.mol;
 public enum AminoAcid implements Mass {
 
     A("Alanine", 'A', "Ala", "C3H5ON", 71.03711, 71.0788),
+    B("Asparagine or aspartic acid", 'B', "Asx", "", 114.53495, 114.5962),
     R("Arginine", 'R', "Arg", "C6H12ON4", 156.10111, 156.1875),
     N("Asparagine", 'N', "Asn", "C4H6O2N2", 114.04293, 114.1038),
     D("Aspartic acid", 'D', "Asp", "C4H5O3N", 115.02694, 115.0886),
@@ -28,9 +29,11 @@ public enum AminoAcid implements Mass {
     P("Proline", 'P', "Pro", "C5H7ON", 97.05276, 97.1167),
     S("Serine", 'S', "Ser", "C3H5O2N", 87.03203, 87.0782),
     T("Threonine", 'T', "Thr", "C4H7O2N", 101.04768, 101.1051),
+    U("Selenocysteine", 'U', "SeC", "C3H5NOSe", 150.95363, 150.0379),
+    V("Valine", 'V', "Val", "C5H9ON", 99.06841, 99.1326),
     W("Tryptophan", 'W', "Trp", "C11H10ON2", 186.07931, 186.2132),
     Y("Tyrosine", 'Y', "Tyr", "C9H9O2N", 163.06333, 163.1760),
-    V("Valine", 'V', "Val", "C5H9ON", 99.06841, 99.1326);
+    Z("Glutamine or glutamic acid", 'Z', "Glx", "", 128.55059, 128.6231);
 
     private final String name;
     private final char oneLetterCode;

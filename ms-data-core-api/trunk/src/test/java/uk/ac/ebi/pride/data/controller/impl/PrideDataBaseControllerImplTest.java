@@ -25,6 +25,7 @@ public class PrideDataBaseControllerImplTest {
     public void setUp() throws Exception {
        // PooledConnectionFactory pooledConnectionFactory = PooledConnectionFactory.getInstance();
        prideController = new PrideDBAccessControllerImpl("10885");
+       //prideController = new PrideDBAccessControllerImpl("15086");
     }
 
     @After

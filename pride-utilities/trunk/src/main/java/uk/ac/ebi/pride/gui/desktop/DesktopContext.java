@@ -161,6 +161,14 @@ public class DesktopContext extends PropertyChangeHelper {
     }
 
     /**
+     * Cancel existing tasks using a given task owner
+     * @param owner task owner
+     */
+    public final synchronized void cancelTasksByOwner(Object owner) {
+        taskManager.cancelTasksByOwner(owner);
+    }
+
+    /**
      * Remove task listener
      *
      * @param listener task listener

@@ -26,7 +26,7 @@ The *conversion mode* is the mode where the actual conversion is being done. The
 
 The dao-api package contains the basic _DAO_ interface as well as the _AbstractDAOImpl_ class that need to be implemented / extended by every DAO. Furthermore, it contains several general purpose classes used by all DAOs.
 
-A detailed description of the DAO interface can be found in the next section. Below are descriptions of the general purpose classes found in the dao-api package.
+A detailed description of the DAO interface can be found in the next sections below. First, a description of the general purpose classes found in the dao-api package.
 
 === DAOCvParams ===
 

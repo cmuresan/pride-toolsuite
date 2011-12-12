@@ -50,7 +50,7 @@ The _Utils_ class provides general purpose functions used in several DAOs. All f
 
 == 1.) Maven project setup ==
 
-Every DAO is developed as a single maven project. The project is generally called dao-[[fileformat]]-impl (for example _dao-mascot-impl_ or _dao-mzidentml-imp_).
+Every DAO is developed as a single maven project. The project is generally called dao-[[fileformat]]-impl (for example _dao-mascot-impl_ or _dao-mzidentml-impl_).
 
 When setting up the project add the following dependencies and maven repositories to your DAO project's pom.xml:
 {{{
@@ -76,7 +76,7 @@ When setting up the project add the following dependencies and maven repositorie
 
 == 2.) Main DAO class ==
 
-Every DAO consists of one main class the is used by the PRIDE Converter framework. This class is generally called [[fileformat]]Dao (for example _MascotDao_). 
+Every DAO consists of one main class that is used by the PRIDE Converter framework. This class is generally called [[fileformat]]Dao (for example _MascotDao_). 
 
 The DAO class *must* implement the _DAO_ interface as well as extend the _AbstractDAOImpl_ class.
 

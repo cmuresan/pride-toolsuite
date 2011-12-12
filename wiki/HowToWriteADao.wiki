@@ -6,7 +6,7 @@
 
 = Introduction =
 
-Data access objects (DAOs) in PRIDE Converter 2 are the components used for accessing MS result files in different file formats. For every file format there must be one DAO supporting it. All DAOs implement the _DAO_ interface and thereby unify the heterogenous data coming form the various input formats.
+Data access objects (DAOs) in PRIDE Converter 2 are the components used for accessing MS result files in different file formats. For every file format there must be one DAO supporting it. All DAOs implement the _DAO_ interface and thereby unify the heterogenous data coming form the various input formats and facilitating the integration of new data formats into the PRIDE Converter 2.
 
 ----
 
@@ -16,11 +16,11 @@ This section describes some general concepts of the PRIDE Converter 2 project. P
 
 == Conversion modes ==
 
-PRIDE Converter 2 works in two conversion modes: the "pre-scan" and the "convert" mode. Generally, the available input files do not contain all the meta-data required to create valid PRIDE XML files. 
+PRIDE Converter 2 works in two conversion modes: the "pre-scan" and the "convert" mode, where the first is mainly concerned about meta-data and annotation of the data and the second mode handles that actual data. Generally, the available input files do not contain all the meta-data required to create valid PRIDE XML files (and hence has to be extended by the converter).
 
-The *pre-scan mode* is triggered first and used to collect all available meta-data from the input file to determine the level of annotation required by the user. Most _DAO_ functions are only called in pre-scan mode.
+The *pre-scan mode* is triggered first and used to collect all available meta-data from the input file to determine the level of existing annotation and the missing values that will have to be provided by the user. Most DAO functions are only called in _pre-scan mode_. The meta-data is stored by the converter for the later conversion process.
 
-The *conversion mode* is the mode where the actual conversion is being done. The actual conversion processed is mainly using the report file generated from the pre-scan mode as input and only accesses the Dao to retrieve additional data (such as spectra and fragment ion annotation).
+The *conversion mode* is the mode where the actual conversion is being done. The actual conversion process uses mainly the report file (stored meta-data) generated from the pre-scan mode as input and only accesses the DAO to retrieve actual data or non-meta-data (such as spectra data and fragment ion annotations).
 
 == The dao-api package ==
 

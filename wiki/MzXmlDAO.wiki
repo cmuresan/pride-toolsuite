@@ -4,7 +4,7 @@
 
 mzXML is the peak list format used by the Trans Proteomics Pipeline (TPP). Detailed information about the mzXML format can be found at http://tools.proteomecenter.org/wiki/index.php?title=Formats:mzXML. 
 
-The *MzXML DAO* is based on the mzxml-parser developed as part of the peak-list-parser library (*TODO*: add link to project page).
+The *MzXML DAO* is based on the mzxml-parser developed as part of the [http://jmzreader.googlecode.com jmzReader library].
 
 = Parameters =
 

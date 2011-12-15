@@ -5,10 +5,10 @@ import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
- * User: local_admin
+ * User: yperez
  * Date: 14/09/11
  * Time: 15:24
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class GraviUtilities {
     private static final Map<String, Double> graviIndexes = new HashMap<String, Double>(){

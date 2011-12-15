@@ -15,7 +15,7 @@ import java.util.List;
 public enum SearchEngineType {
     MASCOT(Arrays.asList(CvTermReference.MASCOT_SCORE)),
     XTANDEM(Arrays.asList(CvTermReference.XTANDEM_HYPER_SCORE, CvTermReference.XTANDEM_EXPECTANCY_SCORE)),
-    SEQUEST(Arrays.asList(CvTermReference.SEQUEST_SCORE, CvTermReference.X_CORRELATION, CvTermReference.DELTA_CN)),
+    SEQUEST(Arrays.asList(CvTermReference.SEQUEST_SCORE, CvTermReference.X_CORRELATION, CvTermReference.SEQUEST_DELTA_CN)),
     SPECTRUM_MILL(Arrays.asList(CvTermReference.SPECTRUM_MILL_PEPTIDE_SCORE)),
     OMSSA(Arrays.asList(CvTermReference.OMSSA_E_VALUE, CvTermReference.OMSSA_P_VALUE));
 

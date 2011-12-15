@@ -7,7 +7,7 @@ import java.util.Collection;
 /**
  * CvTerms contain a list of controlled vocabularies.
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 24-Apr-2010
  * Time: 21:20:49
  */
@@ -110,15 +110,69 @@ public enum CvTermReference {
     PSI_ION_SELECTION_CHARGE_STATE("PSI", "PSI:1000041", "Charge State", "PSI:1000455"),
     PSI_ION_SELECTION_MZ("PSI", "PSI:1000040", "Mass To Charge Ratio", "PSI:1000455"),
     PSI_ION_SELECTION_INTENSITY("PSI", "PSI:1000042", "Intensity", "PSI:1000455"),
-    MASCOT_SCORE("PRIDE", "PRIDE:0000069", "Mascot Score", "PRIDE:0000049"),
-    XTANDEM_HYPER_SCORE("PRIDE", "PRIDE:0000176", "X!Tandem Hyperscore", "PRIDE:0000049"),
-    XTANDEM_EXPECTANCY_SCORE("PRIDE", "PRIDE:0000183", "X!Tandem Expectancy Score", "PRIDE:0000047"),
-    SEQUEST_SCORE("PRIDE", "PRIDE:0000053", "SEQUEST SCORE", "PRIDE:0000049"),
+
+    /*Definition of most important Search engines parameters from PRIDE */
+
     X_CORRELATION("PRIDE", "PRIDE:0000013", "X correlation", "PRIDE:0000049"),
-    DELTA_CN("PRIDE", "PRIDE:0000012", "Delta Cn", "PRIDE:0000049"),
-    SPECTRUM_MILL_PEPTIDE_SCORE("PRIDE", "PRIDE:0000177", "SpectrumMill Peptide Score", "PRIDE:0000049"),
+
     OMSSA_E_VALUE("PRIDE", "PRIDE:0000185", "OMSSA E-value", "PRIDE:0000049"),
     OMSSA_P_VALUE("PRIDE", "PRIDE:0000186", "OMSSA P-value", "PRIDE:0000049"),
+
+    MASCOT_SCORE("PRIDE", "PRIDE:0000069", "Mascot Score", "PRIDE:0000049"),
+    MASCOT_EXPECT_VALUE("PRIDE","PRIDE:0000212","Mascot expect value","PRIDE:0000046"),
+
+    XTANDEM_HYPER_SCORE("PRIDE", "PRIDE:0000176", "X!Tandem Hyperscore", "PRIDE:0000049"),
+    XTANDEM_EXPECTANCY_SCORE("PRIDE", "PRIDE:0000183", "X|Tandem expectancy score", "PRIDE:0000047"),
+    XTANDEM_ZSCORE("PRIDE","PRIDE:0000182","X|Tandem Z score","PRIDE:0000047"),
+
+    SEQUEST_CN("PRIDE","PRIDE:0000052","Cn","PRIDE:0000049"),
+    SEQUEST_SCORE("PRIDE", "PRIDE:0000053", "SEQUEST SCORE", "PRIDE:0000049"),
+    SEQUEST_DELTA_CN("PRIDE", "PRIDE:0000012", "Delta Cn", "PRIDE:0000049"),
+
+    SPECTRUM_MILL_PEPTIDE_SCORE("PRIDE", "PRIDE:0000177", "SpectrumMill Peptide Score", "PRIDE:0000049"),
+
+    PEPTIDE_PROPHET_DISCRIMINANT_SCORE("PRIDE", "PRIDE:0000138", "Discriminant score","PRIDE:0000049"),
+    PEPTIDE_PROPHET_PROBABILITY("PRIDE","PRIDE:0000099", "PeptideProphet probability score","PRIDE:0000049"),
+
+    /*Definition of most important Search engines parameters from MS */
+    MS_MASCOT_SCORE("MS", "MS:1001171", "Mascot:score", "MS:1001143"),
+
+    // OMSSA:evalue
+    MS_OMSSA_E("MS","MS:1001328", "OMSSA:evalue", "MS:1001143"),
+
+    // MyriMatch:MVH
+    MS_MYRIMATCH_MVH("MS","MS:1001589", "MyriMatch:MVH","MS:1001143"),
+
+    // Paragon:score
+    MS_PARAGON_SCORE("MS","MS:1001166", "Paragon:score", "MS:1001153"),
+
+    // Phenyx:Score
+    MS_PHENYX_SCORE("MS", "MS:1001390", "Phenyx:Score", "MS:1001153"),
+
+    // ProteinExtractor:Score
+    MS_PROTEIN_EXTRACTOR_SCORE("MS", "MS:1001507", "ProteinExtractor:Score","MS:1001153"),
+
+    // ProteinLync:Lputer Score
+    MS_PROTEIN_LYNC_SCORE("MS", "MS:1001571", "ProteinLynx:Ladder Score","MS:1001143"),
+
+    // ProteinScape:SequestMetaScore
+    MS_PROTEINSCAPE_SEQUEST_METASCORE("MS", "MS:1001506", "ProteinScape:SequestMetaScore","MS:1001143"),
+
+    // Sequest:consensus score
+    MS_SEQUEST_CONSENSUS_SCORE("MS", "MS:1001163", "Sequest:consensus score", "MS:1001153"),
+
+    // Sonar:Score
+    MS_SONAR_SCORE("MS", "MS:1001502", "Sonar:Score", "MS:1001143"),
+
+    // SpectrumMill:Score
+    MS_SPECTRUMMILL_SCORE("MS", "MS:1001572", "SpectrumMill:Score", "MS:1001143"),
+
+    // X!Tandem:hyperscore
+    MS_XTANDEM_HYPERSCORE("MS", "MS:1001331", "X!Tandem:hyperscore", "MS:1001143"),
+
+    // percolator:score
+    MS_PERCULATOR_SCORE("MS", "MS:1001492", "percolator:score", "MS:1001143"),
+
     PROJECT_NAME("PRIDE", "PRIDE:0000097", "Project", "PRIDE:0000006"),
     EXPERIMENT_DESCRIPTION("PRIDE", "PRIDE:0000040", "Experiment Description", "PRIDE:0000006"),
     PEPTIDE_GLOBAL_FDR("MS", "MS:1001364", "pep:global FDR", "MS:1001405"),

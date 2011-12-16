@@ -117,28 +117,37 @@ public enum CvTermReference {
 
     OMSSA_E_VALUE("PRIDE", "PRIDE:0000185", "OMSSA E-value", "PRIDE:0000049"),
     OMSSA_P_VALUE("PRIDE", "PRIDE:0000186", "OMSSA P-value", "PRIDE:0000049"),
+    MS_OMSSA_E("MS","MS:1001328", "OMSSA:evalue", "MS:1001143"),
+    MS_OMSSA_P("MS","MS:1001329", "OMSSA:pvalue", "MS:1001143"),
 
     MASCOT_SCORE("PRIDE", "PRIDE:0000069", "Mascot Score", "PRIDE:0000049"),
     MASCOT_EXPECT_VALUE("PRIDE","PRIDE:0000212","Mascot expect value","PRIDE:0000046"),
+    MS_MASCOT_SCORE("MS", "MS:1001171", "Mascot:score", "MS:1001143"),
+    MS_MASCOT_EXPECT_VALUE("MS","MS:1001172","Mascot:expectation value","MS:1001143"),
 
     XTANDEM_HYPER_SCORE("PRIDE", "PRIDE:0000176", "X!Tandem Hyperscore", "PRIDE:0000049"),
     XTANDEM_EXPECTANCY_SCORE("PRIDE", "PRIDE:0000183", "X|Tandem expectancy score", "PRIDE:0000047"),
     XTANDEM_ZSCORE("PRIDE","PRIDE:0000182","X|Tandem Z score","PRIDE:0000047"),
+    MS_XTANDEM_HYPERSCORE("MS", "MS:1001331", "X!Tandem:hyperscore", "MS:1001143"),
+    MS_XTANDEM_EXPECTANCY_SCORE("MS", "MS:1001330", "X!Tandem:expect", "MS:1001143"),
+
+
 
     SEQUEST_CN("PRIDE","PRIDE:0000052","Cn","PRIDE:0000049"),
     SEQUEST_SCORE("PRIDE", "PRIDE:0000053", "SEQUEST SCORE", "PRIDE:0000049"),
     SEQUEST_DELTA_CN("PRIDE", "PRIDE:0000012", "Delta Cn", "PRIDE:0000049"),
+    MS_SEQUEST_CONSENSUS_SCORE("MS", "MS:1001163", "Sequest:consensus score", "MS:1001153"),
+    MS_SEQUEST_DELTA_CN("MS","MS:1001156","Sequest:deltacn","MS:1001143"),
+    MS_SEQUEST_XCORR("MS","MS:1001155","Sequest:xcorr", "MS:1001143"),
+
+
 
     SPECTRUM_MILL_PEPTIDE_SCORE("PRIDE", "PRIDE:0000177", "SpectrumMill Peptide Score", "PRIDE:0000049"),
+    MS_SPECTRUMMILL_SCORE("MS", "MS:1001572", "SpectrumMill:Score", "MS:1001143"),
 
     PEPTIDE_PROPHET_DISCRIMINANT_SCORE("PRIDE", "PRIDE:0000138", "Discriminant score","PRIDE:0000049"),
     PEPTIDE_PROPHET_PROBABILITY("PRIDE","PRIDE:0000099", "PeptideProphet probability score","PRIDE:0000049"),
 
-    /*Definition of most important Search engines parameters from MS */
-    MS_MASCOT_SCORE("MS", "MS:1001171", "Mascot:score", "MS:1001143"),
-
-    // OMSSA:evalue
-    MS_OMSSA_E("MS","MS:1001328", "OMSSA:evalue", "MS:1001143"),
 
     // MyriMatch:MVH
     MS_MYRIMATCH_MVH("MS","MS:1001589", "MyriMatch:MVH","MS:1001143"),
@@ -158,17 +167,8 @@ public enum CvTermReference {
     // ProteinScape:SequestMetaScore
     MS_PROTEINSCAPE_SEQUEST_METASCORE("MS", "MS:1001506", "ProteinScape:SequestMetaScore","MS:1001143"),
 
-    // Sequest:consensus score
-    MS_SEQUEST_CONSENSUS_SCORE("MS", "MS:1001163", "Sequest:consensus score", "MS:1001153"),
-
     // Sonar:Score
     MS_SONAR_SCORE("MS", "MS:1001502", "Sonar:Score", "MS:1001143"),
-
-    // SpectrumMill:Score
-    MS_SPECTRUMMILL_SCORE("MS", "MS:1001572", "SpectrumMill:Score", "MS:1001143"),
-
-    // X!Tandem:hyperscore
-    MS_XTANDEM_HYPERSCORE("MS", "MS:1001331", "X!Tandem:hyperscore", "MS:1001143"),
 
     // percolator:score
     MS_PERCULATOR_SCORE("MS", "MS:1001492", "percolator:score", "MS:1001143"),

@@ -71,7 +71,7 @@ public class MzMLControllerImplTest {
 
     @Test
     public void testGetSoftware() throws Exception {
-        List<Software> softwares = mzMLController.getSoftwareList();
+        List<Software> softwares = mzMLController.getSoftwares();
         assertTrue("There should be only three softwares", softwares.size() == 3);
         assertEquals("Software Name should always be software1", softwares.get(0).getId(), "Bioworks");
         assertEquals("Software Name should always be software2", softwares.get(1).getId(), "pwiz");

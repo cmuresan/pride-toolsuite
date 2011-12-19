@@ -225,14 +225,13 @@ public class DBSequence extends IdentifiableParamGroup {
 
     @Override
     public int hashCode() {
-        int result = length;
-
-        result = 31 * result + accessionId.hashCode();
-        result = 31 * result + searchDataBase.hashCode();
-        result = 31 * result + sequence.hashCode();
-        result = 31 * result + accessionVersion.hashCode();
-        result = 31 * result + spliceIsoform.hashCode();
-
+        int result = super.hashCode();
+        result = 31 * result + (accessionId != null ? accessionId.hashCode() : 0);
+        result = 31 * result + (accessionVersion != null ? accessionVersion.hashCode() : 0);
+        result = 31 * result + length;
+        result = 31 * result + (searchDataBase != null ? searchDataBase.hashCode() : 0);
+        result = 31 * result + (sequence != null ? sequence.hashCode() : 0);
+        result = 31 * result + (spliceIsoform != null ? spliceIsoform.hashCode() : 0);
         return result;
     }
 }

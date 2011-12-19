@@ -247,7 +247,7 @@ public interface DataAccessController
      * @return Collection<Software> an collection of softwares.
      * @throws DataAccessException throw a exception when there is an error accessing the data source
      */
-    public Collection<Software> getSoftwareList() throws DataAccessException;
+    public Collection<Software> getSoftwares() throws DataAccessException;
 
     /**
      * Get the List of Persons Related with the Experiment

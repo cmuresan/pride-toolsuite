@@ -786,8 +786,8 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @throws DataAccessException data access exception
      */
     @Override
-    public PeptideScore getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException {
-        PeptideScore score = null;
+    public Score getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException {
+        Score score = null;
         // get peptide additional parameters
         ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
         if (paramGroup != null) {

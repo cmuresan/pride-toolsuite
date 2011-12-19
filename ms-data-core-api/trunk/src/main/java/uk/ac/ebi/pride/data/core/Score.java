@@ -10,22 +10,30 @@ import java.util.*;
 //~--- JDK imports ------------------------------------------------------------
 
 /**
- * PeptideScore stores a number of peptide scores for a list of search engines.
+ * Score stores a number of peptide scores for a list of search engines.
  * Please Note that even if peptide scores are null if they are not provided.
  * <p/>
  * User: rwang
  * Date: Dec 2, 2010
  * Time: 9:02:05 AM
  */
-public class PeptideScore {
+public class Score {
 
     private Map<SearchEngineType, Map<CvTermReference, Number>> scores;
 
     /**
      * Constructor
      */
-    public PeptideScore() {
+    public Score() {
         scores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
+    }
+
+    /**
+     * Constructor for Scores
+     * @param scores
+     */
+    public Score(Map<SearchEngineType, Map<CvTermReference, Number>> scores) {
+        this.scores = scores;
     }
 
     /**
@@ -126,6 +134,26 @@ public class PeptideScore {
         if (scoreMap != null) {
             scoreMap.remove(ref);
         }
+    }
+
+    /**
+     * Get the Default score for Search Engine
+     *
+     * * @return score
+     */
+    public double getDefaultScore(){
+        Object[] scoresArray = scores.values().toArray();
+        Object[] scoresArrayValue = ((Map<CvTermReference, Number>) scoresArray[0]).values().toArray();
+        return ((Double)scoresArrayValue[0]).doubleValue();
+    }
+
+    /**
+     * Get Default Search Engine for Scores.
+     * @return
+     */
+    public SearchEngineType getDefaultSearchEngine(){
+        Object[] searchengines = scores.keySet().toArray();
+        return (SearchEngineType) searchengines[0];
     }
 }
 

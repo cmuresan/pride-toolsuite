@@ -279,7 +279,7 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      *
      * @return List of Software
      */
-    public List<Software> getSoftwareList() {
+    public List<Software> getSoftwares() {
         return softwareList;
     }
 

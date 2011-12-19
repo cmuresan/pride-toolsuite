@@ -168,7 +168,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/cvList</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.CvParam</clazz>
         <idMapped>false</idMapped>
@@ -204,7 +204,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/DataCollection</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.DBSequence</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.DBSequenceCvParam</cvParamClass>
@@ -269,7 +269,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/DataCollection/AnalysisData/SpectrumIdentificationList/SpectrumIdentificationResult/SpectrumIdentificationItem/Fragmentation/IonType/FragmentArray</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.Fragmentation</clazz>
         <idMapped>false</idMapped>
@@ -323,7 +323,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/AnalysisCollection/ProteinDetection/InputSpectrumIdentifications</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.IonType</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.IonTypeCvParam</cvParamClass>
@@ -358,7 +358,7 @@ Configurations for various properties of model classes.
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.Modification</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.ModificationCvParam</cvParamClass>
-        <idMapped>false</idMapped>
+        <idMapped>true</idMapped>
         <indexed>false</indexed>
         <tagName>Modification</tagName>
         <userParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.ModificationUserParam</userParamClass>
@@ -429,7 +429,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/SequenceCollection/Peptide</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidence</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.PeptideEvidenceCvParam</cvParamClass>
@@ -452,7 +452,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/SequenceCollection/PeptideEvidenceList</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidenceRef</clazz>
         <idMapped>false</idMapped>
@@ -462,7 +462,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/DataCollection/AnalysisData/SpectrumIdentificationList/SpectrumIdentificationResult/SpectrumIdentificationItem/PeptideEvidenceRef</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis</clazz>
         <idMapped>false</idMapped>
@@ -504,7 +504,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/AnalysisCollection/ProteinDetection</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.ProteinDetectionHypothesisCvParam</cvParamClass>
@@ -652,11 +652,11 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/AnalysisCollection/SpectrumIdentification</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.SpectrumIdentificationItemCvParam</cvParamClass>
-        <idMapped>false</idMapped>
+        <idMapped>true</idMapped>
         <indexed>true</indexed>
         <refResolverClass>uk.ac.ebi.jmzidml.xml.jaxb.resolver.SpectrumIdentificationItemRefResolver</refResolverClass>
         <tagName>SpectrumIdentificationItem</tagName>
@@ -664,7 +664,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/DataCollection/AnalysisData/SpectrumIdentificationList/SpectrumIdentificationResult/SpectrumIdentificationItem</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItemRef</clazz>
         <idMapped>false</idMapped>
@@ -727,10 +727,10 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/AnalysisSampleCollection/Sample/SubSample</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.SubstitutionModification</clazz>
-        <idMapped>false</idMapped>
+        <idMapped>true</idMapped>
         <indexed>false</indexed>
         <tagName>SubstitutionModification</tagName>
         <xpath>/MzIdentML/SequenceCollection/Peptide/SubstitutionModification</xpath>
@@ -744,7 +744,7 @@ Configurations for various properties of model classes.
         <indexed>false</indexed>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.TranslationTable</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.TranslationTableCvParam</cvParamClass>

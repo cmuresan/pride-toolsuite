@@ -231,7 +231,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @throws DataAccessException
      */
     @Override
-    public List<Software> getSoftwareList() throws DataAccessException {
+    public List<Software> getSoftwares() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
@@ -249,7 +249,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException(msg, ex);
             }
         } else {
-            return metaData.getSoftwareList();
+            return metaData.getSoftwares();
         }
     }
 
@@ -394,7 +394,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 // Get Samples objects for PRide Object
                 List<Sample> samples = getSamples();
                 // Get all the softwares related with the object
-                List<Software> softwares = getSoftwareList();
+                List<Software> softwares = getSoftwares();
                 // Get Contact Persons
                 List<Person> persons = getPersonContacts();
                 // Get the Contact Organization

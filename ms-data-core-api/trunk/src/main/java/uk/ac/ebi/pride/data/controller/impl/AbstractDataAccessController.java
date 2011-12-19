@@ -278,7 +278,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     @Override
-    public Collection<Software> getSoftwareList() throws DataAccessException {
+    public Collection<Software> getSoftwares() throws DataAccessException {
         return Collections.emptyList();
     }
 
@@ -693,7 +693,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         double score = -1;
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
-            score = ident.getScore();
+            score = ident.getScore().getDefaultScore();
         }
         return score;
     }
@@ -755,7 +755,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         if (identIds.size() > 0) {
             Identification ident = getIdentificationById(CollectionUtils.getElement(identIds, 0));
             if (ident != null) {
-                searchEngine = new SearchEngine(ident.getSearchEngine());
+                searchEngine = new SearchEngine(null,null,ident.getScore().getSearchEngineTypes());
                 // check the search engine types from the data source
                 List<Peptide> peptides = ident.getIdentifiedPeptides();
                 Peptide peptide = peptides.get(0);
@@ -1153,8 +1153,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      * @throws DataAccessException data access exception
      */
     @Override
-    public PeptideScore getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException {
-        PeptideScore score = null;
+    public Score getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException {
+        Score score = null;
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));

@@ -16,6 +16,7 @@ import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.db.DBUtilities;
 import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
 import uk.ac.ebi.pride.data.utils.*;
+import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.io.UnsupportedEncodingException;
@@ -362,7 +363,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public List<Software> getSoftwareList() throws DataAccessException {
+    public List<Software> getSoftwares() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
@@ -397,7 +398,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             }
             return softwares;
         }
-        return metaData.getSoftwareList();
+        return metaData.getSoftwares();
     }
 
     @Override
@@ -445,8 +446,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             List<InstrumentConfiguration> instrumentConfigurations = new ArrayList<InstrumentConfiguration>();
             //get software
             Software software = null;
-            if (getSoftwareList().size() > 0) {
-                software = getSoftwareList().get(0);
+            if (getSoftwares().size() > 0) {
+                software = getSoftwares().get(0);
             }
 
             Connection connection = null;
@@ -510,8 +511,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             List<ProcessingMethod> procMethods = new ArrayList<ProcessingMethod>();
             List<DataProcessing> dataProcessings = new ArrayList<DataProcessing>();
             Software software = null;
-            if (getSoftwareList().size() > 0) {
-                software = getSoftwareList().get(0);
+            if (getSoftwares().size() > 0) {
+                software = getSoftwares().get(0);
             }
 
             Connection connection = null;
@@ -702,7 +703,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 }
 
                 List<Sample> samples = getSamples();
-                List<Software> software = getSoftwareList();
+                List<Software> software = getSoftwares();
                 //List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
                 //List<DataProcessing> dataProcessings = getDataProcessings();
                 ParamGroup additional = getAdditional();
@@ -1280,17 +1281,29 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     logger.debug("Getting a identification from database: {}", accession);
                     Double seqConverage = rs.getDouble("sequence_coverage");
                     double seqConverageVal = seqConverage == 0 ? -1 : seqConverage;
+                    double seqScore = rs.getDouble("score");
+                    double seqScoreVal = seqScore == 0 ? -1 : seqScore;
                     params = new ParamGroup(getCvParams(connection, "pride_identification_param", rs.getInt("identification_id")), getUserParams(connection, "pride_identification_param", rs.getInt("identification_id")));
                     peptides = getPeptideIdentification(connection, rs.getInt("identification_id"), rs.getInt("pi.experiment_id"));
                     spectrum = getSpectrumByRef(connection, rs.getString("spectrum_ref"));
                     String className = rs.getString("classname");
                     DBSequence dbSequence = new DBSequence(null, null, null, -1, accession, new SearchDataBase(rs.getString("search_database"), rs.getString("database_version")), null, rs.getString("accession_version"), rs.getString("splice_isoform"));
                     Map<PeptideEvidence, List<Peptide>> peptideEvidences = DataAccessUtilities.getPeptideEvidence(peptides);
+
+                    SearchEngineType searchEngine = SearchEngineType.getByName(rs.getString("search_engine"));
+                    Score score = null;
+                    if(searchEngine != null){
+                        Map<SearchEngineType,Map<CvTermReference,Number>> scores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
+                        Map<CvTermReference,Number> scoreValues = new HashMap<CvTermReference, Number>();
+                        scoreValues.put(SearchEngineType.getDefaultCvTerm(rs.getString("search_engine")), new Double(seqScoreVal));
+                        scores.put(searchEngine,scoreValues);
+                        score = new Score(scores);
+                    }
                     if ("uk.ac.ebi.pride.rdbms.ojb.model.core.TwoDimensionalIdentificationBean".equals(className)) {
                         gel = getPeptideGel(connection, rs.getInt("gel_id"), rs.getDouble("x_coordinate"), rs.getDouble("y_coordinate"), rs.getDouble("molecular_weight"), rs.getDouble("pi"));
-                        identification = new Identification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptideEvidences, 0.0, rs.getDouble("threshold"), new SearchEngine(null, rs.getString("search_engine")), seqConverageVal, gel);
+                        identification = new Identification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptideEvidences, score, rs.getDouble("threshold"), seqConverageVal, gel);
                     } else if ("uk.ac.ebi.pride.rdbms.ojb.model.core.GelFreeIdentificationBean".equals(className)) {
-                        identification = new Identification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptideEvidences, 0.0, rs.getDouble("threshold"), new SearchEngine(null, rs.getString("search_engine")), seqConverageVal,null);
+                        identification = new Identification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptideEvidences, score, rs.getDouble("threshold"), seqConverageVal,null);
                     }
 
                     if (useCache) {

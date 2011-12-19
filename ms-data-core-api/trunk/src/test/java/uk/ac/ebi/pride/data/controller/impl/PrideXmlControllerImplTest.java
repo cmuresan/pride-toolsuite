@@ -60,7 +60,7 @@ public class PrideXmlControllerImplTest {
 
     @Test
     public void testGetSoftware() throws Exception {
-        List<Software> software = prideController.getSoftwareList();
+        List<Software> software = prideController.getSoftwares();
         assertTrue("There should be only one software", software.size() == 1);
         assertEquals("Software ID should be Xcalibur", software.get(0).getName(), "Xcalibur");
         assertEquals("Software version should be 1.2 SP1", software.get(0).getVersion(), "1.2 SP1");

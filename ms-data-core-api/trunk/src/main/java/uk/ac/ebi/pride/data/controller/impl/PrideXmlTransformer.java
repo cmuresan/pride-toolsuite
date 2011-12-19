@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.data.controller.impl;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
+import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
@@ -10,6 +11,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -372,16 +374,24 @@ public class PrideXmlTransformer {
                 gel = transformGel(rawGel, rawIdent.getGelLocation(), rawIdent.getMolecularWeight(), rawIdent.getPI());
             }
 
-            Double score = rawIdent.getScore();
-            double scoreVal = score == null ? -1 : score;
+            Double oldScore = rawIdent.getScore();
+            double scoreVal = oldScore == null ? -1 : oldScore;
             Double seqConverage = rawIdent.getSequenceCoverage();
             double seqConverageVal = seqConverage == null ? -1 : seqConverage;
             Double threshold = rawIdent.getThreshold();
             double thresholdVal = threshold == null ? -1 : threshold;
-
+            SearchEngineType searchEngine = SearchEngineType.getByName(rawIdent.getSearchEngine());
+            Score score = null;
+            if(searchEngine != null){
+                Map<SearchEngineType,Map<CvTermReference,Number>> scores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
+                Map<CvTermReference,Number> scoreValues = new HashMap<CvTermReference, Number>();
+                scoreValues.put(SearchEngineType.getDefaultCvTerm(rawIdent.getSearchEngine()), new Double(scoreVal));
+                scores.put(searchEngine,scoreValues);
+                score = new Score(scores);
+            }
             SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
             DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
-            ident = new Identification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, scoreVal, thresholdVal, null, seqConverageVal, gel);
+            ident = new Identification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, score, thresholdVal, seqConverageVal, gel);
         }
 
         return ident;
@@ -416,18 +426,26 @@ public class PrideXmlTransformer {
             ParamGroup params = transformParamGroup(rawIdent.getAdditional());
 
 
-            Double score = rawIdent.getScore();
-            double scoreVal = score == null ? -1 : score;
+            Double oldScore = rawIdent.getScore();
+            double scoreVal = oldScore == null ? -1 : oldScore;
             Double seqConverage = rawIdent.getSequenceCoverage();
             double seqConverageVal = seqConverage == null ? -1 : seqConverage;
             Double threshold = rawIdent.getThreshold();
             double thresholdVal = threshold == null ? -1 : threshold;
+            SearchEngineType searchEngine = SearchEngineType.getByName(rawIdent.getSearchEngine());
+            Score score = null;
 
+            if(searchEngine != null){
+                Map<SearchEngineType,Map<CvTermReference,Number>> scores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
+                Map<CvTermReference,Number> scoreValues = new HashMap<CvTermReference, Number>();
+                scoreValues.put(SearchEngineType.getDefaultCvTerm(rawIdent.getSearchEngine()), new Double(scoreVal));
+                scores.put(searchEngine,scoreValues);
+                score = new Score(scores);
+            }
             SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
             DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
-            //Todo: Search Engine Types
-            SearchEngine searchEngine = new SearchEngine(null, rawIdent.getSearchEngine(),null);
-            return new Identification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, scoreVal, thresholdVal, searchEngine, seqConverageVal,null);
+            //SearchEngine searchEngine = new SearchEngine(null, rawIdent.getSearchEngine(),null);
+            return new Identification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, score, thresholdVal, seqConverageVal,null);
 
         }
 

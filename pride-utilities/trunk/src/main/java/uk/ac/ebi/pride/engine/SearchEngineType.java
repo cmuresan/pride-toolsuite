@@ -37,4 +37,31 @@ public enum SearchEngineType {
         }
         return null;
     }
+
+    /**
+     * Return A SearchEngineType using the name of the SearchEngine
+     * @param name
+     * @return SearchEngineType
+     */
+    public static SearchEngineType getByName(String name){
+        if(name !=null){
+            if(name.toUpperCase().compareTo("MASCOT")==0)        return MASCOT;
+            if(name.toUpperCase().compareTo("XTANDEM")==0)       return XTANDEM;
+            if(name.toUpperCase().compareTo("SEQUEST")==0)       return SEQUEST;
+            if(name.toUpperCase().compareTo("SPECTRUM_MILL")==0) return SPECTRUM_MILL;
+            if(name.toUpperCase().compareTo("OMSSA")==0)         return OMSSA;
+        }
+        return null;
+    }
+
+    public static CvTermReference getDefaultCvTerm(String name){
+        if(name != null){
+            if(name.toUpperCase().compareTo("MASCOT")==0)        return MASCOT.getSearchEngineScores().get(0);
+            if(name.toUpperCase().compareTo("XTANDEM")==0)       return XTANDEM.getSearchEngineScores().get(0);
+            if(name.toUpperCase().compareTo("SEQUEST")==0)       return SEQUEST.getSearchEngineScores().get(0);
+            if(name.toUpperCase().compareTo("SPECTRUM_MILL")==0) return SPECTRUM_MILL.getSearchEngineScores().get(0);
+            if(name.toUpperCase().compareTo("OMSSA")==0)         return OMSSA.getSearchEngineScores().get(0);
+        }
+        return null;
+    }
 }

@@ -227,19 +227,10 @@ public class PeptideEvidence extends IdentifiableParamGroup {
         result = 31 * result + endPosition;
         result = 31 * result + (int) preResidue;
         result = 31 * result + (int) postResidue;
-        result = 31 * result + ((translationTable != null)
-                                ? translationTable.hashCode()
-                                : 0);
-        result = 31 * result + frame;
-        result = 31 * result + (decoy
-                                ? 1
-                                : 0);
-        result = 31 * result + ((peptideSequence != null)
-                                ? peptideSequence.hashCode()
-                                : 0);
-        result = 31 * result + ((dbSequence != null)
-                                ? dbSequence.hashCode()
-                                : 0);
+        result = 31 * result + ((translationTable != null) ? translationTable.hashCode() : 0);
+        result = 31 * result + frame; result = 31 * result + (decoy ? 1 : 0);
+        result = 31 * result + ((peptideSequence != null) ? peptideSequence.hashCode() : 0);
+        result = 31 * result + ((dbSequence != null) ? dbSequence.hashCode() : 0);
 
         return result;
     }

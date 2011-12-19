@@ -214,7 +214,7 @@ public interface PeptideDataAccess {
      * @return PeptideScore  peptide score
      * @throws DataAccessException data access exception
      */
-    public PeptideScore getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public Score getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException;
 
     /**
      * Get all Peptide Evidence for a Peptide Identification

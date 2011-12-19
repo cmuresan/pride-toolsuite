@@ -256,12 +256,12 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public List<Software> getSoftwareList() throws DataAccessException {
+    public List<Software> getSoftwares() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
             try {
-                SoftwareList rawSoftware = unmarshaller.getSoftwareList();
+                SoftwareList rawSoftware = unmarshaller.getSoftwares();
                 return MzMLTransformer.transformSoftwareList(rawSoftware);
             } catch (MzMLUnmarshallerException e) {
                 String msg = "Error while getting a list of software";
@@ -269,7 +269,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException(msg, e);
             }
         } else {
-            return metaData.getSoftwareList();
+            return metaData.getSoftwares();
         }
     }
 
@@ -441,7 +441,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
             // Sample list
             List<Sample> samples = getSamples();
             // Software list
-            List<Software> softwares = getSoftwareList();
+            List<Software> softwares = getSoftwares();
             // ScanSettings list
             ParamGroup fileContent = getFileContent();
             metaData = new ExperimentMetaData(fileContent, id, accession, version, null, samples, softwares, personList, sourceFileList, null, organizationList, null, null, null, null);

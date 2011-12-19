@@ -52,7 +52,7 @@ public class MzMLUnmarshallerAdaptor {
         return unmarshaller.unmarshalFromXpath("/mzML/sampleList", SampleList.class);
     }
 
-    public SoftwareList getSoftwareList() throws MzMLUnmarshallerException {
+    public SoftwareList getSoftwares() throws MzMLUnmarshallerException {
         return unmarshaller.unmarshalFromXpath("/mzML/softwareList", SoftwareList.class);
     }
 

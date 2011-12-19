@@ -69,7 +69,7 @@ public class PrideDataBaseControllerImplTest {
 
     @Test
     public void testGetSoftware() throws Exception {
-        List<Software> software = prideController.getSoftwareList();
+        List<Software> software = prideController.getSoftwares();
         assertTrue("There should be only one software", software.size() == 1);
         assertEquals("Software ID should be MassLynx", software.get(0).getName(), "MassLynx");
         assertEquals("Software version should be 4.0", software.get(0).getVersion(), "4.0");
@@ -148,4 +148,6 @@ public class PrideDataBaseControllerImplTest {
         assertEquals("Mz binary array compression", spectrum.getMzBinaryDataArray().getCvParams().get(1).getAccession(), "MS:1000576");
 
     }
+
+
 }

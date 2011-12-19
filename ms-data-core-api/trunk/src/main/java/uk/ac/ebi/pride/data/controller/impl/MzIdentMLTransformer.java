@@ -1,7 +1,28 @@
 package uk.ac.ebi.pride.data.controller.impl;
 
 
+import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.core.AbstractContact;
+import uk.ac.ebi.pride.data.core.CvParam;
+import uk.ac.ebi.pride.data.core.DBSequence;
+import uk.ac.ebi.pride.data.core.Enzyme;
+import uk.ac.ebi.pride.data.core.Filter;
+import uk.ac.ebi.pride.data.core.MassTable;
+import uk.ac.ebi.pride.data.core.Modification;
+import uk.ac.ebi.pride.data.core.Organization;
+import uk.ac.ebi.pride.data.core.Peptide;
+import uk.ac.ebi.pride.data.core.PeptideEvidence;
+import uk.ac.ebi.pride.data.core.Person;
+import uk.ac.ebi.pride.data.core.Provider;
+import uk.ac.ebi.pride.data.core.Sample;
+import uk.ac.ebi.pride.data.core.SearchModification;
+import uk.ac.ebi.pride.data.core.SourceFile;
+import uk.ac.ebi.pride.data.core.SpectraData;
+import uk.ac.ebi.pride.data.core.SpectrumIdentificationProtocol;
+import uk.ac.ebi.pride.data.core.SubstitutionModification;
+import uk.ac.ebi.pride.data.core.UserParam;
+import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.*;
@@ -255,8 +276,10 @@ public class MzIdentMLTransformer {
         }
         if (oldIdent != null) {
             Map<PeptideEvidence, List<Peptide>> peptides = transformToPeptideIdentifications(oldIdent.getPeptideHypothesis(), oldFragmentationTable);
-            ident = new Identification(oldIdent.getId(), oldIdent.getName(), transformToDBSequence(oldIdent.getDBSequence()), oldIdent.isPassThreshold(), peptides, -1, -1, null, -1,null);
-            //Todo: SearchEngine information, score, threshold and sequence coverage
+            ParamGroup paramGroup = new ParamGroup(transformToCvParam(oldIdent.getCvParam()),transformToUserParam(oldIdent.getUserParam()));
+            Score score = transformScore(paramGroup);
+            ident = new Identification(paramGroup, oldIdent.getId(), oldIdent.getName(), transformToDBSequence(oldIdent.getDBSequence()), oldIdent.isPassThreshold(), peptides, score, -1, -1,null);
+            //Todo: threshold and sequence coverage
         }
         return ident;
     }
@@ -301,11 +324,45 @@ public class MzIdentMLTransformer {
     public static Peptide transformToPeptideIdentification(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem oldSpectrumIdentification, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
         Peptide peptide = null;
         if (oldSpectrumIdentification != null) {
-            peptide = new Peptide(oldSpectrumIdentification.getId(), oldSpectrumIdentification.getName(), oldSpectrumIdentification.getChargeState(), oldSpectrumIdentification.getExperimentalMassToCharge(), oldSpectrumIdentification.getCalculatedMassToCharge(), oldSpectrumIdentification.getCalculatedPI(), transformToPeptide(oldSpectrumIdentification.getPeptide()), oldSpectrumIdentification.getRank(), false, transformToMassTable(oldSpectrumIdentification.getMassTable()), transformToSample(oldSpectrumIdentification.getSample()), transformToPeptideEvidence(oldSpectrumIdentification.getPeptideEvidenceRef()), transformToFragmentationIon(oldSpectrumIdentification.getFragmentation(), oldFragmentationTable), null, null, null);
-            //Todo: Peptide Score
+            String id = oldSpectrumIdentification.getId();
+            String name = oldSpectrumIdentification.getName();
+            int chargeState = oldSpectrumIdentification.getChargeState();
+            double massToCharge = oldSpectrumIdentification.getExperimentalMassToCharge();
+            double calcMassToCharge = oldSpectrumIdentification.getCalculatedMassToCharge();
+            float pI = (float) 0.0;
+            if(oldSpectrumIdentification.getCalculatedPI() != null){
+               pI = oldSpectrumIdentification.getCalculatedPI();
+            }
+            uk.ac.ebi.jmzidml.model.mzidml.Peptide peptideSeq = oldSpectrumIdentification.getPeptide();
+            int rank = oldSpectrumIdentification.getRank();
+            boolean passThrehold = oldSpectrumIdentification.isPassThreshold();
+            uk.ac.ebi.jmzidml.model.mzidml.MassTable massTable  = oldSpectrumIdentification.getMassTable();
+            uk.ac.ebi.jmzidml.model.mzidml.Sample sample = oldSpectrumIdentification.getSample();
+            List<uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidenceRef> peptideEvidence = oldSpectrumIdentification.getPeptideEvidenceRef();
+            uk.ac.ebi.jmzidml.model.mzidml.Fragmentation fragmentation = oldSpectrumIdentification.getFragmentation();
+            ParamGroup scoreParamGroup = new ParamGroup(transformToCvParam(oldSpectrumIdentification.getCvParam()),transformToUserParam(oldSpectrumIdentification.getUserParam()));
+            peptide = new Peptide(id,
+                                  name,
+                                  chargeState,
+                                  massToCharge,
+                                  calcMassToCharge,
+                                  pI,
+                                  transformToPeptide(peptideSeq),
+                                  rank,
+                                  passThrehold,
+                                  transformToMassTable(massTable),
+                                  transformToSample(sample),
+                                  transformToPeptideEvidence(peptideEvidence),
+                                  transformToFragmentationIon(fragmentation, oldFragmentationTable), transformScore(scoreParamGroup), null, null);
             //Todo: Peptide SpectraData
         }
         return peptide;
+    }
+
+    private static Score transformScore(ParamGroup paramGroup) {
+        List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(paramGroup);
+        Score score = DataAccessUtilities.getPeptideScore(paramGroup,types);
+        return score;
     }
 
     private static List<FragmentIon> transformToFragmentationIon(uk.ac.ebi.jmzidml.model.mzidml.Fragmentation fragmentation, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {

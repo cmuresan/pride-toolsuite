@@ -32,14 +32,10 @@ public class Identification extends IdentifiableParamGroup {
     private Map<PeptideEvidence, List<Peptide>> peptides = null;
 
     /**
-     * optional search engine score
+     * The score is the score value in a SearchEngine Context
      */
-    private double score = -1;
 
-    /**
-     * search engine name
-     */
-    private SearchEngine searchEngine = null;
+    private Score score = null;
 
     /**
      * percentage of sequence coverage obtained through all identified peptides/masses
@@ -62,21 +58,18 @@ public class Identification extends IdentifiableParamGroup {
     IdentifiableParamGroup proteinAmbiguityGroup = null;
 
     public Identification(Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
-                          Map<PeptideEvidence, List<Peptide>> peptides, double score, double threshold,
-                          SearchEngine searchEngine, double sequenceCoverage, Gel gel) {
-        this(null, id, name, dbSequence, passThreshold, peptides, score, threshold, searchEngine, sequenceCoverage, gel);
+                          Map<PeptideEvidence, List<Peptide>> peptides, Score score, double threshold, double sequenceCoverage, Gel gel) {
+        this(null, id, name, dbSequence, passThreshold, peptides, score, threshold, sequenceCoverage, gel);
     }
 
     public Identification(ParamGroup params, Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
-                          Map<PeptideEvidence, List<Peptide>> peptides, double score, double threshold,
-                          SearchEngine searchEngine, double sequenceCoverage, Gel gel) {
+                          Map<PeptideEvidence, List<Peptide>> peptides, Score score, double threshold, double sequenceCoverage, Gel gel) {
         super(params, id, name);
         this.dbSequence       = dbSequence;
         this.passThreshold    = passThreshold;
         this.peptides         = peptides;
         this.score            = score;
         this.threshold        = threshold;
-        this.searchEngine     = searchEngine;
         this.sequenceCoverage = sequenceCoverage;
         this.gel = gel;
     }
@@ -105,11 +98,11 @@ public class Identification extends IdentifiableParamGroup {
         this.peptides = peptides;
     }
 
-    public double getScore() {
+    public Score getScore() {
         return score;
     }
 
-    public void setScore(double score) {
+    public void setScore(Score score) {
         this.score = score;
     }
 
@@ -119,14 +112,6 @@ public class Identification extends IdentifiableParamGroup {
 
     public void setThreshold(double threshold) {
         this.threshold = threshold;
-    }
-
-    public SearchEngine getSearchEngine() {
-        return searchEngine;
-    }
-
-    public void setSearchEngine(SearchEngine searchEngine) {
-        this.searchEngine = searchEngine;
     }
 
     public double getSequenceCoverage() {

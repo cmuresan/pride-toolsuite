@@ -372,12 +372,12 @@ public class DataAccessUtilities {
      * @param seTypes    a list of search engine types
      * @return PeptideScore  peptide score
      */
-    public static PeptideScore getPeptideScore(ParamGroup paramGroup, List<SearchEngineType> seTypes) {
+    public static Score getPeptideScore(ParamGroup paramGroup, List<SearchEngineType> seTypes) {
         if (paramGroup == null || seTypes == null) {
-            throw new IllegalArgumentException("Input arguments for getPeptideScore can not be null");
+            throw new IllegalArgumentException("Input arguments for getScore can not be null");
         }
 
-        PeptideScore score = new PeptideScore();
+        Score score = new Score();
         for (SearchEngineType type : seTypes) {
             List<CvTermReference> scoreCvTerms = type.getSearchEngineScores();
             for (CvTermReference scoreCvTerm : scoreCvTerms) {

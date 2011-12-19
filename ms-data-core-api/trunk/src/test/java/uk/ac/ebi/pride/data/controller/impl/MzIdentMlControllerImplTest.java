@@ -50,7 +50,7 @@ public class MzIdentMlControllerImplTest {
 
     @Test
     public void testGetSoftware() throws Exception {
-        List<Software> software = mzIdentMlController.getSoftwareList();
+        List<Software> software = mzIdentMlController.getSoftwares();
         assertTrue("There should be only one software", software.size() == 2);
         assertEquals("Software ID should be Mascot Server", software.get(0).getName(), "Mascot Server");
         assertEquals("Software version should be 2.3.3.0 for the second software", software.get(1).getVersion(), "2.3.3.0");
@@ -139,10 +139,14 @@ public class MzIdentMlControllerImplTest {
 
         assertTrue("The numer of Identification should be 2", identifications.size()==2);
         assertEquals("The id of the first identification should be PDH_psu|NC_LIV_020800_0",identifications.get(0).toString(),"PDH_psu|NC_LIV_020800_0");
+   }
 
-    }
+   @Test
+   public void getIdentificationbyId() throws DataAccessException{
+       List<Comparable> identificationIds = new ArrayList<Comparable>(mzIdentMlController.getIdentificationIds());
+       for (int i = 0; i < identificationIds.size(); i++){
+           Identification identification = mzIdentMlController.getIdentificationById(identificationIds.get(i),true);
 
-
-
-
+       }
+   }
 }

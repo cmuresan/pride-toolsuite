@@ -53,9 +53,9 @@ public class Peptide extends IdentifiableParamGroup {
     private List<PeptideEvidence> peptideEvidenceList = null;
 
     /**
-     * PeptideScore stores a number of peptide scores for a list of search engines.
+     * Score stores a number of peptide scores for a list of search engines.
      */
-    private PeptideScore peptideScore = null;
+    private Score score = null;
 
     /**
      * A reference to the identified (poly)peptide sequence in the Peptide element.
@@ -111,7 +111,7 @@ public class Peptide extends IdentifiableParamGroup {
      * @param sample
      * @param peptideEvidenceList
      * @param fragmentation
-     * @param peptideScore
+     * @param score
      * @param spectrum
      * @param spectraData
      */
@@ -119,17 +119,17 @@ public class Peptide extends IdentifiableParamGroup {
                    double calculatedMassToCharge, double calculatedPI, PeptideSequence peptideSequence, int rank,
                    boolean passThreshold, MassTable massTableRef, Sample sample,
                    List<PeptideEvidence> peptideEvidenceList, List<FragmentIon> fragmentation,
-                   PeptideScore peptideScore, Spectrum spectrum, SpectraData spectraData) {
+                   Score score, Spectrum spectrum, SpectraData spectraData) {
         this(null, id, name, chargeState, experimentalMassToCharge, calculatedMassToCharge, calculatedPI,
              peptideSequence, rank, passThreshold, massTableRef, sample, peptideEvidenceList, fragmentation,
-             peptideScore, spectrum, spectraData);
+                score, spectrum, spectraData);
     }
 
     public Peptide(ParamGroup params, Comparable id, String name, int chargeState, double experimentalMassToCharge,
                    double calculatedMassToCharge, double calculatedPI, PeptideSequence peptideSequence, int rank,
                    boolean passThreshold, MassTable massTableRef, Sample sample,
                    List<PeptideEvidence> peptideEvidenceList, List<FragmentIon> fragmentation,
-                   PeptideScore peptideScore, Spectrum spectrum, SpectraData spectraData) {
+                   Score score, Spectrum spectrum, SpectraData spectraData) {
         super(params, id, name);
         this.chargeState              = chargeState;
         this.experimentalMassToCharge = experimentalMassToCharge;
@@ -142,7 +142,7 @@ public class Peptide extends IdentifiableParamGroup {
         this.sample                   = sample;
         this.peptideEvidenceList      = peptideEvidenceList;
         this.fragmentation            = fragmentation;
-        this.peptideScore             = peptideScore;
+        this.score = score;
         this.spectrum                 = spectrum;
         this.spectraData              = spectraData;
     }
@@ -235,12 +235,12 @@ public class Peptide extends IdentifiableParamGroup {
         this.fragmentation = fragmentation;
     }
 
-    public PeptideScore getPeptideScore() {
-        return peptideScore;
+    public Score getScore() {
+        return score;
     }
 
-    public void setPeptideScore(PeptideScore peptideScore) {
-        this.peptideScore = peptideScore;
+    public void setScore(Score score) {
+        this.score = score;
     }
 
     public Spectrum getSpectrum() {

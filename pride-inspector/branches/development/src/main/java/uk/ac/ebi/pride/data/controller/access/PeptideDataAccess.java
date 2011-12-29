@@ -182,4 +182,17 @@ public interface PeptideDataAccess {
      * @throws DataAccessException data access exception
      */
     public PeptideScore getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException;
+
+
+    /**
+     * Get precursor charge on peptide level
+     * Note: sometimes, precursor charge at the peptide level is different from the precursor charge at the spectrum level
+     * As the peptide-level precursor charge is often assigned by search engine rather than ms instrument
+     *
+     * @param identId   identification id
+     * @param peptideId peptid eid, can be the index of the peptide as well.
+     * @return  precursor charge, 0 should be returned if not available
+     * @throws DataAccessException  data access exception
+     */
+    public int getPeptidePrecursorCharge(Comparable identId, Comparable peptideId) throws DataAccessException;
 }

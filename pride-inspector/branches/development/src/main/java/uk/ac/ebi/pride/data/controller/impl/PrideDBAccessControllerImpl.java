@@ -669,8 +669,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
                     precursors = getPrecursorsBySpectrum_id(idInt);
 
-                    int mzArrBinId = ((Long)result.get("mz_array_binary_id")).intValue();
-                    int intenArrBinId = ((Long)result.get("inten_array_binary_id")).intValue();
+                    int mzArrBinId = ((Long) result.get("mz_array_binary_id")).intValue();
+                    int intenArrBinId = ((Long) result.get("inten_array_binary_id")).intValue();
                     BinaryDataArray mz = getBinaryDataArray(mzArrBinId, CvTermReference.MZ_ARRAY);
                     BinaryDataArray inten = getBinaryDataArray(intenArrBinId, CvTermReference.INTENSITY_ARRAY);
                     binaryArray.add(mz);
@@ -1008,7 +1008,12 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                                 sum += intent;
                             }
                             getCache().store(CacheCategory.SUM_OF_INTENSITY, specId, sum);
-                            getCache().store(CacheCategory.NUMBER_OF_PEAKS, specId, intentBinaryArray.getDoubleArray().length);
+                            int numOfPeaks = intentBinaryArray.getDoubleArray().length;
+                            if (numOfPeaks == 1 && intentBinaryArray.getDoubleArray()[0] == 0) {
+                                numOfPeaks = 0;
+                            }
+
+                            getCache().store(CacheCategory.NUMBER_OF_PEAKS, specId, numOfPeaks);
                         }
                     } catch (UnsupportedEncodingException e) {
                         String errMsg = "Failed to query sum of intensity while decoding the binary data array";

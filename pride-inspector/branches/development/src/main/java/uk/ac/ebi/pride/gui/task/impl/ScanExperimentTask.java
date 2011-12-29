@@ -102,7 +102,7 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
                                 String name = mod.getName();
                                 if (!ptmMap.containsKey(accession)) {
                                     EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.INFO, "PTM: " + accession,
-                                            "PTM found: [" + accession + "]\t" + name)));
+                                            "PTM found: [" + accession + "]\t" + (name == null ? "" : name))));
                                     ptmMap.put(mod.getAccession(), mod.getName());
                                 }
                             }

@@ -27,7 +27,9 @@ import javax.jnlp.SingleInstanceListener;
 import javax.jnlp.SingleInstanceService;
 import javax.jnlp.UnavailableServiceException;
 import javax.swing.*;
+import javax.swing.text.DefaultEditorKit;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -73,6 +75,8 @@ public class PrideInspector extends Desktop {
         storeCmdLineArgs(args);
         // load all properties
         loadProperties();
+        // init key controls
+        initKeyControls();
         // createAttributedSequence the main frame
         buildMainFrame();
         // createAttributedSequence menu bar
@@ -170,6 +174,24 @@ public class PrideInspector extends Desktop {
             context.loadSystemProps(this.getClass().getClassLoader().getResourceAsStream("prop/settings.prop"));
         } catch (IOException e) {
             logger.error("Error while loading properties", e);
+        }
+    }
+
+    /**
+     * Initialize key controls for mac platform
+     */
+    private void initKeyControls() {
+        String osName = System.getProperty("os.name");
+        if (osName.startsWith("Mac OS")) {
+            InputMap textFieldInputMap = (InputMap) UIManager.get("TextField.focusInputMap");
+            textFieldInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.META_DOWN_MASK), DefaultEditorKit.copyAction);
+            textFieldInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.META_DOWN_MASK), DefaultEditorKit.pasteAction);
+            textFieldInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.META_DOWN_MASK), DefaultEditorKit.cutAction);
+
+            InputMap textAreaInputMap = (InputMap) UIManager.get("TextArea.focusInputMap");
+            textAreaInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.META_DOWN_MASK), DefaultEditorKit.copyAction);
+            textAreaInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.META_DOWN_MASK), DefaultEditorKit.pasteAction);
+            textAreaInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.META_DOWN_MASK), DefaultEditorKit.cutAction);
         }
     }
 

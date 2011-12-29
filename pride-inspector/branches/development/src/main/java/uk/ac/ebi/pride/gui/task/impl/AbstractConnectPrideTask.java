@@ -102,7 +102,7 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
             boutStream = new BufferedOutputStream(outStream, BUFFER_SIZE);
             byte data[] = new byte[BUFFER_SIZE];
             int count;
-            int readCount = 0;
+            long readCount = 0;
             if (size != null) {
                 setProgress(1);
             }

@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Table model for contact details
- *
+ * <p/>
  * User: rwang
  * Date: 24/07/2011
  * Time: 11:50
@@ -91,9 +91,11 @@ public class ContactTableModel extends ListTableModel<ParamGroup> {
 
         // contact information
         List<UserParam> ups = newData.getUserParams();
-        for (UserParam up : ups) {
-            if (CONTACT_INFORMATION.equals(up.getName())) {
-                info = up.getValue();
+        if (ups != null) {
+            for (UserParam up : ups) {
+                if (CONTACT_INFORMATION.equals(up.getName())) {
+                    info = up.getValue();
+                }
             }
         }
 

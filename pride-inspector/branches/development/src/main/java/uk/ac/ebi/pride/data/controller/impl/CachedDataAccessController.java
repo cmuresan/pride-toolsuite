@@ -840,6 +840,32 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     }
 
     /**
+     * Get precursor charge on peptide level
+     * Note: sometimes, precursor charge at the peptide level is different from the precursor charge at the spectrum level
+     * As the peptide-level precursor charge is often assigned by search engine rather than ms instrument
+     *
+     * @param identId   identification id
+     * @param peptideId peptid eid, can be the index of the peptide as well.
+     * @return precursor charge, 0 should be returned if not available
+     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
+     *          data access exception
+     */
+    @Override
+    public int getPeptidePrecursorCharge(Comparable identId, Comparable peptideId) throws DataAccessException {
+        int charge = 0;
+        // get peptide additional parameters
+        ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
+        if (paramGroup != null) {
+            // get peptide precursor charge
+            charge = DataAccessUtilities.getPrecursorCharge(paramGroup);
+        } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
+            charge = super.getPeptidePrecursorCharge(identId, peptideId);
+        }
+
+        return charge;
+    }
+
+    /**
      * Get search engine type
      *
      * @return SearchEngine    search engine

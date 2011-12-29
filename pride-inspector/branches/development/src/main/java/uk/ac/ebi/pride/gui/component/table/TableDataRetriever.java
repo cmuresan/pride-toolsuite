@@ -91,11 +91,14 @@ public class TableDataRetriever {
         }
 
         // precursor charge
+        int charge = controller.getPeptidePrecursorCharge(identId, peptideId);
         Comparable specId = controller.getPeptideSpectrumId(identId, peptideId);
-        if (specId != null) {
-            int charge = controller.getPrecursorCharge(specId);
-            content.add(charge == 0 ? null : charge);
+        if (charge == 0 && specId != null) {
+            charge = controller.getPrecursorCharge(specId);
+        }
+        content.add(charge == 0 ? null : charge);
 
+        if (specId != null) {
             // delta mass
             // theoretical mass
             double mz = controller.getPrecursorMz(specId);

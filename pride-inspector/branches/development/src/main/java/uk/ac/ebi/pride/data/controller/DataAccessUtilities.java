@@ -92,7 +92,7 @@ public class DataAccessUtilities {
     }
 
     /**
-     * Get precursor charge
+     * Get precursor charge at spectrum level
      *
      * @param spectrum spectrum
      * @return int precursor charge
@@ -106,6 +106,25 @@ public class DataAccessUtilities {
                 charge = c.intValue();
             }
         }
+        return charge;
+    }
+
+    /**
+     * Get precursor charge from param group
+     *
+     * @param paramGroup param group
+     * @return precursor charge
+     */
+    public static int getPrecursorCharge(ParamGroup paramGroup) {
+        int charge = 0;
+
+        if (paramGroup != null) {
+            Double c = getSelectedIonCvParamValue(paramGroup, CvTermReference.PSI_ION_SELECTION_CHARGE_STATE, CvTermReference.ION_SELECTION_CHARGE_STATE);
+            if (c != null) {
+                charge = c.intValue();
+            }
+        }
+
         return charge;
     }
 
@@ -175,6 +194,7 @@ public class DataAccessUtilities {
                 CvTermReference.PSI_ION_SELECTION_CHARGE_STATE, CvTermReference.ION_SELECTION_CHARGE_STATE);
     }
 
+
     /**
      * Get the ion m/z value for a selected ion.
      *
@@ -186,7 +206,6 @@ public class DataAccessUtilities {
         return getSelectedIonCvParamValue(precursor, index,
                 CvTermReference.PSI_ION_SELECTION_MZ, CvTermReference.ION_SELECTION_MZ);
     }
-
 
     /**
      * Get the ion intensity value for a selected ion.
@@ -214,11 +233,26 @@ public class DataAccessUtilities {
         if (index >= 0 && selectedIons != null && index < selectedIons.size()) {
             ParamGroup selectedIon = selectedIons.get(index);
             // search PRIDE xml based charge
-            for (CvTermReference ref : refs) {
-                List<CvParam> cvParams = getCvParam(selectedIon, ref.getCvLabel(), ref.getAccession());
-                if (cvParams != null && !cvParams.isEmpty()) {
-                    value = new Double(cvParams.get(0).getValue());
-                }
+            value = getSelectedIonCvParamValue(selectedIon, refs);
+        }
+        return value;
+    }
+
+
+    /**
+     * Get value of selected ion cv param
+     *
+     * @param paramGroup param group
+     * @param refs       a list of possible cv terms to search for
+     * @return Double  value of the cv paramter
+     */
+    private static Double getSelectedIonCvParamValue(ParamGroup paramGroup, CvTermReference... refs) {
+        Double value = null;
+        // search PRIDE xml based charge
+        for (CvTermReference ref : refs) {
+            List<CvParam> cvParams = getCvParam(paramGroup, ref.getCvLabel(), ref.getAccession());
+            if (cvParams != null && !cvParams.isEmpty()) {
+                value = new Double(cvParams.get(0).getValue());
             }
         }
         return value;
@@ -276,6 +310,7 @@ public class DataAccessUtilities {
         }
     }
 
+
     /**
      * Check whether spectrum has fragment ion information
      *
@@ -286,7 +321,6 @@ public class DataAccessUtilities {
         Peptide peptide = spectrum.getPeptide();
         return peptide != null && hasFragmentIon(peptide);
     }
-
 
     /**
      * Check whether peptide has fragment ion information
@@ -370,6 +404,7 @@ public class DataAccessUtilities {
         return score;
     }
 
+
     /**
      * Search and find a list of search engine types from input parameter group.
      *
@@ -393,7 +428,6 @@ public class DataAccessUtilities {
 
         return types;
     }
-
 
     /**
      * Get cv param by accession number and cv label.

@@ -1022,6 +1022,32 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
+     * Get precursor charge on peptide level
+     * Note: sometimes, precursor charge at the peptide level is different from the precursor charge at the spectrum level
+     * As the peptide-level precursor charge is often assigned by search engine rather than ms instrument
+     *
+     * @param identId   identification id
+     * @param peptideId peptid eid, can be the index of the peptide as well.
+     * @return precursor charge, 0 should be returned if not available
+     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
+     *          data access exception
+     */
+    @Override
+    public int getPeptidePrecursorCharge(Comparable identId, Comparable peptideId) throws DataAccessException {
+        int charge = 0;
+
+        Identification ident = getIdentificationById(identId);
+        if (ident != null) {
+            Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
+            if (peptide != null) {
+                charge = DataAccessUtilities.getPrecursorCharge(peptide);
+            }
+        }
+
+        return charge;
+    }
+
+    /**
      * Get foreground experiment accession
      *
      * @return Comparable  experiment accession

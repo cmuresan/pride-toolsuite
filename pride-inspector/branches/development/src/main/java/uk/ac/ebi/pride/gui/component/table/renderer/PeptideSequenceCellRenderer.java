@@ -39,7 +39,11 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
                 String tooltip = getToolTipText(mods, peptide.getSequence().length());
                 if (!tooltip.trim().equals("")) {
                     this.setToolTipText(tooltip);
+                } else {
+                    this.setToolTipText(null);
                 }
+            } else {
+                this.setToolTipText(null);
             }
             // set background
             if (isSelected) {
@@ -91,9 +95,12 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
                 tip.append("<b><font size=\"3\" color=\"red\">");
                 tip.append(mod.getAccession());
                 tip.append("</font></b><br>");
-                tip.append("<b>Name</b>:");
-                tip.append(mod.getName());
-                tip.append("<br>");
+                String modName = mod.getName();
+                if (modName != null) {
+                    tip.append("<b>Name</b>:");
+                    tip.append(mod.getName());
+                    tip.append("<br>");
+                }
                 tip.append("<b>Location</b>:");
                 int location = mod.getLocation();
                 if (location == 0) {

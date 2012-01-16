@@ -144,7 +144,14 @@ public class Score {
     public double getDefaultScore(){
         Object[] scoresArray = scores.values().toArray();
         Object[] scoresArrayValue = ((Map<CvTermReference, Number>) scoresArray[0]).values().toArray();
-        return ((Double)scoresArrayValue[0]).doubleValue();
+        double scoreValue = -1;
+        for (int i= 0; i < scoresArrayValue.length;i++){
+            if(scoresArrayValue[i] != null) {
+                scoreValue  = ((Double)scoresArrayValue[i]).doubleValue();
+                break;
+            }
+        }
+        return scoreValue;
     }
 
     /**

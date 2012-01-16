@@ -358,8 +358,8 @@ Configurations for various properties of model classes.
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.Modification</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.ModificationCvParam</cvParamClass>
-        <idMapped>true</idMapped>
-        <indexed>false</indexed>
+        <idMapped>false</idMapped>
+        <indexed>true</indexed>
         <tagName>Modification</tagName>
         <userParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.ModificationUserParam</userParamClass>
         <xpath>/MzIdentML/SequenceCollection/Peptide/Modification</xpath>
@@ -418,7 +418,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/AuditCollection/Organization/Parent</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>true</autoRefResolving>
+        <autoRefResolving>false</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.Peptide</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.PeptideCvParam</cvParamClass>
@@ -455,7 +455,7 @@ Configurations for various properties of model classes.
         <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidenceRef</clazz>
-        <idMapped>false</idMapped>
+        <idMapped>true</idMapped>
         <indexed>false</indexed>
         <refResolverClass>uk.ac.ebi.jmzidml.xml.jaxb.resolver.PeptideEvidenceRefResolver</refResolverClass>
         <tagName>PeptideEvidenceRef</tagName>
@@ -730,7 +730,7 @@ Configurations for various properties of model classes.
         <autoRefResolving>false</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.SubstitutionModification</clazz>
-        <idMapped>true</idMapped>
+        <idMapped>false</idMapped>
         <indexed>false</indexed>
         <tagName>SubstitutionModification</tagName>
         <xpath>/MzIdentML/SequenceCollection/Peptide/SubstitutionModification</xpath>

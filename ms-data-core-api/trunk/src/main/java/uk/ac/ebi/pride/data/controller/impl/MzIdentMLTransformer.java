@@ -507,11 +507,18 @@ public class MzIdentMLTransformer {
     private static Modification transformToModification(uk.ac.ebi.jmzidml.model.mzidml.Modification oldModification) {
         Modification modification = null;
         if (oldModification != null) {
-            List<Double> monoMasses = new ArrayList<Double>();
-            monoMasses.add(oldModification.getMonoisotopicMassDelta());
-            List<Double> avgMasses = new ArrayList<Double>();
-            avgMasses.add(oldModification.getAvgMassDelta());
-            modification = new Modification(null, null, oldModification.getLocation(), oldModification.getResidues(), avgMasses, monoMasses,null,null);
+            List<Double> monoMasses = null;
+            List<Double> avgMasses  = null;
+            if(oldModification.getMonoisotopicMassDelta() != null){
+                monoMasses = new ArrayList<Double>();
+                monoMasses.add(oldModification.getMonoisotopicMassDelta());
+            }
+            if(oldModification.getAvgMassDelta() != null){
+                avgMasses = new ArrayList<Double>();
+                avgMasses.add(oldModification.getAvgMassDelta());
+            }
+            ParamGroup param = new ParamGroup(transformToCvParam(oldModification.getCvParam()),null);
+            modification = new Modification(param, null, null, oldModification.getLocation(), oldModification.getResidues(), avgMasses, monoMasses,null,null);
         }
         return modification;
     }

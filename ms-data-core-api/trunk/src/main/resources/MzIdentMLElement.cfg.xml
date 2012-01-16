@@ -418,7 +418,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/AuditCollection/Organization/Parent</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.Peptide</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.PeptideCvParam</cvParamClass>
@@ -727,7 +727,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/AnalysisSampleCollection/Sample/SubSample</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>true</autoRefResolving>
+        <autoRefResolving>false</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.SubstitutionModification</clazz>
         <idMapped>true</idMapped>

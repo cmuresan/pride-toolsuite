@@ -35,7 +35,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
     private MzIdentMLUnmarshallerAdaptor unmarshaller = null;
 
-    private static Pattern mzIdentMLHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<(mzML)|(indexedmzML) xmlns=.*", Pattern.MULTILINE);
+    private static Pattern mzIdentMLHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<(MzIdentML)|(indexedmzIdentML) xmlns=.*", Pattern.MULTILINE);
 
     public MzIdentMLControllerImpl(File file) throws DataAccessException {
         this(file, null);
@@ -457,7 +457,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      */
     @Override
     public Peptide getPeptideById(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
-        Peptide peptide = super.getPeptideById(null, index, useCache);
+        Peptide peptide = super.getPeptideById(identId, index, useCache);
         if (peptide == null) {
             logger.debug("Get new peptide from file: {}", index);
             peptide = MzIdentMLTransformer.transformToPeptideIdentification(unmarshaller.getPeptideIdentificationById(identId, index), unmarshaller.getFragmentationTable());
@@ -500,10 +500,10 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * Check a file is PRIDE XML file
+     * Check a file is MZIdentML XML file
      *
      * @param file input file
-     * @return boolean true means PRIDE XML
+     * @return boolean true means MZIdentML XML
      */
     public static boolean isValidFormat(File file) {
         boolean valid = false;

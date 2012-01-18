@@ -755,7 +755,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         if (identIds.size() > 0) {
             Identification ident = getIdentificationById(CollectionUtils.getElement(identIds, 0));
             if (ident != null) {
-                searchEngine = new SearchEngine(null,null,ident.getScore().getSearchEngineTypes());
+                List<SearchEngineType> engines = (ident.getScore() == null)? null:ident.getScore().getSearchEngineTypes();
+                searchEngine = new SearchEngine(null,null,engines);
                 // check the search engine types from the data source
                 List<Peptide> peptides = ident.getIdentifiedPeptides();
                 Peptide peptide = peptides.get(0);

@@ -213,10 +213,11 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
 
         try {
             Collection<Comparable> idenIDList = cdac.getIdentificationIds();
-
+            int idenIDInt= 0;
             for (Comparable idenID : idenIDList) {
                 Identification id = cdac.getIdentificationById(idenID, false);
-                int identification_id = Integer.valueOf(id.getId().toString());
+                //int identification_id = Integer.valueOf(id.getId().toString());
+                int identification_id = idenIDInt;
 
                 for (Peptide pep : id.getIdentifiedPeptides()) {
                     double ptmMass = 0;
@@ -259,6 +260,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
 
                     list.add(pp);
                 }
+                idenIDInt++;
             }
         } catch (DataAccessException ex) {
             logger.error("Error while reading protein identification", ex);

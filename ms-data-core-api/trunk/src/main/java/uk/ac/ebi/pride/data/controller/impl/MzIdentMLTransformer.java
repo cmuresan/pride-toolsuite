@@ -517,8 +517,25 @@ public class MzIdentMLTransformer {
                 avgMasses = new ArrayList<Double>();
                 avgMasses.add(oldModification.getAvgMassDelta());
             }
-            ParamGroup param = new ParamGroup(transformToCvParam(oldModification.getCvParam()),null);
-            modification = new Modification(param, null, null, oldModification.getLocation(), oldModification.getResidues(), avgMasses, monoMasses,null,null);
+            List<CvParam> cvParams = transformToCvParam(oldModification.getCvParam());
+            String id = null;
+            String name = null;
+            String dataBaseName = null;
+            //Todo: Try to make this function more flexible, we can define default Mod Databases
+            for(int i = 0; i < cvParams.size();i++ ){
+               if(cvParams.get(i).getCvLookupID().compareToIgnoreCase("MOD") ==0){
+                   id = cvParams.get(i).getAccession();
+                   name = cvParams.get(i).getName();
+                   dataBaseName = (cvParams.get(i).getCvLookupID() == null)?"MOD":cvParams.get(i).getCvLookupID();
+                   break;
+               }else if(cvParams.get(i).getCvLookupID().compareToIgnoreCase("UNIMOD") ==0){
+                   id = cvParams.get(i).getAccession();
+                   name = cvParams.get(i).getName();
+                   dataBaseName = (cvParams.get(i).getCvLookupID() == null)?"UNIMOD":cvParams.get(i).getCvLookupID();
+               }
+            }
+            ParamGroup param = new ParamGroup(cvParams,null);
+            modification = new Modification(param, id, name, oldModification.getLocation(), oldModification.getResidues(), avgMasses, monoMasses,dataBaseName,null);
         }
         return modification;
     }

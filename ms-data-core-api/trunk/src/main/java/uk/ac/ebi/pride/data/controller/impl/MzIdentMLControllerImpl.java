@@ -423,6 +423,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     @Override
     public Identification getIdentificationById(Comparable id, boolean useCache) throws DataAccessException {
         Identification ident = super.getIdentificationById(id, useCache);
+        ;
         if (ident == null) {
             logger.debug("Get new identification from file: {}", id);
             try {

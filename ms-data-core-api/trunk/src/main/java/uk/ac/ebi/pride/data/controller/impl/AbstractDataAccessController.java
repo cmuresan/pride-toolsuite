@@ -692,7 +692,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     public double getIdentificationScore(Comparable identId) throws DataAccessException {
         double score = -1;
         Identification ident = getIdentificationById(identId);
-        if (ident != null) {
+        if ((ident != null) && (ident.getScore() != null) ) {
             score = ident.getScore().getDefaultScore();
         }
         return score;

@@ -301,8 +301,11 @@ public class MzIdentMLTransformer {
             peptides = new HashMap<PeptideEvidence, List<Peptide>>();
             for (uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis oldPeptideHypothesis : peptideHypothesis) {
                 PeptideEvidence peptideEvidence = transformToPeptideEvidence(oldPeptideHypothesis.getPeptideEvidence());
+                //System.out.println("1"); aqui
                 List<Peptide> peptideIdentified = transformToPeptideIdentification(oldPeptideHypothesis.getSpectrumIdentificationItemRef(), oldFragmentationTable);
+                //System.out.println("2");
                 peptides.put(peptideEvidence, peptideIdentified);
+                //System.out.println("3");
             }
         }
         return peptides;
@@ -554,7 +557,10 @@ public class MzIdentMLTransformer {
     private static SubstitutionModification transformToSubstitutionMod(uk.ac.ebi.jmzidml.model.mzidml.SubstitutionModification oldModification) {
         SubstitutionModification modification = null;
         if (oldModification != null) {
-            modification = new SubstitutionModification(oldModification.getOriginalResidue(), oldModification.getReplacementResidue(), oldModification.getLocation(), oldModification.getAvgMassDelta(), oldModification.getMonoisotopicMassDelta());
+            double avgMass  = (oldModification.getAvgMassDelta() != null)?oldModification.getAvgMassDelta().doubleValue():-1.0;
+            double monoMass = (oldModification.getMonoisotopicMassDelta()!=null)?oldModification.getMonoisotopicMassDelta().doubleValue():-1.0;
+            int location = (oldModification.getLocation()!=null)?oldModification.getLocation().intValue():-1;
+            modification = new SubstitutionModification(oldModification.getOriginalResidue(), oldModification.getReplacementResidue(), location, avgMass, monoMass);
         }
         return modification;
     }
@@ -562,7 +568,12 @@ public class MzIdentMLTransformer {
     private static DBSequence transformToDBSequence(uk.ac.ebi.jmzidml.model.mzidml.DBSequence oldDbSequence) {
         DBSequence dbSequence = null;
         if (oldDbSequence != null) {
-            dbSequence = new DBSequence(null,oldDbSequence.getId(), oldDbSequence.getName(), oldDbSequence.getLength(), oldDbSequence.getAccession(), transformToSeachDatabase(oldDbSequence.getSearchDatabase()), oldDbSequence.getSeq(), null, null);
+            String id = oldDbSequence.getId();
+            String name = oldDbSequence.getName();
+            int length = (oldDbSequence.getLength() != null)?oldDbSequence.getLength().intValue():-1;
+            String accession = oldDbSequence.getAccession();
+            ParamGroup params = new ParamGroup(transformToCvParam(oldDbSequence.getCvParam()),transformToUserParam(oldDbSequence.getUserParam()));
+            dbSequence = new DBSequence(params,id, name, length, accession, transformToSeachDatabase(oldDbSequence.getSearchDatabase()), oldDbSequence.getSeq(), null, null);
         }
         return dbSequence;
     }

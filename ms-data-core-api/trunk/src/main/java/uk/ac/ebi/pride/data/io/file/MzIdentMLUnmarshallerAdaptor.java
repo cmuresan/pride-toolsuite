@@ -53,8 +53,7 @@ public class MzIdentMLUnmarshallerAdaptor {
     public List<Sample> getSampleList() {
         uk.ac.ebi.jmzidml.model.mzidml.AnalysisSampleCollection asc =
             unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AnalysisSampleCollection.class);
-
-        return asc.getSample();
+        return (asc!=null)?asc.getSample():null;
     }
 
     public List<SourceFile> getSourceFiles() {

@@ -146,7 +146,7 @@ public class MzIdentMlControllerImplTest {
        List<Comparable> identificationIds = new ArrayList<Comparable>(mzIdentMlController.getIdentificationIds());
        for (int i = 0; i < identificationIds.size(); i++){
            Identification identification = mzIdentMlController.getIdentificationById(identificationIds.get(i),true);
-           System.out.println(identification.getIdentifiedPeptides().size());
+           //System.out.println(identification.getIdentifiedPeptides().size());
        }
    }
 }

@@ -259,7 +259,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/AnalysisProtocolCollection/SpectrumIdentificationProtocol/DatabaseFilters/Filter</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.FragmentArray</clazz>
         <idMapped>false</idMapped>
@@ -269,7 +269,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/DataCollection/AnalysisData/SpectrumIdentificationList/SpectrumIdentificationResult/SpectrumIdentificationItem/Fragmentation/IonType/FragmentArray</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>true</autoRefResolving>
+        <autoRefResolving>false</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.Fragmentation</clazz>
         <idMapped>false</idMapped>
@@ -323,7 +323,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/AnalysisCollection/ProteinDetection/InputSpectrumIdentifications</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>true</autoRefResolving>
+        <autoRefResolving>false</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.IonType</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.IonTypeCvParam</cvParamClass>
@@ -744,7 +744,7 @@ Configurations for various properties of model classes.
         <indexed>false</indexed>
     </configurations>
     <configurations>
-        <autoRefResolving>true</autoRefResolving>
+        <autoRefResolving>false</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.TranslationTable</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.TranslationTableCvParam</cvParamClass>

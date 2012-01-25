@@ -800,7 +800,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      * @throws DataAccessException data access exception
      */
     @Override
-    public Peptide getPeptideById(Comparable identId, Comparable index) throws DataAccessException {
+    public Peptide getPeptideByIndex(Comparable identId, Comparable index) throws DataAccessException {
         Peptide peptide = null;
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
@@ -838,7 +838,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
 
     @Override
     public Collection<PeptideEvidence> getPeptideEvidences(Comparable identId, Comparable peptideId) throws DataAccessException {
-        Peptide peptide = getPeptideById(identId, peptideId);
+        Peptide peptide = getPeptideByIndex(identId, peptideId);
         return peptide.getPeptideEvidenceList();
     }
 
@@ -1799,7 +1799,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      */
     @Override
     public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
-        Peptide peptide = getPeptideById(identId, peptideId);
+        Peptide peptide = getPeptideByIndex(identId, peptideId);
         return new Quantitation(Quantitation.Type.PEPTIDE, peptide.getCvParams());
     }
 

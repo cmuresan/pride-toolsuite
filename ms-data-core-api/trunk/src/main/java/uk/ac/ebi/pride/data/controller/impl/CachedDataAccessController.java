@@ -512,11 +512,11 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     }
 
     @Override
-    public Peptide getPeptideById(Comparable identId, Comparable index) throws DataAccessException {
-        return getPeptideById(identId, index, true);
+    public Peptide getPeptideByIndex(Comparable identId, Comparable index) throws DataAccessException {
+        return getPeptideByIndex(identId, index, true);
     }
 
-    public Peptide getPeptideById(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
+    public Peptide getPeptideByIndex(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
         Peptide pep = null;
 
         if (useCache) {

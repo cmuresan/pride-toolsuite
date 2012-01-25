@@ -92,19 +92,16 @@ public class MzIdentMLUnmarshallerAdaptor {
                                       (String) IdentId);
     }
 
-    public SpectrumIdentificationItem getPeptideIdentificationById(Comparable IdentId, Comparable index) {
+    public SpectrumIdentificationItem getPeptideIdentificationByIndex(Comparable IdentId, Comparable index) {
         ProteinDetectionHypothesis protein;
 
         try {
             protein = unmarshaller.unmarshal(ProteinDetectionHypothesis.class, (String) IdentId);
-
             List<PeptideHypothesis> peptideHypothesises = protein.getPeptideHypothesis();
-
+            System.out.println(index);
             for (PeptideHypothesis peptideHypothesis : peptideHypothesises) {
-                for (SpectrumIdentificationItemRef spectrumIdentificationItemRef :
-                        peptideHypothesis.getSpectrumIdentificationItemRef()) {
-                    if (spectrumIdentificationItemRef.getSpectrumIdentificationItem().getId().equalsIgnoreCase(
-                            (String) index)) {
+                for (SpectrumIdentificationItemRef spectrumIdentificationItemRef :  peptideHypothesis.getSpectrumIdentificationItemRef()) {
+                    if (spectrumIdentificationItemRef.getSpectrumIdentificationItem().getId().equalsIgnoreCase((String) index)) {
                         return spectrumIdentificationItemRef.getSpectrumIdentificationItem();
                     }
                 }
@@ -117,8 +114,15 @@ public class MzIdentMLUnmarshallerAdaptor {
     }
 
     public int getNumIdentifiedPeptides() {
-        return (unmarshaller.unmarshal(
-            uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationResult.class)).getSpectrumIdentificationItem().size();
+        int count = -1;
+        try {
+            Set<String> listIDs =  unmarshaller.getIDsForElement(MzIdentMLElement.SpectrumIdentificationItem);
+            count = listIDs.size();
+        } catch (ConfigurationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return count;
+        //return (unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationResult.class)).getSpectrumIdentificationItem().size();
     }
 
     public FragmentationTable getFragmentationTable() {

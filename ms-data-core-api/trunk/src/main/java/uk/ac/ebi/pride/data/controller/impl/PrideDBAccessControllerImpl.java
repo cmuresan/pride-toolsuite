@@ -1362,13 +1362,13 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
 
     @Override
-    public Peptide getPeptideById(Comparable identId, Comparable peptideId, boolean useCache) throws DataAccessException {
+    public Peptide getPeptideByIndex(Comparable identId, Comparable peptideId, boolean useCache) throws DataAccessException {
 
-        Peptide peptide = super.getPeptideById(identId, peptideId, useCache);
+        Peptide peptide = super.getPeptideByIndex(identId, peptideId, useCache);
         if (peptide == null) {
             //todo: check whether to use cache
             String sequence = (String) getCache().get(CacheCategory.PEPTIDE_SEQUENCE, peptideId);
-            logger.debug("getPeptideById(identId, peptideId): ID[{}] : Sequence[{}]", new Object[]{peptideId, sequence});
+            logger.debug("getPeptideByIndex(identId, peptideId): ID[{}] : Sequence[{}]", new Object[]{peptideId, sequence});
             Integer start = (Integer) getCache().get(CacheCategory.PEPTIDE_START, peptideId);
             Integer end = (Integer) getCache().get(CacheCategory.PEPTIDE_END, peptideId);
             int pid = Integer.parseInt(peptideId.toString());

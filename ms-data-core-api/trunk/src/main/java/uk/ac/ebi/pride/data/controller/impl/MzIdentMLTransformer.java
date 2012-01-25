@@ -393,7 +393,23 @@ public class MzIdentMLTransformer {
                 //if (ionType.getIndex() == null)  continue;
 
                 // iterate over the ion type indexes
-                for (Integer index = 0; index < ionType.getIndex().size(); index++) {
+                List<Integer> listIds = new ArrayList<Integer>();
+                listIds.add(ionType.getIndex().get(0));
+                for (int i = 1 ; i < ionType.getIndex().size();i++){
+                    boolean found = false;
+                    int j = 0;
+                    while ((found == false) && (j < listIds.size())){
+                      if(ionType.getIndex().get(i) == listIds.get(j)){
+                          found = true;
+                      }
+                      j++;
+                    }
+                    if(!found){
+                        listIds.add(ionType.getIndex().get(i));
+                    }
+                }
+
+                for (Integer index = 0; index < listIds.size(); index++) {
                     //FragmentIon fragmentIon = new FragmentIon();
                     List<CvParam> cvParams = new ArrayList<CvParam>();
                     // charge

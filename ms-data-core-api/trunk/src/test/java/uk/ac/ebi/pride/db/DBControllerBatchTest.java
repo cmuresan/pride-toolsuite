@@ -80,7 +80,7 @@ public class DBControllerBatchTest {
                                 // read peptide details
                                 Collection<Comparable> pepIds = controller.getPeptideIds(id);
                                 for (Comparable pepId : pepIds) {
-                                    controller.getPeptideById(id, pepId);
+                                    controller.getPeptideByIndex(id, pepId);
                                 }
                                 cnt++;
                                 if (cnt >= 50) {

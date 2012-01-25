@@ -540,8 +540,8 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @throws DataAccessException exception while getting peptide
      */
     @Override
-    public Peptide getPeptideById(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
-        Peptide peptide = super.getPeptideById(identId, index, useCache);
+    public Peptide getPeptideByIndex(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
+        Peptide peptide = super.getPeptideByIndex(identId, index, useCache);
         if (peptide == null) {
             logger.debug("Get new peptide from file: {}-{}", identId, index);
             peptide = PrideXmlTransformer.transformPeptide(reader.getPeptide(identId.toString(), Integer.parseInt(index.toString())));

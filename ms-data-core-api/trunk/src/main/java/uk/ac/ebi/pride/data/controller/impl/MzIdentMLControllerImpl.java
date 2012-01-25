@@ -423,16 +423,18 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     @Override
     public Identification getIdentificationById(Comparable id, boolean useCache) throws DataAccessException {
         Identification ident = super.getIdentificationById(id, useCache);
-        ;
+
         if (ident == null) {
             logger.debug("Get new identification from file: {}", id);
             try {
                 ident = MzIdentMLTransformer.transformToIdentification(unmarshaller.getIdentificationById(id), unmarshaller.getFragmentationTable());
+                //System.out.println(ident.getId().toString());
                 if (useCache && ident != null) {
                     // store identification into cache
                     getCache().store(CacheCategory.IDENTIFICATION, id, ident);
                     // store precursor charge and m/z
                     for (Peptide peptide : ident.getIdentifiedPeptides()) {
+                        getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(id, peptide.getId()), peptide);
                         Spectrum spectrum = peptide.getSpectrum();
                         if (spectrum != null) {
                             getCache().store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
@@ -457,11 +459,11 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @throws DataAccessException exception while getting peptide
      */
     @Override
-    public Peptide getPeptideById(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
-        Peptide peptide = super.getPeptideById(identId, index, useCache);
+    public Peptide getPeptideByIndex(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
+        Peptide peptide = super.getPeptideByIndex(identId, index, useCache);
         if (peptide == null) {
             logger.debug("Get new peptide from file: {}", index);
-            peptide = MzIdentMLTransformer.transformToPeptideIdentification(unmarshaller.getPeptideIdentificationById(identId, index), unmarshaller.getFragmentationTable());
+            peptide = MzIdentMLTransformer.transformToPeptideIdentification(unmarshaller.getPeptideIdentificationByIndex(identId, index), unmarshaller.getFragmentationTable());
             if (useCache && peptide != null) {
                 // store peptide
                 getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, index), peptide);

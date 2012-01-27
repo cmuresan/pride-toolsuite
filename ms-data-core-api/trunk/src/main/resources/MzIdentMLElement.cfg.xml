@@ -505,7 +505,7 @@ Configurations for various properties of model classes.
     </configurations>
     <configurations>
         <autoRefResolving>true</autoRefResolving>
-        <cached>false</cached>
+        <cached>true</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.ProteinDetectionHypothesisCvParam</cvParamClass>
         <idMapped>true</idMapped>

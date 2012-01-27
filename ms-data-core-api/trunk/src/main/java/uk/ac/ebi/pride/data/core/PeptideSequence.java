@@ -11,7 +11,7 @@ import java.util.List;
  * Date: 04/08/11
  * Time: 10:29
  */
-public class PeptideSequence extends IdentifiableParamGroup {
+public class PeptideSequence extends IdentifiableParamGroup implements Comparable{
 
     /**
      * A molecule modification specification. If n modifications have been found on a peptide,
@@ -198,6 +198,11 @@ public class PeptideSequence extends IdentifiableParamGroup {
                                 : 0);
 
         return result;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return (((PeptideSequence)o).getSequence().compareToIgnoreCase(this.getSequence()));
     }
 }
 

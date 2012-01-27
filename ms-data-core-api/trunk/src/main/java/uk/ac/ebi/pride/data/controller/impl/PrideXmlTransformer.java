@@ -358,10 +358,6 @@ public class PrideXmlTransformer {
                     peptides.add(transformPeptide(rawPeptide));
                 }
             }
-            Map<PeptideEvidence, List<Peptide>> peptideEvidences = DataAccessUtilities.getPeptideEvidence(peptides);
-
-            // spectrum
-            Spectrum spectrum = transformSpectrum(rawIdent.getSpectrum());
 
             // params
             ParamGroup params = transformParamGroup(rawIdent.getAdditional());
@@ -391,7 +387,7 @@ public class PrideXmlTransformer {
             }
             SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
             DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
-            ident = new Identification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, score, thresholdVal, seqConverageVal, gel);
+            ident = new Identification(params, rawIdent.getId(), null, dbSequence, false, peptides, score, thresholdVal, seqConverageVal, gel);
         }
 
         return ident;
@@ -417,11 +413,6 @@ public class PrideXmlTransformer {
                 }
             }
 
-            Map<PeptideEvidence, List<Peptide>> peptideEvidences = DataAccessUtilities.getPeptideEvidence(peptides);
-
-            // spectrum
-            Spectrum spectrum = transformSpectrum(rawIdent.getSpectrum());
-
             // params
             ParamGroup params = transformParamGroup(rawIdent.getAdditional());
 
@@ -445,7 +436,7 @@ public class PrideXmlTransformer {
             SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
             DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
             //SearchEngine searchEngine = new SearchEngine(null, rawIdent.getSearchEngine(),null);
-            return new Identification(params, rawIdent.getId(), null, dbSequence, false, peptideEvidences, score, thresholdVal, seqConverageVal,null);
+            return new Identification(params, rawIdent.getId(), null, dbSequence, false, peptides, score, thresholdVal, seqConverageVal,null);
 
         }
 
@@ -531,10 +522,12 @@ public class PrideXmlTransformer {
 
         PeptideSequence peptideSequence = new PeptideSequence(null, null, rawPeptide.getSequence(), modifications);
         List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
-        peptideEvidences.add(new PeptideEvidence(null, null, startPos, stopPos, false, peptideSequence, null));
-        return new Peptide(params, null, null, -1, 0.0, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
+        PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, startPos, stopPos, false, peptideSequence, null);
+        peptideEvidences.add(peptideEvidence);
+        SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, -1, 0.0, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
+        return new Peptide(peptideEvidence,spectrumIdentification);
         //Todo : We need to capture the experimental Mass Value at this level, also the theoretical Mass Value
-        //return new Peptide(params, rawPeptide.getSequence(), startPos, stopPos,  modifications, fragmentIons, spectrum);
+
     }
 
     /**

@@ -1211,8 +1211,11 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 spectrum = getSpectrumByPeptide(connection, experiment_id, rs.getInt("spectrum_ref"));
                 PeptideSequence peptideSequence = new PeptideSequence(null, null, rs.getString("sequence"), modifications);
                 List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
-                peptideEvidences.add(new PeptideEvidence(null, null, rs.getInt("pep_start"), rs.getInt("pep_end"), false, peptideSequence, null));
-                peptides.add(new Peptide(params, null, null, -1, 0.0, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null));
+                PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, rs.getInt("pep_start"), rs.getInt("pep_end"), false, peptideSequence, null);
+                peptideEvidences.add(peptideEvidence);
+                SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, -1, 0.0, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
+                peptides.add(new Peptide(peptideEvidence, spectrumIdentification));
+                //Todo: We need to think if is possible to find PeptideEvidences in PRIDE Identifications.
             }
         } catch (SQLException e) {
             logger.error("Failed to query peptides", e);
@@ -1288,8 +1291,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     spectrum = getSpectrumByRef(connection, rs.getString("spectrum_ref"));
                     String className = rs.getString("classname");
                     DBSequence dbSequence = new DBSequence(null, null, null, -1, accession, new SearchDataBase(rs.getString("search_database"), rs.getString("database_version")), null, rs.getString("accession_version"), rs.getString("splice_isoform"));
-                    Map<PeptideEvidence, List<Peptide>> peptideEvidences = DataAccessUtilities.getPeptideEvidence(peptides);
-
                     SearchEngineType searchEngine = SearchEngineType.getByName(rs.getString("search_engine"));
                     Score score = null;
                     if(searchEngine != null){
@@ -1301,9 +1302,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     }
                     if ("uk.ac.ebi.pride.rdbms.ojb.model.core.TwoDimensionalIdentificationBean".equals(className)) {
                         gel = getPeptideGel(connection, rs.getInt("gel_id"), rs.getDouble("x_coordinate"), rs.getDouble("y_coordinate"), rs.getDouble("molecular_weight"), rs.getDouble("pi"));
-                        identification = new Identification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptideEvidences, score, rs.getDouble("threshold"), seqConverageVal, gel);
+                        identification = new Identification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptides, score, rs.getDouble("threshold"), seqConverageVal, gel);
                     } else if ("uk.ac.ebi.pride.rdbms.ojb.model.core.GelFreeIdentificationBean".equals(className)) {
-                        identification = new Identification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptideEvidences, score, rs.getDouble("threshold"), seqConverageVal,null);
+                        identification = new Identification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptides, score, rs.getDouble("threshold"), seqConverageVal,null);
                     }
 
                     if (useCache) {
@@ -1382,9 +1383,10 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             }
             PeptideSequence peptideSequence = new PeptideSequence(null, null, sequence, modifications);
             List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
-            peptideEvidences.add(new PeptideEvidence(null, null, start, end, false, peptideSequence, null));
-            peptide = new Peptide(params, null, null, -1, 0.0, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
-
+            PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, start, end, false, peptideSequence, null);
+            peptideEvidences.add(peptideEvidence);
+            SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, -1, 0.0, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
+            peptide = new Peptide(peptideEvidence,spectrumIdentification);
             if (useCache) {
                 getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, peptideId), peptide);
             }

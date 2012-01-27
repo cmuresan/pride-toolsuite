@@ -8,10 +8,7 @@ import uk.ac.ebi.jmzidml.xml.io.MzIdentMLUnmarshaller;
 
 import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -23,6 +20,7 @@ import java.util.Set;
  * Time: 15:28
  */
 public class MzIdentMLUnmarshallerAdaptor {
+
     private MzIdentMLUnmarshaller unmarshaller = null;
 
     public MzIdentMLUnmarshallerAdaptor(MzIdentMLUnmarshaller um) {
@@ -87,41 +85,35 @@ public class MzIdentMLUnmarshallerAdaptor {
         return unmarshaller.unmarshalCollectionFromXpath(uk.ac.ebi.jmzidml.MzIdentMLElement.BibliographicReference);
     }
 
-    public ProteinDetectionHypothesis getIdentificationById(Comparable IdentId) throws JAXBException {
-        return unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis.class,
-                                      (String) IdentId);
-    }
-
-    public SpectrumIdentificationItem getPeptideIdentificationByIndex(Comparable IdentId, Comparable index) {
-        ProteinDetectionHypothesis protein;
-
+    public ProteinDetectionHypothesis getIdentificationById(Comparable IdentId){
         try {
-            protein = unmarshaller.unmarshal(ProteinDetectionHypothesis.class, (String) IdentId);
-            List<PeptideHypothesis> peptideHypothesises = protein.getPeptideHypothesis();
-            System.out.println(index);
-            for (PeptideHypothesis peptideHypothesis : peptideHypothesises) {
-                for (SpectrumIdentificationItemRef spectrumIdentificationItemRef :  peptideHypothesis.getSpectrumIdentificationItemRef()) {
-                    if (spectrumIdentificationItemRef.getSpectrumIdentificationItem().getId().equalsIgnoreCase((String) index)) {
-                        return spectrumIdentificationItemRef.getSpectrumIdentificationItem();
-                    }
-                }
-            }
+            return unmarshaller.unmarshal(ProteinDetectionHypothesis.class,(String) IdentId);
         } catch (JAXBException e) {
-            e.printStackTrace();
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-
         return null;
     }
 
     public int getNumIdentifiedPeptides() {
-        int count = -1;
+        int total = 0;
         try {
-            Set<String> listIDs =  unmarshaller.getIDsForElement(MzIdentMLElement.SpectrumIdentificationItem);
-            count = listIDs.size();
+            Set<String> listIDs = unmarshaller.getIDsForElement(MzIdentMLElement.ProteinDetectionHypothesis);
+            Object[] ArrayIDs = listIDs.toArray();
+            for(int i = 0; i < ArrayIDs.length;i++){
+                ProteinDetectionHypothesis protein = null;
+                protein = unmarshaller.unmarshal(ProteinDetectionHypothesis.class, (String) ArrayIDs[i]);
+                int count = 0;
+                for(PeptideHypothesis peptideHypothesis: protein.getPeptideHypothesis()){
+                   count += peptideHypothesis.getSpectrumIdentificationItemRef().size();
+                }
+                total += count;
+            }
         } catch (ConfigurationException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch(JAXBException e){
+            e.printStackTrace();
         }
-        return count;
+        return total;
         //return (unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationResult.class)).getSpectrumIdentificationItem().size();
     }
 
@@ -178,6 +170,24 @@ public class MzIdentMLUnmarshallerAdaptor {
         Inputs dc = unmarshaller.unmarshal(Inputs.class);
 
         return dc.getSpectraData();
+    }
+
+    public List<PeptideHypothesis> getPeptideHypothesisbyID(Comparable id){
+        ProteinDetectionHypothesis proteinDetectionHypothesis = getIdentificationById(id);
+        List<PeptideHypothesis> peptideHypothesises = new ArrayList<PeptideHypothesis>();
+        try{
+            for(PeptideHypothesis peptideHypothesis : proteinDetectionHypothesis.getPeptideHypothesis()){
+                PeptideEvidence peptideEvidence = unmarshaller.unmarshal(PeptideEvidence.class,peptideHypothesis.getPeptideEvidenceRef());
+                Peptide peptide = unmarshaller.unmarshal(Peptide.class,peptideEvidence.getPeptideRef());
+                peptideEvidence.setPeptide(peptide);
+                peptideHypothesis.setPeptideEvidence(peptideEvidence);
+                peptideHypothesises.add(peptideHypothesis);
+            }
+        } catch (JAXBException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return peptideHypothesises;
+
     }
 }
 

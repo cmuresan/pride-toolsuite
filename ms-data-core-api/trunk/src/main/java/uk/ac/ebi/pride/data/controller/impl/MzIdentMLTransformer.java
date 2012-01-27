@@ -35,6 +35,7 @@ import java.util.*;
  * Time: 16:08
  */
 public class MzIdentMLTransformer {
+
     private static List<IdentifiableParamGroup> FragmentationTable = null;
 
     public static List<SourceFile> transformToSourceFile(List<uk.ac.ebi.jmzidml.model.mzidml.SourceFile> oldSourceFiles) {
@@ -275,7 +276,8 @@ public class MzIdentMLTransformer {
             FragmentationTable = transformToFragmentationTable(oldFragmentationTable);
         }
         if (oldIdent != null) {
-            Map<PeptideEvidence, List<Peptide>> peptides = transformToPeptideIdentifications(oldIdent.getPeptideHypothesis(), oldFragmentationTable);
+            System.out.println("Identification Id:" + oldIdent.getId());
+            List<Peptide> peptides= transformToPeptideIdentifications(oldIdent.getPeptideHypothesis(), oldFragmentationTable);
             ParamGroup paramGroup = new ParamGroup(transformToCvParam(oldIdent.getCvParam()),transformToUserParam(oldIdent.getUserParam()));
             Score score = transformScore(paramGroup);
             ident = new Identification(paramGroup, oldIdent.getId(), oldIdent.getName(), transformToDBSequence(oldIdent.getDBSequence()), oldIdent.isPassThreshold(), peptides, score, -1, -1,null);
@@ -295,37 +297,42 @@ public class MzIdentMLTransformer {
         return fragmentationTable;
     }
 
-    private static Map<PeptideEvidence, List<Peptide>> transformToPeptideIdentifications(List<uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis> peptideHypothesis, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
-        Map<PeptideEvidence, List<Peptide>> peptides = null;
+    public static List<Peptide> transformToPeptideIdentifications(List<uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis> peptideHypothesis, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
+        List<Peptide> peptides = null;
         if (peptideHypothesis != null) {
-            peptides = new HashMap<PeptideEvidence, List<Peptide>>();
+            peptides = new ArrayList<Peptide>();
+            int i = 0;
             for (uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis oldPeptideHypothesis : peptideHypothesis) {
+                System.out.println("Peptide Hyphotesis: " + i);
                 PeptideEvidence peptideEvidence = transformToPeptideEvidence(oldPeptideHypothesis.getPeptideEvidence());
-                //System.out.println("1"); aqui
-                List<Peptide> peptideIdentified = transformToPeptideIdentification(oldPeptideHypothesis.getSpectrumIdentificationItemRef(), oldFragmentationTable);
-                //System.out.println("2");
-                peptides.put(peptideEvidence, peptideIdentified);
-                //System.out.println("3");
+                System.out.println("\t Peptide Evidence:" + peptideEvidence.getId());
+
+                List<SpectrumIdentification> spectrumIdentifications = transformToPeptideIdentification(oldPeptideHypothesis.getSpectrumIdentificationItemRef(), oldFragmentationTable);
+                for(int j = 0 ; j < spectrumIdentifications.size();j++){
+                     peptides.add(new Peptide(peptideEvidence,spectrumIdentifications.get(j)));
+                     System.out.println("\t Peptide Identified:" + peptides.get(j).getSpectrumIdentification().getId());
+                }
+                i++;
             }
         }
         return peptides;
     }
 
-    public static List<Peptide> transformToPeptideIdentification(List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItemRef> spectrumIdentificationItemRefs, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
-        List<Peptide> peptides = null;
+    public static List<SpectrumIdentification> transformToPeptideIdentification(List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItemRef> spectrumIdentificationItemRefs, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
+        List<SpectrumIdentification> peptides = null;
         if (spectrumIdentificationItemRefs != null) {
-            peptides = new ArrayList<Peptide>();
+            peptides = new ArrayList<SpectrumIdentification>();
             for (uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItemRef oldSpectrumIdentificationItemRef : spectrumIdentificationItemRefs) {
                 uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem oldPeptideIdentification = oldSpectrumIdentificationItemRef.getSpectrumIdentificationItem();
-                Peptide peptide = transformToPeptideIdentification(oldPeptideIdentification, oldFragmentationTable);
+                SpectrumIdentification peptide = transformToPeptideIdentification(oldPeptideIdentification, oldFragmentationTable);
                 peptides.add(peptide);
             }
         }
         return peptides;
     }
 
-    public static Peptide transformToPeptideIdentification(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem oldSpectrumIdentification, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
-        Peptide peptide = null;
+    public static SpectrumIdentification transformToPeptideIdentification(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem oldSpectrumIdentification, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
+        SpectrumIdentification peptide = null;
         if (oldSpectrumIdentification != null) {
             String id = oldSpectrumIdentification.getId();
             String name = oldSpectrumIdentification.getName();
@@ -344,18 +351,9 @@ public class MzIdentMLTransformer {
             List<uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidenceRef> peptideEvidence = oldSpectrumIdentification.getPeptideEvidenceRef();
             uk.ac.ebi.jmzidml.model.mzidml.Fragmentation fragmentation = oldSpectrumIdentification.getFragmentation();
             ParamGroup scoreParamGroup = new ParamGroup(transformToCvParam(oldSpectrumIdentification.getCvParam()),transformToUserParam(oldSpectrumIdentification.getUserParam()));
-            peptide = new Peptide(id,
-                                  name,
-                                  chargeState,
-                                  massToCharge,
-                                  calcMassToCharge,
-                                  pI,
-                                  transformToPeptide(peptideSeq),
-                                  rank,
-                                  passThrehold,
-                                  transformToMassTable(massTable),
-                                  transformToSample(sample),
-                                  transformToPeptideEvidence(peptideEvidence),
+            peptide = new SpectrumIdentification(id, name,chargeState, massToCharge, calcMassToCharge, pI,
+                                  transformToPeptide(peptideSeq), rank, passThrehold, transformToMassTable(massTable),
+                                  transformToSample(sample), transformToPeptideEvidence(peptideEvidence),
                                   transformToFragmentationIon(fragmentation, oldFragmentationTable), transformScore(scoreParamGroup), null, null);
             //Todo: Peptide SpectraData
         }

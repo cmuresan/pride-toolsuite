@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * Constants shared by all classes
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 25-May-2010
  * Time: 14:09:16
  */
@@ -69,6 +69,7 @@ public interface Constants {
     public static final String MZXML_FILE = ".mzml";
     public static final String XML_FILE = ".xml";
     public static final String GZIPPED_FILE = ".gz";
+    public static final String MZIDENT_FILE =".mzid";
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     public static final String UNKNOWN = "Unknown";

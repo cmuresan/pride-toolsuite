@@ -172,6 +172,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
     /**
      * Insert each tab
+     * This function create and insert new Tabs
      */
     private void createTabbedPane() {
         contentTabPane = new JTabbedPane();

@@ -75,9 +75,9 @@ public class ShowParamDialogTask extends TaskAdapter<Void, Void> {
             title = "Additional Protein Parameters: " + name;
             params = protIdent;
         } else {
-            Peptide peptide = controller.getPeptideById(protId, peptideId);
+            Peptide peptide = controller.getPeptideByIndex(protId, peptideId);
             title = "Additional Peptide Parameters: " + peptide.getSequence();
-            params = peptide;
+            params = peptide.getSpectrumIdentification();
         }
 
         Runnable code = new Runnable() {

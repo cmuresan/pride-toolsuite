@@ -193,7 +193,7 @@ public class TableDataRetriever {
         content.add(controller.getNumberOfFragmentIons(identId, peptideId));
 
         // peptide scores
-        PeptideScore score = controller.getPeptideScore(identId, peptideId);
+        Score score = controller.getPeptideScore(identId, peptideId);
         if (score != null) {
             List<Number> nums = score.getAllPeptideScores();
             if (nums != null && !nums.isEmpty()) {
@@ -245,6 +245,7 @@ public class TableDataRetriever {
 
         // Original Protein Accession
         String protAcc = controller.getProteinAccession(identId);
+
         String protAccVersion = controller.getProteinAccessionVersion(identId);
         String database = controller.getSearchDatabase(identId).getName();
         content.add(protAcc);

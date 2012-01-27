@@ -27,8 +27,7 @@ public class SimpleFileDialog extends JFileChooser {
         super(path);
         this.fileFormats = extensions;
         // set dialog title
-        this.setDialogTitle(title == null ?
-                                (openDialog ? OPEN_FILE : SAVE_FILE) :
+        this.setDialogTitle(title == null ? (openDialog ? OPEN_FILE : SAVE_FILE) :
                                  title);
         // set dialog default file name
         if (defaultFileName != null) {

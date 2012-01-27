@@ -34,7 +34,7 @@ public class RetrievePeptideTask extends AbstractDataAccessTask<Peptide, String>
     protected Peptide retrieve() throws Exception {
         Peptide peptide = null;
         try {
-            peptide = controller.getPeptideById(identId, peptideId);
+            peptide = controller.getPeptideByIndex(identId, peptideId);
         } catch(DataAccessException dex) {
             String msg = "Failed to retrieve peptide";
             logger.error(msg, dex);

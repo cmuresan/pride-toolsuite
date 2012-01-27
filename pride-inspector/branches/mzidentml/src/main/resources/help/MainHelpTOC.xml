@@ -40,7 +40,7 @@
             <tocitem text="Delta m/z Chart" target="help.chart.7"/>
             <tocitem text="Number of Missed Tryptic Cleavages Chart" target="help.chart.8"/>
         </tocitem>
-        <tocitem text="Opening mzML or PRIDE XML Files" target="help.openfile" />
+        <tocitem text="Opening mzML/MzIdentML or PRIDE XML Files" target="help.openfile" />
         <tocitem text="Trying mzML or PRIDE XML Example Files" target="help.examples" />
         <tocitem text="Connecting to PRIDE Public Database Instance" target="help.pridedb" />
         <tocitem text="Downloading Your Experiments from PRIDE" target="help.download"/>

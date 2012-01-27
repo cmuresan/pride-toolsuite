@@ -53,7 +53,7 @@ public class EmptyDataAccessController extends AbstractDataAccessController {
     }
 
     @Override
-    public Collection<Software> getSoftwareList() throws DataAccessException {
+    public Collection<Software> getSoftwares() throws DataAccessException {
         return Collections.emptyList();
     }
 

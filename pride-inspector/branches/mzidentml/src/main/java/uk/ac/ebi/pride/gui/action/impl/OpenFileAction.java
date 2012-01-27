@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.gui.action.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.data.controller.impl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.controller.impl.MzMLControllerImpl;
 import uk.ac.ebi.pride.data.controller.impl.PrideXmlControllerImpl;
 import uk.ac.ebi.pride.gui.GUIUtilities;
@@ -27,16 +28,18 @@ import java.util.List;
 
 /**
  * OpenFileAction opens files supported by PRIDE Viewer
- * so far: mzML, PRIDE XML
+ * so far: mzML, mzid,  PRIDE XML
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 18-Aug-2010
  * Time: 11:40:33
  */
 public class OpenFileAction extends PrideAction implements TaskListener<Void, File> {
+
     private static final Logger logger = LoggerFactory.getLogger(OpenFileAction.class);
 
     private List<File> inputFilesToOpen;
+
     private PrideInspectorContext context;
 
     public OpenFileAction(String name, Icon icon) {
@@ -186,8 +189,7 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
      */
     private List<File> createFileOpenDialog() {
 
-        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/PRIDE xml Files", null, true,
-                                            Constants.MZXML_FILE, Constants.XML_FILE, Constants.GZIPPED_FILE);
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzid/PRIDE xml Files", null, true, Constants.MZIDENT_FILE, Constants.MZXML_FILE, Constants.XML_FILE, Constants.GZIPPED_FILE);
         int result = ofd.showDialog(Desktop.getInstance().getMainComponent(), null);
 
         List<File> filesToOpen = new ArrayList<File>();
@@ -261,8 +263,10 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
             classType = MzMLControllerImpl.class;
         } else if (PrideXmlControllerImpl.isValidFormat(file)) {
             classType = PrideXmlControllerImpl.class;
+        }else if(MzIdentMLControllerImpl.isValidFormat(file)){
+            classType = MzIdentMLControllerImpl.class;
         } else {
-            GUIUtilities.error(Desktop.getInstance().getMainComponent(), "<html><h4>The files you selected are not in supported format.</h4> The formats are supported by PRIDE Inspector are: <br> <b> PRIDE XML </b> <br> <b> mzML </b> </html>", "Wrong File Format");
+            GUIUtilities.error(Desktop.getInstance().getMainComponent(), "<html><h4>The files you selected are not in supported format.</h4> The formats are supported by PRIDE Inspector are: <br> <b> PRIDE XML </b> <br> <b> mzIdentML </b> <br> <b> mzML </b> </html>", "Wrong File Format");
         }
 
         return classType;

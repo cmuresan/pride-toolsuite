@@ -14,7 +14,7 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 
 /**
- * Task to open mzML or PRIDE xml files.
+ * Task to open mzML/MzIdentML or PRIDE xml files.
  * Note: this task doesn't check whether file has been loaded before
  * This is handled by OpenFileAction.
  * <p/>

@@ -758,9 +758,9 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
                 List<SearchEngineType> engines = (ident.getScore() == null)? null:ident.getScore().getSearchEngineTypes();
                 searchEngine = new SearchEngine(null,null,engines);
                 // check the search engine types from the data source
-                List<Peptide> peptides = ident.getIdentifiedPeptides();
+                List<Peptide> peptides = ident.getPeptides();
                 Peptide peptide = peptides.get(0);
-                List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide);
+                List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide.getSpectrumIdentification());
                 searchEngine.setSearchEngineTypes(types);
             }
         }
@@ -781,7 +781,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         Collection<Comparable> ids = new ArrayList<Comparable>();
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
-            List<Peptide> peptides = ident.getIdentifiedPeptides();
+            List<Peptide> peptides = ident.getPeptides();
             if (peptides != null) {
                 for (int index = 0; index < peptides.size(); index++) {
                     ids.add(index);
@@ -824,7 +824,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         // read from data source
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
-            List<Peptide> peptides = ident.getIdentifiedPeptides();
+            List<Peptide> peptides = ident.getPeptides();
             if (peptides != null) {
                 for (Peptide peptide : peptides) {
                     String seq = peptide.getPeptideSequence().getSequence();
@@ -928,7 +928,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         int cnt = 0;
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
-            List<Peptide> peptides = ident.getIdentifiedPeptides();
+            List<Peptide> peptides = ident.getPeptides();
             if (peptides != null) {
                 Peptide peptide = peptides.get(Integer.parseInt(peptideId.toString()));
                 if (peptide != null) {
@@ -1088,7 +1088,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         int cnt = 0;
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
-            List<Peptide> peptides = ident.getIdentifiedPeptides();
+            List<Peptide> peptides = ident.getPeptides();
             if (peptides != null) {
                 Peptide peptide = peptides.get(Integer.parseInt(peptideId.toString()));
                 if (peptide != null) {
@@ -1161,7 +1161,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
             Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
                 SearchEngine se = this.getSearchEngine();
-                score = DataAccessUtilities.getPeptideScore(peptide, se.getSearchEngineTypes());
+                score = DataAccessUtilities.getPeptideScore(peptide.getSpectrumIdentification(), se.getSearchEngineTypes());
             }
         }
         return score;
@@ -1800,7 +1800,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     @Override
     public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
         Peptide peptide = getPeptideByIndex(identId, peptideId);
-        return new Quantitation(Quantitation.Type.PEPTIDE, peptide.getCvParams());
+        return new Quantitation(Quantitation.Type.PEPTIDE, peptide.getSpectrumIdentification().getCvParams());
     }
 
     @Override

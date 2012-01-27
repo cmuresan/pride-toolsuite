@@ -219,7 +219,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
                 //int identification_id = Integer.valueOf(id.getId().toString());
                 int identification_id = idenIDInt;
 
-                for (Peptide pep : id.getIdentifiedPeptides()) {
+                for (Peptide pep : id.getPeptides()) {
                     double ptmMass = 0;
 
                     for (Modification modification : pep.getPeptideSequence().getModificationList()) {
@@ -249,8 +249,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
 
                     for (SearchEngineType searchEngineType : searchEngines) {
                         for (CvTermReference cvTermReference : searchEngineType.getSearchEngineScores()) {
-                            Number pepScore = DataAccessUtilities.getPeptideScore(pep,
-                                    searchEngines).getPeptideScore(searchEngineType, cvTermReference);
+                            Number pepScore = DataAccessUtilities.getPeptideScore(pep.getSpectrumIdentification(), searchEngines).getPeptideScore(searchEngineType, cvTermReference);
 
                             if (pepScore != null) {
                                 pp.addPeptideScore(searchEngineType, cvTermReference, pepScore);

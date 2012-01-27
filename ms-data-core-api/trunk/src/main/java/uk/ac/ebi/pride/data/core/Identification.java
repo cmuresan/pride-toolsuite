@@ -27,9 +27,9 @@ public class Identification extends IdentifiableParamGroup {
     private boolean passThreshold = false;
 
     /**
-     * Peptide Evidence in which is based the identification
+     * Peptide Identifications
      */
-    private Map<PeptideEvidence, List<Peptide>> peptides = null;
+    private List<Peptide> peptides = null;
 
     /**
      * The score is the score value in a SearchEngine Context
@@ -58,12 +58,12 @@ public class Identification extends IdentifiableParamGroup {
     IdentifiableParamGroup proteinAmbiguityGroup = null;
 
     public Identification(Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
-                          Map<PeptideEvidence, List<Peptide>> peptides, Score score, double threshold, double sequenceCoverage, Gel gel) {
+                          List<Peptide> peptides, Score score, double threshold, double sequenceCoverage, Gel gel) {
         this(null, id, name, dbSequence, passThreshold, peptides, score, threshold, sequenceCoverage, gel);
     }
 
     public Identification(ParamGroup params, Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
-                          Map<PeptideEvidence, List<Peptide>> peptides, Score score, double threshold, double sequenceCoverage, Gel gel) {
+                          List<Peptide> peptides, Score score, double threshold, double sequenceCoverage, Gel gel) {
         super(params, id, name);
         this.dbSequence       = dbSequence;
         this.passThreshold    = passThreshold;
@@ -90,11 +90,11 @@ public class Identification extends IdentifiableParamGroup {
         this.passThreshold = passThreshold;
     }
 
-    public Map<PeptideEvidence, List<Peptide>> getPeptides() {
+    public List<Peptide> getPeptides() {
         return peptides;
     }
 
-    public void setPeptides(Map<PeptideEvidence, List<Peptide>> peptides) {
+    public void setPeptides(List<Peptide> peptides) {
         this.peptides = peptides;
     }
 
@@ -123,24 +123,13 @@ public class Identification extends IdentifiableParamGroup {
     }
 
     public List<PeptideSequence> getPeptidesSequence() {
-        ArrayList<PeptideSequence> result                = new ArrayList<PeptideSequence>();
-        List<Peptide>              identifiedPeptideList = this.getIdentifiedPeptides();
+        ArrayList<PeptideSequence> result = new ArrayList<PeptideSequence>();
+        List<Peptide> identifiedPeptideList = this.getPeptides();
 
         for (Peptide peptide : identifiedPeptideList) {
-            result.add(peptide.getPeptideSequence());
+            result.add(peptide.getPeptideEvidence().getPeptideSequence());
         }
-
         return result;
-    }
-
-    public List<Peptide> getIdentifiedPeptides() {
-        List<Peptide> identifiedPeptides = new ArrayList<Peptide>();
-
-        for (PeptideEvidence key : peptides.keySet()) {
-            identifiedPeptides.addAll(peptides.get(key));
-        }
-
-        return identifiedPeptides;
     }
 
     public Gel getGel() {

@@ -512,7 +512,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                     // store identification into cache
                     getCache().store(CacheCategory.IDENTIFICATION, id, ident);
                     // store precursor charge and m/z
-                    for (Peptide peptide : ident.getIdentifiedPeptides()) {
+                    for (Peptide peptide : ident.getPeptides()) {
                         Spectrum spectrum = peptide.getSpectrum();
                         if (spectrum != null) {
                             getCache().store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));

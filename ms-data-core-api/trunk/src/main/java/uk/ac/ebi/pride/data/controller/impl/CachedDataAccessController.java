@@ -524,7 +524,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
             Identification ident = (Identification) cache.get(CacheCategory.IDENTIFICATION, identId);
             if (ident != null) {
                 int indexInt = Integer.parseInt(index.toString());
-                List<Peptide> peptides = ident.getIdentifiedPeptides();
+                List<Peptide> peptides = ident.getPeptides();
                 if (indexInt >= 0 && indexInt < peptides.size()) {
                     pep = peptides.get(indexInt);
                 }

@@ -235,7 +235,7 @@ public class DataAccessUtilities {
      */
     public static Peptide getPeptide(Identification ident, int index) {
         Peptide peptide = null;
-        List<Peptide> peptides = ident.getIdentifiedPeptides();
+        List<Peptide> peptides = ident.getPeptides();
         if (peptides != null && peptides.size() > index) {
             peptide = peptides.get(index);
         }
@@ -249,7 +249,7 @@ public class DataAccessUtilities {
      * @return int number of peptides
      */
     public static int getNumberOfPeptides(Identification ident) {
-        List<Peptide> peptides = ident.getIdentifiedPeptides();
+        List<Peptide> peptides = ident.getPeptides();
         return peptides == null ? 0 : peptides.size();
     }
 
@@ -308,7 +308,7 @@ public class DataAccessUtilities {
      */
     public static int getNumberOfPTMs(Identification ident) {
         int cnt = 0;
-        List<Peptide> peptides = ident.getIdentifiedPeptides();
+        List<Peptide> peptides = ident.getPeptides();
         for (Peptide peptide : peptides) {
             List<Modification> mods = peptide.getPeptideSequence().getModificationList();
             if (mods != null) {
@@ -325,7 +325,7 @@ public class DataAccessUtilities {
      */
     public static int getNumberOfSubstitutionPTMs(Identification ident) {
         int cnt = 0;
-        List<Peptide> peptides = ident.getIdentifiedPeptides();
+        List<Peptide> peptides = ident.getPeptides();
         for (Peptide peptide : peptides) {
             List<SubstitutionModification> mods = peptide.getPeptideSequence().getSubstitutionModificationList();
             if (mods != null) {

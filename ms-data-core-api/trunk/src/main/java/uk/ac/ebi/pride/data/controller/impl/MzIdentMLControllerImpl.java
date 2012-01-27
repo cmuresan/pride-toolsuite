@@ -1,7 +1,10 @@
 package uk.ac.ebi.pride.data.controller.impl;
 
+import com.compomics.util.experiment.biology.Protein;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis;
+import uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis;
 import uk.ac.ebi.jmzidml.xml.io.MzIdentMLUnmarshaller;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
@@ -13,6 +16,7 @@ import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
 
+import javax.xml.bind.JAXBException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -428,13 +432,15 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             logger.debug("Get new identification from file: {}", id);
             try {
                 ident = MzIdentMLTransformer.transformToIdentification(unmarshaller.getIdentificationById(id), unmarshaller.getFragmentationTable());
+                List<Peptide> peptides = MzIdentMLTransformer.transformToPeptideIdentifications(unmarshaller.getPeptideHypothesisbyID(id),unmarshaller.getFragmentationTable());
+                ident.setPeptides(peptides);
                 //System.out.println(ident.getId().toString());
                 if (useCache && ident != null) {
                     // store identification into cache
                     getCache().store(CacheCategory.IDENTIFICATION, id, ident);
                     // store precursor charge and m/z
-                    for (Peptide peptide : ident.getIdentifiedPeptides()) {
-                        getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(id, peptide.getId()), peptide);
+                    for (Peptide peptide : ident.getPeptides()) {
+                        getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(id, peptide.getSpectrumIdentification().getId()), peptide);
                         Spectrum spectrum = peptide.getSpectrum();
                         if (spectrum != null) {
                             getCache().store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
@@ -459,11 +465,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @throws DataAccessException exception while getting peptide
      */
     @Override
-    public Peptide getPeptideByIndex(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
+    public Peptide getPeptideByIndex(Comparable identId, Comparable index, boolean useCache) throws DataAccessException{
         Peptide peptide = super.getPeptideByIndex(identId, index, useCache);
         if (peptide == null) {
             logger.debug("Get new peptide from file: {}", index);
-            peptide = MzIdentMLTransformer.transformToPeptideIdentification(unmarshaller.getPeptideIdentificationByIndex(identId, index), unmarshaller.getFragmentationTable());
+            Identification ident = MzIdentMLTransformer.transformToIdentification(unmarshaller.getIdentificationById(identId),unmarshaller.getFragmentationTable());
+            peptide = ident.getPeptides().get(Integer.parseInt(index.toString()));
             if (useCache && peptide != null) {
                 // store peptide
                 getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, index), peptide);
@@ -501,6 +508,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         unmarshaller = null;
         super.close();
     }
+
 
     /**
      * Check a file is MZIdentML XML file

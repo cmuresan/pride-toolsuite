@@ -3,6 +3,8 @@ package uk.ac.ebi.pride.gui.component.table;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.core.CvParam;
+import uk.ac.ebi.pride.data.core.Modification;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
@@ -92,29 +94,47 @@ public class TableDataRetriever {
 
         // precursor charge
         Comparable specId = controller.getPeptideSpectrumId(identId, peptideId);
+        Peptide peptide = controller.getPeptideByIndex(identId,peptideId);
+        int charge = peptide.getPrecursorCharge();
+        content.add(charge == 0 ? null : charge);
+
+        double mz = peptide.getPrecursorMz();
+        List<Double> ptmMasses = new ArrayList<Double>();
+        for (Modification mod : mods) {
+            List<Double> monoMasses = mod.getMonoisotopicMassDelta();
+            if (monoMasses != null && !monoMasses.isEmpty()) {
+                ptmMasses.add(monoMasses.get(0));
+            }
+        }
+        Double deltaMass = MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
+        content.add(deltaMass == null ? null : NumberUtilities.scaleDouble(deltaMass, 2));
+
+        content.add(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 2));
+
+
         if (specId != null) {
-            int charge = controller.getPrecursorCharge(specId);
-            content.add(charge == 0 ? null : charge);
+            //int charge = controller.getPrecursorCharge(specId);
+            //content.add(charge == 0 ? null : charge);
 
             // delta mass
             // theoretical mass
-            double mz = controller.getPrecursorMz(specId);
-            List<Double> ptmMasses = new ArrayList<Double>();
-            for (Modification mod : mods) {
-                List<Double> monoMasses = mod.getMonoisotopicMassDelta();
-                if (monoMasses != null && !monoMasses.isEmpty()) {
-                    ptmMasses.add(monoMasses.get(0));
-                }
-            }
-            Double deltaMass = MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
-            content.add(deltaMass == null ? null : NumberUtilities.scaleDouble(deltaMass, 2));
+            //double mz = controller.getPrecursorMz(specId);
+            //List<Double> ptmMasses = new ArrayList<Double>();
+            //for (Modification mod : mods) {
+             //   List<Double> monoMasses = mod.getMonoisotopicMassDelta();
+             //   if (monoMasses != null && !monoMasses.isEmpty()) {
+             //       ptmMasses.add(monoMasses.get(0));
+             //   }
+            //}
+            //Double deltaMass = MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
+            //content.add(deltaMass == null ? null : NumberUtilities.scaleDouble(deltaMass, 2));
 
             // precursor m/z
-            content.add(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 2));
+            //content.add(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 2));
         } else {
-            content.add(null);
-            content.add(null);
-            content.add(null);
+            //content.add(null);
+            //content.add(null);
+            //content.add(null);
         }
         // peptide ptms
         content.add(mods.size());

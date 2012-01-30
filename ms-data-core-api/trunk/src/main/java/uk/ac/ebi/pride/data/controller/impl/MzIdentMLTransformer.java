@@ -276,7 +276,6 @@ public class MzIdentMLTransformer {
             FragmentationTable = transformToFragmentationTable(oldFragmentationTable);
         }
         if (oldIdent != null) {
-            System.out.println("Identification Id:" + oldIdent.getId());
             List<Peptide> peptides= transformToPeptideIdentifications(oldIdent.getPeptideHypothesis(), oldFragmentationTable);
             ParamGroup paramGroup = new ParamGroup(transformToCvParam(oldIdent.getCvParam()),transformToUserParam(oldIdent.getUserParam()));
             Score score = transformScore(paramGroup);
@@ -303,14 +302,10 @@ public class MzIdentMLTransformer {
             peptides = new ArrayList<Peptide>();
             int i = 0;
             for (uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis oldPeptideHypothesis : peptideHypothesis) {
-                System.out.println("Peptide Hyphotesis: " + i);
                 PeptideEvidence peptideEvidence = transformToPeptideEvidence(oldPeptideHypothesis.getPeptideEvidence());
-                System.out.println("\t Peptide Evidence:" + peptideEvidence.getId());
-
                 List<SpectrumIdentification> spectrumIdentifications = transformToPeptideIdentification(oldPeptideHypothesis.getSpectrumIdentificationItemRef(), oldFragmentationTable);
                 for(int j = 0 ; j < spectrumIdentifications.size();j++){
                      peptides.add(new Peptide(peptideEvidence,spectrumIdentifications.get(j)));
-                     System.out.println("\t Peptide Identified:" + peptides.get(j).getSpectrumIdentification().getId());
                 }
                 i++;
             }

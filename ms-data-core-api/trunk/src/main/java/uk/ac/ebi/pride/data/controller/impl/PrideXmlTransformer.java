@@ -524,7 +524,14 @@ public class PrideXmlTransformer {
         List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
         PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, startPos, stopPos, false, peptideSequence, null);
         peptideEvidences.add(peptideEvidence);
-        SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, -1, 0.0, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
+        int charge = -1;
+        double mz  = 0.0;
+        if(spectrum != null){
+            charge = DataAccessUtilities.getPrecursorCharge(spectrum);
+            mz = DataAccessUtilities.getPrecursorMz(spectrum);
+        }
+
+        SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, charge, mz, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
         return new Peptide(peptideEvidence,spectrumIdentification);
         //Todo : We need to capture the experimental Mass Value at this level, also the theoretical Mass Value
 

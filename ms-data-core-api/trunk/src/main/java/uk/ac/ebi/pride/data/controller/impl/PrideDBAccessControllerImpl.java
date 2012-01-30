@@ -1213,7 +1213,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
                 PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, rs.getInt("pep_start"), rs.getInt("pep_end"), false, peptideSequence, null);
                 peptideEvidences.add(peptideEvidence);
-                SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, -1, 0.0, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
+                int charge = DataAccessUtilities.getPrecursorCharge(spectrum);
+                double mz = DataAccessUtilities.getPrecursorMz(spectrum);
+                SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, charge, mz, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
                 peptides.add(new Peptide(peptideEvidence, spectrumIdentification));
                 //Todo: We need to think if is possible to find PeptideEvidences in PRIDE Identifications.
             }
@@ -1381,11 +1383,13 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             if (specId != null) {
                 spectrum = getSpectrumById(specId);
             }
+            int charge = this.getPrecursorCharge(specId);
+            double mz = this.getPrecursorMz(specId);
             PeptideSequence peptideSequence = new PeptideSequence(null, null, sequence, modifications);
             List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
             PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, start, end, false, peptideSequence, null);
             peptideEvidences.add(peptideEvidence);
-            SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, -1, 0.0, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
+            SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, charge,mz, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
             peptide = new Peptide(peptideEvidence,spectrumIdentification);
             if (useCache) {
                 getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, peptideId), peptide);

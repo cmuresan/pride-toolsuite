@@ -71,6 +71,14 @@ public class Peptide {
         if(this.getPeptideSequence().getModificationList().size() == 0) return false;
         return true;
     }
+
+    public int getPrecursorCharge() {
+        return this.getSpectrumIdentification().getChargeState();
+    }
+
+    public double getPrecursorMz() {
+        return this.getSpectrumIdentification().getExperimentalMassToCharge();
+    }
 }
 
 

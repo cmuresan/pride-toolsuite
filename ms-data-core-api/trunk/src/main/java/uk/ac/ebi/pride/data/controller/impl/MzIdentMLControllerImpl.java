@@ -434,7 +434,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 ident = MzIdentMLTransformer.transformToIdentification(unmarshaller.getIdentificationById(id), unmarshaller.getFragmentationTable());
                 List<Peptide> peptides = MzIdentMLTransformer.transformToPeptideIdentifications(unmarshaller.getPeptideHypothesisbyID(id),unmarshaller.getFragmentationTable());
                 ident.setPeptides(peptides);
-                //System.out.println(ident.getId().toString());
                 if (useCache && ident != null) {
                     // store identification into cache
                     getCache().store(CacheCategory.IDENTIFICATION, id, ident);
@@ -470,6 +469,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         if (peptide == null) {
             logger.debug("Get new peptide from file: {}", index);
             Identification ident = MzIdentMLTransformer.transformToIdentification(unmarshaller.getIdentificationById(identId),unmarshaller.getFragmentationTable());
+            List<Peptide> peptides = MzIdentMLTransformer.transformToPeptideIdentifications(unmarshaller.getPeptideHypothesisbyID(identId),unmarshaller.getFragmentationTable());
+            ident.setPeptides(peptides);
             peptide = ident.getPeptides().get(Integer.parseInt(index.toString()));
             if (useCache && peptide != null) {
                 // store peptide

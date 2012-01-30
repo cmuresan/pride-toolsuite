@@ -204,6 +204,11 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
     public int compareTo(Object o) {
         return (((PeptideSequence)o).getSequence().compareToIgnoreCase(this.getSequence()));
     }
+
+    @Override
+    public String toString() {
+        return sequence;
+    }
 }
 
 

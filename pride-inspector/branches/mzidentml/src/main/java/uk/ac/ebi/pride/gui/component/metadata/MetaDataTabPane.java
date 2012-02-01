@@ -17,7 +17,6 @@ import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveMetaDataTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
-import uk.ac.ebi.pride.model.interfaces.core.Experiment;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
 import uk.ac.ebi.pride.gui.access.GeneralMetaDataGroup;
@@ -55,6 +54,8 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
     private JPanel sampleProtocolMetadataPanel;
     private JPanel instrumentProcMetadataPanel;
     private PrideInspectorContext context;
+    private IdentificationMetadataPanel identificationMetadataPnael;
+
 
     public MetaDataTabPane(DataAccessController controller, JComponent component) {
         super(controller, component);
@@ -217,6 +218,8 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
             metaDataContainer.add(sampleProtocolMetadataPanel, BorderLayout.CENTER);
         } else if (INSTRUMENT_SOFTWARE.equals(cmd)) {
             metaDataContainer.add(instrumentProcMetadataPanel, BorderLayout.CENTER);
+        } else if (IDENTIFICATION_METADATA.equals(cmd)){
+            metaDataContainer.add(identificationMetadataPnael, BorderLayout.CENTER);
         }
         metaDataContainer.revalidate();
         metaDataContainer.repaint();
@@ -301,6 +304,9 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
         generalMetadataPanel = new GeneralMetadataPanel(metaData);
         sampleProtocolMetadataPanel = new SampleProtocolMetadataPanel(metaData);
         instrumentProcMetadataPanel = new InstrumentProcessingMetadataPanel(metaData);
+        //identificationMetadataPnael2 = new IdentificationMetadataPanel(metaData);
+        identificationMetadataPnael = new IdentificationMetadataPanel(metaData);
+
         // set default panel
         metaDataContainer.add(generalMetadataPanel, BorderLayout.CENTER);
     }

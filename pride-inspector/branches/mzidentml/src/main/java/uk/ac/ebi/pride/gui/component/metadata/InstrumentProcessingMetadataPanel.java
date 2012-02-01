@@ -3,11 +3,9 @@ package uk.ac.ebi.pride.gui.component.metadata;
 import com.sun.xml.internal.bind.v2.TODO;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
-import uk.ac.ebi.pride.data.core.DataProcessing;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.core.ExperimentMetaData;
-import uk.ac.ebi.pride.data.core.InstrumentConfiguration;
-import uk.ac.ebi.pride.data.core.ExperimentMetaData;
-import uk.ac.ebi.pride.data.core.ProcessingMethod;
+import uk.ac.ebi.pride.gui.access.GeneralMetaDataGroup;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,18 +19,18 @@ import java.util.List;
  * @author User #2
  */
 public class InstrumentProcessingMetadataPanel extends JPanel {
-    public InstrumentProcessingMetadataPanel(ExperimentMetaData metaData) {
+
+
+    public InstrumentProcessingMetadataPanel(GeneralMetaDataGroup metaData) {
         populateComponents(metaData);
         initComponents();
     }
 
-    private void populateComponents(ExperimentMetaData metaData) {
+    private void populateComponents(GeneralMetaDataGroup metaData) {
         // instrument configurations
         instrumentTabbedPane = new JTabbedPane();
         instrumentTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
-        //List<InstrumentConfiguration> instrumentConfigurationList = metaData.getInstrumentConfigurations();
-        List<InstrumentConfiguration> instrumentConfigurationList = null;
-        //Todo: Fixed
+        List<InstrumentConfiguration> instrumentConfigurationList = metaData.getInstrumentConfigurations();
         if (instrumentConfigurationList != null) {
             for (InstrumentConfiguration instrumentConfiguration : instrumentConfigurationList) {
                 String name = instrumentConfiguration.getId();
@@ -44,9 +42,7 @@ public class InstrumentProcessingMetadataPanel extends JPanel {
         // data processings
         dataProcTabbedPane = new JTabbedPane();
         dataProcTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
-        //List<DataProcessing> dataProcessingList = metaData.getDataProcessings();
-        //Todo: fixed
-        List<DataProcessing> dataProcessingList = null;
+        List<DataProcessing> dataProcessingList = metaData.getDataProcessings();
         if (dataProcessingList != null) {
             int cnt = 1;
             for (DataProcessing dataProcessing : dataProcessingList) {

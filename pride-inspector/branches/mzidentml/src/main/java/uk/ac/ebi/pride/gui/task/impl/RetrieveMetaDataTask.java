@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.ExperimentMetaData;
+import uk.ac.ebi.pride.data.core.IdentificationMetaData;
+import uk.ac.ebi.pride.data.core.MzGraphMetaData;
+import uk.ac.ebi.pride.gui.access.GeneralMetaDataGroup;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 
@@ -15,7 +18,8 @@ import uk.ac.ebi.pride.gui.component.message.MessageType;
  * Date: 22-Oct-2010
  * Time: 12:18:34
  */
-public class RetrieveMetaDataTask extends AbstractDataAccessTask<ExperimentMetaData, Void> {
+public class RetrieveMetaDataTask extends AbstractDataAccessTask<GeneralMetaDataGroup, Void> {
+
     private static final Logger logger = LoggerFactory.getLogger(RetrieveEntryTask.class);
     /**
      * the default task title
@@ -33,15 +37,19 @@ public class RetrieveMetaDataTask extends AbstractDataAccessTask<ExperimentMetaD
     }
 
     @Override
-    protected ExperimentMetaData retrieve() throws Exception {
-        ExperimentMetaData metaData = null;
+    protected GeneralMetaDataGroup retrieve() throws Exception {
+        GeneralMetaDataGroup groupMetaData = null;
         try {
-            metaData = controller.getExperimentMetaData();
+            ExperimentMetaData metaData = controller.getExperimentMetaData();
+            MzGraphMetaData mzGraphMetaData = controller.getMzGraphMetaData();
+            IdentificationMetaData identificationMetaData = controller.getIdentificationMetaData();
+            groupMetaData = new GeneralMetaDataGroup(identificationMetaData,metaData,mzGraphMetaData);
+
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve meta data from data source";
             logger.error(msg, dex);
             appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         }
-        return metaData;
+        return groupMetaData;
     }
 }

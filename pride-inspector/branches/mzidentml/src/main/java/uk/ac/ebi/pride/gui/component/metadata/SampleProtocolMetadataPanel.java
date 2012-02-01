@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.component.metadata;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.gui.access.GeneralMetaDataGroup;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.model.interfaces.core.Experiment;
 
@@ -19,12 +20,12 @@ import java.util.List;
  * @author User #2
  */
 public class SampleProtocolMetadataPanel extends JPanel {
-    public SampleProtocolMetadataPanel(ExperimentMetaData metaData) {
+    public SampleProtocolMetadataPanel(GeneralMetaDataGroup metaData) {
         populateComponents(metaData);
         initComponents();
     }
 
-    private void populateComponents(ExperimentMetaData metaData) {
+    private void populateComponents(GeneralMetaDataGroup metaData) {
         // add samples
         sampleTabbedPane = new JTabbedPane();
         sampleTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
@@ -44,10 +45,9 @@ public class SampleProtocolMetadataPanel extends JPanel {
 
         // protocol
         protocolNameField = new JLabel();
-        if (metaData instanceof ExperimentMetaData && ((ExperimentMetaData) metaData).getProtocol() != null
-                && ((ExperimentMetaData) metaData).getProtocol().getProtocolSteps() != null) {
+        if ((metaData.getProtocol() != null) && (metaData.getProtocol().getProtocolSteps() != null)) {
             // get protocol
-            ExperimentProtocol protocol = ((ExperimentMetaData) metaData).getProtocol();
+            ExperimentProtocol protocol = metaData.getProtocol();
             // protocol name
             String protName = protocol.getName();
             protocolNameField.setText(protName);

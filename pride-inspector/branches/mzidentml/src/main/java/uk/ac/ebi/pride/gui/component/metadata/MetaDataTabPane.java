@@ -4,9 +4,7 @@ import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.ExperimentMetaData;
-import uk.ac.ebi.pride.data.core.UserParam;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
@@ -22,6 +20,7 @@ import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.model.interfaces.core.Experiment;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
+import uk.ac.ebi.pride.gui.access.GeneralMetaDataGroup;
 
 import javax.help.CSH;
 import javax.swing.*;
@@ -38,12 +37,14 @@ import java.lang.reflect.InvocationTargetException;
  * Date: 05-Mar-2010
  * Time: 15:12:07
  */
-public class MetaDataTabPane extends DataAccessControllerPane<ExperimentMetaData, Void> implements ActionListener {
+public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGroup, Void> implements ActionListener {
+
     private static final Logger logger = LoggerFactory.getLogger(MetaDataTabPane.class);
 
-    private static final String GENERAL = "Experiment General";
-    private static final String SAMPLE_PROTOCOL = "Sample & Protocol";
-    private static final String INSTRUMENT_SOFTWARE = "Instrument & Processing";
+    private static final String GENERAL                 = "Experiment General";
+    private static final String SAMPLE_PROTOCOL         = "Sample & Protocol";
+    private static final String INSTRUMENT_SOFTWARE     = "Instrument & Processing";
+    private static final String IDENTIFICATION_METADATA = "Identification Protocol";
 
     private static final String PANE_TITLE = "Overview";
 
@@ -85,8 +86,10 @@ public class MetaDataTabPane extends DataAccessControllerPane<ExperimentMetaData
     }
 
     @Override
-    public void succeed(TaskEvent<ExperimentMetaData> metaDataTaskEvent) {
-        final ExperimentMetaData metaData = metaDataTaskEvent.getValue();
+
+    public void succeed(TaskEvent<GeneralMetaDataGroup> metaDataTaskEvent) {
+
+        final GeneralMetaDataGroup metaData = metaDataTaskEvent.getValue();
 
         Runnable run = new Runnable() {
 
@@ -134,8 +137,8 @@ public class MetaDataTabPane extends DataAccessControllerPane<ExperimentMetaData
      *
      * @param metaData Experimental metadata
      */
-    private void notifyKeyInfo(ExperimentMetaData metaData) {
-        java.util.List<CvParam> cvParams = metaData.getCvParams();
+    private void notifyKeyInfo(GeneralMetaDataGroup metaData) {
+        java.util.List<CvParam> cvParams = metaData.getMetaData().getCvParams();
         if (cvParams != null) {
             for (CvParam cvParam : cvParams) {
                 String acc = cvParam.getAccession();
@@ -158,7 +161,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<ExperimentMetaData
             }
         }
 
-        java.util.List<UserParam> userParams = metaData.getUserParams();
+        java.util.List<UserParam> userParams = metaData.getMetaData().getUserParams();
         if (userParams != null) {
             for (UserParam userParam : userParams) {
                 String name = userParam.getName().toLowerCase();
@@ -204,6 +207,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<ExperimentMetaData
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
         String cmd = e.getActionCommand();
         metaDataContainer.removeAll();
         metaDataContainer.add(metaDataTopPanel, BorderLayout.NORTH);
@@ -257,30 +261,43 @@ public class MetaDataTabPane extends DataAccessControllerPane<ExperimentMetaData
         metaDataControlBar.setBackground(Color.white);
         metaDataControlBar.setLayout(new FlowLayout(FlowLayout.CENTER));
         ButtonGroup buttonGroup = new ButtonGroup();
+
         JToggleButton generalButton = new JToggleButton(GENERAL);
         generalButton.setActionCommand(GENERAL);
         generalButton.setPreferredSize(new Dimension(200, 25));
+
         JToggleButton proSamButton = new JToggleButton(SAMPLE_PROTOCOL);
         proSamButton.setActionCommand(SAMPLE_PROTOCOL);
         proSamButton.setPreferredSize(new Dimension(200, 25));
+
         JToggleButton insSofButton = new JToggleButton(INSTRUMENT_SOFTWARE);
         insSofButton.setActionCommand(INSTRUMENT_SOFTWARE);
         insSofButton.setPreferredSize(new Dimension(200, 25));
+
+        JToggleButton identButton = new JToggleButton(IDENTIFICATION_METADATA);
+        identButton.setActionCommand(IDENTIFICATION_METADATA);
+        identButton.setPreferredSize(new Dimension(200, 25));
+
         generalButton.addActionListener(this);
         proSamButton.addActionListener(this);
         insSofButton.addActionListener(this);
+        identButton.addActionListener(this);
+
         buttonGroup.add(generalButton);
         buttonGroup.add(proSamButton);
         buttonGroup.add(insSofButton);
+        buttonGroup.add(identButton);
+
         metaDataControlBar.add(generalButton);
         metaDataControlBar.add(proSamButton);
         metaDataControlBar.add(insSofButton);
+        metaDataControlBar.add(identButton);
 
         // set default selection
         generalButton.setSelected(true);
     }
 
-    private void createMetaDataPanels(ExperimentMetaData metaData) {
+    private void createMetaDataPanels(GeneralMetaDataGroup metaData) {
         generalMetadataPanel = new GeneralMetadataPanel(metaData);
         sampleProtocolMetadataPanel = new SampleProtocolMetadataPanel(metaData);
         instrumentProcMetadataPanel = new InstrumentProcessingMetadataPanel(metaData);

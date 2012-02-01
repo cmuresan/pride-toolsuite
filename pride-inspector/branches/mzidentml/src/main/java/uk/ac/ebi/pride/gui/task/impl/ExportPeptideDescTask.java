@@ -91,7 +91,7 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
 
             // number of peptides
             if (controller.hasPeptide()) {
-                writer.println("# Number lolo of peptides: " + controller.getNumberOfPeptides());
+                writer.println("# Number of peptides: " + controller.getNumberOfPeptides());
             }
 
             // in order to get a list of headers for export

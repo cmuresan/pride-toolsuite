@@ -84,4 +84,8 @@ public class GeneralMetaDataGroup {
     public List<DataProcessing> getDataProcessings() {
         return getMzGraphMetaData().getDataProcessingList();
     }
+
+    public List<SearchDataBase> getSearchDatabases() {
+        return getIdentificationMetaData().getSearchDataBaseList();
+    }
 }

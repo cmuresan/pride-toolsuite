@@ -124,6 +124,7 @@ public class GeneralMetadataPanel extends JPanel {
         // instrument field
         instrumentField = new JTextField();
         String instrumentStr = "";
+
         List<InstrumentConfiguration> instruments = metaData.getInstrumentConfigurations();
         if(instruments != null){
         for (InstrumentConfiguration instrument : instruments) {

@@ -6,8 +6,11 @@ package uk.ac.ebi.pride.gui.component.metadata;
 
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.access.GeneralMetaDataGroup;
+import uk.ac.ebi.pride.gui.component.table.TableFactory;
+import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
@@ -19,6 +22,7 @@ public class IdentificationMetadataPanel extends JPanel {
     public IdentificationMetadataPanel(GeneralMetaDataGroup metaData) {
         populateComponents(metaData);
         initComponents();
+
     }
 
     private void populateComponents(GeneralMetaDataGroup metaData) {
@@ -35,33 +39,39 @@ public class IdentificationMetadataPanel extends JPanel {
                 dataBaseTabbedPane.add(name, databaseMetadataPanel);
             }
         }
-        /*List<InstrumentConfiguration> instrumentConfigurationList = metaData.getInstrumentConfigurations();
-        if (instrumentConfigurationList != null) {
-            for (InstrumentConfiguration instrumentConfiguration : instrumentConfigurationList) {
-                String name = instrumentConfiguration.getId();
-                InstrumentCompMetadataPanel comps = new InstrumentCompMetadataPanel(instrumentConfiguration);
-                dataBaseTabbedPane.addTab("Database " + name, comps);
-            }
-        } */
 
-        proteinProtocolTabbedPane = new JTabbedPane();
-        proteinProtocolTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
+        //Protein Protocol Parameters
+        proteinProtocolLabel = new JLabel();
+
+        Protocol proteinProtocol = metaData.getProteinDetectionProtocol();
+
+        if ((proteinProtocol != null) && (proteinProtocol.getAnalysisParam() != null)) {
+
+            String nameProtocol = proteinProtocol.getName();
+            if(nameProtocol == null) nameProtocol ="Dafault";
+            String softwareProtocol = proteinProtocol.getAnalysisSoftware().getName();
+            proteinProtocolLabel.setText("Protein Identification Protocol: " + nameProtocol + ", Software " + softwareProtocol);
+            proteinProtocolLabel.setToolTipText(nameProtocol);
+            // protocol table
+            proteinProtocolTable = TableFactory.createParamTable(proteinProtocol.getAnalysisParam());
+        } else {
+            proteinProtocolTable = TableFactory.createParamTable(new ArrayList<Parameter>());
+        }
+
+
 
         // peptide Protocol
         peptideProtocolTabbedPane = new JTabbedPane();
         peptideProtocolTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
-        List<DataProcessing> dataProcessingList = metaData.getDataProcessings();
-        if (dataProcessingList != null) {
-            int cnt = 1;
-            for (DataProcessing dataProcessing : dataProcessingList) {
-                List<ProcessingMethod> methods = dataProcessing.getProcessingMethods();
-                if (methods != null) {
-                    for (ProcessingMethod method : methods) {
-                        DataProcessingMetadataPanel dataProc = new DataProcessingMetadataPanel(method);
-                        peptideProtocolTabbedPane.addTab("Method " + cnt, dataProc);
-                        cnt++;
-                    }
-                }
+
+        List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = metaData.getSpectrumIdentificationProtocol();
+        if (spectrumIdentificationProtocolList != null) {
+            for (SpectrumIdentificationProtocol spectrumIdentificationProtocol : spectrumIdentificationProtocolList) {
+                String name = spectrumIdentificationProtocol.getName();
+                if(name == null) name ="Dafault";
+                String software = spectrumIdentificationProtocol.getAnalysisSoftware().getName();
+                PeptideIdentificationMetadataPanel peptideComp = new PeptideIdentificationMetadataPanel(spectrumIdentificationProtocol);
+                peptideProtocolTabbedPane.addTab("Protocol " + name + ", Software" + software, peptideComp);
             }
         }
     }
@@ -71,7 +81,7 @@ public class IdentificationMetadataPanel extends JPanel {
         // Generated using JFormDesigner non-commercial license
         databaseLabel = new JLabel();
         peptideProtocol = new JLabel();
-        proteinProtocol = new JLabel();
+        scrollPane2 = new JScrollPane();
 
         //======== this ========
 
@@ -83,8 +93,12 @@ public class IdentificationMetadataPanel extends JPanel {
         peptideProtocol.setText("Peptide Identification Protocol");
         peptideProtocol.setFont(peptideProtocol.getFont().deriveFont(peptideProtocol.getFont().getStyle() | Font.BOLD));
 
-        proteinProtocol.setText("Peptide Identification Protocol");
-        proteinProtocol.setFont(peptideProtocol.getFont().deriveFont(peptideProtocol.getFont().getStyle() | Font.BOLD));
+        proteinProtocolLabel.setFont(peptideProtocol.getFont().deriveFont(peptideProtocol.getFont().getStyle() | Font.BOLD));
+
+        //======== scrollPane2 ========
+        {
+            scrollPane2.setViewportView(proteinProtocolTable);
+        }
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         setLayout(layout);
@@ -97,8 +111,8 @@ public class IdentificationMetadataPanel extends JPanel {
                         .add(org.jdesktop.layout.GroupLayout.LEADING, dataBaseTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
                         .add(org.jdesktop.layout.GroupLayout.LEADING, databaseLabel)
                         .add(org.jdesktop.layout.GroupLayout.LEADING, peptideProtocol)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, proteinProtocol)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, proteinProtocolTabbedPane))
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, proteinProtocolLabel)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, scrollPane2))
                     .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -107,15 +121,15 @@ public class IdentificationMetadataPanel extends JPanel {
                         .addContainerGap()
                         .add(databaseLabel)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(dataBaseTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                        .add(dataBaseTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
                         .add(18, 18, 18)
                         .add(peptideProtocol)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(peptideProtocolTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                        .add(peptideProtocolTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                         .add(18, 18, 18)
-                        .add(proteinProtocol)
+                        .add(proteinProtocolLabel)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(proteinProtocolTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                        .add(scrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
                         .add(28, 28, 28))
 
         );
@@ -128,7 +142,8 @@ public class IdentificationMetadataPanel extends JPanel {
     private JTabbedPane dataBaseTabbedPane;
     private JLabel peptideProtocol;
     private JTabbedPane peptideProtocolTabbedPane;
-    private JLabel proteinProtocol;
-    private JTabbedPane proteinProtocolTabbedPane;
+    private JLabel proteinProtocolLabel;
+    private JTable proteinProtocolTable;
+    private JScrollPane scrollPane2;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

@@ -86,6 +86,12 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
     private List<SourceFile> sourceFiles = null;
 
     /**
+     * List of SpectraData Objects used by MZIdentML to refereed the original mass spectra files.
+     * A data set containing spectra data (consisting of one or more spectra).
+     */
+    private List<SpectraData> spectraDataList = null;
+
+    /**
      * version of this document used for PRIDE and MzIdentML
      */
     private String version = null;
@@ -129,6 +135,37 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
         this.protocol         = protocol;
         this.shortLabel       = shortLabel;
     }
+
+    /**
+     *
+     * @param params
+     * @param id
+     * @param name
+     * @param version
+     * @param shortLabel
+     * @param sampleList
+     * @param softwareList
+     * @param personList
+     * @param sourceFiles
+     * @param provider
+     * @param organizationList
+     * @param references
+     * @param creationDate
+     * @param publicDate
+     * @param protocol
+     * @param spectraDataList
+     */
+    public ExperimentMetaData(ParamGroup params, Comparable id, String name, String version, String shortLabel,
+                              List<Sample> sampleList, List<Software> softwareList, List<Person> personList,
+                              List<SourceFile> sourceFiles, Provider provider, List<Organization> organizationList,
+                              List<Reference> references, Date creationDate, Date publicDate,
+                              ExperimentProtocol protocol,List<SpectraData> spectraDataList) {
+        this(params, id, name,version,shortLabel,sampleList,softwareList,personList,sourceFiles,provider,organizationList,references,creationDate,publicDate,protocol);
+        this.spectraDataList = spectraDataList;
+    }
+
+
+
 
     /**
      * Get Provider. The last software that generate the final file.
@@ -358,6 +395,14 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      */
     public ParamGroup getFileContent() {
         return new ParamGroup(this.getCvParams(), this.getUserParams());
+    }
+
+    public List<SpectraData> getSpectraDataList() {
+        return spectraDataList;
+    }
+
+    public void setSpectraDataList(List<SpectraData> spectraDataList) {
+        this.spectraDataList = spectraDataList;
     }
 }
 

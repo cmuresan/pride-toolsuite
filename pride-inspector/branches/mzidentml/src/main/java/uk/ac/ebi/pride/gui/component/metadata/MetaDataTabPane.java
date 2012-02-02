@@ -54,7 +54,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
     private JPanel sampleProtocolMetadataPanel;
     private JPanel instrumentProcMetadataPanel;
     private PrideInspectorContext context;
-    private IdentificationMetadataPanel identificationMetadataPnael;
+    private IdentificationMetadataPanel identificationMetadataPanel;
 
 
     public MetaDataTabPane(DataAccessController controller, JComponent component) {
@@ -103,7 +103,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
                 createMetaDataPanels(metaData);
 
                 // tool bar
-                createTopPanel();
+                createTopPanel(metaData);
 
                 // add to scroll pane
                 JScrollPane scrollPane = new JScrollPane(metaDataContainer,
@@ -219,7 +219,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
         } else if (INSTRUMENT_SOFTWARE.equals(cmd)) {
             metaDataContainer.add(instrumentProcMetadataPanel, BorderLayout.CENTER);
         } else if (IDENTIFICATION_METADATA.equals(cmd)){
-            metaDataContainer.add(identificationMetadataPnael, BorderLayout.CENTER);
+            metaDataContainer.add(identificationMetadataPanel, BorderLayout.CENTER);
         }
         metaDataContainer.revalidate();
         metaDataContainer.repaint();
@@ -231,13 +231,13 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
         metaDataContainer.setBackground(Color.white);
     }
 
-    private void createTopPanel() {
+    private void createTopPanel(GeneralMetaDataGroup metaDataGroup) {
         metaDataTopPanel = new JPanel(new BorderLayout());
         metaDataTopPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.gray));
 
 
         // create tool bar
-        createToolbar();
+        createToolbar(metaDataGroup);
         metaDataTopPanel.add(metaDataControlBar, BorderLayout.CENTER);
 
         // create help button
@@ -259,7 +259,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
     }
 
 
-    private void createToolbar() {
+    private void createToolbar(GeneralMetaDataGroup metaDataGroup) {
         metaDataControlBar = new JPanel();
         metaDataControlBar.setBackground(Color.white);
         metaDataControlBar.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -276,10 +276,16 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
         JToggleButton insSofButton = new JToggleButton(INSTRUMENT_SOFTWARE);
         insSofButton.setActionCommand(INSTRUMENT_SOFTWARE);
         insSofButton.setPreferredSize(new Dimension(200, 25));
+        if(!metaDataGroup.hasMzGraphMetadata()){
+            insSofButton.setEnabled(false);
+        }
 
         JToggleButton identButton = new JToggleButton(IDENTIFICATION_METADATA);
         identButton.setActionCommand(IDENTIFICATION_METADATA);
         identButton.setPreferredSize(new Dimension(200, 25));
+        if(!metaDataGroup.hasIdentificationMetadata()){
+            identButton.setEnabled(false);
+        }
 
         generalButton.addActionListener(this);
         proSamButton.addActionListener(this);
@@ -303,10 +309,12 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
     private void createMetaDataPanels(GeneralMetaDataGroup metaData) {
         generalMetadataPanel = new GeneralMetadataPanel(metaData);
         sampleProtocolMetadataPanel = new SampleProtocolMetadataPanel(metaData);
-        instrumentProcMetadataPanel = new InstrumentProcessingMetadataPanel(metaData);
-        //identificationMetadataPnael2 = new IdentificationMetadataPanel(metaData);
-        identificationMetadataPnael = new IdentificationMetadataPanel(metaData);
-
+        if(metaData.hasMzGraphMetadata()){
+            instrumentProcMetadataPanel = new InstrumentProcessingMetadataPanel(metaData);
+        }
+        if(metaData.hasIdentificationMetadata()){
+            identificationMetadataPanel = new IdentificationMetadataPanel(metaData);
+        }
         // set default panel
         metaDataContainer.add(generalMetadataPanel, BorderLayout.CENTER);
     }

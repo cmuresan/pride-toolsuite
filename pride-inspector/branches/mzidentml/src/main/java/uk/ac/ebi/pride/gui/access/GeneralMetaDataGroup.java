@@ -62,7 +62,10 @@ public class GeneralMetaDataGroup {
     }
 
     public List<InstrumentConfiguration> getInstrumentConfigurations() {
-        return getMzGraphMetaData().getInstrumentConfigurations();
+        if(hasMzGraphMetadata()){
+            return getMzGraphMetaData().getInstrumentConfigurations();
+        }
+        return null;
     }
 
     public List<Reference> getReferences() {
@@ -87,5 +90,29 @@ public class GeneralMetaDataGroup {
 
     public List<SearchDataBase> getSearchDatabases() {
         return getIdentificationMetaData().getSearchDataBaseList();
+    }
+
+    public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() {
+        return getIdentificationMetaData().getSpectrumIdentificationProtocolList();
+    }
+
+
+    public Protocol getProteinDetectionProtocol() {
+        return this.getIdentificationMetaData().getProteinDetectionProtocol();
+    }
+
+    public boolean hasIdentificationMetadata(){
+        if(getIdentificationMetaData() == null){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean hasMzGraphMetadata(){
+        if(getMzGraphMetaData() == null){
+            return false;
+        }
+        return true;
+
     }
 }

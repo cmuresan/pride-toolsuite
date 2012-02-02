@@ -360,7 +360,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
     @Override
     public List<SpectraData> getSpectraDataFiles() throws DataAccessException {
-        MzGraphMetaData metaData = super.getMzGraphMetaData();
+        ExperimentMetaData metaData = super.getExperimentMetaData();
         if (metaData == null) {
             return MzIdentMLTransformer.transformToSpectraData(unmarshaller.getSpectraData());
         }
@@ -370,11 +370,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     @Override
     public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
         MzGraphMetaData metaData = null;
-        /*MzGraphMetaData metaData = super.getMzGraphMetaData();
-        if (metaData == null) {
-            List<SpectraData> spectraDataList = getSpectraDataFiles();
-            metaData = new MzGraphMetaData(null, null, null, null, null, null, spectraDataList);
-        } */
         return metaData;
     }
 

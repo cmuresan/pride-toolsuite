@@ -122,21 +122,8 @@ public class MzIdentMlControllerImplTest {
     }
 
     @Test
-    public void testGetMzGraphMetaData() throws Exception{
-        MzGraphMetaData mzGraphMetaData = (MzGraphMetaData) mzIdentMlController.getMzGraphMetaData();
-        List<SpectraData> spectraDatas  = mzGraphMetaData.getSpectraDataList();
-
-        assertTrue("The number of Spectra Data Files should be 1", spectraDatas.size() == 1);
-        assertEquals("The name of the Files should be 55merge.mgf", spectraDatas.get(0).getName(), "55merge.mgf");
-        assertEquals("The Format of the File should be Mascot MGF file", spectraDatas.get(0).getFileFormat().getName(),"Mascot MGF file");
-        assertEquals("The Spectrum Id Format should be multiple peak list nativeID format", spectraDatas.get(0).getSpectrumIdFormat().getName(), "multiple peak list nativeID format");
-
-    }
-
-    @Test
     public void testGetIdentificationIDs() throws DataAccessException {
         List<Comparable> identifications = new ArrayList<Comparable>(mzIdentMlController.getIdentificationIds());
-
         assertTrue("The numer of Identification should be 2", identifications.size()==2);
         assertEquals("The id of the first identification should be PDH_psu|NC_LIV_020800_0",identifications.get(0).toString(),"PDH_psu|NC_LIV_020800_0");
    }

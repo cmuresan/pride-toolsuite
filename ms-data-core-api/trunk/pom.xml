@@ -143,7 +143,7 @@
         <dependency>
             <groupId>uk.ac.ebi.pride.util</groupId>
             <artifactId>pride-utilities</artifactId>
-            <version>0.1.12</version>
+            <version>0.1.14</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
@@ -185,6 +185,7 @@
                     <overWriteReleases>true</overWriteReleases>
                     <overWriteSnapshots>true</overWriteSnapshots>
                     <excludeTransitive>false</excludeTransitive>
+                    <artifactItems/>
                 </configuration>
             </plugin>
             <plugin>
@@ -227,17 +228,11 @@
     </repositories>
 
     <distributionManagement>
-        <repository>
-            <id>ebi-repo</id>
-            <name>EBI Repository</name>
-            <url>scp://localhost:2200/homes/maven/public_html/m2repo</url>
-        </repository>
-        <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>ebi-repo-snapshots</id>
-            <name>EBI Snapshots Repository</name>
-            <url>socksify scp://localhost:2200/homes/maven/public_html/m2repo_snapshots</url>
-        </snapshotRepository>
+       <repository>
+          <id>ebi-repo</id>
+                    <name>The EBI internal repository</name>
+                    <url>scp://localhost:2200/homes/maven/public_html/m2repo</url>
+       </repository>
     </distributionManagement>
 
 </project>

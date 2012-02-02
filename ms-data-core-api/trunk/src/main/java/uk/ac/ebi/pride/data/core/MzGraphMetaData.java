@@ -34,12 +34,6 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
     private List<ScanSetting> scanSettings = null;
 
     /**
-     * List of SpectraData Objects used by MZIdentML to refereed the original mass spectra files.
-     * A data set containing spectra data (consisting of one or more spectra).
-     */
-    private List<SpectraData> spectraDataList = null;
-
-    /**
      * Constructor for MzGraphMetaData
      *
      * @param id
@@ -51,7 +45,7 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
     public MzGraphMetaData(Comparable id, String name, List<ScanSetting> scanSettings,
                            List<InstrumentConfiguration> instrumentConfigurations,
                            List<DataProcessing> dataProcessingList) {
-        this(null, id, name, scanSettings, instrumentConfigurations, dataProcessingList, null);
+        this(null, id, name, scanSettings, instrumentConfigurations, dataProcessingList);
     }
 
     /**
@@ -65,17 +59,10 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
     public MzGraphMetaData(ParamGroup params, Comparable id, String name, List<ScanSetting> scanSettings,
                            List<InstrumentConfiguration> instrumentConfigurations,
                            List<DataProcessing> dataProcessingList) {
-        this(params, id, name, scanSettings, instrumentConfigurations, dataProcessingList, null);
-    }
-
-    public MzGraphMetaData(ParamGroup params, Comparable id, String name, List<ScanSetting> scanSettings,
-                           List<InstrumentConfiguration> instrumentConfigurations,
-                           List<DataProcessing> dataProcessingList, List<SpectraData> spectraDataList) {
         super(params, id, name);
         this.scanSettings             = scanSettings;
         this.instrumentConfigurations = instrumentConfigurations;
         this.dataProcessingList       = dataProcessingList;
-        this.spectraDataList          = spectraDataList;
     }
 
     public ParamGroup getFileContent() {
@@ -111,13 +98,6 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
         this.dataProcessingList = dataProcessingList;
     }
 
-    public List<SpectraData> getSpectraDataList() {
-        return spectraDataList;
-    }
-
-    public void setSpectraDataList(List<SpectraData> spectraDataList) {
-        this.spectraDataList = spectraDataList;
-    }
 }
 
 

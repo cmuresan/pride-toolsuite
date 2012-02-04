@@ -98,7 +98,7 @@ public class LeftControlPane extends JPanel {
             {
 
                 //---- summaryLabel ----
-                summaryLabel.setText("Experiment Summary");
+                summaryLabel.setText("Experiment to Summary");
                 summaryLabel.setBorder(new EmptyBorder(3, 0, 0, 0));
 
                 //======== summaryPanel ========

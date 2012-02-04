@@ -437,7 +437,8 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
 
             metaData = new IdentificationMetaData(null, null, spectrumIdentificationProtocolList, proteinDetectionProtocol, searchDataBaseList);
         }
-        return metaData;
+        //return metaData;
+        return null;
     }
 
     @Override

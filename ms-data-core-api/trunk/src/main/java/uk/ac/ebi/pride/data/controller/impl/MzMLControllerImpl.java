@@ -461,6 +461,11 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         return metaData;
     }
 
+    @Override
+    public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
+        return null;
+    }
+
     /**
      * Check a file is mzML file
      *

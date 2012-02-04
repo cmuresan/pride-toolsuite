@@ -68,7 +68,11 @@ public class SearchEngine extends Identifiable {
      * @param searchEngineTypes a list of search engine types
      */
     public void setSearchEngineTypes(List<SearchEngineType> searchEngineTypes) {
-        this.searchEngineTypes.clear();
+        if(this.searchEngineTypes == null){
+            this.searchEngineTypes = new ArrayList<SearchEngineType>();
+        }else{
+            this.searchEngineTypes.clear();
+        }
         this.searchEngineTypes.addAll(searchEngineTypes);
     }
 

@@ -4,6 +4,7 @@ import org.bushe.swing.event.ContainerEventServiceFinder;
 import org.bushe.swing.event.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.jmzidml.model.mzidml.SearchDatabase;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
@@ -136,7 +137,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
             metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
             // search database
-            Object database = identId == null ? "Unknown" : controller.getSearchDatabase(identId);
+            Object database = ((identId == null) || (controller.getSearchDatabase(identId).getName() == null)) ? "Unknown" : controller.getSearchDatabase(identId).getName();
             database = database == null ? "Unknown" : database;
             JLabel engineLabel = new JLabel("<html><b>Search Database</b>: </html>");
             JLabel engineValLabel = new JLabel(database.toString());

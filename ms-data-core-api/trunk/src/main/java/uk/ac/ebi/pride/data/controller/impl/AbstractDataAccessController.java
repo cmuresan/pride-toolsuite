@@ -1007,7 +1007,6 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
             Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
                 stop = peptide.getPeptideEvidenceList().get(0).getEndPosition();
-                //Todo: We need to define finally how to manage the information for pride xml object as PeptideEvidence
             }
         }
         return stop;
@@ -1423,9 +1422,11 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         if (additionals != null) {
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
-            for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
-                    return true;
+            if(cvParams != null){
+                for (CvParam cvParam : cvParams) {
+                    if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -1449,13 +1450,14 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         if (additionals != null) {
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
-            for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isQuantitativeMethodParam(cvParam)) {
-                    methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
+            if(cvParams != null){
+                for (CvParam cvParam : cvParams) {
+                    if (QuantCvTermReference.isQuantitativeMethodParam(cvParam)) {
+                        methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
+                    }
                 }
             }
         }
-
         return methods;
     }
 
@@ -1475,11 +1477,14 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         if (additionals != null) {
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
-            for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isLabelFreeMethod(cvParam)) {
-                    methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
+            if(cvParams != null){
+                for (CvParam cvParam : cvParams) {
+                    if (QuantCvTermReference.isLabelFreeMethod(cvParam)) {
+                        methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
+                    }
                 }
             }
+
         }
 
         return methods;
@@ -1541,9 +1546,11 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         if (additionals != null) {
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
-            for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
-                    methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
+            if(cvParams !=null){
+                for (CvParam cvParam : cvParams) {
+                    if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
+                        methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
+                    }
                 }
             }
         }

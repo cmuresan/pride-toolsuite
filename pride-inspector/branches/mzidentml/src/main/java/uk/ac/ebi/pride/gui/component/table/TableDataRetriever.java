@@ -218,7 +218,7 @@ public class TableDataRetriever {
             List<Number> nums = score.getAllPeptideScores();
             if (nums != null && !nums.isEmpty()) {
                 for (Number num : nums) {
-                    content.add(num == null ? num : num.doubleValue());
+                    if(num!=null) content.add(num.doubleValue());//content.add(num == null ? num : num.doubleValue());
                 }
             }
         }
@@ -233,8 +233,8 @@ public class TableDataRetriever {
         content.add(end == -1 ? null : end);
 
         // Theoritical isoelectric point
-//        content.add(IsoelectricPointUtils.calculate(sequence));
-        content.add(null);
+        content.add(IsoelectricPointUtils.calculate(sequence));
+       // content.add(null);
 
         // Spectrum reference
         content.add(specId);

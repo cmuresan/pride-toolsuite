@@ -65,10 +65,10 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
         }
     }
 
-    private SearchEngine searchEngine;
+    private List<CvTermReference> listScores;
 
-    AbstractPeptideTableModel(SearchEngine se) {
-        this.searchEngine = se;
+    AbstractPeptideTableModel(List<CvTermReference> listScores) {
+        this.listScores = listScores;
         addAdditionalColumns();
     }
 
@@ -82,14 +82,14 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
         TableHeader[] headers = TableHeader.values();
         for (TableHeader header : headers) {
             columnNames.put(header.getHeader(), header.getToolTip());
-            if (searchEngine != null && TableHeader.NUMBER_OF_FRAGMENT_IONS_COLUMN.getHeader().equals(header.getHeader())) {
-                List<SearchEngineType> types = searchEngine.getSearchEngineTypes();
-                for (SearchEngineType type : types) {
-                    List<CvTermReference> scoreCvTerms = type.getSearchEngineScores();
-                    for (CvTermReference scoreCvTerm : scoreCvTerms) {
-                        String name = scoreCvTerm.getName();
-                        columnNames.put(name, name);
-                    }
+            if (listScores != null && TableHeader.NUMBER_OF_FRAGMENT_IONS_COLUMN.getHeader().equals(header.getHeader())) {
+                //List<SearchEngineType> types = searchEngine.getSearchEngineTypes();
+                for (CvTermReference scoreCvTerm : listScores) {
+                    //List<CvTermReference> scoreCvTerms = type.getSearchEngineScores();
+                    ///for (CvTermReference scoreCvTerm : scoreCvTerms) {
+                    String name = scoreCvTerm.getName();
+                    columnNames.put(name, name);
+                    //}
                 }
             }
         }

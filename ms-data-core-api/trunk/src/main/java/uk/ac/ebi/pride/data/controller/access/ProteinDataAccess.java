@@ -7,8 +7,10 @@ import uk.ac.ebi.pride.data.core.DBSequence;
 import uk.ac.ebi.pride.data.core.Identification;
 import uk.ac.ebi.pride.data.core.SearchDataBase;
 import uk.ac.ebi.pride.data.core.SearchEngine;
+import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.Collection;
+import java.util.List;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -150,6 +152,9 @@ public interface ProteinDataAccess {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception.
      */
     public SearchEngine getSearchEngine() throws DataAccessException;
+
+
+    public List<CvTermReference> getListProteinCvTermReferenceScores() throws  DataAccessException;
 
     /**
      * Get the sequence of the Identified Protein

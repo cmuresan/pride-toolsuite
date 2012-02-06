@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.core.SearchEngine;
+import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +17,8 @@ import java.util.List;
 public class PeptideTableModel extends AbstractPeptideTableModel {
 
 
-    public PeptideTableModel(SearchEngine se) {
-        super(se);
+    public PeptideTableModel(List<CvTermReference> listScores) {
+        super(listScores);
     }
 
     @Override

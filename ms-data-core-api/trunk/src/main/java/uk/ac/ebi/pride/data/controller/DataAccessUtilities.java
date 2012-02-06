@@ -393,7 +393,7 @@ public class DataAccessUtilities {
                         score.addPeptideScore(type, scoreCvTerm, null);
                     }
                 } else {
-                    score.addPeptideScore(type, scoreCvTerm, null);
+                  //  score.addPeptideScore(type, scoreCvTerm, null);
                 }
             }
         }
@@ -424,6 +424,30 @@ public class DataAccessUtilities {
 
         return types;
     }
+
+
+
+    public static Score getPeptideScore(ParamGroup params){
+        Score score = null;
+        if(params!=null){
+            Map<SearchEngineType, Map<CvTermReference, Number>> scoresMap;
+            scoresMap = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
+            List<SearchEngineType> searchEngineTypes = DataAccessUtilities.getSearchEngineTypes(params);
+            if(searchEngineTypes != null){
+                score = new Score();
+                for (SearchEngineType searchEngineType: searchEngineTypes){
+                    for (CvParam term: params.getCvParams()){
+                        CvTermReference reference = CvTermReference.getCvRefByAccession(term.getAccession());
+                        if(reference != null){
+                            score.addPeptideScore(searchEngineType,reference,new Double(term.getValue()));
+                        }
+                    }
+                }
+            }
+        }
+        return score;
+    }
+
 
 
     /**

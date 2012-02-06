@@ -10,6 +10,7 @@ import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.gui.prop.PropertyChangeHelper;
+import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.beans.PropertyChangeEvent;
 import java.util.*;
@@ -768,6 +769,37 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         return searchEngine;
     }
 
+    @Override
+    public List<CvTermReference> getListProteinCvTermReferenceScores() throws DataAccessException {
+        Collection<Comparable> identIds = this.getIdentificationIds();
+        if (identIds.size() > 0) {
+            Identification ident = getIdentificationById(CollectionUtils.getElement(identIds, 0));
+            if(ident != null){
+                Score score = DataAccessUtilities.getPeptideScore(ident);
+                return score.getCvTermReferenceWithValues();
+            }
+        }
+        return null;
+
+    }
+
+    @Override
+    public List<CvTermReference> getListPeptideCvTermReferenceScores() throws DataAccessException {
+        Collection<Comparable> identIds = this.getIdentificationIds();
+        if (identIds.size() > 0) {
+            Identification ident = getIdentificationById(CollectionUtils.getElement(identIds, 0));
+            if(ident != null){
+                List<Peptide> peptides = ident.getPeptides();
+                Peptide peptide = peptides.get(0);
+                Score score = DataAccessUtilities.getPeptideScore(peptide.getSpectrumIdentification());
+                return score.getCvTermReferenceWithValues();
+            }
+        }
+        return null;
+
+
+    }
+
     /**
      * Get peptide ids using identification id.
      *
@@ -1158,9 +1190,9 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         Identification ident = getIdentificationById(identId);
         if (ident != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
-            if (peptide != null) {
-                SearchEngine se = this.getSearchEngine();
-                score = DataAccessUtilities.getPeptideScore(peptide.getSpectrumIdentification(), se.getSearchEngineTypes());
+            if ((peptide != null) || (peptide.getSpectrumIdentification().getScore() == null)) {
+                score = DataAccessUtilities.getPeptideScore(peptide.getSpectrumIdentification());
+                peptide.getSpectrumIdentification().setScore(score);
             }
         }
         return score;

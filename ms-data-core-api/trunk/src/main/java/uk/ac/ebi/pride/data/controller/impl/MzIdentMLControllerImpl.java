@@ -15,6 +15,7 @@ import uk.ac.ebi.pride.data.controller.cache.impl.MzIdentMLCacheBuilder;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
+import uk.ac.ebi.pride.term.CvTermReference;
 
 import javax.xml.bind.JAXBException;
 import java.io.BufferedReader;
@@ -372,44 +373,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         MzGraphMetaData metaData = null;
         return metaData;
     }
-
-    /**
-     * Get spectrum using a spectrum id, gives the option to choose whether to use cache.
-     * This implementation provides a way of by passing the cache.
-     *
-     * @param id       spectrum id
-     * @param useCache true means to use cache
-     * @return Spectrum spectrum object
-     * @throws DataAccessException data access exception
-     */
-    /*@Override
-    Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
-        Spectrum spectrum = super.getSpectrumById(id, useCache);
-        if (spectrum == null && id != null) {
-            logger.debug("Get new spectrum from file: {}", id);
-            try {
-                spectrum = PrideXmlTransformer.transformSpectrum(reader.getSpectrumById(id.toString()));
-                if (useCache && spectrum != null) {
-                    cache.store(CacheCategory.SPECTRUM, id, spectrum);
-                }
-            } catch (Exception ex) {
-                throw new DataAccessException("Failed to retrieve spectrum: " + id, ex);
-            }
-        }
-        return spectrum;
-    }*/
-
-    /**
-     * Check whether the spectrum has been identified.
-     *
-     * @param specId spectrum id
-     * @return boolean     true means identified
-     * @throws DataAccessException data access exception
-     */
-    /*@Override
-    public boolean isIdentifiedSpectrum(Comparable specId) throws DataAccessException {
-        return reader.isIdentifiedSpectrum(specId.toString());
-    } */
 
     /**
      * Get identification using a identification id, gives the option to choose whether to use cache.

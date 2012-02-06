@@ -792,8 +792,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
         if (paramGroup != null) {
             // get peptide score
-            SearchEngine se = this.getSearchEngine();
-            score = DataAccessUtilities.getPeptideScore(paramGroup, se.getSearchEngineTypes());
+            score = DataAccessUtilities.getPeptideScore(paramGroup);
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
             score = super.getPeptideScore(identId, peptideId);
         }

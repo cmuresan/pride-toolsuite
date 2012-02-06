@@ -1213,9 +1213,14 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
                 PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, rs.getInt("pep_start"), rs.getInt("pep_end"), false, peptideSequence, null);
                 peptideEvidences.add(peptideEvidence);
+
                 int charge = DataAccessUtilities.getPrecursorCharge(spectrum);
                 double mz = DataAccessUtilities.getPrecursorMz(spectrum);
-                SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, charge, mz, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
+
+                //get Scores
+                Score score = DataAccessUtilities.getPeptideScore(params);
+
+                SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, charge, mz, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, score, spectrum, null);
                 peptides.add(new Peptide(peptideEvidence, spectrumIdentification));
                 //Todo: We need to think if is possible to find PeptideEvidences in PRIDE Identifications.
             }

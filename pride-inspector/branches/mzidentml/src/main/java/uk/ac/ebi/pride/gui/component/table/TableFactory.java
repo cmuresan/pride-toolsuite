@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.gui.component.table.renderer.*;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.url.*;
 import uk.ac.ebi.pride.gui.utils.Constants;
+import uk.ac.ebi.pride.term.CvTermReference;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -105,13 +106,13 @@ public class TableFactory {
     /**
      * Build a table to display peptide related details.
      *
-     * @param se         search engine
+     * @param listScores  List of Reference Scores
      * @param controller data access controller
      * @return JTable   peptide table
      */
-    public static JTable createPeptideTable(SearchEngine se, DataAccessController controller) {
+    public static JTable createPeptideTable(List<CvTermReference> listScores, DataAccessController controller) {
 
-        PeptideTableModel peptideTableModel = new PeptideTableModel(se);
+        PeptideTableModel peptideTableModel = new PeptideTableModel(listScores);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable table = new DefaultPrideTable(peptideTableModel, columnModel);
 
@@ -478,7 +479,7 @@ public class TableFactory {
      * @param se search engine
      * @return JTable  peptide table
      */
-    public static JTable createQuantPeptideTable(DataAccessController controller, SearchEngine se) {
+    public static JTable createQuantPeptideTable(DataAccessController controller, List<CvTermReference> se) {
         QuantPeptideTableModel tableModel = new QuantPeptideTableModel(se);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable quantPeptideTable = new DefaultPrideTable(tableModel, columnModel);

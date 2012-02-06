@@ -278,7 +278,7 @@ public class MzIdentMLTransformer {
         if (oldIdent != null) {
             List<Peptide> peptides= transformToPeptideIdentifications(oldIdent.getPeptideHypothesis(), oldFragmentationTable);
             ParamGroup paramGroup = new ParamGroup(transformToCvParam(oldIdent.getCvParam()),transformToUserParam(oldIdent.getUserParam()));
-            Score score = transformScore(paramGroup);
+            Score score = DataAccessUtilities.getPeptideScore(paramGroup);
             ident = new Identification(paramGroup, oldIdent.getId(), oldIdent.getName(), transformToDBSequence(oldIdent.getDBSequence()), oldIdent.isPassThreshold(), peptides, score, -1, -1,null);
             //Todo: threshold and sequence coverage
         }
@@ -346,19 +346,14 @@ public class MzIdentMLTransformer {
             List<uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidenceRef> peptideEvidence = oldSpectrumIdentification.getPeptideEvidenceRef();
             uk.ac.ebi.jmzidml.model.mzidml.Fragmentation fragmentation = oldSpectrumIdentification.getFragmentation();
             ParamGroup scoreParamGroup = new ParamGroup(transformToCvParam(oldSpectrumIdentification.getCvParam()),transformToUserParam(oldSpectrumIdentification.getUserParam()));
-            peptide = new SpectrumIdentification(id, name,chargeState, massToCharge, calcMassToCharge, pI,
+            Score score = DataAccessUtilities.getPeptideScore(scoreParamGroup);
+            peptide = new SpectrumIdentification(scoreParamGroup, id, name,chargeState, massToCharge, calcMassToCharge, pI,
                                   transformToPeptide(peptideSeq), rank, passThrehold, transformToMassTable(massTable),
                                   transformToSample(sample), transformToPeptideEvidence(peptideEvidence),
-                                  transformToFragmentationIon(fragmentation, oldFragmentationTable), transformScore(scoreParamGroup), null, null);
+                                  transformToFragmentationIon(fragmentation, oldFragmentationTable), score, null, null);
             //Todo: Peptide SpectraData
         }
         return peptide;
-    }
-
-    private static Score transformScore(ParamGroup paramGroup) {
-        List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(paramGroup);
-        Score score = DataAccessUtilities.getPeptideScore(paramGroup,types);
-        return score;
     }
 
     private static List<FragmentIon> transformToFragmentationIon(uk.ac.ebi.jmzidml.model.mzidml.Fragmentation fragmentation, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {

@@ -13,7 +13,7 @@ import java.util.*;
  * Score stores a number of peptide scores for a list of search engines.
  * Please Note that even if peptide scores are null if they are not provided.
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: Dec 2, 2010
  * Time: 9:02:05 AM
  */
@@ -56,9 +56,7 @@ public class Score {
     public Number getPeptideScore(SearchEngineType se, CvTermReference ref) {
         Map<CvTermReference, Number> scoreMap = scores.get(se);
 
-        return (scoreMap == null)
-               ? null
-               : scoreMap.get(ref);
+        return (scoreMap == null) ? null  : scoreMap.get(ref);
     }
 
     /**
@@ -161,6 +159,18 @@ public class Score {
     public SearchEngineType getDefaultSearchEngine(){
         Object[] searchengines = scores.keySet().toArray();
         return (SearchEngineType) searchengines[0];
+    }
+
+    public List<CvTermReference> getCvTermReferenceWithValues(){
+        List<CvTermReference> listReference = new ArrayList<CvTermReference>();
+        for (Map<CvTermReference, Number> numberMap : scores.values()) {
+            for (CvTermReference cvTermReference: numberMap.keySet()){
+                if(numberMap.get(cvTermReference) !=null){
+                    listReference.add(cvTermReference);
+                }
+            }
+        }
+        return listReference;
     }
 }
 

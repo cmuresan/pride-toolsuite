@@ -1218,7 +1218,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 double mz = DataAccessUtilities.getPrecursorMz(spectrum);
 
                 //get Scores
-                Score score = DataAccessUtilities.getPeptideScore(params);
+                Score score = DataAccessUtilities.getScore(params);
 
                 SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, charge, mz, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, score, spectrum, null);
                 peptides.add(new Peptide(peptideEvidence, spectrumIdentification));
@@ -1291,22 +1291,34 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     logger.debug("Getting a identification from database: {}", accession);
                     Double seqConverage = rs.getDouble("sequence_coverage");
                     double seqConverageVal = seqConverage == 0 ? -1 : seqConverage;
+
                     double seqScore = rs.getDouble("score");
-                    double seqScoreVal = seqScore == 0 ? -1 : seqScore;
-                    params = new ParamGroup(getCvParams(connection, "pride_identification_param", rs.getInt("identification_id")), getUserParams(connection, "pride_identification_param", rs.getInt("identification_id")));
-                    peptides = getPeptideIdentification(connection, rs.getInt("identification_id"), rs.getInt("pi.experiment_id"));
-                    spectrum = getSpectrumByRef(connection, rs.getString("spectrum_ref"));
-                    String className = rs.getString("classname");
-                    DBSequence dbSequence = new DBSequence(null, null, null, -1, accession, new SearchDataBase(rs.getString("search_database"), rs.getString("database_version")), null, rs.getString("accession_version"), rs.getString("splice_isoform"));
                     SearchEngineType searchEngine = SearchEngineType.getByName(rs.getString("search_engine"));
                     Score score = null;
-                    if(searchEngine != null){
+                    double seqScoreVal = seqScore == 0 ? -1 : seqScore;
+
+                    params = new ParamGroup(getCvParams(connection, "pride_identification_param", rs.getInt("identification_id")), getUserParams(connection, "pride_identification_param", rs.getInt("identification_id")));
+
+                    if((seqScore != 0) && (searchEngine !=null)){
+                        CvTermReference cvTerm = SearchEngineType.getDefaultCvTerm(rs.getString("search_engine"));
+                        if(cvTerm != null){
+                            CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),(new Double(seqScore)).toString(),null,null,null);
+                            params.addCvParam(cvParam);
+                        }
                         Map<SearchEngineType,Map<CvTermReference,Number>> scores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
                         Map<CvTermReference,Number> scoreValues = new HashMap<CvTermReference, Number>();
                         scoreValues.put(SearchEngineType.getDefaultCvTerm(rs.getString("search_engine")), new Double(seqScoreVal));
                         scores.put(searchEngine,scoreValues);
                         score = new Score(scores);
                     }
+
+                    peptides = getPeptideIdentification(connection, rs.getInt("identification_id"), rs.getInt("pi.experiment_id"));
+                    spectrum = getSpectrumByRef(connection, rs.getString("spectrum_ref"));
+                    String className = rs.getString("classname");
+                    DBSequence dbSequence = new DBSequence(null, null, null, -1, accession, new SearchDataBase(rs.getString("search_database"), rs.getString("database_version")), null, rs.getString("accession_version"), rs.getString("splice_isoform"));
+
+
+
                     if ("uk.ac.ebi.pride.rdbms.ojb.model.core.TwoDimensionalIdentificationBean".equals(className)) {
                         gel = getPeptideGel(connection, rs.getInt("gel_id"), rs.getDouble("x_coordinate"), rs.getDouble("y_coordinate"), rs.getDouble("molecular_weight"), rs.getDouble("pi"));
                         identification = new Identification(params, Integer.toString(rs.getInt("identification_id")), null, dbSequence, false, peptides, score, rs.getDouble("threshold"), seqConverageVal, gel);

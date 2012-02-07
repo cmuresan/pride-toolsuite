@@ -17,8 +17,8 @@ import java.util.List;
 public class PeptideTableModel extends AbstractPeptideTableModel {
 
 
-    public PeptideTableModel(List<CvTermReference> listScores) {
-        super(listScores);
+    public PeptideTableModel(List<CvTermReference> listPeptideScores) {
+        super(listPeptideScores);
     }
 
     @Override

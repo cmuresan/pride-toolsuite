@@ -3,10 +3,7 @@ package uk.ac.ebi.pride.data.controller.access;
 //~--- non-JDK imports --------------------------------------------------------
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.DBSequence;
-import uk.ac.ebi.pride.data.core.Identification;
-import uk.ac.ebi.pride.data.core.SearchDataBase;
-import uk.ac.ebi.pride.data.core.SearchEngine;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.Collection;
@@ -126,6 +123,9 @@ public interface ProteinDataAccess {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception.
      */
     public double getIdentificationScore(Comparable identId) throws DataAccessException;
+
+
+    public Score getIdentificationScores(Comparable identId) throws DataAccessException;
 
     /**
      * Get the threshold of a identification.

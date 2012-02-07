@@ -775,7 +775,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         if (identIds.size() > 0) {
             Identification ident = getIdentificationById(CollectionUtils.getElement(identIds, 0));
             if(ident != null){
-                Score score = DataAccessUtilities.getPeptideScore(ident);
+                Score score = DataAccessUtilities.getScore(ident);
                 return score.getCvTermReferenceWithValues();
             }
         }
@@ -791,13 +791,22 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
             if(ident != null){
                 List<Peptide> peptides = ident.getPeptides();
                 Peptide peptide = peptides.get(0);
-                Score score = DataAccessUtilities.getPeptideScore(peptide.getSpectrumIdentification());
+                Score score = DataAccessUtilities.getScore(peptide.getSpectrumIdentification());
                 return score.getCvTermReferenceWithValues();
             }
         }
         return null;
+    }
 
-
+    @Override
+    public Score getIdentificationScores(Comparable identId) throws DataAccessException {
+        Identification ident = getIdentificationById(identId);
+        Score score = null;
+        if(ident != null){
+            score = DataAccessUtilities.getScore(ident);
+            ident.setScore(score);
+        }
+        return score;
     }
 
     /**
@@ -1191,7 +1200,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         if (ident != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
             if ((peptide != null) || (peptide.getSpectrumIdentification().getScore() == null)) {
-                score = DataAccessUtilities.getPeptideScore(peptide.getSpectrumIdentification());
+                score = DataAccessUtilities.getScore(peptide.getSpectrumIdentification());
                 peptide.getSpectrumIdentification().setScore(score);
             }
         }

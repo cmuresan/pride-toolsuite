@@ -21,6 +21,7 @@ import uk.ac.ebi.pride.gui.url.HttpUtilities;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.EnsemblSpeciesMapper;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
 import javax.help.CSH;
@@ -33,6 +34,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.List;
 
 import static uk.ac.ebi.pride.gui.utils.Constants.DOT;
 import static uk.ac.ebi.pride.gui.utils.Constants.TAB_SEP_FILE;
@@ -53,11 +56,13 @@ public class QuantExportDialog extends JDialog {
     private PrideInspectorContext appContext;
     private JTable table;
     private DataAccessController controller;
+    private List<CvTermReference> listProteinScores;
 
-    public QuantExportDialog(Frame owner, JTable table, DataAccessController controller) {
+    public QuantExportDialog(Frame owner, JTable table, DataAccessController controller,List<CvTermReference> listProteinScores) {
         super(owner);
         this.table = table;
         this.controller = controller;
+        this.listProteinScores = listProteinScores;
         setupMainPane();
         initComponents();
         populateComponents();
@@ -75,7 +80,7 @@ public class QuantExportDialog extends JDialog {
         // Generated using JFormDesigner non-commercial license
         panel1 = new JPanel();
         scrollPane2 = new JScrollPane();
-        proteinTable = createProteinTable();
+        proteinTable = createProteinTable(listProteinScores);
         ensemblButton = new JButton();
         exportButton = new JButton();
         label5 = new JLabel();
@@ -290,8 +295,8 @@ public class QuantExportDialog extends JDialog {
      *
      * @return JTable  a new jtable
      */
-    private JTable createProteinTable() {
-        QuantProteinTableModel tableModel = new QuantProteinTableModel();
+    private JTable createProteinTable(List<CvTermReference> listProteinScores) {
+        QuantProteinTableModel tableModel = new QuantProteinTableModel(listProteinScores);
         tableModel.removeAllColumns();
 
         // get the existing quant protein table model

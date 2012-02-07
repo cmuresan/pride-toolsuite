@@ -52,8 +52,9 @@ public class TableFactory {
      * @param controller data access controller
      * @return JTable   identification table
      */
-    public static JTable createIdentificationTable(DataAccessController controller) {
-        ProteinTableModel identTableModel = new ProteinTableModel();
+    public static JTable createIdentificationTable(List<CvTermReference> listProteinScores, DataAccessController controller) {
+
+        ProteinTableModel identTableModel = new ProteinTableModel(listProteinScores);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable table = new DefaultPrideTable(identTableModel, columnModel);
 
@@ -106,13 +107,13 @@ public class TableFactory {
     /**
      * Build a table to display peptide related details.
      *
-     * @param listScores  List of Reference Scores
+     * @param listPeptideScores  List of Reference Scores
      * @param controller data access controller
      * @return JTable   peptide table
      */
-    public static JTable createPeptideTable(List<CvTermReference> listScores, DataAccessController controller) {
+    public static JTable createPeptideTable(List<CvTermReference> listPeptideScores, DataAccessController controller) {
 
-        PeptideTableModel peptideTableModel = new PeptideTableModel(listScores);
+        PeptideTableModel peptideTableModel = new PeptideTableModel(listPeptideScores);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable table = new DefaultPrideTable(peptideTableModel, columnModel);
 
@@ -385,6 +386,7 @@ public class TableFactory {
      * @return JTable  quant protein table
      */
     public static JTable createQuantProteinTable(DataAccessController controller, TableModel tableModel) {
+
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable quantProteinTable = new DefaultPrideTable(tableModel, columnModel);
         quantProteinTable.setAutoCreateColumnsFromModel(false);
@@ -468,19 +470,20 @@ public class TableFactory {
      * @param controller data access controller
      * @return JTable   protein quantitative table
      */
-    public static JTable createQuantProteinTable(DataAccessController controller) {
-        QuantProteinTableModel tableModel = new QuantProteinTableModel();
+    public static JTable createQuantProteinTable(DataAccessController controller,List<CvTermReference> listProteinScores) {
+        QuantProteinTableModel tableModel = new QuantProteinTableModel(listProteinScores);
         return createQuantProteinTable(controller, tableModel);
     }
 
     /**
      * Create a table for peptide quantitative data
      *
-     * @param se search engine
+     * @param listPeptideScores List of CvTerm
      * @return JTable  peptide table
      */
-    public static JTable createQuantPeptideTable(DataAccessController controller, List<CvTermReference> se) {
-        QuantPeptideTableModel tableModel = new QuantPeptideTableModel(se);
+    public static JTable createQuantPeptideTable(DataAccessController controller, List<CvTermReference> listPeptideScores) {
+
+        QuantPeptideTableModel tableModel = new QuantPeptideTableModel(listPeptideScores);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable quantPeptideTable = new DefaultPrideTable(tableModel, columnModel);
         quantPeptideTable.setAutoCreateColumnsFromModel(false);

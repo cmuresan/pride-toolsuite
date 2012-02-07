@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
+import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,12 @@ import java.util.List;
  * Time: 15:58:04
  */
 public class ProteinTableModel extends AbstractProteinTableModel {
+
+    public ProteinTableModel(List<CvTermReference> listProteinScores) {
+        super(listProteinScores);
+    }
+
+
 
     @Override
     public void initializeTableModel() {

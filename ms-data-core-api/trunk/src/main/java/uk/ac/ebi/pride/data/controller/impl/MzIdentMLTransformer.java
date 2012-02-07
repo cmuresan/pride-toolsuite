@@ -22,7 +22,6 @@ import uk.ac.ebi.pride.data.core.SpectraData;
 import uk.ac.ebi.pride.data.core.SpectrumIdentificationProtocol;
 import uk.ac.ebi.pride.data.core.SubstitutionModification;
 import uk.ac.ebi.pride.data.core.UserParam;
-import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.*;
@@ -278,7 +277,7 @@ public class MzIdentMLTransformer {
         if (oldIdent != null) {
             List<Peptide> peptides= transformToPeptideIdentifications(oldIdent.getPeptideHypothesis(), oldFragmentationTable);
             ParamGroup paramGroup = new ParamGroup(transformToCvParam(oldIdent.getCvParam()),transformToUserParam(oldIdent.getUserParam()));
-            Score score = DataAccessUtilities.getPeptideScore(paramGroup);
+            Score score = DataAccessUtilities.getScore(paramGroup);
             ident = new Identification(paramGroup, oldIdent.getId(), oldIdent.getName(), transformToDBSequence(oldIdent.getDBSequence()), oldIdent.isPassThreshold(), peptides, score, -1, -1,null);
             //Todo: threshold and sequence coverage
         }
@@ -346,7 +345,7 @@ public class MzIdentMLTransformer {
             List<uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidenceRef> peptideEvidence = oldSpectrumIdentification.getPeptideEvidenceRef();
             uk.ac.ebi.jmzidml.model.mzidml.Fragmentation fragmentation = oldSpectrumIdentification.getFragmentation();
             ParamGroup scoreParamGroup = new ParamGroup(transformToCvParam(oldSpectrumIdentification.getCvParam()),transformToUserParam(oldSpectrumIdentification.getUserParam()));
-            Score score = DataAccessUtilities.getPeptideScore(scoreParamGroup);
+            Score score = DataAccessUtilities.getScore(scoreParamGroup);
             peptide = new SpectrumIdentification(scoreParamGroup, id, name,chargeState, massToCharge, calcMassToCharge, pI,
                                   transformToPeptide(peptideSeq), rank, passThrehold, transformToMassTable(massTable),
                                   transformToSample(sample), transformToPeptideEvidence(peptideEvidence),

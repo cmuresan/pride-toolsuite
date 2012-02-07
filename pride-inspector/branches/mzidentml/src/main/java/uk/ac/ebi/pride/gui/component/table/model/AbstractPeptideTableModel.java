@@ -67,8 +67,8 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
 
     private List<CvTermReference> listScores;
 
-    AbstractPeptideTableModel(List<CvTermReference> listScores) {
-        this.listScores = listScores;
+    AbstractPeptideTableModel(List<CvTermReference> listPeptideScores) {
+        this.listScores = listPeptideScores;
         addAdditionalColumns();
     }
 

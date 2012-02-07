@@ -69,7 +69,13 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
     @Override
     protected void addComponents() {
         // create identification table
-        identTable = TableFactory.createIdentificationTable(controller);
+        try {
+            identTable = TableFactory.createIdentificationTable(controller.getListProteinCvTermReferenceScores(), controller);
+        } catch (DataAccessException e) {
+            String msg = "Failed to retrieve search engine details";
+            logger.error(msg, e);
+            appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
+        }
 
         // createAttributedSequence header panel
         JPanel headerPanel = buildHeaderPane();

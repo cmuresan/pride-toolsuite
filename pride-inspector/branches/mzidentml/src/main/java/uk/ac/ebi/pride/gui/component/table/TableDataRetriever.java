@@ -215,7 +215,7 @@ public class TableDataRetriever {
         // peptide scores
         Score score = controller.getPeptideScore(identId, peptideId);
         if (score != null) {
-            List<Number> nums = score.getAllPeptideScores();
+            List<Number> nums = score.getAllScoreValues();
             if (nums != null && !nums.isEmpty()) {
                 for (Number num : nums) {
                     if(num!=null) content.add(num.doubleValue());//content.add(num == null ? num : num.doubleValue());
@@ -304,8 +304,8 @@ public class TableDataRetriever {
         }
 
         // Score
-        double score = controller.getIdentificationScore(identId);
-        content.add(score == -1 ? null : score);
+      //  double score = controller.getIdentificationScore(identId);
+      //  content.add(score == -1 ? null : score);
 
         // Threshold
         double threshold = controller.getIdentificationThreshold(identId);
@@ -325,6 +325,18 @@ public class TableDataRetriever {
 
         // additional details is always null
         content.add(identId);
+
+        // peptide scores
+        Score scores = controller.getIdentificationScores(identId);
+        if (scores != null) {
+            List<Number> nums = scores.getAllScoreValues();
+            if (nums != null && !nums.isEmpty()) {
+                for (Number num : nums) {
+                    if(num!=null) content.add(num.doubleValue());//content.add(num == null ? num : num.doubleValue());
+                }
+            }
+        }
+
 
         return content;
     }

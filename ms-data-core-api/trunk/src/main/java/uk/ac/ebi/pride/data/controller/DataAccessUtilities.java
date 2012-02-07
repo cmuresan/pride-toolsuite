@@ -427,7 +427,7 @@ public class DataAccessUtilities {
 
 
 
-    public static Score getPeptideScore(ParamGroup params){
+    public static Score getScore(ParamGroup params){
         Score score = null;
         if(params!=null){
             Map<SearchEngineType, Map<CvTermReference, Number>> scoresMap;

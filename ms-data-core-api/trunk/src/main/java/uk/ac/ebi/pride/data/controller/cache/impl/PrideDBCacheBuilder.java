@@ -3,14 +3,13 @@ package uk.ac.ebi.pride.data.controller.cache.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
+import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.impl.PrideDBAccessControllerImpl;
-import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.Modification;
-import uk.ac.ebi.pride.data.core.ParamGroup;
-import uk.ac.ebi.pride.data.core.UserParam;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.db.DBUtilities;
 import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
+import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
@@ -172,11 +171,11 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         // protein accession map
         Map<Comparable, String> protAccs = new HashMap<Comparable, String>();
         // protein accession version map
-        Map<Comparable, String> protAccVersions = new HashMap<Comparable, String>();
+       Map<Comparable, String> protAccVersions = new HashMap<Comparable, String>();
         // database map
-        Map<Comparable, String> databases = new HashMap<Comparable, String>();
+        Map<Comparable, SearchDataBase> databases = new HashMap<Comparable, SearchDataBase>();
         // scores map
-        Map<Comparable, Double> scores = new HashMap<Comparable, Double>();
+        Map<Comparable, Score> scores = new HashMap<Comparable, Score>();
         // thresholds map
         Map<Comparable, Double> threholds = new HashMap<Comparable, Double>();
 
@@ -187,7 +186,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         try {
             connection = PooledConnectionFactory.getConnection();
             // get mz data array id
-            st = connection.prepareStatement("select identification_id, accession_number, accession_version, search_database, score, threshold from pride_identification " +
+            st = connection.prepareStatement("select identification_id, accession_number, accession_version, search_database, database_version, score, threshold, search_engine from pride_identification " +
                     "join pride_experiment using(experiment_id) where accession=?");
             st.setString(1, expAcc.toString());
             rs = st.executeQuery();
@@ -196,13 +195,25 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
                 String acc = rs.getString("accession_number");
                 String accVersion = rs.getString("accession_version");
                 String database = rs.getString("search_database");
+                String searchEngine = rs.getString("search_engine");
                 Double sc = rs.getDouble("score");
                 Double thd = rs.getDouble("threshold");
+                String databaseV = rs.getString("database_version");
                 identIds.add(id);
                 protAccs.put(id, acc);
                 protAccVersions.put(id, accVersion);
-                databases.put(id, database);
-                scores.put(id, sc);
+                SearchEngineType searchEngineType = SearchEngineType.getByName(searchEngine);
+                databases.put(id, new SearchDataBase(database,databaseV));
+                Score score = null;
+                if(sc != 0 && searchEngineType != null){
+                    CvTermReference cvTerm = SearchEngineType.getDefaultCvTerm(searchEngine);
+                    Map<SearchEngineType,Map<CvTermReference,Number>> mapScores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
+                    Map<CvTermReference,Number> scoreValues = new HashMap<CvTermReference, Number>();
+                    scoreValues.put(SearchEngineType.getDefaultCvTerm(searchEngine), sc);
+                    mapScores.put(searchEngineType, scoreValues);
+                    score = new Score(mapScores);
+                }
+                scores.put(id, score);
                 threholds.put(id, thd);
             }
         } catch (SQLException e) {
@@ -379,6 +390,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
      * @throws java.sql.SQLException an error while querying database.
      */
     private void populatePTMInfo(Comparable expAcc) throws SQLException {
+
         logger.info("Initializing ptm locations");
         // clear cache
         cache.clear(CacheCategory.PEPTIDE_TO_MODIFICATION);
@@ -418,18 +430,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
                 accToModId.put(modAcc, modId);
             }
             rs.close();
-        } catch (SQLException e) {
-            logger.error("Querying PTM locations", e);
-            throw e;
-        } finally {
-            DBUtilities.releaseResources(connection, st, rs);
-        }
-
-        // query detla mass table
-        Connection innerConnection = null;
-        PreparedStatement innerStmt = null;
-        ResultSet innerRs = null;
-        for (Map.Entry<String, Comparable> entry : accToModId.entrySet()) {
+            for (Map.Entry<String, Comparable> entry : accToModId.entrySet()) {
 
             String modAcc = entry.getKey();
             Comparable modId = entry.getValue();
@@ -438,9 +439,50 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             List<Double> monoMasses = new ArrayList<Double>();
             List<Double> avgMasses = new ArrayList<Double>();
             logger.debug("Getting mass delta value");
-            try {
-                connection = PooledConnectionFactory.getConnection();
-                st = connection.prepareStatement("SELECT ms.modification_id, ms.mass_delta_value, ms.classname, pm.mod_database, pm.mod_database_version FROM pride_mass_delta ms " +
+
+            st = connection.prepareStatement("SELECT mass_delta_value FROM pride_mass_delta WHERE modification_id = ? AND classname = ?");
+            st.setInt(1, Integer.parseInt(modId.toString()));
+            st.setString(2, "uk.ac.ebi.pride.rdbms.ojb.model.core.MonoMassDeltaBean");
+            rs = st.executeQuery();
+            while (rs.next()) {
+                monoMasses.add(new Double(rs.getDouble("mass_delta_value")));
+            }
+            st = connection.prepareStatement("SELECT mass_delta_value FROM pride_mass_delta WHERE modification_id = ? AND classname = ?");
+            st.setInt(1, Integer.parseInt(modId.toString()));
+            st.setString(2, "uk.ac.ebi.pride.rdbms.ojb.model.core.AverageMassDeltaBean");
+            rs = st.executeQuery();
+            while (rs.next()) {
+               avgMasses.add(new Double(rs.getDouble("mass_delta_value")));
+            }
+            List<CvParam> cvParams = new ArrayList<CvParam>();
+            st = connection.prepareStatement("SELECT accession, name, value, cv_label FROM pride_modification_param " + " WHERE parent_element_fk = ? AND cv_label is not null");
+            st.setInt(1, Integer.parseInt(modId.toString()));
+            rs = st.executeQuery();
+            while (rs.next()) {
+              cvParams.add(new CvParam(rs.getString("accession"), rs.getString("name"), rs.getString("cv_label"), rs.getString("value"), "", "", ""));
+            }
+            List<UserParam> userParams = new ArrayList<UserParam>();
+            st = connection.prepareStatement("SELECT name, value FROM pride_modification_param " + " WHERE parent_element_fk = ? AND cv_label is null");
+            st.setInt(1, Integer.parseInt(modId.toString()));
+            rs = st.executeQuery();
+            while (rs.next()) {
+              userParams.add(new UserParam(rs.getString("name"), "", rs.getString("value"), "", "", ""));
+            }
+            ParamGroup paramGroup = new ParamGroup(cvParams,userParams);
+            Modification mod = new Modification(paramGroup, modAcc, null, 0, null, avgMasses, monoMasses, modDB, modDBVersion);
+            modifications.put(modAcc, mod);
+            rs.close();
+         }
+
+        } catch (SQLException e) {
+            logger.error("Querying PTM locations", e);
+            throw e;
+        } finally {
+            DBUtilities.releaseResources(connection, st, rs);
+        }
+
+
+                /*st = connection.prepareStatement("SELECT ms.modification_id, ms.mass_delta_value, ms.classname, pm.mod_database, pm.mod_database_version FROM pride_mass_delta ms " +
                         "join pride_modification pm using(modification_id) where ms.modification_id= ?");
                 st.setString(1, modId.toString());
                 rs = st.executeQuery();
@@ -462,7 +504,6 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             } finally {
                 DBUtilities.releaseResources(connection, st, rs);
             }
-
             try {
                 // get modification cv params
                 List<CvParam> cvParams = new ArrayList<CvParam>();
@@ -488,7 +529,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             } finally {
                 DBUtilities.releaseResources(innerConnection, innerStmt, innerRs);
             }
-        }
+        }     */
 
         // add to cache
         cache.storeInBatch(CacheCategory.PEPTIDE_TO_MODIFICATION, locations);

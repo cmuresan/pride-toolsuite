@@ -64,7 +64,7 @@ public class Score {
      *
      * @return List<Number>    a list of scores
      */
-    public List<Number> getAllPeptideScores() {
+    public List<Number> getAllScoreValues() {
         List<Number> scoreList = new ArrayList<Number>();
 
         for (Map<CvTermReference, Number> numberMap : scores.values()) {

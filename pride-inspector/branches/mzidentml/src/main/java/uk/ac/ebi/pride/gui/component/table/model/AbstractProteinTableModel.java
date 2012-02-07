@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.component.table.model;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.mol.IsoelectricPointUtils;
+import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
         PROTEIN_STATUS("Status", "Status Of The Protein Accession"),
         PROTEIN_SEQUENCE_COVERAGE("Coverage", "Protein Sequence Coverage"),
         THEORITICAL_ISOELECTRIC_POINT_COLUMN("pI", "Theoritical isoelectric point"),
-        IDENTIFICATION_SCORE_COLUMN("Score", "PRIDE Protein Score"),
+        //IDENTIFICATION_SCORE_COLUMN("Score", "PRIDE Protein Score"),
         IDENTIFICATION_THRESHOLD_COLUMN("Threshold", "PRIDE Protein Threshold"),
         NUMBER_OF_PEPTIDES("# Peptides", "Number of Peptides"),
         NUMBER_OF_UNIQUE_PEPTIDES("# Distinct Peptides", "Number of Distinct Peptides"),
@@ -52,6 +53,27 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
 
         public String getToolTip() {
             return toolTip;
+        }
+    }
+
+    private List<CvTermReference> listScores;
+
+    public AbstractProteinTableModel(List<CvTermReference> listScores) {
+        this.listScores = listScores;
+        addAdditionalColumns();
+    }
+
+    void addAdditionalColumns() {
+        // add columns for search engine scores
+        TableHeader[] headers = TableHeader.values();
+        for (TableHeader header : headers) {
+            columnNames.put(header.getHeader(), header.getToolTip());
+            if (listScores != null) {
+                for (CvTermReference scoreCvTerm : listScores) {
+                    String name = scoreCvTerm.getName();
+                    columnNames.put(name, name);
+                }
+            }
         }
     }
 
@@ -80,6 +102,7 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
      * @param newData protein detail map
      */
     void addProteinDetailData(Object newData) {
+
         // column index for mapped protein accession column
         int mappedAccIndex = getColumnIndex(TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
         // column index for protein name

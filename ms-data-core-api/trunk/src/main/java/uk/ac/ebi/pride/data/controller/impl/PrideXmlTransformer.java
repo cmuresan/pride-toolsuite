@@ -371,18 +371,24 @@ public class PrideXmlTransformer {
                 gel = transformGel(rawGel, rawIdent.getGelLocation(), rawIdent.getMolecularWeight(), rawIdent.getPI());
             }
 
-            Double oldScore = rawIdent.getScore();
-            double scoreVal = oldScore == null ? -1 : oldScore;
             Double seqConverage = rawIdent.getSequenceCoverage();
             double seqConverageVal = seqConverage == null ? -1 : seqConverage;
+
             Double threshold = rawIdent.getThreshold();
             double thresholdVal = threshold == null ? -1 : threshold;
+
             SearchEngineType searchEngine = SearchEngineType.getByName(rawIdent.getSearchEngine());
             Score score = null;
-            if(searchEngine != null){
+            if(searchEngine != null && rawIdent.getScore()!=null){
+                CvTermReference cvTerm = SearchEngineType.getDefaultCvTerm(rawIdent.getSearchEngine());
+                if(cvTerm != null){
+                    CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),rawIdent.getScore().toString(),null,null,null);
+                    params.addCvParam(cvParam);
+                }
+
                 Map<SearchEngineType,Map<CvTermReference,Number>> scores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
                 Map<CvTermReference,Number> scoreValues = new HashMap<CvTermReference, Number>();
-                scoreValues.put(SearchEngineType.getDefaultCvTerm(rawIdent.getSearchEngine()), new Double(scoreVal));
+                scoreValues.put(SearchEngineType.getDefaultCvTerm(rawIdent.getSearchEngine()),rawIdent.getScore());
                 scores.put(searchEngine,scoreValues);
                 score = new Score(scores);
             }
@@ -418,8 +424,7 @@ public class PrideXmlTransformer {
             ParamGroup params = transformParamGroup(rawIdent.getAdditional());
 
 
-            Double oldScore = rawIdent.getScore();
-            double scoreVal = oldScore == null ? -1 : oldScore;
+
             Double seqConverage = rawIdent.getSequenceCoverage();
             double seqConverageVal = seqConverage == null ? -1 : seqConverage;
             Double threshold = rawIdent.getThreshold();
@@ -427,10 +432,15 @@ public class PrideXmlTransformer {
             SearchEngineType searchEngine = SearchEngineType.getByName(rawIdent.getSearchEngine());
             Score score = null;
 
-            if(searchEngine != null){
+            if(searchEngine != null && rawIdent.getScore()!=null){
+                CvTermReference cvTerm = SearchEngineType.getDefaultCvTerm(rawIdent.getSearchEngine());
+                if(cvTerm != null){
+                    CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),rawIdent.getScore().toString(),null,null,null);
+                    params.addCvParam(cvParam);
+                }
                 Map<SearchEngineType,Map<CvTermReference,Number>> scores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
                 Map<CvTermReference,Number> scoreValues = new HashMap<CvTermReference, Number>();
-                scoreValues.put(SearchEngineType.getDefaultCvTerm(rawIdent.getSearchEngine()), new Double(scoreVal));
+                scoreValues.put(SearchEngineType.getDefaultCvTerm(rawIdent.getSearchEngine()), rawIdent.getScore());
                 scores.put(searchEngine,scoreValues);
                 score = new Score(scores);
             }
@@ -534,7 +544,7 @@ public class PrideXmlTransformer {
             mz = DataAccessUtilities.getPrecursorMz(spectrum);
         }
         // Retrieve Score
-        Score score = DataAccessUtilities.getPeptideScore(params);
+        Score score = DataAccessUtilities.getScore(params);
 
         SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, charge, mz, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, score, spectrum, null);
         return new Peptide(peptideEvidence,spectrumIdentification);

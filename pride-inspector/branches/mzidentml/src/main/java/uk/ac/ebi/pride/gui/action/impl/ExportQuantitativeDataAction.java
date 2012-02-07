@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.action.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.action.PrideAction;
@@ -52,7 +53,12 @@ public class ExportQuantitativeDataAction extends PrideAction {
 
             @Override
             public void run() {
-                QuantExportDialog quantExportDialog = new QuantExportDialog(Desktop.getInstance().getMainComponent(), table, controller);
+                QuantExportDialog quantExportDialog = null;
+                try {
+                    quantExportDialog = new QuantExportDialog(Desktop.getInstance().getMainComponent(), table, controller,controller.getListPeptideCvTermReferenceScores());
+                } catch (DataAccessException e1) {
+                    e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
                 quantExportDialog.setVisible(true);
             }
         };

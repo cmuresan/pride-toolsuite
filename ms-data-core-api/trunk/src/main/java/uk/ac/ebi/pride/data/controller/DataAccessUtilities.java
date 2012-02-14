@@ -388,12 +388,12 @@ public class DataAccessUtilities {
                     String numStr = scoreParam.getValue();
                     if (NumberUtilities.isNumber(numStr)) {
                         Double num = new Double(numStr);
-                        score.addPeptideScore(type, scoreCvTerm, num);
+                        score.addScore(type, scoreCvTerm, num);
                     } else {
-                        score.addPeptideScore(type, scoreCvTerm, null);
+                        score.addScore(type, scoreCvTerm, null);
                     }
                 } else {
-                  //  score.addPeptideScore(type, scoreCvTerm, null);
+                  //  score.addScore(type, scoreCvTerm, null);
                 }
             }
         }
@@ -439,7 +439,7 @@ public class DataAccessUtilities {
                     for (CvParam term: params.getCvParams()){
                         CvTermReference reference = CvTermReference.getCvRefByAccession(term.getAccession());
                         if(reference != null){
-                            score.addPeptideScore(searchEngineType,reference,new Double(term.getValue()));
+                            score.addScore(searchEngineType, reference, new Double(term.getValue()));
                         }
                     }
                 }

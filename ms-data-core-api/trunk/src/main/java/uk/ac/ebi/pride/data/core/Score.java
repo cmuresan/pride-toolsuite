@@ -90,7 +90,7 @@ public class Score {
      * @param ref cv term reference for the score type
      * @param num peptide score
      */
-    public void addPeptideScore(SearchEngineType se, CvTermReference ref, Number num) {
+    public void addScore(SearchEngineType se, CvTermReference ref, Number num) {
 
         // create a new if the search engine doesn't exist
         Map<CvTermReference, Number> scoreMap = scores.get(se);
@@ -116,7 +116,7 @@ public class Score {
      *
      * @param se search engine
      */
-    public void removePeptideScore(SearchEngineType se) {
+    public void removeScore(SearchEngineType se) {
         scores.remove(se);
     }
 
@@ -126,7 +126,7 @@ public class Score {
      * @param se  search engine
      * @param ref cv term reference
      */
-    public void removePeptideScore(SearchEngineType se, CvTermReference ref) {
+    public void removeScore(SearchEngineType se, CvTermReference ref) {
         Map<CvTermReference, Number> scoreMap = scores.get(se);
 
         if (scoreMap != null) {

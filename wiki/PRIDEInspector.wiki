@@ -5,6 +5,7 @@
   <tr>
     <td width="70%">
  * [#About_PRIDE_Inspector About PRIDE Inspector]
+ * [#PRIDE_Inspector_Publication PRIDE Inspector Publication]
  * [#Getting_PRIDE_Inspector Getting PRIDE Inspector]
   * [#Installation_Requirements Installation Requirements]
   * [#Launch_via_Webstart Launch via Webstart]

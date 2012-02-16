@@ -37,7 +37,16 @@ The data formats supported by PRIDE Inspector are:
  * *[http://www.psidev.info/index.php?q=node/257 mzML 1.1]*
  * *[http://www.ebi.ac.uk/pride/schemaXmlspyDocumentation.do PRIDE XML 2.1]* 
 
-*Note*: We do have plans to support additional formats in the near future.
+*Note*: We do have plans to support additional formats like mzIdentML in the near future.
+
+
+==PRIDE Inspector Publication==
+
+ * *[http://www.nature.com/nbt/journal/v30/n2/full/nbt.2112.html Wang et al., Nat Biotechnol. 2012. 30: 130-132]*
+
+
+
+
 
 [PRIDEInspector top of page]
 

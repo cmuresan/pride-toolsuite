@@ -41,11 +41,13 @@ The data formats supported by PRIDE Inspector are:
 
 
 
+
 ==PRIDE Inspector Publication==
 
 When you use PRIDE Inspector, please cite the following publication:
 
  * *[http://www.nature.com/nbt/journal/v30/n2/full/nbt.2112.html Wang et al.Nat Biotechnol (2012).30: 130-132.] [http://www.nature.com/nbt/journal/v30/n2/pdf/nbt.2112.pdf PDF File].  [http://www.ncbi.nlm.nih.gov/pubmed/22318026 PubMed record].*
+
 
 
 

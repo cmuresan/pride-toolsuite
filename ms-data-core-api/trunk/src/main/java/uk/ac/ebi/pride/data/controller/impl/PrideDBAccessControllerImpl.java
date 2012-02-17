@@ -1299,7 +1299,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
                     params = new ParamGroup(getCvParams(connection, "pride_identification_param", rs.getInt("identification_id")), getUserParams(connection, "pride_identification_param", rs.getInt("identification_id")));
 
-                    if((seqScore != 0) && (searchEngine !=null)){
+                    /*if((seqScore != 0) && (searchEngine !=null)){
                         CvTermReference cvTerm = SearchEngineType.getDefaultCvTerm(rs.getString("search_engine"));
                         if(cvTerm != null){
                             CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),(new Double(seqScore)).toString(),null,null,null);
@@ -1310,7 +1310,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                         scoreValues.put(SearchEngineType.getDefaultCvTerm(rs.getString("search_engine")), new Double(seqScoreVal));
                         scores.put(searchEngine,scoreValues);
                         score = new Score(scores);
-                    }
+                    }*/
 
                     peptides = getPeptideIdentification(connection, rs.getInt("identification_id"), rs.getInt("pi.experiment_id"));
                     spectrum = getSpectrumByRef(connection, rs.getString("spectrum_ref"));

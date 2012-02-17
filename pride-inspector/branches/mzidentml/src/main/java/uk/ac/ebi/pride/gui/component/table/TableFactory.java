@@ -429,8 +429,8 @@ public class TableFactory {
         isoelectricColumn.setVisible(false);
 
         // score
-        TableColumnExt proteinScoreColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.IDENTIFICATION_SCORE_COLUMN.getHeader());
-        proteinScoreColumn.setVisible(false);
+        //TableColumnExt proteinScoreColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.IDENTIFICATION_SCORE_COLUMN.getHeader());
+        //proteinScoreColumn.setVisible(false);
 
         // threshold
         TableColumnExt proteinThresholdColumn = (TableColumnExt) quantProteinTable.getColumn(QuantProteinTableModel.TableHeader.IDENTIFICATION_THRESHOLD_COLUMN.getHeader());

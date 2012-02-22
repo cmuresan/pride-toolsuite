@@ -737,7 +737,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     public SearchDataBase getSearchDatabase(Comparable identId) throws DataAccessException {
         SearchDataBase database = null;
         Identification ident = getIdentificationById(identId);
-        if (ident != null) {
+        if (ident != null && (ident.getDbSequence() != null)) {
             database = ident.getDbSequence().getSearchDataBase();
         }
         return database;

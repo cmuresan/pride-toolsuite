@@ -263,7 +263,8 @@ public class MzIdentMLTransformer {
                     ((ref.getPages() != null) ? ":" + ref.getPages() + "." : "");
             // create the ref
             //Todo: Set the References ParamGroup for references
-            Reference reference = new Reference(ref.getId(), ref.getName(), ref.getDoi(), ref.getTitle(), ref.getPages(), ref.getIssue(), ref.getVolume(), ref.getYear().toString(), ref.getEditor(), ref.getPublisher(), ref.getPublication(), ref.getAuthors(), refLine);
+            String year = (ref.getYear() == null)? null:ref.getYear().toString();
+            Reference reference = new Reference(ref.getId(), ref.getName(), ref.getDoi(), ref.getTitle(), ref.getPages(), ref.getIssue(), ref.getVolume(), year, ref.getEditor(), ref.getPublisher(), ref.getPublication(), ref.getAuthors(), refLine);
             references.add(reference);
         }
         return references;
@@ -278,7 +279,16 @@ public class MzIdentMLTransformer {
             List<Peptide> peptides= transformToPeptideIdentifications(oldIdent.getPeptideHypothesis(), oldFragmentationTable);
             ParamGroup paramGroup = new ParamGroup(transformToCvParam(oldIdent.getCvParam()),transformToUserParam(oldIdent.getUserParam()));
             Score score = DataAccessUtilities.getScore(paramGroup);
-            ident = new Identification(paramGroup, oldIdent.getId(), oldIdent.getName(), transformToDBSequence(oldIdent.getDBSequence()), oldIdent.isPassThreshold(), peptides, score, -1, -1,null);
+            // Some search engines don't like to map the ref of
+            // the dbSequence to the database because is at the peptide Evidence Level
+            DBSequence dbSequence = null;
+            if(oldIdent.getDBSequence() == null){
+                dbSequence = peptides.get(0).getPeptideEvidence().getDbSequence();
+            }else{
+                dbSequence = transformToDBSequence(oldIdent.getDBSequence());
+
+            }
+            ident = new Identification(paramGroup, oldIdent.getId(), oldIdent.getName(), dbSequence, oldIdent.isPassThreshold(), peptides, score, -1, -1,null);
             //Todo: threshold and sequence coverage
         }
         return ident;
@@ -475,7 +485,9 @@ public class MzIdentMLTransformer {
     private static PeptideEvidence transformToPeptideEvidence(uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidence oldPeptideEvidence) {
         PeptideEvidence evidence = null;
         if (oldPeptideEvidence != null) {
-            evidence = new PeptideEvidence(oldPeptideEvidence.getId(), oldPeptideEvidence.getName(), oldPeptideEvidence.getStart(), oldPeptideEvidence.getEnd(), oldPeptideEvidence.isIsDecoy(), transformToPeptide(oldPeptideEvidence.getPeptide()), transformToDBSequence(oldPeptideEvidence.getDBSequence()));
+            int start = (oldPeptideEvidence.getStart() != null)? oldPeptideEvidence.getStart().intValue(): -1;
+            int end   = (oldPeptideEvidence.getEnd()   != null)? oldPeptideEvidence.getEnd().intValue(): -1;
+            evidence = new PeptideEvidence(oldPeptideEvidence.getId(), oldPeptideEvidence.getName(), start, end, oldPeptideEvidence.isIsDecoy(), transformToPeptide(oldPeptideEvidence.getPeptide()), transformToDBSequence(oldPeptideEvidence.getDBSequence()));
         }
         return evidence;
     }
@@ -512,6 +524,7 @@ public class MzIdentMLTransformer {
 
     private static Modification transformToModification(uk.ac.ebi.jmzidml.model.mzidml.Modification oldModification) {
         Modification modification = null;
+
         if (oldModification != null) {
             List<Double> monoMasses = null;
             List<Double> avgMasses  = null;
@@ -538,6 +551,10 @@ public class MzIdentMLTransformer {
                    id = cvParams.get(i).getAccession();
                    name = cvParams.get(i).getName();
                    dataBaseName = (cvParams.get(i).getCvLookupID() == null)?"UNIMOD":cvParams.get(i).getCvLookupID();
+               }else{
+                   id = cvParams.get(i).getAccession();
+                   name = cvParams.get(i).getName();
+                   dataBaseName = cvParams.get(i).getCvLookupID();
                }
             }
             ParamGroup param = new ParamGroup(cvParams,null);
@@ -650,9 +667,9 @@ public class MzIdentMLTransformer {
             ParamGroup searchType = new ParamGroup(transformToCvParam(oldProtocol.getSearchType().getCvParam()), transformToUserParam(oldProtocol.getSearchType().getUserParam()));
             boolean enzymeIndependent = (oldProtocol.getEnzymes().isIndependent() == null) ? false : oldProtocol.getEnzymes().isIndependent();
             List<Enzyme> enzymeList = transformToEnzyme(oldProtocol.getEnzymes().getEnzyme());
-            List<CvParam> fragmentTolerance = transformToCvParam(oldProtocol.getFragmentTolerance().getCvParam());
-            List<CvParam> parentTolerance = transformToCvParam(oldProtocol.getParentTolerance().getCvParam());
-            List<Filter> filterList = transformToFilter(oldProtocol.getDatabaseFilters().getFilter());
+            List<CvParam> fragmentTolerance = (oldProtocol.getFragmentTolerance()!=null)? transformToCvParam(oldProtocol.getFragmentTolerance().getCvParam()):null;
+            List<CvParam> parentTolerance = (oldProtocol.getParentTolerance() != null)? transformToCvParam(oldProtocol.getParentTolerance().getCvParam()):null;
+            List<Filter> filterList = (oldProtocol.getDatabaseFilters() != null)? transformToFilter(oldProtocol.getDatabaseFilters().getFilter()):null;
             DataBaseTranslation dataBaseTranslation = transformToDataBaseTranslation(oldProtocol.getDatabaseTranslation());
             List<SearchModification> searchModificationList = transformToSearchModification(oldProtocol.getModificationParams().getSearchModification());
             List<MassTable> massTableList = transformToMassTable(oldProtocol.getMassTable());

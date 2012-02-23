@@ -73,7 +73,7 @@ public class PTMTableModel extends ProgressiveListTableModel<Void, Peptide> {
                 if (location == 0) {
                     location = 1;
                     content.add("N Terminal");
-                } else if (location == seqLength) {
+                } else if (location == seqLength + 1) {
                     content.add("C Terminal");
                 } else if (location == -1) {
                     content.add(null);

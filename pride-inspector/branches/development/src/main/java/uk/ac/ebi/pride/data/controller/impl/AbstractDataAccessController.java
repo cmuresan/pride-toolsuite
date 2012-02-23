@@ -338,8 +338,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      * @throws DataAccessException data access exception
      */
     @Override
-    public int getPrecursorCharge(Comparable specId) throws DataAccessException {
-        int charge = 0;
+    public Integer getPrecursorCharge(Comparable specId) throws DataAccessException {
+        Integer charge = null;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
             charge = DataAccessUtilities.getPrecursorCharge(spectrum);
@@ -1033,8 +1033,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      *          data access exception
      */
     @Override
-    public int getPeptidePrecursorCharge(Comparable identId, Comparable peptideId) throws DataAccessException {
-        int charge = 0;
+    public Integer getPeptidePrecursorCharge(Comparable identId, Comparable peptideId) throws DataAccessException {
+        Integer charge = null;
 
         Identification ident = getIdentificationById(identId);
         if (ident != null) {

@@ -356,13 +356,13 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @throws DataAccessException data access exception
      */
     @Override
-    public int getPrecursorCharge(Comparable specId) throws DataAccessException {
+    public Integer getPrecursorCharge(Comparable specId) throws DataAccessException {
         Integer charge = (Integer) cache.get(CacheCategory.PRECURSOR_CHARGE, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && charge == null) {
             charge = super.getPrecursorCharge(specId);
             cache.store(CacheCategory.PRECURSOR_CHARGE, specId, charge);
         }
-        return charge == null ? 0 : charge;
+        return charge;
     }
 
     /**
@@ -851,8 +851,8 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      *          data access exception
      */
     @Override
-    public int getPeptidePrecursorCharge(Comparable identId, Comparable peptideId) throws DataAccessException {
-        int charge = 0;
+    public Integer getPeptidePrecursorCharge(Comparable identId, Comparable peptideId) throws DataAccessException {
+        Integer charge = null;
         // get peptide additional parameters
         ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
         if (paramGroup != null) {

@@ -64,7 +64,7 @@ public class ExportSpectrumDescTask extends AbstractDataAccessTask<Void, Void> {
 
             // data source
             if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
-                writer.println("# Data source: " + ((File)controller.getSource()).getAbsolutePath());
+                writer.println("# Data source: " + ((File) controller.getSource()).getAbsolutePath());
             } else if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
                 writer.println("# Data source: pride public mysql instance");
             }
@@ -91,16 +91,19 @@ public class ExportSpectrumDescTask extends AbstractDataAccessTask<Void, Void> {
             }
 
             //------- Content section -------
-            writer.println("Spectrum ID" +  TAB + "MS Level" + TAB + "Precursor Charge" +
-                            TAB + "Precursor m/z" + TAB + "Precursor Intensity" + TAB +
-                            "Sum of Intensity" + TAB + "Number of peaks");
+            writer.println("Spectrum ID" + TAB + "MS Level" + TAB + "Precursor Charge" +
+                    TAB + "Precursor m/z" + TAB + "Precursor Intensity" + TAB +
+                    "Sum of Intensity" + TAB + "Number of peaks");
             Collection<Comparable> spectrumIds = controller.getSpectrumIds();
             for (Comparable specId : spectrumIds) {
                 writer.print(specId);
                 writer.print(TAB);
                 writer.print(controller.getMsLevel(specId));
                 writer.print(TAB);
-                writer.print(controller.getPrecursorCharge(specId));
+                Integer charge = controller.getPrecursorCharge(specId);
+                if (charge != null) {
+                    writer.print(controller.getPrecursorCharge(specId));
+                }
                 writer.print(TAB);
                 writer.print(controller.getPrecursorMz(specId));
                 writer.print(TAB);

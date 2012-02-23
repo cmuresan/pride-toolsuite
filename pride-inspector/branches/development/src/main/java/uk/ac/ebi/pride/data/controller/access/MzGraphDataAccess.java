@@ -132,7 +132,7 @@ public interface MzGraphDataAccess {
      * @return int  precursor charge.
      * @throws DataAccessException data access exception.
      */
-    public int getPrecursorCharge(Comparable specId) throws DataAccessException;
+    public Integer getPrecursorCharge(Comparable specId) throws DataAccessException;
 
     /**
      * Get the precursor's m/z value of a spectrum.

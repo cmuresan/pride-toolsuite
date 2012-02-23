@@ -63,7 +63,7 @@ public class DBMetadataExtractor {
             writer = new PrintWriter(new FileWriter(new File(metadataFile)));
 
             // print header
-            writer.println("Experiment Accession\tTitle\tProject\tSpecies\tTaxonomy ID\tTissue\tBRENDA ID (Tissue)\t#Spectra\t#Proteins\t#Peptides\tReference\tPubMed ID");
+            writer.println("Accession\tTitle\tProject\tSpecies\tTaxonomy ID\tTissue\tBRENDA ID (Tissue)\t#Spectra\t#Proteins\t#Peptides\tReference\tPubMed ID");
 
             for (Integer accession : accessions) {
 

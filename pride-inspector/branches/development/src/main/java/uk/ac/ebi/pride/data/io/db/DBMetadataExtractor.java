@@ -1,25 +1,18 @@
 package uk.ac.ebi.pride.data.io.db;
 
+import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.controller.impl.PrideDBAccessControllerImpl;
-import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.Experiment;
-import uk.ac.ebi.pride.data.core.Reference;
-import uk.ac.ebi.pride.data.core.Sample;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * DBMetadataExtractor
@@ -29,7 +22,7 @@ import java.util.List;
  */
 public class DBMetadataExtractor {
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, IOException {
         // metadata output file
         String metadataFile = args[0];
 
@@ -58,14 +51,18 @@ public class DBMetadataExtractor {
         // sort accessions
         Collections.sort(accessions);
 
+        // load PTM mappings file
+        Map<String, Tuple<String, String>> ptmMappings = getPtmMappings();
+
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(new FileWriter(new File(metadataFile)));
 
             // print header
-            writer.println("Accession\tTitle\tProject\tSpecies\tTaxonomy ID\tTissue\tBRENDA ID (Tissue)\t#Spectra\t#Proteins\t#Peptides\tReference\tPubMed ID");
+            writer.println("Accession\tTitle\tProject\tSpecies\tTaxonomy ID\tTissue\tBRENDA ID (Tissue)\tPTM\t#Spectra\t#Proteins\t#Peptides\tReference\tPubMed ID");
 
             for (Integer accession : accessions) {
+                System.out.println(accession);
 
                 // Data access controller
                 PrideDBAccessControllerImpl controller = new PrideDBAccessControllerImpl(accession);
@@ -91,41 +88,87 @@ public class DBMetadataExtractor {
                     Sample sample = samples.get(0);
                     // species, taxonomy id
                     List<CvParam> cvParams = sample.getCvParams();
-                    boolean foundNewt = false;
+                    Set<CvParam> speciesCvParams = new LinkedHashSet<CvParam>();
                     for (CvParam cvParam : cvParams) {
                         if (cvParam.getCvLookupID().toLowerCase().equals("newt")) {
-                            writeEntry(writer, cvParam.getName());
-                            writeEntry(writer, cvParam.getAccession());
-                            foundNewt = true;
-                            break;
+                            speciesCvParams.add(cvParam);
                         }
                     }
 
-                    if (!foundNewt) {
+                    if (speciesCvParams.size() == 0) {
                         writer.print("\t");
                         writer.print("\t");
+                    } else {
+                        String species = "";
+                        String speciesAccs = "";
+                        for (CvParam speciesCvParam : speciesCvParams) {
+                            species += speciesCvParam.getName() + ";";
+                            speciesAccs += speciesCvParam.getAccession() + ";";
+                        }
+                        species = species.substring(0, species.length() - 1);
+                        speciesAccs = speciesAccs.substring(0, speciesAccs.length() - 1);
+                        writeEntry(writer, species);
+                        writeEntry(writer, speciesAccs);
                     }
 
                     // tissue, brenda id
-                    boolean foundTissue = false;
+                    Set<CvParam> tissueCvParams = new LinkedHashSet<CvParam>();
                     for (CvParam cvParam : cvParams) {
                         if (cvParam.getCvLookupID().toLowerCase().equals("bto")) {
-                            writeEntry(writer, cvParam.getName());
-                            writeEntry(writer, cvParam.getAccession());
-                            foundTissue = true;
-                            break;
+                            tissueCvParams.add(cvParam);
                         }
                     }
 
-                    if (!foundTissue) {
+                    if (tissueCvParams.size() == 0) {
                         writer.print("\t");
                         writer.print("\t");
+                    } else {
+                        String tissue = "";
+                        String tissueAccs = "";
+                        for (CvParam tissueCvParam : tissueCvParams) {
+                            tissue += tissueCvParam.getName() + ";";
+                            tissueAccs += tissueCvParam.getAccession() + ";";
+                        }
+                        tissue = tissue.substring(0, tissue.length() - 1);
+                        tissueAccs = tissueAccs.substring(0, tissueAccs.length() - 1);
+                        writeEntry(writer, tissue);
+                        writeEntry(writer, tissueAccs);
                     }
+
                 } else {
                     writer.print("\t");
                     writer.print("\t");
                     writer.print("\t");
                     writer.print("\t");
+                }
+
+                // get unique PTMs
+                Collection<Comparable> identIds = controller.getIdentificationIds();
+                Map<String, Modification> modifications = new LinkedHashMap<String, Modification>();
+                for (Comparable identId : identIds) {
+                    Collection<Comparable> peptideIds = controller.getPeptideIds(identId);
+                    for (Comparable peptideId : peptideIds) {
+                        List<Modification> ptms = controller.getPTMs(identId, peptideId);
+                        for (Modification ptm : ptms) {
+                            modifications.put(ptm.getAccession(), ptm);
+                        }
+                    }
+                }
+
+                if (modifications.size() == 0) {
+                    writer.print("\t");
+                } else {
+                    String modName = "";
+                    for (String s : modifications.keySet()) {
+                        Tuple<String, String> ptmMappingDetail = ptmMappings.get(s);
+                        if (ptmMappingDetail == null) {
+                            modName += modifications.get(s).getName() + ";";
+                        } else {
+                            modName += ptmMappingDetail.getKey();
+                        }
+                    }
+                    modName = modName.substring(0, modName.length() - 1);
+                    writeEntry(writer, modName);
                 }
 
                 // number spectra
@@ -180,10 +223,37 @@ public class DBMetadataExtractor {
         } catch (IOException e) {
             System.err.println("Failed to write data to file");
         } finally {
-            if (writer !=  null) {
+            if (writer != null) {
                 writer.close();
             }
         }
+    }
+
+    private static Map<String, Tuple<String, String>> getPtmMappings() throws IOException {
+        Map<String, Tuple<String, String>> ptmMappings = new LinkedHashMap<String, Tuple<String, String>>();
+
+        InputStream inputStream = DBMetadataExtractor.class.getClassLoader().getResourceAsStream("metadata/ptm_mapping.tsv");
+
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+            // ignore the first line
+            reader.readLine();
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                String[] parts = line.split("\t");
+                ptmMappings.put(parts[0], new Tuple<String, String>(parts[1], parts[2]));
+            }
+
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
+
+        return ptmMappings;
     }
 
     private static void writeEntry(PrintWriter writer, String entry) {

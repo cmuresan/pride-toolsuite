@@ -115,8 +115,8 @@ public class DataAccessUtilities {
      * @param paramGroup param group
      * @return precursor charge
      */
-    public static int getPrecursorCharge(ParamGroup paramGroup) {
-        int charge = 0;
+    public static Integer getPrecursorCharge(ParamGroup paramGroup) {
+        Integer charge = null;
 
         if (paramGroup != null) {
             Double c = getSelectedIonCvParamValue(paramGroup, CvTermReference.PSI_ION_SELECTION_CHARGE_STATE, CvTermReference.ION_SELECTION_CHARGE_STATE);

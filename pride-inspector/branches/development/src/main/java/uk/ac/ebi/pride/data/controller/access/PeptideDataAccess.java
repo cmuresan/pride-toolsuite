@@ -191,8 +191,8 @@ public interface PeptideDataAccess {
      *
      * @param identId   identification id
      * @param peptideId peptid eid, can be the index of the peptide as well.
-     * @return  precursor charge, 0 should be returned if not available
+     * @return  precursor charge, null should be returned if not available
      * @throws DataAccessException  data access exception
      */
-    public int getPeptidePrecursorCharge(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public Integer getPeptidePrecursorCharge(Comparable identId, Comparable peptideId) throws DataAccessException;
 }

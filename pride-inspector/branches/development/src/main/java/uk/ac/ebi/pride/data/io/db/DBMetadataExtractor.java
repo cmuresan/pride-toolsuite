@@ -145,12 +145,16 @@ public class DBMetadataExtractor {
                 // get unique PTMs
                 Collection<Comparable> identIds = controller.getIdentificationIds();
                 Map<String, Modification> modifications = new LinkedHashMap<String, Modification>();
-                for (Comparable identId : identIds) {
-                    Collection<Comparable> peptideIds = controller.getPeptideIds(identId);
-                    for (Comparable peptideId : peptideIds) {
-                        List<Modification> ptms = controller.getPTMs(identId, peptideId);
-                        for (Modification ptm : ptms) {
-                            modifications.put(ptm.getAccession(), ptm);
+                if (identIds != null) {
+                    for (Comparable identId : identIds) {
+                        Collection<Comparable> peptideIds = controller.getPeptideIds(identId);
+                        if (peptideIds != null) {
+                            for (Comparable peptideId : peptideIds) {
+                                List<Modification> ptms = controller.getPTMs(identId, peptideId);
+                                for (Modification ptm : ptms) {
+                                    modifications.put(ptm.getAccession(), ptm);
+                                }
+                            }
                         }
                     }
                 }

@@ -72,6 +72,18 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
     private static final String FEED_BACK = "Feedback";
 
     /**
+     * PDF
+     */
+    private static final String PDF = "[PDF File]";
+
+    /**
+     * PUBMED
+     */
+    private static final String PUBMED = "[PubMed record]";
+    
+    private static final String PRIDE_INSPECTOR_CITE_MESSAGE = "When use PRIDE Inspector, please cite: ";
+
+    /**
      * give feedback
      */
     private static final String GIVE_US_FEEDBACK = "Give Us Your Feedback";
@@ -79,6 +91,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
      * large title color
      */
     private static final Color LARGE_TITLE_COLOR = new Color(58, 45, 123);
+
     /**
      * large title font
      */
@@ -89,12 +102,12 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
      */
     private static final Font BUTTON_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 15);
 
+
     /**
      * quick start font color
      */
     private static final Color BUTTON_FONT_COLOR = new Color(0, 60, 200, 200);
-
-
+    
     /**
      * pride inspector context
      */
@@ -133,11 +146,21 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
 
         // feedback panel
         JPanel feedbackPanel = createFeedBackPane();
+        
+        // publication panel
+        JPanel publicationPanel = createPublicationPanel();
 
         // message panel
         JPanel messagePanel = createMessagePanel();
 
-        JSplitPane bottomLeftSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, learnMoreAboutPanel, feedbackPanel);
+        JSplitPane bottomLeftBottomSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, feedbackPanel, publicationPanel);
+        bottomLeftBottomSplitPane.setDividerLocation(0.5);
+        bottomLeftBottomSplitPane.setResizeWeight(0.5);
+        bottomLeftBottomSplitPane.setOpaque(false);
+        bottomLeftBottomSplitPane.setBorder(BorderFactory.createEmptyBorder());
+        bottomLeftBottomSplitPane.setDividerSize(0);
+
+        JSplitPane bottomLeftSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, learnMoreAboutPanel, bottomLeftBottomSplitPane);
         bottomLeftSplitPane.setDividerLocation(0.5);
         bottomLeftSplitPane.setResizeWeight(0.5);
         bottomLeftSplitPane.setOpaque(false);
@@ -477,6 +500,60 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         feedbackPane.add(positionalPanel, BorderLayout.CENTER);
 
         return feedbackPane;
+    }
+    
+    private JPanel createPublicationPanel() {
+        JPanel publicationPanel = new JPanel(new BorderLayout());
+
+        // set transparency
+        publicationPanel.setOpaque(false);
+
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        buttonPanel.setOpaque(false);
+
+        // set general configs
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        c.insets = new Insets(20, 10, 5, 10);
+        c.anchor = GridBagConstraints.WEST;
+        c.weightx = 0;
+
+        c.gridx = 0;
+        c.gridy = 0;
+
+        // add pride inspector
+        JLabel inspectorDescLabel = new JLabel(PRIDE_INSPECTOR_CITE_MESSAGE, JLabel.LEFT);
+        inspectorDescLabel.setFont(BUTTON_FONT);
+        inspectorDescLabel.setForeground(LARGE_TITLE_COLOR);
+        buttonPanel.add(inspectorDescLabel, c);
+
+        c.insets = new Insets(5, 10, 5, 10);
+        c.gridx = 0;
+        c.gridy = 1;
+
+        // add pride inspector
+        JPanel inspectorPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        inspectorPanel.setOpaque(false);
+
+        JButton inspectorPublicationButton = createLabelLikeButton(new OpenUrlAction(context.getProperty("pride.inspector.publication.title"), null, context.getProperty("pride.inspector.publication.url")));
+        inspectorPanel.add(inspectorPublicationButton);
+        
+        JButton inspectorPDFButton = createLabelLikeButton(new OpenUrlAction(PDF, null, context.getProperty("pride.inspector.publication.pdf.url")));
+        inspectorPanel.add(inspectorPDFButton);
+
+        JButton inspectorPubMedButton = createLabelLikeButton(new OpenUrlAction(PUBMED, null, context.getProperty("pride.inspector.publication.pubmed.url")));
+        inspectorPanel.add(inspectorPubMedButton);
+        
+        buttonPanel.add(inspectorPanel, c);
+
+        JPanel positionalPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        positionalPanel.setOpaque(false);
+        positionalPanel.add(buttonPanel);
+
+        publicationPanel.add(positionalPanel, BorderLayout.CENTER);
+
+        return publicationPanel;
     }
 
 

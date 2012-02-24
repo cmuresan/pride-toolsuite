@@ -48,6 +48,7 @@ public class DBMetadataExtractor {
             DBUtilities.releaseResources(connection, stmt, rs);
         }
 
+
         // sort accessions
         Collections.sort(accessions);
 
@@ -152,12 +153,15 @@ public class DBMetadataExtractor {
                             for (Comparable peptideId : peptideIds) {
                                 List<Modification> ptms = controller.getPTMs(identId, peptideId);
                                 for (Modification ptm : ptms) {
-                                    modifications.put(ptm.getAccession(), ptm);
+                                    if (ptm.getName() != null) {
+                                        modifications.put(ptm.getAccession(), ptm);
+                                    }
                                 }
                             }
                         }
                     }
                 }
+
 
                 if (modifications.size() == 0) {
                     writer.print("\t");
@@ -168,7 +172,7 @@ public class DBMetadataExtractor {
                         if (ptmMappingDetail == null) {
                             modName += modifications.get(s).getName() + ";";
                         } else {
-                            modName += ptmMappingDetail.getKey();
+                            modName += ptmMappingDetail.getKey() + ";";
                         }
                     }
                     modName = modName.substring(0, modName.length() - 1);

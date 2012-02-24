@@ -230,12 +230,6 @@ public class TableDataRetriever {
         // additional details
         content.add(identId + Constants.COMMA + peptideId);
 
-        int cnt = 0;
-        for (Object c : content) {
-            System.out.println(cnt + "\t" + c);
-            cnt++;
-        }
-
         return content;
     }
 

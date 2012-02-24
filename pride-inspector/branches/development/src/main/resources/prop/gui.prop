@@ -327,5 +327,9 @@ menu.setting.small.icon = icon/16x16/configuration.png
 add.experiment.small.icon = icon/16x16/plus.png
 view.detail.small.icon = icon/16x16/detail.png
 
+# reactome
+reactome.html.template = template/reactome.html
+reactome.query.value.placeholder=[QUERY_VALUE]
+
            
 

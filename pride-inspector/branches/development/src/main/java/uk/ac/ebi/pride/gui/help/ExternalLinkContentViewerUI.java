@@ -10,6 +10,8 @@ import javax.swing.plaf.ComponentUI;
 import java.net.URL;
 
 /**
+ * Enable opening hyperlinks in external browser
+ *
  * @author Rui Wang
  * @version $Id$
  */
@@ -26,7 +28,6 @@ public class ExternalLinkContentViewerUI extends BasicContentViewerUI{
     @Override
     public void hyperlinkUpdate(HyperlinkEvent e) {
         if(e.getEventType()==HyperlinkEvent.EventType.ACTIVATED){
-            System.out.println("called");
             try{
                 URL u = e.getURL();
                 if(u.getProtocol().equalsIgnoreCase("mailto")||u.getProtocol().equalsIgnoreCase("http")||u.getProtocol().equalsIgnoreCase("ftp")){

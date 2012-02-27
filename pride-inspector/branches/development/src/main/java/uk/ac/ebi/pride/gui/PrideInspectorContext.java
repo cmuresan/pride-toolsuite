@@ -14,6 +14,7 @@ import uk.ac.ebi.pride.gui.task.TaskManager;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.help.HelpSetException;
+import javax.help.SwingHelpUtilities;
 import javax.swing.*;
 import java.net.URL;
 import java.util.Collections;
@@ -399,6 +400,7 @@ public class PrideInspectorContext extends DesktopContext {
 
     private void createHelp() {
         try {
+            SwingHelpUtilities.setContentViewerUI("uk.ac.ebi.pride.gui.help.ExternalLinkContentViewerUI");
             ClassLoader cl = PrideInspectorContext.class.getClassLoader();
             URL url = HelpSet.findHelpSet(cl, this.getProperty("help.main.set"));
             mainHelpSet = new HelpSet(cl, url);

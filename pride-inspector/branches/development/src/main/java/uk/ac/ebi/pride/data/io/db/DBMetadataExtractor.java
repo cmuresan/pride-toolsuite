@@ -172,7 +172,7 @@ public class DBMetadataExtractor {
                         if (ptmMappingDetail == null) {
                             modName += modifications.get(s).getName() + ";";
                         } else {
-                            modName += ptmMappingDetail.getKey() + ";";
+                            modName = ptmMappingDetail.getKey() + ";" + modName;
                         }
                     }
                     modName = modName.substring(0, modName.length() - 1);
@@ -252,7 +252,7 @@ public class DBMetadataExtractor {
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 String[] parts = line.split("\t");
-                ptmMappings.put(parts[0], new Tuple<String, String>(parts[1], parts[2]));
+                ptmMappings.put(parts[2], new Tuple<String, String>(parts[1], parts[0]));
             }
 
         } finally {

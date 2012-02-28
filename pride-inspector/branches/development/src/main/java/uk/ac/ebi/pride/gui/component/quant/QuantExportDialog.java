@@ -439,6 +439,13 @@ public class QuantExportDialog extends JDialog {
                     quantDataStartColIndex = mappedProtColIndex + 1;
                 }
 
+                // add header
+                value += proteinTable.getColumnName(mappedProtColIndex) + "\t";
+                for (int i = quantDataStartColIndex; i < colCnt; i++) {
+                    value += proteinTable.getColumnName(i) + "\t";
+                }
+                value = value.substring(0, value.length() - 1) + "\n";
+
                 for (int i = 0; i < rowCnt; i++) {
                     String prot = (String) proteinTable.getValueAt(i, mappedProtColIndex);
                     if (prot == null) {

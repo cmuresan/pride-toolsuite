@@ -419,6 +419,7 @@ public class QuantExportDialog extends JDialog {
 
         private String createQueryValue() {
             String value = "";
+            String separator = ",";
 
             int rowCnt = proteinTable.getRowCount();
             if (rowCnt > 0) {
@@ -440,9 +441,9 @@ public class QuantExportDialog extends JDialog {
                 }
 
                 // add header
-                value += proteinTable.getColumnName(mappedProtColIndex) + "\t";
+                value += proteinTable.getColumnName(mappedProtColIndex) + separator;
                 for (int i = quantDataStartColIndex; i < colCnt; i++) {
-                    value += proteinTable.getColumnName(i) + "\t";
+                    value += proteinTable.getColumnName(i) + separator;
                 }
                 value = value.substring(0, value.length() - 1) + "\n";
 
@@ -453,7 +454,7 @@ public class QuantExportDialog extends JDialog {
                     }
 
                     if (prot != null && quantDataStartColIndex > -1) {
-                        value += prot + "\t";
+                        value += prot + separator;
                         for (int j = quantDataStartColIndex; j < colCnt; j++) {
                             String colName = proteinTable.getColumnName(j);
                             if (colName.contains("/")) {
@@ -461,7 +462,7 @@ public class QuantExportDialog extends JDialog {
                                 if (quantVal != null) {
                                     value += quantVal;
                                 }
-                                value += "\t";
+                                value += separator;
                             }
                         }
                         value = value.substring(0, value.length() - 1) + "\n";

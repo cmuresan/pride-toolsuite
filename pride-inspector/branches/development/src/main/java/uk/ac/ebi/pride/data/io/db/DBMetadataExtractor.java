@@ -167,17 +167,22 @@ public class DBMetadataExtractor {
                     writer.print("\t");
                 } else {
                     String modName = "";
+                    List<String> ptmNames = new LinkedList<String>();
                     for (String s : modifications.keySet()) {
                         Tuple<String, String> ptmMappingDetail = ptmMappings.get(s);
                         if (ptmMappingDetail == null) {
-                            if (!modName.contains(modifications.get(s).getName())) {
-                                modName += modifications.get(s).getName() + ";";
+                            if (!ptmNames.contains(modifications.get(s).getName())) {
+                                ptmNames.add(modifications.get(s).getName());
                             }
                         } else {
-                            if (!modName.contains(ptmMappingDetail.getKey())) {
-                                modName = ptmMappingDetail.getKey() + ";" + modName;
+                            if (!ptmNames.contains(ptmMappingDetail.getKey())) {
+                                ptmNames.add(0, ptmMappingDetail.getKey());
                             }
                         }
+                    }
+
+                    for (String ptmName : ptmNames) {
+                        modName += ptmName + ";";
                     }
                     modName = modName.substring(0, modName.length() - 1);
                     writeEntry(writer, modName);

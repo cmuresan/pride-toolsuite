@@ -170,9 +170,13 @@ public class DBMetadataExtractor {
                     for (String s : modifications.keySet()) {
                         Tuple<String, String> ptmMappingDetail = ptmMappings.get(s);
                         if (ptmMappingDetail == null) {
-                            modName += modifications.get(s).getName() + ";";
+                            if (!modName.contains(modifications.get(s).getName())) {
+                                modName += modifications.get(s).getName() + ";";
+                            }
                         } else {
-                            modName = ptmMappingDetail.getKey() + ";" + modName;
+                            if (!modName.contains(ptmMappingDetail.getKey())) {
+                                modName = ptmMappingDetail.getKey() + ";" + modName;
+                            }
                         }
                     }
                     modName = modName.substring(0, modName.length() - 1);

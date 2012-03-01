@@ -12,6 +12,13 @@
 
 ----
 == News ==
+*_March 1. 2012:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.2.4] is now available:*
+ * Support precursor information at the peptide level.
+ * Additional PTM summary column for database search panel.
+ * Reactome pathway linkage from the quantification view. 
+ * PRIDE Inspector paper reference added to the welcome screen.
+ * A number of bug fixes.
+
 *_October 26. 2011:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.2.3] is now available:*
  * Problem on download protein details on Uniprot accessions, this was due to a change on Uniprot web service.
  * Bug fix on opening duplicated experiments from database.

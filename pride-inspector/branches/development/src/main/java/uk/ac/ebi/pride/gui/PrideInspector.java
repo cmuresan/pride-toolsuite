@@ -75,10 +75,10 @@ public class PrideInspector extends Desktop {
         storeCmdLineArgs(args);
         // load all properties
         loadProperties();
-        // init key controls
-        initKeyControls();
         // createAttributedSequence the main frame
         buildMainFrame();
+        // init key controls
+        initKeyControls();
         // createAttributedSequence menu bar
         buildMenuToolBar();
         // createAttributedSequence the bottom bar
@@ -184,14 +184,14 @@ public class PrideInspector extends Desktop {
         String osName = System.getProperty("os.name");
         if (osName.startsWith("Mac OS")) {
             InputMap textFieldInputMap = (InputMap) UIManager.get("TextField.focusInputMap");
-            textFieldInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.META_DOWN_MASK), DefaultEditorKit.copyAction);
-            textFieldInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.META_DOWN_MASK), DefaultEditorKit.pasteAction);
-            textFieldInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.META_DOWN_MASK), DefaultEditorKit.cutAction);
+            textFieldInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), DefaultEditorKit.copyAction);
+            textFieldInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), DefaultEditorKit.pasteAction);
+            textFieldInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), DefaultEditorKit.cutAction);
 
             InputMap textAreaInputMap = (InputMap) UIManager.get("TextArea.focusInputMap");
-            textAreaInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.META_DOWN_MASK), DefaultEditorKit.copyAction);
-            textAreaInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.META_DOWN_MASK), DefaultEditorKit.pasteAction);
-            textAreaInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.META_DOWN_MASK), DefaultEditorKit.cutAction);
+            textAreaInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), DefaultEditorKit.copyAction);
+            textAreaInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), DefaultEditorKit.pasteAction);
+            textAreaInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), DefaultEditorKit.cutAction);
         }
     }
 

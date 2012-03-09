@@ -119,7 +119,19 @@ Typically, the files are parsed when the DAO constructor is invoked. Due to pote
 
 === Identifications, Peptides, and PTMs ===
  
+PrideXML file format is "protein-oriented". This means that identifications consists of protein elements and their associated peptides. Therefore, the report.model.Identification object represents several entities associated with a protein:
 
+- Accession and other parameters (e.g. score, threshold)
+- List of Peptides (uk.ac.ebi.pride.tools.converter.report.model.Peptide).
+
+Each Peptide has itself associated more information:
+
+- AA sequence, spectrum reference, ID inside the spectrum, etc.
+- Additional parameters, including cvParams and userParams.
+
+Again, all this information comes from the source files. It is the DAO's responsibility to extract this information and instantiate the objects properly.
+
+=== Spectrum ===
 
 ----
 

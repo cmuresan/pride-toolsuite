@@ -106,13 +106,19 @@ minProbability.setDescription(
 );
 }}}
 
-== 4.) Main DAO Implementation Tasks ==
+== 4.) Main DAO Implementation Hints ==
 
 The process of implementing a DAO primarily consists of instantiating the entities contained in the package 'uk.ac.ebi.pride.tools.converter.report.model' using the information contained in the source(s) file(s) to convert from. These entities will be later on returned by the DAO interface when required by the PRIDE converter. We can see how these entities relate with the DAO in the class diagram.
 
 <<class diagram>>
 
+Using the entities provided through the DAO interface, the Converter can generates the PrideXML file. Actually, the report.model entities has been generated from the PrideXML schema.
 
+Typically, the files are parsed when the DAO constructor is invoked. Due to potential memory problems when dealing with big files, it is not recommended to keep in memory all these entities at the same time during source file parsing. Instead, an internal DAO-specific representation is recommended, using lightweight objects. These lightweight objects shall be used in the very last moment (when the DAO interface methods are invoked) to generate the report.model entities. The most representative example of this is the getIdentificationsIterator method. A typical implementation implemented its own Iterator and generates each Identification object in the Iterator.next() method, keeping in memory just one model entity.
+
+
+=== Identifications, Peptides, and PTMs ===
+ 
 
 
 ----

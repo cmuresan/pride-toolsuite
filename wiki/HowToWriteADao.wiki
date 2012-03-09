@@ -106,7 +106,7 @@ minProbability.setDescription(
 );
 }}}
 
-== 4.) Main DAO Implementation Hints ==
+== 4.) DAO Implementation Hints ==
 
 The process of implementing a DAO primarily consists of instantiating the entities contained in the package 'uk.ac.ebi.pride.tools.converter.report.model' using the information contained in the source(s) file(s) to convert from. These entities will be later on returned by the DAO interface when required by the PRIDE converter. We can see how these entities relate with the DAO in the class diagram.
 
@@ -121,13 +121,13 @@ Typically, the files are parsed when the DAO constructor is invoked. Due to pote
  
 PrideXML file format is "protein-oriented". This means that identifications consists of protein elements and their associated peptides. Therefore, the report.model.Identification object represents several entities associated with a protein:
 
-- Accession and other parameters (e.g. score, threshold)
-- List of Peptides (uk.ac.ebi.pride.tools.converter.report.model.Peptide).
+* Accession and other parameters (e.g. score, threshold)
+* List of Peptides (uk.ac.ebi.pride.tools.converter.report.model.Peptide).
 
 Each Peptide has itself associated more information:
 
-- AA sequence, spectrum reference, ID inside the spectrum, etc.
-- Additional parameters, including cvParams and userParams.
+* AA sequence, spectrum reference, ID inside the spectrum, etc.
+* Additional parameters, including cvParams and userParams.
 
 Again, all this information comes from the source files. It is the DAO's responsibility to extract this information and instantiate the objects properly.
 

@@ -110,7 +110,7 @@ minProbability.setDescription(
 
 The process of implementing a DAO primarily consists of instantiating the entities contained in the package 'uk.ac.ebi.pride.tools.converter.report.model' using the information contained in the source(s) file(s) to convert from. These entities will be later on returned by the DAO interface when required by the PRIDE converter. We can see how these entities relate with the DAO in the class diagram.
 
-[[file:http://farm8.staticflickr.com/7057/6966837261_dc4660d199_o.png|frameless|border|Class Diagram]]
+http://farm8.staticflickr.com/7057/6966837261_dc4660d199_o.png
 
 Using the entities provided through the DAO interface, the Converter can generates the PrideXML file. Actually, the report.model entities has been generated from the PrideXML schema.
 

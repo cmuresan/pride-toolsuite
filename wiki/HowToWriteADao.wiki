@@ -108,6 +108,11 @@ minProbability.setDescription(
 
 == 4.) Main DAO Implementation Tasks ==
 
+The process of implementing a DAO primarily consists of instantiating the entities contained in the package 'uk.ac.ebi.pride.tools.converter.report.model' using the information contained in the source(s) file(s) to convert from. These entities will be later on returned by the DAO interface when required by the PRIDE converter. We can see how these entities relate with the DAO in the class diagram.
+
+<<class diagram>>
+
+
 
 
 ----

@@ -106,7 +106,7 @@ minProbability.setDescription(
 );
 }}}
 
-== 4.) Main DAO Implementation Tasks
+== 4.) Main DAO Implementation Tasks ==
 
 
 

@@ -68,6 +68,8 @@ public class BinaryDataArray extends ParamGroup {
     public void setDataProcessing(DataProcessing dataProcessing) {
         this.dataProcessing = dataProcessing;
     }
+
+
 }
 
 

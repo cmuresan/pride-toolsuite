@@ -105,6 +105,11 @@ public abstract class MzGraph extends IdentifiableParamGroup {
         return arr;
     }
 
+    protected void setBinaryDataArray(Double[] values, String cvAcc){
+        BinaryDataArray arr = null;
+
+    }
+
     public DataProcessing getDataProcessing() {
         return this.defaultDataProcessing;
     }

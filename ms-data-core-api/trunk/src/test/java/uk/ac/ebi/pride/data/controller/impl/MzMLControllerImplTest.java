@@ -25,7 +25,7 @@ public class MzMLControllerImplTest {
 
     @Before
     public void setUp() throws Exception {
-        URL url = PrideXmlControllerImplTest.class.getClassLoader().getResource("tiny.pwiz.1.1.xml");
+        URL url = MzMLControllerImplTest.class.getClassLoader().getResource("tiny.pwiz.1.1.xml");
         if (url == null) {
             throw new IllegalStateException("no file for input found!");
         }

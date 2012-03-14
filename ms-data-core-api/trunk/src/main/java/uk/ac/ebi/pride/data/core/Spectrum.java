@@ -5,6 +5,7 @@ package uk.ac.ebi.pride.data.core;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.List;
+import java.util.Map;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -186,6 +187,7 @@ public class Spectrum extends MzGraph {
     public void setPeptide(Peptide peptide) {
         this.peptide = peptide;
     }
+
 }
 
 

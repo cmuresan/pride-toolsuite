@@ -9,7 +9,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
-import uk.ac.ebi.pride.data.controller.cache.impl.MzMLCacheBuilder;
+import uk.ac.ebi.pride.data.controller.cache.impl.MzMlCacheBuilder;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.core.Chromatogram;
 import uk.ac.ebi.pride.data.core.DataProcessing;
@@ -33,7 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * MzMLControllerImpl provides methods to access mzML files.
+ * MzXmlControllerImpl provides methods to access mzML files.
  * <p/>
  * User: rwang
  * Date: 02-Feb-2010
@@ -96,7 +96,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
                 DataAccessController.ContentCategory.SOFTWARE,
                 DataAccessController.ContentCategory.DATA_PROCESSING);
         // create cache builder
-        setCacheBuilder(new MzMLCacheBuilder(this));
+        setCacheBuilder(new MzMlCacheBuilder(this));
         // populate cache
         populateCache();
     }

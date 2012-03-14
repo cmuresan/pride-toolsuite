@@ -175,11 +175,12 @@ public class ParamGroup implements MassSpecObject {
 
         ParamGroup that = (ParamGroup) o;
 
-        if (!cvParams.equals(that.cvParams)) {
+
+        if (cvParams != null && !cvParams.equals(that.cvParams)) {
             return false;
         }
 
-        if (!userParams.equals(that.userParams)) {
+        if (userParams != null && !userParams.equals(that.userParams)) {
             return false;
         }
 

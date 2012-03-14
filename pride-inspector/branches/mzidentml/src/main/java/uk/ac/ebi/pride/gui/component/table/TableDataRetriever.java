@@ -112,30 +112,6 @@ public class TableDataRetriever {
         content.add(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 2));
 
 
-        if (specId != null) {
-            //int charge = controller.getPrecursorCharge(specId);
-            //content.add(charge == 0 ? null : charge);
-
-            // delta mass
-            // theoretical mass
-            //double mz = controller.getPrecursorMz(specId);
-            //List<Double> ptmMasses = new ArrayList<Double>();
-            //for (Modification mod : mods) {
-             //   List<Double> monoMasses = mod.getMonoisotopicMassDelta();
-             //   if (monoMasses != null && !monoMasses.isEmpty()) {
-             //       ptmMasses.add(monoMasses.get(0));
-             //   }
-            //}
-            //Double deltaMass = MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
-            //content.add(deltaMass == null ? null : NumberUtilities.scaleDouble(deltaMass, 2));
-
-            // precursor m/z
-            //content.add(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 2));
-        } else {
-            //content.add(null);
-            //content.add(null);
-            //content.add(null);
-        }
         // peptide ptms
         content.add(mods.size());
 
@@ -302,10 +278,6 @@ public class TableDataRetriever {
         } else {
             content.add(null);
         }
-
-        // Score
-      //  double score = controller.getIdentificationScore(identId);
-      //  content.add(score == -1 ? null : score);
 
         // Threshold
         double threshold = controller.getIdentificationThreshold(identId);

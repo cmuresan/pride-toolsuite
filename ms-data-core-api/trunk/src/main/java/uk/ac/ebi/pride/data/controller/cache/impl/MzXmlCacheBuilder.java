@@ -3,8 +3,8 @@ package uk.ac.ebi.pride.data.controller.cache.impl;
 //~--- non-JDK imports --------------------------------------------------------
 
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
-import uk.ac.ebi.pride.data.controller.impl.MzMLControllerImpl;
-import uk.ac.ebi.pride.data.io.file.MzMLUnmarshallerAdaptor;
+import uk.ac.ebi.pride.data.controller.impl.MzXmlControllerImpl;
+import uk.ac.ebi.pride.data.io.file.MzXmlUnmarshallerAdaptor;
 
 import java.util.ArrayList;
 
@@ -17,13 +17,13 @@ import java.util.ArrayList;
  * Date: 06-Sep-2010
  * Time: 17:07:55
  */
-public class MzMLCacheBuilder extends AbstractAccessCacheBuilder {
-    public MzMLCacheBuilder(MzMLControllerImpl c) {
+public class MzXmlCacheBuilder extends AbstractAccessCacheBuilder {
+    public MzXmlCacheBuilder(MzXmlControllerImpl c) {
         super(c);
     }
 
     /**
-     * For the moment, MzMLCacheBuilder only caches spectrum ids and chromatogram ids.
+     * For the moment, MzXmlCacheBuilder only caches spectrum ids and chromatogram ids.
      *
      * @throws Exception error while caching the ids.
      */
@@ -32,15 +32,11 @@ public class MzMLCacheBuilder extends AbstractAccessCacheBuilder {
         super.populate();
 
         // get a direct reference to unmarshaller
-        MzMLUnmarshallerAdaptor unmarshaller = ((MzMLControllerImpl) controller).getUnmarshaller();
+        MzXmlUnmarshallerAdaptor unmarshaller = ((MzXmlControllerImpl) controller).getUnmarshaller();
 
         // clear and add spectrum ids
         cache.clear(CacheCategory.SPECTRUM_ID);
         cache.storeInBatch(CacheCategory.SPECTRUM_ID, new ArrayList<Comparable>(unmarshaller.getSpectrumIds()));
-
-        // clear and add chromatogram ids
-        cache.clear(CacheCategory.CHROMATOGRAM_ID);
-        cache.storeInBatch(CacheCategory.CHROMATOGRAM_ID, new ArrayList<Comparable>(unmarshaller.getChromatogramIds()));
     }
 }
 

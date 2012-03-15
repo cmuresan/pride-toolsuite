@@ -3,35 +3,34 @@ package uk.ac.ebi.pride.data.controller.impl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.core.Spectrum;
 
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Created by IntelliJ IDEA.
  * User: yperez
- * Date: 3/13/12
- * Time: 9:58 PM
+ * Date: 3/15/12
+ * Time: 12:45 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MzXmlControllerImplTest {
+public class MzDataControllerImplTest {
 
-    private MzXmlControllerImpl mzXmlController = null;
+    private MzDataControllerImpl mzXmlController = null;
 
     @Before
     public void setUp() throws Exception {
-        URL url = MzXmlControllerImplTest.class.getClassLoader().getResource("testfile.mzXML");
+        URL url = MzXmlControllerImplTest.class.getClassLoader().getResource("PRIDE_Exp_mzData_Ac_8869.xml");
         if (url == null) {
             throw new IllegalStateException("no file for input found!");
         }
         File inputFile = new File(url.toURI());
-        mzXmlController = new MzXmlControllerImpl(inputFile);
+        mzXmlController = new MzDataControllerImpl(inputFile);
     }
 
     @After
@@ -42,7 +41,7 @@ public class MzXmlControllerImplTest {
     @Test
     public void testGetSpectrumIds() throws Exception {
         List<Comparable> ids = new ArrayList<Comparable>(mzXmlController.getSpectrumIds());
-        assertTrue("There should be four Spectras", ids.size() == 9181);
+        assertTrue("There should be four Spectras", ids.size() == 2139);
         assertTrue("The id of the first spectra should be", ids.contains("1"));
         assertTrue("The id of the Four spectra should be", ids.contains("4"));
     }

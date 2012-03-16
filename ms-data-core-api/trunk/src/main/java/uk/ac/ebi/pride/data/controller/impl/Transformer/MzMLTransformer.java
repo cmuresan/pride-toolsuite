@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.data.controller.impl;
+package uk.ac.ebi.pride.data.controller.impl.Transformer;
 
 import uk.ac.ebi.jmzml.model.mzml.ComponentList;
 import uk.ac.ebi.jmzml.model.mzml.FileDescription;

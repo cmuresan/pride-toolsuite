@@ -70,7 +70,11 @@ public interface Constants {
     public static final String XML_FILE = ".xml";
     public static final String GZIPPED_FILE = ".gz";
     public static final String MZIDENT_FILE =".mzid";
-    public static final String MZXML_FILE   = ".mzXML";
+    public static final String MZXML_FILE   = ".mzxml";
+    public static final String MGF_EXT = ".mgf";
+    public static final String DTA_EXT = ".dta";
+    public static final String MS2_EXT = ".ms2";
+    public static final String PKL_EXT = ".pkl";
 
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");

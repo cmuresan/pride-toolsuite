@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.data.controller.impl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzMLControllerImpl;
 import uk.ac.ebi.pride.data.core.*;
 
 import java.io.File;

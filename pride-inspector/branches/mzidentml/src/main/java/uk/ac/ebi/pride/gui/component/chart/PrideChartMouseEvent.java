@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.gui.component.chart;
 
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
-import uk.ac.ebi.pride.data.controller.impl.PrideChartManager;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideChartManager;
 
 /**
  * <p>A.</p>

@@ -14,6 +14,7 @@ import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
 
+import javax.xml.bind.JAXBException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -512,19 +513,22 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         Peptide peptide = super.getPeptideByIndex(identId, index, useCache);
         if (peptide == null) {
             logger.debug("Get new peptide from file: {}", index);
-            Identification ident = MzIdentMLTransformer.transformToIdentification(unmarshaller.getIdentificationById(identId), unmarshaller.getFragmentationTable());
-            List<Peptide> peptides = MzIdentMLTransformer.transformToPeptideIdentifications(unmarshaller.getPeptideHypothesisbyID(identId), unmarshaller.getFragmentationTable());
-            ident.setPeptides(peptides);
-            peptide = ident.getPeptides().get(Integer.parseInt(index.toString()));
-            if (useCache && peptide != null) {
-                // store peptide
-                getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, index), peptide);
-                // store precursor charge and m/z
-                Spectrum spectrum = peptide.getSpectrum();
-                if (spectrum != null) {
-                    getCache().store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
-                    getCache().store(CacheCategory.PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+            Identification ident = null;
+            try {
+                ident = MzIdentMLTransformer.transformToIdentification(unmarshaller.getIdentificationById(identId), unmarshaller.getFragmentationTable());
+                List<Peptide> peptides = MzIdentMLTransformer.transformToPeptideIdentifications(unmarshaller.getPeptideHypothesisbyID(identId), unmarshaller.getFragmentationTable());
+                ident.setPeptides(peptides);
+                peptide = ident.getPeptides().get(Integer.parseInt(index.toString()));
+                if (useCache && peptide != null) {
+                    getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, index), peptide);
+                    Spectrum spectrum = peptide.getSpectrum();
+                    if (spectrum != null) {
+                        getCache().store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
+                        getCache().store(CacheCategory.PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+                    }
                 }
+            } catch (JAXBException e) {
+                throw new DataAccessException("Failed to retrieve peptide identification: " + identId + " " + index, e);
             }
         }
         return peptide;

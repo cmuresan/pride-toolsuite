@@ -4,7 +4,7 @@ package uk.ac.ebi.pride.data.controller.cache.impl;
 
 import uk.ac.ebi.jmzidml.MzIdentMLElement;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
-import uk.ac.ebi.pride.data.controller.impl.MzIdentMLControllerImpl;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
 
 import java.util.ArrayList;

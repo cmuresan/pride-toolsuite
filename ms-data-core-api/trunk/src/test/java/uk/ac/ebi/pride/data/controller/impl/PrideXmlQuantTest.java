@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.data.controller.impl;
 
 import org.junit.Before;
 import org.junit.Test;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
 import uk.ac.ebi.pride.data.core.CvParam;
 import uk.ac.ebi.pride.data.core.Quantitation;
 import uk.ac.ebi.pride.data.core.QuantitativeSample;

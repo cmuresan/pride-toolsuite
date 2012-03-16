@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.data.controller.impl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzDataControllerImpl;
 import uk.ac.ebi.pride.data.core.Spectrum;
 
 import java.io.File;

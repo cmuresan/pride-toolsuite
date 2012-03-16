@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.db;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.controller.impl.MzMLControllerImpl;
-import uk.ac.ebi.pride.data.controller.impl.PrideXmlControllerImpl;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzMLControllerImpl;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
 
 import java.io.File;
 import java.io.FileWriter;

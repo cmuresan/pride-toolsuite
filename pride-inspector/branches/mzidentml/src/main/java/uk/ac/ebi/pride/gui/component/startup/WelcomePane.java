@@ -39,7 +39,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
     /**
      * Open file label
      */
-    private static final String OPEN_FILE = "Open mzML/MzIdentML or PRIDE XML Files";
+    private static final String OPEN_FILE = "Open Identification or Peak Files";
 
     /**
      * Connect to pride database

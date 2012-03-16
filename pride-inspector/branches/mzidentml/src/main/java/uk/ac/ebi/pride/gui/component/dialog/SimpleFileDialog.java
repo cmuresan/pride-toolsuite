@@ -11,6 +11,7 @@ import java.io.File;
  * Time: 11:54:20
  */
 public class SimpleFileDialog extends JFileChooser {
+
     private static final String OPEN_FILE = "Open File";
     private static final String SAVE_FILE = "Save File";
 

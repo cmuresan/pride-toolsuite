@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.component.chart;
 
 import uk.ac.ebi.pride.chart.graphics.interfaces.PrideChartLegend;
-import uk.ac.ebi.pride.data.controller.impl.PrideChartManager;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideChartManager;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

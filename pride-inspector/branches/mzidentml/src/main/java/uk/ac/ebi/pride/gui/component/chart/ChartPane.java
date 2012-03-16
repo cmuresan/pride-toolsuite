@@ -4,7 +4,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.Title;
 import uk.ac.ebi.pride.chart.graphics.implementation.PrideChartException;
-import uk.ac.ebi.pride.data.controller.impl.PrideChartManager;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideChartManager;
 
 import javax.swing.*;
 import java.awt.*;

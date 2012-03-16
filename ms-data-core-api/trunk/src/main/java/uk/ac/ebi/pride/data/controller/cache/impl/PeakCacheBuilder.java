@@ -1,21 +1,22 @@
 package uk.ac.ebi.pride.data.controller.cache.impl;
 
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
-import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzMLControllerImpl;
-import uk.ac.ebi.pride.data.io.file.MzMLUnmarshallerAdaptor;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzXmlControllerImpl;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PeakControllerImpl;
+import uk.ac.ebi.pride.data.io.file.PeakUnmarshallerAdaptor;
 
 import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
  * User: yperez
- * Date: 3/13/12
- * Time: 2:48 PM
+ * Date: 3/15/12
+ * Time: 10:45 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MzMlCacheBuilder extends AbstractAccessCacheBuilder{
+public class PeakCacheBuilder extends AbstractAccessCacheBuilder {
 
-     public MzMlCacheBuilder(MzMLControllerImpl c) {
+    public PeakCacheBuilder(PeakControllerImpl c) {
         super(c);
     }
 
@@ -29,14 +30,10 @@ public class MzMlCacheBuilder extends AbstractAccessCacheBuilder{
         super.populate();
 
         // get a direct reference to unmarshaller
-        MzMLUnmarshallerAdaptor unmarshaller = ((MzMLControllerImpl) controller).getUnmarshaller();
+        PeakUnmarshallerAdaptor unmarshaller = ((PeakControllerImpl) controller).getUnmarshaller();
 
         // clear and add spectrum ids
         cache.clear(CacheCategory.SPECTRUM_ID);
         cache.storeInBatch(CacheCategory.SPECTRUM_ID, new ArrayList<Comparable>(unmarshaller.getSpectrumIds()));
-
-        // clear and add chromatograms ids
-        cache.clear(CacheCategory.CHROMATOGRAM_ID);
-        cache.storeInBatch(CacheCategory.CHROMATOGRAM_ID, new ArrayList<Comparable>(unmarshaller.getChromatogramIds()));
     }
 }

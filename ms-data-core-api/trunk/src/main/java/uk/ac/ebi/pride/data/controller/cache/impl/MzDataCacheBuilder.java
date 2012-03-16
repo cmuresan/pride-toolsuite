@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.data.controller.cache.impl;
 
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
-import uk.ac.ebi.pride.data.controller.impl.MzDataControllerImpl;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzDataControllerImpl;
 import uk.ac.ebi.pride.data.io.file.MzDataUnmarshallerAdaptor;
 
 import java.util.ArrayList;

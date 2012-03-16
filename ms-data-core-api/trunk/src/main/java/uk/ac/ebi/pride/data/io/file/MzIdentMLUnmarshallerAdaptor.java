@@ -8,6 +8,8 @@ import uk.ac.ebi.jmzidml.xml.io.MzIdentMLUnmarshaller;
 
 import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -35,19 +37,6 @@ public class MzIdentMLUnmarshallerAdaptor {
         return unmarshaller.getMzIdentMLVersion();
     }
 
-    /*
-     * public CVList getCVList() throws MzMLUnmarshallerException {
-     *   return unmarshaller.unmarshalFromXpath("/mzML/cvList", CVList.class);
-     * }
-     *
-     * public FileDescription getFileDescription() throws MzMLUnmarshallerException {
-     *   return unmarshaller.unmarshalFromXpath("/mzML/fileDescription", FileDescription.class);
-     * }
-     *
-     * public ReferenceableParamGroupList getReferenceableParamGroupList() throws MzMLUnmarshallerException {
-     *   return unmarshaller.unmarshalFromXpath("/mzML/referenceableParamGroupList", ReferenceableParamGroupList.class);
-     * }
-     */
     public List<Sample> getSampleList() {
         uk.ac.ebi.jmzidml.model.mzidml.AnalysisSampleCollection asc =
             unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AnalysisSampleCollection.class);
@@ -143,9 +132,25 @@ public class MzIdentMLUnmarshallerAdaptor {
          * This is the only way that we can use now to retrieve the name property
          * In the future we need to think in more elaborated way.
          */
-        return (properties.containsKey("name"))
-               ? properties.get("name")
-               : "Unknown experiment (mzIdentML)";
+        return (properties.containsKey("name"))  ? properties.get("name") : "Unknown experiment (mzIdentML)";
+    }
+
+    public Date getCreationDate(){
+        Map<String, String> properties = unmarshaller.getElementAttributes(unmarshaller.getMzIdentMLId(),
+                                             uk.ac.ebi.jmzidml.model.mzidml.MzIdentML.class);
+
+        /*
+         * This is the only way that we can use now to retrieve the name property
+         * In the future we need to think in more elaborated way.
+         */
+        Date dateCreation = null;
+        if(properties.containsKey("creationDate")){
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");
+                Calendar calendar = javax.xml.bind.DatatypeConverter.parseDateTime(properties.get("creationDate"));
+                dateCreation = calendar.getTime();
+        }
+        return dateCreation;
+
     }
 
     public Provider getProvider() {

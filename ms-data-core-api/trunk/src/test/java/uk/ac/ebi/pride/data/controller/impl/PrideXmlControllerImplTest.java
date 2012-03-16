@@ -88,7 +88,7 @@ public class PrideXmlControllerImplTest {
 
     @Test
     public void testGetMetaData() throws Exception {
-        ExperimentMetaData experiment = (ExperimentMetaData) prideController.getExperimentMetaData();
+        ExperimentMetaData experiment = prideController.getExperimentMetaData();
 
         // test additional param
         List<CvParam> additional = experiment.getCvParams();

@@ -395,7 +395,7 @@ public class MzIdentMLTransformer {
                 for (int i = 1 ; i < ionType.getIndex().size();i++){
                     boolean found = false;
                     int j = 0;
-                    while ((found == false) && (j < listIds.size())){
+                    while ((!found) && (j < listIds.size())){
                       if(ionType.getIndex().get(i) == listIds.get(j)){
                           found = true;
                       }

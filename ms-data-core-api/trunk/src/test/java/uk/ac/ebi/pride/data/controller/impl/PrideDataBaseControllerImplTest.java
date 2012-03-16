@@ -97,7 +97,7 @@ public class PrideDataBaseControllerImplTest {
 
     @Test
     public void testGetMetaData() throws Exception {
-        ExperimentMetaData experiment = (ExperimentMetaData) prideController.getExperimentMetaData();
+        ExperimentMetaData experiment = prideController.getExperimentMetaData();
 
         // test references
         List<Reference> references = experiment.getReferences();

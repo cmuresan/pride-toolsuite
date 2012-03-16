@@ -68,7 +68,7 @@ public class IdentificationMetadataPanel extends JPanel {
         if (spectrumIdentificationProtocolList != null) {
             for (SpectrumIdentificationProtocol spectrumIdentificationProtocol : spectrumIdentificationProtocolList) {
                 String name = spectrumIdentificationProtocol.getName();
-                if(name == null) name ="Dafault";
+                if(name == null) name ="Default";
                 String software = spectrumIdentificationProtocol.getAnalysisSoftware().getName();
                 PeptideIdentificationMetadataPanel peptideComp = new PeptideIdentificationMetadataPanel(spectrumIdentificationProtocol);
                 peptideProtocolTabbedPane.addTab("Protocol " + name + ", Software" + software, peptideComp);

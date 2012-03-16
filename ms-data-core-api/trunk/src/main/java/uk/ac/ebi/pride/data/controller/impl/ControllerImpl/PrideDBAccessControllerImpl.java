@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.data.controller.impl;
+package uk.ac.ebi.pride.data.controller.impl.ControllerImpl;
 
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;

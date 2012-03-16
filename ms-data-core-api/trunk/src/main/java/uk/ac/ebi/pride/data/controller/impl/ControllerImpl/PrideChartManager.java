@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.data.controller.impl;
+package uk.ac.ebi.pride.data.controller.impl.ControllerImpl;
 
 import uk.ac.ebi.pride.chart.graphics.implementation.PrideChart;
 

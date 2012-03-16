@@ -1,10 +1,7 @@
-package uk.ac.ebi.pride.data.controller.impl;
+package uk.ac.ebi.pride.data.controller.impl.ControllerImpl;
 
-import com.compomics.util.experiment.biology.Protein;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis;
-import uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis;
 import uk.ac.ebi.jmzidml.xml.io.MzIdentMLUnmarshaller;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
@@ -12,12 +9,11 @@ import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.cache.impl.MzIdentMLCacheBuilder;
+import uk.ac.ebi.pride.data.controller.impl.Transformer.MzIdentMLTransformer;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
-import uk.ac.ebi.pride.term.CvTermReference;
 
-import javax.xml.bind.JAXBException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -428,7 +424,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         if (peptide == null) {
             logger.debug("Get new peptide from file: {}", index);
             Identification ident = MzIdentMLTransformer.transformToIdentification(unmarshaller.getIdentificationById(identId),unmarshaller.getFragmentationTable());
-            List<Peptide> peptides = MzIdentMLTransformer.transformToPeptideIdentifications(unmarshaller.getPeptideHypothesisbyID(identId),unmarshaller.getFragmentationTable());
+            List<Peptide> peptides = MzIdentMLTransformer.transformToPeptideIdentifications(unmarshaller.getPeptideHypothesisbyID(identId), unmarshaller.getFragmentationTable());
             ident.setPeptides(peptides);
             peptide = ident.getPeptides().get(Integer.parseInt(index.toString()));
             if (useCache && peptide != null) {

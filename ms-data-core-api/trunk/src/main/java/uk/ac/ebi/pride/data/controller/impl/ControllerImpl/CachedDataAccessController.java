@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.data.controller.impl;
+package uk.ac.ebi.pride.data.controller.impl.ControllerImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

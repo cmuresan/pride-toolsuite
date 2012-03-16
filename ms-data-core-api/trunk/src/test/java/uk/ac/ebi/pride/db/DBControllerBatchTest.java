@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.db;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.controller.impl.PrideDBAccessControllerImpl;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideDBAccessControllerImpl;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import java.util.Collection;
 

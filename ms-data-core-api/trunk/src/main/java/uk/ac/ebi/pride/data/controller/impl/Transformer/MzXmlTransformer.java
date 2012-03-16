@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.data.controller.impl;
+package uk.ac.ebi.pride.data.controller.impl.Transformer;
 
 import sun.nio.cs.ext.DoubleByteEncoder;
 import uk.ac.ebi.jmzml.model.mzml.ComponentList;

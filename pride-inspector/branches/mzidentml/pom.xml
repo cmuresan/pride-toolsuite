@@ -85,6 +85,7 @@
             <artifactId>logback-classic</artifactId>
             <version>0.9.24</version>
         </dependency>
+        <!--ms-core-api dependency-->
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>ms-data-core-api</artifactId>

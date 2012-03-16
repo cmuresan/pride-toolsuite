@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.gui.task.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.pride.data.controller.impl.PrideXmlControllerImpl;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;

@@ -19,12 +19,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * ToDo: document this class
+ * The MzIdentMLControllerImpl is the controller that retrieve the information from
+ * the mzidentml files. It have support for Experiment Metadata (Global metadata),
+ * also it have information about the IdentificationMetadata. The MzGraphMetaData is not
+ * supported for this files because they not contains information about spectrums. The controller
+ * support the mzidentml schema version 1.1.
  * <p/>
  * User: yperez
  * Date: 19/09/11
@@ -32,21 +37,47 @@ import java.util.regex.Pattern;
  */
 public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
+    // Logger property to trace the Errors
     private static final Logger logger = LoggerFactory.getLogger(MzIdentMLControllerImpl.class);
 
+    //The unmarshller class that retrieve the information from the mzidentml files
     private MzIdentMLUnmarshallerAdaptor unmarshaller = null;
 
+    // The Match pattern for a valid mzidentml file, its support now the version 1.1.
     private static Pattern mzIdentMLHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<(MzIdentML)|(indexedmzIdentML) xmlns=.*", Pattern.MULTILINE);
 
+
+    /**
+     * The constructor used by Default the CACHE_AND_SOURCE mode, it
+     * means retrieve information from cache first,
+     * if didn't find anything,then read from data source directly.
+     *
+     * @param file
+     * @throws DataAccessException
+     */
     public MzIdentMLControllerImpl(File file) throws DataAccessException {
         this(file, null);
     }
 
+    /**
+     * Default Constructor extends the CacheDataAccessController
+     *
+     * @param file mzidentml file
+     * @param mode if the the mode is using Cache or retrieving from Source
+     * @throws DataAccessException
+     */
     public MzIdentMLControllerImpl(File file, DataAccessMode mode) throws DataAccessException {
         super(file, mode);
         initialize();
     }
 
+    /**
+     * This function initialize all the Categories in which the Controller
+     * used the Cache System. In this case it wil be use cache for PROTEIN,
+     * PEPTIDE, SAMPLE and SOFTWARE.
+     *
+     * @throws DataAccessException
+     */
     protected void initialize() throws DataAccessException {
         // create pride access utils
         File file = (File) getSource();
@@ -61,10 +92,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 ContentCategory.PROTEIN,
                 ContentCategory.PEPTIDE,
                 ContentCategory.SAMPLE,
-                ContentCategory.PROTOCOL,
-                ContentCategory.INSTRUMENT,
-                ContentCategory.SOFTWARE,
-                ContentCategory.DATA_PROCESSING
+                ContentCategory.SOFTWARE
         );
         // set cache builder
         setCacheBuilder(new MzIdentMLCacheBuilder(this));
@@ -72,10 +100,21 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         populateCache();
     }
 
+    /**
+     * Return the mzidentml unmarshall adaptor to be used by the CacheBuilder
+     * Implementation.
+     *
+     * @return MzIdentMLUnmarshallerAdaptor
+     */
     public MzIdentMLUnmarshallerAdaptor getUnmarshaller() {
         return unmarshaller;
     }
 
+    /**
+     * Get the unique id of the data access controller
+     *
+     * @return String  unique id
+     */
     @Override
     public String getUid() {
         String uid = super.getUid();
@@ -121,6 +160,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return sourceFiles;
     }
 
+    /**
+     * Get a list of Organization Contacts
+     *
+     * @return List<Organization> A List of Organizations
+     * @throws DataAccessException
+     */
     @Override
     public List<Organization> getOrganizationContacts() throws DataAccessException {
         List<Organization> organizationList;
@@ -132,6 +177,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return organizationList;
     }
 
+    /**
+     * Get a list of Person Contacts
+     *
+     * @return List<Person> A list of Persons
+     * @throws DataAccessException
+     */
     @Override
     public List<Person> getPersonContacts() throws DataAccessException {
         List<Person> personList;
@@ -175,13 +226,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         ExperimentMetaData metaData = super.getExperimentMetaData();
         if (metaData == null) {
             return MzIdentMLTransformer.transformToProvider(unmarshaller.getProvider());
-
         }
         return metaData.getProvider();
     }
 
     /**
-     * Get a list of software
+     * Get a list of softwares
      *
      * @return List<Software>   a list of software objects.
      * @throws DataAccessException data access exception
@@ -219,42 +269,40 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * Get the protocol object
+     * Protocol is not supported by mzidentml files. In this case ExperimentProtocol is
+     * related with Sample Experimental Protocol, this concept comes from PRIDE XML Files
+     * and it is not included in any field on mzidentml.
      *
-     * @return Protocol protocol object.
+     * @return ExperimentProtocol protocol object.
      * @throws DataAccessException data access exception
      */
     public ExperimentProtocol getProtocol() throws DataAccessException {
-        try {
-            // ToDo: implementation needed
-            //  return PrideXmlTransformer.transformProtocol(reader.getProtocol());
-        } catch (Exception ex) {
-            throw new DataAccessException("Failed to retrieve protocol", ex);
-        }
-        return null;
+        throw new UnsupportedOperationException("This method is not supported");
     }
 
     /**
-     * Get additional parameters
+     * Additional is a concept that comes from PRIDE XML Files. The mzidentml
+     * contains all information inside the different objects, not extra information
+     * will be provided outside the Root objects.
      *
      * @return ParamGroup   a group of cv parameters and user parameters.
-     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
+     * @throws DataAccessException
      *
      */
     @Override
     public ParamGroup getAdditional() throws DataAccessException {
-        ExperimentMetaData metaData = super.getExperimentMetaData();
-        if (metaData == null) {
-            try {
-                // ToDo: implementation needed
-                // return PrideXmlTransformer.transformAdditional(reader.getAdditionalParams());
-            } catch (Exception ex) {
-                throw new DataAccessException("Failed to retrieve additional information", ex);
-            }
-        }
-        return null;
+        throw new UnsupportedOperationException("This method is not supported");
     }
 
+    /**
+     * The mzidentml do not support Quatitation Data
+     * @return
+     * @throws DataAccessException
+     */
+    @Override
+    public boolean hasQuantData() throws DataAccessException {
+        return false;
+    }
 
     /**
      * Get meta data related to this experiment
@@ -268,17 +316,14 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
         if (metaData == null) {
             try {
-
-                // Get Accession for Pride XML Object
+                // Get Accession for MzIdentML Object
                 String accession = unmarshaller.getMzIdentMLId();
-                // Get the Version of the Pride File.
+                // Get the Version of the MzIdentML File.
                 String version = unmarshaller.getMzIdentMLVersion();
                 //Get Source File List
                 List<SourceFile> sources = getSourceFiles();
-                //List<SourceFile> sources = null;
-                // Get Samples objects for PRide Object
+                //Get Sample List
                 List<Sample> samples = getSamples();
-                //List<Sample> samples = null;
                 // Get all the softwares related with the object
                 List<Software> softwares = getSoftwares();
                 // Get Contact Persons
@@ -286,20 +331,21 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 // Get the Contact Organization
                 List<Organization> organizations = getOrganizationContacts();
                 // Get Additional Information Related with the Project
-                ParamGroup additional = getAdditional();
+                ParamGroup additional = null;
                 // Get the Experiment Title
                 String title = unmarshaller.getMzIdentMLName();
                 // Get The Experiment Short Label, in case of mzidentml we decided to show the same value of the Id.
-                String shortLabel = unmarshaller.getMzIdentMLId();
+                String shortLabel = unmarshaller.getMzIdentMLName();
                 //Get Experiment Protocol
-                //Todo: We need to think if it would be possible to convert the protocols to a ExperimentProtocol see Johannes Code
-                ExperimentProtocol protocol = getProtocol();
+                ExperimentProtocol protocol = null;
                 // Get References From the Experiment
                 List<Reference> references = getReferences();
                 // Get the provider object of the MzIdentMl file
                 Provider provider = getProvider();
-
-                metaData = new ExperimentMetaData(additional, accession, title, version, shortLabel, samples, softwares, persons, sources, provider, organizations, references, null, null, protocol);
+                //Get Creation Date
+                Date creationDate = unmarshaller.getCreationDate();
+                //Create the ExperimentMetaData Object
+                metaData = new ExperimentMetaData(additional, accession, title, version, shortLabel, samples, softwares, persons, sources, provider, organizations, references, creationDate, null, protocol);
                 // store it in the cache
                 getCache().store(CacheCategory.EXPERIMENT_METADATA, metaData);
             } catch (Exception ex) {
@@ -310,6 +356,13 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return metaData;
     }
 
+    /**
+     * The spectrum IdentificationProtocol is the Set of parameters Related with
+     * the Spectrum Identification Process in terms of Search Engines, Databases,
+     * Enzymes, Modifications and Database Filters, etc
+     * @return List<SpectrumIdentificationProtocol> A List of Spectrum Identification Protocols
+     * @throws DataAccessException
+     */
     @Override
     public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() throws DataAccessException {
         IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
@@ -320,6 +373,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return identificationMetaData.getSpectrumIdentificationProtocolList();
     }
 
+    /**
+     * The Protein Protocol is a relation of different Software and Processing Steps with
+     * the Identified Proteins.
+     * @return Protocol Protein Protocol
+     * @throws DataAccessException
+     */
     @Override
     public Protocol getProteinDetectionProtocol() throws DataAccessException {
         IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
@@ -329,6 +388,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return identificationMetaData.getProteinDetectionProtocol();
     }
 
+    /**
+     * Get the List of Databases used in the Experiment
+     *
+     * @return List<SearchDataBase> List of SearchDatabases
+     * @throws DataAccessException
+     */
     @Override
     public List<SearchDataBase> getSearchDataBases() throws DataAccessException {
         IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
@@ -338,23 +403,31 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return identificationMetaData.getSearchDataBaseList();
     }
 
+    /**
+     * The IdentificationMetadata is a Combination of SpectrumIdentificationProtocol,
+     * a Protein Protocol and finally the Databases used in the Experiment.
+     *
+     * @return IdentificationMetadata the metadata related with the identification process
+     * @throws DataAccessException
+     */
     @Override
     public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
         IdentificationMetaData metaData = super.getIdentificationMetaData();
         if (metaData == null) {
             List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = getSpectrumIdentificationProtocol();
-            //Todo: Try to convert the CVTerms in Pride to SpectrumIdentificationProtocol
             Protocol proteinDetectionProtocol = getProteinDetectionProtocol();
-            //Todo: Try to convert the CVTerms in Pride to Protocol
             List<SearchDataBase> searchDataBaseList = getSearchDataBases();
-            //Todo: We need to search in the peptides Identifications all of the Search Databases Used.
-            //Todo: We need to search all of the possible modifications presented in the experiment.
-
             metaData = new IdentificationMetaData(null, null, spectrumIdentificationProtocolList, proteinDetectionProtocol, searchDataBaseList);
         }
         return metaData;
     }
 
+    /**
+     * Get the List of File Spectras that the Mzidentml use to identified peptides
+     *
+     * @return
+     * @throws DataAccessException
+     */
     @Override
     public List<SpectraData> getSpectraDataFiles() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
@@ -364,10 +437,26 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return metaData.getSpectraDataList();
     }
 
+    /**
+     * MzidemtML files do not support Spectra MetaData. It is supported by MzML and
+     * PRIDE Objects, also by other file Formats.
+     * @return
+     * @throws DataAccessException
+     */
     @Override
     public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
-        MzGraphMetaData metaData = null;
-        return metaData;
+       throw new UnsupportedOperationException("This method is not supported");
+    }
+
+    /**
+     * The MzGraphMetadata is not supported by mzidentml.
+     *
+     * @return
+     * @throws DataAccessException
+     */
+    @Override
+    public boolean hasSpectrum() throws DataAccessException {
+        return false;
     }
 
     /**
@@ -387,7 +476,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             logger.debug("Get new identification from file: {}", id);
             try {
                 ident = MzIdentMLTransformer.transformToIdentification(unmarshaller.getIdentificationById(id), unmarshaller.getFragmentationTable());
-                List<Peptide> peptides = MzIdentMLTransformer.transformToPeptideIdentifications(unmarshaller.getPeptideHypothesisbyID(id),unmarshaller.getFragmentationTable());
+                List<Peptide> peptides = MzIdentMLTransformer.transformToPeptideIdentifications(unmarshaller.getPeptideHypothesisbyID(id), unmarshaller.getFragmentationTable());
                 ident.setPeptides(peptides);
                 if (useCache && ident != null) {
                     // store identification into cache
@@ -419,11 +508,11 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @throws DataAccessException exception while getting peptide
      */
     @Override
-    public Peptide getPeptideByIndex(Comparable identId, Comparable index, boolean useCache) throws DataAccessException{
+    public Peptide getPeptideByIndex(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
         Peptide peptide = super.getPeptideByIndex(identId, index, useCache);
         if (peptide == null) {
             logger.debug("Get new peptide from file: {}", index);
-            Identification ident = MzIdentMLTransformer.transformToIdentification(unmarshaller.getIdentificationById(identId),unmarshaller.getFragmentationTable());
+            Identification ident = MzIdentMLTransformer.transformToIdentification(unmarshaller.getIdentificationById(identId), unmarshaller.getFragmentationTable());
             List<Peptide> peptides = MzIdentMLTransformer.transformToPeptideIdentifications(unmarshaller.getPeptideHypothesisbyID(identId), unmarshaller.getFragmentationTable());
             ident.setPeptides(peptides);
             peptide = ident.getPeptides().get(Integer.parseInt(index.toString()));

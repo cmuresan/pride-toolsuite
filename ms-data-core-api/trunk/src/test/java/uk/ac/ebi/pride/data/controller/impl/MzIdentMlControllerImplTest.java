@@ -59,7 +59,7 @@ public class MzIdentMlControllerImplTest {
 
     @Test
     public void testGetMetaData() throws Exception {
-        ExperimentMetaData experiment = (ExperimentMetaData) mzIdentMlController.getExperimentMetaData();
+        ExperimentMetaData experiment = mzIdentMlController.getExperimentMetaData();
 
         // test references
         List<Reference> references = experiment.getReferences();
@@ -96,7 +96,7 @@ public class MzIdentMlControllerImplTest {
 
     @Test
     public void testGetIdentificationMetaData() throws Exception {
-        IdentificationMetaData experiment = (IdentificationMetaData) mzIdentMlController.getIdentificationMetaData();
+        IdentificationMetaData experiment = mzIdentMlController.getIdentificationMetaData();
 
         // test SearchDatabase
         List<SearchDataBase> databases = experiment.getSearchDataBaseList();

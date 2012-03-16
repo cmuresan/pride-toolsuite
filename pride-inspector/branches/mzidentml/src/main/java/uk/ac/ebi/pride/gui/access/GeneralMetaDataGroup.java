@@ -50,14 +50,23 @@ public class GeneralMetaDataGroup {
     }
 
     public Object getId() {
+        if(getMetaData() == null){
+            return null;
+        }
         return this.getMetaData().getId();
     }
 
     public String getName() {
+        if(getMetaData() == null){
+            return null;
+        }
         return this.getMetaData().getName();
     }
 
     public String getShortLabel() {
+        if(getMetaData() == null){
+            return null;
+        }
         return getMetaData().getShortLabel();
     }
 
@@ -69,35 +78,59 @@ public class GeneralMetaDataGroup {
     }
 
     public List<Reference> getReferences() {
+        if(getMetaData() == null){
+            return null;
+        }
         return getMetaData().getReferences();
     }
 
     public List<Person> getPersonList() {
+        if(getMetaData() == null){
+            return null;
+        }
         return getMetaData().getPersonList();
     }
 
     public List<Sample> getSampleList() {
+        if(getMetaData() == null){
+            return null;
+        }
         return getMetaData().getSampleList();
     }
 
     public ExperimentProtocol getProtocol() {
+        if(getMetaData() == null){
+            return null;
+        }
         return getMetaData().getProtocol();
     }
 
     public List<DataProcessing> getDataProcessings() {
+        if(getMzGraphMetaData() == null){
+            return null;
+        }
         return getMzGraphMetaData().getDataProcessingList();
     }
 
     public List<SearchDataBase> getSearchDatabases() {
+        if(getIdentificationMetaData() == null){
+            return null;
+        }
         return getIdentificationMetaData().getSearchDataBaseList();
     }
 
     public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() {
+        if(getIdentificationMetaData() == null){
+            return null;
+        }
         return getIdentificationMetaData().getSpectrumIdentificationProtocolList();
     }
 
 
     public Protocol getProteinDetectionProtocol() {
+        if(getIdentificationMetaData() == null){
+            return null;
+        }
         return this.getIdentificationMetaData().getProteinDetectionProtocol();
     }
 

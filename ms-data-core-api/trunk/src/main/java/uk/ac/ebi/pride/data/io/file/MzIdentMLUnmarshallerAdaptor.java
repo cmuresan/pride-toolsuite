@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.data.io.file;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import uk.ac.ebi.jmzidml.MzIdentMLElement;
 import uk.ac.ebi.jmzidml.model.mzidml.*;
@@ -12,12 +11,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 /**
- * MzMLIdentMLUnmarshallerAdaptor provides a list of convenient methods to access mzidentML files
+ * MzMLIdentMLUnmarshallerAdaptor provides a list of convenient
+ * methods to access mzidentML files.
  * <p/>
- * User: yperez
+ * User: yperez, rwang
  * Date: 23/09/11
  * Time: 15:28
  */
@@ -74,50 +74,32 @@ public class MzIdentMLUnmarshallerAdaptor {
         return unmarshaller.unmarshalCollectionFromXpath(uk.ac.ebi.jmzidml.MzIdentMLElement.BibliographicReference);
     }
 
-    public ProteinDetectionHypothesis getIdentificationById(Comparable IdentId){
-        try {
-            return unmarshaller.unmarshal(ProteinDetectionHypothesis.class,(String) IdentId);
-        } catch (JAXBException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        return null;
+    public ProteinDetectionHypothesis getIdentificationById(Comparable IdentId) throws JAXBException {
+        return unmarshaller.unmarshal(ProteinDetectionHypothesis.class,(String) IdentId);
     }
 
-    public int getNumIdentifiedPeptides() {
+    public int getNumIdentifiedPeptides() throws ConfigurationException, JAXBException {
         int total = 0;
-        try {
-            Set<String> listIDs = unmarshaller.getIDsForElement(MzIdentMLElement.ProteinDetectionHypothesis);
-            Object[] ArrayIDs = listIDs.toArray();
-            for(int i = 0; i < ArrayIDs.length;i++){
-                ProteinDetectionHypothesis protein = null;
-                protein = unmarshaller.unmarshal(ProteinDetectionHypothesis.class, (String) ArrayIDs[i]);
-                int count = 0;
-                for(PeptideHypothesis peptideHypothesis: protein.getPeptideHypothesis()){
-                   count += peptideHypothesis.getSpectrumIdentificationItemRef().size();
-                }
-                total += count;
+        Set<String> listIDs = unmarshaller.getIDsForElement(MzIdentMLElement.ProteinDetectionHypothesis);
+        Object[] ArrayIDs = listIDs.toArray();
+        for(int i = 0; i < ArrayIDs.length;i++){
+            ProteinDetectionHypothesis protein = null;
+            protein = unmarshaller.unmarshal(ProteinDetectionHypothesis.class, (String) ArrayIDs[i]);
+            int count = 0;
+            for(PeptideHypothesis peptideHypothesis: protein.getPeptideHypothesis()){
+                count += peptideHypothesis.getSpectrumIdentificationItemRef().size();
             }
-        } catch (ConfigurationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch(JAXBException e){
-            e.printStackTrace();
+            total += count;
         }
         return total;
-        //return (unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationResult.class)).getSpectrumIdentificationItem().size();
     }
 
     public FragmentationTable getFragmentationTable() {
         return unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable.class);
     }
 
-    public Set<String> getIDsForElement(MzIdentMLElement mzIdentMLElement) {
-        try {
-            return unmarshaller.getIDsForElement(mzIdentMLElement);
-        } catch (ConfigurationException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    public Set<String> getIDsForElement(MzIdentMLElement mzIdentMLElement) throws ConfigurationException {
+        return unmarshaller.getIDsForElement(mzIdentMLElement);
     }
 
     public List<Cv> getCvList() {
@@ -173,26 +155,20 @@ public class MzIdentMLUnmarshallerAdaptor {
 
     public List<SpectraData> getSpectraData() {
         Inputs dc = unmarshaller.unmarshal(Inputs.class);
-
         return dc.getSpectraData();
     }
 
-    public List<PeptideHypothesis> getPeptideHypothesisbyID(Comparable id){
+    public List<PeptideHypothesis> getPeptideHypothesisbyID(Comparable id) throws JAXBException {
         ProteinDetectionHypothesis proteinDetectionHypothesis = getIdentificationById(id);
         List<PeptideHypothesis> peptideHypothesises = new ArrayList<PeptideHypothesis>();
-        try{
-            for(PeptideHypothesis peptideHypothesis : proteinDetectionHypothesis.getPeptideHypothesis()){
-                PeptideEvidence peptideEvidence = unmarshaller.unmarshal(PeptideEvidence.class,peptideHypothesis.getPeptideEvidenceRef());
-                Peptide peptide = unmarshaller.unmarshal(Peptide.class,peptideEvidence.getPeptideRef());
-                peptideEvidence.setPeptide(peptide);
-                peptideHypothesis.setPeptideEvidence(peptideEvidence);
-                peptideHypothesises.add(peptideHypothesis);
-            }
-        } catch (JAXBException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        for(PeptideHypothesis peptideHypothesis : proteinDetectionHypothesis.getPeptideHypothesis()){
+            PeptideEvidence peptideEvidence = unmarshaller.unmarshal(PeptideEvidence.class,peptideHypothesis.getPeptideEvidenceRef());
+            Peptide peptide = unmarshaller.unmarshal(Peptide.class,peptideEvidence.getPeptideRef());
+            peptideEvidence.setPeptide(peptide);
+            peptideHypothesis.setPeptideEvidence(peptideEvidence);
+            peptideHypothesises.add(peptideHypothesis);
         }
         return peptideHypothesises;
-
     }
 }
 

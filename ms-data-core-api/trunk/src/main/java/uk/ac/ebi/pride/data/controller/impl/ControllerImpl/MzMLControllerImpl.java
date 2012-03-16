@@ -34,13 +34,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * MzXmlControllerImpl provides methods to access mzML files.
+ * MzMlControllerImpl provides methods to access mzML files.
  * <p/>
- * User: rwang
+ * User: rwang,yperez
  * Date: 02-Feb-2010
  * Time: 12:31:43
  */
 public class MzMLControllerImpl extends CachedDataAccessController {
+
     private static final Logger logger = LoggerFactory.getLogger(MzMLControllerImpl.class);
     /**
      * Pattern for validating mzML format
@@ -153,8 +154,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
     /**
      * Get referenceable paramgroup, this concept is only available in mzML
-     * It is a paramgroup with id
-     * And this is not cached
+     * It is a paramgroup with id and this is not cached
      *
      * @return ReferenceableParamGroup param group
      * @throws DataAccessException data access exception
@@ -215,11 +215,17 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         }
     }
 
+    /**
+     * Get a list of Organization contacts
+     *
+     * @return List<Organization>    list of persons
+     * @throws DataAccessException
+     */
     @Override
     public List<Organization> getOrganizationContacts() throws DataAccessException {
         try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
-            // List of Persons
+            // List of Organization
             return MzMLTransformer.transformFileDescriptionOrganization(rawFileDesc);
         } catch (MzMLUnmarshallerException e) {
             String msg = "Error while getting a list of organizational contacts";
@@ -228,6 +234,12 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         }
     }
 
+    /**
+     * Get a List of SourceFiles
+     *
+     * @return List<SourceFile> List of SourceFile
+     * @throws DataAccessException
+     */
     @Override
     public List<SourceFile> getSourceFiles() throws DataAccessException {
         try {
@@ -242,11 +254,15 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     }
 
 
+    /**
+     *
+     * @return
+     * @throws DataAccessException
+     */
     @Override
     public ParamGroup getFileContent() throws DataAccessException {
         try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
-            // List of Persons
             return MzMLTransformer.transformFileDescriptionToFileContent(rawFileDesc);
 
         } catch (MzMLUnmarshallerException e) {
@@ -256,6 +272,12 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         }
     }
 
+    /**
+     * Get a List of Softwares
+     *
+     * @return List<Software> List of Softwares
+     * @throws DataAccessException
+     */
     @Override
     public List<Software> getSoftwares() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();

@@ -544,7 +544,7 @@ Configurations for various properties of model classes.
         <indexed>false</indexed>
     </configurations>
     <configurations>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.Provider</clazz>
         <idMapped>true</idMapped>

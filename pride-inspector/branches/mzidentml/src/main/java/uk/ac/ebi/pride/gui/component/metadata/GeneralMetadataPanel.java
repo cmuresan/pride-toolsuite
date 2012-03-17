@@ -42,6 +42,7 @@ public class GeneralMetadataPanel extends JPanel {
      * @param metaData meta data
      */
     private void populateComponents(GeneralMetaDataGroup metaData) {
+
         // get accession
         String accession = (metaData.getId() != null)?metaData.getId().toString():null;
         accessionField = new JTextField();
@@ -57,6 +58,7 @@ public class GeneralMetadataPanel extends JPanel {
         if (expTitle != null) {
            expTitleField.setText(expTitle);
         }
+
        // get short label
        String sl = metaData.getShortLabel();
        if (sl != null) {
@@ -80,6 +82,7 @@ public class GeneralMetadataPanel extends JPanel {
                 }
             }
         }
+
         projectField.setCaretPosition(0);
         expDescArea.setCaretPosition(0);
 

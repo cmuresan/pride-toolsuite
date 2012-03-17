@@ -253,10 +253,14 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         }
     }
 
-
     /**
+     *  This summarizes the different types of spectra that can be expected
+     *  in the file. This is expected to aid processing software in skipping
+     *  files that do not contain appropriate spectrum types for it. It should
+     *  also describe the nativeID format used in the file by referring to an
+     *  appropriate CV term.
      *
-     * @return
+     * @return ParamGroup A list of CvTerms Related with the File Content
      * @throws DataAccessException
      */
     @Override
@@ -455,23 +459,38 @@ public class MzMLControllerImpl extends CachedDataAccessController {
             String id = unmarshaller.getMzMLId();
             String accession = unmarshaller.getMzMLAccession();
             String version = unmarshaller.getMzMLVersion();
+
+
             // SourceFile List
             List<SourceFile> sourceFileList = getSourceFiles();
+
             // List of Persons
             List<Person> personList = getPersonContacts();
+
             // List of Organizations
             List<Organization> organizationList = getOrganizationContacts();
+
             // Sample list
             List<Sample> samples = getSamples();
+
             // Software list
             List<Software> softwares = getSoftwares();
+
             // ScanSettings list
             ParamGroup fileContent = getFileContent();
+
             metaData = new ExperimentMetaData(fileContent, id, accession, version, null, samples, softwares, personList, sourceFileList, null, organizationList, null, null, null, null);
         }
         return metaData;
     }
 
+    /**
+     * Get the Spectrum Metadata, the ScanSettings, The DataProcessing, and Instrument
+     * Configurations.
+     *
+     * @return MzGraphMetaData is the Metadata related with Spectrum Information
+     * @throws DataAccessException
+     */
     @Override
     public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
@@ -484,9 +503,26 @@ public class MzMLControllerImpl extends CachedDataAccessController {
         return metaData;
     }
 
+    /**
+     * The mzML do not contains Identification Metadata, just Spectrum Information
+     * @return
+     * @throws DataAccessException
+     */
     @Override
     public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
-        return null;
+        throw new UnsupportedOperationException("This method is not supported");
+    }
+
+    /**
+     * This method provide the way to know if the controller contain
+     * Identification Data and IdentificationMetadata.
+     *
+     * @return
+     * @throws DataAccessException
+     */
+    @Override
+    public boolean hasIdentification() throws DataAccessException {
+       return false;
     }
 
     /**
@@ -523,4 +559,6 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
         return valid;
     }
+
+
 }

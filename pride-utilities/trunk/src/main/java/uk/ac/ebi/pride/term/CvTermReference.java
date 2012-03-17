@@ -176,7 +176,8 @@ public enum CvTermReference {
     PROJECT_NAME("PRIDE", "PRIDE:0000097", "Project", "PRIDE:0000006"),
     EXPERIMENT_DESCRIPTION("PRIDE", "PRIDE:0000040", "Experiment Description", "PRIDE:0000006"),
     PEPTIDE_GLOBAL_FDR("MS", "MS:1001364", "pep:global FDR", "MS:1001405"),
-    PROTEIN_GLOBAL_FDR("MS", "MS:1001214", "prot:global FDR", "MS:1001405");
+    PROTEIN_GLOBAL_FDR("MS", "MS:1001214", "prot:global FDR", "MS:1001405"),
+    EXPERIMENT_GLOBAL_CREATIONDATE ("PRIDE", "PRIDE:0000219", "Date of search", "PRIDE:0000006");
 
 
     private final String cvLabel;

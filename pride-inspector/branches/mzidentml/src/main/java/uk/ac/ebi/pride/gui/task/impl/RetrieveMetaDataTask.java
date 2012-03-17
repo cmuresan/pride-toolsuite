@@ -41,8 +41,14 @@ public class RetrieveMetaDataTask extends AbstractDataAccessTask<GeneralMetaData
         GeneralMetaDataGroup groupMetaData = null;
         try {
             ExperimentMetaData metaData = controller.getExperimentMetaData();
-            MzGraphMetaData mzGraphMetaData = controller.getMzGraphMetaData();
-            IdentificationMetaData identificationMetaData = controller.getIdentificationMetaData();
+            MzGraphMetaData mzGraphMetaData = null;
+            IdentificationMetaData identificationMetaData = null;
+            if(controller.hasSpectrum()){
+                mzGraphMetaData = controller.getMzGraphMetaData();
+            }
+            if(controller.hasIdentification()){
+                identificationMetaData = controller.getIdentificationMetaData();
+            }
             groupMetaData = new GeneralMetaDataGroup(identificationMetaData,metaData,mzGraphMetaData);
 
         } catch (DataAccessException dex) {

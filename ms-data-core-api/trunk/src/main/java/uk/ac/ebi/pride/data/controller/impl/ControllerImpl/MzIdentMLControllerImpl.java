@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.data.controller.impl.ControllerImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.jmzidml.model.mzidml.*;
 import uk.ac.ebi.jmzidml.xml.io.MzIdentMLUnmarshaller;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
@@ -11,6 +12,15 @@ import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.cache.impl.MzIdentMLCacheBuilder;
 import uk.ac.ebi.pride.data.controller.impl.Transformer.MzIdentMLTransformer;
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.core.CvParam;
+import uk.ac.ebi.pride.data.core.Organization;
+import uk.ac.ebi.pride.data.core.Peptide;
+import uk.ac.ebi.pride.data.core.Person;
+import uk.ac.ebi.pride.data.core.Provider;
+import uk.ac.ebi.pride.data.core.Sample;
+import uk.ac.ebi.pride.data.core.SourceFile;
+import uk.ac.ebi.pride.data.core.SpectraData;
+import uk.ac.ebi.pride.data.core.SpectrumIdentificationProtocol;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
 
@@ -20,8 +30,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -282,9 +291,11 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * Additional is a concept that comes from PRIDE XML Files. The mzidentml
-     * contains all information inside the different objects, not extra information
-     * will be provided outside the Root objects.
+     * Additional is a concept that comes from PRIDE XML Files. In the mzidentml
+     * all the concepts of the Additional comes inside different objects.
+     * This function construct an Additional Object a relation of
+     * creationDate, Original Spectra Data Files and finally the Original software
+     * that provide the mzidentml file.
      *
      * @return ParamGroup   a group of cv parameters and user parameters.
      * @throws DataAccessException
@@ -292,7 +303,33 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      */
     @Override
     public ParamGroup getAdditional() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
+        ParamGroup additionals = null;
+        // Take information from provider !!!
+        Provider provider = getProvider();
+        Date date = unmarshaller.getCreationDate();
+        List<SpectraData> spectraDataList = getSpectraDataFiles();
+
+        if((provider != null && provider.getSoftware() != null) || date != null || spectraDataList != null){
+            additionals = new ParamGroup();
+            // Get information from last software that provide the file
+            if(provider != null && provider.getSoftware() != null) additionals.addCvParams(provider.getSoftware().getCvParams());
+
+            // Get the information of the creation file
+            if(unmarshaller.getCreationDate() != null){
+                additionals.addCvParam(MzIdentMLTransformer.transformDateToCvParam(unmarshaller.getCreationDate()));
+            }
+            //Get spectra information as additional
+            if(spectraDataList != null){
+                Set<CvParam> cvParamList = new HashSet<CvParam>();
+                for (SpectraData spectraData: spectraDataList){
+                    cvParamList.add(spectraData.getSpectrumIdFormat());
+                    cvParamList.add(spectraData.getFileFormat());
+                }
+                List<CvParam> list = new ArrayList<CvParam>(cvParamList);
+                additionals.addCvParams(list);
+            }
+        }
+        return additionals;
     }
 
     /**
@@ -332,7 +369,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 // Get the Contact Organization
                 List<Organization> organizations = getOrganizationContacts();
                 // Get Additional Information Related with the Project
-                ParamGroup additional = null;
+                ParamGroup additional = getAdditional();
                 // Get the Experiment Title
                 String title = unmarshaller.getMzIdentMLName();
                 // Get The Experiment Short Label, in case of mzidentml we decided to show the same value of the Id.

@@ -244,7 +244,20 @@ public class MzIdentMLTransformer {
             } else if (oldSoftware.getContactRole().getPerson() != null) {
                 contact = transformToPerson(oldSoftware.getContactRole().getPerson());
             }
-            return new Software(oldSoftware.getId(), oldSoftware.getName(), contact,oldSoftware.getCustomizations(), oldSoftware.getUri(), oldSoftware.getVersion());
+            ParamGroup name = null;
+            if(oldSoftware.getSoftwareName() !=null){
+                name = new ParamGroup();
+                if(oldSoftware.getSoftwareName().getCvParam() != null) {
+                    CvParam cvParam = transformToCvParam(oldSoftware.getSoftwareName().getCvParam());
+                    name.addCvParam(cvParam);
+                }
+                if(oldSoftware.getSoftwareName().getUserParam() !=null){
+                    UserParam userParam = transformToUserParam(oldSoftware.getSoftwareName().getUserParam());
+                    name.addUserParam(userParam);
+                }
+            }
+
+            return new Software(name,oldSoftware.getId(), oldSoftware.getName(), contact,oldSoftware.getCustomizations(), oldSoftware.getUri(), oldSoftware.getVersion());
         }
         return null;
     }
@@ -809,5 +822,11 @@ public class MzIdentMLTransformer {
             }
         }
         return spectraDatas;
+    }
+
+    public static CvParam transformDateToCvParam(Date creationDate) {
+        CvTermReference cvTerm = CvTermReference.EXPERIMENT_GLOBAL_CREATIONDATE;
+        CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),creationDate.toString(),null,null,null);
+        return cvParam;
     }
 }

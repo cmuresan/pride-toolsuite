@@ -72,7 +72,4 @@ public class MzXmlUnmarshallerAdaptor {
         return unmarshaller.getMsInstrument();
     }
 
-
-
-
 }

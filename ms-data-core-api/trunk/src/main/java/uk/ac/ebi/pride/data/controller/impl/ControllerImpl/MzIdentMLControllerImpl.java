@@ -374,7 +374,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 String title = unmarshaller.getMzIdentMLName();
                 // Get The Experiment Short Label, in case of mzidentml we decided to show the same value of the Id.
                 String shortLabel = unmarshaller.getMzIdentMLName();
-                //Get Experiment Protocol
+                //Get Experiment Protocol in case of mzidentml Experiment Protocol is empty.
                 ExperimentProtocol protocol = null;
                 // Get References From the Experiment
                 List<Reference> references = getReferences();

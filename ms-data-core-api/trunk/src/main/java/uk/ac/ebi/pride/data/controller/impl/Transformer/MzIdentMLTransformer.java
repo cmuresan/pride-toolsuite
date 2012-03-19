@@ -27,7 +27,10 @@ import uk.ac.ebi.pride.term.CvTermReference;
 import java.util.*;
 
 /**
- * ToDo: document this class
+ * This class is the Transformer class from a jmzidml object to a core object.
+ * It is used by MzIdentMLTransformer to convert jmzidml native objetcs to the ms-core-api
+ * Objects.
+ *
  * <p/>
  * User: yperez
  * Date: 19/09/11
@@ -114,7 +117,6 @@ public class MzIdentMLTransformer {
         return organizations;
     }
 
-
     public static List<Person> transformToPerson(List<uk.ac.ebi.jmzidml.model.mzidml.Person> oldPersons) {
         List<Person> persons = null;
         if (oldPersons != null) {
@@ -127,15 +129,27 @@ public class MzIdentMLTransformer {
     }
 
     public static Person transformToPerson(uk.ac.ebi.jmzidml.model.mzidml.Person oldPerson) {
+
         if (oldPerson != null) {
+            List<CvParam> cvParams = new ArrayList<CvParam>();
             List<Organization> affiliation = transformAffiliationToOrganization(oldPerson.getAffiliation());
-            //Todo: Take from Cv Params the value of the mail.
-            return new Person(new ParamGroup(transformToCvParam(oldPerson.getCvParam()), transformToUserParam(oldPerson.getUserParam())), oldPerson.getId(), oldPerson.getName(), oldPerson.getLastName(), oldPerson.getFirstName(), oldPerson.getMidInitials(), affiliation, null);
+            CvTermReference contactTerm = CvTermReference.CONTACT_NAME;
+            String firstName = (oldPerson.getFirstName() != null)?oldPerson.getFirstName():"";
+            String lastName  = (oldPerson.getLastName() != null)?oldPerson.getLastName():"";
+            cvParams.add(new CvParam(contactTerm.getAccession(),contactTerm.getName(),contactTerm.getCvLabel(),firstName + " " + lastName, null,null,null));
+            CvTermReference contactOrg = CvTermReference.CONTACT_ORG;
+            String organizationStr = "";
+            for(Organization organization: affiliation){
+                organizationStr += organization.getName() + " ";
+            }
+            cvParams.add(new CvParam(contactOrg.getAccession(),contactOrg.getName(),contactOrg.getCvLabel(),organizationStr, null,null,null));
+            ParamGroup paramGroup = new ParamGroup(transformToCvParam(oldPerson.getCvParam()), transformToUserParam(oldPerson.getUserParam()));
+            paramGroup.addCvParams(cvParams);
+            return new Person(paramGroup, oldPerson.getId(), oldPerson.getName(), oldPerson.getLastName(), oldPerson.getFirstName(), oldPerson.getMidInitials(), affiliation, null);
         }
 
         return null;
     }
-
 
     public static List<Sample> transformToSample(List<uk.ac.ebi.jmzidml.model.mzidml.Sample> oldSamples) {
         List<Sample> samples = null;

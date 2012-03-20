@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 import uk.ac.ebi.pride.data.core.*;

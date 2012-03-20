@@ -5,7 +5,13 @@ package uk.ac.ebi.pride.data.io.file;
 import uk.ac.ebi.jmzml.model.mzml.*;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshaller;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
+import uk.ac.ebi.pride.data.core.CvParam;
+import uk.ac.ebi.pride.term.CvTermReference;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -83,6 +89,21 @@ public class MzMLUnmarshallerAdaptor {
 
     public Chromatogram getChromatogramById(String id) throws MzMLUnmarshallerException {
         return unmarshaller.getChromatogramById(id);
+    }
+
+    public Date getCreationDate() {
+        Run run = unmarshaller.unmarshalFromXpath("/mzML/run",Run.class);
+
+        /*
+         * This is the only way that we can use now to retrieve the name property
+         * In the future we need to think in more elaborated way.
+         */
+        Date dateCreation = null;
+        run.getStartTimeStamp();
+        if(run.getStartTimeStamp() != null){
+            dateCreation = run.getStartTimeStamp().getTime();
+        }
+        return dateCreation;
     }
 }
 

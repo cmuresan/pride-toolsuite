@@ -1,18 +1,28 @@
 package uk.ac.ebi.pride.data.controller.impl.Transformer;
 
-import uk.ac.ebi.jmzml.model.mzml.ComponentList;
-import uk.ac.ebi.jmzml.model.mzml.FileDescription;
-import uk.ac.ebi.jmzml.model.mzml.SoftwareRef;
+import uk.ac.ebi.jmzml.model.mzml.*;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.core.BinaryDataArray;
+import uk.ac.ebi.pride.data.core.Chromatogram;
+import uk.ac.ebi.pride.data.core.DataProcessing;
+import uk.ac.ebi.pride.data.core.InstrumentConfiguration;
+import uk.ac.ebi.pride.data.core.ParamGroup;
+import uk.ac.ebi.pride.data.core.Precursor;
+import uk.ac.ebi.pride.data.core.ProcessingMethod;
+import uk.ac.ebi.pride.data.core.ReferenceableParamGroup;
+import uk.ac.ebi.pride.data.core.Sample;
+import uk.ac.ebi.pride.data.core.Scan;
+import uk.ac.ebi.pride.data.core.ScanList;
+import uk.ac.ebi.pride.data.core.Software;
+import uk.ac.ebi.pride.data.core.SourceFile;
+import uk.ac.ebi.pride.data.core.Spectrum;
+import uk.ac.ebi.pride.data.core.UserParam;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class contains a set of static methods for converting jmzML object to the pride inspector core objects
@@ -135,7 +145,7 @@ public class MzMLTransformer {
                 if (cv != null)
                     cvLookupID = cv.getId();
                 String unitCVLookupID = null;
-                cv = oldParam.getUnitCV();
+                cv = oldParam.getCV();
                 if (cv != null)
                     unitCVLookupID = cv.getId();
                 CvParam newParam = new CvParam(oldParam.getAccession(), oldParam.getName(), cvLookupID,
@@ -783,7 +793,7 @@ public class MzMLTransformer {
      * @return List<Person> List of Person Contacts
      */
     public static List<Person> transformFileDescriptionToPerson(FileDescription rawFileDescription) {
-        if (rawFileDescription != null) {
+        if (rawFileDescription != null && rawFileDescription.getContact() !=null) {
             List<ParamGroup> contacts = transformParamGroupList(rawFileDescription.getContact());
             List<Person> persons = new ArrayList<Person>();
             for (ParamGroup contact : contacts) {
@@ -836,5 +846,11 @@ public class MzMLTransformer {
             return organizations;
         }
         return null;
+    }
+
+    public static CvParam transformDateToCvParam(Date creationDate) {
+        CvTermReference cvTerm = CvTermReference.MS_SCAN_DATE;
+        CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),creationDate.toString(),null,null,null);
+        return cvParam;
     }
 }

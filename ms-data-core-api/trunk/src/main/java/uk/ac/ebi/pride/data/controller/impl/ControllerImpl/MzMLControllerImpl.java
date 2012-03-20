@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -374,14 +375,27 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * Get additional details, mzML don't have this kind of information
+     * In case of mzMl the additional parameters are related with the getFileContent
+     * This are a set of CVTerms related with the Content in the MzML File. Also we add the
+     * the Date of the Run as a CvParam, it is very important to know when this information was
+     * generated.
      *
      * @return ParamGroup  param group
      * @throws DataAccessException data access exception
      */
     @Override
     public ParamGroup getAdditional() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
+        ParamGroup paramGroup = null;
+        ParamGroup fileContent = getFileContent();
+        if(fileContent !=null){
+            paramGroup = fileContent;
+        }
+        Date dateCreation = unmarshaller.getCreationDate();
+        if(dateCreation != null){
+            paramGroup.addCvParam(MzMLTransformer.transformDateToCvParam(dateCreation));
+
+        }
+        return paramGroup;
     }
 
     /**
@@ -460,7 +474,6 @@ public class MzMLControllerImpl extends CachedDataAccessController {
             String accession = unmarshaller.getMzMLAccession();
             String version = unmarshaller.getMzMLVersion();
 
-
             // SourceFile List
             List<SourceFile> sourceFileList = getSourceFiles();
 
@@ -477,9 +490,9 @@ public class MzMLControllerImpl extends CachedDataAccessController {
             List<Software> softwares = getSoftwares();
 
             // ScanSettings list
-            ParamGroup fileContent = getFileContent();
+            ParamGroup adittional = getAdditional();
 
-            metaData = new ExperimentMetaData(fileContent, id, accession, version, null, samples, softwares, personList, sourceFileList, null, organizationList, null, null, null, null);
+            metaData = new ExperimentMetaData(adittional, id, accession, version, null, samples, softwares, personList, sourceFileList, null, organizationList, null, null, null, null);
         }
         return metaData;
     }

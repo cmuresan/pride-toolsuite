@@ -59,6 +59,15 @@ public class MzDataUnmarshallerAdaptor {
         return unmarshaller.getDescription().getDataProcessing();
     }
 
+    public String getIdMzData(){
+        return unmarshaller.getMzDataAttributes().get("accessionNumber");
+    }
+
+    public String getVersionMzData(){
+        return unmarshaller.getMzDataAttributes().get("version");
+    }
+
+
 
 
 

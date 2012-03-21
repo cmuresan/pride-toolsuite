@@ -272,6 +272,9 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
         JToggleButton proSamButton = new JToggleButton(SAMPLE_PROTOCOL);
         proSamButton.setActionCommand(SAMPLE_PROTOCOL);
         proSamButton.setPreferredSize(new Dimension(200, 25));
+        if(!metaDataGroup.hasSampleProtocolMetadata()){
+            proSamButton.setEnabled(false);
+        }
 
         JToggleButton insSofButton = new JToggleButton(INSTRUMENT_SOFTWARE);
         insSofButton.setActionCommand(INSTRUMENT_SOFTWARE);
@@ -308,7 +311,9 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
 
     private void createMetaDataPanels(GeneralMetaDataGroup metaData) {
         generalMetadataPanel = new GeneralMetadataPanel(metaData);
-        sampleProtocolMetadataPanel = new SampleProtocolMetadataPanel(metaData);
+        if(metaData.getSampleList() != null || metaData.getProtocol() != null){
+            sampleProtocolMetadataPanel = new SampleProtocolMetadataPanel(metaData);
+        }
         if(metaData.hasMzGraphMetadata()){
             instrumentProcMetadataPanel = new InstrumentProcessingMetadataPanel(metaData);
         }

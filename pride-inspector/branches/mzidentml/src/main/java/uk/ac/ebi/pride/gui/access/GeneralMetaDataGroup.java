@@ -126,7 +126,6 @@ public class GeneralMetaDataGroup {
         return getIdentificationMetaData().getSpectrumIdentificationProtocolList();
     }
 
-
     public Protocol getProteinDetectionProtocol() {
         if(getIdentificationMetaData() == null){
             return null;
@@ -147,5 +146,12 @@ public class GeneralMetaDataGroup {
         }
         return true;
 
+    }
+
+    public boolean hasSampleProtocolMetadata() {
+        if(metaData.getSampleList() !=null || metaData.getProtocol() != null){
+            return true;
+        }
+        return false;
     }
 }

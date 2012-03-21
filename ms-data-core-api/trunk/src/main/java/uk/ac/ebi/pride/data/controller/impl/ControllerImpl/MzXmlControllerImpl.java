@@ -18,6 +18,7 @@ import uk.ac.ebi.pride.data.core.SourceFile;
 import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.data.io.file.MzXmlUnmarshallerAdaptor;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
+import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.tools.jmzreader.JMzReaderException;
 import uk.ac.ebi.pride.tools.mzxml_parser.MzXMLFile;
 import uk.ac.ebi.pride.tools.mzxml_parser.MzXMLParsingException;
@@ -25,16 +26,26 @@ import uk.ac.ebi.pride.tools.mzxml_parser.mzxml.model.MsInstrument;
 import uk.ac.ebi.pride.tools.mzxml_parser.mzxml.model.Operator;
 import uk.ac.ebi.pride.tools.mzxml_parser.mzxml.model.ParentFile;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.Duration;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * This class is the controller to parse an retrieve the information from mzXML files,
+ * It retrieve the spectrum information, and also the most important metadata, the relevant and
+ * portable to the ms-core-api information from the mzXML files. this controller use the MzXMLFile Api
+ * to parse an retrieve the information from mzXML files.
+ *
  * User: yperez, rwang
  * Date: 2/27/12
  * Time: 2:12 PM
@@ -45,17 +56,17 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
 
     private static final Logger logger = LoggerFactory.getLogger(MzXmlControllerImpl.class);
     /**
-     * Pattern for validating mzML format
+     * Pattern for validating mzXML format
      */
     private static Pattern mzXmlHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<(mzXML) xmlns=.*", Pattern.MULTILINE);
 
     /**
-     * Reader for getting information from jmzReader file
+     * Reader for getting information from mzXML file
      */
     private MzXmlUnmarshallerAdaptor unmarshaller;
 
     /**
-     * Construct a data access controller using a given mzML file
+     * Construct a data access controller using a given mzXML file
      *
      * @param file jmzReader file
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception
@@ -67,7 +78,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
     /**
      * Construct a data access controller using a given mzML file and data access mode
      *
-     * @param file jmzReader file
+     * @param file mzXML file
      * @param mode data access mode
      * @throws DataAccessException data access exception
      */
@@ -78,6 +89,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
 
     /**
      * Initialize the data access controller
+     *
      *
      * @throws DataAccessException data access exception
      */
@@ -101,7 +113,6 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
         this.setType(DataAccessController.Type.XML_FILE);
         // set the content categories
         this.setContentCategories(DataAccessController.ContentCategory.SPECTRUM,
-                DataAccessController.ContentCategory.CHROMATOGRAM,
                 DataAccessController.ContentCategory.SAMPLE,
                 DataAccessController.ContentCategory.INSTRUMENT,
                 DataAccessController.ContentCategory.SOFTWARE,
@@ -144,7 +155,6 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
         return uid;
     }
 
-
     /**
      * Get a list of person contacts
      *
@@ -164,10 +174,23 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
         }
     }
 
+    /**
+     * The mzXML files do not contain information about Organizations
+     * @return
+     * @throws DataAccessException
+     */
     @Override
     public List<Organization> getOrganizationContacts() throws DataAccessException {
         throw new UnsupportedOperationException("This method is not supported");
     }
+
+    /**
+     * Get a list of Source Files. The information of filetype will be converted to CvTerm
+     * using the MS ontology.
+     *
+     * @return List<SourceFile> list of SourceFile
+     * @throws DataAccessException
+     */
 
     @Override
     public List<SourceFile> getSourceFiles() throws DataAccessException {
@@ -182,12 +205,42 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
         }
     }
 
-
+    /**
+     * This will be summarize the different parent file formats. Looking inside the Cvterms
+     * of the mzXML parent file.
+     *
+     * @return
+     * @throws DataAccessException
+     */
     @Override
     public ParamGroup getFileContent() throws DataAccessException {
-       throw new UnsupportedOperationException("This method is not supported");
+        ParamGroup paramGroup = null;
+        Set<CvParam> cvParamSet = null;
+        List<SourceFile> sourceFiles = getSourceFiles();
+        if(sourceFiles != null){
+            cvParamSet = new HashSet<CvParam>();
+            for(SourceFile sourceFile: sourceFiles){
+                if(sourceFile.getFileFormat() != null){
+                    cvParamSet.add(sourceFile.getFileFormat());
+                }
+            }
+        }
+        if (cvParamSet != null){
+            List<CvParam> cvParams = new ArrayList<CvParam>();
+            cvParams.addAll(cvParamSet);
+            paramGroup = new ParamGroup(cvParams,null);
+        }
+        return paramGroup;
     }
 
+    /**
+     * The softwares on mzXml are annotated with their names, the type, and the execution
+     * time processing the data. The function annotated also a CvParam related with the Type
+     * of the Software (Data Processing or Data Acquisition).
+     *
+     * @return
+     * @throws DataAccessException
+     */
     @Override
     public List<Software> getSoftwares() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
@@ -207,32 +260,21 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * Get a list of scan settings by checking the cache first
+     * Is not possible to convert any information from mzXML to the ScanSetting concept in
+     * terms of CvTerms.
      *
      * @return List<ScanSetting>   a list of scan settings
      * @throws DataAccessException data access exception
      */
     @Override
     public List<ScanSetting> getScanSettings() throws DataAccessException {
-        MzGraphMetaData metaData = super.getMzGraphMetaData();
-
-        /*if (metaData == null) {
-            try {
-                ScanSettingsList rawScanSettingList = unmarshaller.getScanSettingsList();
-                return MzMLTransformer.transformScanSettingList(rawScanSettingList);
-            } catch (MzMLUnmarshallerException e) {
-                String msg = "Error while getting a list of scan settings";
-                logger.error(msg, e);
-                throw new DataAccessException(msg, e);
-            }
-        } else {
-            return metaData.getScanSettings();
-        }*/
-        return metaData.getScanSettings();
+        throw new UnsupportedOperationException("This method is not supported");
     }
 
     /**
-     * Get a list of instrument configurations by checking the cache first
+     * Get a list of instrument configurations. Here the function capture the information related with
+     * souce, detector and analyzer for each instrument. The name of the instrument is related with the model
+     * of the Instrument.
      *
      * @return List<Instrumentconfiguration>   a list of instrument configurations
      * @throws DataAccessException data access exception
@@ -265,11 +307,11 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
     public List<DataProcessing> getDataProcessings() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
-        /*if (metaData == null) {
+        if (metaData == null) {
             try {
-                uk.ac.ebi.jmzml.model.mzml.DataProcessingList rawDataProcList = unmarshaller.getDataProcessingList();
-                return MzMLTransformer.transformDataProcessingList(rawDataProcList);
-            } catch (MzMLUnmarshallerException e) {
+                List<uk.ac.ebi.pride.tools.mzxml_parser.mzxml.model.DataProcessing> rawDataProcList = unmarshaller.getDataProcessing();
+                return MzXmlTransformer.transformDataProcessingList(rawDataProcList);
+            } catch (MzXMLParsingException e) {
                 String msg = "Error while getting a list of data processings";
                 logger.error(msg, e);
                 throw new DataAccessException(msg, e);
@@ -277,19 +319,30 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
         } else {
             return metaData.getDataProcessingList();
         }
-          */
-        return metaData.getDataProcessingList();
     }
 
     /**
-     * Get additional details, mzML don't have this kind of information
+     * Get additional details, the mzXML is like mzML the Additional is the combination of FileContent
+     * and StartTime.
      *
      * @return ParamGroup  param group
      * @throws DataAccessException data access exception
      */
     @Override
     public ParamGroup getAdditional() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
+        ParamGroup fileContent = getFileContent();
+        Duration startDate = null;
+
+        try {
+            startDate = unmarshaller.getStartDate();
+            CvParam cvParamStartDate = MzXmlTransformer.transformDurationToCvParam(startDate, CvTermReference.MS_SCAN_DATE);
+            if(cvParamStartDate !=null && fileContent != null) fileContent.addCvParam(cvParamStartDate);
+        } catch (DatatypeConfigurationException e) {
+            String msg = "Error while getting the started Time";
+            logger.error(msg, e);
+            throw new DataAccessException(msg, e);
+        }
+        return fileContent;
     }
 
     /**
@@ -351,7 +404,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
 
         if (metaData == null) {
             // id , accession and version
-            String id = null;
+            String id = ((File) getSource()).getName();
             String accession = null;
             String version = null;
             // SourceFile List
@@ -365,8 +418,8 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
             // Software list
             List<Software> softwares = getSoftwares();
             // ScanSettings list
-            ParamGroup fileContent = null;
-            metaData = new ExperimentMetaData(fileContent, id, accession, version, null, samples, softwares, personList, sourceFileList, null, organizationList, null, null, null, null);
+            ParamGroup additional = getAdditional();
+            metaData = new ExperimentMetaData(additional, id, accession, version, null, samples, softwares, personList, sourceFileList, null, organizationList, null, null, null, null);
         }
 
 
@@ -375,7 +428,17 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
 
     @Override
     public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
-        return null;
+        MzGraphMetaData metaData = super.getMzGraphMetaData();
+        if (metaData == null) {
+            //Scan settings is not support for mzXml files
+            List<ScanSetting> scanSettings = null;
+            // Get Data Processing
+            List<DataProcessing> dataProcessings = getDataProcessings();
+            // Get Instrument Configurations
+            List<InstrumentConfiguration> instrumentConfigurations = getInstrumentConfigurations();
+            metaData = new MzGraphMetaData(null, null, scanSettings, instrumentConfigurations, dataProcessings);
+        }
+        return metaData;
     }
 
     @Override

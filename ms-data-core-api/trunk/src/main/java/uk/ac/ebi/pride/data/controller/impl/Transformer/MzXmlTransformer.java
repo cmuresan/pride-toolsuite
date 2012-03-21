@@ -9,6 +9,8 @@ import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -128,16 +130,23 @@ public class MzXmlTransformer {
         return persons;
     }
 
-
-
-
     public static List<SourceFile> transformFileSources(List<uk.ac.ebi.pride.tools.mzxml_parser.mzxml.model.ParentFile> rawParentFiles) {
         List<SourceFile> sourceFiles = null;
         if(rawParentFiles != null){
             sourceFiles = new ArrayList<SourceFile>();
             for(uk.ac.ebi.pride.tools.mzxml_parser.mzxml.model.ParentFile parentFile: rawParentFiles){
-                SourceFile sourceFile = new SourceFile(null,null,parentFile.getFileName(),null,null,null);
-                //Todo: It could be interesting to convert typeFormat from mzXml to a CvParam.
+                ParamGroup paramGroup = null;
+                CvParam fileFormat = null;
+                if(parentFile.getFileType() != null){
+                    paramGroup = new ParamGroup();
+                    CvTermReference cvReference = CvTermReference.MS_FILE_SPECTRUM;
+                    // Kepp here the information of the file Type, is the only solution to convert mzXML attributes to CvTerms
+                    CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),parentFile.getFileType(),null,null,null);
+                    paramGroup.addCvParam(cvParam);
+                    fileFormat = cvParam;
+                }
+                SourceFile sourceFile = new SourceFile(paramGroup,null,parentFile.getFileName(),null,fileFormat,null);
+                sourceFiles.add(sourceFile);
             }
         }
         return sourceFiles;
@@ -155,7 +164,29 @@ public class MzXmlTransformer {
     }
 
     public static Software transformSoftware(uk.ac.ebi.pride.tools.mzxml_parser.mzxml.model.Software rawSoftware){
-        return new Software(null,rawSoftware.getName(),null,null,null,rawSoftware.getVersion());
+        Software software = null;
+        if(rawSoftware != null){
+            software = new Software(null,null,rawSoftware.getName(),null,null,null,rawSoftware.getVersion());
+            if(rawSoftware.getType() != null){
+                ParamGroup paramGroup = new ParamGroup();
+                if(rawSoftware.getType().compareToIgnoreCase("conversion") == 0){
+                    CvTermReference cvReference = CvTermReference.MS_SOFTWARE_PROCESSING;
+                    CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),rawSoftware.getName(),null,null,null);
+                    paramGroup.addCvParam(cvParam);
+                }else if(rawSoftware.getType().compareToIgnoreCase("acquisition") == 0){
+                    CvTermReference cvReference = CvTermReference.MS_SOFTWARE_ACQUISITION;
+                    CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),rawSoftware.getName(),null,null,null);
+                    paramGroup.addCvParam(cvParam);
+                } else if(rawSoftware.getType().compareToIgnoreCase("processing") == 0){
+                    CvTermReference cvReference = CvTermReference.MS_SOFTWARE_PROCESSING;
+                    CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),rawSoftware.getName(),null,null,null);
+                    paramGroup.addCvParam(cvParam);
+                }
+                software.addCvParams(paramGroup.getCvParams());
+            }
+
+        }
+        return software;
     }
 
 
@@ -169,22 +200,105 @@ public class MzXmlTransformer {
                 List<InstrumentComponent> analyzer = new ArrayList<InstrumentComponent>();
                 List<InstrumentComponent> detector = new ArrayList<InstrumentComponent>();
                 if(msInstrument.getMsIonisation() != null){
-                    //Todo: In the future it could be interesting to have something like a probability system to match from an Ontology Term and a CVParam
-
+                    CvTermReference cvReference = CvTermReference.MS_INSTRUMENT_SOURCE;
+                    CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),msInstrument.getMsIonisation().getTheValue(),null,null,null);
+                    ParamGroup paramGroup = new ParamGroup();
+                    paramGroup.addCvParam(cvParam);
+                    InstrumentComponent sourceInstr = new InstrumentComponent(0,paramGroup);
+                    source.add(sourceInstr);
+                }
+                if(msInstrument.getMsDetector() != null){
+                    CvTermReference cvReference = CvTermReference.MS_INSTRUMENT_DETECTOR;
+                    CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),msInstrument.getMsDetector().getTheValue(),null,null,null);
+                    ParamGroup paramGroup = new ParamGroup();
+                    paramGroup.addCvParam(cvParam);
+                    InstrumentComponent detectorInstr = new InstrumentComponent(1,paramGroup);
+                    detector.add(detectorInstr);
                 }
                 if(msInstrument.getMsMassAnalyzer() != null){
-                    //Todo: In the future it could be interesting to have something like a probability system to match from an Ontology Term and a CVParam
+                    CvTermReference cvReference = CvTermReference.MS_INSTRUMENT_ANALYZER;
+                    CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),msInstrument.getMsMassAnalyzer().getTheValue(),null,null,null);
+                    ParamGroup paramGroup = new ParamGroup();
+                    paramGroup.addCvParam(cvParam);
+                    InstrumentComponent analyzerInstr = new InstrumentComponent(2,paramGroup);
+                    analyzer.add(analyzerInstr);
+                }
+                // The name of the instrument is the model of the msInstrument.
+                InstrumentConfiguration instrumentConfiguration = new InstrumentConfiguration(msInstrument.getMsModel().getTheValue(), null, software, source, analyzer, detector, null);
 
-                }
-                if(msInstrument.getMsMassAnalyzer() != null){
-                    //Todo: In the future it could be interesting to have something like a probability system to match from an Ontology Term and a CVParam
-                }
-                InstrumentConfiguration instrumentConfiguration = new InstrumentConfiguration(null, null, software, source, analyzer, detector, null);
                 instrumentConfigurations.add(instrumentConfiguration);
             }
-
         }
         return instrumentConfigurations;
     }
 
+    /**
+     * Convert a list of data prcessings
+     *
+     * @param rawDataProcList mzXML data processing list
+     * @return List<DataProcessing>    a list of data processings
+     */
+    public static List<DataProcessing> transformDataProcessingList(List<uk.ac.ebi.pride.tools.mzxml_parser.mzxml.model.DataProcessing> rawDataProcList) {
+        List<DataProcessing> dataProcessings = null;
+
+        if (rawDataProcList != null) {
+            dataProcessings = new ArrayList<DataProcessing>();
+            int i = 0;
+            for (uk.ac.ebi.pride.tools.mzxml_parser.mzxml.model.DataProcessing oldDataProcessing : rawDataProcList) {
+                dataProcessings.add(transformDataProcessing(i, oldDataProcessing));
+                i++;
+            }
+        }
+
+        return dataProcessings;
+    }
+
+    /**
+     * Convert data processing
+     *
+     * @param oldDataProcessing jmzml data processing
+     * @return DataProcessing  data processing
+     */
+    public static DataProcessing transformDataProcessing(int order,  uk.ac.ebi.pride.tools.mzxml_parser.mzxml.model.DataProcessing oldDataProcessing) {
+        DataProcessing dataProcessing = null;
+        if(oldDataProcessing != null){
+            List<CvParam> cvParams = new ArrayList<CvParam>();
+            CvTermReference cvReference = null;
+            if(oldDataProcessing.isCentroided() != null && oldDataProcessing.isCentroided()){
+                cvReference = CvTermReference.MS_DATAPROCESSING_CENTROID;
+                CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),null,null,null,null);
+                cvParams.add(cvParam);
+            }
+            if(oldDataProcessing.isChargeDeconvoluted() != null && oldDataProcessing.isChargeDeconvoluted()){
+                cvReference = CvTermReference.MS_DATAPROCESSING_DECONVOLUTION;
+                CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),null,null,null,null);
+                cvParams.add(cvParam);
+            }
+            if(oldDataProcessing.isDeisotoped() !=null && oldDataProcessing.isDeisotoped()){
+                cvReference = CvTermReference.MS_DATAPROCESSING_DEISOTOPING;
+                CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),null,null,null,null);
+                cvParams.add(cvParam);
+            }
+            if(oldDataProcessing.getIntensityCutoff() != null){
+                cvReference = CvTermReference.MS_DATAPROCESSING_INTENSITY_THRESHOLD;
+                CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),oldDataProcessing.getIntensityCutoff().toString(),null,null,null);
+                cvParams.add(cvParam);
+            }
+            List<ProcessingMethod> processingMethods = new ArrayList<ProcessingMethod>();
+            ProcessingMethod processingMethod = new ProcessingMethod(order, transformSoftware(oldDataProcessing.getSoftware()),new ParamGroup(cvParams,null));
+            processingMethods.add(processingMethod);
+            dataProcessing = new DataProcessing(null,oldDataProcessing.getSoftware().getName(),processingMethods);
+        }
+        return dataProcessing;
+
+    }
+
+
+    public static CvParam transformDurationToCvParam(Duration startDate, CvTermReference msScanDate) {
+        CvParam cvParam = null;
+        if(startDate != null){
+            cvParam = new CvParam(msScanDate.getAccession(),msScanDate.getName(),msScanDate.getCvLabel(),startDate.toString(),null,null,null);
+        }
+        return cvParam;
+    }
 }

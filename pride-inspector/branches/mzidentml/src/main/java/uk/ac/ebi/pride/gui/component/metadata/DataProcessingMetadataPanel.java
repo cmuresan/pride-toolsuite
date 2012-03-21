@@ -34,7 +34,7 @@ public class DataProcessingMetadataPanel extends JPanel {
         // software
         Software software = method.getSoftware();
         if (software != null) {
-            String name = (software.getId() != null)?software.getId().toString():null;
+            String name = (software.getName() != null)?software.getName().toString():null;
             if (name != null) {
                 softwareNameField.setText(name);
             }

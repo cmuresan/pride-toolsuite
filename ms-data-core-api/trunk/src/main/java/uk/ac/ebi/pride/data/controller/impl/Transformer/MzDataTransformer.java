@@ -279,7 +279,7 @@ public class MzDataTransformer {
     /**
      * Convert instrument configuration
      *
-     * @param oldInstrument jmzml instrument configuration
+     * @param oldInstrument mzData instrument configuration
      * @return Instrumentconfiguration insturment configuration
      */
     public static List<InstrumentConfiguration> transformInstrumentConfiguration(uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.InstrumentDescription oldInstrument) {
@@ -296,7 +296,6 @@ public class MzDataTransformer {
 
             // convert software
             Software software = null;
-            //Todo: The Instrument don't have a relation with Softwares: Why?
 
             // convert component list
             List<InstrumentComponent> source   = null;

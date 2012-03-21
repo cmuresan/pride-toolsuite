@@ -329,6 +329,15 @@ public interface DataAccessController
      */
     public Collection<SpectraData> getSpectraDataFiles() throws DataAccessException;
 
+    /**
+     * This function give the user the possibility to know if the controller contains
+     * MetaData. The metaData could be ExperimentMetadata, MzGraphMetaData, IdentificationMetaData
+     *
+     * @return
+     * @throws DataAccessException
+     */
+    public boolean hasMetaDataInformation();
+
     // Todo: getDefaultInstrument() from mzML's run element
     // Todo: getDefaultSample() from mzML's run element
     // Todo: getDefaultSpectrumDataProcessing() from mzML's spectrumList element

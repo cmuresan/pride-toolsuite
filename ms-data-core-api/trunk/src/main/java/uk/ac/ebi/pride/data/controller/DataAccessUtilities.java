@@ -430,8 +430,6 @@ public class DataAccessUtilities {
     public static Score getScore(ParamGroup params){
         Score score = null;
         if(params!=null){
-            Map<SearchEngineType, Map<CvTermReference, Number>> scoresMap;
-            scoresMap = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
             List<SearchEngineType> searchEngineTypes = DataAccessUtilities.getSearchEngineTypes(params);
             if(searchEngineTypes != null){
                 score = new Score();

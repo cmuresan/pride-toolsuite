@@ -17,11 +17,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * The MzXML Unmarshaller Adaptor provides the methods to retrieve the information form
+ * the mzxml_parser library.
+ *
  * User: yperez
  * Date: 2/27/12
  * Time: 2:27 PM
- * To change this template use File | Settings | File Templates.
  */
 public class MzXmlUnmarshallerAdaptor {
 

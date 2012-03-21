@@ -145,7 +145,7 @@ public class Score {
         double scoreValue = -1;
         for (int i= 0; i < scoresArrayValue.length;i++){
             if(scoresArrayValue[i] != null) {
-                scoreValue  = ((Double)scoresArrayValue[i]).doubleValue();
+                scoreValue  = ((Double)scoresArrayValue[i]);
                 break;
             }
         }

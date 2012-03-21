@@ -8,11 +8,12 @@ import uk.ac.ebi.pride.data.io.file.PeakUnmarshallerAdaptor;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
+ * PeakCacheBuilder provides the methods to initialize the Cache Categories
+ * for pure peaks list file formats.
+ *
  * User: yperez
  * Date: 3/15/12
  * Time: 10:45 PM
- * To change this template use File | Settings | File Templates.
  */
 public class PeakCacheBuilder extends AbstractAccessCacheBuilder {
 

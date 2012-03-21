@@ -333,8 +333,7 @@ public interface DataAccessController
      * This function give the user the possibility to know if the controller contains
      * MetaData. The metaData could be ExperimentMetadata, MzGraphMetaData, IdentificationMetaData
      *
-     * @return
-     * @throws DataAccessException
+     * @return boolean
      */
     public boolean hasMetaDataInformation();
 

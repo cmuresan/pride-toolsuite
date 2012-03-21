@@ -14,12 +14,14 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by IntelliJ IDEA.
+ * This class is the controller for mzData files. It is responsable to retrieve
+ * the information for Spectrum and MetaData.
+ *
  * User: yperez
  * Date: 3/15/12
  * Time: 12:45 PM
- * To change this template use File | Settings | File Templates.
  */
+
 public class MzDataControllerImplTest {
 
     private MzDataControllerImpl mzXmlController = null;

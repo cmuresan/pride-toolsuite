@@ -7,11 +7,10 @@ import uk.ac.ebi.pride.data.io.file.MzDataUnmarshallerAdaptor;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
+ * Class to Create the Cache for MzData Files.
  * User: yperez
  * Date: 3/15/12
  * Time: 8:00 AM
- * To change this template use File | Settings | File Templates.
  */
 public class MzDataCacheBuilder extends AbstractAccessCacheBuilder {
     public MzDataCacheBuilder(MzDataControllerImpl c) {

@@ -336,14 +336,13 @@ public class MzIdentMLTransformer {
         List<Peptide> peptides = null;
         if (peptideHypothesis != null) {
             peptides = new ArrayList<Peptide>();
-            int i = 0;
+
             for (uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis oldPeptideHypothesis : peptideHypothesis) {
                 PeptideEvidence peptideEvidence = transformToPeptideEvidence(oldPeptideHypothesis.getPeptideEvidence());
                 List<SpectrumIdentification> spectrumIdentifications = transformToPeptideIdentification(oldPeptideHypothesis.getSpectrumIdentificationItemRef(), oldFragmentationTable);
-                for(int j = 0 ; j < spectrumIdentifications.size();j++){
-                     peptides.add(new Peptide(peptideEvidence,spectrumIdentifications.get(j)));
+                for(SpectrumIdentification spectrumIdentification: spectrumIdentifications){
+                     peptides.add(new Peptide(peptideEvidence,spectrumIdentification));
                 }
-                i++;
             }
         }
         return peptides;
@@ -512,8 +511,8 @@ public class MzIdentMLTransformer {
     private static PeptideEvidence transformToPeptideEvidence(uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidence oldPeptideEvidence) {
         PeptideEvidence evidence = null;
         if (oldPeptideEvidence != null) {
-            int start = (oldPeptideEvidence.getStart() != null)? oldPeptideEvidence.getStart().intValue(): -1;
-            int end   = (oldPeptideEvidence.getEnd()   != null)? oldPeptideEvidence.getEnd().intValue(): -1;
+            int start = (oldPeptideEvidence.getStart() != null)? oldPeptideEvidence.getStart(): -1;
+            int end   = (oldPeptideEvidence.getEnd()   != null)? oldPeptideEvidence.getEnd(): -1;
             evidence = new PeptideEvidence(oldPeptideEvidence.getId(), oldPeptideEvidence.getName(), start, end, oldPeptideEvidence.isIsDecoy(), transformToPeptide(oldPeptideEvidence.getPeptide()), transformToDBSequence(oldPeptideEvidence.getDBSequence()));
         }
         return evidence;
@@ -568,20 +567,20 @@ public class MzIdentMLTransformer {
             String name = null;
             String dataBaseName = null;
             //Todo: Try to make this function more flexible, we can define default Mod Databases
-            for(int i = 0; i < cvParams.size();i++ ){
-               if(cvParams.get(i).getCvLookupID().compareToIgnoreCase("MOD") ==0){
-                   id = cvParams.get(i).getAccession();
-                   name = cvParams.get(i).getName();
-                   dataBaseName = (cvParams.get(i).getCvLookupID() == null)?"MOD":cvParams.get(i).getCvLookupID();
+            for(CvParam cvParam: cvParams){
+               if(cvParam.getCvLookupID().compareToIgnoreCase("MOD") ==0){
+                   id = cvParam.getAccession();
+                   name = cvParam.getName();
+                   dataBaseName = (cvParam.getCvLookupID() == null)?"MOD":cvParam.getCvLookupID();
                    break;
-               }else if(cvParams.get(i).getCvLookupID().compareToIgnoreCase("UNIMOD") ==0){
-                   id = cvParams.get(i).getAccession();
-                   name = cvParams.get(i).getName();
-                   dataBaseName = (cvParams.get(i).getCvLookupID() == null)?"UNIMOD":cvParams.get(i).getCvLookupID();
+               }else if(cvParam.getCvLookupID().compareToIgnoreCase("UNIMOD") ==0){
+                   id = cvParam.getAccession();
+                   name = cvParam.getName();
+                   dataBaseName = (cvParam.getCvLookupID() == null)?"UNIMOD":cvParam.getCvLookupID();
                }else{
-                   id = cvParams.get(i).getAccession();
-                   name = cvParams.get(i).getName();
-                   dataBaseName = cvParams.get(i).getCvLookupID();
+                   id = cvParam.getAccession();
+                   name = cvParam.getName();
+                   dataBaseName = cvParam.getCvLookupID();
                }
             }
             ParamGroup param = new ParamGroup(cvParams,null);
@@ -604,9 +603,9 @@ public class MzIdentMLTransformer {
     private static SubstitutionModification transformToSubstitutionMod(uk.ac.ebi.jmzidml.model.mzidml.SubstitutionModification oldModification) {
         SubstitutionModification modification = null;
         if (oldModification != null) {
-            double avgMass  = (oldModification.getAvgMassDelta() != null)?oldModification.getAvgMassDelta().doubleValue():-1.0;
-            double monoMass = (oldModification.getMonoisotopicMassDelta()!=null)?oldModification.getMonoisotopicMassDelta().doubleValue():-1.0;
-            int location = (oldModification.getLocation()!=null)?oldModification.getLocation().intValue():-1;
+            double avgMass  = (oldModification.getAvgMassDelta() != null)?oldModification.getAvgMassDelta():-1.0;
+            double monoMass = (oldModification.getMonoisotopicMassDelta()!=null)?oldModification.getMonoisotopicMassDelta():-1.0;
+            int location = (oldModification.getLocation()!=null)?oldModification.getLocation():-1;
             modification = new SubstitutionModification(oldModification.getOriginalResidue(), oldModification.getReplacementResidue(), location, avgMass, monoMass);
         }
         return modification;
@@ -617,7 +616,7 @@ public class MzIdentMLTransformer {
         if (oldDbSequence != null) {
             String id = oldDbSequence.getId();
             String name = oldDbSequence.getName();
-            int length = (oldDbSequence.getLength() != null)?oldDbSequence.getLength().intValue():-1;
+            int length = (oldDbSequence.getLength() != null)?oldDbSequence.getLength():-1;
             String accession = oldDbSequence.getAccession();
             ParamGroup params = new ParamGroup(transformToCvParam(oldDbSequence.getCvParam()),transformToUserParam(oldDbSequence.getUserParam()));
             dbSequence = new DBSequence(params,id, name, length, accession, transformToSeachDatabase(oldDbSequence.getSearchDatabase()), oldDbSequence.getSeq(), null, null);
@@ -840,7 +839,6 @@ public class MzIdentMLTransformer {
 
     public static CvParam transformDateToCvParam(Date creationDate) {
         CvTermReference cvTerm = CvTermReference.EXPERIMENT_GLOBAL_CREATIONDATE;
-        CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),creationDate.toString(),null,null,null);
-        return cvParam;
+        return  new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),creationDate.toString(),null,null,null);
     }
 }

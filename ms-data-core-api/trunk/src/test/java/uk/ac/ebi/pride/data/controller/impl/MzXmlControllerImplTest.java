@@ -15,11 +15,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by IntelliJ IDEA.
+ * Test Class for MzXML Controller
+ *
  * User: yperez
  * Date: 3/13/12
  * Time: 9:58 PM
- * To change this template use File | Settings | File Templates.
  */
 public class MzXmlControllerImplTest {
 

@@ -7,11 +7,12 @@ import uk.ac.ebi.pride.data.io.file.MzMLUnmarshallerAdaptor;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
+ * The CacheBuilder class provides the functionality to initialize the cache
+ * categories for mzML files.
+ *
  * User: yperez
  * Date: 3/13/12
  * Time: 2:48 PM
- * To change this template use File | Settings | File Templates.
  */
 public class MzMlCacheBuilder extends AbstractAccessCacheBuilder{
 

@@ -72,7 +72,7 @@ public class MzIdentMlControllerImplTest {
         assertEquals("The name of the file should be PSI Example File", experiment.getName(), "PSI Example File");
 
         // test the Provider of the File
-        assertEquals("The id of the Provider should be person2",((Person)(experiment.getProvider().getContact())).getId(),"person2");
+        assertEquals("The id of the Provider should be person2",(experiment.getProvider().getContact()).getId(),"person2");
         assertEquals("The role of the Provider should be researcher",experiment.getProvider().getRole().getName(),"researcher");
 
     }
@@ -132,8 +132,8 @@ public class MzIdentMlControllerImplTest {
    @Test
    public void getIdentificationbyId() throws DataAccessException{
        List<Comparable> identificationIds = new ArrayList<Comparable>(mzIdentMlController.getIdentificationIds());
-       for (int i = 0; i < identificationIds.size(); i++){
-           Identification identification = mzIdentMlController.getIdentificationById(identificationIds.get(i),true);
+       for (Comparable id: identificationIds){
+           Identification identification = mzIdentMlController.getIdentificationById(id,true);
            //System.out.println(identification.getIdentifiedPeptides().size());
        }
    }

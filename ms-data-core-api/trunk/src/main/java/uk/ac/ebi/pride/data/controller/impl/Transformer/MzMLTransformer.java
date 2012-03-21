@@ -850,7 +850,6 @@ public class MzMLTransformer {
 
     public static CvParam transformDateToCvParam(Date creationDate) {
         CvTermReference cvTerm = CvTermReference.MS_SCAN_DATE;
-        CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),creationDate.toString(),null,null,null);
-        return cvParam;
+        return new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),creationDate.toString(),null,null,null);
     }
 }

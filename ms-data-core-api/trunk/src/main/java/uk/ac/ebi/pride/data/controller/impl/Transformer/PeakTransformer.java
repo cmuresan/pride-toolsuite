@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * PeakTransformer provides the functionality to convert peak objects to ms-core-api
+ * objects.
+ *
  * User: yperez
  * Date: 3/15/12
  * Time: 10:49 PM
- * To change this template use File | Settings | File Templates.
  */
 public class PeakTransformer {
     /**
@@ -84,8 +85,8 @@ public class PeakTransformer {
             double[] mzArray  = new double[peakList.keySet().size()];
             int i = 0;
             for(Double mz: peakList.keySet()){
-                mzArray[i]  = mz.doubleValue();
-                intArray[i] = peakList.get(mz).doubleValue();
+                mzArray[i]  = mz;
+                intArray[i] = peakList.get(mz);
                 i++;
             }
 

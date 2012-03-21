@@ -19,11 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * This class provide the functions to convert and transform mzData objects
+ * to ms-core-api objetcs.
+ *
  * User: yperez
  * Date: 3/15/12
  * Time: 9:19 AM
- * To change this template use File | Settings | File Templates.
  */
 public class MzDataTransformer {
 
@@ -185,8 +186,8 @@ public class MzDataTransformer {
         double[] mzArray  = new double[peakList.keySet().size()];
         int i = 0;
         for(Double mz: peakList.keySet()){
-            mzArray[i]  = mz.doubleValue();
-            intArray[i] = peakList.get(mz).doubleValue();
+            mzArray[i]  = mz;
+            intArray[i] = peakList.get(mz);
             i++;
         }
 

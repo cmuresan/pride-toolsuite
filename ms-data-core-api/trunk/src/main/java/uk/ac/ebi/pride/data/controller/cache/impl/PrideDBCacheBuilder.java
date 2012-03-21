@@ -444,14 +444,14 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             st.setString(2, "uk.ac.ebi.pride.rdbms.ojb.model.core.MonoMassDeltaBean");
             rs = st.executeQuery();
             while (rs.next()) {
-                monoMasses.add(new Double(rs.getDouble("mass_delta_value")));
+                monoMasses.add(rs.getDouble("mass_delta_value"));
             }
             st = connection.prepareStatement("SELECT mass_delta_value FROM pride_mass_delta WHERE modification_id = ? AND classname = ?");
             st.setInt(1, Integer.parseInt(modId.toString()));
             st.setString(2, "uk.ac.ebi.pride.rdbms.ojb.model.core.AverageMassDeltaBean");
             rs = st.executeQuery();
             while (rs.next()) {
-               avgMasses.add(new Double(rs.getDouble("mass_delta_value")));
+               avgMasses.add(rs.getDouble("mass_delta_value"));
             }
             List<CvParam> cvParams = new ArrayList<CvParam>();
             st = connection.prepareStatement("SELECT accession, name, value, cv_label FROM pride_modification_param " + " WHERE parent_element_fk = ? AND cv_label is not null");

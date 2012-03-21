@@ -17,11 +17,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * MZXml transformer provides the methods to convert MzXml objects to
+ * ms-core-api objetcs.
+ *
  * User: yperez
  * Date: 2/27/12
  * Time: 2:12 PM
- * To change this template use File | Settings | File Templates.
  */
 public class MzXmlTransformer {
 
@@ -94,8 +95,8 @@ public class MzXmlTransformer {
         double[] mzArray  = new double[peakList.keySet().size()];
         int i = 0;
         for(Double mz: peakList.keySet()){
-            mzArray[i]  = mz.doubleValue();
-            intArray[i] = peakList.get(mz).doubleValue();
+            mzArray[i]  = mz;
+            intArray[i] = peakList.get(mz);
             i++;
         }
 

@@ -9,11 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * The UnmarshallerAdaptor for MzData files retrieve the mzData objects
+ * from the mzdata_parser.
+ *
  * User: yperez
  * Date: 3/15/12
  * Time: 8:26 AM
- * To change this template use File | Settings | File Templates.
  */
 public class MzDataUnmarshallerAdaptor {
 

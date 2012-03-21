@@ -98,8 +98,8 @@ public class ControllerContentPane extends DataAccessControllerPane {
         try {
             Collection<DataAccessController.ContentCategory> categories = controller.getContentCategories();
 
-            // metadata tab is always visible
             metaDataTabEnabled = true;
+
 
             if (!categories.isEmpty()) {
                 if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)
@@ -180,10 +180,14 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
         // the type of data contains experiment data
         if (!categories.isEmpty()) {
-            metaDataTabPane = new MetaDataTabPane(controller, this);
-            metaDataTabIndex = indexCount++;
-            contentTabPane.insertTab(metaDataTabPane.getTitle(), metaDataTabPane.getIcon(), metaDataTabPane, metaDataTabPane.getTitle(), metaDataTabIndex);
-            metaDataTabPane.populate();
+
+
+            if(controller.hasMetaDataInformation()){
+                metaDataTabPane = new MetaDataTabPane(controller, this);
+                metaDataTabIndex = indexCount++;
+                contentTabPane.insertTab(metaDataTabPane.getTitle(), metaDataTabPane.getIcon(), metaDataTabPane, metaDataTabPane.getTitle(), metaDataTabIndex);
+                metaDataTabPane.populate();
+            }
 
 
             // identification data tab
@@ -233,6 +237,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
      */
     @SuppressWarnings("unchecked")
     private void retrieveIdentificationData() {
+
         Collection<DataAccessController.ContentCategory> categories = controller.getContentCategories();
         if (categories.contains(DataAccessController.ContentCategory.PROTEIN) &&
                 categories.contains(DataAccessController.ContentCategory.PEPTIDE)) {

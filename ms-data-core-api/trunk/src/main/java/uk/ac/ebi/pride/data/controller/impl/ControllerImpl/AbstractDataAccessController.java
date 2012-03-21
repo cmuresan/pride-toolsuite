@@ -1855,4 +1855,14 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     public void propertyChange(PropertyChangeEvent evt) {
         // empty method
     }
+
+    /**
+     * By defult all the supported files contains Metadata. Only the Peak Files do not contain any Metadata.
+     * @return
+     * @throws DataAccessException
+     */
+    @Override
+    public boolean hasMetaDataInformation(){
+        return true;
+    }
 }

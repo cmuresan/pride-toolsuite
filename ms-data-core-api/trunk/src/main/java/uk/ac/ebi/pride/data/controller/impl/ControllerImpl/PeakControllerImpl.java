@@ -26,7 +26,9 @@ import java.util.List;
 
 
 /**
- * Created by IntelliJ IDEA.
+ * Peak Controller keep the information from different Peak files. It support mgf, ms2, pkl,
+ * and DTa files. This files only contain the name of the file, the
+ *
  * User: yperez
  * Date: 3/15/12
  * Time: 10:27 PM
@@ -280,7 +282,9 @@ public class PeakControllerImpl extends CachedDataAccessController {
         if (metaData == null) {
             // id , accession and version
             String id = null;
+
             String accession = null;
+
             String version = null;
             // SourceFile List
             List<SourceFile> sourceFileList = null;
@@ -294,10 +298,9 @@ public class PeakControllerImpl extends CachedDataAccessController {
             List<Software> softwares = null;
             // ScanSettings list
             ParamGroup fileContent = null;
+
             metaData = new ExperimentMetaData(fileContent, id, accession, version, null, samples, softwares, personList, sourceFileList, null, organizationList, null, null, null, null);
         }
-
-
         return metaData;
     }
 
@@ -334,5 +337,14 @@ public class PeakControllerImpl extends CachedDataAccessController {
         return null;
     }
 
-
+    /**
+     * The only file format that not contain any MetaData are the pure peak files.
+     *
+     * @return
+     * @throws DataAccessException
+     */
+    @Override
+    public boolean hasMetaDataInformation(){
+        return false;
+    }
 }

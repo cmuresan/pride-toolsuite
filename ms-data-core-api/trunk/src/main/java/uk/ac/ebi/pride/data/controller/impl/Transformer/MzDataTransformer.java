@@ -362,15 +362,21 @@ public class MzDataTransformer {
             String id = null;
             List<ProcessingMethod> methods = null;
 
-            if(oldDataProcessing.getProcessingMethod() != null){
-                 methods = new ArrayList<ProcessingMethod>();
-                 List<Software> softwares = transformSoftware(oldDataProcessing.getSoftware());
-                 ParamGroup paramGroup = transformParamGroup(oldDataProcessing.getProcessingMethod());
-                 ProcessingMethod newProcessingMethod = new ProcessingMethod(0, softwares.get(0), paramGroup);
-                 methods.add(newProcessingMethod);
+            if(oldDataProcessing.getSoftware() != null || oldDataProcessing.getProcessingMethod() != null){
+                methods = new ArrayList<ProcessingMethod>();
+                Software software = null;
+                ParamGroup paramGroup = null;
+                if(oldDataProcessing.getSoftware() != null){
+                    List<Software> softwares = transformSoftware(oldDataProcessing.getSoftware());
+                    software = softwares.get(0);
+                }
+                if(oldDataProcessing.getProcessingMethod() != null){
+                    paramGroup = transformParamGroup(oldDataProcessing.getProcessingMethod());
+                }
+                ProcessingMethod processingMethod = new ProcessingMethod(0,software,paramGroup);
+                methods.add(processingMethod);
             }
-            DataProcessing newDataProcessing = new DataProcessing(id, methods);
-            dataProcessings.add(newDataProcessing);
+            dataProcessings.add(new DataProcessing(null,methods));
         }
         return dataProcessings;
     }
@@ -378,7 +384,7 @@ public class MzDataTransformer {
     /**
      * Transform FileDescription object to List of SourceFile
      *
-     * @param oldSourceFile jmzml FileDescription Object
+     * @param oldSourceFile mzData FileDescription Object
      * @return List<SourceFile> List of Source Files used in the MzMl
      */
     public static List<SourceFile> transformToFileSource(uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.SourceFile oldSourceFile) {
@@ -388,14 +394,24 @@ public class MzDataTransformer {
             String name = oldSourceFile.getNameOfFile();
             String id = oldSourceFile.getNameOfFile();
             String path = oldSourceFile.getPathToFile();
-            SourceFile newSourceFile = new SourceFile(null, id, name, path);
+            ParamGroup paramGroup = null;
+            CvParam fileFormat = null;
+            if(oldSourceFile.getFileType() != null){
+                paramGroup = new ParamGroup();
+                CvTermReference cvReference = CvTermReference.MS_FILE_SPECTRUM;
+                // Kepp here the information of the file Type, is the only solution to convert mzXML attributes to CvTerms
+                CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),oldSourceFile.getFileType(),null,null,null);
+                paramGroup.addCvParam(cvParam);
+                fileFormat = cvParam;
+            }
+            SourceFile newSourceFile = new SourceFile(paramGroup, id, name, path,fileFormat,null);
             sourceFiles.add(newSourceFile);
         }
         return sourceFiles;
     }
 
     /**
-     * Method to retrieve the Contact Persons From the FileDescription Object in the MzMl Files
+     * Method to retrieve the Contact Persons From the FileDescription Object in the mzData Files
      *
      * @param oldPersons
      * @return List<Person> List of Person Contacts

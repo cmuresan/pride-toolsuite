@@ -9,6 +9,7 @@ import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.cache.impl.MzDataCacheBuilder;
 import uk.ac.ebi.pride.data.controller.impl.Transformer.MzDataTransformer;
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.core.CvParam;
 import uk.ac.ebi.pride.data.core.DataProcessing;
 import uk.ac.ebi.pride.data.core.Person;
 import uk.ac.ebi.pride.data.core.Software;
@@ -26,34 +27,40 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
+ * This controller is used to retrieve the information from mzData files. It uses the jmzReader
+ * to retrieve the information from mzData files. The mzData files support Spectrum and Chromatogram
+ * Information and also other important Metadata.
+ *
  * User: yperez
  * Date: 3/15/12
  * Time: 8:17 AM
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class MzDataControllerImpl extends CachedDataAccessController {
 
     private static final Logger logger = LoggerFactory.getLogger(MzDataControllerImpl.class);
     /**
-     * Pattern for validating mzML format
+     * Pattern for validating mzData format
      */
     private static Pattern mzDataHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<(mzData) version=.*", Pattern.MULTILINE);
 
     /**
-     * Reader for getting information from jmzReader file
+     * Reader for getting information from mzData file
      */
     private MzDataUnmarshallerAdaptor unmarshaller;
 
     /**
-     * Construct a data access controller using a given mzML file
+     * Construct a data access controller using a given ,zData file
      *
-     * @param file jmzReader file
+     * @param file mzData file
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception
      */
     public MzDataControllerImpl(File file) throws DataAccessException {
@@ -160,9 +167,8 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * Get referenceable paramgroup, this concept is only available in mzML
-     * It is a paramgroup with id
-     * And this is not cached
+     * Get referenceable paramgroup, this concept is only available in mzML not in mzData
+     * It is a paramgroup with id.
      *
      * @return ReferenceableParamGroup param group
      * @throws DataAccessException data access exception
@@ -215,11 +221,22 @@ public class MzDataControllerImpl extends CachedDataAccessController {
         }
     }
 
+    /**
+     * Get the information of Organizations. Tje organizations is not supported in mzData
+     *
+     * @return
+     * @throws DataAccessException
+     */
     @Override
     public List<Organization> getOrganizationContacts() throws DataAccessException {
         throw new UnsupportedOperationException("This method is not supported");
     }
 
+    /**
+     * Get the information of SourceFiles.
+     * @return
+     * @throws DataAccessException
+     */
     @Override
     public List<SourceFile> getSourceFiles() throws DataAccessException {
         try {
@@ -233,12 +250,40 @@ public class MzDataControllerImpl extends CachedDataAccessController {
         }
     }
 
+    /**
+     * File Content is extra parameters related with Source Files in case of mzData.
+     *
+     * @return ParamGroup
+     * @throws DataAccessException
+     */
 
     @Override
     public ParamGroup getFileContent() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
+        ParamGroup paramGroup = null;
+        List<SourceFile> sourceFiles = getSourceFiles();
+        Set<CvParam> cvParamSet = null;
+
+        if(sourceFiles != null){
+            cvParamSet = new HashSet<CvParam>();
+            for(SourceFile sourceFile: sourceFiles){
+                if(sourceFile.getFileFormat() != null){
+                    cvParamSet.add(sourceFile.getFileFormat());
+                }
+            }
+        }
+        if (cvParamSet != null){
+            List<CvParam> cvParams = new ArrayList<CvParam>();
+            cvParams.addAll(cvParamSet);
+            paramGroup = new ParamGroup(cvParams,null);
+        }
+        return paramGroup;
     }
 
+    /**
+     * Get a List of Software
+     * @return List<Software> List of Software
+     * @throws DataAccessException
+     */
     @Override
     public List<Software> getSoftwares() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
@@ -258,7 +303,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * Get a list of scan settings by checking the cache first
+     * Scan Setting is not Supported by mzData.
      *
      * @return List<ScanSetting>   a list of scan settings
      * @throws DataAccessException data access exception
@@ -379,36 +424,36 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
+    public ExperimentMetaData getExperimentMetaData()throws DataAccessException{
 
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
             // id , accession and version
-            try{
-                String id = unmarshaller.getAdmin().getSampleName();
-                String accession = unmarshaller.getAdmin().getSampleName();
-                String version = null;
+            String id = unmarshaller.getIdMzData();
 
-                // SourceFile List
-                List<SourceFile> sourceFileList = getSourceFiles();
-                // List of Persons
-                List<Person> personList = getPersonContacts();
+            String accession = null;
+            // File Version
+            String version = unmarshaller.getVersionMzData();
 
-                // List of Organizations
-                List<Organization> organizationList = null;
+            // SourceFile List
+            List<SourceFile> sourceFileList = getSourceFiles();
 
-                // Sample list
-                List<Sample> samples = getSamples();
-                // Software list
-                List<Software> softwares = getSoftwares();
-                // ScanSettings list
-                ParamGroup fileContent = null;
-                metaData = new ExperimentMetaData(fileContent, id, accession, version, null, samples, softwares, personList, sourceFileList, null, organizationList, null, null, null, null);
-            }catch (JMzReaderException ex){
-                logger.error("Get spectrum by id", ex);
-                throw new DataAccessException("Exception while trying to read Experiment MetaData using Spectrum ID", ex);
-            }
+            // List of Persons
+            List<Person> personList = getPersonContacts();
+
+            // List of Organizations
+            List<Organization> organizationList = null;
+
+            // Sample list
+            List<Sample> samples = getSamples();
+
+            // Software list
+            List<Software> softwares = getSoftwares();
+
+            ParamGroup fileContent = getFileContent();
+
+            metaData = new ExperimentMetaData(fileContent, id, accession, version, null, samples, softwares, personList, sourceFileList, null, organizationList, null, null, null, null);
         }
         return metaData;
     }

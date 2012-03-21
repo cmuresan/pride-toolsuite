@@ -397,6 +397,14 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
         super.close();
     }
 
+    /**
+     * The Experiment Metadata supported for MzXML is only the name of the files,
+     * the type of the file, the instrument, the person contacts.
+     *
+     * @return
+     * @throws DataAccessException
+     */
+
     @Override
     public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
 
@@ -426,6 +434,13 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
         return metaData;
     }
 
+    /**
+     * Get the MzGraphMetaData support the dataProcessing Metadata, the Instrument Configuration
+     * and do not contains scanSetting information for mzXML files.
+     *
+     * @return MzGraphMetaData    MetaData of related Spectrum Information.
+     * @throws DataAccessException
+     */
     @Override
     public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
@@ -441,12 +456,17 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
         return metaData;
     }
 
+    /**
+     * The identification MetaData is not supported for mzXML files
+     * @return
+     * @throws DataAccessException
+     */
     @Override
     public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
-        return null;
+        throw new UnsupportedOperationException("This method is not supported");
     }
 
-    /**
+   /**
      * Check a file is mzML file
      *
      * @param file input file

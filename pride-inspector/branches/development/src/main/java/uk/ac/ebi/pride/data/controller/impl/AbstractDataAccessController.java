@@ -1590,22 +1590,24 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
             Sample sample = CollectionUtils.getElement(samples, 0);
             List<CvParam> cvParams = sample.getCvParams();
             // scan for all the species
-            for (CvParam cvParam : cvParams) {
-                String cvLabel = cvParam.getCvLookupID().toLowerCase();
-                if ("newt".equals(cvLabel)) {
-                    sampleDesc.setSpecies(cvParam);
-                } else if ("bto".equals(cvLabel)) {
-                    sampleDesc.setTissue(cvParam);
-                } else if ("cl".equals(cvLabel)) {
-                    sampleDesc.setCellLine(cvParam);
-                } else if ("go".equals(cvLabel)) {
-                    sampleDesc.setGOTerm(cvParam);
-                } else if ("doid".equals(cvLabel)) {
-                    sampleDesc.setDisease(cvParam);
-                } else if (QuantCvTermReference.isSubSampleDescription(cvParam)) {
-                    sampleDesc.setDescription(cvParam);
-                } else if (QuantCvTermReference.isReagent(cvParam)) {
-                    sampleDesc.setReagent(cvParam);
+            if (cvParams != null) {
+                for (CvParam cvParam : cvParams) {
+                    String cvLabel = cvParam.getCvLookupID().toLowerCase();
+                    if ("newt".equals(cvLabel)) {
+                        sampleDesc.setSpecies(cvParam);
+                    } else if ("bto".equals(cvLabel)) {
+                        sampleDesc.setTissue(cvParam);
+                    } else if ("cl".equals(cvLabel)) {
+                        sampleDesc.setCellLine(cvParam);
+                    } else if ("go".equals(cvLabel)) {
+                        sampleDesc.setGOTerm(cvParam);
+                    } else if ("doid".equals(cvLabel)) {
+                        sampleDesc.setDisease(cvParam);
+                    } else if (QuantCvTermReference.isSubSampleDescription(cvParam)) {
+                        sampleDesc.setDescription(cvParam);
+                    } else if (QuantCvTermReference.isReagent(cvParam)) {
+                        sampleDesc.setReagent(cvParam);
+                    }
                 }
             }
         }

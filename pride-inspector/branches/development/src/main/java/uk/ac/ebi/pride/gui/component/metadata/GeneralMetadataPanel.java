@@ -98,19 +98,22 @@ public class GeneralMetadataPanel extends JPanel {
         List<Sample> samples = metaData.getSamples();
         if (samples != null) {
             for (Sample sample : samples) {
-                for (CvParam cvParam : sample.getCvParams()) {
-                    String cvAcc = cvParam.getAccession();
-                    String name = cvParam.getName();
-                    String cvLabel = cvParam.getCvLookupID().toLowerCase();
-                    if ("newt".equals(cvLabel)) {
-                        if (!speciesAcc.contains(cvAcc)) {
-                            species += ("".equals(species) ? "" : ", ") + name;
-                            speciesAcc.add(cvAcc);
-                        }
-                    } else if ("bto".equals(cvLabel)) {
-                        if (!tissuesAcc.contains(cvAcc)) {
-                            tissues += ("".equals(tissues) ? "" : ", ") + name;
-                            tissuesAcc.add(cvAcc);
+                List<CvParam> cvParams = sample.getCvParams();
+                if (cvParams != null) {
+                    for (CvParam cvParam : cvParams) {
+                        String cvAcc = cvParam.getAccession();
+                        String name = cvParam.getName();
+                        String cvLabel = cvParam.getCvLookupID().toLowerCase();
+                        if ("newt".equals(cvLabel)) {
+                            if (!speciesAcc.contains(cvAcc)) {
+                                species += ("".equals(species) ? "" : ", ") + name;
+                                speciesAcc.add(cvAcc);
+                            }
+                        } else if ("bto".equals(cvLabel)) {
+                            if (!tissuesAcc.contains(cvAcc)) {
+                                tissues += ("".equals(tissues) ? "" : ", ") + name;
+                                tissuesAcc.add(cvAcc);
+                            }
                         }
                     }
                 }
@@ -149,7 +152,7 @@ public class GeneralMetadataPanel extends JPanel {
             engine = engine == null ? "Unknown" : engine;
             searchEngineField.setText(engine.toString());
             searchEngineField.setCaretPosition(0);
-        }catch (DataAccessException e) {
+        } catch (DataAccessException e) {
             logger.error("Failed to retrieve search engine", e);
         }
 

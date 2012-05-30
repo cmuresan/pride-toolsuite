@@ -305,7 +305,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      */
     @Override
     public int getNumberOfPeaks(Comparable specId) throws DataAccessException {
-        int numOfPeaks = 0;
+            int numOfPeaks = 0;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
             numOfPeaks = DataAccessUtilities.getNumberOfPeaks(spectrum);

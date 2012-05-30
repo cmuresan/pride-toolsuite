@@ -121,6 +121,7 @@ public class AnnotationUtils {
                     peptide.addAminoAcid(aminoAcid);
                 }
             }
+
             if (peptide.getNumberOfAminoAcids() != peptideStr.length()) {
                 peptide.removeAll();
             }

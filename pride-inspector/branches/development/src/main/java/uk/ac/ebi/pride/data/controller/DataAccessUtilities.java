@@ -97,8 +97,8 @@ public class DataAccessUtilities {
      * @param spectrum spectrum
      * @return int precursor charge
      */
-    public static int getPrecursorCharge(Spectrum spectrum) {
-        int charge = 0;
+    public static Integer getPrecursorCharge(Spectrum spectrum) {
+        Integer charge = null;
         List<Precursor> precursors = spectrum.getPrecursors();
         if (precursors != null && !precursors.isEmpty()) {
             Double c = getSelectedIonCharge(precursors.get(0), 0);
@@ -445,8 +445,8 @@ public class DataAccessUtilities {
         List<CvParam> cps = new ArrayList<CvParam>();
         if (cvParams != null) {
             for (CvParam param : cvParams) {
-                if (param.getAccession().toLowerCase().equals(accession.toLowerCase())
-                        && param.getCvLookupID().toLowerCase().equals(cvLabel.toLowerCase())) {
+                if (param.getAccession().equalsIgnoreCase(accession)
+                        && param.getCvLookupID().equalsIgnoreCase(cvLabel)) {
                     cps.add(param);
                 }
             }

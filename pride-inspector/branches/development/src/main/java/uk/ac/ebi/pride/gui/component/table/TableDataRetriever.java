@@ -109,7 +109,7 @@ public class TableDataRetriever {
                     ptmMasses.add(monoMasses.get(0));
                 }
             }
-            Double deltaMass = MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
+            Double deltaMass = charge == null ? null : MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
             content.add(deltaMass == null ? null : deltaMass);
 
             // precursor m/z

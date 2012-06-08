@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
+import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -52,7 +53,8 @@ public class DownloadSingleExperimentTask extends AbstractConnectPrideTask {
     @Override
     protected List<Map<String, String>> doInBackground() throws Exception {
         // connect
-        HttpURLConnection connection = connect();
+        DesktopContext context = Desktop.getInstance().getDesktopContext();
+        HttpURLConnection connection = connect(context.getProperty("pride.experiment.download.url"));
         // initialize meta data download
         initMetaDataDownload(connection, Arrays.asList(accession), user, password);
         // download meta data
@@ -61,11 +63,11 @@ public class DownloadSingleExperimentTask extends AbstractConnectPrideTask {
         if (metaData != null && metaData.size() == 1) {
             String sizeStr = metaData.get(0).get("Size");
             double size = Double.parseDouble(sizeStr) * 1024 * 1024;
-            connection = connect();
+            connection = connect(context.getProperty("pride.experiment.download.url"));
             // init download
             initExperimentDownload(connection, accession, user, password);
             // download
-            downloadExperiment(connection, accession, output, size);
+            downloadFile(connection, output, size);
             // show download finished
             showDoneMessage();
 

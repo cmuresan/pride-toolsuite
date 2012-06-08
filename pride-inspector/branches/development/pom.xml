@@ -220,6 +220,13 @@
             <artifactId>accession-resolver</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+        <!--ProteomeXchange-->
+        <dependency>
+            <groupId>uk.ac.ebi.pride</groupId>
+            <artifactId>px-submission-core</artifactId>
+            <version>0.8-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

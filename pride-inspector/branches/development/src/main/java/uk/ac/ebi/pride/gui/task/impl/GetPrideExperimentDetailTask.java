@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.gui.task.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.gui.desktop.Desktop;
+import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 
 import java.net.HttpURLConnection;
 import java.util.*;
@@ -13,18 +15,18 @@ import java.util.*;
  * Date: 04-Aug-2010
  * Time: 13:51:20
  */
-public class OpenReviewerConnectionTask extends AbstractConnectPrideTask {
-    private static final Logger logger = LoggerFactory.getLogger(OpenReviewerConnectionTask.class);
+public class GetPrideExperimentDetailTask extends AbstractConnectPrideTask {
+    private static final Logger logger = LoggerFactory.getLogger(GetPrideExperimentDetailTask.class);
 
     private String user;
     private String password;
     private Set<Comparable> accessions;
 
-    public OpenReviewerConnectionTask(String user, String password) {
+    public GetPrideExperimentDetailTask(String user, String password) {
         this(user, password, null);
     }
 
-    public OpenReviewerConnectionTask(String user, String password, Collection<Comparable> accessions) {
+    public GetPrideExperimentDetailTask(String user, String password, Collection<Comparable> accessions) {
         this.user = user;
         this.password = password;
         if (accessions != null) {
@@ -41,7 +43,8 @@ public class OpenReviewerConnectionTask extends AbstractConnectPrideTask {
     protected List<Map<String, String>> doInBackground() throws Exception {
 
         // create a http connection
-        HttpURLConnection connection = connect();
+        DesktopContext context = Desktop.getInstance().getDesktopContext();
+        HttpURLConnection connection = connect(context.getProperty("pride.experiment.download.url"));
 
         List<Map<String, String>> metadata = null;
 

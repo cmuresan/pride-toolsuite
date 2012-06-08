@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.gui.component.reviewer;
 
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.task.impl.OpenReviewerConnectionTask;
+import uk.ac.ebi.pride.gui.task.impl.GetPrideExperimentDetailTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
@@ -18,7 +18,7 @@ import java.awt.event.ActionListener;
  * Date: 04-Aug-2010
  * Time: 09:43:33
  */
-public class PrivateDownloadPane extends JDialog implements ActionListener {
+public class PrideDownloadPane extends JDialog implements ActionListener {
 
     private static final String TITLE = "Download PRIDE Experiment";
     private static final String MSG_TITLE = "Message";
@@ -34,14 +34,14 @@ public class PrivateDownloadPane extends JDialog implements ActionListener {
     private JTextField userField;
     private JPasswordField pwdField;
     private MessageLabel msgLabel;
-    private PrivateDownloadSelectionPane selectionPane;
+    private PrideDownloadSelectionPane selectionPanePride;
 
     /**
      * reference to desktop context
      */
     private PrideInspectorContext context;
 
-    public PrivateDownloadPane(Frame owner) {
+    public PrideDownloadPane(Frame owner) {
         super(owner, TITLE);
         setupMainPane();
     }
@@ -57,8 +57,8 @@ public class PrivateDownloadPane extends JDialog implements ActionListener {
         mainPanel.add(createLoginPane());
         mainPanel.add(createMsgPane());
 
-        selectionPane = new PrivateDownloadSelectionPane(this, true);
-        mainPanel.add(selectionPane);
+        selectionPanePride = new PrideDownloadSelectionPane(this, true);
+        mainPanel.add(selectionPanePride);
 
         mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         this.add(mainPanel);
@@ -141,11 +141,11 @@ public class PrivateDownloadPane extends JDialog implements ActionListener {
     private void loginButtonPressed() {
         String currentUserName = userField.getText();
         char[] currentPassWord = pwdField.getPassword();
-        OpenReviewerConnectionTask reviewerTask = new OpenReviewerConnectionTask(currentUserName, String.valueOf(currentPassWord));
+        GetPrideExperimentDetailTask reviewerTask = new GetPrideExperimentDetailTask(currentUserName, String.valueOf(currentPassWord));
         reviewerTask.setGUIBlocker(new DefaultGUIBlocker(reviewerTask, GUIBlocker.Scope.NONE, null));
-        selectionPane.setCurrentUserName(currentUserName);
-        selectionPane.setCurrentPassWord(String.valueOf(currentPassWord));
-        reviewerTask.addTaskListener(selectionPane);
+        selectionPanePride.setCurrentUserName(currentUserName);
+        selectionPanePride.setCurrentPassWord(String.valueOf(currentPassWord));
+        reviewerTask.addTaskListener(selectionPanePride);
         reviewerTask.addTaskListener(msgLabel);
         reviewerTask.execute();
     }

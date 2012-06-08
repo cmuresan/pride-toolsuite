@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.data.controller.impl.PrideDBAccessControllerImpl;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.TaskDialog;
-import uk.ac.ebi.pride.gui.component.reviewer.PrivateDownloadSelectionPane;
+import uk.ac.ebi.pride.gui.component.reviewer.PrideDownloadSelectionPane;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
@@ -140,7 +140,7 @@ public class OpenValidPrideExperimentTask extends TaskAdapter<Void, Void> implem
      * Open all the remaing experiments, they could be public or private
      */
     private void openRemainingExperiments(List<Comparable> remainingExps) {
-        OpenReviewerConnectionTask task = new OpenReviewerConnectionTask(username, password, remainingExps);
+        GetPrideExperimentDetailTask task = new GetPrideExperimentDetailTask(username, password, remainingExps);
         task.addTaskListener(this);
         task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
         context.addTask(task);
@@ -150,7 +150,7 @@ public class OpenValidPrideExperimentTask extends TaskAdapter<Void, Void> implem
      * Open all the private experiment associated with the user
      */
     private void openAllPrivateExperiments() {
-        OpenReviewerConnectionTask task = new OpenReviewerConnectionTask(username, password);
+        GetPrideExperimentDetailTask task = new GetPrideExperimentDetailTask(username, password);
         task.addTaskListener(this);
         task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
         context.addTask(task);
@@ -288,9 +288,9 @@ public class OpenValidPrideExperimentTask extends TaskAdapter<Void, Void> implem
             dialog.add(msgPanel, BorderLayout.NORTH);
 
             // add a experiment selection pane
-            PrivateDownloadSelectionPane selectionPane = new PrivateDownloadSelectionPane(dialog, true, username, password);
-            selectionPane.addExperimentMetaData(validMetaData);
-            dialog.add(selectionPane, BorderLayout.CENTER);
+            PrideDownloadSelectionPane selectionPanePride = new PrideDownloadSelectionPane(dialog, true, username, password);
+            selectionPanePride.addExperimentMetaData(validMetaData);
+            dialog.add(selectionPanePride, BorderLayout.CENTER);
             dialog.setAlwaysOnTop(true);
             dialog.setVisible(true);
         } else {
@@ -299,7 +299,7 @@ public class OpenValidPrideExperimentTask extends TaskAdapter<Void, Void> implem
             TaskDialog dialog = new TaskDialog(Desktop.getInstance().getMainComponent(), "Download PRIDE Experiment", "Downloading...Please be aware that this may take a few minutes");
             dialog.setAlwaysOnTop(true);
             dialog.setVisible(true);
-            DownloadExperimentTask downloadTask = new DownloadExperimentTask(accs, new File(System.getProperty("java.io.tmpdir")), username, password, true);
+            DownloadPrideExperimentTask downloadTask = new DownloadPrideExperimentTask(accs, new File(System.getProperty("java.io.tmpdir")), username, password, true);
             downloadTask.addTaskListener(dialog);
             downloadTask.setGUIBlocker(new DefaultGUIBlocker(downloadTask, GUIBlocker.Scope.NONE, null));
             context.addTask(downloadTask);

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.impl.PrideXmlControllerImpl;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
+import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
@@ -19,8 +20,8 @@ import java.util.Map;
  * Date: 04-Aug-2010
  * Time: 15:41:24
  */
-public class DownloadExperimentTask extends AbstractConnectPrideTask {
-    private static final Logger logger = LoggerFactory.getLogger(DownloadExperimentTask.class);
+public class DownloadPrideExperimentTask extends AbstractConnectPrideTask {
+    private static final Logger logger = LoggerFactory.getLogger(DownloadPrideExperimentTask.class);
 
     private Map<Comparable, Double> accessions;
     private File folder;
@@ -28,8 +29,8 @@ public class DownloadExperimentTask extends AbstractConnectPrideTask {
     private String password;
     private boolean toOpenFile;
 
-    public DownloadExperimentTask(Map<Comparable, Double> accessions, File path,
-                                  String usr, String pwd, boolean toOpenFile) {
+    public DownloadPrideExperimentTask(Map<Comparable, Double> accessions, File path,
+                                       String usr, String pwd, boolean toOpenFile) {
         this.accessions = accessions;
         this.folder = path;
         this.user = usr;
@@ -51,7 +52,9 @@ public class DownloadExperimentTask extends AbstractConnectPrideTask {
                     Double size = acc.getValue();
 
                     // create a http connection
-                    HttpURLConnection connection = connect();
+                    DesktopContext context = Desktop.getInstance().getDesktopContext();
+                    HttpURLConnection connection = connect(context.getProperty("pride.experiment.download.url"));
+
                     if (connection != null) {
                         // login for download
                         initExperimentDownload(connection, accession, user, password);
@@ -60,7 +63,7 @@ public class DownloadExperimentTask extends AbstractConnectPrideTask {
                         File output = getFilePath(accession);
 
                         // download experiment
-                        downloadExperiment(connection, accession, output, size);
+                        downloadFile(connection, output, size);
 
                         // open
                         if (toOpenFile) {

@@ -2,8 +2,6 @@ package uk.ac.ebi.pride.gui.task.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.pride.gui.desktop.Desktop;
-import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.url.HttpUtilities;
 import uk.ac.ebi.pride.gui.utils.Constants;
@@ -22,7 +20,7 @@ import java.util.zip.GZIPInputStream;
  * Time: 13:46
  */
 public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<String, String>>, String> {
-    private static final Logger logger = LoggerFactory.getLogger(DownloadExperimentTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(DownloadPrideExperimentTask.class);
     private static final int BUFFER_SIZE = 1024;
 
     /**
@@ -30,15 +28,14 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
      *
      * @return HttpURLConnection    http connection
      */
-    HttpURLConnection connect() {
+    HttpURLConnection connect(String url) {
         HttpURLConnection connection = null;
 
         try {
-            DesktopContext context = Desktop.getInstance().getDesktopContext();
-            connection = HttpUtilities.createHttpConnection(context.getProperty("pride.experiment.download.url"), "POST");
+            connection = HttpUtilities.createHttpConnection(url, "POST");
         } catch (Exception ex) {
-            logger.warn("Fail to create connection to PRIDE server: {}", ex.getMessage());
-            publish("Warning: Fail to create connection to PRIDE server");
+            logger.warn("Fail to create connection to the remote server: {}", ex.getMessage());
+            publish("Warning: Fail to create connection to the remote server");
         }
 
         return connection;
@@ -68,8 +65,50 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
             out.write(cmd.toString());
             out.close();
         } catch (IOException ex) {
-            logger.warn("Fail to send download request to PRIDE server: {}", ex.getMessage());
-            publish("Warning: Fail to send download request to PRIDE server");
+            logger.warn("Fail to send download request to the remote server: {}", ex.getMessage());
+            publish("Warning: Fail to send download request to the remote server");
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    logger.warn("Fail to close output stream", e);
+                }
+            }
+        }
+    }
+
+    /**
+     * login to proteomexchange to download
+     *
+     * @param connection http connection.
+     * @param accession  pride experiment accession
+     * @param user       user name
+     * @param password   password
+     */
+    void initSubmissionDownload(HttpURLConnection connection,
+                                Comparable accession,
+                                String fileId,
+                                String user,
+                                String password) {
+        OutputStreamWriter out = null;
+        try {
+            out = new OutputStreamWriter(connection.getOutputStream());
+            StringBuilder cmd = new StringBuilder();
+            cmd.append("username=");
+            cmd.append(URLEncoder.encode(String.valueOf(user), "UTF-8"));
+            cmd.append("&password=");
+            cmd.append(URLEncoder.encode(String.valueOf(password), "UTF-8"));
+            cmd.append("&action=downloadFile");
+            cmd.append("&accession=");
+            cmd.append(accession);
+            cmd.append("&fileid=");
+            cmd.append(fileId);
+            out.write(cmd.toString());
+            out.close();
+        } catch (IOException ex) {
+            logger.warn("Fail to send download request to the remote server: {}", ex.getMessage());
+            publish("Warning: Fail to send download request to the remote server");
         } finally {
             if (out != null) {
                 try {
@@ -86,16 +125,15 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
      * Download pride experiment
      *
      * @param connection http connection
-     * @param accession  pride accession
      * @param file       output file path
      * @param size       size of the file
      */
     @SuppressWarnings("unchecked")
-    void downloadExperiment(HttpURLConnection connection, Comparable accession, File file, Double size) {
+    void downloadFile(HttpURLConnection connection, File file, Double size) {
         BufferedOutputStream boutStream = null;
         GZIPInputStream in = null;
         try {
-            publish("Downloading " + accession);
+            publish("Downloading " + file);
             in = new GZIPInputStream(connection.getInputStream());
 
             FileOutputStream outStream = new FileOutputStream(file);
@@ -125,8 +163,8 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
                 logger.warn("Wrong login credentials: {}", msg);
                 publish("Warning: Wrong login credentials");
             } else if (msg.contains("400")) {
-                logger.warn("Fail to connect to remote PRIDE server: {}", msg);
-                publish("Warning: Fail to connect to remote PRIDE server");
+                logger.warn("Fail to connect to the remote server: {}", msg);
+                publish("Warning: Fail to connect to the remote server");
             } else {
                 logger.warn("Unexpected error: " + ex.getMessage());
                 publish("Unexpected error: " + ex.getMessage());
@@ -158,11 +196,12 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
      * @param user       user name
      * @param password   password
      */
-    void initMetaDataDownload(HttpURLConnection connection, Collection<Comparable> accessions,
-                                        String user, String password) {
+    void initMetaDataDownload(HttpURLConnection connection,
+                              Collection<Comparable> accessions,
+                              String user,
+                              String password) {
         OutputStreamWriter out = null;
         try {
-            publish("Logging into PRIDE ....");
             out = new OutputStreamWriter(connection.getOutputStream());
             StringBuilder cmd = new StringBuilder();
             cmd.append("username=");
@@ -205,7 +244,6 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
 
         BufferedReader in = null;
         try {
-            publish("Loading Experiment details ...");
             in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String str;
             Map<String, String> entry = new HashMap<String, String>();
@@ -220,15 +258,14 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
                 }
             }
             in.close();
-            publish("Login has finished");
         } catch (IOException ex) {
             String msg = ex.getMessage();
             if (msg.contains("403")) {
                 logger.warn("Wrong login credentials: {}", msg);
                 publish("Warning: Wrong login credentials");
             } else {
-                logger.warn("Fail to connect to remote PRIDE server: {}", msg);
-                publish("Warning: Fail to connect to remote PRIDE server");
+                logger.warn("Fail to connect to the remote server: {}", msg);
+                publish("Warning: Fail to connect to the remote server");
             }
         } finally {
             if (in != null) {

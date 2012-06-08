@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
 import uk.ac.ebi.pride.gui.action.PrideAction;
-import uk.ac.ebi.pride.gui.component.reviewer.PrivateDownloadPane;
+import uk.ac.ebi.pride.gui.component.reviewer.PrideDownloadPane;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
 import javax.swing.*;
@@ -23,7 +23,7 @@ public class OpenReviewAction extends PrideAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        PrivateDownloadPane downloadPane = new PrivateDownloadPane(Desktop.getInstance().getMainComponent());
+        PrideDownloadPane downloadPane = new PrideDownloadPane(Desktop.getInstance().getMainComponent());
         downloadPane.setVisible(true);
     }
 }

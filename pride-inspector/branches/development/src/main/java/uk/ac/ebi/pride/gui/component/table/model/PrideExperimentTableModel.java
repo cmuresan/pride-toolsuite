@@ -1,20 +1,17 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
 import java.io.Serializable;
 import java.util.*;
 
 /**
- * ReviewDownloadTableModel contains the details that displayed in review donwload table
+ * PrideExperimentTableModel contains the details that displayed in review donwload table
  * User: rwang
  * Date: 11-Sep-2010
  * Time: 14:02:07
  */
-public class ReviewDownloadTableModel extends ListTableModel<List<Map<String, String>>> {
-    private static final Logger logger = LoggerFactory.getLogger(ReviewDownloadTableModel.class);
+public class PrideExperimentTableModel extends ListTableModel<List<Map<String, String>>> {
 
     public enum TableHeader {
 

@@ -5,10 +5,10 @@ import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.component.dialog.TaskDialog;
 import uk.ac.ebi.pride.gui.component.table.model.ListTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.ReviewDownloadTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.PrideExperimentTableModel;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
-import uk.ac.ebi.pride.gui.task.impl.DownloadExperimentTask;
+import uk.ac.ebi.pride.gui.task.impl.DownloadPrideExperimentTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
@@ -20,57 +20,56 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * PrivateDownloadSelectionPane display both a list of experiments to be downloaded
+ * PrideDownloadSelectionPane display both a list of experiments to be downloaded
  * and where it is going to be stored.
  * <p/>
  * User: rwang
  * Date: 24/01/11
  * Time: 11:08
  */
-public class PrivateDownloadSelectionPane extends JPanel implements ActionListener, TableModelListener, TaskListener<List<Map<String, String>>, String> {
-    private static final String SAVE_TO_TITLE = "Save to";
-    private static final String BROWSE_BUTTON = "Browse";
-    private static final String SELECTION_ALL_BUTTON = "Select All";
-    private static final String DESELECTION_ALL_BUTTON = "Deselect All";
-    private static final String DOWNLOAD_BUTTON = "Download";
+public class PrideDownloadSelectionPane extends JPanel
+        implements ActionListener, TableModelListener, TaskListener<java.util.List<Map<String, String>>, String> {
 
-    private static final Dimension PATH_FIELD_SIZE = new Dimension(440, 20);
+    protected static final String SAVE_TO_TITLE = "Save to";
+    protected static final String BROWSE_BUTTON = "Browse";
+    protected static final String SELECTION_ALL_BUTTON = "Select All";
+    protected static final String DESELECTION_ALL_BUTTON = "Deselect All";
+    protected static final String DOWNLOAD_BUTTON = "Download";
+    protected static final Dimension PATH_FIELD_SIZE = new Dimension(440, 20);
 
     /**
      * Parent component which contains this component
      */
-    private Component parent;
-    /**
-     * This indicates whether to displose parent component when the download button has been clicked
-     */
-    private boolean toDispose;
-    private JTextField pathField;
-    private JXTable downloadTable;
-    private ReviewDownloadTableModel downloadTableModel;
-    private JButton selectAllButton;
-    private JButton deselectAllButton;
-    private JButton downloadButton;
-    private String currentUserName;
-    private String currentPassWord;
-    private JCheckBox openAfterDownloadCheckbox;
-    private PrideInspectorContext context;
+    protected Component parent;
 
-    public PrivateDownloadSelectionPane(Component parent, boolean toDispose) {
+    /**
+     * This indicates whether to dispose parent component when the download button has been clicked
+     */
+    protected boolean toDispose;
+    protected JTextField pathField;
+    protected JXTable downloadTable;
+    protected ListTableModel<java.util.List<Map<String, String>>> downloadTableModel;
+    protected JButton selectAllButton;
+    protected JButton deselectAllButton;
+    protected JButton downloadButton;
+    protected String currentUserName;
+    protected String currentPassWord;
+    protected JCheckBox openAfterDownloadCheckbox;
+    protected PrideInspectorContext context;
+
+    public PrideDownloadSelectionPane(Component parent, boolean toDispose) {
         this(parent, toDispose, null, null);
     }
 
-    public PrivateDownloadSelectionPane(Component parent, boolean toDispose, String username, String password) {
+    public PrideDownloadSelectionPane(Component parent, boolean toDispose, String username, String password) {
         this.parent = parent;
         this.toDispose = toDispose;
         this.currentUserName = username;
         this.currentPassWord = password;
         this.context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
-
-        // setup the main GUI components
         setupMainPane();
     }
 
@@ -90,7 +89,7 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
         this.currentPassWord = currentPassWord;
     }
 
-    public void addExperimentMetaData(List<Map<String, String>> metadata) {
+    public void addExperimentMetaData(java.util.List<Map<String, String>> metadata) {
         downloadTableModel.addData(metadata);
         downloadTableModel.fireTableDataChanged();
     }
@@ -103,7 +102,7 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
 
         // create download table
         downloadTable = new JXTable();
-        downloadTableModel = new ReviewDownloadTableModel();
+        downloadTableModel = new PrideExperimentTableModel();
         downloadTableModel.addTableModelListener(this);
         downloadTable.setModel(downloadTableModel);
         downloadTable.setColumnControlVisible(true);
@@ -190,7 +189,7 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
     private void selectionButtonPressed(boolean downloadable) {
         int rowCnt = downloadTable.getRowCount();
         if (rowCnt > 0) {
-            int downloadColumnIndex = downloadTableModel.getColumnIndex(ReviewDownloadTableModel.TableHeader.DOWNLOAD_COLUMN.getHeader());
+            int downloadColumnIndex = downloadTableModel.getColumnIndex(PrideExperimentTableModel.TableHeader.DOWNLOAD_COLUMN.getHeader());
             for (int i = 0; i < rowCnt; i++) {
                 downloadTableModel.setValueAt(downloadable, i, downloadColumnIndex);
             }
@@ -205,9 +204,9 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
             int rowCnt = downloadTable.getRowCount();
             if (rowCnt > 0) {
                 Map<Comparable, Double> accs = new LinkedHashMap<Comparable, Double>();
-                int downloadColumnIndex = downloadTableModel.getColumnIndex(ReviewDownloadTableModel.TableHeader.DOWNLOAD_COLUMN.getHeader());
-                int accColumnIndex = downloadTableModel.getColumnIndex(ReviewDownloadTableModel.TableHeader.EXP_ACC_COLUMN.getHeader());
-                int sizeColumnIndex = downloadTableModel.getColumnIndex(ReviewDownloadTableModel.TableHeader.SIZE_COLUMN.getHeader());
+                int downloadColumnIndex = downloadTableModel.getColumnIndex(PrideExperimentTableModel.TableHeader.DOWNLOAD_COLUMN.getHeader());
+                int accColumnIndex = downloadTableModel.getColumnIndex(PrideExperimentTableModel.TableHeader.EXP_ACC_COLUMN.getHeader());
+                int sizeColumnIndex = downloadTableModel.getColumnIndex(PrideExperimentTableModel.TableHeader.SIZE_COLUMN.getHeader());
                 for (int i = 0; i < rowCnt; i++) {
                     Boolean value = (Boolean) downloadTableModel.getValueAt(i, downloadColumnIndex);
                     if (value) {
@@ -220,7 +219,7 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
                 // create a dialog to show progress
                 TaskDialog dialog = new TaskDialog(uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getMainComponent(), "Download PRIDE Experiment", "Downloading...Please be aware that this may take a few minutes");
                 dialog.setVisible(true);
-                DownloadExperimentTask downloadTask = new DownloadExperimentTask(accs, path, currentUserName, currentPassWord, openAfterDownloadCheckbox.isSelected());
+                DownloadPrideExperimentTask downloadTask = new DownloadPrideExperimentTask(accs, path, currentUserName, currentPassWord, openAfterDownloadCheckbox.isSelected());
                 downloadTask.addTaskListener(dialog);
                 downloadTask.setGUIBlocker(new DefaultGUIBlocker(downloadTask, GUIBlocker.Scope.NONE, null));
                 PrideInspectorContext context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
@@ -239,7 +238,7 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
             deselectAllButton.setEnabled(true);
             boolean downloadable = false;
             int rowCnt = tableModel.getRowCount();
-            int column = tableModel.getColumnIndex(ReviewDownloadTableModel.TableHeader.DOWNLOAD_COLUMN.getHeader());
+            int column = tableModel.getColumnIndex(PrideExperimentTableModel.TableHeader.DOWNLOAD_COLUMN.getHeader());
             for (int i = 0; i < rowCnt; i++) {
                 Boolean val = (Boolean) tableModel.getValueAt(i, column);
                 if (val) {
@@ -255,7 +254,7 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
     }
 
     @Override
-    public void succeed(TaskEvent<List<Map<String, String>>> listTaskEvent) {
+    public void succeed(TaskEvent<java.util.List<Map<String, String>>> listTaskEvent) {
         addExperimentMetaData(listTaskEvent.getValue());
     }
 
@@ -264,7 +263,7 @@ public class PrivateDownloadSelectionPane extends JPanel implements ActionListen
     }
 
     @Override
-    public void process(TaskEvent<List<String>> listTaskEvent) {
+    public void process(TaskEvent<java.util.List<String>> listTaskEvent) {
     }
 
     @Override

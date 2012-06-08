@@ -16,6 +16,7 @@ import uk.ac.ebi.pride.gui.component.status.TaskMonitorPanel;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.menu.MenuFactory;
+import uk.ac.ebi.pride.gui.task.impl.OpenPxSubmissionTask;
 import uk.ac.ebi.pride.gui.task.impl.OpenValidPrideExperimentTask;
 import uk.ac.ebi.pride.gui.utils.AccessionUtils;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
@@ -44,6 +45,8 @@ public class PrideInspector extends Desktop {
 
     // command line option for experiment accessions
     private static final String ACCESSION_CMD = "accession";
+    // command line option for proteomexchange accessions
+    private static final String PX_ACCESSION_CMD = "pxaccesssion";
     // command line option for user name
     private static final String USER_NAME_CMD = "username";
     // command line option for password
@@ -109,8 +112,10 @@ public class PrideInspector extends Desktop {
     private void createCmdLineParser() {
         cmdOptions = new Options();
 
-        // add a accession option
-        cmdOptions.addOption(ACCESSION_CMD, true, "a list of pride experiment accessions, separated by comma");
+        // add pride accession option
+        cmdOptions.addOption(ACCESSION_CMD, true, "a list of PRIDE experiment accessions, separated by comma");
+        // add proteomexchange accession option
+        cmdOptions.addOption(PX_ACCESSION_CMD, true, "a list of ProteomeXchange accessions, separated by comma");
         // add a user name option
         cmdOptions.addOption(USER_NAME_CMD, true, "pride user name");
         // add a password option
@@ -138,11 +143,18 @@ public class PrideInspector extends Desktop {
             // parse command line input
             CommandLine cmd = cmdParser.parse(cmdOptions, args);
 
-            // get accessions
-            java.util.List<Comparable> accs = null;
+            // get pride accessions
+            java.util.List<Comparable> prideAccessions = null;
             if (cmd.hasOption(ACCESSION_CMD)) {
                 String accStr = cmd.getOptionValue(ACCESSION_CMD);
-                accs = new ArrayList<Comparable>(AccessionUtils.expand(accStr));
+                prideAccessions = new ArrayList<Comparable>(AccessionUtils.expand(accStr));
+            }
+
+            // get proteomexchange accessions
+            java.util.List<Comparable> pxAccessions = null;
+            if (cmd.hasOption(PX_ACCESSION_CMD)) {
+                String accStr = cmd.getOptionValue(PX_ACCESSION_CMD);
+                pxAccessions = new ArrayList<Comparable>(AccessionUtils.expand(accStr));
             }
 
             // get user name
@@ -157,8 +169,12 @@ public class PrideInspector extends Desktop {
                 password = cmd.getOptionValue(PASSWORD_CMD);
             }
 
-            if (accs != null || username != null) {
-                OpenValidPrideExperimentTask task = new OpenValidPrideExperimentTask(accs, username, password);
+            if (prideAccessions != null) {
+                OpenValidPrideExperimentTask task = new OpenValidPrideExperimentTask(prideAccessions, username, password);
+                task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
+                getDesktopContext().addTask(task);
+            } else if (pxAccessions != null) {
+                OpenPxSubmissionTask task = new OpenPxSubmissionTask(pxAccessions, username, password);
                 task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
                 getDesktopContext().addTask(task);
             }

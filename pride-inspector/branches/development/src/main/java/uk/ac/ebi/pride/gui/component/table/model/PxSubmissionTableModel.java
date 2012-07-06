@@ -22,11 +22,11 @@ public class PxSubmissionTableModel extends AbstractTreeTableModel {
         ACC_COLUMN("Accession", "ProteomeXchange Accession"),
         DOI_COLUMN("DOI", "DOI Number"),
         FILE_ID_COLUMN("ID", "File ID"),
+        FILE_SIZE_COLUMN("Size (M)", "Download File Size (M)"),
         FILE_NAME_COLUMN("Name", "File Name"),
         FILE_TYPE_COLUMN("Type", "Type of the file"),
         PRIDE_ACC_COLUMN("PRIDE", "PRIDE Accession"),
         FILE_MAPPING_COLUMN("Relation", "Related files"),
-        FILE_SIZE_COLUMN("Size (M)", "Download File Size (M)"),
         DOWNLOAD_COLUMN("Download", "Download Option");
 
         private final String header;
@@ -103,10 +103,11 @@ public class PxSubmissionTableModel extends AbstractTreeTableModel {
             PxSubmissionEntry child = new PxSubmissionEntry(acc, doi, fileID, fileName, fileType, prideAcc, fileMapping, fileSize);
 
             List<PxSubmissionEntry> entries = submissionEntries.get(parent);
-            entries.add(child);
-
-            // sum up the file sizes
-            parent.setSize(parent.getSize() + child.getSize());
+            if (!entries.contains(child)) {
+                entries.add(child);
+                // sum up the file sizes
+                parent.setSize(parent.getSize() + child.getSize());
+            }
 
             submissionEntries.put(parent, entries);
         }

@@ -40,8 +40,8 @@ default.pride.password=inspector
 pride.experiment.download.url=http://www.ebi.ac.uk/pride/review
 
 # URL for downloading proteomexchange submission
-px.submission.metadata.download.url=http://www.ebi.ac.uk/pride/px/download/metadata
-px.submission.file.download.url=http://www.ebi.ac.uk/pride/px/download/file
+px.submission.metadata.download.url=http://localhost:9090/px-web/download/metadata
+px.submission.file.download.url=http://localhost:9090/px-web/download/file
 
 # URL for link to Ensembl Genome Browser
 ensembl.genome.browser.url=http://www.ensembl.org/%1$s/Location/Genome?type=ProteinAlignFeature

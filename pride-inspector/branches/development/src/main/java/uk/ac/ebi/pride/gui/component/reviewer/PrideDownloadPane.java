@@ -103,7 +103,7 @@ public class PrideDownloadPane extends JPanel implements ActionListener {
         Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
         JButton helpButton = GUIUtilities.createLabelLikeButton(helpIcon, "Help");
         helpButton.setForeground(Color.blue);
-        CSH.setHelpIDString(helpButton, "help.download");
+        CSH.setHelpIDString(helpButton, "help.pride.download");
         helpButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
         helpPane.add(helpButton);
 

@@ -13,21 +13,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Created by IntelliJ IDEA.
+ * Download panel for PRIDE experiments
+ *
  * User: rwang
  * Date: 04-Aug-2010
  * Time: 09:43:33
  */
-public class PrideDownloadPane extends JDialog implements ActionListener {
+public class PrideDownloadPane extends JPanel implements ActionListener {
 
-    private static final String TITLE = "Download PRIDE Experiment";
     private static final String MSG_TITLE = "Message";
     private static final String USER_NAME_TITLE = "User Name";
     private static final String PASSWORD_TITLE = "Password";
     private static final String LOG_IN_BUTTON = "Login";
 
-    private static final Dimension MAIN_PANE_SIZE = new Dimension(650, 600);
-    private static final Dimension LOGIN_PANE_SIZE = new Dimension(650, 40);
     private static final Dimension TXT_FIELD_SIZE = new Dimension(80, 20);
     private static final Dimension MSG_PANE_SIZE = new Dimension(650, 100);
 
@@ -40,9 +38,10 @@ public class PrideDownloadPane extends JDialog implements ActionListener {
      * reference to desktop context
      */
     private PrideInspectorContext context;
+    private Component parent;
 
-    public PrideDownloadPane(Frame owner) {
-        super(owner, TITLE);
+    public PrideDownloadPane(Component parent) {
+        this.parent = parent;
         setupMainPane();
     }
 
@@ -52,23 +51,21 @@ public class PrideDownloadPane extends JDialog implements ActionListener {
     public void setupMainPane() {
         context = (PrideInspectorContext)uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
         
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.add(createLoginPane());
-        mainPanel.add(createMsgPane());
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        JPanel northPanel = new JPanel();
+        northPanel.setLayout(new BorderLayout());
+        northPanel.add(createLoginPane(), BorderLayout.NORTH);
+        northPanel.add(createMsgPane(), BorderLayout.CENTER);
+        mainPanel.add(northPanel, BorderLayout.NORTH);
 
-        selectionPanePride = new PrideDownloadSelectionPane(this, true);
-        mainPanel.add(selectionPanePride);
+
+        selectionPanePride = new PrideDownloadSelectionPane(parent, true);
+        selectionPanePride.setPreferredSize(new Dimension(720, 445));
+        mainPanel.add(selectionPanePride, BorderLayout.CENTER);
 
         mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
         this.add(mainPanel);
-        this.setMinimumSize(MAIN_PANE_SIZE);
-        // set icon
-        ImageIcon dialogIcon = (ImageIcon) GUIUtilities.loadIcon(context.getProperty("reviewer.download.icon.small"));
-        this.setIconImage(dialogIcon.getImage());
-        // set display location
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation((d.width - getWidth())/2, (d.height - getHeight())/2);
     }
 
     /**
@@ -78,8 +75,6 @@ public class PrideDownloadPane extends JDialog implements ActionListener {
      */
     private JPanel createLoginPane() {
         JPanel loginPane = new JPanel(new BorderLayout());
-//        loginPane.setBorder(BorderFactory.createTitledBorder(LOGIN_TITLE));
-        loginPane.setMaximumSize(LOGIN_PANE_SIZE);
 
         // input box panel
         JPanel inputBoxPane = new JPanel(new FlowLayout(FlowLayout.LEFT));

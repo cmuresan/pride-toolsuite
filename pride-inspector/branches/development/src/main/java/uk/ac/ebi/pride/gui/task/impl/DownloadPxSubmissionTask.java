@@ -56,11 +56,11 @@ public class DownloadPxSubmissionTask extends AbstractConnectPrideTask {
                 for (PxSubmissionEntry submissionEntry : submissionEntries) {
                     // create a http connection
                     DesktopContext context = Desktop.getInstance().getDesktopContext();
-                    HttpURLConnection connection = connect(context.getProperty("pride.experiment.download.url"));
+                    HttpURLConnection connection = connect(context.getProperty("px.submission.file.download.url"));
 
                     if (connection != null) {
                         // initialize the download
-                        initSubmissionDownload(connection, submissionEntry.getAccession(), submissionEntry.getFileID(), user, password);
+                        initPxSubmissionDownload(connection, submissionEntry.getAccession(), submissionEntry.getFileID(), user, password);
 
                         // get output file path
                         File output = new File(folder.getAbsolutePath() + File.separator + submissionEntry.getFileName());

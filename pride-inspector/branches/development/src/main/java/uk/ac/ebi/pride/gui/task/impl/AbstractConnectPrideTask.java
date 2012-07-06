@@ -10,7 +10,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.util.*;
-import java.util.zip.GZIPInputStream;
 
 /**
  * Abstract class to provide methods to connect pride web services
@@ -79,16 +78,15 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
     }
 
     /**
-     * login to proteomexchange to download
+     * log in for ProteomeXchange meta data information.
      *
-     * @param connection http connection.
-     * @param accession  pride experiment accession
+     * @param connection http connection
+     * @param accessions a list of pride experiment accessions
      * @param user       user name
      * @param password   password
      */
-    void initSubmissionDownload(HttpURLConnection connection,
-                                Comparable accession,
-                                String fileId,
+    void initPxMetaDataDownload(HttpURLConnection connection,
+                                Collection<Comparable> accessions,
                                 String user,
                                 String password) {
         OutputStreamWriter out = null;
@@ -99,8 +97,52 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
             cmd.append(URLEncoder.encode(String.valueOf(user), "UTF-8"));
             cmd.append("&password=");
             cmd.append(URLEncoder.encode(String.valueOf(password), "UTF-8"));
-            cmd.append("&action=downloadFile");
-            cmd.append("&accession=");
+            if (accessions != null && !accessions.isEmpty()) {
+                cmd.append("&pxaccession=");
+                String accStr = "";
+                for (Comparable accession : accessions) {
+                    accStr += accession.toString() + Constants.COMMA;
+                }
+                cmd.append(accStr);
+            }
+            out.write(cmd.toString());
+            out.close();
+        } catch (IOException ex) {
+            logger.warn("Fail to send request to PRIDE server: {}", ex.getMessage());
+            publish("Warning: Fail to send request to PRIDE server");
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    logger.warn("Failed to close output stream", e);
+                }
+            }
+        }
+    }
+
+    /**
+     * login to proteomexchange to download
+     *
+     * @param connection http connection.
+     * @param accession  pride experiment accession
+     * @param user       user name
+     * @param password   password
+     */
+    void initPxSubmissionDownload(HttpURLConnection connection,
+                                  Comparable accession,
+                                  String fileId,
+                                  String user,
+                                  String password) {
+        OutputStreamWriter out = null;
+        try {
+            out = new OutputStreamWriter(connection.getOutputStream());
+            StringBuilder cmd = new StringBuilder();
+            cmd.append("username=");
+            cmd.append(URLEncoder.encode(String.valueOf(user), "UTF-8"));
+            cmd.append("&password=");
+            cmd.append(URLEncoder.encode(String.valueOf(password), "UTF-8"));
+            cmd.append("&pxaccession=");
             cmd.append(accession);
             cmd.append("&fileid=");
             cmd.append(fileId);
@@ -131,10 +173,10 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
     @SuppressWarnings("unchecked")
     void downloadFile(HttpURLConnection connection, File file, Double size) {
         BufferedOutputStream boutStream = null;
-        GZIPInputStream in = null;
+        InputStream in = null;
         try {
             publish("Downloading " + file);
-            in = new GZIPInputStream(connection.getInputStream());
+            in = connection.getInputStream();
 
             FileOutputStream outStream = new FileOutputStream(file);
             boutStream = new BufferedOutputStream(outStream, BUFFER_SIZE);

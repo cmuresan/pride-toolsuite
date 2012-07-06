@@ -43,14 +43,14 @@ public class GetPxSubmissionDetailTask extends AbstractConnectPrideTask {
 
         // create a http connection
         DesktopContext context = Desktop.getInstance().getDesktopContext();
-        HttpURLConnection connection = connect(context.getProperty("px.submission.download.url"));
+        HttpURLConnection connection = connect(context.getProperty("px.submission.metadata.download.url"));
 
         List<Map<String, String>> metadata = null;
 
         try {
             if (connection != null) {
                 // login for meta data
-                initMetaDataDownload(connection, accessions, user, password);
+                initPxMetaDataDownload(connection, accessions, user, password);
 
                 // download experiment meta data
                 metadata = downloadMetaData(connection);

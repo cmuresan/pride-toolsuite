@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.gui.component.table.model;
 
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 import uk.ac.ebi.pride.gui.px.PxSubmissionEntry;
+import uk.ac.ebi.pride.util.NumberUtilities;
 
 import javax.swing.tree.TreePath;
 import java.util.ArrayList;
@@ -20,11 +21,11 @@ public class PxSubmissionTableModel extends AbstractTreeTableModel {
 
         ACC_COLUMN("Accession", "ProteomeXchange Accession"),
         DOI_COLUMN("DOI", "DOI Number"),
-        FILE_ID_COLUMN("File ID", "File ID"),
-        FILE_NAME_COLUMN("File Name", "File Name"),
+        FILE_ID_COLUMN("ID", "File ID"),
+        FILE_NAME_COLUMN("Name", "File Name"),
         FILE_TYPE_COLUMN("Type", "Type of the file"),
-        PRIDE_ACC_COLUMN("PRIDE Accession", "PRIDE Accession"),
-        FILE_MAPPING_COLUMN("Mapping", "Mappings between files"),
+        PRIDE_ACC_COLUMN("PRIDE", "PRIDE Accession"),
+        FILE_MAPPING_COLUMN("Relation", "Related files"),
         FILE_SIZE_COLUMN("Size (M)", "Download File Size (M)"),
         DOWNLOAD_COLUMN("Download", "Download Option");
 
@@ -87,7 +88,6 @@ public class PxSubmissionTableModel extends AbstractTreeTableModel {
      * Each entry in the list represents a single submitted file
      */
     public void addData(List<Map<String, String>> data) {
-        Map<String, PxSubmissionEntry> parents = new LinkedHashMap<String, PxSubmissionEntry>();
         for (Map<String, String> entry : data) {
             String acc = entry.get(PxSubmissionEntry.ACCESSION);
             String doi = entry.get(PxSubmissionEntry.DOI);
@@ -97,6 +97,7 @@ public class PxSubmissionTableModel extends AbstractTreeTableModel {
             String prideAcc = entry.get(PxSubmissionEntry.PRIDE_ACC);
             String fileMapping = entry.get(PxSubmissionEntry.FILE_MAPPING);
             double fileSize = Double.parseDouble(entry.get(PxSubmissionEntry.FILE_SIZE));
+            fileSize = NumberUtilities.scaleDouble(fileSize / (1024 * 1024), 2);
 
             PxSubmissionEntry parent = addPxSubmissionParentNode(acc, doi);
             PxSubmissionEntry child = new PxSubmissionEntry(acc, doi, fileID, fileName, fileType, prideAcc, fileMapping, fileSize);

@@ -8,7 +8,7 @@ package uk.ac.ebi.pride.gui.px;
  */
 public class PxSubmissionEntry {
 
-    public static final String ACCESSION = "accession";
+    public static final String ACCESSION = "px_accession";
     public static final String DOI = "doi";
     public static final String FILE_ID = "file_id";
     public static final String FILE_NAME = "file_name";

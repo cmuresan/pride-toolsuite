@@ -19,6 +19,8 @@ close.source.disable.icon.small=icon/16x16/delete_disable.gif
 
 reviewer.download.title=Private Download
 reviewer.download.tooltip=Private download
+reviewer.download.pride.title = PRIDE
+reviewer.download.px.title = ProteomeXchange
 reviewer.download.icon.small=icon/16x16/reviewer_download.png
 reviewer.download.icon.medium=icon/32x32/reviewer_download.png
 reviewer.download.icon.large=icon/48x48/reviewer_download.png

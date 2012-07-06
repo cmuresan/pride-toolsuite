@@ -68,7 +68,7 @@ public class PxDownloadSelectionPane extends JPanel
         this.toDispose = toDispose;
         this.currentUserName = username;
         this.currentPassWord = password;
-        this.context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
+//        this.context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
 
         setupMainPane();
     }
@@ -90,7 +90,9 @@ public class PxDownloadSelectionPane extends JPanel
     }
 
     public void addExperimentMetaData(java.util.List<Map<String, String>> metadata) {
-        downloadTableModel.addData(metadata);
+        if (metadata != null && metadata.size() > 0) {
+            downloadTableModel.addData(metadata);
+        }
     }
 
     /**
@@ -107,6 +109,7 @@ public class PxDownloadSelectionPane extends JPanel
         downloadTable.setColumnControlVisible(true);
         downloadTable.setFillsViewportHeight(true);
         downloadTable.setCellEditor(new DefaultCellEditor(new JCheckBox()));
+
         JScrollPane scrollPane = new JScrollPane(downloadTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.add(scrollPane, BorderLayout.CENTER);
 
@@ -286,12 +289,12 @@ public class PxDownloadSelectionPane extends JPanel
                     downloadTableModel.setValueAt(selectedNode.isToDownload(), childNode, downloadColumnIndex);
                 }
             } else {
-                PxSubmissionEntry parentNode = (PxSubmissionEntry)downloadTableModel.getParent(selectedNode);
+                PxSubmissionEntry parentNode = (PxSubmissionEntry) downloadTableModel.getParent(selectedNode);
                 if (parentNode.isToDownload() != selectedNode.isToDownload()) {
                     boolean neighborInSameState = true;
                     int childCnt = downloadTableModel.getChildCount(parentNode);
                     for (int i = 0; i < childCnt; i++) {
-                        PxSubmissionEntry child = (PxSubmissionEntry)downloadTableModel.getChild(parentNode, i);
+                        PxSubmissionEntry child = (PxSubmissionEntry) downloadTableModel.getChild(parentNode, i);
                         if (child.isToDownload() != selectedNode.isToDownload()) {
                             neighborInSameState = false;
                             break;

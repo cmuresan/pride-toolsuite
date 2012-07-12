@@ -8,7 +8,6 @@ import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 
 import java.io.File;
-import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -54,20 +53,18 @@ public class DownloadSingleExperimentTask extends AbstractConnectPrideTask {
     protected List<Map<String, String>> doInBackground() throws Exception {
         // connect
         DesktopContext context = Desktop.getInstance().getDesktopContext();
-        HttpURLConnection connection = connect(context.getProperty("pride.experiment.download.url"));
         // initialize meta data download
-        initMetaDataDownload(connection, Arrays.asList(accession), user, password);
+        String url = buildPrideMetaDataDownloadURL(context.getProperty("pride.experiment.download.url"), Arrays.asList(accession), user, password);
         // download meta data
-        List<Map<String, String>> metaData = downloadMetaData(connection);
+        List<Map<String, String>> metaData = downloadMetaData(url);
         // get file size
         if (metaData != null && metaData.size() == 1) {
             String sizeStr = metaData.get(0).get("Size");
             double size = Double.parseDouble(sizeStr) * 1024 * 1024;
-            connection = connect(context.getProperty("pride.experiment.download.url"));
             // init download
-            initExperimentDownload(connection, accession, user, password);
+            url = buildExperimentDownloadURL(context.getProperty("pride.experiment.download.url"), accession, user, password);
             // download
-            downloadFile(connection, output, size);
+            downloadFile(url, output, size);
             // show download finished
             showDoneMessage();
 

@@ -13,7 +13,6 @@ import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import java.io.File;
-import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
 
@@ -56,31 +55,27 @@ public class DownloadPxSubmissionTask extends AbstractConnectPrideTask {
                 for (PxSubmissionEntry submissionEntry : submissionEntries) {
                     // create a http connection
                     DesktopContext context = Desktop.getInstance().getDesktopContext();
-                    HttpURLConnection connection = connect(context.getProperty("px.submission.file.download.url"));
 
-                    if (connection != null) {
-                        // initialize the download
-                        initPxSubmissionDownload(connection, submissionEntry.getAccession(), submissionEntry.getFileID(), user, password);
+                    // initialize the download
+                    String url = buildPxFileDownloadURL(context.getProperty("px.submission.file.download.url"), submissionEntry.getAccession(), submissionEntry.getFileID(), user, password);
 
-                        // get output file path
-                        File output = new File(folder.getAbsolutePath() + File.separator + submissionEntry.getFileName());
+                    // get output file path
+                    File output = new File(folder.getAbsolutePath() + File.separator + submissionEntry.getFileName());
 
-                        // download submission file
-                        downloadFile(connection, output, submissionEntry.getSize());
+                    // download submission file
+                    downloadFile(url, output, submissionEntry.getSize());
 
-                        // open file
-                        if (toOpenFile) {
-                            MassSpecFileFormat fileFormat = MassSpecFileFormat.checkFormat(output);
-                            if (fileFormat != null) {
-                                if (fileFormat.equals(MassSpecFileFormat.PRIDE)) {
-                                    openFile(output, PrideXmlControllerImpl.class);
-                                } else if (fileFormat.equals(MassSpecFileFormat.MZML)) {
-                                    openFile(output, MzMLControllerImpl.class);
-                                }
-
+                    // open file
+                    if (toOpenFile) {
+                        MassSpecFileFormat fileFormat = MassSpecFileFormat.checkFormat(output);
+                        if (fileFormat != null) {
+                            if (fileFormat.equals(MassSpecFileFormat.PRIDE)) {
+                                openFile(output, PrideXmlControllerImpl.class);
+                            } else if (fileFormat.equals(MassSpecFileFormat.MZML)) {
+                                openFile(output, MzMLControllerImpl.class);
                             }
-                        }
 
+                        }
                     }
 
                     // this is important for cancelling

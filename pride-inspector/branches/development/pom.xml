@@ -129,6 +129,12 @@
             <artifactId>spring-jdbc</artifactId>
             <version>3.0.6.RELEASE</version>
         </dependency>
+        <!-- apache commons httpcomponents-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.2.1</version>
+        </dependency>
         <!-- javaHelp -->
         <dependency>
             <groupId>javax.help</groupId>

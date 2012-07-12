@@ -9,7 +9,6 @@ import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import java.io.File;
-import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
 
@@ -53,22 +52,19 @@ public class DownloadPrideExperimentTask extends AbstractConnectPrideTask {
 
                     // create a http connection
                     DesktopContext context = Desktop.getInstance().getDesktopContext();
-                    HttpURLConnection connection = connect(context.getProperty("pride.experiment.download.url"));
 
-                    if (connection != null) {
-                        // login for download
-                        initExperimentDownload(connection, accession, user, password);
+                    // login for download
+                    String url = buildExperimentDownloadURL(context.getProperty("pride.experiment.download.url"), accession, user, password);
 
-                        // get output file path
-                        File output = getFilePath(accession);
+                    // get output file path
+                    File output = getFilePath(accession);
 
-                        // download experiment
-                        downloadFile(connection, output, size);
+                    // download experiment
+                    downloadFile(url, output, size);
 
-                        // open
-                        if (toOpenFile) {
-                            openFile(output);
-                        }
+                    // open
+                    if (toOpenFile) {
+                        openFile(output);
                     }
 
                     // this is important for cancelling

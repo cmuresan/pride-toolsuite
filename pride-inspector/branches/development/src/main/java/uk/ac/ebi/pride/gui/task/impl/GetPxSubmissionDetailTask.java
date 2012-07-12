@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 
-import java.net.HttpURLConnection;
 import java.util.*;
 
 /**
@@ -43,22 +42,19 @@ public class GetPxSubmissionDetailTask extends AbstractConnectPrideTask {
 
         // create a http connection
         DesktopContext context = Desktop.getInstance().getDesktopContext();
-        HttpURLConnection connection = connect(context.getProperty("px.submission.metadata.download.url"));
 
         List<Map<String, String>> metadata = null;
 
         try {
-            if (connection != null) {
-                // login for meta data
-                initPxMetaDataDownload(connection, accessions, user, password);
+            // login for meta data
+            String url = buildPxMetaDataDownloadURL(context.getProperty("px.submission.metadata.download.url"), accessions, user, password);
 
-                // download experiment meta data
-                metadata = downloadMetaData(connection);
+            // download experiment meta data
+            metadata = downloadMetaData(url);
 
-                // this is important for cancelling
-                if (Thread.interrupted()) {
-                    throw new InterruptedException();
-                }
+            // this is important for cancelling
+            if (Thread.interrupted()) {
+                throw new InterruptedException();
             }
         } catch (InterruptedException ex) {
             logger.warn("Download session has been cancelled");

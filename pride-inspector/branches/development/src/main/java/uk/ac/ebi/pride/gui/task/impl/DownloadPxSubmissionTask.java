@@ -74,7 +74,6 @@ public class DownloadPxSubmissionTask extends AbstractConnectPrideTask {
                             } else if (fileFormat.equals(MassSpecFileFormat.MZML)) {
                                 openFile(output, MzMLControllerImpl.class);
                             }
-
                         }
                     }
 

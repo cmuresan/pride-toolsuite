@@ -105,7 +105,7 @@ public class RetrieveSpectrumTableTask extends AbstractDataAccessTask<Void, Tupl
                     content.add(controller.isIdentifiedSpectrum(specId));
                     // precursor charge
                     Integer pCharge = controller.getPrecursorCharge(specId);
-                    content.add(pCharge);
+                    content.add((pCharge == null || pCharge == 0)? null : pCharge);
                     // precursor m/z
                     double pMz = controller.getPrecursorMz(specId);
                     content.add(pMz == -1 ? null : NumberUtilities.scaleDouble(pMz, 4));

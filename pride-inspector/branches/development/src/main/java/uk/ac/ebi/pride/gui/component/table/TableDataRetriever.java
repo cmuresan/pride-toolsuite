@@ -95,6 +95,9 @@ public class TableDataRetriever {
         Comparable specId = controller.getPeptideSpectrumId(identId, peptideId);
         if (charge == null && specId != null) {
             charge = controller.getPrecursorCharge(specId);
+            if (charge == 0) {
+                charge = null;
+            }
         }
         content.add(charge);
 

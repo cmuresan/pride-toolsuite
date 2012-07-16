@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.listener.HyperLinkCellMouseClickListener;
+import uk.ac.ebi.pride.gui.component.table.listener.MouseClickPopupListener;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.component.table.model.ParamTableModel;
 import uk.ac.ebi.pride.gui.component.table.renderer.HyperLinkCellRenderer;
@@ -200,6 +201,10 @@ public class GeneralMetadataPanel extends JPanel {
         }
 
         additionalTable = TableFactory.createParamTable(paramGroup);
+        // enable popup dialog for the "Value" field, in case the value is too long to be displayed in the table cell
+        Collection<String> columnHeadersWithPopup = new HashSet<String>();
+        columnHeadersWithPopup.add(ParamTableModel.TableHeader.VALUE.getHeader());
+        additionalTable.addMouseListener(new MouseClickPopupListener(additionalTable, columnHeadersWithPopup));
         // hyperlink ontology accessions
         String valColumnHeader = ParamTableModel.TableHeader.VALUE.getHeader();
         TableColumnExt accColumn = (TableColumnExt) additionalTable.getColumn(valColumnHeader);

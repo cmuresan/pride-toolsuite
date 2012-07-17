@@ -30,9 +30,9 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
      * login to pride to download
      *
      * @param baseUrl   base url for http request
-     * @param accession  pride experiment accession
-     * @param user       user name
-     * @param password   password
+     * @param accession pride experiment accession
+     * @param user      user name
+     * @param password  password
      */
     String buildExperimentDownloadURL(String baseUrl, Comparable accession,
                                       String user, String password) {
@@ -58,17 +58,17 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
     /**
      * log in for ProteomeXchange meta data information.
      *
-     * @param baseUrl base url for http request
+     * @param baseUrl    base url for http request
      * @param accessions a list of pride experiment accessions
      * @param user       user name
      * @param password   password
      */
     String buildPxMetaDataDownloadURL(String baseUrl,
-                                    Collection<Comparable> accessions,
-                                    String user,
-                                    String password) {
+                                      Collection<Comparable> accessions,
+                                      String user,
+                                      String password) {
         StringBuilder cmd = new StringBuilder();
-        
+
         try {
             cmd.append(baseUrl);
             cmd.append("?");
@@ -86,18 +86,18 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
             }
         } catch (IOException ex) {
             logger.warn("Fail to construct url for downloading proteoemexchange metadata: {}", ex.getMessage());
-        } 
-        
+        }
+
         return cmd.toString();
     }
 
     /**
      * login to proteomexchange to download
      *
-     * @param baseUrl base url for http request.
-     * @param accession  pride experiment accession
-     * @param user       user name
-     * @param password   password
+     * @param baseUrl   base url for http request.
+     * @param accession pride experiment accession
+     * @param user      user name
+     * @param password  password
      */
     String buildPxFileDownloadURL(String baseUrl,
                                   Comparable accession,
@@ -126,7 +126,7 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
     /**
      * log in for meta data information.
      *
-     * @param baseUrl        base url to request for metadata information
+     * @param baseUrl    base url to request for metadata information
      * @param accessions a list of pride experiment accessions
      * @param user       user name
      * @param password   password
@@ -174,8 +174,9 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
         try {
             publish("Downloading " + file);
             HttpResponse httpResponse = doHttpGet(url);
+            int statusCode = httpResponse.getStatusLine().getStatusCode();
             HttpEntity httpEntity = httpResponse.getEntity();
-            if (httpEntity != null) {
+            if (statusCode == 200 && httpEntity != null) {
                 in = httpEntity.getContent();
                 if ("application/x-gzip".equals(httpEntity.getContentType().getValue())) {
                     in = new GZIPInputStream(in);
@@ -202,15 +203,23 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
                 }
                 boutStream.flush();
                 publish("Download has finished");
+            } else {
+                if (statusCode == 404) {
+                    logger.warn("No file found: {}", httpResponse.getStatusLine().getReasonPhrase());
+                    publish("Warning:No file found");
+                } else {
+                    logger.warn("Failed to login: {}", httpResponse.getStatusLine().getReasonPhrase());
+                    publish("Warning:Failed to login");
+                }
             }
         } catch (IOException ex) {
             String msg = ex.getMessage();
             if (msg.contains("403")) {
                 logger.warn("Wrong login credentials: {}", msg);
-                publish("Warning: Wrong login credentials");
+                publish("Warning:Wrong login credentials");
             } else if (msg.contains("400")) {
                 logger.warn("Fail to connect to the remote server: {}", msg);
-                publish("Warning: Fail to connect to the remote server");
+                publish("Warning:Fail to connect to the remote server");
             } else {
                 logger.warn("Unexpected error: " + ex.getMessage());
                 publish("Unexpected error: " + ex.getMessage());
@@ -245,8 +254,9 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
         try {
             HttpResponse httpResponse = doHttpGet(url);
+            int statusCode = httpResponse.getStatusLine().getStatusCode();
             HttpEntity httpEntity = httpResponse.getEntity();
-            if (httpEntity != null) {
+            if (statusCode == 200 && httpEntity != null) {
                 in = new BufferedReader(new InputStreamReader(httpEntity.getContent()));
 
                 Map<String, String> entry = new HashMap<String, String>();
@@ -262,15 +272,24 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
                     }
                 }
                 in.close();
+                publish("Success:Login successful");
+            } else {
+                if (statusCode == 404) {
+                    logger.warn("No experiments found: {}", httpResponse.getStatusLine().getReasonPhrase());
+                    publish("Warning:No record found");
+                } else {
+                    logger.warn("Failed to login: {}", httpResponse.getStatusLine().getReasonPhrase());
+                    publish("Warning:Failed to login");
+                }
             }
         } catch (IOException ex) {
             String msg = ex.getMessage();
             if (msg.contains("403")) {
                 logger.warn("Wrong login credentials: {}", msg);
-                publish("Warning: Wrong login credentials");
+                publish("Warning:Wrong login credentials");
             } else {
                 logger.warn("Fail to connect to the remote server: {}", msg);
-                publish("Warning: Fail to connect to the remote server");
+                publish("Warning:Fail to connect the server");
             }
         } finally {
             if (in != null) {

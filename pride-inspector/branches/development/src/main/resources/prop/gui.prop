@@ -24,6 +24,9 @@ reviewer.download.px.title = ProteomeXchange
 reviewer.download.icon.small=icon/16x16/reviewer_download.png
 reviewer.download.icon.medium=icon/32x32/reviewer_download.png
 reviewer.download.icon.large=icon/48x48/reviewer_download.png
+reviewer.login.in.progress.icon.small=icon/16x16/loading.gif
+reviewer.login.error.icon.small=icon/16x16/exception_notify.png
+reviewer.login.success.icon.small=icon/16x16/tick.png
 
 help.title=Help
 help.tooltip=Open PRIDE Inspector Help Document

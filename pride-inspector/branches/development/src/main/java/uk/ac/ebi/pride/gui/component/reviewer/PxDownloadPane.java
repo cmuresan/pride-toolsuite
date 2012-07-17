@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.gui.component.reviewer;
 
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
+import uk.ac.ebi.pride.gui.task.TaskEvent;
+import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.impl.GetPxSubmissionDetailTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
@@ -11,6 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
 
 /**
  * Download panel for ProteomeXchange, allows users input a user name and password
@@ -18,19 +21,17 @@ import java.awt.event.ActionListener;
  * @author Rui Wang
  * @version $Id$
  */
-public class PxDownloadPane extends JPanel implements ActionListener {
+public class PxDownloadPane extends JPanel implements ActionListener,TaskListener<java.util.List<Map<String, String>>, String> {
 
-    private static final String MSG_TITLE = "Message";
     private static final String USER_NAME_TITLE = "User Name";
     private static final String PASSWORD_TITLE = "Password";
     private static final String LOG_IN_BUTTON = "Login";
 
     private static final Dimension TXT_FIELD_SIZE = new Dimension(80, 20);
-    private static final Dimension MSG_PANE_SIZE = new Dimension(650, 100);
 
     private JTextField userField;
     private JPasswordField pwdField;
-    private MessageLabel msgLabel;
+    private JLabel messageLabel;
     private PxDownloadSelectionPane selectionPanePride;
 
     /**
@@ -53,7 +54,6 @@ public class PxDownloadPane extends JPanel implements ActionListener {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.add(createLoginPane());
-        mainPanel.add(createMsgPane());
 
         selectionPanePride = new PxDownloadSelectionPane(parent, true);
         mainPanel.add(selectionPanePride);
@@ -90,6 +90,9 @@ public class PxDownloadPane extends JPanel implements ActionListener {
         loginButton.addActionListener(this);
         inputBoxPane.add(loginButton);
 
+        messageLabel = new JLabel();
+        inputBoxPane.add(messageLabel);
+
         loginPane.add(inputBoxPane, BorderLayout.CENTER);
 
         // help button
@@ -104,18 +107,6 @@ public class PxDownloadPane extends JPanel implements ActionListener {
         loginPane.add(helpPane, BorderLayout.EAST);
 
         return loginPane;
-    }
-
-    private JPanel createMsgPane() {
-        JPanel msgPane = new JPanel();
-        msgPane.setLayout(new BorderLayout());
-        msgPane.setBorder(BorderFactory.createTitledBorder(MSG_TITLE));
-        msgPane.setMaximumSize(MSG_PANE_SIZE);
-        msgPane.setVisible(false);
-        msgLabel = new MessageLabel(msgPane);
-        msgLabel.setOpaque(false);
-        msgPane.add(msgLabel);
-        return msgPane;
     }
 
     @Override
@@ -135,7 +126,58 @@ public class PxDownloadPane extends JPanel implements ActionListener {
         selectionPanePride.setCurrentUserName(currentUserName);
         selectionPanePride.setCurrentPassWord(String.valueOf(currentPassWord));
         reviewerTask.addTaskListener(selectionPanePride);
-        reviewerTask.addTaskListener(msgLabel);
+        reviewerTask.addTaskListener(this);
         reviewerTask.execute();
+    }
+
+    @Override
+    public void started(TaskEvent<Void> event) {
+        // set the login in progress icon
+        Icon icon = GUIUtilities.loadIcon(context.getProperty("reviewer.login.in.progress.icon.small"));
+        messageLabel.setIcon(icon);
+        messageLabel.setText(null);
+    }
+
+    @Override
+    public void process(TaskEvent<java.util.List<String>> listTaskEvent) {
+        java.util.List<String> msgs = listTaskEvent.getValue();
+        for (String msg : msgs) {
+            if (msg.contains("Warning:")) {
+                messageLabel.setForeground(new Color(255, 0, 0, 200));
+                // set the login in progress icon
+                Icon icon = GUIUtilities.loadIcon(context.getProperty("reviewer.login.error.icon.small"));
+                messageLabel.setIcon(icon);
+                messageLabel.setText(msg.replace("Warning:", ""));
+            } else {
+                // set the login in progress icon
+                Icon icon = GUIUtilities.loadIcon(context.getProperty("reviewer.login.success.icon.small"));
+                messageLabel.setIcon(icon);
+                messageLabel.setText(null);
+            }
+        }
+    }
+
+    @Override
+    public void succeed(TaskEvent<java.util.List<Map<String, String>>> listTaskEvent) {
+    }
+
+    @Override
+    public void finished(TaskEvent<Void> event) {
+    }
+
+    @Override
+    public void failed(TaskEvent<Throwable> event) {
+    }
+
+    @Override
+    public void cancelled(TaskEvent<Void> event) {
+    }
+
+    @Override
+    public void interrupted(TaskEvent<InterruptedException> iex) {
+    }
+
+    @Override
+    public void progress(TaskEvent<Integer> progress) {
     }
 }

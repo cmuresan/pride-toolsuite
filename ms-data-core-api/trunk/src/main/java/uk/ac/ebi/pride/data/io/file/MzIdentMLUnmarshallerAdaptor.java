@@ -60,14 +60,14 @@ public class MzIdentMLUnmarshallerAdaptor {
         uk.ac.ebi.jmzidml.model.mzidml.AuditCollection ac =
             unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AuditCollection.class);
 
-        return ac.getPerson();
+        return (ac != null)?ac.getPerson():null;
     }
 
     public List<Organization> getOrganizationContacts() {
         uk.ac.ebi.jmzidml.model.mzidml.AuditCollection ac =
             unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AuditCollection.class);
 
-        return ac.getOrganization();
+        return (ac != null)? ac.getOrganization():null;
     }
 
     public Iterator<BibliographicReference> getReferences() {

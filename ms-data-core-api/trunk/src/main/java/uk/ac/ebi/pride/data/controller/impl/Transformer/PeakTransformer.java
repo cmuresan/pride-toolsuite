@@ -41,6 +41,12 @@ public class PeakTransformer {
                 CvTermReference cvTerm = CvTermReference.MS_LEVEL;
                 CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),spectrum.getMsLevel().toString(),null,null,null);
                 paramGroup.addCvParam(cvParam);
+
+                /*cvTerm = CvTermReference.MS_TITLE;
+                CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),,null,null,null);
+                paramGroup.addCvParam(cvParam);
+                  */
+
                 if(spectrum.getPrecursorMZ() != null || spectrum.getPrecursorIntensity() !=null || spectrum.getPrecursorCharge() !=null){
                     precursors = new ArrayList<Precursor>();
                     ParamGroup ionSelected = new ParamGroup();
@@ -98,7 +104,6 @@ public class PeakTransformer {
             binaryDataArrays.add(mzBinaryArr);
 
             return binaryDataArrays;
-
 
         }
 }

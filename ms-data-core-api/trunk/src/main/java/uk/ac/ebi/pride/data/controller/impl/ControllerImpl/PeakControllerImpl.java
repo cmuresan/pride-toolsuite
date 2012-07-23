@@ -232,7 +232,7 @@ public class PeakControllerImpl extends CachedDataAccessController {
      * @throws DataAccessException data access exception
      */
     @Override
-    Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
+    public Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
         Spectrum spectrum = super.getSpectrumById(id, useCache);
         if (spectrum == null) {
             uk.ac.ebi.pride.tools.jmzreader.model.Spectrum rawSpec = null;

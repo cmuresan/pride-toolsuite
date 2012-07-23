@@ -253,9 +253,9 @@ public class MzIdentMLTransformer {
     public static Software transformToSoftware(uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftware oldSoftware) {
         if (oldSoftware != null) {
             AbstractContact contact = null;
-            if (oldSoftware.getContactRole().getOrganization() != null) {
+            if (oldSoftware.getContactRole() != null && oldSoftware.getContactRole().getOrganization() != null) {
                 contact = transformToOrganization(oldSoftware.getContactRole().getOrganization());
-            } else if (oldSoftware.getContactRole().getPerson() != null) {
+            } else if (oldSoftware.getContactRole() != null && oldSoftware.getContactRole().getPerson() != null) {
                 contact = transformToPerson(oldSoftware.getContactRole().getPerson());
             }
             ParamGroup name = null;

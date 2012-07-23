@@ -42,7 +42,7 @@ public class MzIdentMLCacheBuilder extends AbstractAccessCacheBuilder {
         cache.clear(CacheCategory.PEPTIDE_SEQUENCE);
 
 
-        // clear and add peptide ids
+        // clear and add protein ids
         cache.clear(CacheCategory.IDENTIFICATION_ID);
         cache.storeInBatch( CacheCategory.IDENTIFICATION_ID, new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.ProteinDetectionHypothesis)));
     }

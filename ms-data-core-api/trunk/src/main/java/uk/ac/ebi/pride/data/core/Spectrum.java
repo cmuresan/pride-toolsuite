@@ -4,6 +4,7 @@ package uk.ac.ebi.pride.data.core;
 
 import uk.ac.ebi.pride.term.CvTermReference;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,6 +61,7 @@ public class Spectrum extends MzGraph {
      * the identifier for the spot on a MALDI or similar on
      */
     private String spotID = null;
+
 
     /**
      * @param id
@@ -187,7 +189,6 @@ public class Spectrum extends MzGraph {
     public void setPeptide(Peptide peptide) {
         this.peptide = peptide;
     }
-
 }
 
 

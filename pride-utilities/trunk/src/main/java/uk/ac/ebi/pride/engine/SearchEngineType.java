@@ -36,27 +36,6 @@ public enum SearchEngineType {
                 if(termReferenceAux.equals(termReference)) return searchEngineType;
             }
         }
-        /*if((termReference.getAccession().equals(CvTermReference.MS_MASCOT_SCORE.getAccession()))
-                || (termReference.getAccession().equals(CvTermReference.MS_MASCOT_EXPECT_VALUE.getAccession()))){
-            return MASCOT;
-        }
-        if((termReference.getAccession().equals(CvTermReference.MS_XTANDEM_EXPECTANCY_SCORE.getAccession()))
-                || (termReference.getAccession().equals(CvTermReference.MS_XTANDEM_HYPERSCORE.getAccession()))){
-            return XTANDEM;
-        }
-        if((termReference.getAccession().equals(CvTermReference.MS_SEQUEST_CONSENSUS_SCORE.getAccession()))
-                || (termReference.getAccession().equals(CvTermReference.MS_SEQUEST_DELTA_CN.getAccession()))
-                || (termReference.getAccession().equals(CvTermReference.MS_SEQUEST_XCORR.getAccession()))){
-            return SEQUEST;
-        }
-        if((termReference.getAccession().equals(CvTermReference.MS_OMSSA_E.getAccession()))
-                || (termReference.getAccession().equals(CvTermReference.MS_OMSSA_P.getAccession()))){
-            return OMSSA;
-        }
-        if(termReference.getAccession().equals(CvTermReference.MS_SPECTRUMMILL_SCORE.getAccession())){
-            return SPECTRUM_MILL;
-        } */
-
 
         return null;
     }
@@ -68,24 +47,24 @@ public enum SearchEngineType {
      */
     public static SearchEngineType getByName(String name){
         if(name !=null){
-            if(name.toUpperCase().compareTo("MASCOT")==0)        return MASCOT;
-            if(name.toUpperCase().compareTo("XTANDEM")==0)       return XTANDEM;
-            if(name.toUpperCase().compareTo("SEQUEST")==0)       return SEQUEST;
-            if(name.toUpperCase().compareTo("SPECTRUM_MILL")==0) return SPECTRUM_MILL;
-            if(name.toUpperCase().compareTo("OMSSA")==0)         return OMSSA;
-            if(name.toUpperCase().compareTo("MATRIX SCIENCE MASCOT") == 0) return MASCOT;
+            name = name.toUpperCase();
+            if("MASCOT".equals(name) || "MATRIX SCIENCE MASCOT".equals(name))   return MASCOT;
+            if("XTANDEM".equals(name))       return XTANDEM;
+            if("SEQUEST".equals(name))       return SEQUEST;
+            if("SPECTRUM_MILL".equals(name)) return SPECTRUM_MILL;
+            if("OMSSA".equals(name))         return OMSSA;
         }
         return null;
     }
 
     public static CvTermReference getDefaultCvTerm(String name){
         if(name != null){
-            if(name.toUpperCase().compareTo("MASCOT")==0)        return MASCOT.getSearchEngineScores().get(0);
-            if(name.toUpperCase().compareTo("MATRIX SCIENCE MASCOT") == 0) return MASCOT.getSearchEngineScores().get(0);
-            if(name.toUpperCase().compareTo("XTANDEM")==0)       return XTANDEM.getSearchEngineScores().get(0);
-            if(name.toUpperCase().compareTo("SEQUEST")==0)       return SEQUEST.getSearchEngineScores().get(0);
-            if(name.toUpperCase().compareTo("SPECTRUM_MILL")==0) return SPECTRUM_MILL.getSearchEngineScores().get(0);
-            if(name.toUpperCase().compareTo("OMSSA")==0)         return OMSSA.getSearchEngineScores().get(0);
+            name = name.toUpperCase();
+            if("MASCOT".equals(name) || "MATRIX SCIENCE MASCOT".equals(name)) return MASCOT.getSearchEngineScores().get(0);
+            if("XTANDEM".equals(name))       return XTANDEM.getSearchEngineScores().get(0);
+            if("SEQUEST".equals(name))       return SEQUEST.getSearchEngineScores().get(0);
+            if("SPECTRUM_MILL".equals(name)) return SPECTRUM_MILL.getSearchEngineScores().get(0);
+            if("OMSSA".equals(name))         return OMSSA.getSearchEngineScores().get(0);
 
         }
         return null;

@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.data.controller.impl.Transformer;
 
 
+import uk.ac.ebi.jmzidml.model.mzidml.SpecificityRules;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.core.AbstractContact;
@@ -23,6 +24,8 @@ import uk.ac.ebi.pride.data.core.SpectrumIdentificationProtocol;
 import uk.ac.ebi.pride.data.core.SubstitutionModification;
 import uk.ac.ebi.pride.data.core.UserParam;
 import uk.ac.ebi.pride.term.CvTermReference;
+import uk.ac.ebi.pride.data.core.SpectrumIdentification;
+
 
 import java.util.*;
 
@@ -297,27 +300,34 @@ public class MzIdentMLTransformer {
         return references;
     }
 
-    public static Identification transformToIdentification(uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis oldIdent, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
+    public static Identification transformToIdentification(uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis oldIdent,
+                                                           uk.ac.ebi.jmzidml.model.mzidml.DBSequence oldDbSequence,
+                                                           List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> spectrumIdentificationItemList,
+                                                           uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
         Identification ident = null;
+
         if (FragmentationTable == null) {
             FragmentationTable = transformToFragmentationTable(oldFragmentationTable);
         }
-        if (oldIdent != null) {
-            List<Peptide> peptides= transformToPeptideIdentifications(oldIdent.getPeptideHypothesis(), oldFragmentationTable);
-            ParamGroup paramGroup = new ParamGroup(transformToCvParam(oldIdent.getCvParam()),transformToUserParam(oldIdent.getUserParam()));
-            Score score = DataAccessUtilities.getScore(paramGroup);
-            // Some search engines don't like to map the ref of
-            // the dbSequence to the database because is at the peptide Evidence Level
-            DBSequence dbSequence = null;
-            if(oldIdent.getDBSequence() == null){
-                dbSequence = peptides.get(0).getPeptideEvidence().getDbSequence();
-            }else{
-                dbSequence = transformToDBSequence(oldIdent.getDBSequence());
 
-            }
-            ident = new Identification(paramGroup, oldIdent.getId(), oldIdent.getName(), dbSequence, oldIdent.isPassThreshold(), peptides, score, -1, -1,null);
-            //Todo: threshold and sequence coverage
+        DBSequence dbSequence = transformToDBSequence(oldDbSequence);
+        ParamGroup paramGroup = null;
+        Score score = null;
+        String name = null;
+        boolean passThreshold = false;
+
+        if (oldIdent != null) {
+            //List<Peptide> peptides= transformToPeptideIdentifications(oldIdent.getPeptideHypothesis(), oldFragmentationTable);
+            paramGroup = new ParamGroup(transformToCvParam(oldIdent.getCvParam()),transformToUserParam(oldIdent.getUserParam()));
+            score = DataAccessUtilities.getScore(paramGroup);
+            name = oldIdent.getName();
+            passThreshold = oldIdent.isPassThreshold();
+
         }
+        List<Peptide> peptides = transformToPeptideIdentificationsFromSpectrumItems(spectrumIdentificationItemList,oldFragmentationTable);
+        ident = new Identification(paramGroup, dbSequence.getId(), name, dbSequence, passThreshold, peptides, score, -1, -1,null);
+        //Todo: threshold and sequence coverage
+
         return ident;
     }
 
@@ -342,6 +352,21 @@ public class MzIdentMLTransformer {
                 List<SpectrumIdentification> spectrumIdentifications = transformToPeptideIdentification(oldPeptideHypothesis.getSpectrumIdentificationItemRef(), oldFragmentationTable);
                 for(SpectrumIdentification spectrumIdentification: spectrumIdentifications){
                      peptides.add(new Peptide(peptideEvidence,spectrumIdentification));
+                }
+            }
+        }
+        return peptides;
+    }
+
+    public static List<Peptide> transformToPeptideIdentificationsFromSpectrumItems(List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> peptideIdentificationList, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
+        List<Peptide> peptides = null;
+        if(peptideIdentificationList != null && peptideIdentificationList.size() > 0){
+            peptides = new ArrayList<Peptide>();
+            for(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem oldSpectrumidentification: peptideIdentificationList){
+                SpectrumIdentification spectrumIdent = transformToPeptideIdentification(oldSpectrumidentification,oldFragmentationTable);
+                for(uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidenceRef evidence: oldSpectrumidentification.getPeptideEvidenceRef()){
+                    PeptideEvidence peptideEvidence = transformToPeptideEvidence(evidence.getPeptideEvidence());
+                    peptides.add(new Peptide(peptideEvidence,spectrumIdent));
                 }
             }
         }
@@ -707,7 +732,15 @@ public class MzIdentMLTransformer {
     private static SearchModification transformToSearchModification(uk.ac.ebi.jmzidml.model.mzidml.SearchModification oldModification) {
         SearchModification searchModification = null;
         if (oldModification != null) {
-            List<CvParam> rules = (oldModification.getSpecificityRules() == null) ? null : transformToCvParam(oldModification.getSpecificityRules().getCvParam());
+            List<CvParam> rules = null;
+            if(oldModification.getSpecificityRules() != null){
+                List<uk.ac.ebi.jmzidml.model.mzidml.CvParam> cvParamRules = new ArrayList<uk.ac.ebi.jmzidml.model.mzidml.CvParam>();
+                for(SpecificityRules paramRules: oldModification.getSpecificityRules()){
+                    cvParamRules.addAll(paramRules.getCvParam());
+                }
+                rules = transformToCvParam(cvParamRules);
+            }
+
             searchModification = new SearchModification(oldModification.isFixedMod(), oldModification.getMassDelta(), oldModification.getResidues(), rules, transformToCvParam(oldModification.getCvParam()));
         }
         return searchModification;

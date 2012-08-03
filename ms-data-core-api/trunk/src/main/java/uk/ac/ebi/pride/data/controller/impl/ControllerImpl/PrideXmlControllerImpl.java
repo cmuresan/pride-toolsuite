@@ -19,6 +19,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -617,5 +618,10 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         }
 
         return valid;
+    }
+
+    @Override
+    public Collection<Comparable> getIdentificationGroups() throws DataAccessException {
+        return null;
     }
 }

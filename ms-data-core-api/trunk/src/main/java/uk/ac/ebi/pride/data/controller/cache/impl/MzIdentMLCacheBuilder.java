@@ -2,12 +2,13 @@ package uk.ac.ebi.pride.data.controller.cache.impl;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import org.apache.batik.ext.awt.image.renderable.CompositeRable;
 import uk.ac.ebi.jmzidml.MzIdentMLElement;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
 
-import java.util.ArrayList;
+import java.util.*;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -35,16 +36,39 @@ public class MzIdentMLCacheBuilder extends AbstractAccessCacheBuilder {
         // get a reference to xml reader
         MzIdentMLUnmarshallerAdaptor unmarshaller = ((MzIdentMLControllerImpl) controller).getUnmarshaller();
 
-        // clear and add metadata
-        cache.clear(CacheCategory.EXPERIMENT_METADATA);
-        controller.getExperimentMetaData();
+        /* Get a preScan of the File, the PreCan of the Mzidentml File gets the information
+               * about all the spectrums, protein identifications, and peptide-spectrum matchs with the
+               * same structure that currently follow the mzidentml library.
+               */
+        Map<CacheCategory, Object> mzIdentMLMaps = unmarshaller.getPreScanIdMaps();
 
-        cache.clear(CacheCategory.PEPTIDE_SEQUENCE);
+        Map<Comparable,Map<Comparable,List<String[]>>> identProteinsMap = (Map<Comparable, Map<Comparable, List<String[]>>>) mzIdentMLMaps.get(CacheCategory.IDENTIFICATION_TO_PEPTIDE_EVIDENCES);
+        cache.storeInBatch(CacheCategory.IDENTIFICATION_TO_PEPTIDE_EVIDENCES, identProteinsMap);
 
-
-        // clear and add protein ids
         cache.clear(CacheCategory.IDENTIFICATION_ID);
-        cache.storeInBatch( CacheCategory.IDENTIFICATION_ID, new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.ProteinDetectionHypothesis)));
+        cache.storeInBatch( CacheCategory.IDENTIFICATION_ID, new ArrayList<Comparable>(identProteinsMap.keySet()));
+
+        Map<Comparable, List<Comparable>> spectraDataMap = (Map<Comparable, List<Comparable>>) mzIdentMLMaps.get(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS);
+        cache.clear(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS);
+        cache.storeInBatch(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS, spectraDataMap);
+
+        Map<Comparable, String[]> identSpectrumMap = (Map<Comparable, String[]>) mzIdentMLMaps.get(CacheCategory.PEPTIDE_TO_SPECTRUM);
+        cache.clear(CacheCategory.PEPTIDE_TO_SPECTRUM);
+        cache.storeInBatch(CacheCategory.PEPTIDE_TO_SPECTRUM,identSpectrumMap);
+
+        cache.clear(CacheCategory.PROTEIN_GROUP_ID);
+        cache.storeInBatch(CacheCategory.PROTEIN_GROUP_ID, new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.ProteinAmbiguityGroup)));
+        if(cache.hasCacheCategory(CacheCategory.PROTEIN_GROUP_ID)){
+
+            ArrayList<Comparable> proteinHIds = new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.ProteinDetectionHypothesis));
+            Map<Comparable, Comparable> proteinHypothesisMap = new HashMap<Comparable, Comparable>(proteinHIds.size());
+            for(Comparable id: proteinHIds){
+                proteinHypothesisMap.put(unmarshaller.getDBSequencebyProteinHypothesis(id),id);
+            }
+            cache.storeInBatch(CacheCategory.IDENTIFICATION_PROTEIN_GROUP_ID, proteinHypothesisMap);
+        }
+
+
     }
 }
 

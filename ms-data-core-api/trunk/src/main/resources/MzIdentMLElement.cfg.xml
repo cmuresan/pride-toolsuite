@@ -487,7 +487,7 @@ Configurations for various properties of model classes.
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.ProteinAmbiguityGroup</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.ProteinAmbiguityGroupCvParam</cvParamClass>
-        <idMapped>false</idMapped>
+        <idMapped>true</idMapped>
         <indexed>true</indexed>
         <tagName>ProteinAmbiguityGroup</tagName>
         <userParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.ProteinAmbiguityGroupUserParam</userParamClass>
@@ -699,7 +699,7 @@ Configurations for various properties of model classes.
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationResult</clazz>
         <cvParamClass>uk.ac.ebi.jmzidml.model.mzidml.params.SpectrumIdentificationResultCvParam</cvParamClass>
-        <idMapped>false</idMapped>
+        <idMapped>true</idMapped>
         <indexed>true</indexed>
         <refResolverClass>uk.ac.ebi.jmzidml.xml.jaxb.resolver.SpectrumIdentificationResultRefResolver</refResolverClass>
         <tagName>SpectrumIdentificationResult</tagName>

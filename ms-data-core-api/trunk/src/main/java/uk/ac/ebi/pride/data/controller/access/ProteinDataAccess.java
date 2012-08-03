@@ -41,7 +41,18 @@ public interface ProteinDataAccess {
      */
     public boolean hasIdentification() throws DataAccessException;
 
+
     /**
+        * Whether this controller contains protein groups information
+        *
+        * @return boolean  return true if identifications exist
+        * @throws uk.ac.ebi.pride.data.controller.DataAccessException
+        *          throw a exception when there is an error
+        *          accessing the data source
+        */
+   public boolean hasIdentificationGroupInformation() throws  DataAccessException;
+
+  /**
      * Get a collection of identification ids
      *
      * @return Collection   a string collection of identification ids
@@ -49,7 +60,17 @@ public interface ProteinDataAccess {
      *          throw a exception when there is an error
      *          accessing the data source
      */
-    public Collection<Comparable> getIdentificationIds() throws DataAccessException;
+   public Collection<Comparable> getIdentificationIds() throws DataAccessException;
+
+    /**
+     * Get a collection of identification group ids
+     *
+     * @return Collection   a string collection of identification ids
+     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
+     *          throw a exception when there is an error
+     *          accessing the data source
+     */
+    public Collection<Comparable> getIdentificationGroups() throws DataAccessException;
 
     /**
      * Get the index of identification by its id

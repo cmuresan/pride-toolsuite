@@ -34,6 +34,7 @@ import java.util.*;
  * Time: 14:26:03
  */
 public abstract class CachedDataAccessController extends AbstractDataAccessController implements CacheAccess {
+
     private static final Logger logger = LoggerFactory.getLogger(CachedDataAccessController.class);
     /**
      * the default data access mode is to use both cache and data source
@@ -885,6 +886,16 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
             return CollectionUtils.getElement(metaDatas, 0);
         }
         return null;
+    }
+
+    @Override
+    public Collection<Comparable> getIdentificationGroups() throws DataAccessException {
+        Collection<Comparable> groupIds = (Collection<Comparable>) cache.get(CacheCategory.PROTEIN_GROUP_ID);
+
+        if (groupIds == null || groupIds.isEmpty()) {
+            groupIds = Collections.emptyList();
+        }
+        return groupIds;
     }
 
     /**

@@ -34,7 +34,17 @@ public interface DataAccessController
      * Note: this does not automatically mean they must have them.
      */
     public enum ContentCategory {
-        SPECTRUM, CHROMATOGRAM, PROTEIN, PEPTIDE, QUANTITATION, SAMPLE, PROTOCOL, SOFTWARE, INSTRUMENT, DATA_PROCESSING
+        SPECTRUM,
+        CHROMATOGRAM,
+        PROTEIN,
+        PROTEIN_GROUPS,
+        PEPTIDE,
+        QUANTITATION,
+        SAMPLE,
+        PROTOCOL,
+        SOFTWARE,
+        INSTRUMENT,
+        DATA_PROCESSING
     }
 
     /**

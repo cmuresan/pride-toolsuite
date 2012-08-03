@@ -567,6 +567,19 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     /**
+     * Check the availability of protein group identifications
+     *
+     * @return boolean true means there is protein identifications
+     * @throws DataAccessException data access exception
+     */
+
+    @Override
+    public boolean hasIdentificationGroupInformation() throws DataAccessException {
+        return getNumberOfIdentifications() > 0;
+    }
+
+
+    /**
      * Check the availability of peptide identifications
      *
      * @return boolean true means there is peptide identificaitons
@@ -587,6 +600,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     public int getNumberOfIdentifications() throws DataAccessException {
         return getIdentificationIds().size();
     }
+
+
 
     /**
      * Get the index of a identification using its id

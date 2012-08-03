@@ -1,13 +1,26 @@
 package uk.ac.ebi.pride.data.io.file;
 
 
+import org.apache.batik.ext.awt.image.renderable.CompositeRable;
 import uk.ac.ebi.jmzidml.MzIdentMLElement;
 import uk.ac.ebi.jmzidml.model.mzidml.*;
+import uk.ac.ebi.jmzidml.model.mzidml.Organization;
+import uk.ac.ebi.jmzidml.model.mzidml.Peptide;
+import uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidence;
+import uk.ac.ebi.jmzidml.model.mzidml.Person;
+import uk.ac.ebi.jmzidml.model.mzidml.Provider;
+import uk.ac.ebi.jmzidml.model.mzidml.Sample;
+import uk.ac.ebi.jmzidml.model.mzidml.SourceFile;
+import uk.ac.ebi.jmzidml.model.mzidml.SpectraData;
+import uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationProtocol;
 import uk.ac.ebi.jmzidml.xml.io.MzIdentMLUnmarshaller;
+import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 
+
+import javax.crypto.Mac;
 import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
-import java.text.ParseException;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -80,18 +93,8 @@ public class MzIdentMLUnmarshallerAdaptor {
 
     public int getNumIdentifiedPeptides() throws ConfigurationException, JAXBException {
         int total = 0;
-        Set<String> listIDs = unmarshaller.getIDsForElement(MzIdentMLElement.ProteinDetectionHypothesis);
-        Object[] ArrayIDs = listIDs.toArray();
-        for(int i = 0; i < ArrayIDs.length;i++){
-            ProteinDetectionHypothesis protein = null;
-            protein = unmarshaller.unmarshal(ProteinDetectionHypothesis.class, (String) ArrayIDs[i]);
-            int count = 0;
-            for(PeptideHypothesis peptideHypothesis: protein.getPeptideHypothesis()){
-                count += peptideHypothesis.getSpectrumIdentificationItemRef().size();
-            }
-            total += count;
-        }
-        return total;
+        Set<String> listIDs = unmarshaller.getIDsForElement(MzIdentMLElement.SpectrumIdentificationItem);
+        return listIDs.size();
     }
 
     public FragmentationTable getFragmentationTable() {
@@ -169,6 +172,114 @@ public class MzIdentMLUnmarshallerAdaptor {
             peptideHypothesises.add(peptideHypothesis);
         }
         return peptideHypothesises;
+    }
+
+    public PeptideEvidence getPeptideEvidence(Comparable id) throws JAXBException {
+          return unmarshaller.unmarshal(PeptideEvidence.class,(String) id);
+    }
+
+    public Map<Comparable,Comparable> getPeptideEvidencesBySpectrum(Comparable id) throws JAXBException {
+        List<PeptideEvidenceRef> peptideEvidenceRefs = unmarshaller.unmarshal(SpectrumIdentificationItem.class,(String) id).getPeptideEvidenceRef();
+        Map<Comparable,Comparable> peptideRefs = new HashMap<Comparable, Comparable>(peptideEvidenceRefs.size());
+        for(PeptideEvidenceRef peptideEvidenceRef: peptideEvidenceRefs){
+            peptideRefs.put(peptideEvidenceRef.getPeptideEvidenceRef(), peptideEvidenceRef.getPeptideEvidence().getDBSequenceRef());
+        }
+        return peptideRefs;
+    }
+
+    public Comparable getDBSequencebyProteinHypothesis(Comparable id) throws JAXBException
+    {
+        return unmarshaller.unmarshal(ProteinDetectionHypothesis.class,(String) id).getDBSequenceRef();
+
+    }
+
+    public DBSequence getDBSequenceById(Comparable id) throws JAXBException {
+        return unmarshaller.unmarshal(DBSequence.class,(String) id);
+    }
+
+    public List<SpectrumIdentificationItem> getSpectrumIdentificationsbyIds(List<Comparable> spectrumIdentIds) throws JAXBException {
+        List<SpectrumIdentificationItem> spectrumIdentifications = null;
+        if(spectrumIdentIds != null && spectrumIdentIds.size() > 0){
+            spectrumIdentifications = new ArrayList<SpectrumIdentificationItem>();
+            for(Comparable id: spectrumIdentIds){
+                SpectrumIdentificationItem spectrumIdentification = unmarshaller.unmarshal(SpectrumIdentificationItem.class, (String) id);
+                spectrumIdentifications.add(spectrumIdentification);
+            }
+
+        }
+        return spectrumIdentifications;
+    }
+
+    public Map<Comparable,String[]> getSpectrumIdentificationsbySpectrumResult(Comparable id) throws JAXBException {
+        ArrayList<SpectrumIdentificationItem> spectrumIdentificationItems = null;
+        SpectrumIdentificationResult results  = unmarshaller.unmarshal(SpectrumIdentificationResult.class, (String) id);
+        Map<Comparable, String[]> spectrumIds = new HashMap<Comparable, String[]>(results.getSpectrumIdentificationItem().size());
+        for(SpectrumIdentificationItem idSpectrumItem: results.getSpectrumIdentificationItem()){
+            String[] spectrumInfo = new String[2];
+            spectrumInfo[0] = results.getSpectrumID();
+            spectrumInfo[1] = results.getSpectraDataRef();
+            spectrumIds.put(idSpectrumItem.getId(),spectrumInfo);
+        }
+        return spectrumIds;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public Map<CacheCategory, Object> getPreScanIdMaps() throws ConfigurationException, JAXBException {
+
+        Map<CacheCategory, Object> maps = new HashMap<CacheCategory, Object>();
+
+        ArrayList<Comparable> spectraDataIds = new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.SpectraData));
+
+        // First Map is the Relation bettwen an Spectrum file and all the Spectrums ids in the file
+        Map<Comparable, List<Comparable>> spectraDataMap = new HashMap<Comparable, List<Comparable>>(spectraDataIds.size());
+
+
+        Map<Comparable, String[]> identSpectrumMap = new HashMap<Comparable, String[]>();
+
+
+        ArrayList<Comparable> spectrumMatchResultsIds  = new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.SpectrumIdentificationResult));
+
+        Map<Comparable,Map<Comparable,List<String[]>>> identProteinsMap = new HashMap<Comparable, Map<Comparable, List<String[]>>>();
+
+        for(Comparable idSpectrumResult: spectrumMatchResultsIds){
+            SpectrumIdentificationResult spectrumResult = unmarshaller.unmarshal(SpectrumIdentificationResult.class,(String) idSpectrumResult);
+
+            // SpectraDataMap fill
+            List<Comparable> spectrumIds = spectraDataMap.get(spectrumResult.getSpectraDataRef());
+            if(spectrumIds == null) spectrumIds = new ArrayList<Comparable>(1);
+            spectrumIds.add(spectrumResult.getSpectrumID());
+            spectraDataMap.put(spectrumResult.getSpectraDataRef(),spectrumIds);
+
+            for(SpectrumIdentificationItem spectrumIdentItem: spectrumResult.getSpectrumIdentificationItem()){
+
+                // fill the SpectrumIdentification and the Spectrum information
+                String[] spectrumFeatures = new String[2];
+                spectrumFeatures[0] = spectrumResult.getSpectrumID();
+                spectrumFeatures[1] = spectrumResult.getSpectraDataRef();
+                identSpectrumMap.put(spectrumIdentItem.getId(),spectrumFeatures);
+
+                List<String[]> evidences = new ArrayList<String[]>();
+                Set<Comparable> idProteins = new HashSet<Comparable>();
+                for (PeptideEvidenceRef evidenceRef: spectrumIdentItem.getPeptideEvidenceRef()){
+                    String[] evidence = new String[2];
+                    evidence[0] = evidenceRef.getPeptideEvidenceRef();
+                    evidence[1] = evidenceRef.getPeptideEvidence().getDBSequenceRef();
+                    evidences.add(evidence);
+                    idProteins.add(evidence[1]);
+                }
+                for(Comparable idProtein: idProteins){
+                    Map<Comparable,List<String[]>> spectrumIdentifications = identProteinsMap.get(idProtein);
+                    if(spectrumIdentifications == null) spectrumIdentifications = new HashMap<Comparable, List<String[]>>();
+                    spectrumIdentifications.put(spectrumIdentItem.getId(),evidences);
+                    identProteinsMap.put(idProtein,spectrumIdentifications);
+                }
+            }
+        }
+
+        maps.put(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS,spectraDataMap);
+        maps.put(CacheCategory.IDENTIFICATION_TO_PEPTIDE_EVIDENCES,identProteinsMap);
+        maps.put(CacheCategory.PEPTIDE_TO_SPECTRUM,identSpectrumMap);
+
+        return maps;
     }
 }
 

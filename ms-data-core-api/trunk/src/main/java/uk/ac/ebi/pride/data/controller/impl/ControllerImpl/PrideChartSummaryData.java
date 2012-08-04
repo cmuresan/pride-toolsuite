@@ -215,7 +215,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
             Collection<Comparable> idenIDList = cdac.getIdentificationIds();
             int idenIDInt= 0;
             for (Comparable idenID : idenIDList) {
-                Identification id = cdac.getIdentificationById(idenID, false);
+                Identification id = cdac.getIdentificationById(idenID, true);
                 //int identification_id = Integer.valueOf(id.getId().toString());
                 int identification_id = idenIDInt;
 

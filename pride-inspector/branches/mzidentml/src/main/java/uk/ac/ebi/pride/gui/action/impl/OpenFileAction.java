@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
-import com.sun.tools.xjc.addon.code_injector.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.*;

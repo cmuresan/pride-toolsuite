@@ -78,4 +78,58 @@ public enum AminoAcid implements Mass {
     public double getAvgMass() {
         return avgMass;
     }
+
+    public static AminoAcid getAminoAcid(char oneLetterCode){
+        switch( oneLetterCode ) {
+            case 'A':
+                return AminoAcid.A;
+            case 'B':
+                return AminoAcid.B;
+            case 'R':
+                return AminoAcid.R;
+            case 'N':
+                return AminoAcid.N;
+            case 'D':
+                return AminoAcid.D;
+            case 'C':
+                return AminoAcid.C;
+            case 'E':
+                return AminoAcid.E;
+            case 'Q':
+                return AminoAcid.Q;
+            case 'G':
+                return AminoAcid.G;
+            case 'H':
+                return AminoAcid.H;
+            case 'I':
+                return AminoAcid.I;
+            case 'L':
+                return AminoAcid.L;
+            case 'J':
+                return AminoAcid.J;
+            case 'K':
+                return AminoAcid.K;
+            case 'M':
+                return AminoAcid.M;
+            case 'F':
+                return AminoAcid.F;
+            case 'P':
+                return AminoAcid.P;
+            case 'S':
+                return AminoAcid.S;
+            case 'T':
+                return AminoAcid.T;
+            case 'V':
+                return AminoAcid.V;
+            case 'W':
+                return AminoAcid.W;
+            case 'Y':
+                return AminoAcid.Y;
+            case 'Z':
+                return AminoAcid.Z;
+            default:
+                return null;
+
+        }
+    }
 }

@@ -19,15 +19,13 @@ public class ProteinTableModel extends AbstractProteinTableModel {
         super(listProteinScores);
     }
 
-
-
-    @Override
+    /*@Override
     public void initializeTableModel() {
         TableHeader[] headers = TableHeader.values();
         for (TableHeader header : headers) {
             columnNames.put(header.getHeader(), header.getToolTip());
         }
-    }
+    }   */
 
     @Override
     public void addData(Tuple<TableContentType, Object> newData) {

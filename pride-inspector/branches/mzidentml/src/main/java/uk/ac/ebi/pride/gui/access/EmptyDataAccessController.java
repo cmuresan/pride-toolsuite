@@ -111,4 +111,9 @@ public class EmptyDataAccessController extends AbstractDataAccessController {
     public Chromatogram getChromatogramById(Comparable id) throws DataAccessException {
         return null;
     }
+
+    @Override
+    public Collection<Comparable> getIdentificationGroups() throws DataAccessException {
+        return null;
+    }
 }

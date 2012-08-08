@@ -97,6 +97,7 @@ public class TableFactory {
         additionalCol.setCellRenderer(new IconRenderer(icon));
         additionalCol.setMaxWidth(50);
 
+
         // add mouse motion listener
         table.addMouseMotionListener(new TableCellMouseMotionListener(table, additionalColHeader));
         table.addMouseListener(new ShowParamsMouseListener(controller, table, additionalColHeader));

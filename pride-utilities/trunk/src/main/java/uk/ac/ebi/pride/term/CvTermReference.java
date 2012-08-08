@@ -131,8 +131,6 @@ public enum CvTermReference {
     MS_XTANDEM_HYPERSCORE("PSI-MS", "MS:1001331", "X!Tandem:hyperscore", "MS:1001143"),
     MS_XTANDEM_EXPECTANCY_SCORE("PSI-MS", "MS:1001330", "X!Tandem:expect", "MS:1001143"),
 
-
-
     SEQUEST_CN("PRIDE","PRIDE:0000052","Cn","PRIDE:0000049"),
     SEQUEST_SCORE("PRIDE", "PRIDE:0000053", "SEQUEST SCORE", "PRIDE:0000049"),
     SEQUEST_DELTA_CN("PRIDE", "PRIDE:0000012", "Delta Cn", "PRIDE:0000049"),
@@ -150,7 +148,11 @@ public enum CvTermReference {
 
 
     // MyriMatch:MVH
-    MS_MYRIMATCH_MVH("PSI-MS","MS:1001589", "MyriMatch:MVH","MS:1001143"),
+    MS_MYRIMATCH_MVH("MS","MS:1001589", "MyriMatch:MVH","MS:1001143"),
+    MS_MYRIMATCH_NMATCHS("MS","MS:1001121", "number of matched peaks","MS:1001143"),
+    MS_MYRIMATCH_NOMATCHS("MS","MS:1001362","number of unmatched peaks","MS:1001143"),
+    MS_MYRIMATCH_MZFIDELITY("MS","MS:1001590","MyriMatch:mzFidelity","MS:1001143"),
+
 
     // Paragon:score
     MS_PARAGON_SCORE("PSI-MS","MS:1001166", "Paragon:score", "MS:1001153"),
@@ -177,7 +179,25 @@ public enum CvTermReference {
     EXPERIMENT_DESCRIPTION("PRIDE", "PRIDE:0000040", "Experiment Description", "PRIDE:0000006"),
     PEPTIDE_GLOBAL_FDR("MS", "MS:1001364", "pep:global FDR", "MS:1001405"),
     PROTEIN_GLOBAL_FDR("MS", "MS:1001214", "prot:global FDR", "MS:1001405"),
-    EXPERIMENT_GLOBAL_CREATIONDATE ("PRIDE", "PRIDE:0000219", "Date of search", "PRIDE:0000006");
+    EXPERIMENT_GLOBAL_CREATIONDATE ("PRIDE", "PRIDE:0000219", "Date of search", "PRIDE:0000006"),
+    MS_SCAN_DATE("MS", "MS:1000016", "scan start time", "MS:1001458"),
+    MS_SOFTWARE_PROCESSING("MS","MS:1001457","data processing software","MS:1000531"),
+    MS_SOFTWARE_ACQUISITION("MS","MS:1001455","acquisition software","MS:1000531"),
+    MS_FILE_SPECTRUM("MS", "MS:1000560", "mass spectrometer file format", "MS:1001459"),
+
+    MS_DATAPROCESSING_DEISOTOPING("MS", "MS:1000033", "deisotoping", "MS:1000543"),
+    MS_DATAPROCESSING_DECONVOLUTION("MS", "MS:1000034", "charge deconvolution", "MS:1000543"),
+    MS_DATAPROCESSING_INTENSITY_THRESHOLD("MS", "MS:1001486", "data filtering", "MS:1000543"),
+    MS_DATAPROCESSING_CENTROID("MS", "MS:1000035", "peak picking", "MS:1000543"),
+
+
+
+    MS_INSTRUMENT_MODEL("MS", "MS:1000031", "instrument model", "MS:1000463"),
+    MS_INSTRUMENT_DETECTOR("MS", "MS:1000453","detector","MS:1000463"),
+    MS_INSTRUMENT_ANALYZER("MS", "MS:1000451","mass analyzer","MS:1000463"),
+    MS_INSTRUMENT_SOURCE("MS", "MS:1000458", "source","MS:1000463");
+
+
 
 
     private final String cvLabel;

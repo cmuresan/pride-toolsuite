@@ -295,9 +295,6 @@ public class TableDataRetriever {
         // unique id for identification
         content.add(identId);
 
-        // additional details is always null
-        content.add(identId);
-
         // peptide scores
         Score scores = controller.getIdentificationScores(identId);
         if (scores != null) {
@@ -308,6 +305,11 @@ public class TableDataRetriever {
                 }
             }
         }
+
+        // additional details is always null
+        content.add(identId);
+
+
 
 
         return content;

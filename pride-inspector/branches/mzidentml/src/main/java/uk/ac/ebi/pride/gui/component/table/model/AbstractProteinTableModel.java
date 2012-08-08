@@ -68,7 +68,7 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
         TableHeader[] headers = TableHeader.values();
         for (TableHeader header : headers) {
             columnNames.put(header.getHeader(), header.getToolTip());
-            if (listScores != null) {
+            if (listScores != null && TableHeader.IDENTIFICATION_ID.getHeader().equals(header.getHeader())) {
                 for (CvTermReference scoreCvTerm : listScores) {
                     String name = scoreCvTerm.getName();
                     columnNames.put(name, name);
@@ -79,10 +79,11 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
 
     @Override
     public void initializeTableModel() {
-        TableHeader[] headers = TableHeader.values();
+       /* TableHeader[] headers = TableHeader.values();
         for (TableHeader header : headers) {
             columnNames.put(header.getHeader(), header.getToolTip());
-        }
+        }     */
+       // nothing to do here
     }
 
     @Override

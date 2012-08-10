@@ -95,7 +95,9 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
                     continue;
                 }
 
-                accBuffer.put(protIdentId, mappedProtAcc);
+                if(mappedProtAcc != null){
+                    accBuffer.put(protIdentId, mappedProtAcc);
+                }
                 if (accBuffer.size() == MAX_BATCH_DOWNLOAD_SIZE) {
                     // fetch and publish protein details
                     fetchAndPublish(accBuffer, proteins);

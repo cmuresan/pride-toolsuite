@@ -65,10 +65,8 @@ public class MzIdentMLCacheBuilder extends AbstractAccessCacheBuilder {
             for(Comparable id: proteinHIds){
                 proteinHypothesisMap.put(unmarshaller.getDBSequencebyProteinHypothesis(id),id);
             }
-            cache.storeInBatch(CacheCategory.IDENTIFICATION_PROTEIN_GROUP_ID, proteinHypothesisMap);
+         cache.storeInBatch(CacheCategory.IDENTIFICATION_PROTEIN_GROUP_ID, proteinHypothesisMap);
         }
-
-
     }
 }
 

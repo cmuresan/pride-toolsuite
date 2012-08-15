@@ -24,10 +24,12 @@ import uk.ac.ebi.pride.data.core.SpectraData;
 import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.data.core.SpectrumIdentificationProtocol;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
+import uk.ac.ebi.pride.data.utils.Constants;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
-import uk.ac.ebi.pride.tools.jmzreader.model.*;
+import uk.ac.ebi.pride.data.utils.MzIdentMLUtils;
 
 
+import javax.xml.bind.JAXBException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -66,7 +68,19 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
        * related with the file.
 
      */
-    private Map<SpectraData, DataAccessController> msDataAccessControllers = null;
+    private Map<Comparable, DataAccessController> msDataAccessControllers = null;
+
+    /**
+     * A map of the SpectraData associated with this mzidentml
+     */
+
+    private Map<Comparable, SpectraData> spectraDataMap = null;
+
+
+    /**
+     * If the file have spectrum information
+     */
+    private boolean spectrums = false;
 
   /**
      * The constructor used by Default the CACHE_AND_SOURCE mode, it
@@ -488,14 +502,14 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * MzidemtML files do not support Spectra MetaData. It is supported by MzML and
+     * MzidemtML files will support in the future Spectra MetaData if is present
      * PRIDE Objects, also by other file Formats.
      * @return
      * @throws DataAccessException
      */
     @Override
     public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
-       throw new UnsupportedOperationException("This method is not supported");
+       return null;
     }
 
     /**
@@ -506,7 +520,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      */
     @Override
     public boolean hasSpectrum() throws DataAccessException {
-        return false;
+        return spectrums;
     }
 
     /**
@@ -620,6 +634,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public void close() {
         unmarshaller = null;
         super.close();
+
     }
 
 
@@ -661,36 +676,80 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
    @Override
    public boolean hasIdentificationGroupInformation() throws DataAccessException {
         return super.getIdentificationGroups().size() > 0;
-    }
+   }
 
+    /**
+     * Get spectrum using a spectrumIdentification id, gives the option to choose whether to
+     * use cache. This implementation provides a way of by passing the cache.
+     *
+     * @param id  spectrum Identification ID
+     * @param useCache true means to use cache
+     * @return Spectrum spectrum object
+     * @throws DataAccessException data access exception
+     **/
+    @Override
+    Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
+        String[] spectrumIdArray = ((Map<Comparable, String[]>) getCache().get(CacheCategory.PEPTIDE_TO_SPECTRUM)).get(id);
 
-    public Map<SpectraData, DataAccessController> getMsDataAccessControllers() {
-        return msDataAccessControllers;
-    }
-
-    public void setMsDataAccessControllers(Map<SpectraData, DataAccessController> msDataAccessControllers) {
-        this.msDataAccessControllers = msDataAccessControllers;
-    }
-
-    Spectrum getSpectrumById(Comparable fileID, Comparable id, boolean useCache) throws DataAccessException {
-
-        Spectrum spectrum = null;
-
-        if(msDataAccessControllers != null && msDataAccessControllers.containsKey(fileID)){
-             spectrum = msDataAccessControllers.get(fileID).getSpectrumById(id);
+        /** To store in cache the Spectrum files, an Id was constructed using the spectrum ID and the
+         *  id of the File.
+         **/
+        Comparable spectrumId = spectrumIdArray[0] + "!" + spectrumIdArray[1];
+        Spectrum spectrum = super.getSpectrumById(spectrumId, useCache);
+        if (spectrum == null && id != null) {
+            logger.debug("Get new spectrum from file: {}", id);
+            try {
+                DataAccessController spectrumController = msDataAccessControllers.get(spectrumIdArray[1]);
+                spectrum = spectrumController.getSpectrumById(spectrumIdArray[0]);
+                if (useCache && spectrum != null) {
+                    getCache().store(CacheCategory.SPECTRUM, id, spectrum);
+                }
+            } catch (Exception ex) {
+                String msg = "Error while getting spectrum: " + id;
+                logger.error(msg, ex);
+                throw new DataAccessException(msg, ex);
+            }
         }
         return spectrum;
     }
 
-    public void addMSController(SpectraData spectraData, DataAccessController dataAccessController){
-        msDataAccessControllers.put(spectraData, dataAccessController);
+    public void addMSController(List<File> dataAccessControllerFiles) throws DataAccessException {
+        if(spectraDataMap == null){
+            spectraDataMap = getSpectraDataMap();
+        }
+        if(msDataAccessControllers == null) msDataAccessControllers = new HashMap<Comparable, DataAccessController>();
+        for(File file: dataAccessControllerFiles){
+            for(Comparable id: spectraDataMap.keySet()){
+                SpectraData spectraData = spectraDataMap.get(id);
+                if(spectraData.getLocation().indexOf(file.getName()) > 0){
+                    msDataAccessControllers.put(id, new PeakControllerImpl(file));
+                    spectrums = true;
+                    //Todo: Other controller more than mgf
+                }
+            }
+        }
     }
 
-    public void addMSController(File file){
-
+    private Map<Comparable, SpectraData> getSpectraDataMap() throws DataAccessException {
+        Map<Comparable, List<Comparable>> spectraDataIdMap = (Map<Comparable, List<Comparable>>) getCache().get(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS);
+        Set<Comparable> spectraIds = spectraDataIdMap.keySet();
+        Map<Comparable, SpectraData> spectraDataMapResult = new HashMap<Comparable, SpectraData>(spectraDataIdMap.size());
+        try {
+            Map<Comparable, uk.ac.ebi.jmzidml.model.mzidml.SpectraData> oldSpectraDataMap = unmarshaller.getSpectraData(spectraIds);                    Map<Comparable,SpectraData> spectraDataMap = new HashMap<Comparable, SpectraData>(oldSpectraDataMap.size());
+            for(Comparable id: oldSpectraDataMap.keySet()){
+                SpectraData spectraData = MzIdentMLTransformer.transformToSpectraData(oldSpectraDataMap.get(id));
+                if(isSpectraDataSupported(spectraData)) spectraDataMapResult.put(id,spectraData);
+            }
+        } catch (JAXBException ex) {
+            String msg = "Error while getting the spectrum File information";
+            logger.error(msg, ex);
+            throw new DataAccessException(msg, ex);
+        }
+        return spectraDataMapResult;
     }
 
-
-
-
+    private boolean isSpectraDataSupported(SpectraData spectraData) {
+        return (MzIdentMLUtils.getSpectraDataIdFormat(spectraData) == Constants.SpecIdFormat.NONE ||
+                MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.NONE)?false:true;
+    }
 }

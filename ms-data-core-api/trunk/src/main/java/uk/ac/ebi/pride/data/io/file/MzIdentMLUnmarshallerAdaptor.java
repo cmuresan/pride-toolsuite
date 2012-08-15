@@ -15,6 +15,7 @@ import uk.ac.ebi.jmzidml.model.mzidml.SpectraData;
 import uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationProtocol;
 import uk.ac.ebi.jmzidml.xml.io.MzIdentMLUnmarshaller;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
+import uk.ac.ebi.pride.data.utils.MzIdentMLUtils;
 
 
 import javax.crypto.Mac;
@@ -161,6 +162,27 @@ public class MzIdentMLUnmarshallerAdaptor {
         return dc.getSpectraData();
     }
 
+    public Map<Comparable, SpectraData> getSpectraDataMap() {
+        Inputs dc = unmarshaller.unmarshal(Inputs.class);
+        List<SpectraData> spectraDataList =  dc.getSpectraData();
+        Map<Comparable,SpectraData> spectraDataMap = null;
+        if(spectraDataList != null && spectraDataList.size()>0) spectraDataMap = new HashMap<Comparable, SpectraData>();
+        for(SpectraData spectraData: spectraDataList){
+            spectraDataMap.put(spectraData.getId(),spectraData);
+        }
+        return spectraDataMap;
+    }
+
+
+    public Map<Comparable,SpectraData> getSpectraData(Set<Comparable> ids) throws JAXBException {
+        Map<Comparable, SpectraData> spectraDataMap = new HashMap<Comparable, SpectraData>();
+        for(Comparable id: ids){
+            SpectraData spectraData = unmarshaller.unmarshal(SpectraData.class, (String) id);
+            spectraDataMap.put(id,spectraData);
+        }
+        return spectraDataMap;
+    }
+
     public List<PeptideHypothesis> getPeptideHypothesisbyID(Comparable id) throws JAXBException {
         ProteinDetectionHypothesis proteinDetectionHypothesis = getIdentificationById(id);
         List<PeptideHypothesis> peptideHypothesises = new ArrayList<PeptideHypothesis>();
@@ -190,7 +212,6 @@ public class MzIdentMLUnmarshallerAdaptor {
     public Comparable getDBSequencebyProteinHypothesis(Comparable id) throws JAXBException
     {
         return unmarshaller.unmarshal(ProteinDetectionHypothesis.class,(String) id).getDBSequenceRef();
-
     }
 
     public DBSequence getDBSequenceById(Comparable id) throws JAXBException {
@@ -227,7 +248,8 @@ public class MzIdentMLUnmarshallerAdaptor {
 
         Map<CacheCategory, Object> maps = new HashMap<CacheCategory, Object>();
 
-        ArrayList<Comparable> spectraDataIds = new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.SpectraData));
+
+        Map<Comparable, SpectraData> spectraDataIds = getSpectraDataMap();
 
         // First Map is the Relation bettwen an Spectrum file and all the Spectrums ids in the file
         Map<Comparable, List<Comparable>> spectraDataMap = new HashMap<Comparable, List<Comparable>>(spectraDataIds.size());
@@ -253,8 +275,12 @@ public class MzIdentMLUnmarshallerAdaptor {
 
                 // fill the SpectrumIdentification and the Spectrum information
                 String[] spectrumFeatures = new String[2];
-                spectrumFeatures[0] = spectrumResult.getSpectrumID();
+                SpectraData spectraData = spectraDataIds.get(spectrumResult.getSpectraDataRef());
+
+                String spectrumId   = MzIdentMLUtils.getSpectrumId(spectraData,spectrumResult.getSpectrumID());
+                spectrumFeatures[0] = spectrumId;
                 spectrumFeatures[1] = spectrumResult.getSpectraDataRef();
+
                 identSpectrumMap.put(spectrumIdentItem.getId(),spectrumFeatures);
 
                 List<String[]> evidences = new ArrayList<String[]>();

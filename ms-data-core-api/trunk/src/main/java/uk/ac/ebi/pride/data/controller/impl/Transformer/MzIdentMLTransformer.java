@@ -849,7 +849,7 @@ public class MzIdentMLTransformer {
         return searchDataBases;
     }
 
-    private static SpectraData transformToSpectraData(uk.ac.ebi.jmzidml.model.mzidml.SpectraData oldSpectraData) {
+    public static SpectraData transformToSpectraData(uk.ac.ebi.jmzidml.model.mzidml.SpectraData oldSpectraData) {
         SpectraData spectraData = null;
         if (oldSpectraData != null) {
             CvParam fileFormat = (oldSpectraData.getFileFormat() == null) ? null : transformToCvParam(oldSpectraData.getFileFormat().getCvParam());

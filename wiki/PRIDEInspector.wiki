@@ -15,7 +15,7 @@
  * [#Getting_Help Getting Help]
  * [#Source_Code Source Code]
  * [#Screenshots Screenshots]
- * [Journal review using PRIDE Inspector?]
+ * [Journal review using PRIDE Inspector]
     </td>
   </tr>
 </table>

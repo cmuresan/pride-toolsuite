@@ -305,7 +305,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      */
     @Override
     public int getNumberOfPeaks(Comparable specId) throws DataAccessException {
-            int numOfPeaks = 0;
+        int numOfPeaks = 0;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
             numOfPeaks = DataAccessUtilities.getNumberOfPeaks(spectrum);
@@ -673,9 +673,11 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
                 searchEngine = new SearchEngine(ident.getSearchEngine());
                 // check the search engine types from the data source
                 List<Peptide> peptides = ident.getPeptides();
-                Peptide peptide = peptides.get(0);
-                List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide);
-                searchEngine.setSearchEngineTypes(types);
+                if (peptides != null && !peptides.isEmpty()) {
+                    Peptide peptide = peptides.get(0);
+                    List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide);
+                    searchEngine.setSearchEngineTypes(types);
+                }
             }
         }
 

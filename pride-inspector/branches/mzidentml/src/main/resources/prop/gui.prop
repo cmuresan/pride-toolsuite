@@ -17,6 +17,9 @@ close.individual.source.enable.icon.small=icon/16x16/close_data_source.gif
 close.source.enable.icon.small=icon/16x16/delete_enable.gif
 close.source.disable.icon.small=icon/16x16/delete_disable.gif
 
+open.mzidentml.ms.icon.small=icon/16x16/peak.png
+delete.mzidentml.ms.icon.small=icon/16x16/delete_enable.gif
+
 reviewer.download.title=Private Download
 reviewer.download.tooltip=Private download
 reviewer.download.icon.small=icon/16x16/reviewer_download.png
@@ -218,7 +221,7 @@ about.pride.main.logo=logo/pride-logo.png
 about.bottom.line.text=PRIDE Inspector-{0}, java version {1}
 about.text=PRIDE Inspector is brought to you by\n\
            \n\
-           Rui Wang\n\
+           Rui Wang && Yasset Perez-Riverol\n\
            Antonio Fabregat Mundo\n\
            Daniel Rios\n\
            Joe Foster\n\

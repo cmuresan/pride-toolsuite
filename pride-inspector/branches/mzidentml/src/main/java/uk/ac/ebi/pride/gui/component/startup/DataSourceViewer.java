@@ -8,7 +8,9 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
+import uk.ac.ebi.pride.gui.component.dialog.SimpleMsDialog;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
+import uk.ac.ebi.pride.gui.desktop.*;
 import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 
@@ -90,6 +92,12 @@ public class DataSourceViewer extends JPanel {
         TableColumn sourceCol = sourceTable.getColumn(TableHeader.DATA_SOURCE_COLUMN.getHeader());
         sourceCol.setCellRenderer(new DataAccessTableCellRenderer());
 
+        // set renderer for mzidentml column
+        TableColumn mzidentmlCol = sourceTable.getColumn(TableHeader.DATA_MZIDENT_COLUMN.getHeader());
+        mzidentmlCol.setCellRenderer(new MzidentMLMSCellRenderer());
+
+        mzidentmlCol.setMaxWidth(20);
+
         // set renderer for close data source column
         TableColumn closeCol = sourceTable.getColumn(TableHeader.CLOSE_COLUMN.getHeader());
         closeCol.setCellRenderer(new CloseDataSourceCellRenderer());
@@ -99,6 +107,10 @@ public class DataSourceViewer extends JPanel {
 
         // listen to any close data source event
         sourceTable.addMouseListener(new CloseDataSourceMouseListener());
+
+        // listen to any Open mzidentml MS files
+        sourceTable.addMouseListener(new MzidentMLOpenMSMouseListener());
+
 
         // listen to any row selection
         sourceTable.getSelectionModel().addListSelectionListener(new DataAccessSelectionListener());
@@ -173,6 +185,7 @@ public class DataSourceViewer extends JPanel {
      */
     public enum TableHeader {
         DATA_SOURCE_COLUMN("Data Source", "Data Source"),
+        DATA_MZIDENT_COLUMN("Open MS Files", "Open Ms Files for mzIdentMl"),
         CLOSE_COLUMN("Close", "Close Data Source");
 
         private final String header;
@@ -301,7 +314,7 @@ public class DataSourceViewer extends JPanel {
             // get the icon depending on the type of the data access controller
             ImageIcon icon = null;
             DataAccessController.Type type = controller.getType();
-            if (DataAccessController.Type.XML_FILE.equals(type)) {
+            if (DataAccessController.Type.XML_FILE.equals(type) || DataAccessController.Type.MZIDENTML.equals(type)) {
                 icon = GUIUtilities.loadImageIcon(context.getProperty(categories.isEmpty() ? "file.source.loading.small.icon" : "file.source.small.icon"));
             } else if (DataAccessController.Type.DATABASE.equals(type)) {
                 icon = GUIUtilities.loadImageIcon(context.getProperty(categories.isEmpty() ? "database.source.loading.small.icon" : "database.source.small.icon"));
@@ -364,6 +377,44 @@ public class DataSourceViewer extends JPanel {
     }
 
     /**
+     * Draw a red cross for close the data access controller
+     * */
+     private class MzidentMLMSCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                       boolean hasFocus, int row, int column) {
+            // get the original component
+            JLabel cell = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            DataAccessController controller = context.getControllers().get(row);
+
+            Collection<DataAccessController.ContentCategory> categories = controller.getContentCategories();
+
+            // get the icon depending on the type of the data access controller
+
+            DataAccessController.Type type = controller.getType();
+
+            if (DataAccessController.Type.MZIDENTML.equals(type) && !categories.isEmpty()) {
+                // get the icon
+
+                Icon icon = GUIUtilities.loadImageIcon(context.getProperty("open.mzidentml.ms.icon.small"));
+
+                cell.setIcon(icon);
+                // overwrite the background changing behavior when selected
+                cell.setBackground(Color.white);
+                // set the component to none focusable
+                cell.setFocusable(false);
+            }else{
+                cell.setBackground(Color.white);
+                cell.setIcon(null);
+            }
+            return cell;
+        }
+    }
+
+
+
+    /**
      * DataAccessSelectionListener is triggered when a selection has been made on a data source
      */
     private class DataAccessSelectionListener implements ListSelectionListener {
@@ -405,6 +456,32 @@ public class DataSourceViewer extends JPanel {
                 if (row >= 0 && row < controllers.size()) {
                     DataAccessController controller = controllers.get(row);
                     context.removeDataAccessController(controller, true);
+                }
+            }
+        }
+    }
+
+    /**
+     * CloseDataSourceMouseListener  is triggered when a close action has been made on a data source
+     **/
+    private class MzidentMLOpenMSMouseListener extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            // get row number and column number
+            int row = sourceTable.rowAtPoint(new Point(e.getX(), e.getY()));
+            int col = sourceTable.columnAtPoint(new Point(e.getX(), e.getY()));
+            // get column name
+            String colName = sourceTable.getColumnName(col);
+            if (colName.equals(TableHeader.DATA_MZIDENT_COLUMN.getHeader())) {
+                // remove the data access controller from data access monitor
+                java.util.List<DataAccessController> controllers = context.getControllers();
+                if (row >= 0 && row < controllers.size()) {
+                    DataAccessController controller = controllers.get(row);
+                    if(controller.getType().equals(DataAccessController.Type.MZIDENTML)){
+                        Dialog dialog = new SimpleMsDialog(uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getMainComponent(),controller);
+                        dialog.setVisible(true);
+                    }
+
                 }
             }
         }

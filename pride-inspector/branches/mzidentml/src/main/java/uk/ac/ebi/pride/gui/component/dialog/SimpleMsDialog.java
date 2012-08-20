@@ -62,6 +62,13 @@ public class SimpleMsDialog extends JDialog {
         customInitComponents();
     }
 
+    public SimpleMsDialog(Dialog owner) {
+        super(owner);
+        initComponents();
+        context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
+    }
+
+
     /**
      * This method initialize the custom components in the MsDialog
      *
@@ -91,47 +98,7 @@ public class SimpleMsDialog extends JDialog {
             }
         });
 
-        Integer totalSpectras = 0;
-        Integer noMiss        = 0;
-        try {
-            totalSpectras = ((MzIdentMLControllerImpl) controller).getNumberOfSpectra();
-        } catch (DataAccessException e) {
-            logger.error("Failed to check the file type", e);
-        }
-
-        if(controller != null){
-            try{
-                Map<SpectraData, DataAccessController> spectraDataFileMap = ((MzIdentMLControllerImpl) controller).getSpectraDataMSFiles();
-                if(spectraDataFileMap != null && spectraDataFileMap.size()>0){
-                    for(SpectraData spectraData: spectraDataFileMap.keySet()){
-                        Object[] data = new Object[4];
-                        data[0] = spectraData.getId() + " " + ((spectraData.getName() == null)? spectraData.getLocation(): spectraData.getName());
-                        data[1] = ((MzIdentMLControllerImpl)controller).getNumberOfSpectrabySpectraData(spectraData);
-                        noMiss =+ (Integer)data[1];
-                        data[2] = (spectraDataFileMap.get(spectraData) == null)? "" : spectraDataFileMap.get(spectraData).getSource();
-                        data[3] = GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small"));
-                        ((DefaultTableModel) table1.getModel()).addRow(data);
-                    }
-                }
-
-                String message = getMessage(spectraDataFileMap, totalSpectras + noMiss);
-                SummaryReportMessage.Type type = getMessageType(spectraDataFileMap);
-
-
-                RoundCornerLabel label= new RoundCornerLabel(getIcon(type), message, getBackgroundPaint(type), getBorderPaint(type));
-                label.setPreferredSize(new Dimension(50, DEFAULT_HEIGHT));
-                panelMessage.add(label);
-            } catch (DataAccessException e1) {
-                logger.error("Failed to check the file type", e1);
-            }
-
-        }
-    }
-
-    public SimpleMsDialog(Dialog owner) {
-        super(owner);
-        initComponents();
-        context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
+        updateMSFileList(controller);
     }
 
     private void addNewMsFile(ActionEvent e) {
@@ -146,7 +113,7 @@ public class SimpleMsDialog extends JDialog {
                         Constants.DTA_EXT,
                         Constants.GZIPPED_FILE );
 
-        int result = ofd.showDialog(uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getMainComponent(), null);
+        int result = ofd.showDialog(this, null);
 
         java.util.List<File> filesToOpen = new ArrayList<File>();
 
@@ -158,16 +125,66 @@ public class SimpleMsDialog extends JDialog {
             // remember the path has visited
             context.setOpenFilePath(filePath.replace(selectedFile.getName(), ""));
         }
-
-        msFiles = filesToOpen;
-
-        assignMStoSpectraDataSet();
+        assignMStoSpectraDataSet(filesToOpen);
 
     }
 
-    private void assignMStoSpectraDataSet() {
-        //To change body of created methods use File | Settings | File Templates.
+    private void assignMStoSpectraDataSet(List<File> files) {
+        try {
+            ((MzIdentMLControllerImpl) controller).addMSController(files);
+        } catch (DataAccessException e1) {
+            logger.error("Failed to check the files as controllers", e1);
+        }
+        updateMSFileList(controller);
     }
+
+    private void updateMSFileList(DataAccessController controller) {
+        try {
+            Map<SpectraData, DataAccessController> spectraDataFileMap = ((MzIdentMLControllerImpl) controller).getSpectraDataMSFiles();
+            clearTalbeMsFiles();
+            int totalSpectras   = 0;
+            int noMissSpectrums = 0;
+            for(SpectraData spectraData: spectraDataFileMap.keySet()){
+                String msFileName = (spectraDataFileMap.get(spectraData) == null)? "" : ((File) spectraDataFileMap.get(spectraData).getSource()).getAbsolutePath();
+                int countFile = fillTableRow(spectraData,msFileName);
+                totalSpectras =+ countFile;
+                noMissSpectrums =+ ((spectraDataFileMap.get(spectraData) == null)?0:countFile);
+            }
+            String message = getMessage(spectraDataFileMap, totalSpectras - noMissSpectrums);
+            SummaryReportMessage.Type type = getMessageType(spectraDataFileMap,totalSpectras-noMissSpectrums);
+            updateMessage(type,message);
+        } catch (DataAccessException e) {
+            logger.error("Failed to check the file type", e);
+        }
+
+    }
+
+    private void clearTalbeMsFiles() {
+        DefaultTableModel model = (DefaultTableModel) table1.getModel();
+        for( int i = model.getRowCount() - 1; i >= 0; i-- ) {
+            model.removeRow(i);
+        }
+    }
+
+    private int fillTableRow(SpectraData spectraData, String msFileName){
+        Object[] data = new Object[4];
+        data[0] = spectraData.getId() + " " + ((spectraData.getName() == null)? "" : ": " + spectraData.getName());
+        data[1] = ((MzIdentMLControllerImpl)controller).getNumberOfSpectrabySpectraData(spectraData);
+        data[2] = msFileName;
+        data[3] = GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small"));
+        ((DefaultTableModel) table1.getModel()).addRow(data);
+        return (Integer)data[1];
+    }
+
+    private void updateMessage(SummaryReportMessage.Type type, String message){
+        if(panelMessage.getComponentCount() > 0) panelMessage.removeAll();
+        RoundCornerLabel label = new RoundCornerLabel(getIcon(type), message, getBackgroundPaint(type), getBorderPaint(type));
+        label.setPreferredSize(new Dimension(50, DEFAULT_HEIGHT));
+        panelMessage.add(label);
+        panelMessage.revalidate();
+    }
+
+
 
     private void cancelbuttonActionPerformed(ActionEvent e) {
         dispose();
@@ -345,11 +362,15 @@ public class SimpleMsDialog extends JDialog {
          }
      }
 
-     private SummaryReportMessage.Type getMessageType(Map<SpectraData, DataAccessController> spectraDataMap){
+     private SummaryReportMessage.Type getMessageType(Map<SpectraData, DataAccessController> spectraDataMap, int total){
          if(spectraDataMap == null || spectraDataMap.size() < 1){
              return SummaryReportMessage.Type.ERROR;
+         }else if(total > 0){
+             return SummaryReportMessage.Type.WARNING;
+         }else if(total == 0){
+             return SummaryReportMessage.Type.SUCCESS;
          }
-         return SummaryReportMessage.Type.WARNING;
+         return SummaryReportMessage.Type.INFO;
      }
 
     private String getMessage(Map<SpectraData, DataAccessController> spectraDataMap, Integer spectrumCount){

@@ -261,7 +261,6 @@ public class DataAccessUtilities {
      */
     public static int getNumberOfUniquePeptides(Identification ident) {
         List<PeptideSequence> peptides = ident.getPeptidesSequence();
-        System.out.println(ident.getId());
         int cnt = 0;
         if (peptides == null) {
             return cnt;

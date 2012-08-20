@@ -50,7 +50,6 @@ public class MzIdentMlMSControllerImplTest {
         mzIdentMlController.addMSController(fileList);
         Spectrum spectrum = mzIdentMlController.getSpectrumById("SII_67_1");
         assertTrue("There should be 60 peaks", spectrum.getIntensityBinaryDataArray().getDoubleArray().length == 60);
-        System.out.println();
     }
 
 }

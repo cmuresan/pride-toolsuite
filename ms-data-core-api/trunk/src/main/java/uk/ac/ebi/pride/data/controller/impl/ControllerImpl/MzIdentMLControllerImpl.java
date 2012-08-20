@@ -121,7 +121,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         // set data source description
         this.setName(file.getName());
         // set the type
-        this.setType(Type.XML_FILE);
+        this.setType(Type.MZIDENTML);
         // set the content categories
         this.setContentCategories(
                 ContentCategory.PROTEIN,
@@ -751,5 +751,40 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     private boolean isSpectraDataSupported(SpectraData spectraData) {
         return (MzIdentMLUtils.getSpectraDataIdFormat(spectraData) == Constants.SpecIdFormat.NONE ||
                 MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.NONE)?false:true;
+    }
+
+    public Map<SpectraData, DataAccessController> getSpectraDataMSFiles() throws DataAccessException {
+        spectraDataMap = getSpectraDataMap();
+        Map<SpectraData, DataAccessController> mapResult = new HashMap<SpectraData, DataAccessController>(spectraDataMap.size());
+
+        for(Comparable id: spectraDataMap.keySet()){
+            if(msDataAccessControllers !=null && msDataAccessControllers.containsKey(id)){
+                mapResult.put(spectraDataMap.get(id),msDataAccessControllers.get(id));
+            }else{
+                mapResult.put(spectraDataMap.get(id),null);
+            }
+        }
+        return mapResult;
+    }
+
+    public Integer getNumberOfSpectrabySpectraData(SpectraData spectraData) {
+        Map<Comparable, List<Comparable>> spectraDataIdMap = (Map<Comparable, List<Comparable>>) getCache().get(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS);
+        return spectraDataIdMap.get(spectraData.getId()).size();
+    }
+
+    /**
+     * Get the number of spectra
+     * @return int the number of spectra
+     * @throws DataAccessException data access exception
+     * */
+
+    @Override
+    public int getNumberOfSpectra() throws DataAccessException {
+        Map<Comparable, List<Comparable>> spectraDataIdMap = (Map<Comparable, List<Comparable>>) getCache().get(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS);
+        int countSpectra = 0;
+        for(Comparable id: spectraDataIdMap.keySet()){
+            countSpectra =+ spectraDataIdMap.get(id).size();
+        }
+        return countSpectra;
     }
 }

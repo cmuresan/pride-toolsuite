@@ -54,7 +54,7 @@ public interface DataAccessController
      * DATABASE means connection to a database
      * XML_FILE means reading the data from a file.
      */
-    public enum Type { DATABASE, XML_FILE, PEAK_FILE }
+    public enum Type { DATABASE, XML_FILE, PEAK_FILE,MZIDENTML}
 
     /** ========================================= Description section ========================================= */
 

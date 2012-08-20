@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.task.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.access.EmptyDataAccessController;
@@ -108,7 +109,11 @@ public class OpenFileTask<D extends DataAccessController> extends TaskAdapter<Vo
             // create dummy
             EmptyDataAccessController dummy = new EmptyDataAccessController();
             dummy.setName(inputFile.getName());
-            dummy.setType(DataAccessController.Type.XML_FILE);
+            if(dataAccessControllerClass == MzIdentMLControllerImpl.class){
+                dummy.setType(DataAccessController.Type.MZIDENTML);
+            }else{
+                dummy.setType(DataAccessController.Type.XML_FILE);
+            }
             // add a closure hook
             this.addOwner(dummy);
             context.addDataAccessController(dummy);

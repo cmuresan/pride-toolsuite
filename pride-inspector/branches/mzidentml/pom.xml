@@ -33,8 +33,6 @@
             </roles>
             <timezone>0</timezone>
         </developer>
-
-
         <developer>
             <id>fabregat</id>
             <name>Antonio Fabregat</name>
@@ -45,7 +43,6 @@
             </roles>
             <timezone>0</timezone>
         </developer>
-
         <developer>
             <id>yperez</id>
             <name>Yasset Perez-Riverol</name>

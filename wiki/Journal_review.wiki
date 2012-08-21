@@ -2,11 +2,33 @@
 
 = Introduction =
 
-As an integrated desktop application for visualizinig and analyzing MS dataset, PRIDE Inspector was created to help data submitters, journal editors, and journal reviewers to visualize, browse and assess proteomics experimental data. Below we highlight some of the features facilitating the journal reviewing process.  
+As an integrated desktop application for visualizinig and analyzing MS dataset, PRIDE Inspector was created to help data submitters, journal editors, and journal reviewers to visualize, browse and assess proteomics experimental data. 
 
-= Details =
+We have been using PRIDE Inspector within the PRIDE team for the last few months in our own reviews of manuscripts and are convinced of its ability to make reviewing proteomics data easier. Below we highlight some of the features facilitating the journal reviewing process.  
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+= Journal Reviewing =
+
+As an example, we invite you to give it a try with data from Mike Dunn’s group, present in PRIDE (McManus et al., 2010, PMID: 20432482). The manuscript related information has been kept private on purpose to show the functionality of PRIDE Inspector. The process described here would be exactly the same for any potential reviewer.
+
+== Using the online version ==
+
+To launch PRIDE Inspector with direct access to the dataset mentioned above, you need to have Java Webstart installed.
+
+Please access [http://www.ebi.ac.uk/pride/jsp/pages/jnlp/jnlp.jsp?username=review02342&password=nsqNx4tt online version] then follow the instructions. 
+
+Please note that If you are using Google Chrome, you will need to double click the downloaded .jnlp file to launch PRIDE Inspector.
+ 
+If you don't have Java Web Start installed, you can install PRIDE Inspector locally. For detailed instructions please see below. 
+
+== Using the desktop version == 
+
+* Ensure you have a recent version of Java installed.
+*  Download the PRIDE Inspector application from:  http://code.google.com/p/pride-toolsuite/
+(See "Feature downloads" on the right block. The last version available will appear there).
+2- Once installed, go to that directory in your local computer and double click the corresponding version pride-inspector.jar file. The application will then start.
+3- In the PRIDE Inspector "Welcome" page click on "Private Download".
+4- A window will pop up. There you need to enter your username and password (it would be the same process for a reviewer account), and click on "Login".
+Please use as an example:
+Username : review02342 
+Password: nsqNx4tt
+5- The experiments that belong to that account will be listed there.

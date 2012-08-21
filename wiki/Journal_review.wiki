@@ -41,6 +41,13 @@ http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review
 The Summary Charts Tab provides a set of charts showing different representation of the data contained in the selected experiment. It offers reviewers a quick way of assess the overall quality of the experiment using:
 
   * *Peak Intensity Distribution Charge* : A histogram of ion intensity vs frequency for all MS2 spectra in the experiment.
+  * *Precursor Ion Charge Distribution* : Displays a bar chart of precursor ion charges.
+  * *Average MS/MS spectrum* : Displays the average MS/MS spectrum.
+  * *Distribution of Precursor Ion Masses* : Displays a frequency distribution of product ion m/z for different precursor ion charges.
+  * *Number of Peptides Identified per Protein* : Displays a bar chart with the number of peptides identified per protein.
+  * *Number of Peaks per Spectrum* : Displays a histogram of number of peaks per MS/MS spectrum.
+  * *Delta m/z* : Displays a relative frequency distribution of theoretical precursor ion mass - experimental precursor ion mass.
+  * *Number of Missed Tryptic Cleavages* : Displays the number of missed tryptic cleavages.
  
 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/summary_charts.png 

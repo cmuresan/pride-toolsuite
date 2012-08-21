@@ -2,8 +2,7 @@
 
 = Introduction =
 
-Add your content here.
-
+As an integrated desktop application for visualizinig and analyzing MS dataset, PRIDE Inspector was created to help data submitters, journal editors, and journal reviewers to visualize, browse and assess proteomics experimental data. Below we highlight some of the features facilitating the journal reviewing process.  
 
 = Details =
 

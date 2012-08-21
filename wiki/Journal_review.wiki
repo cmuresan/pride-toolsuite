@@ -30,12 +30,19 @@ If you don't have Java Web Start installed, you can install PRIDE Inspector loca
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/private_download.png
 
 == Quality assessment ==
-PRIDE Inspector offers three quick ways of assessing the overall quality of the experiment: *Experiment summary*, *Summary charts* and *Experiment overview* 
+PRIDE Inspector offers three quick ways of assessing the overall quality of the experiment: *Experiment Summary*, *Summary Charts* and *Experiment Overview* 
 
-=== Experiment summary ===
-The experiment summary panel is located on the bottom-left of the PRIDE Inspector, it offers a snapshot view of the experiment, and is the quickest way of spotting something wrong. It shows whether protein identifications, peptide identifications and spectra are present, also shows different types of post translational modifications present in the experiment (See screenshot below).
+=== Experiment Summary ===
+The Experiment Summary panel is located on the bottom-left of the PRIDE Inspector, it offers a snapshot view of the experiment, and is the quickest way of spotting something wrong. It shows whether protein identifications, peptide identifications and spectra are present, also shows different types of post translational modifications present in the experiment (See screenshot below).
 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/experiment_summary.png 
 
-=== Summary charts ===
-The summary charts panel is located 
+=== Summary Charts ===
+The Summary Charts Tab provides a set of charts showing different representation of the data contained in the selected experiment. It offers reviewers a quick way of assess the overall quality of the experiment using:
+
+  * *Peak Intensity Distribution Charge* : A histogram of ion intensity vs frequency for all MS2 spectra in the experiment.
+ 
+
+http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/summary_charts.png 
+
+=== Experiment Overview ===

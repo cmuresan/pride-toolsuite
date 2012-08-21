@@ -60,4 +60,20 @@ You can find out more on the overall information about the experiment, sample de
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/experiment_overview.png
 
 = Detailed quality assessment =
- 
+ For detailed quality assessment of a experiment, we recommend you use Protein Tab, Peptide Tab and Spectrum/Chromatogram Tab. Below is a short summary on each Tab's main functionality, for detailed guide, please refer to the help document embedded in the PRIDE Inspector.
+
+=== Protein Tab ===
+The Protein Tab provides a protein identification centric view. It displays all identified proteins, and for each protein identification, its related peptide spectrum matches are also displayed. (See screenshot below)
+
+http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/protein_tab.png
+
+=== Peptide Tab ===
+The Peptide Tab provides a peptide centric view. All identified peptides are displayed in this area, along with their post translational modifications and spectra. (See screenshot below)
+
+http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/protein_tab.png
+
+=== Spectrum/Chromatogram Tab ===
+The Spectrum/Chromatogram Tab provides a spectrum/chromatogram centric view. All spectra and chromatogram from the data source are displayed in this area. (See screenshot below)
+
+http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/spectrum_tab.png
+            

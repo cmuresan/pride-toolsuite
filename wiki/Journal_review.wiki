@@ -29,7 +29,7 @@ If you don't have Java Web Start installed, you can install PRIDE Inspector loca
 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/private_download.png
 
-== Quality assessment ==
+==  Quick quality assessment ==
 PRIDE Inspector offers three quick ways of assessing the overall quality of the experiment: *Experiment Summary*, *Summary Charts* and *Experiment Overview* 
 
 === Experiment Summary ===
@@ -53,3 +53,11 @@ The Summary Charts Tab provides a set of charts showing different representation
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/summary_charts.png 
 
 === Experiment Overview ===
+The Experiment Overview Tab provides a unified view on the metadata of different types of data sources. It is arranged in a series of three panels, each panel showing a specific type of metadata. The type of metadata is indicated by the panel's title. Each metadata panel can be viewed by clicking on the button at the top of the Experiment Overview Tab (See screenshot below).
+
+You can find out more on the overall information about the experiment, sample details, experiment protocol, MS instrument details and software used for data processing.  
+
+http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/experiment_overview.png
+
+=== Detailed quality assessment ===
+ 

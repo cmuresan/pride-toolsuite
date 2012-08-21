@@ -29,4 +29,5 @@ If you don't have Java Web Start installed, you can install PRIDE Inspector loca
   # A window will pop up. There you need to enter your username and password (it would be the same process for a reviewer account), and click on "Login". Please use as an example: Username : *review02342*  Password: *nsqNx4tt*
   # The experiments that belong to that account will be listed there.
 
-== Assess quality == 
+== Quality assessment ==
+PRIDE Inspector offers a few quick ways of assessing the quality of the experiment.  

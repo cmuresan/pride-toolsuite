@@ -30,8 +30,7 @@ If you don't have Java Web Start installed, you can install PRIDE Inspector loca
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/private_download.png
 
 == Quality assessment ==
-PRIDE Inspector offers three quick ways of assessing the overall quality of the experiment.  
-  * Experiment summary
-  * Quality charts
-  * Experiment overview
+PRIDE Inspector offers three quick ways of assessing the overall quality of the experiment: *Experiment summary*, *Summary charts* and *Experiment overview* 
 
+=== Experiment summary ===
+Experiment summary 

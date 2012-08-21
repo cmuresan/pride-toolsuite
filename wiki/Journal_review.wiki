@@ -14,7 +14,7 @@ As an example, we invite you to give it a try with data from Mike Dunn’s group
 
 To launch PRIDE Inspector with direct access to the dataset mentioned above, you need to have Java Webstart installed.
 
-Please access [http://www.ebi.ac.uk/pride/jsp/pages/jnlp/jnlp.jsp?username=review02342&password=nsqNx4tt online version] then follow the instructions. 
+Please access [http://www.ebi.ac.uk/pride/jsp/pages/jnlp/jnlp.jsp?username=review02342&password=nsqNx4tt online version] then follow the instructions. This option will automatically download and open the experiments and ready to be reviewed. 
 
 Please note that If you are using Google Chrome, you will need to double click the downloaded .jnlp file to launch PRIDE Inspector.
  
@@ -22,18 +22,18 @@ If you don't have Java Web Start installed, you can install PRIDE Inspector loca
 
 == Using the desktop version == 
 
-# Ensure you have a recent version of Java installed.
+  # Ensure you have a recent version of Java installed.
 
-#  Download the PRIDE Inspector application from:  http://code.google.com/p/pride-toolsuite/
+  #  Download the PRIDE Inspector application from:  http://code.google.com/p/pride-toolsuite/
 (See "Feature downloads" on the right block. The last version available will appear there).
 
-# Once installed, go to that directory in your local computer and double click the corresponding version pride-inspector.jar file. The application will then start.
+  # Once installed, go to that directory in your local computer and double click the corresponding version pride-inspector.jar file. The application will then start.
 
-# In the PRIDE Inspector "Welcome" page click on "Private Download".
+  # In the PRIDE Inspector "Welcome" page click on "Private Download".
 
-# A window will pop up. There you need to enter your username and password (it would be the same process for a reviewer account), and click on "Login".
+  # A window will pop up. There you need to enter your username and password (it would be the same process for a reviewer account), and click on "Login".
 Please use as an example:
 Username : review02342 
 Password: nsqNx4tt
 
-# The experiments that belong to that account will be listed there.
+  # The experiments that belong to that account will be listed there.

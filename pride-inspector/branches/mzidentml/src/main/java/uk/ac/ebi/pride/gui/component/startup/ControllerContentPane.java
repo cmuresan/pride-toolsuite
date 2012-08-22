@@ -450,4 +450,16 @@ public class ControllerContentPane extends DataAccessControllerPane {
     public boolean isChartTabEnabled() {
         return chartTabEnabled;
     }
+
+    public int indexOf(JComponent component){
+        return contentTabPane.indexOfComponent(component);
+    }
+
+    public void insertTab(String title, Icon icon, MzDataTabPane mzDataPane, String title1, int index) {
+        contentTabPane.insertTab(title,icon,mzDataPane,title1,index);
+    }
+
+    public void removeTab(int index){
+        contentTabPane.removeTabAt(index);
+    }
 }

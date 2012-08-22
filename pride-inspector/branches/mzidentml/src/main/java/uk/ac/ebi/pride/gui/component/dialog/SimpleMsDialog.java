@@ -4,7 +4,6 @@
 
 package uk.ac.ebi.pride.gui.component.dialog;
 
-import org.jdesktop.swingx.border.*;
 import uk.ac.ebi.pride.data.core.SpectraData;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
@@ -13,9 +12,9 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 
 import uk.ac.ebi.pride.gui.component.report.ReportList;
-import uk.ac.ebi.pride.gui.component.report.ReportListRenderer;
 import uk.ac.ebi.pride.gui.component.report.RoundCornerLabel;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
+import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.utils.Constants;
 
 import java.awt.*;
@@ -42,7 +41,7 @@ public class SimpleMsDialog extends JDialog {
 
     DataAccessController controller = null;
 
-    List<File> msFiles = null;
+    Map<SpectraData, File> msFileMap = null;
 
     private ReportList container;
 
@@ -98,7 +97,13 @@ public class SimpleMsDialog extends JDialog {
             }
         });
 
-        updateMSFileList(controller);
+        try {
+            msFileMap = ((MzIdentMLControllerImpl) controller).getSpectraDataMSFiles();
+
+        } catch (DataAccessException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        updateMSFileList(msFileMap);
     }
 
     private void addNewMsFile(ActionEvent e) {
@@ -125,27 +130,26 @@ public class SimpleMsDialog extends JDialog {
             // remember the path has visited
             context.setOpenFilePath(filePath.replace(selectedFile.getName(), ""));
         }
-        assignMStoSpectraDataSet(filesToOpen);
+        addMStoSpectraDataSet(filesToOpen);
 
     }
 
-    private void assignMStoSpectraDataSet(List<File> files) {
+    private void addMStoSpectraDataSet(List<File> files) {
         try {
-            ((MzIdentMLControllerImpl) controller).addMSController(files);
+            msFileMap = ((MzIdentMLControllerImpl) controller).checkMScontrollers(files);
         } catch (DataAccessException e1) {
             logger.error("Failed to check the files as controllers", e1);
         }
-        updateMSFileList(controller);
+        updateMSFileList(msFileMap);
     }
 
-    private void updateMSFileList(DataAccessController controller) {
-        try {
-            Map<SpectraData, DataAccessController> spectraDataFileMap = ((MzIdentMLControllerImpl) controller).getSpectraDataMSFiles();
+    private void updateMSFileList(Map<SpectraData, File> spectraDataFileMap) {
+        if(spectraDataFileMap != null){
             clearTalbeMsFiles();
             int totalSpectras   = 0;
             int noMissSpectrums = 0;
             for(SpectraData spectraData: spectraDataFileMap.keySet()){
-                String msFileName = (spectraDataFileMap.get(spectraData) == null)? "" : ((File) spectraDataFileMap.get(spectraData).getSource()).getAbsolutePath();
+                String msFileName = (spectraDataFileMap.get(spectraData) == null)? "" : spectraDataFileMap.get(spectraData).getAbsolutePath();
                 int countFile = fillTableRow(spectraData,msFileName);
                 totalSpectras =+ countFile;
                 noMissSpectrums =+ ((spectraDataFileMap.get(spectraData) == null)?0:countFile);
@@ -153,10 +157,8 @@ public class SimpleMsDialog extends JDialog {
             String message = getMessage(spectraDataFileMap, totalSpectras - noMissSpectrums);
             SummaryReportMessage.Type type = getMessageType(spectraDataFileMap,totalSpectras-noMissSpectrums);
             updateMessage(type,message);
-        } catch (DataAccessException e) {
-            logger.error("Failed to check the file type", e);
+            updateButtonStatus(type);
         }
-
     }
 
     private void clearTalbeMsFiles() {
@@ -184,9 +186,28 @@ public class SimpleMsDialog extends JDialog {
         panelMessage.revalidate();
     }
 
-
+    private void updateButtonStatus(SummaryReportMessage.Type type){
+        if(type == SummaryReportMessage.Type.ERROR){
+            addButton.setEnabled(false);
+            setButton.setEnabled(false);
+        }else if(type == SummaryReportMessage.Type.SUCCESS){
+            addButton.setEnabled(false);
+        }
+    }
 
     private void cancelbuttonActionPerformed(ActionEvent e) {
+        dispose();
+    }
+
+    private void setMSFilesActionPerformed(ActionEvent e) {
+        try {
+            ((MzIdentMLControllerImpl)controller).addMSController(msFileMap);
+            ControllerContentPane contentPane = (ControllerContentPane) context.getDataContentPane(controller);
+            contentPane.getMzDataTab().setEnabled(true);
+            contentPane.populate();
+        } catch (DataAccessException e1) {
+            logger.error("Failed to check the files as controllers", e1);
+        }
         dispose();
     }
 
@@ -197,8 +218,8 @@ public class SimpleMsDialog extends JDialog {
         table1 = new JTable();
         addButton = new JButton();
         separator1 = new JSeparator();
-        button1 = new JButton();
-        button2 = new JButton();
+        setButton = new JButton();
+        cancelButton = new JButton();
         panelMessage = new JPanel();
 
         //======== this ========
@@ -236,12 +257,18 @@ public class SimpleMsDialog extends JDialog {
             }
         });
 
-        //---- button1 ----
-        button1.setText("Set");
+        //---- setButton ----
+        setButton.setText("Set");
+        setButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setMSFilesActionPerformed(e);
+            }
+        });
 
-        //---- button2 ----
-        button2.setText("Cancel");
-        button2.addActionListener(new ActionListener() {
+        //---- cancelButton ----
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cancelbuttonActionPerformed(e);
@@ -267,9 +294,9 @@ public class SimpleMsDialog extends JDialog {
                             .addComponent(panelMessage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
                             .addGap(0, 354, Short.MAX_VALUE)
-                            .addComponent(button2)
+                            .addComponent(cancelButton)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(button1, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
+                            .addComponent(setButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
                         .addComponent(separator1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE))
                     .addContainerGap())
         );
@@ -286,8 +313,8 @@ public class SimpleMsDialog extends JDialog {
                     .addComponent(separator1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(button1)
-                        .addComponent(button2))
+                        .addComponent(setButton)
+                        .addComponent(cancelButton))
                     .addGap(13, 13, 13))
         );
         pack();
@@ -362,7 +389,7 @@ public class SimpleMsDialog extends JDialog {
          }
      }
 
-     private SummaryReportMessage.Type getMessageType(Map<SpectraData, DataAccessController> spectraDataMap, int total){
+     private SummaryReportMessage.Type getMessageType(Map<SpectraData, File> spectraDataMap, int total){
          if(spectraDataMap == null || spectraDataMap.size() < 1){
              return SummaryReportMessage.Type.ERROR;
          }else if(total > 0){
@@ -373,7 +400,7 @@ public class SimpleMsDialog extends JDialog {
          return SummaryReportMessage.Type.INFO;
      }
 
-    private String getMessage(Map<SpectraData, DataAccessController> spectraDataMap, Integer spectrumCount){
+    private String getMessage(Map<SpectraData, File> spectraDataMap, Integer spectrumCount){
         if(spectraDataMap == null || spectraDataMap.size() < 1){
             return SimpleMsDialog.ERROR_MESSAGE;
         }else if(spectrumCount == 0){
@@ -393,8 +420,8 @@ public class SimpleMsDialog extends JDialog {
     private JTable table1;
     private JButton addButton;
     private JSeparator separator1;
-    private JButton button1;
-    private JButton button2;
+    private JButton setButton;
+    private JButton cancelButton;
     private JPanel panelMessage;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

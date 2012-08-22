@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerIm
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 
+import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.report.ReportList;
 import uk.ac.ebi.pride.gui.component.report.RoundCornerLabel;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
@@ -203,7 +204,15 @@ public class SimpleMsDialog extends JDialog {
         try {
             ((MzIdentMLControllerImpl)controller).addMSController(msFileMap);
             ControllerContentPane contentPane = (ControllerContentPane) context.getDataContentPane(controller);
-            contentPane.getMzDataTab().setEnabled(true);
+            MzDataTabPane mzDataPane = contentPane.getMzDataTab();
+            int index = contentPane.indexOf(mzDataPane);
+            mzDataPane = new MzDataTabPane(controller, contentPane);
+            contentPane.removeTab(index);
+            contentPane.insertTab(mzDataPane.getTitle(), mzDataPane.getIcon(), mzDataPane, mzDataPane.getTitle(), index);
+            mzDataPane.populate();
+
+
+
             contentPane.populate();
         } catch (DataAccessException e1) {
             logger.error("Failed to check the files as controllers", e1);

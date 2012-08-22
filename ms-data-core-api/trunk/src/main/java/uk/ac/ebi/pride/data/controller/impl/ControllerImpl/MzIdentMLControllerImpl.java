@@ -128,7 +128,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 ContentCategory.PEPTIDE,
                 ContentCategory.SAMPLE,
                 ContentCategory.SOFTWARE,
-                ContentCategory.PROTEIN_GROUPS
+                ContentCategory.PROTEIN_GROUPS,
+                ContentCategory.SPECTRUM
         );
         // set cache builder
         setCacheBuilder(new MzIdentMLCacheBuilder(this));
@@ -714,24 +715,66 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     }
 
     public void addMSController(List<File> dataAccessControllerFiles) throws DataAccessException {
+        Map<SpectraData, File> spectraDataFileMap = checkMScontrollers(dataAccessControllerFiles);
+        if(msDataAccessControllers == null) msDataAccessControllers = new HashMap<Comparable, DataAccessController>();
+        if(spectraDataFileMap != null){
+            for(SpectraData spectraData: spectraDataFileMap.keySet()){
+                msDataAccessControllers.put(spectraData.getId(), new PeakControllerImpl(spectraDataFileMap.get(spectraData)));
+            }
+            this.setContentCategories(
+                    ContentCategory.PROTEIN,
+                    ContentCategory.PEPTIDE,
+                    ContentCategory.SAMPLE,
+                    ContentCategory.SOFTWARE,
+                    ContentCategory.PROTEIN_GROUPS,
+                    ContentCategory.SPECTRUM
+            );
+            //Todo: Other controller more than mgf
+
+        }
+    }
+
+    public void addMSController(Map<SpectraData, File> spectraDataFileMap) throws DataAccessException {
+
+        Map<SpectraData, File> spectraDataControllerMap = getSpectraDataMSFiles();
+
+        if(msDataAccessControllers == null) msDataAccessControllers = new HashMap<Comparable, DataAccessController>();
+        for(SpectraData spectraData: spectraDataControllerMap.keySet()){
+            for(SpectraData spectraDataFile: spectraDataFileMap.keySet()){
+                if(spectraDataControllerMap.get(spectraData) == null &&
+                        spectraData.getId().compareTo(spectraDataFile.getId()) == 0){
+                    msDataAccessControllers.put(spectraData.getId(), new PeakControllerImpl(spectraDataFileMap.get(spectraDataFile)));
+                    //Todo: Need to check if changes
+
+                }
+            }
+
+        }
+    }
+
+    public Map<SpectraData,File> checkMScontrollers(List<File> dataAccessControllerFiles) throws DataAccessException {
+
         if(spectraDataMap == null){
             spectraDataMap = getSpectraDataMap();
         }
-        if(msDataAccessControllers == null) msDataAccessControllers = new HashMap<Comparable, DataAccessController>();
+
+        Map<SpectraData, File> spectraFileMap = null;
+
         for(File file: dataAccessControllerFiles){
             for(Comparable id: spectraDataMap.keySet()){
                 SpectraData spectraData = spectraDataMap.get(id);
                 if(spectraData.getLocation().indexOf(file.getName()) > 0){
-                    msDataAccessControllers.put(id, new PeakControllerImpl(file));
-                    spectrums = true;
-                    //Todo: Other controller more than mgf
+                    spectraFileMap = (spectraFileMap == null)? new HashMap<SpectraData, File>():spectraFileMap;
+                    spectraFileMap.put(spectraData,file);
                 }
             }
         }
+        return spectraFileMap;
     }
 
     private Map<Comparable, SpectraData> getSpectraDataMap() throws DataAccessException {
         Map<Comparable, List<Comparable>> spectraDataIdMap = (Map<Comparable, List<Comparable>>) getCache().get(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS);
+
         Set<Comparable> spectraIds = spectraDataIdMap.keySet();
         Map<Comparable, SpectraData> spectraDataMapResult = new HashMap<Comparable, SpectraData>(spectraDataIdMap.size());
         try {
@@ -753,7 +796,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.NONE)?false:true;
     }
 
-    public Map<SpectraData, DataAccessController> getSpectraDataMSFiles() throws DataAccessException {
+    public Map<SpectraData, DataAccessController> getSpectraDataMSControllers() throws DataAccessException {
         spectraDataMap = getSpectraDataMap();
         Map<SpectraData, DataAccessController> mapResult = new HashMap<SpectraData, DataAccessController>(spectraDataMap.size());
 
@@ -765,6 +808,16 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             }
         }
         return mapResult;
+    }
+
+    public Map<SpectraData, File> getSpectraDataMSFiles() throws DataAccessException {
+        Map<SpectraData, DataAccessController> spectraDataControllerMAp = getSpectraDataMSControllers();
+        Map<SpectraData, File> spectraDataFileMap = new HashMap<SpectraData, File>(spectraDataControllerMAp.size());
+        for(SpectraData spectraData: spectraDataControllerMAp.keySet()){
+            DataAccessController controller = spectraDataControllerMAp.get(spectraData);
+            spectraDataFileMap.put(spectraData,(controller == null)?null:(File)controller.getSource());
+        }
+        return spectraDataFileMap;
     }
 
     public Integer getNumberOfSpectrabySpectraData(SpectraData spectraData) {

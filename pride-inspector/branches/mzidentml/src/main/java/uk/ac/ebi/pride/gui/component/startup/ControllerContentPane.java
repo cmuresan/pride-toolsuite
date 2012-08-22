@@ -102,12 +102,15 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
 
             if (!categories.isEmpty()) {
+
                 if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)
                         || categories.contains(DataAccessController.ContentCategory.CHROMATOGRAM)) {
+
                     boolean hasSpectrum = controller.hasSpectrum();
                     boolean hasChromatogram = controller.hasChromatogram();
 
                     contentTabPane.setEnabledAt(mzDataTabIndex, hasSpectrum || hasChromatogram);
+
                     mzDataTabEnabled = hasSpectrum || hasChromatogram;
 
                     // check spectrum

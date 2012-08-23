@@ -77,11 +77,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     private Map<Comparable, SpectraData> spectraDataMap = null;
 
 
-    /**
-     * If the file have spectrum information
-     */
-    private boolean spectrums = false;
-
   /**
      * The constructor used by Default the CACHE_AND_SOURCE mode, it
      * means retrieve information from cache first,
@@ -521,7 +516,14 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      */
     @Override
     public boolean hasSpectrum() throws DataAccessException {
-        return spectrums;
+        if(msDataAccessControllers != null){
+            for(Comparable id: msDataAccessControllers.keySet()){
+                if(msDataAccessControllers.get(id) != null){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -567,7 +569,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                     // store precursor charge and m/z
                     for (Peptide peptide : ident.getPeptides()) {
                         getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(id, peptide.getSpectrumIdentification().getId()), peptide);
-                        Spectrum spectrum = peptide.getSpectrum();
+                        Spectrum spectrum = null;
+                        if(hasSpectrum()){
+                            spectrum = getSpectrumById(peptide.getSpectrumIdentification().getId());
+                            spectrum.setPeptide(peptide);
+                            peptide.setSpectrum(spectrum);
+                        }
                         if (spectrum != null) {
                             getCache().store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
                             getCache().store(CacheCategory.PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
@@ -594,7 +601,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     @Override
     public Peptide getPeptideByIndex(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
         Peptide peptide = super.getPeptideByIndex(identId, index, useCache);
-        if (peptide == null) {
+        if (peptide == null || (peptide.getSpectrum() == null && hasSpectrum())) {
             logger.debug("Get new peptide from file: {}", index);
             Identification ident = null;
             ident = getIdentificationById(identId);
@@ -695,7 +702,14 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         /** To store in cache the Spectrum files, an Id was constructed using the spectrum ID and the
          *  id of the File.
          **/
-        Comparable spectrumId = spectrumIdArray[0] + "!" + spectrumIdArray[1];
+        Comparable spectrumId = null;
+        if(spectrumIdArray != null){
+            spectrumId = spectrumIdArray[0] + "!" + spectrumIdArray[1];
+        }else{
+            spectrumId = id;
+            spectrumIdArray = ((String)spectrumId).split("!");
+        }
+
         Spectrum spectrum = super.getSpectrumById(spectrumId, useCache);
         if (spectrum == null && id != null) {
             logger.debug("Get new spectrum from file: {}", id);
@@ -712,6 +726,21 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             }
         }
         return spectrum;
+    }
+
+    @Override
+    public Collection<Comparable> getSpectrumIds() throws DataAccessException {
+        Collection<Comparable> spectrumIds = super.getSpectrumIds();
+        if(spectrumIds.size() == 0 && hasSpectrum() && msDataAccessControllers != null){
+            spectrumIds = new ArrayList<Comparable>();
+            for(Comparable id: msDataAccessControllers.keySet()){
+                if(msDataAccessControllers.get(id) != null)
+                    for(Comparable idSpectrum: msDataAccessControllers.get(id).getSpectrumIds()){
+                        spectrumIds.add(idSpectrum + "!" + id);
+                    }
+            }
+        }
+        return spectrumIds;
     }
 
     public void addMSController(List<File> dataAccessControllerFiles) throws DataAccessException {

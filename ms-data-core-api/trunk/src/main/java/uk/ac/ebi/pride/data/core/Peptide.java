@@ -46,6 +46,10 @@ public class Peptide {
         return this.getSpectrumIdentification().getSpectrum();
     }
 
+    public void setSpectrum(Spectrum spectrum){
+        this.getSpectrumIdentification().setSpectrum(spectrum);
+    }
+
     public List<PeptideEvidence> getPeptideEvidenceList() {
         return this.getSpectrumIdentification().getPeptideEvidenceList();
     }

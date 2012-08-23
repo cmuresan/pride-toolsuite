@@ -79,17 +79,20 @@ public class FragmentIon extends ParamGroup {
             String value     = cvParam.getValue();
 
             if (CvTermReference.PRODUCT_ION_MZ.getAccession().equals(accession)
-                    || CvTermReference.PRODUCT_ION_MZ_PLGS.getAccession().equals(accession)) {
+                    || CvTermReference.PRODUCT_ION_MZ_PLGS.getAccession().equals(accession)
+                    || CvTermReference.MS_PRODUCT_ION_MZ.getAccession().equals(accession)) {
                 mz = NumberUtilities.isNumber(value)
                      ? Double.parseDouble(value)
                      : mz;
             } else if (CvTermReference.PRODUCT_ION_INTENSITY.getAccession().equals(accession)
-                       || CvTermReference.PRODUCT_ION_INTENSITY_PLGS.getAccession().equals(accession)) {
+                       || CvTermReference.PRODUCT_ION_INTENSITY_PLGS.getAccession().equals(accession)
+                       || CvTermReference.MS_PRODUCT_ION_INTENSITY.getAccession().equals(accession)) {
                 intensity = NumberUtilities.isNumber(value)
                             ? Double.parseDouble(value)
                             : intensity;
             } else if (CvTermReference.PRODUCT_ION_MASS_ERROR.getAccession().equals(accession)
-                       || CvTermReference.PRODUCT_ION_MASS_ERROR_PLGS.getAccession().equals(accession)) {
+                       || CvTermReference.PRODUCT_ION_MASS_ERROR_PLGS.getAccession().equals(accession)
+                       || CvTermReference.MS_PRODUCT_ION_MASS_ERROR.getAccession().equals(accession)) {
                 massError = NumberUtilities.isNumber(value)
                             ? Double.parseDouble(value)
                             : massError;

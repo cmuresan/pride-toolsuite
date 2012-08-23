@@ -63,7 +63,7 @@ public class DownloadPxSubmissionTask extends AbstractConnectPrideTask {
                     File output = new File(folder.getAbsolutePath() + File.separator + submissionEntry.getFileName());
 
                     // download submission file
-                    downloadFile(url, output, submissionEntry.getSize());
+                    downloadFile(url, output, submissionEntry.getSize() * 1024 * 1024);
 
                     // open file
                     if (toOpenFile) {

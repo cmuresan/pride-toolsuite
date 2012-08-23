@@ -52,11 +52,12 @@ public class PxDownloadPane extends JPanel implements ActionListener,TaskListene
         context = (PrideInspectorContext)uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
 
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.add(createLoginPane());
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(createLoginPane(), BorderLayout.NORTH);
 
         selectionPanePride = new PxDownloadSelectionPane(parent, true);
-        mainPanel.add(selectionPanePride);
+        selectionPanePride.setPreferredSize(new Dimension(720, 445));
+        mainPanel.add(selectionPanePride, BorderLayout.CENTER);
 
         mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         this.add(mainPanel);

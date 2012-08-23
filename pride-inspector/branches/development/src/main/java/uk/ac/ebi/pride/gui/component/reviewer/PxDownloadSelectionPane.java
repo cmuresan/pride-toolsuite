@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Displays a list of files to be downloaded for ProteomeXchange submissions, also allows user to select which files to be downloaded.
@@ -68,7 +69,6 @@ public class PxDownloadSelectionPane extends JPanel
         this.toDispose = toDispose;
         this.currentUserName = username;
         this.currentPassWord = password;
-//        this.context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
 
         setupMainPane();
     }
@@ -102,14 +102,7 @@ public class PxDownloadSelectionPane extends JPanel
         this.setLayout(new BorderLayout());
 
         // create download table
-        downloadTable = new JXTreeTable();
-        downloadTableModel = new PxSubmissionTableModel();
-        downloadTableModel.addTreeModelListener(this);
-        downloadTable.setTreeTableModel(downloadTableModel);
-        downloadTable.setColumnControlVisible(true);
-        downloadTable.setFillsViewportHeight(true);
-        downloadTable.setCellEditor(new DefaultCellEditor(new JCheckBox()));
-
+        createTable();
         JScrollPane scrollPane = new JScrollPane(downloadTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.add(scrollPane, BorderLayout.CENTER);
 
@@ -157,6 +150,17 @@ public class PxDownloadSelectionPane extends JPanel
         this.add(container, BorderLayout.SOUTH);
     }
 
+    private void createTable() {
+        downloadTable = new JXTreeTable();
+        downloadTableModel = new PxSubmissionTableModel();
+        downloadTableModel.addTreeModelListener(this);
+        downloadTable.setTreeTableModel(downloadTableModel);
+        downloadTable.setColumnControlVisible(true);
+        downloadTable.setFillsViewportHeight(true);
+        downloadTable.setCellEditor(new DefaultCellEditor(new JCheckBox()));
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String evtCmd = e.getActionCommand();
@@ -169,9 +173,6 @@ public class PxDownloadSelectionPane extends JPanel
             selectionButtonPressed(false);
         } else if (DOWNLOAD_BUTTON.equals(evtCmd)) {
             downloadButtonPressed();
-            if (toDispose) {
-                parent.setVisible(false);
-            }
         }
     }
 
@@ -181,11 +182,16 @@ public class PxDownloadSelectionPane extends JPanel
         int cnt = downloadTableModel.getChildCount(root);
         if (cnt > 0) {
             for (int i = 0; i < cnt; i++) {
-                Object child = downloadTableModel.getChild(root, i);
-                downloadTableModel.setValueAt(downloadable, child, downloadColumnIndex);
-                int childCnt = downloadTableModel.getChildCount(child);
+                Object parent = downloadTableModel.getChild(root, i);
+                downloadTableModel.setValueAt(downloadable, parent, downloadColumnIndex);
+                int childCnt = downloadTableModel.getChildCount(parent);
                 for (int j = 0; j < childCnt; j++) {
-                    downloadTableModel.setValueAt(downloadable, downloadTableModel.getChild(child, j), downloadColumnIndex);
+                    Object child = downloadTableModel.getChild(parent, j);
+                    downloadTableModel.setValueAt(downloadable, child, downloadColumnIndex);
+                    int nestedChildCnt = downloadTableModel.getChildCount(child);
+                    for (int k = 0; k < nestedChildCnt; k++) {
+                        downloadTableModel.setValueAt(downloadable, downloadTableModel.getChild(child, k), downloadColumnIndex);
+                    }
                 }
             }
         }
@@ -199,10 +205,23 @@ public class PxDownloadSelectionPane extends JPanel
             java.util.List<PxSubmissionEntry> pxSubmissionEntries = new ArrayList<PxSubmissionEntry>();
 
             // find all the selected px submission files
-            java.util.List<Object> leaves = downloadTableModel.getLeaves();
+            java.util.Set<Object> leaves = downloadTableModel.getNoneParentNodes();
+            boolean toDownload = true;
             for (Object leaf : leaves) {
                 if (((PxSubmissionEntry) leaf).isToDownload()) {
-                    pxSubmissionEntries.add((PxSubmissionEntry) leaf);
+                    PxSubmissionEntry entry = (PxSubmissionEntry) leaf;
+                    pxSubmissionEntries.add(entry);
+                    if (entry.getFileType().toLowerCase().equals("result")) {
+                        toDownload = false;
+                    }
+                }
+            }
+
+            if (!toDownload) {
+                int confirmed = JOptionPane.showConfirmDialog(this, "Please be aware that only the file format supported by PRIDE Inspector can be opened, such as: PRIDE XML, mzML",
+                        "Download ProteomeXchange submission", JOptionPane.OK_CANCEL_OPTION);
+                if (confirmed != 0) {
+                    return;
                 }
             }
 
@@ -214,6 +233,9 @@ public class PxDownloadSelectionPane extends JPanel
             downloadTask.setGUIBlocker(new DefaultGUIBlocker(downloadTask, GUIBlocker.Scope.NONE, null));
             PrideInspectorContext context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
             context.addTask(downloadTask);
+            if (toDispose) {
+                parent.setVisible(false);
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Please specify a valid output path", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -278,44 +300,57 @@ public class PxDownloadSelectionPane extends JPanel
     public void treeNodesChanged(TreeModelEvent e) {
         boolean downloadable = false;
 
-
         if (e.getChildren().length > 0) {
             PxSubmissionEntry selectedNode = (PxSubmissionEntry) e.getChildren()[0];
             int downloadColumnIndex = downloadTableModel.getColumnIndex(PxSubmissionTableModel.TableHeader.DOWNLOAD_COLUMN.getHeader());
-            int cnt = downloadTableModel.getChildCount(selectedNode);
-            if (cnt > 0) {
-                for (int i = 0; i < cnt; i++) {
-                    PxSubmissionEntry childNode = (PxSubmissionEntry) downloadTableModel.getChild(selectedNode, i);
+            if (selectedNode.hasChildren() && selectedNode.getFileName() == null) {
+                // if node represents a high-level px submission
+                for (PxSubmissionEntry childNode : selectedNode.getChildren()) {
                     downloadTableModel.setValueAt(selectedNode.isToDownload(), childNode, downloadColumnIndex);
+                    for (PxSubmissionEntry nestedChildNode : childNode.getChildren()) {
+                        downloadTableModel.setValueAt(selectedNode.isToDownload(), nestedChildNode, downloadColumnIndex);
+                    }
                 }
             } else {
-                PxSubmissionEntry parentNode = (PxSubmissionEntry) downloadTableModel.getParent(selectedNode);
-                if (parentNode.isToDownload() != selectedNode.isToDownload()) {
-                    boolean neighborInSameState = true;
-                    int childCnt = downloadTableModel.getChildCount(parentNode);
-                    for (int i = 0; i < childCnt; i++) {
-                        PxSubmissionEntry child = (PxSubmissionEntry) downloadTableModel.getChild(parentNode, i);
-                        if (child.isToDownload() != selectedNode.isToDownload()) {
-                            neighborInSameState = false;
-                            break;
-                        }
-                    }
+                Set<PxSubmissionEntry> parentNodes = selectedNode.getParents();
+                for (PxSubmissionEntry parentNode : parentNodes) {
+                    if (parentNode.getFileName() == null && parentNode.isToDownload() != selectedNode.isToDownload()) {
+                        boolean neighborInSameState = true;
+                        for (PxSubmissionEntry childNode : parentNode.getChildren()) {
+                            if (childNode.isToDownload() != selectedNode.isToDownload()) {
+                                neighborInSameState = false;
+                                break;
+                            }
 
-                    if (neighborInSameState) {
-                        downloadTableModel.setValueAt(selectedNode.isToDownload(), parentNode, downloadColumnIndex);
+                            if (!neighborInSameState) {
+                                break;
+                            }
+
+                            for (PxSubmissionEntry nestedChild : childNode.getChildren()) {
+                                if (nestedChild.isToDownload() != selectedNode.isToDownload()) {
+                                    neighborInSameState = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (neighborInSameState) {
+                            downloadTableModel.setValueAt(selectedNode.isToDownload(), parentNode, downloadColumnIndex);
+                        }
                     }
                 }
             }
         }
 
         // check whether any file has been selected, enable/disable the download button
-        java.util.List<Object> leaves = downloadTableModel.getLeaves();
-        for (Object leaf : leaves) {
-            if (((PxSubmissionEntry) leaf).isToDownload()) {
+        Set<Object> nodes = downloadTableModel.getNoneParentNodes();
+        for (Object node : nodes) {
+            if (((PxSubmissionEntry)node).isToDownload()) {
                 downloadable = true;
                 break;
             }
         }
+
         downloadButton.setEnabled(downloadable);
 
         downloadTable.revalidate();

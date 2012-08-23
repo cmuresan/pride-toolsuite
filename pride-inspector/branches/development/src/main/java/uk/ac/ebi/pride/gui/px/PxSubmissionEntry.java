@@ -1,5 +1,8 @@
 package uk.ac.ebi.pride.gui.px;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  * Entry represents each proteomexchange submission file
  *
@@ -16,6 +19,7 @@ public class PxSubmissionEntry {
     public static final String PRIDE_ACC = "pride_accession";
     public static final String FILE_MAPPING = "file_mapping";
     public static final String FILE_SIZE = "file_size";
+    private static final String COMMA = ",";
 
     private String accession;
     private String doi;
@@ -23,31 +27,52 @@ public class PxSubmissionEntry {
     private String fileName;
     private String fileType;
     private String prideAccession;
-    private String fileMapping;
+    private Set<String> fileMappings;
+    private boolean isFileMapped;
     private double size;
     private boolean toDownload;
+
+    private final Set<PxSubmissionEntry> parentPxSubmissionEntries;
+    private final Set<PxSubmissionEntry> childPxSubmissionEntries;
 
     public PxSubmissionEntry(String accession, String doi) {
         this(accession, doi, null, null, null, null, null, 0.0);
     }
 
     public PxSubmissionEntry(String accession,
-                              String doi,
-                              String fileID,
-                              String fileName,
-                              String fileType,
-                              String prideAccession,
-                              String fileMapping,
-                              double size) {
+                             String doi,
+                             String fileID,
+                             String fileName,
+                             String fileType,
+                             String prideAccession,
+                             String fileMapping,
+                             double size) {
         this.accession = accession;
         this.doi = doi;
         this.fileID = fileID;
         this.fileName = fileName;
         this.fileType = fileType;
         this.prideAccession = prideAccession;
-        this.fileMapping = fileMapping;
+        this.fileMappings = createFileMappings(fileMapping);
+        this.isFileMapped = false;
         this.size = size;
         this.toDownload = false;
+        this.parentPxSubmissionEntries = new LinkedHashSet<PxSubmissionEntry>();
+        this.childPxSubmissionEntries = new LinkedHashSet<PxSubmissionEntry>();
+    }
+
+    private Set<String> createFileMappings(String fileMapping) {
+        Set<String> mappings = new LinkedHashSet<String>();
+        if (fileMapping != null) {
+            String[] parts = fileMapping.trim().split(COMMA);
+            for (String part : parts) {
+                String trimmedPart = part.trim();
+                if (!"".equals(trimmedPart)){
+                    mappings.add(trimmedPart);
+                }
+            }
+        }
+        return mappings;
     }
 
     public String getAccession() {
@@ -98,12 +123,20 @@ public class PxSubmissionEntry {
         this.prideAccession = prideAccession;
     }
 
-    public String getFileMapping() {
-        return fileMapping;
+    public boolean hasFileMappings() {
+        return fileMappings.size() > 0;
     }
 
-    public void setFileMapping(String fileMapping) {
-        this.fileMapping = fileMapping;
+    public Set<String> getFileMappings() {
+        return  fileMappings;
+    }
+
+    public boolean isFileMapped() {
+        return isFileMapped;
+    }
+
+    public void setFileMapped(boolean fileMapped) {
+        isFileMapped = fileMapped;
     }
 
     public double getSize() {
@@ -122,34 +155,51 @@ public class PxSubmissionEntry {
         this.toDownload = toDownload;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof PxSubmissionEntry)) return false;
-
-        PxSubmissionEntry that = (PxSubmissionEntry) o;
-
-        if (accession != null ? !accession.equals(that.accession) : that.accession != null) return false;
-        if (doi != null ? !doi.equals(that.doi) : that.doi != null) return false;
-        if (fileID != null ? !fileID.equals(that.fileID) : that.fileID != null) return false;
-        if (fileMapping != null ? !fileMapping.equals(that.fileMapping) : that.fileMapping != null) return false;
-        if (fileName != null ? !fileName.equals(that.fileName) : that.fileName != null) return false;
-        if (fileType != null ? !fileType.equals(that.fileType) : that.fileType != null) return false;
-        if (prideAccession != null ? !prideAccession.equals(that.prideAccession) : that.prideAccession != null)
-            return false;
-
-        return true;
+    public int getNumberOfParent() {
+        return parentPxSubmissionEntries.size();
     }
 
-    @Override
-    public int hashCode() {
-        int result = accession != null ? accession.hashCode() : 0;
-        result = 31 * result + (doi != null ? doi.hashCode() : 0);
-        result = 31 * result + (fileID != null ? fileID.hashCode() : 0);
-        result = 31 * result + (fileName != null ? fileName.hashCode() : 0);
-        result = 31 * result + (fileType != null ? fileType.hashCode() : 0);
-        result = 31 * result + (prideAccession != null ? prideAccession.hashCode() : 0);
-        result = 31 * result + (fileMapping != null ? fileMapping.hashCode() : 0);
-        return result;
+    public boolean hasParents() {
+        return parentPxSubmissionEntries.size() > 0;
+    }
+
+    public boolean hasParent(PxSubmissionEntry parent) {
+        return parentPxSubmissionEntries.contains(parent);
+    }
+
+    public Set<PxSubmissionEntry> getParents() {
+        return parentPxSubmissionEntries;
+    }
+
+    public void addParent(PxSubmissionEntry parent) {
+        this.parentPxSubmissionEntries.add(parent);
+    }
+
+    public void removeParent(PxSubmissionEntry parent) {
+        this.parentPxSubmissionEntries.remove(parent);
+    }
+
+    public int getNumberOfChild() {
+        return childPxSubmissionEntries.size();
+    }
+
+    public boolean hasChildren() {
+        return childPxSubmissionEntries.size() > 0;
+    }
+
+    public boolean hasChild(PxSubmissionEntry child) {
+        return childPxSubmissionEntries.contains(child);
+    }
+
+    public Set<PxSubmissionEntry> getChildren() {
+        return childPxSubmissionEntries;
+    }
+
+    public void addChild(PxSubmissionEntry child) {
+        this.childPxSubmissionEntries.add(child);
+    }
+
+    public void removeChild(PxSubmissionEntry child) {
+        this.childPxSubmissionEntries.remove(child);
     }
 }

@@ -159,6 +159,10 @@ public class PeptideTabPane extends PrideInspectorTabPane {
         return peptideDescPane;
     }
 
+    public PeptideVizPane getVizTabPane() {
+        return vizTabPane;
+    }
+
     @Override
     public void started(TaskEvent event) {
         showIcon(getLoadingIcon());
@@ -194,4 +198,6 @@ public class PeptideTabPane extends PrideInspectorTabPane {
             outterSplitPane.resetToPreferredSizes();
         }
     }
+
+
 }

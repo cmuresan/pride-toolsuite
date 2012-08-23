@@ -31,7 +31,14 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
     private static final Color BACKGROUND_COLOUR = Color.white;
 
     private SpectrumViewPane spectrumViewPane;
+
+    private int spectrumViewPaneIndex = 0;
+
     private ProteinSequencePane proteinSequencePane;
+
+    private int proteinSequencePaneIndex = 0;
+
+    JTabbedPane tabbedPane;
 
     public PeptideVizPane(DataAccessController controller, JComponent parentComponent) {
         super(controller, parentComponent);
@@ -47,7 +54,7 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
     @Override
     protected void addComponents() {
         // tabbed pane
-        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane = new JTabbedPane();
         tabbedPane.setBackground(BACKGROUND_COLOUR);
 
         // tab index
@@ -55,10 +62,7 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
 
         try {
             if (controller.hasSpectrum()) {
-                // Spectrum view pane
-                spectrumViewPane = new SpectrumViewPane(controller, true);
-                tabbedPane.insertTab(appContext.getProperty("spectrum.tab.title"), null,
-                        spectrumViewPane, appContext.getProperty("spectrum.tab.tooltip"), tabIndex);
+                addSpectrumViewPane(tabIndex);
                 tabIndex++;
             }
         } catch (DataAccessException e) {
@@ -79,6 +83,7 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
         scrollPane.setBackground(BACKGROUND_COLOUR);
         tabbedPane.insertTab(appContext.getProperty("protein.sequence.tab.title"), null,
                 scrollPane, appContext.getProperty("protein.sequence.tab.tooltip"), tabIndex);
+        proteinSequencePaneIndex = tabIndex;
 
         this.add(tabbedPane, BorderLayout.CENTER);
     }
@@ -89,6 +94,15 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
             spectrumViewPane.subscribeToEventBus(null);
         }
         proteinSequencePane.subscribeToEventBus(null);
+    }
+
+    public void addSpectrumViewPane(int tabIndex){
+        // Spectrum view pane
+        spectrumViewPane = new SpectrumViewPane(controller, true);
+        tabbedPane.insertTab(appContext.getProperty("spectrum.tab.title"), null,
+                spectrumViewPane, appContext.getProperty("spectrum.tab.tooltip"), tabIndex);
+        spectrumViewPaneIndex = tabIndex;
+        spectrumViewPane.subscribeToEventBus(null);
     }
 
 }

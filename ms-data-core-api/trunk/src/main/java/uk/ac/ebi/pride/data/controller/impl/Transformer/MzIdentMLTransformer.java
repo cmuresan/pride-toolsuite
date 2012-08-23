@@ -473,14 +473,26 @@ public class MzIdentMLTransformer {
                         cvMz = CvTermReference.PRODUCT_ION_MZ;
                         cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
                         if (cvParam == null) {
-                            cvMz = CvTermReference.PRODUCT_ION_INTENSITY;
+                            cvMz = CvTermReference.MS_PRODUCT_ION_MZ;
                             cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
-                            if (cvParam == null) {
-                                cvMz = CvTermReference.PRODUCT_ION_MASS_ERROR;
+                            if(cvParam == null){
+                                cvMz = CvTermReference.PRODUCT_ION_INTENSITY;
                                 cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
-                                if (cvParam == null) {
-                                    cvMz = CvTermReference.PRODUCT_ION_RETENTION_TIME_ERROR;
+                                if(cvParam == null){
+                                    cvMz = CvTermReference.MS_PRODUCT_ION_INTENSITY;
                                     cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
+                                    if (cvParam == null) {
+                                        cvMz = CvTermReference.PRODUCT_ION_MASS_ERROR;
+                                        cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
+                                        if(cvParam == null){
+                                            cvMz = CvTermReference.MS_PRODUCT_ION_MASS_ERROR;
+                                            cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
+                                            if (cvParam == null) {
+                                                cvMz = CvTermReference.PRODUCT_ION_RETENTION_TIME_ERROR;
+                                                cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

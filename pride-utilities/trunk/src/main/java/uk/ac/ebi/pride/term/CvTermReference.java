@@ -50,14 +50,22 @@ public enum CvTermReference {
     SCAN_WINDOW_UPPER_LIMIT("MS", "MS:1000500", "scan window upper limit", "MS:1000549"),
     SUM_OF_SPECTRA("MS", "MS:1000571", "sum of spectra", "MS:1000570"),
     NO_COMBINATION("MS", "MS:1000795", "no combination", "MS:1000570"),
+
     PRODUCT_ION_MZ("PRIDE", "PRIDE:0000188", "product ion m/z", "PRIDE:0000187"),
     PRODUCT_ION_MZ_PLGS("Water", "PLGS:00024", "product ion m/z", null),
+    MS_PRODUCT_ION_MZ("MS","MS:1001225","product ion m/z","MS:1001221"),
+
     PRODUCT_ION_INTENSITY("PRIDE", "PRIDE:0000189", "product ion intensity", "PRIDE:0000187"),
     PRODUCT_ION_INTENSITY_PLGS("Water", "PLGS:00025", "product ion intensity", null),
+    MS_PRODUCT_ION_INTENSITY("MS", "MS:1001226", "product ion intensity", "MS:1001221"),
+
     PRODUCT_ION_MASS_ERROR("PRIDE", "PRIDE:0000190", "product ion mass error", "PRIDE:0000187"),
     PRODUCT_ION_MASS_ERROR_PLGS("Water", "PLGS:00026", "product ion mass error", null),
+    MS_PRODUCT_ION_MASS_ERROR("MS", "MS:1001227", "The product ion m/z error", "MS:1001221"),
+
     PRODUCT_ION_RETENTION_TIME_ERROR("PRIDE", "PRIDE:0000191", "product ion retention time error", "PRIDE:0000187"),
     PRODUCT_ION_RETENTION_TIME_ERROR_PLGS("Water", "PLGS:00027", "product ion retention time error", null),
+    //MS_PRODUCT_ION_RETENTION_TIME_ERROR(),
     PRODUCT_ION_CHARGE("PRIDE", "PRIDE:0000204", "product ion charge", "PRIDE:0000187"),
     PRODUCT_ION_TYPE("PRIDE", "PRIDE:0000192", "product ion type", "PRIDE:0000187"),
     Y_ION("PRIDE", "PRIDE:0000193", "y ion", "PRIDE:0000192"),

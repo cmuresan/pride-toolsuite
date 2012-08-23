@@ -323,6 +323,17 @@ public class ControllerContentPane extends DataAccessControllerPane {
     }
 
     /**
+     * Return mzdata tab pane
+     *
+     * @return MzDataTabPane    mzdata tab pane
+     **/
+
+    public void setMzDataTab(MzDataTabPane mzDataTabPane) {
+        mzDataTab = mzDataTabPane;
+    }
+
+
+    /**
      * Return identification tab pane
      *
      * @return IdentTabPane ident tab pane
@@ -366,6 +377,17 @@ public class ControllerContentPane extends DataAccessControllerPane {
     public int getMzDataTabIndex() {
         return mzDataTabIndex;
     }
+
+    /**
+     * Tab index of the spectrum tab
+     *
+     * @return int tab index
+     *
+     * */
+    public void setMzDataTabIndex(int index) {
+        mzDataTabIndex = index;
+    }
+
 
     /**
      * Tab index of the protein tab
@@ -462,4 +484,5 @@ public class ControllerContentPane extends DataAccessControllerPane {
     public void removeTab(int index){
         contentTabPane.removeTabAt(index);
     }
+
 }

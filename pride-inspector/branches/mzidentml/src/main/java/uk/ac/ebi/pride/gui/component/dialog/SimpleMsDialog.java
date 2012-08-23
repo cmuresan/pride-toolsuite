@@ -12,6 +12,7 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
+import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
 import uk.ac.ebi.pride.gui.component.report.ReportList;
 import uk.ac.ebi.pride.gui.component.report.RoundCornerLabel;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
@@ -109,15 +110,7 @@ public class SimpleMsDialog extends JDialog {
 
     private void addNewMsFile(ActionEvent e) {
 
-        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzid/PRIDE xml Files", null, true, Constants.MZIDENT_FILE,
-                        Constants.MZML_FILE,
-                        Constants.XML_FILE,
-                        Constants.MZXML_FILE,
-                        Constants.MGF_EXT,
-                        Constants.MS2_EXT,
-                        Constants.PKL_EXT,
-                        Constants.DTA_EXT,
-                        Constants.GZIPPED_FILE );
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzid/PRIDE xml Files", null, true, Constants.MGF_EXT);
 
         int result = ofd.showDialog(this, null);
 
@@ -204,12 +197,21 @@ public class SimpleMsDialog extends JDialog {
         try {
             ((MzIdentMLControllerImpl)controller).addMSController(msFileMap);
             ControllerContentPane contentPane = (ControllerContentPane) context.getDataContentPane(controller);
+
+            //Update the Spectrum Tab
             MzDataTabPane mzDataPane = contentPane.getMzDataTab();
-            int index = contentPane.indexOf(mzDataPane);
+            int index = contentPane.getMzDataTabIndex();
             mzDataPane = new MzDataTabPane(controller, contentPane);
             contentPane.removeTab(index);
+            contentPane.setMzDataTab(mzDataPane);
             contentPane.insertTab(mzDataPane.getTitle(), mzDataPane.getIcon(), mzDataPane, mzDataPane.getTitle(), index);
             mzDataPane.populate();
+
+            //Update the Peptide and Protein Tabs
+            PeptideTabPane peptideContentPane = contentPane.getPeptideTabPane();
+            peptideContentPane.getVizTabPane().addSpectrumViewPane(1);
+
+
 
 
 

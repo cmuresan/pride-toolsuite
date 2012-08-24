@@ -2,7 +2,7 @@
 
 As an integrated desktop application for visualizing and analysing MS datasets, PRIDE Inspector was created to help data submitters, journal editors, and journal reviewers to visualize, browse and assess proteomics experimental data. 
 
-We have been using PRIDE Inspector within the PRIDE team since its release into production in our own reviews of manuscripts and are convinced of its ability to make the reviewing process easier. Below we highlight some of the features facilitating the journal reviewing process.  
+We have been using PRIDE Inspector within the PRIDE team since its release into production in our own reviews of manuscripts and are convinced of its ability to make the reviewing process easier. Below we highlight some of the features facilitating the journal reviewing process.  For a full overview of all of the features of PRIDE Inspector and a full user manual, please refer to the PRIDE Inspector journal publication and supplementary information ([http://www.nature.com/nbt/journal/v30/n2/full/nbt.2112.html Wang et al., Nat Biotechnol 2012; 30:130-132]. [http://www.nature.com/nbt/journal/v30/n2/pdf/nbt.2112.pdf PDF File].  [http://www.ncbi.nlm.nih.gov/pubmed/22318026 PubMed record]).
 
 = Journal Reviewing =
 

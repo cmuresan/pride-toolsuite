@@ -14,10 +14,7 @@ import uk.ac.ebi.pride.tools.protein_details_fetcher.ProteinDetailFetcher;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 import uk.ac.ebi.pride.tools.utils.AccessionResolver;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Retrieve protein name for a given set of proteins
@@ -93,7 +90,6 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
                     Protein protDetails = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
                     if (protDetails != null) {
                         proteins.put(mappedProtAcc, protDetails);
-                        continue;
                     }
 
                     accBuffer.put(protIdentId, mappedProtAcc);
@@ -134,8 +130,10 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
      * @throws Exception exception while fetching the protein
      */
     private void fetchAndPublish(Map<Comparable, String> accs, Map<String, Protein> proteins) throws Exception {
+        Collection<String> accsToFetch = new HashSet<String>(accs.values());
+        accsToFetch.removeAll(proteins.keySet());
         // fetch protein details
-        Map<String, Protein> results = fetcher.getProteinDetails(accs.values());
+        Map<String, Protein> results = fetcher.getProteinDetails(accsToFetch);
         // add results to cache
         PrideInspectorCacheManager.getInstance().addProteinDetails(results.values());
         // add results to protein map

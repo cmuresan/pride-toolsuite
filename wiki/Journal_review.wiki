@@ -1,8 +1,8 @@
 = Introduction =
 
-As an integrated desktop application for visualizinig and analyzing MS dataset, PRIDE Inspector was created to help data submitters, journal editors, and journal reviewers to visualize, browse and assess proteomics experimental data. 
+As an integrated desktop application for visualizing and analysing MS datasets, PRIDE Inspector was created to help data submitters, journal editors, and journal reviewers to visualize, browse and assess proteomics experimental data. 
 
-We have been using PRIDE Inspector within the PRIDE team for the last few months in our own reviews of manuscripts and are convinced of its ability to make reviewing proteomics data easier. Below we highlight some of the features facilitating the journal reviewing process.  
+We have been using PRIDE Inspector within the PRIDE team since its release into production in our own reviews of manuscripts and are convinced of its ability to make the reviewing process easier. Below we highlight some of the features facilitating the journal reviewing process.  
 
 = Journal Reviewing =
 
@@ -33,7 +33,7 @@ http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review
 PRIDE Inspector offers three quick ways of assessing the overall quality of the experiment: *Experiment Summary*, *Summary Charts* and *Experiment Overview* 
 
 === Experiment Summary ===
-The Experiment Summary panel is located on the bottom-left of the PRIDE Inspector, it offers a snapshot view of the experiment, and is the quickest way of spotting something wrong. It shows whether protein identifications, peptide identifications and spectra are present, also shows different types of post translational modifications present in the experiment (See screenshot below).
+The Experiment Summary panel is located on the bottom-left of the PRIDE Inspector, it offers a snapshot view of the experiment, and is the quickest way of spotting if something looks amiss with the dataset. It shows whether protein identifications, peptide identifications and spectra are present and also shows different types of post translational modifications present in the experiment (See screenshot below).
 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/experiment_summary.png 
 
@@ -49,11 +49,10 @@ The Summary Charts Tab provides a set of charts showing different representation
   * *Delta m/z* : Displays a relative frequency distribution of theoretical precursor ion mass - experimental precursor ion mass.
   * *Number of Missed Tryptic Cleavages* : Displays the number of missed tryptic cleavages.
  
-
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/summary_charts.png 
 
 === Experiment Overview ===
-The Experiment Overview Tab provides a unified view on the metadata of different types of data sources. It is arranged in a series of three panels, each panel showing a specific type of metadata. The type of metadata is indicated by the panel's title. Each metadata panel can be viewed by clicking on the button at the top of the Experiment Overview Tab (See screenshot below).
+The Experiment Overview Tab provides a unified view on the metadata of different types of data sources. It is arranged in a series of three panels, each panel showing a specific type of metadata. The type of metadata is indicated by the panel's title. Each panel can be viewed by clicking on the button at the top of the Experiment Overview Tab (See screenshot below).
 
 You can find out more on the overall information about the experiment, sample details, experiment protocol, MS instrument details and software used for data processing.  
 
@@ -63,17 +62,17 @@ http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review
  For detailed quality assessment of a experiment, we recommend you use Protein Tab, Peptide Tab and Spectrum/Chromatogram Tab. Below is a short summary on each Tab's main functionality, for detailed guide, please refer to the help document embedded in the PRIDE Inspector.
 
 === Protein Tab ===
-The Protein Tab provides a protein identification centric view. It displays all identified proteins, and for each protein identification, its related peptide spectrum matches are also displayed. (See screenshot below)
+The Protein Tab provides a protein identification-centric view. It displays all identified proteins. For each protein identification, its related peptide spectrum matches are also displayed. (See screenshot below)
 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/protein_tab.png
 
 === Peptide Tab ===
-The Peptide Tab provides a peptide centric view. All identified peptides are displayed in this area, along with their post translational modifications and spectra. (See screenshot below)
+The Peptide Tab provides a peptide-centric view. All identified peptides are displayed in this area, along with their post translational modifications and spectra. (See screenshot below)
 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/protein_tab.png
 
 === Spectrum/Chromatogram Tab ===
-The Spectrum/Chromatogram Tab provides a spectrum/chromatogram centric view. All spectra and chromatogram from the data source are displayed in this area. (See screenshot below)
+The Spectrum/Chromatogram Tab provides a spectrum/chromatogram-centric view. All spectra and chromatogram from the data source are displayed in this area. (See screenshot below)
 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/spectrum_tab.png
             

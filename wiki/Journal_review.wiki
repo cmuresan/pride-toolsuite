@@ -35,9 +35,9 @@ If you don't have Java Web Start installed, you can install PRIDE Inspector loca
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/private_download.png
 
 
-=  Quick quality assessment =
+=  Quick data assessment =
 
-PRIDE Inspector offers three quick ways of assessing the overall quality of the experiment: *Experiment Summary*, *Summary Charts* and *Experiment Overview* 
+PRIDE Inspector offers three quick ways of assessing the experimental data: *Experiment Summary*, *Summary Charts* and *Experiment Overview* 
 
 === Experiment Summary ===
 The Experiment Summary panel is located on the bottom-left of the PRIDE Inspector, it offers a snapshot view of the experiment, and is the quickest way of spotting if something looks amiss with the dataset. It shows whether protein identifications, peptide identifications and spectra are present and also shows different types of post translational modifications present in the experiment (See screenshot below).
@@ -67,8 +67,10 @@ You can find out more on the overall information about the experiment, sample de
 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/experiment_overview.png
 
+
 = Detailed data assessment =
- For detailed data assessment of a experiment, we recommend you use Protein Tab, Peptide Tab and Spectrum/Chromatogram Tab. Below is a short summary on each Tab's main functionality, for detailed guide, please refer to the help document embedded in the PRIDE Inspector.
+
+ For detailed data assessment of a experiment, we recommend you use Protein Tab, Peptide Tab and Spectrum/Chromatogram Tab. Also a Quantification tab is enabled if the experiment contains protein/peptide quantitation data. Below is a short summary on each Tab's main functionality, for detailed guide, please refer to the help document embedded in the PRIDE Inspector.
 
 === Protein Tab ===
 The Protein Tab provides a protein identification-centric view. It displays all identified proteins. For each protein identification, its related peptide spectrum matches are also displayed. Please note that it is possible to sort the table based on most table headings, so it is possible to instantly focus on proteins having very low or very high numbers of peptides, or those having PTM annotations. (See screenshot below)
@@ -76,14 +78,18 @@ The Protein Tab provides a protein identification-centric view. It displays all 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/protein_tab.png
 
 === Peptide Tab ===
-The Peptide Tab provides a peptide-centric view. All identified peptides are displayed in this area, along with their post translational modifications and spectra. (See screenshot below)
+The Peptide Tab provides a peptide-centric view, independent from the protein inference. All identified peptides are displayed in this area, along with their post translational modifications and spectra. (See screenshot below)
 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/protein_tab.png
-
-For those peptides with PTM annotations, it is possible to visualize the peak annotations by enabling amino acid annotations. The modified amino acids will have a (*) symbol next to them (not shown). 
+ 
 
 === Spectrum/Chromatogram Tab ===
-The Spectrum/Chromatogram Tab provides a spectrum/chromatogram-centric view. All spectra and chromatogram from the data source are displayed in this area. (See screenshot below)
+
+The Spectrum/Chromatogram Tab provides a spectrum/chromatogram-centric view. All spectra and chromatograms (if available) from the data source are displayed in this area. (See screenshot below)
 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/spectrum_tab.png
-            
+
+
+=== Quantification Tab ===
+
+To be completed.            

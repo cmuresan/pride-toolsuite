@@ -1,18 +1,22 @@
 = Introduction =
 
-As an integrated desktop application for visualizing and analysing MS datasets, PRIDE Inspector was created to help data submitters, journal editors, and journal reviewers to visualize, browse and assess proteomics experimental data. 
+As an integrated desktop application for visualizing and analysing MS datasets, PRIDE Inspector was created to help data submitters, journal editors, and journal reviewers to visualize, browse and assess proteomics experimental data in PRIDE. 
 
-We have been using PRIDE Inspector within the PRIDE team since its release into production in our own reviews of manuscripts and are convinced of its ability to make the reviewing process easier. Below we highlight some of the features facilitating the journal reviewing process.  For a full overview of all of the features of PRIDE Inspector and a full user manual, please refer to the PRIDE Inspector journal publication and supplementary information ([http://www.nature.com/nbt/journal/v30/n2/full/nbt.2112.html Wang et al., Nat Biotechnol 2012; 30:130-132]. [http://www.nature.com/nbt/journal/v30/n2/pdf/nbt.2112.pdf PDF File].  [http://www.ncbi.nlm.nih.gov/pubmed/22318026 PubMed record]).
+Below we highlight some of the features facilitating the journal reviewing process.  For a full overview of all of the features of PRIDE Inspector and a full user manual, please refer to the PRIDE Inspector journal publication and supplementary information ([http://www.nature.com/nbt/journal/v30/n2/full/nbt.2112.html Wang et al., Nat Biotechnol 2012; 30:130-132]. [http://www.nature.com/nbt/journal/v30/n2/pdf/nbt.2112.pdf PDF File].  [http://www.ncbi.nlm.nih.gov/pubmed/22318026 PubMed record]).
 
 = Journal Reviewing =
 
-As an example, we invite you to give it a try with data from Mike Dunn’s group, present in PRIDE (McManus et al., 2010, PMID: 20432482). The manuscript related information has been kept private on purpose to show the functionality of PRIDE Inspector. The process described here would be exactly the same for any potential reviewer.
+After any data submission to PRIDE is finalised, the researchers receive an e-mail the experiment accession list and a URL to enable reviewers/editors access to the private information using PRIDE Inspector.
+
+As an example, we invite you to give it a try with data from Prof. Mike Dunn’s group (University College Dublin), present in PRIDE (McManus et al., 2010, PMID: 20432482). The manuscript related information is now publicly available. However, the original reviewer account is used for demonstration purposes.
 
 == Using the online version ==
 
 To launch PRIDE Inspector with direct access to the dataset mentioned above, you need to have Java Webstart installed.
 
-Please access [http://www.ebi.ac.uk/pride/jsp/pages/jnlp/jnlp.jsp?username=review02342&password=nsqNx4tt online version] then follow the instructions. This option will automatically download and open the experiments and ready to be reviewed. 
+Please copy/paste the following URL in a Web Browser [http://www.ebi.ac.uk/pride/jsp/pages/jnlp/jnlp.jsp?username=review02342&password=nsqNx4tt online version], then follow the instructions. This option will automatically download and open the experiments and ready to be reviewed. 
+
+The download of the data can take longer depending on the size of the experiments and on your Internet connection. So, please realize that this process can take several minutes to complete.
 
 Please note that If you are using Google Chrome, you will need to double click the downloaded .jnlp file to launch PRIDE Inspector.
  
@@ -25,11 +29,14 @@ If you don't have Java Web Start installed, you can install PRIDE Inspector loca
   # Once installed, go to that directory in your local computer and double click the corresponding version pride-inspector.jar file. The application will then start.
   # In the PRIDE Inspector "Welcome" page click on "Private Download".
   # A window will pop up. There you need to enter your username and password (it would be the same process for a reviewer account), and click on "Login". Please use as an example: Username : *review02342*  Password: *nsqNx4tt*
-  # The experiments that belong to that account will be listed there (see screenshot below).
+  # The experiments that belong to that account will be listed there (see screenshot below). You can now download them.
+ # The download of the data can take longer depending on the size of the experiments and on your Internet connection. So, please realize that this process can take several minutes to complete.
 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/private_download.png
 
+
 =  Quick quality assessment =
+
 PRIDE Inspector offers three quick ways of assessing the overall quality of the experiment: *Experiment Summary*, *Summary Charts* and *Experiment Overview* 
 
 === Experiment Summary ===
@@ -38,7 +45,9 @@ The Experiment Summary panel is located on the bottom-left of the PRIDE Inspecto
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/experiment_summary.png 
 
 === Summary Charts ===
-The Summary Charts Tab provides a set of charts showing different representation of the data contained in the selected experiment. It offers reviewers a quick way of assess the overall quality of the experiment using:
+The Summary Charts Tab provides a set of charts showing different representation of the data contained in the selected experiment. The user needs to click on 'Start' on the corresponding Tab to get the charts displayed.
+
+ It offers reviewers a quick way of assess the overall quality of the experiment using:
 
   * *Peak Intensity Distribution Charge* : A histogram of ion intensity vs frequency for all MS2 spectra in the experiment.
   * *Precursor Ion Charge Distribution* : Displays a bar chart of precursor ion charges.
@@ -52,14 +61,14 @@ The Summary Charts Tab provides a set of charts showing different representation
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/summary_charts.png 
 
 === Experiment Overview ===
-The Experiment Overview Tab provides a unified view on the metadata of different types of data sources. It is arranged in a series of three panels, each panel showing a specific type of metadata. The type of metadata is indicated by the panel's title. Each panel can be viewed by clicking on the button at the top of the Experiment Overview Tab (See screenshot below).
+The Overview Tab provides a unified view on the metadata of different types of data sources. It is arranged in a series of three panels, each panel showing a specific type of metadata. The type of metadata is indicated by the panel's title. Each panel can be viewed by clicking on the button at the top of the  Overview Tab (See screenshot below).
 
 You can find out more on the overall information about the experiment, sample details, experiment protocol, MS instrument details and software used for data processing.  
 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/experiment_overview.png
 
-= Detailed quality assessment =
- For detailed quality assessment of a experiment, we recommend you use Protein Tab, Peptide Tab and Spectrum/Chromatogram Tab. Below is a short summary on each Tab's main functionality, for detailed guide, please refer to the help document embedded in the PRIDE Inspector.
+= Detailed data assessment =
+ For detailed data assessment of a experiment, we recommend you use Protein Tab, Peptide Tab and Spectrum/Chromatogram Tab. Below is a short summary on each Tab's main functionality, for detailed guide, please refer to the help document embedded in the PRIDE Inspector.
 
 === Protein Tab ===
 The Protein Tab provides a protein identification-centric view. It displays all identified proteins. For each protein identification, its related peptide spectrum matches are also displayed. Please note that it is possible to sort the table based on most table headings, so it is possible to instantly focus on proteins having very low or very high numbers of peptides, or those having PTM annotations. (See screenshot below)

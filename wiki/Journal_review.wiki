@@ -91,6 +91,6 @@ http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review
 
 === Quantification Tab ===
 
-The Quantification Tab provided the information about the peptide/protein quantification values (see screenshot below).
+The Quantification Tab provided the information about the peptide/protein quantification values (see screenshot below). 
 
        

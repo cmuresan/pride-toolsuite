@@ -93,4 +93,14 @@ http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review
 
 The Quantification Tab provided the information about the peptide/protein quantification values (see screenshot below). 
 
+From top to bottom, you can see three main areas of information:
+ * *Protein Quantification*: a summary table on the protein quantification.
+ * *Peptide Quantification*: displays the peptides identifying the currently selected protein, and their quantification.
+ * *Samples*: show all the samples used in the experiment.
+ * *Protein Quantification Comparison*: histogram for comparing protein quantification.
+ * *Spectrum Browser*: shows the spectrum identifying the currently selected peptide.
+
+http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/quant_tab.png
+
+
        

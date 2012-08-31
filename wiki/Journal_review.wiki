@@ -100,7 +100,7 @@ From top to bottom, you can see three main areas of information:
  * *Protein Quantification Comparison*: histogram for comparing protein quantification.
  * *Spectrum Browser*: shows the spectrum identifying the currently selected peptide.
 
-http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/quant_tab.tiff
+http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/quant_tab.png
 
 
        

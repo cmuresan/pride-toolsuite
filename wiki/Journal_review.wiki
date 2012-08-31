@@ -29,8 +29,7 @@ If you don't have Java Web Start installed, you can install PRIDE Inspector loca
   # Once installed, go to that directory in your local computer and double click the corresponding version pride-inspector.jar file. The application will then start.
   # In the PRIDE Inspector "Welcome" page click on "Private Download".
   # A window will pop up. There you need to enter your username and password (it would be the same process for a reviewer account), and click on "Login". Please use as an example: Username : *review02342*  Password: *nsqNx4tt*
-  # The experiments that belong to that account will be listed there (see screenshot below). You can now download them.
- # The download of the data can take longer depending on the size of the experiments and on your Internet connection. So, please realize that this process can take several minutes to complete.
+  # The experiments that belong to that account will be listed there (see screenshot below). You can now download them. The download of the data can take longer depending on the size of the experiments and on your Internet connection. So, please realize that this process can take several minutes to complete.
 
 http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review/private_download.png
 
@@ -92,4 +91,6 @@ http://pride-toolsuite.googlecode.com/svn/wiki/images/screenshots/journal-review
 
 === Quantification Tab ===
 
-To be completed.            
+The Quantification Tab provided the information about the peptide/protein quantification values (see screenshot below).
+
+       

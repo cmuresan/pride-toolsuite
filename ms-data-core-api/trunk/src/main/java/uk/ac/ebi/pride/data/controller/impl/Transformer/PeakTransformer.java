@@ -37,6 +37,7 @@ public class PeakTransformer {
                 List<Precursor> precursors = null;
                 List<BinaryDataArray> binaryArray = transformBinaryDataArrayList(spectrum.getPeakList());
 
+
                 ParamGroup paramGroup = new ParamGroup();
                 CvTermReference cvTerm = CvTermReference.MS_LEVEL;
                 CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),spectrum.getMsLevel().toString(),null,null,null);

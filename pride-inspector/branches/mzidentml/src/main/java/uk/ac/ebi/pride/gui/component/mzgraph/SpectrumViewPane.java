@@ -169,10 +169,15 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
     @Override
     public void succeed(TaskEvent<Spectrum> spectrumTaskEvent) {
         Spectrum spectrum = spectrumTaskEvent.getValue();
+
         BinaryDataArray mzBinary = spectrum == null ? null : spectrum.getMzBinaryDataArray();
         BinaryDataArray intentBinary = spectrum == null ? null : spectrum.getIntensityBinaryDataArray();
         if (mzBinary != null && intentBinary != null) {
             spectrumBrowser.setPeaks(mzBinary.getDoubleArray(), intentBinary.getDoubleArray());
+            //System.out.println(spectrum.getPeptide().getPeptideEvidence().getPeptideSequence().getSequence());
+            for(int i = 0; i < mzBinary.getDoubleArray().length;i++){
+                System.out.println(mzBinary.getDoubleArray()[i] + "\t" + intentBinary.getDoubleArray()[i]);
+            }
             // set source name
             if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
                 spectrumBrowser.setSource(((File) controller.getSource()).getName());

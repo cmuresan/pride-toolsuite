@@ -248,8 +248,15 @@ public class MzIdentMLUnmarshallerAdaptor {
 
         Map<CacheCategory, Object> maps = new HashMap<CacheCategory, Object>();
 
+        long time = System.currentTimeMillis();
+
 
         Map<Comparable, SpectraData> spectraDataIds = getSpectraDataMap();
+
+        System.out.println("1:" + String.valueOf(System.currentTimeMillis() - time));
+
+        time = System.currentTimeMillis();
+
 
         // First Map is the Relation bettwen an Spectrum file and all the Spectrums ids in the file
         Map<Comparable, List<Comparable>> spectraDataMap = new HashMap<Comparable, List<Comparable>>(spectraDataIds.size());
@@ -260,7 +267,14 @@ public class MzIdentMLUnmarshallerAdaptor {
 
         ArrayList<Comparable> spectrumMatchResultsIds  = new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.SpectrumIdentificationResult));
 
+        System.out.println("2:" + String.valueOf(System.currentTimeMillis() - time));
+
+        time = System.currentTimeMillis();
+
+
         Map<Comparable,Map<Comparable,List<String[]>>> identProteinsMap = new HashMap<Comparable, Map<Comparable, List<String[]>>>();
+
+
 
         for(Comparable idSpectrumResult: spectrumMatchResultsIds){
             SpectrumIdentificationResult spectrumResult = unmarshaller.unmarshal(SpectrumIdentificationResult.class,(String) idSpectrumResult);
@@ -300,6 +314,11 @@ public class MzIdentMLUnmarshallerAdaptor {
                 }
             }
         }
+
+        System.out.println("3:" + String.valueOf(System.currentTimeMillis() - time));
+
+        time = System.currentTimeMillis();
+
 
         maps.put(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS,spectraDataMap);
         maps.put(CacheCategory.IDENTIFICATION_TO_PEPTIDE_EVIDENCES,identProteinsMap);

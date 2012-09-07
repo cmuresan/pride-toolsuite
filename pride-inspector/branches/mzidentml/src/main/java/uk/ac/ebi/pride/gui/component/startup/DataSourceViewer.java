@@ -1,5 +1,11 @@
 package uk.ac.ebi.pride.gui.component.startup;
 
+import net.java.balloontip.BalloonTip;
+import net.java.balloontip.TablecellBalloonTip;
+import net.java.balloontip.styles.BalloonTipStyle;
+import net.java.balloontip.styles.MinimalBalloonStyle;
+import net.java.balloontip.styles.RoundedBalloonStyle;
+import net.java.balloontip.utils.TimingUtils;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventSubscriber;
 import org.slf4j.Logger;
@@ -15,17 +21,17 @@ import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
+import javax.swing.table.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.ImageObserver;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * DataSourceViewer should be monitor the DataAccessControllers in
@@ -36,6 +42,7 @@ import java.util.Collection;
  * Time: 10:42:08
  */
 public class DataSourceViewer extends JPanel {
+
     private static final Logger logger = LoggerFactory.getLogger(DataSourceViewer.class);
 
     /**
@@ -52,6 +59,8 @@ public class DataSourceViewer extends JPanel {
      * a reference to PrideInspectorContext
      */
     private PrideInspectorContext context = null;
+
+    private Map<DataAccessController,String> messages = null;
 
     /**
      * Constructor
@@ -155,6 +164,8 @@ public class DataSourceViewer extends JPanel {
 
             // highlight the selected foreground data source
             final int rowNum = sourceTableModel.getRowIndex(controller);
+
+            //Create Balloon
 
             code = new Runnable() {
 
@@ -316,6 +327,7 @@ public class DataSourceViewer extends JPanel {
             DataAccessController.Type type = controller.getType();
             if (DataAccessController.Type.XML_FILE.equals(type) || DataAccessController.Type.MZIDENTML.equals(type)) {
                 icon = GUIUtilities.loadImageIcon(context.getProperty(categories.isEmpty() ? "file.source.loading.small.icon" : "file.source.small.icon"));
+
             } else if (DataAccessController.Type.DATABASE.equals(type)) {
                 icon = GUIUtilities.loadImageIcon(context.getProperty(categories.isEmpty() ? "database.source.loading.small.icon" : "database.source.small.icon"));
             }
@@ -380,6 +392,8 @@ public class DataSourceViewer extends JPanel {
      * Draw a red cross for close the data access controller
      * */
      private class MzidentMLMSCellRenderer extends DefaultTableCellRenderer {
+
+
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                        boolean hasFocus, int row, int column) {
@@ -394,6 +408,7 @@ public class DataSourceViewer extends JPanel {
 
             DataAccessController.Type type = controller.getType();
 
+
             if (DataAccessController.Type.MZIDENTML.equals(type) && !categories.isEmpty()) {
                 // get the icon
 
@@ -404,14 +419,15 @@ public class DataSourceViewer extends JPanel {
                 cell.setBackground(Color.white);
                 // set the component to none focusable
                 cell.setFocusable(false);
+
             }else{
                 cell.setBackground(Color.white);
                 cell.setIcon(null);
             }
             return cell;
         }
-    }
 
+    }
 
 
     /**
@@ -452,11 +468,14 @@ public class DataSourceViewer extends JPanel {
             String colName = sourceTable.getColumnName(col);
             if (colName.equals(TableHeader.CLOSE_COLUMN.getHeader())) {
                 // remove the data access controller from data access monitor
+                MzidentMLMSCellRenderer cellRender = (MzidentMLMSCellRenderer) sourceTable.getCellRenderer(row,col-1);
+
                 java.util.List<DataAccessController> controllers = context.getControllers();
                 if (row >= 0 && row < controllers.size()) {
                     DataAccessController controller = controllers.get(row);
                     context.removeDataAccessController(controller, true);
                 }
+
             }
         }
     }

@@ -166,6 +166,11 @@
             <version>2.3.1</version>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>net.java.balloontip</groupId>
+            <artifactId>balloontip</artifactId>
+            <version>1.2.1</version>
+        </dependency>
         <!-- This is the lookandfeel for the pride inspector-->
         <!--you can download the lookandfeel jar from http://www.jtattoo.net/Download.html-->
         <!--Then install this library to maven using the following command: mvn install:install-file -Dfile=JTattoo.jar -DgroupId=jtattoo -DartifactId=jtattoo -Dversion=1.3 -Dpackaging=jar-->

@@ -209,7 +209,7 @@ public class SimpleMsDialog extends JDialog {
 
             //Update the Peptide and Protein Tabs
             PeptideTabPane peptideContentPane = contentPane.getPeptideTabPane();
-            peptideContentPane.getVizTabPane().addSpectrumViewPane(1);
+            peptideContentPane.getVizTabPane().addSpectrumViewPane();
 
 
 

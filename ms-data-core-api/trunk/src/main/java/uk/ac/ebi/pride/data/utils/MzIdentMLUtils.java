@@ -52,9 +52,9 @@ public class MzIdentMLUtils {
     public static String getSpectrumId(uk.ac.ebi.jmzidml.model.mzidml.SpectraData spectraData, String spectrumID) {
         Constants.SpecIdFormat fileIdFormat = getSpectraDataIdFormat(spectraData);
         if(fileIdFormat == Constants.SpecIdFormat.MASCOT_QUERY_NUM){
-            return Integer.toString(Integer.parseInt(spectrumID.replaceAll("query=", "")) - 1);
+            return Integer.toString(Integer.parseInt(spectrumID.replaceAll("query=", "")) + 1);
         }else if(fileIdFormat == Constants.SpecIdFormat.MULTI_PEAK_LIST_NATIVE_ID){
-            return spectrumID.replaceAll("index=", "");
+            return Integer.toString(Integer.parseInt(spectrumID.replaceAll("index=", "")) + 1);
         }else if(fileIdFormat == Constants.SpecIdFormat.SINGLE_PEAK_LIST_NATIVE_ID){
             return spectrumID.replaceAll("file=","");
         }else if(fileIdFormat == Constants.SpecIdFormat.MZML_ID){

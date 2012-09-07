@@ -19,6 +19,7 @@ public class IsoelectricPointUtils {
     private final static BjellpI bjellpI = new BjellpI();
 
     public static double calculate(String peptideSeq) {
+        peptideSeq = peptideSeq.replace("*","");
         peptideSeq = replaceSpecialAA(peptideSeq);
         return bjellpI.calculate(peptideSeq);
     }

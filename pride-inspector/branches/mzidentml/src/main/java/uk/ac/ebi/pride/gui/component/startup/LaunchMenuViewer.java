@@ -72,7 +72,7 @@ public class LaunchMenuViewer extends JPanel {
         // help
         ImageIcon helpIcon = GUIUtilities.loadImageIcon(context.getProperty("help.icon.medium"));
         String helpText = context.getProperty("help.title");
-        Action helpAction = new OpenHelpAction(helpText, helpIcon);
+        Action helpAction = new OpenHelpAction(helpText, helpIcon, "help.index");
         JButton helpButton = GUIUtilities.createLabelLikeButton(helpAction);
         helpButton.setHorizontalAlignment(SwingConstants.LEFT);
         container.add(helpButton);

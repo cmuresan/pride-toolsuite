@@ -40,10 +40,11 @@
             <tocitem text="Delta m/z Chart" target="help.chart.7"/>
             <tocitem text="Number of Missed Tryptic Cleavages Chart" target="help.chart.8"/>
         </tocitem>
-        <tocitem text="Opening mzML/MzIdentML or PRIDE XML Files" target="help.openfile" />
+        <tocitem text="Opening mzML or PRIDE XML Files" target="help.openfile" />
         <tocitem text="Trying mzML or PRIDE XML Example Files" target="help.examples" />
         <tocitem text="Connecting to PRIDE Public Database Instance" target="help.pridedb" />
-        <tocitem text="Downloading Your Experiments from PRIDE" target="help.download"/>
+        <tocitem text="Download Your Experiments from PRIDE" target="help.pride.download"/>
+        <tocitem text="Download Your Submissions from ProteomeXchange" target="help.px.download"/>
         <tocitem text="Exporting Data from PRIDE Inspector" target="help.export"/>
         <tocitem text="Exporting Quantification Data from PRIDE Inspector" target="help.export.quant"/>
         <tocitem text="Quantification Principle" target="help.export.quant.principle"/>
@@ -56,6 +57,7 @@
             <tocitem text="What is mzML Format?" target="help.faq.mzml"/>
             <tocitem text="What to do when PRIDE Inspector run out of memory?" target="help.faq.memory"/>
             <tocitem text="How does PRIDE Inspector calculate delta m/z?" target="help.faq.deltamz"/>
+            <tocitem text="The problem with shared peptides?" target="help.faq.shared.peptide"/>
         </tocitem>
 
         <tocitem text="Feedback Page" target="help.feedback"/>

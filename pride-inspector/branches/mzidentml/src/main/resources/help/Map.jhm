@@ -65,7 +65,9 @@
 
     <mapID target="help.pridedb" url="html/usage/connect_pride_db.html"/>
 
-    <mapID target="help.download" url="html/usage/download_pride_exp.html"/>
+    <mapID target="help.pride.download" url="html/usage/download_pride_exp.html"/>
+
+    <mapID target="help.px.download" url="html/usage/download_px_submission.html"/>
 
     <mapID target="help.faq" url="html/faq.html"/>
     <mapID target="help.faq.pride" url="html/faq/pride.html"/>
@@ -74,5 +76,6 @@
     <mapID target="help.faq.mzml" url="html/faq/mzml.html"/>
     <mapID target="help.faq.memory" url="html/faq/memory.html"/>
     <mapID target="help.faq.deltamz" url="html/faq/deltamz.html"/>
+    <mapID target="help.faq.shared.peptide" url="html/faq/shared_peptide.html"/>
 
 </map>

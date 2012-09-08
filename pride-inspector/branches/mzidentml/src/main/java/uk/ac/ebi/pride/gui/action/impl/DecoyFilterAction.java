@@ -165,6 +165,7 @@ public class DecoyFilterAction extends PrideAction implements PropertyChangeList
      * Action listener triggered by clicking the undo filter menu item
      */
     private class UndoFilterActionListener implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
             // remove the decoy filter
@@ -204,6 +205,7 @@ public class DecoyFilterAction extends PrideAction implements PropertyChangeList
             this.decoyOnly = decoyOnly;
         }
 
+        //Update all the panels.
         @Override
         public void actionPerformed(ActionEvent e) {
             // remove the decoy filter

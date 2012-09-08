@@ -22,9 +22,14 @@ delete.mzidentml.ms.icon.small=icon/16x16/delete_enable.gif
 
 reviewer.download.title=Private Download
 reviewer.download.tooltip=Private download
+reviewer.download.pride.title = PRIDE
+reviewer.download.px.title = ProteomeXchange
 reviewer.download.icon.small=icon/16x16/reviewer_download.png
 reviewer.download.icon.medium=icon/32x32/reviewer_download.png
 reviewer.download.icon.large=icon/48x48/reviewer_download.png
+reviewer.login.in.progress.icon.small=icon/16x16/loading.gif
+reviewer.login.error.icon.small=icon/16x16/exception_notify.png
+reviewer.login.success.icon.small=icon/16x16/tick.png
 
 help.title=Help
 help.tooltip=Open PRIDE Inspector Help Document
@@ -315,7 +320,12 @@ quant.histogram.y.axis = Ratio
 # decoy filter
 decoy.filter.title = Decoy Filter
 decoy.filter.tooltip = Decoy Filter
-decoy.filter.small.icon = icon/16x16/filter.png
+decoy.filter.small.icon = icon/16x16/filter.gif
+
+# shared peptide
+shared.peptide.title = Shared Peptides Disclaimer
+shared.peptide.tooltip = Disclaimer on shared peptides issues
+shared.peptide.icon.small = icon/16x16/disclaimer.png
 
 # menu related icons
 menu.selection.tick.small.icon = icon/16x16/tick.png
@@ -324,6 +334,13 @@ menu.setting.small.icon = icon/16x16/configuration.png
 # table related icons
 add.experiment.small.icon = icon/16x16/plus.png
 view.detail.small.icon = icon/16x16/detail.png
+
+# reactome
+reactome.html.template = template/reactome.html
+reactome.query.value.placeholder=[QUERY_VALUE]
+
+# proteomexchange
+px.download.dialog.title = Download ProteomeXchange Submission
 
            
 

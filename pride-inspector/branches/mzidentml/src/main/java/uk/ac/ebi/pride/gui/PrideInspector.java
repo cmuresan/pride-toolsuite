@@ -42,6 +42,8 @@ public class PrideInspector extends Desktop {
 
     // command line option for experiment accessions
     private static final String ACCESSION_CMD = "accession";
+    // command line option for proteomexchange accessions
+    private static final String PX_ACCESSION_CMD = "pxaccesssion";
     // command line option for user name
     private static final String USER_NAME_CMD = "username";
     // command line option for password
@@ -276,11 +278,11 @@ public class PrideInspector extends Desktop {
         // help
         Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
         String helpDesc = context.getProperty("help.title");
-        PrideAction helpAction = new OpenHelpAction(helpDesc, helpIcon);
+        PrideAction helpAction = new OpenHelpAction(helpDesc, helpIcon, "help.index", java.awt.event.KeyEvent.VK_F1);
 
         // faq
         String faqDesc = context.getProperty("faq.title");
-        PrideAction faqAction = new OpenFAQAction(faqDesc, null);
+        PrideAction faqAction = new OpenHelpAction(faqDesc, null, "help.faq");
 
         // pride website
         String prideWeb = context.getProperty("open.pride.website.title");

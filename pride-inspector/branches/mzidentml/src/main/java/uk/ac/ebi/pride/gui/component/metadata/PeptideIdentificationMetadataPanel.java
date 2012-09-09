@@ -49,6 +49,7 @@ public class PeptideIdentificationMetadataPanel extends JPanel{
             if(enzyme.getEnzymeName().getCvParams() !=null) enzymeParamGroup.addCvParams(enzyme.getEnzymeName().getCvParams());
             if(enzyme.getEnzymeName().getUserParams() !=null) enzymeParamGroup.addUserParams(enzyme.getEnzymeName().getUserParams());
         }
+
         if (enzymeParamGroup != null) {
             thresholdTable = TableFactory.createParamTable(enzymeParamGroup);
         } else {

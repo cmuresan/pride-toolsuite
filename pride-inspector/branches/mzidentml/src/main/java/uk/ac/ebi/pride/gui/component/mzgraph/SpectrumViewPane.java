@@ -25,7 +25,6 @@ import uk.ac.ebi.pride.mol.PTModification;
 import uk.ac.ebi.pride.mzgraph.SpectrumBrowser;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 
-import javax.help.CSH;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;

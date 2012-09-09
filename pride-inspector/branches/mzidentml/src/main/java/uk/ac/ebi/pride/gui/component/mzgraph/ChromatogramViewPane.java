@@ -20,7 +20,6 @@ import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.mzgraph.ChromatogramBrowser;
 
-import javax.help.CSH;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;

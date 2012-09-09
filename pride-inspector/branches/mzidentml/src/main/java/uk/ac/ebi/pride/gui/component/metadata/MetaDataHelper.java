@@ -36,10 +36,10 @@ public class MetaDataHelper {
 
         // add experiment related meta data
         if (metaData instanceof ExperimentMetaData) {
-            addUserParam(params, Constants.TITLE, ((ExperimentMetaData) metaData).getName());
-            addUserParam(params, Constants.SHORT_LABEL, ((ExperimentMetaData) metaData).getShortLabel());
-            addUserParam(params, Constants.CREATION_DATE, ((ExperimentMetaData) metaData).getCreationDate());
-            addUserParam(params, Constants.PUBLIC_DATE, ((ExperimentMetaData) metaData).getPublicDate());
+            addUserParam(params, Constants.TITLE, (metaData).getName());
+            addUserParam(params, Constants.SHORT_LABEL, (metaData).getShortLabel());
+            addUserParam(params, Constants.CREATION_DATE, (metaData).getCreationDate());
+            addUserParam(params, Constants.PUBLIC_DATE, (metaData).getPublicDate());
         }
 
         // additional parameters

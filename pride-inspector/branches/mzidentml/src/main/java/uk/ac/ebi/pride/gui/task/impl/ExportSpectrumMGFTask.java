@@ -57,7 +57,7 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
 
         try {
             writer = new PrintWriter(new FileWriter(new File(outputFilePath)));
-            ExperimentMetaData exp = (ExperimentMetaData) controller.getExperimentMetaData();
+            ExperimentMetaData exp = controller.getExperimentMetaData();
 
             //------- Comment section -------
 

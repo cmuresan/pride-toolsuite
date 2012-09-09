@@ -80,9 +80,8 @@ public class PeptideAnnotation {
         if (start != that.start) return false;
         if (ptmAnnotations != null ? !ptmAnnotations.equals(that.ptmAnnotations) : that.ptmAnnotations != null)
             return false;
-        if (sequence != null ? !sequence.equals(that.sequence) : that.sequence != null) return false;
+        return !(sequence != null ? !sequence.equals(that.sequence) : that.sequence != null);
 
-        return true;
     }
 
     @Override

@@ -5,9 +5,6 @@ import uk.ac.ebi.pride.gui.utils.Constants;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 /**
  * Cell renderer to draw bar chart

@@ -4,15 +4,17 @@
 
 package uk.ac.ebi.pride.gui.component.metadata;
 
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.core.Parameter;
+import uk.ac.ebi.pride.data.core.Protocol;
+import uk.ac.ebi.pride.data.core.SearchDataBase;
+import uk.ac.ebi.pride.data.core.SpectrumIdentificationProtocol;
 import uk.ac.ebi.pride.gui.access.GeneralMetaDataGroup;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
-import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
 
 /**
  * @author User #2

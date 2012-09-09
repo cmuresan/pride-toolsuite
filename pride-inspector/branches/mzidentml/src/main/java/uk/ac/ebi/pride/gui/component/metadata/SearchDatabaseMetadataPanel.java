@@ -1,14 +1,13 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
-import org.jdesktop.layout.*;
-import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.core.CvParam;
+import uk.ac.ebi.pride.data.core.ParamGroup;
+import uk.ac.ebi.pride.data.core.SearchDataBase;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 
 import javax.swing.*;
-import javax.swing.GroupLayout;
-import javax.swing.LayoutStyle;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.gui.component.table.renderer;
 
 import uk.ac.ebi.pride.data.core.Modification;
-import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.data.core.PeptideSequence;
 
 import javax.swing.*;

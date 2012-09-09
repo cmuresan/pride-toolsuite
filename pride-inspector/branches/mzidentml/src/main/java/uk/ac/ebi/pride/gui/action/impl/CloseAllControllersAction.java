@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
-import com.sun.corba.se.impl.protocol.giopmsgheaders.AddressingDispositionHelper;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventSubscriber;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -14,8 +13,6 @@ import uk.ac.ebi.pride.gui.event.RemoveDataSourceEvent;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Close all existing data access controller

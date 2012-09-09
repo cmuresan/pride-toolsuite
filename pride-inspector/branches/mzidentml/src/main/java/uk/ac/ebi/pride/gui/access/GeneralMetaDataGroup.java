@@ -134,24 +134,15 @@ public class GeneralMetaDataGroup {
     }
 
     public boolean hasIdentificationMetadata(){
-        if(getIdentificationMetaData() == null){
-            return false;
-        }
-        return true;
+        return getIdentificationMetaData() != null;
     }
 
     public boolean hasMzGraphMetadata(){
-        if(getMzGraphMetaData() == null){
-            return false;
-        }
-        return true;
+        return getMzGraphMetaData() != null;
 
     }
 
     public boolean hasSampleProtocolMetadata() {
-        if(metaData.getSampleList() !=null || metaData.getProtocol() != null){
-            return true;
-        }
-        return false;
+        return metaData.getSampleList() != null || metaData.getProtocol() != null;
     }
 }

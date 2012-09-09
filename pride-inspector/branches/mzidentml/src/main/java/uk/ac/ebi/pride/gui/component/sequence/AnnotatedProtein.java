@@ -14,7 +14,6 @@ import java.util.*;
  * Time: 11:37
  */
 public class AnnotatedProtein extends Protein {
-
     public static final String PEPTIDE_SELECTION_PROP = "selectedAnnotation";
 
     private List<PeptideAnnotation> annotations;

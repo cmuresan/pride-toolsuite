@@ -3,11 +3,11 @@ package uk.ac.ebi.pride.gui.desktop;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableHandler;
-import uk.ac.ebi.pride.gui.prop.PropertyChangeHelper;
 import uk.ac.ebi.pride.gui.prop.PropertyManager;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.TaskManager;
+import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 
 import java.beans.PropertyChangeListener;
 import java.io.IOException;

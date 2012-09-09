@@ -14,7 +14,6 @@ import java.awt.*;
  * To change this template use File | Settings | File Templates.
  */
 public class ReportListRenderer implements ListCellRenderer{
-
     private static final int DEFAULT_HEIGHT = 30;
     private static final int START_ALPHA = 100;
     private static final int STOP_ALPHA = 150;

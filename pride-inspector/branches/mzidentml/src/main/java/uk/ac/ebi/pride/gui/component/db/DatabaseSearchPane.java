@@ -33,7 +33,6 @@ import java.awt.event.KeyListener;
  * All the search actions for the PRIDE public instance is done through this panel
  */
 public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
-
     private static final String PANE_TITLE = "Search Database";
     private static final Color BACKGROUND_COLOUR = Color.white;
 

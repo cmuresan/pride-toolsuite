@@ -27,7 +27,7 @@ public class OpenDatabaseAction extends PrideAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //if (InternetChecker.check()) {
+        if (InternetChecker.check()) {
             // get desktop context
             PrideInspectorContext context = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
 
@@ -36,10 +36,10 @@ public class OpenDatabaseAction extends PrideAction {
             // set task's gui blocker
             newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
             context.addTask(newTask);
-        //} else {
-         //   String msg = Desktop.getInstance().getDesktopContext().getProperty("internet.connection.warning.message");
-         //   String shortMsg = Desktop.getInstance().getDesktopContext().getProperty("internet.connection.warning.short.message");
-        //    JOptionPane.showMessageDialog(Desktop.getInstance().getMainComponent(), msg, shortMsg, JOptionPane.WARNING_MESSAGE);
-        //}
+        } else {
+            String msg = Desktop.getInstance().getDesktopContext().getProperty("internet.connection.warning.message");
+            String shortMsg = Desktop.getInstance().getDesktopContext().getProperty("internet.connection.warning.short.message");
+            JOptionPane.showMessageDialog(Desktop.getInstance().getMainComponent(), msg, shortMsg, JOptionPane.WARNING_MESSAGE);
+        }
     }
 }

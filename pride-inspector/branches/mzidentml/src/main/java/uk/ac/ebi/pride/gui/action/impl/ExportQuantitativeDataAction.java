@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
  * Time: 15:50
  */
 public class ExportQuantitativeDataAction extends PrideAction {
+
     private static final Logger logger = LoggerFactory.getLogger(ExportQuantitativeDataAction.class);
     /**
      * JTable where protein name will be displayed
@@ -50,16 +51,15 @@ public class ExportQuantitativeDataAction extends PrideAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         Runnable code = new Runnable() {
-
-            @Override
+        @Override
             public void run() {
-                QuantExportDialog quantExportDialog = null;
-                try {
-                    quantExportDialog = new QuantExportDialog(Desktop.getInstance().getMainComponent(), table, controller,controller.getListPeptideCvTermReferenceScores());
-                } catch (DataAccessException e1) {
-                    e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                quantExportDialog.setVisible(true);
+            QuantExportDialog quantExportDialog = null;
+            try {
+                quantExportDialog = new QuantExportDialog(Desktop.getInstance().getMainComponent(), table, controller,controller.getListProteinCvTermReferenceScores());
+            } catch (DataAccessException e1) {
+                logger.error("Failed to create an new instance of QuantExportDialog", e1);
+            }
+            quantExportDialog.setVisible(true);
             }
         };
 

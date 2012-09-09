@@ -1,9 +1,12 @@
 package uk.ac.ebi.pride.gui.component.table.listener;
 
 import uk.ac.ebi.pride.gui.component.table.renderer.BarChartRenderer;
+import uk.ac.ebi.pride.gui.component.table.renderer.ScientificNumberRenderer;
+import uk.ac.ebi.pride.gui.utils.Constants;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
@@ -14,7 +17,6 @@ import javax.swing.table.TableModel;
  * Time: 16:58
  */
 public class BarChartColumnListener extends DynamicColumnListener {
-
     private int columnCounts;
 
     public BarChartColumnListener(JTable table) {
@@ -37,7 +39,12 @@ public class BarChartColumnListener extends DynamicColumnListener {
                 for (int i = columnCounts; i < newColumnCounts; i++) {
                     String columnName = table.getModel().getColumnName(i);
                     TableColumn column = getTable().getColumn(columnName);
-                    BarChartRenderer renderer = new BarChartRenderer(2, 0, 1);
+                    TableCellRenderer renderer;
+                    if (columnName.contains(Constants.QUANTIFICATION_RATIO_CHAR)) {
+                        renderer = new BarChartRenderer(2, 0, 1);
+                    } else {
+                        renderer = new ScientificNumberRenderer();
+                    }
                     column.setCellRenderer(renderer);
                 }
 

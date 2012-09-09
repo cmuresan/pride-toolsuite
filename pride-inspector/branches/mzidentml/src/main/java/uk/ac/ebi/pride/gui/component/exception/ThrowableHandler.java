@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.gui.component.exception;
 
-import uk.ac.ebi.pride.gui.prop.PropertyChangeHelper;
+import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;

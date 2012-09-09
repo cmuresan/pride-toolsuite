@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.access.GeneralMetaDataGroup;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.listener.HyperLinkCellMouseClickListener;
+import uk.ac.ebi.pride.gui.component.table.listener.MouseClickPopupListener;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.component.table.model.ParamTableModel;
 import uk.ac.ebi.pride.gui.component.table.renderer.HyperLinkCellRenderer;

@@ -91,16 +91,19 @@ public class ExportSpectrumDescTask extends AbstractDataAccessTask<Void, Void> {
             }
 
             //------- Content section -------
-            writer.println("Spectrum ID" +  TAB + "MS Level" + TAB + "Precursor Charge" +
-                            TAB + "Precursor m/z" + TAB + "Precursor Intensity" + TAB +
-                            "Sum of Intensity" + TAB + "Number of peaks");
+            writer.println("Spectrum ID" + TAB + "MS Level" + TAB + "Precursor Charge" +
+                    TAB + "Precursor m/z" + TAB + "Precursor Intensity" + TAB +
+                    "Sum of Intensity" + TAB + "Number of peaks");
             Collection<Comparable> spectrumIds = controller.getSpectrumIds();
             for (Comparable specId : spectrumIds) {
                 writer.print(specId);
                 writer.print(TAB);
                 writer.print(controller.getMsLevel(specId));
                 writer.print(TAB);
-                writer.print(controller.getPrecursorCharge(specId));
+                Integer charge = controller.getPrecursorCharge(specId);
+                if (charge != null) {
+                    writer.print(controller.getPrecursorCharge(specId));
+                }
                 writer.print(TAB);
                 writer.print(controller.getPrecursorMz(specId));
                 writer.print(TAB);

@@ -104,11 +104,9 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
         // add spectrum help pane
         Icon helpIcon = GUIUtilities.loadIcon(appContext.getProperty("help.icon.small"));
         String helpTooltip = appContext.getProperty("help.tooltip");
-        PrideAction helpAction = new OpenHelpAction(null, helpIcon);
+        PrideAction helpAction = new OpenHelpAction(null, helpIcon, "help.mzgraph.spectra");
         helpAction.putValue(Action.SHORT_DESCRIPTION, helpTooltip);
-        AbstractButton button = (AbstractButton) spectrumBrowser.getSidePane().addAction(helpAction, false);
-        CSH.setHelpIDString(button, "help.mzgraph.spectra");
-        button.addActionListener(new CSH.DisplayHelpFromSource(appContext.getMainHelpBroker()));
+        spectrumBrowser.getSidePane().addAction(helpAction, false);
 
         this.add(spectrumBrowser, BorderLayout.CENTER);
     }
@@ -174,10 +172,6 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
         BinaryDataArray intentBinary = spectrum == null ? null : spectrum.getIntensityBinaryDataArray();
         if (mzBinary != null && intentBinary != null) {
             spectrumBrowser.setPeaks(mzBinary.getDoubleArray(), intentBinary.getDoubleArray());
-            //System.out.println(spectrum.getPeptide().getPeptideEvidence().getPeptideSequence().getSequence());
-            for(int i = 0; i < mzBinary.getDoubleArray().length;i++){
-                System.out.println(mzBinary.getDoubleArray()[i] + "\t" + intentBinary.getDoubleArray()[i]);
-            }
             // set source name
             if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
                 spectrumBrowser.setSource(((File) controller.getSource()).getName());

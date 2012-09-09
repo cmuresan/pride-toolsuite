@@ -5,7 +5,7 @@ import uk.ac.ebi.pride.data.core.MzGraph;
 import uk.ac.ebi.pride.data.core.Parameter;
 import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
-import uk.ac.ebi.pride.gui.prop.PropertyChangeHelper;
+import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 
 import javax.swing.*;
 import javax.swing.event.ListDataListener;

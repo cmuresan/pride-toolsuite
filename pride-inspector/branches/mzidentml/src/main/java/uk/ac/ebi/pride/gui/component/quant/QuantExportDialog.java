@@ -32,9 +32,8 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 import java.util.List;
 
 import static uk.ac.ebi.pride.gui.utils.Constants.DOT;
@@ -84,6 +83,7 @@ public class QuantExportDialog extends JDialog {
         ensemblButton = new JButton();
         exportButton = new JButton();
         label5 = new JLabel();
+        reactomeButton = new JButton();
         panel2 = new JPanel();
         reagentLabel = new JLabel();
         reagentComboBox = new JComboBox();
@@ -123,6 +123,9 @@ public class QuantExportDialog extends JDialog {
             //---- label5 ----
             label5.setText("Protein");
 
+            //---- reactomeButton ----
+            reactomeButton.setText("Reactome Pathway");
+
             GroupLayout panel1Layout = new GroupLayout(panel1);
             panel1.setLayout(panel1Layout);
             panel1Layout.setHorizontalGroup(
@@ -132,11 +135,12 @@ public class QuantExportDialog extends JDialog {
                                     .add(panel1Layout.createParallelGroup()
                                             .add(label5, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE)
                                             .add(panel1Layout.createSequentialGroup()
-                                                    .add(scrollPane2, GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
+                                                    .add(scrollPane2, GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
                                                     .addPreferredGap(LayoutStyle.RELATED)
-                                                    .add(panel1Layout.createParallelGroup(GroupLayout.TRAILING)
-                                                            .add(ensemblButton, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
-                                                            .add(exportButton, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE))))
+                                                    .add(panel1Layout.createParallelGroup()
+                                                            .add(ensemblButton, GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                                                            .add(exportButton, GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                                                            .add(reactomeButton, GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))))
                                     .addContainerGap())
             );
             panel1Layout.setVerticalGroup(
@@ -146,13 +150,15 @@ public class QuantExportDialog extends JDialog {
                                     .addPreferredGap(LayoutStyle.RELATED)
                                     .add(panel1Layout.createParallelGroup()
                                             .add(panel1Layout.createSequentialGroup()
-                                                    .add(68, 68, 68)
+                                                    .add(65, 65, 65)
                                                     .add(exportButton)
                                                     .add(18, 18, 18)
-                                                    .add(ensemblButton))
+                                                    .add(ensemblButton)
+                                                    .add(18, 18, 18)
+                                                    .add(reactomeButton))
                                             .add(GroupLayout.TRAILING, panel1Layout.createSequentialGroup()
                                                     .add(6, 6, 6)
-                                                    .add(scrollPane2, GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)))
+                                                    .add(scrollPane2, GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)))
                                     .addContainerGap())
             );
         }
@@ -172,7 +178,6 @@ public class QuantExportDialog extends JDialog {
 
             //---- filterButton ----
             filterButton.setText("Filter");
-            filterButton.setEnabled(true);
 
             GroupLayout panel2Layout = new GroupLayout(panel2);
             panel2.setLayout(panel2Layout);
@@ -182,15 +187,15 @@ public class QuantExportDialog extends JDialog {
                                     .add(12, 12, 12)
                                     .add(panel2Layout.createParallelGroup()
                                             .add(reagentLabel)
-                                            .add(reagentComboBox, 0, 202, Short.MAX_VALUE))
+                                            .add(reagentComboBox, 0, 205, Short.MAX_VALUE))
                                     .add(25, 25, 25)
                                     .add(panel2Layout.createParallelGroup()
-                                            .add(regulationComboBox, 0, 160, Short.MAX_VALUE)
+                                            .add(regulationComboBox, 0, 165, Short.MAX_VALUE)
                                             .add(regulationLabel))
                                     .add(24, 24, 24)
                                     .add(panel2Layout.createParallelGroup()
                                             .add(panel2Layout.createSequentialGroup()
-                                                    .add(percentageTextField, GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
+                                                    .add(percentageTextField, GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
                                                     .add(18, 18, 18)
                                                     .add(filterButton, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE))
                                             .add(percentageLabel))
@@ -210,15 +215,12 @@ public class QuantExportDialog extends JDialog {
                                                     .add(regulationComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                     .add(percentageTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                             .add(reagentComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                    .addContainerGap(8, Short.MAX_VALUE))
+                                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
         }
 
         //---- closeButton ----
         closeButton.setText("Close");
-
-        //---- helpLabel ----
-
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
@@ -273,6 +275,9 @@ public class QuantExportDialog extends JDialog {
 
         // ensembl button action
         ensemblButton.addActionListener(new EnsemblActionListener());
+
+        // reactome button action
+        reactomeButton.addActionListener(new ReactomePathwayListener());
 
         // export button action
         exportButton.addActionListener(new ExportActionListener());
@@ -336,6 +341,141 @@ public class QuantExportDialog extends JDialog {
                 reagentComboBox.addItem(header);
                 filterButton.setEnabled(true);
             }
+        }
+    }
+
+
+    /**
+     * This is a quick implementation for SLING deliverables
+     * <p/>
+     * NOTE: it is a not very nice implementation
+     */
+    private class ReactomePathwayListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int rowCnt = proteinTable.getRowCount();
+            if (rowCnt > 0) {
+                try {
+                    File tmpHtmlFile = createTemporaryHtml();
+                    if (tmpHtmlFile.exists()) {
+                        HttpUtilities.openURL("file://" + tmpHtmlFile.getAbsolutePath());
+                    }
+                } catch (IOException e1) {
+                    // show warning message
+                    Runnable code = new Runnable() {
+                        @Override
+                        public void run() {
+                            GUIUtilities.warn(uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getMainComponent(),
+                                    "Failed to send query to Reactome", "Reactome Pathway Expression");
+                        }
+                    };
+
+                    try {
+                        EDTUtils.invokeAndWait(code);
+                    } catch (InvocationTargetException e2) {
+                        logger.error("Failed to show warning message", e1);
+                    } catch (InterruptedException e2) {
+                        logger.error("Failed to show warning message", e1);
+                    }
+                }
+            }
+        }
+
+
+        private File createTemporaryHtml() throws IOException {
+            File tmpHtmlFile = File.createTempFile("reactom", ".html");
+
+            // get template file
+            InputStream inputStream = QuantExportDialog.class.getClassLoader().getResourceAsStream(appContext.getProperty("reactome.html.template"));
+
+            // create query value
+            String value = createQueryValue();
+
+            // read from template file
+            BufferedReader reader = null;
+            PrintWriter writer = null;
+
+            try {
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+                writer = new PrintWriter(new FileWriter(tmpHtmlFile));
+
+                String line;
+                String placeHolder = appContext.getProperty("reactome.query.value.placeholder");
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains(placeHolder)) {
+                        line = line.replace(placeHolder, value);
+                    }
+                    writer.println(line);
+                }
+
+            } finally {
+                if (reader != null) {
+                    reader.close();
+                }
+
+                if (writer != null) {
+                    writer.close();
+                }
+            }
+
+            return tmpHtmlFile;
+        }
+
+        private String createQueryValue() {
+            String value = "";
+            String separator = ",";
+
+            int rowCnt = proteinTable.getRowCount();
+            if (rowCnt > 0) {
+                int protColIndex = -1;
+                int mappedProtColIndex = -1;
+                int quantDataStartColIndex = -1;
+                int colCnt = proteinTable.getColumnCount();
+                for (int i = 0; i < colCnt; i++) {
+                    String colName = proteinTable.getColumnName(i);
+                    if (colName.equals(QuantProteinTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader())) {
+                        protColIndex = i;
+                    } else if (colName.equals(QuantProteinTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader())) {
+                        mappedProtColIndex = i;
+                    }
+                }
+
+                if (mappedProtColIndex < colCnt - 1) {
+                    quantDataStartColIndex = mappedProtColIndex + 1;
+                }
+
+                // add header
+                value += proteinTable.getColumnName(mappedProtColIndex) + separator;
+                for (int i = quantDataStartColIndex; i < colCnt; i++) {
+                    value += proteinTable.getColumnName(i) + separator;
+                }
+                value = value.substring(0, value.length() - 1) + "\n";
+
+                for (int i = 0; i < rowCnt; i++) {
+                    String prot = (String) proteinTable.getValueAt(i, mappedProtColIndex);
+                    if (prot == null) {
+                        prot = (String) proteinTable.getValueAt(i, protColIndex);
+                    }
+
+                    if (prot != null && quantDataStartColIndex > -1) {
+                        value += prot + separator;
+                        for (int j = quantDataStartColIndex; j < colCnt; j++) {
+                            String colName = proteinTable.getColumnName(j);
+                            if (colName.contains("/")) {
+                                Double quantVal = (Double) proteinTable.getValueAt(i, j);
+                                if (quantVal != null) {
+                                    value += quantVal;
+                                }
+                                value += separator;
+                            }
+                        }
+                        value = value.substring(0, value.length() - 1) + "\n";
+                    }
+                }
+            }
+
+            return value;
         }
     }
 
@@ -574,6 +714,7 @@ public class QuantExportDialog extends JDialog {
     private JButton ensemblButton;
     private JButton exportButton;
     private JLabel label5;
+    private JButton reactomeButton;
     private JPanel panel2;
     private JLabel reagentLabel;
     private JComboBox reagentComboBox;

@@ -423,27 +423,37 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         protDetailButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
         buttonPanel.add(protDetailButton, c);
 
-        c.gridx = 0;
         c.gridy = 1;
+        c.gridx = 0;
+        JButton mzIndetMLButton = createLabelLikeButton(bulletinIcon, "mzIdentML");
+        CSH.setHelpIDString(mzIndetMLButton, "help.faq.mzidentml");
+        mzIndetMLButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
+        mzIndetMLButton.addMouseListener(new MouseOverListener(mzIndetMLButton));
+        buttonPanel.add(mzIndetMLButton, c);
+
+
+        c.gridx = 1;
         JButton mzMLButton = createLabelLikeButton(bulletinIcon, "mzML");
         CSH.setHelpIDString(mzMLButton, "help.faq.mzml");
         mzMLButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
         mzMLButton.addMouseListener(new MouseOverListener(mzMLButton));
         buttonPanel.add(mzMLButton, c);
 
-        c.gridx = 1;
+
+
+        c.gridx = 2;
         JButton downloadButton = createLabelLikeButton(bulletinIcon, "Private Download");
         CSH.setHelpIDString(downloadButton, "help.download");
         downloadButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
         buttonPanel.add(downloadButton, c);
 
-        c.gridx = 2;
+        c.gridx = 3;
         JButton chartButton = createLabelLikeButton(bulletinIcon, "Summary Charts");
         CSH.setHelpIDString(chartButton, "help.chart");
         chartButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
         buttonPanel.add(chartButton, c);
 
-        c.gridx = 3;
+        c.gridx = 4;
         JButton peptideButton = createLabelLikeButton(bulletinIcon, "Shared Peptides");
         CSH.setHelpIDString(peptideButton, "help.faq.shared.peptide");
         peptideButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));

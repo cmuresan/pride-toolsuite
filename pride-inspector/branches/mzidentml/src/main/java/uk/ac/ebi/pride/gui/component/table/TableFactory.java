@@ -17,6 +17,7 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -281,10 +282,16 @@ public class TableFactory {
         doiColumn.setCellRenderer(new HyperLinkCellRenderer());
         doiColumn.setMaxWidth(100);
 
+        // reference
+        String referenceColumnHeader = ReferenceTableModel.TableHeader.REFERENCE_DESCRIPTION.getHeader();
+
         // add mouse motion listener
-        referenceTable.addMouseMotionListener(new TableCellMouseMotionListener(referenceTable, pubMedColumnHeader, doiColumnHeader));
+        referenceTable.addMouseMotionListener(new TableCellMouseMotionListener(referenceTable, pubMedColumnHeader, doiColumnHeader, referenceColumnHeader));
         referenceTable.addMouseListener(new HyperLinkCellMouseClickListener(referenceTable, pubMedColumnHeader, new PrefixedHyperLinkGenerator(Constants.PUBMED_URL_PERFIX), pubmedPattern));
         referenceTable.addMouseListener(new HyperLinkCellMouseClickListener(referenceTable, doiColumnHeader, new DOIHyperLinkGenerator(Constants.DOI_URL_PREFIX)));
+        Collection<String> columnHeadersWithPopup = new HashSet<String>();
+        columnHeadersWithPopup.add(referenceColumnHeader);
+        referenceTable.addMouseListener(new MouseClickPopupListener(referenceTable, columnHeadersWithPopup));
 
         return referenceTable;
     }
@@ -387,7 +394,6 @@ public class TableFactory {
      * @return JTable  quant protein table
      */
     public static JTable createQuantProteinTable(DataAccessController controller, TableModel tableModel) {
-
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable quantProteinTable = new DefaultPrideTable(tableModel, columnModel);
         quantProteinTable.setAutoCreateColumnsFromModel(false);

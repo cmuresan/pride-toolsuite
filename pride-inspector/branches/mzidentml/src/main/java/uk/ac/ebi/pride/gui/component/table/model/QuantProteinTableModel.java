@@ -141,11 +141,24 @@ public class QuantProteinTableModel extends AbstractProteinTableModel {
             fireTableRowsInserted(rowNum, rowNum);
         } else {
             List<Object> content = contents.get(rowNum);
-            // replace previous quant data
+
+            // adjust all content's size
             int offset = compareColIndex + 1;
-            for (int i = offset; i < content.size(); i++) {
-                content.set(i, data.get(i - offset));
+            int contentSize = content.size();
+            int dataSize = data.size();
+            if (contentSize - offset < dataSize) {
+                for (List<Object> con : contents) {
+                    for (int i = contentSize - offset; i < dataSize; i++) {
+                        con.add(null);
+                    }
+                }
             }
+
+            // replace previous quant data
+            for (int i = 0; i < dataSize; i++) {
+                content.set(i + offset, data.get(i));
+            }
+
             // notify
             fireTableRowsUpdated(rowNum, rowNum);
         }

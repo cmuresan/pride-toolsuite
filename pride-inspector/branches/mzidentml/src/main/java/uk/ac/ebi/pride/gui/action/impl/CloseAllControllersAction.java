@@ -1,15 +1,21 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
+import com.sun.corba.se.impl.protocol.giopmsgheaders.AddressingDispositionHelper;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventSubscriber;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
+import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
+import uk.ac.ebi.pride.gui.event.RemoveDataSourceEvent;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Close all existing data access controller
@@ -42,5 +48,17 @@ public class CloseAllControllersAction extends PrideAction {
     public void onForegroundDataSourceEvent(ForegroundDataSourceEvent evt) {
         DataAccessController foregroundController = (DataAccessController) evt.getNewForegroundDataSource();
         this.setEnabled(foregroundController != null);
+    }
+
+    @EventSubscriber(eventClass = AddDataSourceEvent.class)
+    public void onAddDataSourceEvent(AddDataSourceEvent evt) {
+        Collection controllers = evt.getNewDataSources();
+        this.setEnabled(controllers.size() > 0);
+    }
+
+    @EventSubscriber(eventClass = RemoveDataSourceEvent.class)
+    public void onRemoveDataSourceEvent(RemoveDataSourceEvent evt){
+        Collection controllers = evt.getNewDataSources();
+        this.setEnabled(controllers.size() > 0);
     }
 }

@@ -1,8 +1,12 @@
 package uk.ac.ebi.pride.gui.component.table.renderer;
 
+import uk.ac.ebi.pride.gui.utils.Constants;
+
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
@@ -57,6 +61,14 @@ public class BarChartRenderer extends JLabel implements TableCellRenderer {
         this.setOpaque(true);
     }
 
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
                                                    boolean isSelected, boolean hasFocus,
@@ -90,8 +102,13 @@ public class BarChartRenderer extends JLabel implements TableCellRenderer {
 
             // draw text
             if (numberAndChart) {
-                NumberFormat formatter = NumberFormat.getInstance();
-                String str = formatter.format(value);
+                String str;
+                if (((Number) value).doubleValue() > Constants.MAX_NON_SCIENTIFIC_NUMBER
+                        || ((Number) value).doubleValue() < Constants.MIN_MON_SCIENTIFIC_NUMBER) {
+                    str = Constants.LARGE_DECIMAL_NUMBER_FORMATTER.format(value);
+                } else {
+                    str = Constants.DECIMAL_FORMATTER.format(value);
+                }
                 g2.drawString(str, xPos, height - fontDescent);
 
             }

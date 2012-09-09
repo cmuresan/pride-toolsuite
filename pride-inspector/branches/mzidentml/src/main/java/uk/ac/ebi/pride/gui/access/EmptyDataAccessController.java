@@ -18,6 +18,14 @@ import java.util.List;
  * Time: 15:30:42
  */
 public class EmptyDataAccessController extends AbstractDataAccessController {
+
+    public EmptyDataAccessController() {
+    }
+
+    public EmptyDataAccessController(Object source) {
+        super(source);
+    }
+
     @Override
     public DataAccessMode getMode() {
         return null;

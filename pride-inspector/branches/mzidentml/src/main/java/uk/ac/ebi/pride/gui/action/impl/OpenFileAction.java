@@ -33,11 +33,9 @@ import java.util.List;
  * Time: 11:40:33
  */
 public class OpenFileAction extends PrideAction implements TaskListener<Void, File> {
-
     private static final Logger logger = LoggerFactory.getLogger(OpenFileAction.class);
 
     private List<File> inputFilesToOpen;
-
     private PrideInspectorContext context;
 
     public OpenFileAction(String name, Icon icon) {

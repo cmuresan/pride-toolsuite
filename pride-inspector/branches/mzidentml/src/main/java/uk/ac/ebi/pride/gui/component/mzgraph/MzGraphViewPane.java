@@ -122,7 +122,7 @@ public class MzGraphViewPane extends DataAccessControllerPane {
         // add spectrum help pane
         Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
         String helpTooltip = context.getProperty("help.tooltip");
-        PrideAction helpAction = new OpenHelpAction(null, helpIcon);
+        PrideAction helpAction = new OpenHelpAction(null, helpIcon, helpTooltip);
         helpAction.putValue(Action.SHORT_DESCRIPTION, helpTooltip);
         AbstractButton button = (AbstractButton) spectrumBrowser.getSidePane().addAction(helpAction, false);
         CSH.setHelpIDString(button, "help.mzgraph.spectra");
@@ -138,7 +138,7 @@ public class MzGraphViewPane extends DataAccessControllerPane {
         // add spectrum help pane
         Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
         String helpTooltip = context.getProperty("help.tooltip");
-        PrideAction helpAction = new OpenHelpAction(null, helpIcon);
+        PrideAction helpAction = new OpenHelpAction(null, helpIcon,helpTooltip);
         helpAction.putValue(Action.SHORT_DESCRIPTION, helpTooltip);
         AbstractButton button = (AbstractButton) chromaBrowser.getSidePane().addAction(helpAction, false);
         CSH.setHelpIDString(button, "help.mzgraph.chroma");

@@ -92,9 +92,11 @@ public class ContactTableModel extends ListTableModel<ParamGroup> {
 
         // contact information
         List<UserParam> ups = newData.getUserParams();
-        for (UserParam up : ups) {
-            if (CONTACT_INFORMATION.equals(up.getName())) {
-                info = up.getValue();
+        if (ups != null) {
+            for (UserParam up : ups) {
+                if (CONTACT_INFORMATION.equals(up.getName())) {
+                    info = up.getValue();
+                }
             }
         }
 

@@ -17,7 +17,6 @@ import java.awt.*;
  * Time: 12:24
  */
 public class SummaryReportViewer extends JPanel{
-
     private PrideInspectorContext context;
     private ReportList container;
     private DataAccessController currentController;

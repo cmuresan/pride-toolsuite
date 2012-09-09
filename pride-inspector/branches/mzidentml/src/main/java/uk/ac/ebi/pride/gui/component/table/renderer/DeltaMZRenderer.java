@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.util.NumberUtilities;
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.text.DecimalFormat;
 
 /**
  * Renderer for drawing delta m/a values
@@ -19,11 +20,13 @@ public class DeltaMZRenderer extends JLabel implements TableCellRenderer {
     private double minLimit;
     private double maxLimit;
     private Double deltaMz;
+    private DecimalFormat formatter;
 
     public DeltaMZRenderer(double min, double max) {
         setOpaque(true);
         this.minLimit = min;
         this.maxLimit = max;
+        this.formatter = new DecimalFormat("#####.####");
     }
 
     @Override
@@ -72,7 +75,7 @@ public class DeltaMZRenderer extends JLabel implements TableCellRenderer {
             g2.setFont(g2.getFont().deriveFont(Font.BOLD));
             FontMetrics fontMetrics = g2.getFontMetrics();
 
-            String text = deltaMz + "";
+            String text = formatter.format(deltaMz);
             int textWidth = fontMetrics.stringWidth(text);
             int xPos = (width - textWidth) / 2;
             int yPos = height / 2 + fontMetrics.getDescent() + 2;

@@ -213,6 +213,8 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
                     Comparable identId = (Comparable) pepTableModel.getValueAt(modelRowIndex, identColNum);
                     Comparable peptideId = (Comparable) pepTableModel.getValueAt(modelRowIndex, peptideColNum);
 
+                    logger.debug("Peptide table selection:  Protein id: " + identId + " Peptide Id: " + peptideId);
+
                     // fire a background task to retrieve peptide
                     if (peptideId != null && identId != null) {
                         // publish the event to local event bus

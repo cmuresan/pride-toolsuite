@@ -8,6 +8,7 @@ import javax.help.CSH;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 /**
  * Open Help manuel.
  *
@@ -39,4 +40,3 @@ public class OpenHelpAction extends PrideAction {
         listener.actionPerformed(e);
     }
 }
-

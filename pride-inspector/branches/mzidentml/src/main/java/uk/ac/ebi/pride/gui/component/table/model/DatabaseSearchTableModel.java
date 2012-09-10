@@ -28,6 +28,7 @@ public class DatabaseSearchTableModel extends ListTableModel<List<Object>> {
         TAXONOMY_ID("Taxonomy ID", "Sample Taxonomy ID"),
         TISSUE("Tissue", "Sample Tissue"),
         BRENDA_ID("BRENDA ID (Tissue)", "Tissue's BRENDA ID"),
+        PTM("PTM", "Post Translational Modifications"),
         NUMBER_OF_SPECTRA("#Spectra", "Number of spectra"),
         NUMBER_OF_PROTEIN("#Proteins", "Number of proteins"),
         NUMBER_OF_PEPTIDE("#Peptides", "Number of peptides"),

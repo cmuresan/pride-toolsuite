@@ -215,7 +215,6 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
             if (part == null || "".equals(part.trim())) {
                 rowParts.add(" " + Constants.NOT_AVAILABLE);
             } else if (headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.EXPERIMENT_ACCESSION) ||
-                        headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.TAXONOMY_ID) ||
                         headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.NUMBER_OF_SPECTRA) ||
                         headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.NUMBER_OF_PEPTIDE) ||
                         headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.NUMBER_OF_PROTEIN)) {

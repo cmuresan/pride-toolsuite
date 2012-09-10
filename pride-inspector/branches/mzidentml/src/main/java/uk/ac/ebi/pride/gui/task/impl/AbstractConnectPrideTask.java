@@ -286,6 +286,7 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
             String msg = ex.getMessage();
             if (msg.contains("403")) {
                 logger.warn("Wrong login credentials: {}", msg);
+                publish("Warning:Wrong login credentials");
             } else {
                 logger.warn("Fail to connect to the remote server: {}", msg);
                 publish("Warning:Fail to connect the server");

@@ -19,7 +19,6 @@ import uk.ac.ebi.pride.gui.component.message.MessageType;
  * Time: 12:18:34
  */
 public class RetrieveMetaDataTask extends AbstractDataAccessTask<GeneralMetaDataGroup, Void> {
-
     private static final Logger logger = LoggerFactory.getLogger(RetrieveEntryTask.class);
     /**
      * the default task title

@@ -1,6 +1,4 @@
 <assembly>
-    <id>assembly</id>
-
     <formats>
         <format>zip</format>
     </formats>
@@ -9,7 +7,7 @@
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>lib</outputDirectory>
+            <outputDirectory>${assembly.dir}/lib</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <excludes>
@@ -17,4 +15,14 @@
             </excludes>
         </dependencySet>
     </dependencySets>
+
+    <fileSets>
+        <fileSet>
+            <directory>${project.basedir}/target</directory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+            <outputDirectory>${assembly.dir}</outputDirectory>
+        </fileSet>
+    </fileSets>
 </assembly>

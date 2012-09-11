@@ -23,11 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>From a spectral chartData structure of a PRIDE experiment and a file of theoretical chartData, create a chart comparing the distribution of precursor masses of a pride experiment and the theoretical distribution.</p>
+ * <p>
+ *     From a spectral chartData structure of a PRIDE experiment and a file of theoretical chartData,
+ *     create a chart comparing the distribution of precursor masses of a pride experiment and the theoretical distribution.
+ * </p>
  *
  * @author Antonio Fabregat
- * Date: 15-jul-2010
- * Time: 11:24:46
+ *         Date: 15-jul-2010
+ *         Time: 11:24:46
  */
 public class PreMSvsTheMSChartSpectra extends PrideChart implements PrideChartSpectraOptions, PrideChartQuartiles {
     /**
@@ -74,7 +77,7 @@ public class PreMSvsTheMSChartSpectra extends PrideChart implements PrideChartSp
     }
 
     @Override
-    protected void initializeQuartiles(){
+    protected void initializeQuartiles() {
         this.supportedQuartiles.add(QuartilesType.NONE);
         this.supportedQuartiles.add(QuartilesType.PRIDE);
         this.supportedQuartiles.add(QuartilesType.HUMAN);
@@ -90,23 +93,23 @@ public class PreMSvsTheMSChartSpectra extends PrideChart implements PrideChartSp
     protected void processData(ExperimentSummaryData summaryData) {
         MSDataArray msIdentifiedArrayExp = new MSDataArray(summaryData.getMassVecExp(true));
         int idBars;
-        try{
+        try {
             idBars = (int) Math.ceil(msIdentifiedArrayExp.getMaxValue() / BAR_WIDTH);
-        }catch(Exception e){
+        } catch (Exception e) {
             idBars = 0;
         }
 
         MSDataArray msUnidentifiedArrayExp = new MSDataArray(summaryData.getMassVecExp(false));
         int unidBars;
-        try{
+        try {
             unidBars = (int) Math.ceil(msUnidentifiedArrayExp.getMaxValue() / BAR_WIDTH);
-        }catch(Exception e){
+        } catch (Exception e) {
             unidBars = 0;
         }
 
         //ToDo: find a better way for knowing when there is not precursor mass chartData in the experiment
         //This is 1 because there is not precursor mass chartData in the experiment
-        if (idBars <= 1 && unidBars <=1) {
+        if (idBars <= 1 && unidBars <= 1) {
             recordError("The experiment does not contain precursor mass data");
             intermediateData = new IntermediateData(getErrorMessages());
             return;
@@ -118,20 +121,24 @@ public class PreMSvsTheMSChartSpectra extends PrideChart implements PrideChartSp
         float idTotalFreqExpData = 0;
         for (int j = 0; j < msIdentifiedArrayExp.size(); j++) {
             double value = msIdentifiedArrayExp.getAt(j);
-            int range = (int) Math.floor((value) / BAR_WIDTH);
-            idExpData[range]++;
-            idTotalFreqExpData++;
+            if (value >= 0) {
+                int range = (int) Math.floor((value) / BAR_WIDTH);
+                idExpData[range - 1]++;
+                idTotalFreqExpData++;
+            }
         }
 
         float unidTotalFreqExpData = 0;
         for (int j = 0; j < msUnidentifiedArrayExp.size(); j++) {
             double value = msUnidentifiedArrayExp.getAt(j);
-            int range = (int) Math.floor((value) / BAR_WIDTH);
-            unidExpData[range]++;
-            unidTotalFreqExpData++;
+            if (value >= 0) {
+                int range = (int) Math.floor((value) / BAR_WIDTH);
+                unidExpData[range - 1]++;
+                unidTotalFreqExpData++;
+            }
         }
 
-        List<SeriesPair<Double,Double>> identified = new ArrayList<SeriesPair<Double,Double>>();
+        List<SeriesPair<Double, Double>> identified = new ArrayList<SeriesPair<Double, Double>>();
         for (int j = 0; j < idExpData.length; j++) {
             //Normalization of the frequencies
             double key = j * BAR_WIDTH;
@@ -139,7 +146,7 @@ public class PreMSvsTheMSChartSpectra extends PrideChart implements PrideChartSp
             identified.add(new SeriesPair<Double, Double>(key, value));
         }
 
-        List<SeriesPair<Double,Double>> unidentified = new ArrayList<SeriesPair<Double,Double>>();
+        List<SeriesPair<Double, Double>> unidentified = new ArrayList<SeriesPair<Double, Double>>();
         for (int j = 0; j < unidExpData.length; j++) {
             //Normalization of the frequencies
             double key = j * BAR_WIDTH;
@@ -168,34 +175,34 @@ public class PreMSvsTheMSChartSpectra extends PrideChart implements PrideChartSp
         } catch (JSONException e) {/*Nothing here*/}
     }
 
-    private DataSeries<Double, Double> getAllSpectraSeries(List<DataSeries<Double,Double>> seriesList,
-                                                           double idenFreq, double unidenFreq){
-        DataSeries<Double,Double> identified = seriesList.get(0);
-        DataSeries<Double,Double> unidentified = seriesList.get(1);
+    private DataSeries<Double, Double> getAllSpectraSeries(List<DataSeries<Double, Double>> seriesList,
+                                                           double idenFreq, double unidenFreq) {
+        DataSeries<Double, Double> identified = seriesList.get(0);
+        DataSeries<Double, Double> unidentified = seriesList.get(1);
 
-        List<SeriesPair<Double,Double>> idenSeries = identified.getSeriesValues(Double.class, Double.class);
-        List<SeriesPair<Double,Double>> unidenSeries = unidentified.getSeriesValues(Double.class, Double.class);
+        List<SeriesPair<Double, Double>> idenSeries = identified.getSeriesValues(Double.class, Double.class);
+        List<SeriesPair<Double, Double>> unidenSeries = unidentified.getSeriesValues(Double.class, Double.class);
 
         double max = Math.max(idenSeries.size(), unidenSeries.size());
-        List<SeriesPair<Double,Double>> allSpectraSeries = new ArrayList<SeriesPair<Double,Double>>();
+        List<SeriesPair<Double, Double>> allSpectraSeries = new ArrayList<SeriesPair<Double, Double>>();
         for (int j = 0; j < max; j++) {
             double iden = j < idenSeries.size() ? idenSeries.get(j).getY() : 0.0;
             double uniden = j < unidenSeries.size() ? unidenSeries.get(j).getY() : 0.0;
 
-            double key = j < idenSeries.size() ?  idenSeries.get(j).getX() : unidenSeries.get(j).getX();
+            double key = j < idenSeries.size() ? idenSeries.get(j).getX() : unidenSeries.get(j).getX();
             double value = (iden * idenFreq + uniden * unidenFreq) / (idenFreq + unidenFreq);
             allSpectraSeries.add(new SeriesPair<Double, Double>(key, value));
         }
 
         return new DataSeries<Double, Double>(
-                        DataSeriesType.ALL_SPECTRA,
-                        DataSeriesType.ALL_SPECTRA.getType(),
-                        allSpectraSeries);
+                DataSeriesType.ALL_SPECTRA,
+                DataSeriesType.ALL_SPECTRA.getType(),
+                allSpectraSeries);
     }
 
-    private List<XYSeries> getTheoreticalSeries(int bars, String reference, String fileName){
-        if(fileName==null || fileName.isEmpty()) return new ArrayList<XYSeries>();
-        
+    private List<XYSeries> getTheoreticalSeries(int bars, String reference, String fileName) {
+        if (fileName == null || fileName.isEmpty()) return new ArrayList<XYSeries>();
+
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
         PMDQuartilesFileReader pmdQuartiles = new PMDQuartilesFileReader(is);
 
@@ -205,11 +212,11 @@ public class PreMSvsTheMSChartSpectra extends PrideChart implements PrideChartSp
         XYSeries q3 = new XYSeries("Quartiles"); //Q3
         for (int j = 0; j < bars; j++) {
             double key = j * BAR_WIDTH;
-            try{
+            try {
                 q1.add(key, pmdQuartiles.getQ1Values().get(j));
                 q2.add(key, pmdQuartiles.getQ2Values().get(j));
                 q3.add(key, pmdQuartiles.getQ3Values().get(j));
-            }catch(IndexOutOfBoundsException e){
+            } catch (IndexOutOfBoundsException e) {
                 q1.add(key, 0.0);
                 q2.add(key, 0.0);
                 q3.add(key, 0.0);
@@ -235,9 +242,9 @@ public class PreMSvsTheMSChartSpectra extends PrideChart implements PrideChartSp
     protected void setChart() {
         //Necessary because the y axis upper bound was not being correctly set automatically
         double yAxisUpperBound = 0.0;
-        
-        SeriesManager<Double,Double> sf = new SeriesManager<Double,Double>(intermediateData);
-        List<DataSeries<Double,Double>> seriesList = sf.getSeries();
+
+        SeriesManager<Double, Double> sf = new SeriesManager<Double, Double>(intermediateData);
+        List<DataSeries<Double, Double>> seriesList = sf.getSeries();
 
         //Adds the 'All Spectra' series at the end in the local variable 'seriesList'
         //**NOTE** The intermediateData is NOT modified
@@ -249,7 +256,7 @@ public class PreMSvsTheMSChartSpectra extends PrideChart implements PrideChartSp
         XYSeriesCollection dataset = new XYSeriesCollection();
         for (DataSeries<Double, Double> series : seriesList) {
             DataSeriesType seriesType = series.getType();
-            if(!visibleTypes.contains(seriesType)) continue;
+            if (!visibleTypes.contains(seriesType)) continue;
 
             List<SeriesPair<Double, Double>> values = series.getSeriesValues(Double.class, Double.class);
             XYSeries expSerie = new XYSeries(series.getIdentifier());
@@ -263,7 +270,7 @@ public class PreMSvsTheMSChartSpectra extends PrideChart implements PrideChartSp
 
         QuartilesType quartilesType = getVisibleQuartile();
         String fileName = quartilesType.getFileName();
-        if (fileName!=null) {    
+        if (fileName != null) {
             for (XYSeries xySeries : getTheoreticalSeries(bars, quartilesType.getType(), fileName)) {
                 yAxisUpperBound = Math.max(yAxisUpperBound, xySeries.getMaxY());
                 dataset.addSeries(xySeries);
@@ -288,26 +295,26 @@ public class PreMSvsTheMSChartSpectra extends PrideChart implements PrideChartSp
 
         XYPlot plot = (XYPlot) chart.getPlot();
         //SETTING THE UPPER BOUND AND MARGIN MANUALLY
-        plot.getRangeAxis().setUpperBound(yAxisUpperBound * ( 1 + CHART_UPPER_MARGIN/2 ));
+        plot.getRangeAxis().setUpperBound(yAxisUpperBound * (1 + CHART_UPPER_MARGIN / 2));
         plot.setBackgroundAlpha(0f);
         plot.setDomainGridlinePaint(Color.red);
         plot.setRangeGridlinePaint(Color.blue);
 
         int series = dataset.getSeries().size();
-        if(fileName!=null){
-            plot.getRenderer().setSeriesPaint(series-3, quartilesType.getBoundsColor());
-            plot.getRenderer().setSeriesPaint(series-2, quartilesType.getMiddleColor());
-            plot.getRenderer().setSeriesPaint(series-1, quartilesType.getBoundsColor());
+        if (fileName != null) {
+            plot.getRenderer().setSeriesPaint(series - 3, quartilesType.getBoundsColor());
+            plot.getRenderer().setSeriesPaint(series - 2, quartilesType.getMiddleColor());
+            plot.getRenderer().setSeriesPaint(series - 1, quartilesType.getBoundsColor());
         }
 
 
-        for(int i=0; i<series; i++){
+        for (int i = 0; i < series; i++) {
             sr.setSeriesShapesVisible(i, false);
             sr.setSeriesVisibleInLegend(i, true);
         }
 
-        if( series > 3 )
-            sr.setSeriesVisibleInLegend(series-3, false);
+        if (series > 3)
+            sr.setSeriesVisibleInLegend(series - 3, false);
     }
 
     @Override
@@ -337,8 +344,8 @@ public class PreMSvsTheMSChartSpectra extends PrideChart implements PrideChartSp
 
     @Override
     public boolean isSpectraSeriesEmpty(DataSeriesType type) {
-        SeriesManager<Double,Double> sf = new SeriesManager<Double,Double>(intermediateData);
-        List<DataSeries<Double,Double>> seriesList = sf.getSeries();
+        SeriesManager<Double, Double> sf = new SeriesManager<Double, Double>(intermediateData);
+        List<DataSeries<Double, Double>> seriesList = sf.getSeries();
 
         //Adds the 'All Spectra' series at the end in the local variable 'seriesList'
         //**NOTE** The intermediateData is NOT modified
@@ -346,8 +353,8 @@ public class PreMSvsTheMSChartSpectra extends PrideChart implements PrideChartSp
         double unidenFreq = intermediateData.getDouble("unidenFreq");
         seriesList.add(getAllSpectraSeries(seriesList, idenFreq, unidenFreq));
 
-        for (DataSeries<Double,Double> series : seriesList) {
-            if(series.getType()==type)
+        for (DataSeries<Double, Double> series : seriesList) {
+            if (series.getType() == type)
                 return series.isEmpty(Double.class, Double.class);
         }
         return true;

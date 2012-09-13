@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
+import uk.ac.ebi.pride.gui.component.mzidentml.MzIdMsDialog;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
@@ -20,9 +21,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * OpenFileAction opens files supported by PRIDE Viewer
@@ -36,6 +35,9 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
     private static final Logger logger = LoggerFactory.getLogger(OpenFileAction.class);
 
     private List<File> inputFilesToOpen;
+
+    private List<File> mzidentmlFiles;
+
     private PrideInspectorContext context;
 
     public OpenFileAction(String name, Icon icon) {
@@ -189,17 +191,17 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
                 Constants.MZML_FILE,
                 Constants.XML_FILE,
                 Constants.MZXML_FILE,
-                Constants.MGF_EXT,
-                Constants.MS2_EXT,
-                Constants.PKL_EXT,
-                Constants.DTA_EXT,
+                Constants.MGF_FILE,
+                Constants.MS2_FILE,
+                Constants.PKL_FILE,
+                Constants.DTA_FILE,
                 Constants.GZIPPED_FILE );
 
         int result = ofd.showDialog(Desktop.getInstance().getMainComponent(), null);
 
         List<File> filesToOpen = new ArrayList<File>();
 
-        // check the selection results from open fiel dialog
+        // check the selection results from open file dialog
         if (result == JFileChooser.APPROVE_OPTION) {
             filesToOpen.addAll(Arrays.asList(ofd.getSelectedFiles()));
             File selectedFile = ofd.getSelectedFile();
@@ -207,7 +209,6 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
             // remember the path has visited
             context.setOpenFilePath(filePath.replace(selectedFile.getName(), ""));
         }
-
         return filesToOpen;
     }
 
@@ -218,7 +219,10 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
      */
     @SuppressWarnings("unchecked")
     private void openFiles(List<File> files) {
-        for (File selectedFile : files) {
+        Map<File, Class> openFiles = new HashMap<File, Class>();
+        List<File> mzidFileList = new ArrayList<File>();
+
+        for (File selectedFile: files){
             // check the file type
             Class classType = null;
             try {
@@ -226,16 +230,36 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
             } catch (IOException e1) {
                 logger.error("Failed to check the file type", e1);
             }
-
             if (classType != null) {
-                String msg = "Opening " + selectedFile.getName();
-                OpenFileTask newTask = new OpenFileTask(selectedFile, classType, msg, msg);
-                // set task's gui blocker
-                newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-                // add task listeners
-                // ToDo: this why we need a singleton DesktopContext
-                Desktop.getInstance().getDesktopContext().addTask(newTask);
+                openFiles.put(selectedFile,classType);
             }
+            if(MzIdentMLControllerImpl.isValidFormat(selectedFile)){
+                mzidFileList.add(selectedFile);
+            }
+        }
+
+        Map<File, List<File>> mzIdentMLFiles = null;
+        if(mzidFileList.size() > 0){
+            int option = JOptionPane.showConfirmDialog(null, "<html><b>In the file list are mzIdentMl files</b>.<br><br> " +
+                            "Would you like upload the spectrum files related?</html>", "MzIdentMl Info", JOptionPane.YES_NO_OPTION);
+
+            if (option == JOptionPane.YES_OPTION) {
+                MzIdMsDialog mzidDialog = new MzIdMsDialog(Desktop.getInstance().getMainComponent(),mzidFileList);
+                mzidDialog.setModal(true);
+                mzidDialog.setVisible(true);
+                mzIdentMLFiles = mzidDialog.getMzIdentMlMap();
+                System.out.println(mzIdentMLFiles.size());
+            }
+        }
+
+        for (File selectedFile : openFiles.keySet()) {
+            String msg = "Opening " + selectedFile.getName();
+            OpenFileTask newTask = new OpenFileTask(selectedFile, openFiles.get(selectedFile), msg, msg);
+            // set task's gui blocker
+            newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
+            // add task listeners
+            // ToDo: this why we need a singleton DesktopContext
+            Desktop.getInstance().getDesktopContext().addTask(newTask);
         }
     }
 

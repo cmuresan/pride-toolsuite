@@ -8,7 +8,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.component.dialog.SimpleMsDialog;
+import uk.ac.ebi.pride.gui.component.mzidentml.SimpleMsDialog;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
@@ -158,8 +158,6 @@ public class DataSourceViewer extends JPanel {
 
             // highlight the selected foreground data source
             final int rowNum = sourceTableModel.getRowIndex(controller);
-
-            //Create Balloon
 
             code = new Runnable() {
 

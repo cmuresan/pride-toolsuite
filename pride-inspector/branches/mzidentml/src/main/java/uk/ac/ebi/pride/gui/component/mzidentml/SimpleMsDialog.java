@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Wed Aug 15 13:55:01 BST 2012
  */
 
-package uk.ac.ebi.pride.gui.component.dialog;
+package uk.ac.ebi.pride.gui.component.mzidentml;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +12,7 @@ import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerIm
 import uk.ac.ebi.pride.data.core.SpectraData;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
+import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
 import uk.ac.ebi.pride.gui.component.report.ReportList;
@@ -112,7 +113,7 @@ public class SimpleMsDialog extends JDialog {
 
     private void addNewMsFile(ActionEvent e) {
 
-        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzid/PRIDE xml Files", null, true, Constants.MGF_EXT);
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzid/PRIDE xml Files", null, true, Constants.MGF_FILE);
 
         int result = ofd.showDialog(this, null);
 

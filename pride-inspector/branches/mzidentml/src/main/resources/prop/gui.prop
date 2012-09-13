@@ -297,6 +297,11 @@ protein.sequence.unavailable.title = Protein sequence is not available
 # internet connection
 internet.connection.warning.short.message=Internet Connection Required
 
+# mzidentml popup
+mzidentml.open.warning.message=Do you want to load Spectrum source files?
+mzidentml.open.warning.short.message=MzIdentMl Info
+
+
 # warning message
 open.existing.experiment.title = Experiment Already Opened
 internet.connection.warning.message = <html><b>Please check whether you have Internet connection</b></html>

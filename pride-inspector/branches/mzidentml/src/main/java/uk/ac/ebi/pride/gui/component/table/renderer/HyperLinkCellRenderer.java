@@ -50,7 +50,7 @@ public class HyperLinkCellRenderer extends JLabel implements TableCellRenderer {
 
             if (match) {
                 StringBuilder builder = new StringBuilder();
-                builder.append("<html><a href='" + text + "'>");
+                builder.append("<html><a href='").append(text).append("'>");
                 builder.append(shorten? "Link" : text);
                 builder.append("</a>");
                 builder.append("</html>");

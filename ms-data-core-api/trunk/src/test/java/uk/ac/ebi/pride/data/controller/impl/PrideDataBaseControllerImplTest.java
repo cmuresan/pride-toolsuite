@@ -56,7 +56,7 @@ public class PrideDataBaseControllerImplTest {
     public void testGetAdditionals() throws Exception {
         ParamGroup additionals = prideController.getAdditional();
         assertTrue("The number of CvTermns Should be 4:", additionals.getCvParams().size() ==4);
-        assertEquals("The accession of the first CvTerm should be PRIDE:0000097", additionals.getCvParams().get(0).getAccession(), "PRIDE:0000097");
+        assertEquals("The accession of the first CvTerm should be PRIDE:0000175", additionals.getCvParams().get(0).getAccession(), "PRIDE:0000175");
         assertEquals("The name of the four CvTerm should be Experiment description", additionals.getCvParams().get(3).getName(),"Experiment description");
     }
 
@@ -65,7 +65,7 @@ public class PrideDataBaseControllerImplTest {
         List<Sample> samples = prideController.getSamples();
         assertTrue("There should be only one sample", samples.size() == 1);
         assertEquals("Sample ID should always be sample1", samples.get(0).getId(), "sample1");
-        assertEquals("Sample cv param should be iTRAQ4plex-115 reporter+balance reagent derivatized residue", samples.get(0).getCvParams().get(0).getName(), "iTRAQ4plex-115 reporter+balance reagent derivatized residue");
+        assertEquals("Sample cv param should be iTRAQ4plex-114 reporter+balance reagent derivatized residue", samples.get(0).getCvParams().get(0).getName(), "iTRAQ4plex-114 reporter+balance reagent derivatized residue");
     }
 
     @Test
@@ -92,7 +92,7 @@ public class PrideDataBaseControllerImplTest {
         assertEquals("Auto-generated data processing id should be dataprocess1", dataProcs.get(0).getId(), "dataprocessing1");
         assertTrue("There should be only on processing method", dataProcs.get(0).getProcessingMethods().size() == 1);
         assertEquals("Processing method's software id should MassLynx", dataProcs.get(0).getProcessingMethods().get(0).getSoftware().getName(), "MassLynx");
-        assertEquals("Processing method should contain first Cv term Peak Processing", dataProcs.get(0).getProcessingMethods().get(0).getCvParams().get(0).getName(), "Peak Processing");
+        assertEquals("Processing method should contain first Cv term Deisotoping", dataProcs.get(0).getProcessingMethods().get(0).getCvParams().get(0).getName(), "Deisotoping");
     }
 
     @Test
@@ -101,7 +101,7 @@ public class PrideDataBaseControllerImplTest {
 
         // test references
         List<Reference> references = experiment.getReferences();
-        assertTrue("There should be only one reference", references.size()==0);
+        assertTrue("There should be only one reference", references.size()==1);
         //assertEquals("PubMed number should be 20213678", references.get(0).getCvParams().get(0).getAccession(), "20213678");
 
         // test protocol
@@ -120,7 +120,7 @@ public class PrideDataBaseControllerImplTest {
 
     @Test
     public void testGetSpectrumById() throws Exception {
-        Spectrum spectrum = prideController.getSpectrumById("2000");
+        Spectrum spectrum = prideController.getSpectrumById("119973254");
 
         // test spectrum index
         //assertEquals("Spectrum index should be 1", spectrum.getIndex(), 1);
@@ -142,7 +142,7 @@ public class PrideDataBaseControllerImplTest {
 
         // test precursor
         assertTrue("There should be only one precursor", spectrum.getPrecursors().size() == 1);
-        assertEquals("Precursor ion selection", spectrum.getPrecursors().get(0).getSelectedIons().get(0).getCvParams().get(0).getAccession(), "PSI:1000042");
+        assertEquals("Precursor ion selection", spectrum.getPrecursors().get(0).getSelectedIons().get(0).getCvParams().get(0).getAccession(), "PSI:1000041");
 
         // test binary array
         assertEquals("Mz Binary array precision", spectrum.getMzBinaryDataArray().getCvParams().get(0).getAccession(), "MS:1000523");

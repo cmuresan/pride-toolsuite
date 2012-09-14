@@ -34,19 +34,9 @@ public class PrideDataBaseControllerImplTest {
         prideController.close();
         PooledConnectionFactory factory = PooledConnectionFactory.getInstance();
     }
-    /*@Test
-    public void testAccessions(){
-        Collection<Comparable> expAccs = null;
-        try {
-            expAccs = prideController.getExperimentAccs();
-        } catch (DataAccessException e) {
-            e.printStackTrace();
-        }
-       // assertTrue("There should be only one cv lookup", expAccs.size()>1000);
-    } */
 
-   @Test
-   public void testGetCvLookups() throws Exception {
+    @Test
+    public void testGetCvLookups() throws Exception {
         List<CVLookup> cvs = prideController.getCvLookups();
         assertTrue("There should be only one cv lookup", cvs.size()==1);
         assertEquals("CV label should be PSI", cvs.get(0).getCvLabel(), "PSI");

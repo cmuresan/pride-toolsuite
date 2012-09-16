@@ -349,6 +349,17 @@ public class TableFactory {
         paramTable.addMouseMotionListener(new TableCellMouseMotionListener(paramTable, accColumnHeader));
         paramTable.addMouseListener(new HyperLinkCellMouseClickListener(paramTable, accColumnHeader, new PrefixedHyperLinkGenerator(Constants.OLS_URL_PREFIX)));
 
+        // number column hidden
+        String numHeader = ParamTableModel.TableHeader.ROW_NUMBER_COLUMN.getHeader();
+        TableColumnExt numCol = (TableColumnExt) paramTable.getColumn(numHeader);
+        numCol.setVisible(false);
+
+        // acc column hidden
+        String accHeader = ParamTableModel.TableHeader.ACCESSION.getHeader();
+        TableColumnExt accCol = (TableColumnExt) paramTable.getColumn(accHeader);
+        accCol.setVisible(false);
+
+
         return paramTable;
     }
 

@@ -83,8 +83,8 @@ public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, V
             }
 
             // number of protein identifications
-            if (controller.hasIdentification()) {
-                writer.println("# Number of protein identifications: " + controller.getNumberOfIdentifications());
+            if (controller.hasProtein()) {
+                writer.println("# Number of protein identifications: " + controller.getNumberOfProteins());
             }
 
             // number of peptides
@@ -95,7 +95,7 @@ public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, V
             writer.println("Submitted Protein Accession" + Constants.TAB + "Mapped Protein Accession" + Constants.TAB + "Protein Name" + Constants.TAB +
                             "Score" + Constants.TAB + "Threshold" + Constants.TAB + "Number of peptides" + Constants.TAB +
                             "Number of distinct peptides" + Constants.TAB + "Number of PTMs");
-            Collection<Comparable> identIds = controller.getIdentificationIds();
+            Collection<Comparable> identIds = controller.getProteinIds();
             for (Comparable identId : identIds) {
                 // a row of data
                 List<Object> content = TableDataRetriever.getProteinTableRow(controller, identId);

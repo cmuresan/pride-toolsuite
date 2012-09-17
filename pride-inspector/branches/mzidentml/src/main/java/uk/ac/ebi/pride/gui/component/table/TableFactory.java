@@ -53,7 +53,7 @@ public class TableFactory {
      * @param controller data access controller
      * @return JTable   identification table
      */
-    public static JTable createIdentificationTable(List<CvTermReference> listProteinScores, DataAccessController controller) {
+    public static JTable createIdentificationTable(Collection<CvTermReference> listProteinScores, DataAccessController controller) {
 
         ProteinTableModel identTableModel = new ProteinTableModel(listProteinScores);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
@@ -113,7 +113,7 @@ public class TableFactory {
      * @param controller data access controller
      * @return JTable   peptide table
      */
-    public static JTable createPeptideTable(List<CvTermReference> listPeptideScores, DataAccessController controller) {
+    public static JTable createPeptideTable(Collection<CvTermReference> listPeptideScores, DataAccessController controller) {
 
         PeptideTableModel peptideTableModel = new PeptideTableModel(listPeptideScores);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
@@ -488,7 +488,7 @@ public class TableFactory {
      * @param controller data access controller
      * @return JTable   protein quantitative table
      */
-    public static JTable createQuantProteinTable(DataAccessController controller,List<CvTermReference> listProteinScores) {
+    public static JTable createQuantProteinTable(DataAccessController controller,Collection<CvTermReference> listProteinScores) {
         QuantProteinTableModel tableModel = new QuantProteinTableModel(listProteinScores);
         return createQuantProteinTable(controller, tableModel);
     }
@@ -499,7 +499,7 @@ public class TableFactory {
      * @param listPeptideScores List of CvTerm
      * @return JTable  peptide table
      */
-    public static JTable createQuantPeptideTable(DataAccessController controller, List<CvTermReference> listPeptideScores) {
+    public static JTable createQuantPeptideTable(DataAccessController controller, Collection<CvTermReference> listPeptideScores) {
 
         QuantPeptideTableModel tableModel = new QuantPeptideTableModel(listPeptideScores);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();

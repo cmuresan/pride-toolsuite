@@ -3,10 +3,7 @@ package uk.ac.ebi.pride.gui.component.table.model;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.term.CvTermReference;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Quantitative protein table model
@@ -59,7 +56,7 @@ public class QuantProteinTableModel extends AbstractProteinTableModel {
      */
     Map<Comparable, Integer> identIdToRowNumMapping;
 
-    public QuantProteinTableModel(List<CvTermReference> listProteinScores) {
+    public QuantProteinTableModel(Collection<CvTermReference> listProteinScores) {
         super(listProteinScores);
         this.identIdToRowNumMapping = new HashMap<Comparable, Integer>();
     }

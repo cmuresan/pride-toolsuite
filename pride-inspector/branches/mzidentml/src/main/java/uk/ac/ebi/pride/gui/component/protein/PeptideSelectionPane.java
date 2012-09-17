@@ -116,7 +116,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
 
         // create identification table
         try {
-            pepTable = TableFactory.createPeptideTable(controller.getListPeptideCvTermReferenceScores(), controller);
+            pepTable = TableFactory.createPeptideTable(controller.getPeptideCvTermReferenceScores(), controller);
             // hide protein accession column
             TableColumnExt proteinAccCol = (TableColumnExt) pepTable.getColumn(PeptideTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader());
             proteinAccCol.setVisible(false);

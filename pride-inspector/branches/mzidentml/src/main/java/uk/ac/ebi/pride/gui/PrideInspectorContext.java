@@ -34,6 +34,7 @@ import java.util.Map;
  * Time: 16:45:38
  */
 public class PrideInspectorContext extends DesktopContext {
+
     private static final Logger logger = LoggerFactory.getLogger(PrideInspector.class);
 
     /**

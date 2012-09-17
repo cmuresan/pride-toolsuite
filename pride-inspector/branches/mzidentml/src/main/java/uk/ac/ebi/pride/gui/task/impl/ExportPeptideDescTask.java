@@ -85,8 +85,8 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
             }
 
             // number of protein identifications
-            if (controller.hasIdentification()) {
-                writer.println("# Number of protein identifications: " + controller.getNumberOfIdentifications());
+            if (controller.hasProtein()) {
+                writer.println("# Number of protein identifications: " + controller.getNumberOfProteins());
             }
 
             // number of peptides
@@ -96,7 +96,7 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
 
             // in order to get a list of headers for export
             // first, we need to create an instance of PeptideTableModel
-            PeptideTableModel pepTableModel = new PeptideTableModel(controller.getListPeptideCvTermReferenceScores());
+            PeptideTableModel pepTableModel = new PeptideTableModel(controller.getPeptideCvTermReferenceScores());
             // a list of columns to be skipped
             List<Integer> skipIndexes = new ArrayList<Integer>();
             // skip identification id
@@ -117,7 +117,7 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
             }
             writer.println(header.toString());
 
-            Collection<Comparable> identIds = controller.getIdentificationIds();
+            Collection<Comparable> identIds = controller.getProteinIds();
             for (Comparable identId : identIds) {
                 Collection<Comparable> pepIds = controller.getPeptideIds(identId);
                 if (pepIds != null) {

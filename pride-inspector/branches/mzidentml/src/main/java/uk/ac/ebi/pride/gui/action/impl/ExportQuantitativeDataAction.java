@@ -55,7 +55,7 @@ public class ExportQuantitativeDataAction extends PrideAction {
             public void run() {
             QuantExportDialog quantExportDialog = null;
             try {
-                quantExportDialog = new QuantExportDialog(Desktop.getInstance().getMainComponent(), table, controller,controller.getListProteinCvTermReferenceScores());
+                quantExportDialog = new QuantExportDialog(Desktop.getInstance().getMainComponent(), table, controller,controller.getProteinCvTermReferenceScores());
             } catch (DataAccessException e1) {
                 logger.error("Failed to create an new instance of QuantExportDialog", e1);
             }

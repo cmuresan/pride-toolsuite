@@ -4,6 +4,7 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ import java.util.List;
 public class PeptideTableModel extends AbstractPeptideTableModel {
 
 
-    public PeptideTableModel(List<CvTermReference> listPeptideScores) {
+    public PeptideTableModel(Collection<CvTermReference> listPeptideScores) {
         super(listPeptideScores);
     }
 

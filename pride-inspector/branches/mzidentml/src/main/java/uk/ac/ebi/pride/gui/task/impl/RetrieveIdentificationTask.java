@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.Identification;
+import uk.ac.ebi.pride.data.core.Protein;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 
@@ -15,7 +15,7 @@ import uk.ac.ebi.pride.gui.component.message.MessageType;
  * Date: 10/06/11
  * Time: 16:08
  */
-public class RetrieveIdentificationTask extends AbstractDataAccessTask<Identification, Void> {
+public class RetrieveIdentificationTask extends AbstractDataAccessTask<Protein, Void> {
     private static final Logger logger = LoggerFactory.getLogger(RetrieveIdentificationTask.class);
 
     private Comparable identId;
@@ -26,11 +26,11 @@ public class RetrieveIdentificationTask extends AbstractDataAccessTask<Identific
     }
 
     @Override
-    protected Identification retrieve() throws Exception {
-        Identification result = null;
+    protected Protein retrieve() throws Exception {
+        Protein result = null;
 
         try {
-                result = controller.getIdentificationById(identId);
+                result = controller.getProteinById(identId);
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve data entry from data source";
             logger.error(msg, dex);

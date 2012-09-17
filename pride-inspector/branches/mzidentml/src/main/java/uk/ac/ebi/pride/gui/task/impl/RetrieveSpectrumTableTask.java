@@ -53,7 +53,7 @@ public class RetrieveSpectrumTableTask extends AbstractDataAccessTask<Void, Tupl
      *          thrown when there is error while reading the data.
      */
     public RetrieveSpectrumTableTask(DataAccessController controller) throws DataAccessException {
-        this(controller, 0, controller.getNumberOfIdentifications());
+        this(controller, 0, controller.getNumberOfProteins());
     }
 
     /**

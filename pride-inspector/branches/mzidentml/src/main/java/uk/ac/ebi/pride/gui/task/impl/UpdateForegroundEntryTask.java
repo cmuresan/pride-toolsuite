@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.gui.task.impl;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.Chromatogram;
 import uk.ac.ebi.pride.data.core.ExperimentMetaData;
-import uk.ac.ebi.pride.data.core.Identification;
+import uk.ac.ebi.pride.data.core.Protein;
 import uk.ac.ebi.pride.data.core.Spectrum;
 
 /**
@@ -39,9 +39,9 @@ public class UpdateForegroundEntryTask<T> extends AbstractDataAccessTask<T, Void
         } else if (Chromatogram.class.equals(classType)) {
             controller.setForegroundChromatogramById(id);
             result = controller.getForegroundChromatogram();
-        } else if (Identification.class.equals(classType)) {
+        } else if (Protein.class.equals(classType)) {
             controller.setForegroundIdentificationById(id);
-            result = controller.getForegroundIdentification();
+            result = controller.getForegroundProtein();
         }
         
         return (T)result;

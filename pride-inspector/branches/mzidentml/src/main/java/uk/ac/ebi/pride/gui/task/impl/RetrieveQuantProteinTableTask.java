@@ -35,7 +35,7 @@ public class RetrieveQuantProteinTableTask extends TaskAdapter<Void, Tuple<Table
     @Override
     protected Void doInBackground() throws Exception {
         // get list of protein ids
-        Collection<Comparable> identIds = controller.getIdentificationIds();
+        Collection<Comparable> identIds = controller.getProteinIds();
 
         // get new headers
         // protein quantitative table header

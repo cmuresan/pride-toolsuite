@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Chromatogram;
-import uk.ac.ebi.pride.data.core.Identification;
+import uk.ac.ebi.pride.data.core.Protein;
 import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
@@ -40,8 +40,8 @@ public class RetrieveEntryTask<T> extends AbstractDataAccessTask<T, String> {
                 result = controller.getSpectrumById(id);
             } else if (Chromatogram.class.equals(classType)) {
                 result = controller.getChromatogramById(id);
-            } else if (Identification.class.equals(classType)) {
-                result = controller.getIdentificationById(id);
+            } else if (Protein.class.equals(classType)) {
+                result = controller.getProteinById(id);
             }
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve data entry from data source";

@@ -85,8 +85,8 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
             }
 
             // number of protein identifications
-            if (controller.hasIdentification()) {
-                writer.println("# Number of protein identifications: " + controller.getNumberOfIdentifications());
+            if (controller.hasProtein()) {
+                writer.println("# Number of protein identifications: " + controller.getNumberOfProteins());
             }
 
             // number of peptides

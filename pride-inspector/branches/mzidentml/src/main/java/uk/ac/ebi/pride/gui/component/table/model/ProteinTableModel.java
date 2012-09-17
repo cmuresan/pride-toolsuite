@@ -4,6 +4,7 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class ProteinTableModel extends AbstractProteinTableModel {
 
-    public ProteinTableModel(List<CvTermReference> listProteinScores) {
+    public ProteinTableModel(Collection<CvTermReference> listProteinScores) {
         super(listProteinScores);
     }
 

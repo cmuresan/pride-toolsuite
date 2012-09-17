@@ -278,7 +278,7 @@ public class TableDataRetriever {
         }
 
         // Threshold
-        double threshold = controller.getIdentificationThreshold(identId);
+        double threshold = controller.getProteinThreshold(identId);
         content.add(threshold == -1 ? null : threshold);
 
         // number of peptides
@@ -294,7 +294,7 @@ public class TableDataRetriever {
         content.add(identId);
 
         // peptide scores
-        Score scores = controller.getIdentificationScores(identId);
+        Score scores = controller.getProteinScores(identId);
         if (scores != null) {
             List<Number> nums = scores.getAllScoreValues();
             if (nums != null && !nums.isEmpty()) {

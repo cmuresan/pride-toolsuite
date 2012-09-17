@@ -874,4 +874,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         }
         return countSpectra;
     }
+
+    public List<DataAccessController> getDataAccessControllers(){
+        return new ArrayList<DataAccessController>(msDataAccessControllers.values());
+    }
 }

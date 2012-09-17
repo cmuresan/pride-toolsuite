@@ -20,7 +20,7 @@ public class SearchModification {
 
     private boolean       fixedMod            = false;
 
-    private double        massDelta           = 0.0;
+    private double        massDelta           = -1;
 
     private List<String>  specificityList     = null;
 

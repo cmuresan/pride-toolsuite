@@ -45,7 +45,7 @@ public abstract class AbstractAccessCacheBuilder implements CacheBuilder {
         // always clear existing spectrum, chromatogram and identification caches
         cache.clear(CacheCategory.SPECTRUM);
         cache.clear(CacheCategory.CHROMATOGRAM);
-        cache.clear(CacheCategory.IDENTIFICATION);
+        cache.clear(CacheCategory.PROTEIN);
         cache.clear(CacheCategory.PEPTIDE);
     }
 }

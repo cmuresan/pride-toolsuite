@@ -181,23 +181,23 @@ public interface QuantDataAccess {
     /**
      * Get quantitative data related to a given protein
      *
-     * @param identId protein identification id
+     * @param proteinId protein identification id
      * @return Quantification   quantitative data
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *          error while getting the data from source
      */
-    public Quantitation getProteinQuantData(Comparable identId) throws DataAccessException;
+    public Quantitation getProteinQuantData(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get quantitative data related to a given peptide
      *
-     * @param identId   protein identification id
+     * @param proteinId   protein identification id
      * @param peptideId peptide id
      * @return Quantification   quantitative data
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *          error while getting the data from source
      */
-    public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public Quantitation getPeptideQuantData(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 }
 
 

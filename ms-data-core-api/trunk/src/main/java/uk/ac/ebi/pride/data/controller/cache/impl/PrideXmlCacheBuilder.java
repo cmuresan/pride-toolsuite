@@ -11,7 +11,7 @@ import java.util.ArrayList;
 //~--- JDK imports ------------------------------------------------------------
 
 /**
- * PrideXmlAcccessCacheBuilder initialize the cache for pride xml reading.
+ * PrideXmlAccessCacheBuilder initialize the cache for pride xml reading.
  * <p/>
  * User: rwang
  * Date: 06-Sep-2010
@@ -39,8 +39,8 @@ public class PrideXmlCacheBuilder extends AbstractAccessCacheBuilder {
         cache.storeInBatch(CacheCategory.SPECTRUM_ID, new ArrayList<Comparable>(reader.getSpectrumIds()));
 
         // clear and add peptide ids
-        cache.clear(CacheCategory.IDENTIFICATION_ID);
-        cache.storeInBatch(CacheCategory.IDENTIFICATION_ID, new ArrayList<Comparable>(reader.getIdentIds()));
+        cache.clear(CacheCategory.PROTEIN_ID);
+        cache.storeInBatch(CacheCategory.PROTEIN_ID, new ArrayList<Comparable>(reader.getIdentIds()));
     }
 }
 

@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
 /**
+ * todo: add documentation
  * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 05/08/11
@@ -10,8 +11,8 @@ public class Enzyme {
     private String     cTermGain       = null;
     private ParamGroup enzymeName      = null;
     private String     id              = null;
-    private int        minDistance     = 0;
-    private int        missedCleavages = 0;
+    private int        minDistance     = -1;
+    private int        missedCleavages = -1;
     private String     nTermGain       = null;
     private String     name            = null;
     private boolean    semiSpecific    = false;

@@ -7,7 +7,6 @@ import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.Collection;
-import java.util.List;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -24,12 +23,12 @@ public interface ProteinDataAccess {
     /**
      * The name for gel free identification
      */
-    public static final String GEL_FREE_IDENTIFICATION_TYPE = "Gel Free";
+    public static final String GEL_FREE_PROTEIN_IDENTIFICATION_TYPE = "Gel Free";
 
     /**
      * The name for two dimensional identification
      */
-    public static final String TWO_DIM_IDENTIFICATION_TYPE = "Two Dimensional";
+    public static final String TWO_DIM_PROTEIN_IDENTIFICATION_TYPE = "Two Dimensional";
 
     /**
      * Whether this controller contains identifications
@@ -39,7 +38,7 @@ public interface ProteinDataAccess {
      *          throw a exception when there is an error
      *          accessing the data source
      */
-    public boolean hasIdentification() throws DataAccessException;
+    public boolean hasProtein() throws DataAccessException;
 
 
     /**
@@ -50,7 +49,7 @@ public interface ProteinDataAccess {
         *          throw a exception when there is an error
         *          accessing the data source
         */
-   public boolean hasIdentificationGroupInformation() throws  DataAccessException;
+   public boolean hasProteinGroup() throws  DataAccessException;
 
   /**
      * Get a collection of identification ids
@@ -60,7 +59,7 @@ public interface ProteinDataAccess {
      *          throw a exception when there is an error
      *          accessing the data source
      */
-   public Collection<Comparable> getIdentificationIds() throws DataAccessException;
+   public Collection<Comparable> getProteinIds() throws DataAccessException;
 
     /**
      * Get a collection of identification group ids
@@ -70,25 +69,25 @@ public interface ProteinDataAccess {
      *          throw a exception when there is an error
      *          accessing the data source
      */
-    public Collection<Comparable> getIdentificationGroups() throws DataAccessException;
+    public Collection<Comparable> getProteinGroupIds() throws DataAccessException;
 
     /**
      * Get the index of identification by its id
      *
-     * @param id identification id
+     * @param proteinId identification id
      * @return int  identification index
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception
      */
-    public int getIdentificationIndex(Comparable id) throws DataAccessException;
+    public int indexOfProtein(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get a Identification object
      *
-     * @param id a string id of Identification
+     * @param proteinId a string id of Identification
      * @return Identification an Identification object
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException throw a exception when there is an error accessing the data source
      */
-    public Identification getIdentificationById(Comparable id) throws DataAccessException;
+    public Protein getProteinById(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get the total number of identifications.
@@ -96,7 +95,7 @@ public interface ProteinDataAccess {
      * @return int  the number of identifications.
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception.
      */
-    public int getNumberOfIdentifications() throws DataAccessException;
+    public int getNumberOfProteins() throws DataAccessException;
 
     /**
      * Get identifications by index, this combines both two dimensional and gel free identifications.
@@ -107,64 +106,70 @@ public interface ProteinDataAccess {
      * @return Collection<Identification> list of identifications.
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception.
      */
-    public Collection<Identification> getIdentificationsByIndex(int start, int offset) throws DataAccessException;
+    public Collection<Protein> getProteinByIndex(int start, int offset) throws DataAccessException;
 
     /**
      * Get the protein accession of a identification
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return String   protein accession.
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception.
      */
-    public String getProteinAccession(Comparable identId) throws DataAccessException;
+    public String getProteinAccession(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get the protein accession version of a identification
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return String   protein accession version.
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception.
      */
-    public String getProteinAccessionVersion(Comparable identId) throws DataAccessException;
+    public String getProteinAccessionVersion(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get the type of the identification.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return String   protein accession.
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception.
      */
-    public String getIdentificationType(Comparable identId) throws DataAccessException;
+    public String getProteinType(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get the score of a identification.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return double   score.
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception.
      */
-    public double getIdentificationScore(Comparable identId) throws DataAccessException;
+    public double getProteinScore(Comparable proteinId) throws DataAccessException;
 
-
-    public Score getIdentificationScores(Comparable identId) throws DataAccessException;
+    /**
+     * Get protein identification score
+     *
+     * @param proteinId
+     * @return
+     * @throws DataAccessException
+     */
+    public Score getProteinScores(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get the threshold of a identification.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return double   threshold.
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception.
      */
-    public double getIdentificationThreshold(Comparable identId) throws DataAccessException;
+    public double getProteinThreshold(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get the search database of a identification
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return String   search database.
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception.
      */
-    public SearchDataBase getSearchDatabase(Comparable identId) throws DataAccessException;
+    public SearchDataBase getSearchDatabase(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get the search engine of a identification
@@ -174,17 +179,30 @@ public interface ProteinDataAccess {
      */
     public SearchEngine getSearchEngine() throws DataAccessException;
 
+    /**
+     * Get the search database version of a identification
+     * @param proteinId   identification id
+     * @return  String  search database version
+     * @throws DataAccessException  data access exception
+     */
+    public String getSearchDatabaseVersion(Comparable proteinId) throws DataAccessException;
 
-    public List<CvTermReference> getListProteinCvTermReferenceScores() throws  DataAccessException;
+    /**
+     * get a list of present protein scores in CV terms
+     *
+     * @return
+     * @throws DataAccessException
+     */
+    public Collection<CvTermReference> getProteinCvTermReferenceScores() throws  DataAccessException;
 
     /**
      * Get the sequence of the Identified Protein
      *
-     * @param identId identification Id
+     * @param proteinId identification Id
      * @return Sequence Object in the Database
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      */
-    public DBSequence getIdentificationSequence(Comparable identId) throws DataAccessException;
+    public DBSequence getProteinSequence(Comparable proteinId) throws DataAccessException;
 }
 
 

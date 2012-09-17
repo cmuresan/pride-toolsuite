@@ -1,31 +1,9 @@
 package uk.ac.ebi.pride.data.controller.impl.Transformer;
 
 
-import uk.ac.ebi.jmzidml.model.mzidml.SpecificityRules;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.data.core.AbstractContact;
-import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.DBSequence;
-import uk.ac.ebi.pride.data.core.Enzyme;
-import uk.ac.ebi.pride.data.core.Filter;
-import uk.ac.ebi.pride.data.core.MassTable;
-import uk.ac.ebi.pride.data.core.Modification;
-import uk.ac.ebi.pride.data.core.Organization;
-import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.data.core.PeptideEvidence;
-import uk.ac.ebi.pride.data.core.Person;
-import uk.ac.ebi.pride.data.core.Provider;
-import uk.ac.ebi.pride.data.core.Sample;
-import uk.ac.ebi.pride.data.core.SearchModification;
-import uk.ac.ebi.pride.data.core.SourceFile;
-import uk.ac.ebi.pride.data.core.SpectraData;
-import uk.ac.ebi.pride.data.core.SpectrumIdentificationProtocol;
-import uk.ac.ebi.pride.data.core.SubstitutionModification;
-import uk.ac.ebi.pride.data.core.UserParam;
 import uk.ac.ebi.pride.term.CvTermReference;
-import uk.ac.ebi.pride.data.core.SpectrumIdentification;
-
 
 import java.util.*;
 
@@ -33,7 +11,7 @@ import java.util.*;
  * This class is the Transformer class from a jmzidml object to a core object.
  * It is used by MzIdentMLTransformer to convert jmzidml native objetcs to the ms-core-api
  * Objects.
- *
+ * <p/>
  * <p/>
  * User: yperez
  * Date: 19/09/11
@@ -137,15 +115,15 @@ public class MzIdentMLTransformer {
             List<CvParam> cvParams = new ArrayList<CvParam>();
             List<Organization> affiliation = transformAffiliationToOrganization(oldPerson.getAffiliation());
             CvTermReference contactTerm = CvTermReference.CONTACT_NAME;
-            String firstName = (oldPerson.getFirstName() != null)?oldPerson.getFirstName():"";
-            String lastName  = (oldPerson.getLastName() != null)?oldPerson.getLastName():"";
-            cvParams.add(new CvParam(contactTerm.getAccession(),contactTerm.getName(),contactTerm.getCvLabel(),firstName + " " + lastName, null,null,null));
+            String firstName = (oldPerson.getFirstName() != null) ? oldPerson.getFirstName() : "";
+            String lastName = (oldPerson.getLastName() != null) ? oldPerson.getLastName() : "";
+            cvParams.add(new CvParam(contactTerm.getAccession(), contactTerm.getName(), contactTerm.getCvLabel(), firstName + " " + lastName, null, null, null));
             CvTermReference contactOrg = CvTermReference.CONTACT_ORG;
             String organizationStr = "";
-            for(Organization organization: affiliation){
+            for (Organization organization : affiliation) {
                 organizationStr += organization.getName() + " ";
             }
-            cvParams.add(new CvParam(contactOrg.getAccession(),contactOrg.getName(),contactOrg.getCvLabel(),organizationStr, null,null,null));
+            cvParams.add(new CvParam(contactOrg.getAccession(), contactOrg.getName(), contactOrg.getCvLabel(), organizationStr, null, null, null));
             ParamGroup paramGroup = new ParamGroup(transformToCvParam(oldPerson.getCvParam()), transformToUserParam(oldPerson.getUserParam()));
             paramGroup.addCvParams(cvParams);
             return new Person(paramGroup, oldPerson.getId(), oldPerson.getName(), oldPerson.getLastName(), oldPerson.getFirstName(), oldPerson.getMidInitials(), affiliation, null);
@@ -262,19 +240,19 @@ public class MzIdentMLTransformer {
                 contact = transformToPerson(oldSoftware.getContactRole().getPerson());
             }
             ParamGroup name = null;
-            if(oldSoftware.getSoftwareName() !=null){
+            if (oldSoftware.getSoftwareName() != null) {
                 name = new ParamGroup();
-                if(oldSoftware.getSoftwareName().getCvParam() != null) {
+                if (oldSoftware.getSoftwareName().getCvParam() != null) {
                     CvParam cvParam = transformToCvParam(oldSoftware.getSoftwareName().getCvParam());
                     name.addCvParam(cvParam);
                 }
-                if(oldSoftware.getSoftwareName().getUserParam() !=null){
+                if (oldSoftware.getSoftwareName().getUserParam() != null) {
                     UserParam userParam = transformToUserParam(oldSoftware.getSoftwareName().getUserParam());
                     name.addUserParam(userParam);
                 }
             }
 
-            return new Software(name,oldSoftware.getId(), oldSoftware.getName(), contact,oldSoftware.getCustomizations(), oldSoftware.getUri(), oldSoftware.getVersion());
+            return new Software(name, oldSoftware.getId(), oldSoftware.getName(), contact, oldSoftware.getCustomizations(), oldSoftware.getUri(), oldSoftware.getVersion());
         }
         return null;
     }
@@ -293,18 +271,18 @@ public class MzIdentMLTransformer {
                     ((ref.getPages() != null) ? ":" + ref.getPages() + "." : "");
             // create the ref
             //Todo: Set the References ParamGroup for references
-            String year = (ref.getYear() == null)? null:ref.getYear().toString();
+            String year = (ref.getYear() == null) ? null : ref.getYear().toString();
             Reference reference = new Reference(ref.getId(), ref.getName(), ref.getDoi(), ref.getTitle(), ref.getPages(), ref.getIssue(), ref.getVolume(), year, ref.getEditor(), ref.getPublisher(), ref.getPublication(), ref.getAuthors(), refLine);
             references.add(reference);
         }
         return references;
     }
 
-    public static Identification transformToIdentification(uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis oldIdent,
-                                                           uk.ac.ebi.jmzidml.model.mzidml.DBSequence oldDbSequence,
-                                                           List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> spectrumIdentificationItemList,
-                                                           uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
-        Identification ident = null;
+    public static Protein transformToIdentification(uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis oldIdent,
+                                                    uk.ac.ebi.jmzidml.model.mzidml.DBSequence oldDbSequence,
+                                                    List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> spectrumIdentificationItemList,
+                                                    uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
+        Protein ident = null;
 
         if (FragmentationTable == null) {
             FragmentationTable = transformToFragmentationTable(oldFragmentationTable);
@@ -318,14 +296,14 @@ public class MzIdentMLTransformer {
 
         if (oldIdent != null) {
             //List<Peptide> peptides= transformToPeptideIdentifications(oldIdent.getPeptideHypothesis(), oldFragmentationTable);
-            paramGroup = new ParamGroup(transformToCvParam(oldIdent.getCvParam()),transformToUserParam(oldIdent.getUserParam()));
+            paramGroup = new ParamGroup(transformToCvParam(oldIdent.getCvParam()), transformToUserParam(oldIdent.getUserParam()));
             score = DataAccessUtilities.getScore(paramGroup);
             name = oldIdent.getName();
             passThreshold = oldIdent.isPassThreshold();
 
         }
-        List<Peptide> peptides = transformToPeptideIdentificationsFromSpectrumItems(spectrumIdentificationItemList,oldFragmentationTable);
-        ident = new Identification(paramGroup, dbSequence.getId(), name, dbSequence, passThreshold, peptides, score, -1, -1,null);
+        List<Peptide> peptides = transformToPeptideIdentificationsFromSpectrumItems(spectrumIdentificationItemList, oldFragmentationTable);
+        ident = new Protein(paramGroup, dbSequence.getId(), name, dbSequence, passThreshold, peptides, score, -1, -1, null);
         //Todo: threshold and sequence coverage
 
         return ident;
@@ -350,8 +328,8 @@ public class MzIdentMLTransformer {
             for (uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis oldPeptideHypothesis : peptideHypothesis) {
                 PeptideEvidence peptideEvidence = transformToPeptideEvidence(oldPeptideHypothesis.getPeptideEvidence());
                 List<SpectrumIdentification> spectrumIdentifications = transformToPeptideIdentification(oldPeptideHypothesis.getSpectrumIdentificationItemRef(), oldFragmentationTable);
-                for(SpectrumIdentification spectrumIdentification: spectrumIdentifications){
-                     peptides.add(new Peptide(peptideEvidence,spectrumIdentification));
+                for (SpectrumIdentification spectrumIdentification : spectrumIdentifications) {
+                    peptides.add(new Peptide(peptideEvidence, spectrumIdentification));
                 }
             }
         }
@@ -360,13 +338,13 @@ public class MzIdentMLTransformer {
 
     public static List<Peptide> transformToPeptideIdentificationsFromSpectrumItems(List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> peptideIdentificationList, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
         List<Peptide> peptides = null;
-        if(peptideIdentificationList != null && peptideIdentificationList.size() > 0){
+        if (peptideIdentificationList != null && peptideIdentificationList.size() > 0) {
             peptides = new ArrayList<Peptide>();
-            for(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem oldSpectrumidentification: peptideIdentificationList){
-                SpectrumIdentification spectrumIdent = transformToPeptideIdentification(oldSpectrumidentification,oldFragmentationTable);
-                for(uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidenceRef evidence: oldSpectrumidentification.getPeptideEvidenceRef()){
+            for (uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem oldSpectrumidentification : peptideIdentificationList) {
+                SpectrumIdentification spectrumIdent = transformToPeptideIdentification(oldSpectrumidentification, oldFragmentationTable);
+                for (uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidenceRef evidence : oldSpectrumidentification.getPeptideEvidenceRef()) {
                     PeptideEvidence peptideEvidence = transformToPeptideEvidence(evidence.getPeptideEvidence());
-                    peptides.add(new Peptide(peptideEvidence,spectrumIdent));
+                    peptides.add(new Peptide(peptideEvidence, spectrumIdent));
                 }
             }
         }
@@ -395,22 +373,22 @@ public class MzIdentMLTransformer {
             double massToCharge = oldSpectrumIdentification.getExperimentalMassToCharge();
             double calcMassToCharge = oldSpectrumIdentification.getCalculatedMassToCharge();
             float pI = (float) 0.0;
-            if(oldSpectrumIdentification.getCalculatedPI() != null){
-               pI = oldSpectrumIdentification.getCalculatedPI();
+            if (oldSpectrumIdentification.getCalculatedPI() != null) {
+                pI = oldSpectrumIdentification.getCalculatedPI();
             }
             uk.ac.ebi.jmzidml.model.mzidml.Peptide peptideSeq = oldSpectrumIdentification.getPeptide();
             int rank = oldSpectrumIdentification.getRank();
             boolean passThrehold = oldSpectrumIdentification.isPassThreshold();
-            uk.ac.ebi.jmzidml.model.mzidml.MassTable massTable  = oldSpectrumIdentification.getMassTable();
+            uk.ac.ebi.jmzidml.model.mzidml.MassTable massTable = oldSpectrumIdentification.getMassTable();
             uk.ac.ebi.jmzidml.model.mzidml.Sample sample = oldSpectrumIdentification.getSample();
             List<uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidenceRef> peptideEvidence = oldSpectrumIdentification.getPeptideEvidenceRef();
             uk.ac.ebi.jmzidml.model.mzidml.Fragmentation fragmentation = oldSpectrumIdentification.getFragmentation();
-            ParamGroup scoreParamGroup = new ParamGroup(transformToCvParam(oldSpectrumIdentification.getCvParam()),transformToUserParam(oldSpectrumIdentification.getUserParam()));
+            ParamGroup scoreParamGroup = new ParamGroup(transformToCvParam(oldSpectrumIdentification.getCvParam()), transformToUserParam(oldSpectrumIdentification.getUserParam()));
             Score score = DataAccessUtilities.getScore(scoreParamGroup);
-            peptide = new SpectrumIdentification(scoreParamGroup, id, name,chargeState, massToCharge, calcMassToCharge, pI,
-                                  transformToPeptide(peptideSeq), rank, passThrehold, transformToMassTable(massTable),
-                                  transformToSample(sample), transformToPeptideEvidence(peptideEvidence),
-                                  transformToFragmentationIon(fragmentation, oldFragmentationTable), score, null, null);
+            peptide = new SpectrumIdentification(scoreParamGroup, id, name, chargeState, massToCharge, calcMassToCharge, pI,
+                    transformToPeptide(peptideSeq), rank, passThrehold, transformToMassTable(massTable),
+                    transformToSample(sample), transformToPeptideEvidence(peptideEvidence),
+                    transformToFragmentationIon(fragmentation, oldFragmentationTable), score, null, null);
             //Todo: Peptide SpectraData
         }
         return peptide;
@@ -443,16 +421,16 @@ public class MzIdentMLTransformer {
                 // iterate over the ion type indexes
                 List<Integer> listIds = new ArrayList<Integer>();
                 listIds.add(ionType.getIndex().get(0));
-                for (int i = 1 ; i < ionType.getIndex().size();i++){
+                for (int i = 1; i < ionType.getIndex().size(); i++) {
                     boolean found = false;
                     int j = 0;
-                    while ((!found) && (j < listIds.size())){
-                      if(ionType.getIndex().get(i) == listIds.get(j)){
-                          found = true;
-                      }
-                      j++;
+                    while ((!found) && (j < listIds.size())) {
+                        if (ionType.getIndex().get(i) == listIds.get(j)) {
+                            found = true;
+                        }
+                        j++;
                     }
-                    if(!found){
+                    if (!found) {
                         listIds.add(ionType.getIndex().get(i));
                     }
                 }
@@ -475,16 +453,16 @@ public class MzIdentMLTransformer {
                         if (cvParam == null) {
                             cvMz = CvTermReference.MS_PRODUCT_ION_MZ;
                             cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
-                            if(cvParam == null){
+                            if (cvParam == null) {
                                 cvMz = CvTermReference.PRODUCT_ION_INTENSITY;
                                 cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
-                                if(cvParam == null){
+                                if (cvParam == null) {
                                     cvMz = CvTermReference.MS_PRODUCT_ION_INTENSITY;
                                     cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
                                     if (cvParam == null) {
                                         cvMz = CvTermReference.PRODUCT_ION_MASS_ERROR;
                                         cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
-                                        if(cvParam == null){
+                                        if (cvParam == null) {
                                             cvMz = CvTermReference.MS_PRODUCT_ION_MASS_ERROR;
                                             cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
                                             if (cvParam == null) {
@@ -548,8 +526,8 @@ public class MzIdentMLTransformer {
     private static PeptideEvidence transformToPeptideEvidence(uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidence oldPeptideEvidence) {
         PeptideEvidence evidence = null;
         if (oldPeptideEvidence != null) {
-            int start = (oldPeptideEvidence.getStart() != null)? oldPeptideEvidence.getStart(): -1;
-            int end   = (oldPeptideEvidence.getEnd()   != null)? oldPeptideEvidence.getEnd(): -1;
+            int start = (oldPeptideEvidence.getStart() != null) ? oldPeptideEvidence.getStart() : -1;
+            int end = (oldPeptideEvidence.getEnd() != null) ? oldPeptideEvidence.getEnd() : -1;
             evidence = new PeptideEvidence(oldPeptideEvidence.getId(), oldPeptideEvidence.getName(), start, end, oldPeptideEvidence.isIsDecoy(), transformToPeptide(oldPeptideEvidence.getPeptide()), transformToDBSequence(oldPeptideEvidence.getDBSequence()));
         }
         return evidence;
@@ -590,12 +568,12 @@ public class MzIdentMLTransformer {
 
         if (oldModification != null) {
             List<Double> monoMasses = null;
-            List<Double> avgMasses  = null;
-            if(oldModification.getMonoisotopicMassDelta() != null){
+            List<Double> avgMasses = null;
+            if (oldModification.getMonoisotopicMassDelta() != null) {
                 monoMasses = new ArrayList<Double>();
                 monoMasses.add(oldModification.getMonoisotopicMassDelta());
             }
-            if(oldModification.getAvgMassDelta() != null){
+            if (oldModification.getAvgMassDelta() != null) {
                 avgMasses = new ArrayList<Double>();
                 avgMasses.add(oldModification.getAvgMassDelta());
             }
@@ -604,24 +582,24 @@ public class MzIdentMLTransformer {
             String name = null;
             String dataBaseName = null;
             //Todo: Try to make this function more flexible, we can define default Mod Databases
-            for(CvParam cvParam: cvParams){
-               if(cvParam.getCvLookupID().compareToIgnoreCase("MOD") ==0){
-                   id = cvParam.getAccession();
-                   name = cvParam.getName();
-                   dataBaseName = (cvParam.getCvLookupID() == null)?"MOD":cvParam.getCvLookupID();
-                   break;
-               }else if(cvParam.getCvLookupID().compareToIgnoreCase("UNIMOD") ==0){
-                   id = cvParam.getAccession();
-                   name = cvParam.getName();
-                   dataBaseName = (cvParam.getCvLookupID() == null)?"UNIMOD":cvParam.getCvLookupID();
-               }else{
-                   id = cvParam.getAccession();
-                   name = cvParam.getName();
-                   dataBaseName = cvParam.getCvLookupID();
-               }
+            for (CvParam cvParam : cvParams) {
+                if (cvParam.getCvLookupID().compareToIgnoreCase("MOD") == 0) {
+                    id = cvParam.getAccession();
+                    name = cvParam.getName();
+                    dataBaseName = (cvParam.getCvLookupID() == null) ? "MOD" : cvParam.getCvLookupID();
+                    break;
+                } else if (cvParam.getCvLookupID().compareToIgnoreCase("UNIMOD") == 0) {
+                    id = cvParam.getAccession();
+                    name = cvParam.getName();
+                    dataBaseName = (cvParam.getCvLookupID() == null) ? "UNIMOD" : cvParam.getCvLookupID();
+                } else {
+                    id = cvParam.getAccession();
+                    name = cvParam.getName();
+                    dataBaseName = cvParam.getCvLookupID();
+                }
             }
-            ParamGroup param = new ParamGroup(cvParams,null);
-            modification = new Modification(param, id, name, oldModification.getLocation(), oldModification.getResidues(), avgMasses, monoMasses,dataBaseName,null);
+            ParamGroup param = new ParamGroup(cvParams, null);
+            modification = new Modification(param, id, name, oldModification.getLocation(), oldModification.getResidues(), avgMasses, monoMasses, dataBaseName, null);
         }
         return modification;
     }
@@ -640,9 +618,9 @@ public class MzIdentMLTransformer {
     private static SubstitutionModification transformToSubstitutionMod(uk.ac.ebi.jmzidml.model.mzidml.SubstitutionModification oldModification) {
         SubstitutionModification modification = null;
         if (oldModification != null) {
-            double avgMass  = (oldModification.getAvgMassDelta() != null)?oldModification.getAvgMassDelta():-1.0;
-            double monoMass = (oldModification.getMonoisotopicMassDelta()!=null)?oldModification.getMonoisotopicMassDelta():-1.0;
-            int location = (oldModification.getLocation()!=null)?oldModification.getLocation():-1;
+            double avgMass = (oldModification.getAvgMassDelta() != null) ? oldModification.getAvgMassDelta() : -1.0;
+            double monoMass = (oldModification.getMonoisotopicMassDelta() != null) ? oldModification.getMonoisotopicMassDelta() : -1.0;
+            int location = (oldModification.getLocation() != null) ? oldModification.getLocation() : -1;
             modification = new SubstitutionModification(oldModification.getOriginalResidue(), oldModification.getReplacementResidue(), location, avgMass, monoMass);
         }
         return modification;
@@ -653,10 +631,10 @@ public class MzIdentMLTransformer {
         if (oldDbSequence != null) {
             String id = oldDbSequence.getId();
             String name = oldDbSequence.getName();
-            int length = (oldDbSequence.getLength() != null)?oldDbSequence.getLength():-1;
+            int length = (oldDbSequence.getLength() != null) ? oldDbSequence.getLength() : -1;
             String accession = oldDbSequence.getAccession();
-            ParamGroup params = new ParamGroup(transformToCvParam(oldDbSequence.getCvParam()),transformToUserParam(oldDbSequence.getUserParam()));
-            dbSequence = new DBSequence(params,id, name, length, accession, transformToSeachDatabase(oldDbSequence.getSearchDatabase()), oldDbSequence.getSeq(), null, null);
+            ParamGroup params = new ParamGroup(transformToCvParam(oldDbSequence.getCvParam()), transformToUserParam(oldDbSequence.getUserParam()));
+            dbSequence = new DBSequence(params, id, name, length, accession, transformToSeachDatabase(oldDbSequence.getSearchDatabase()), oldDbSequence.getSeq(), null, null);
         }
         return dbSequence;
     }
@@ -730,9 +708,9 @@ public class MzIdentMLTransformer {
             ParamGroup searchType = new ParamGroup(transformToCvParam(oldProtocol.getSearchType().getCvParam()), transformToUserParam(oldProtocol.getSearchType().getUserParam()));
             boolean enzymeIndependent = (oldProtocol.getEnzymes().isIndependent() == null) ? false : oldProtocol.getEnzymes().isIndependent();
             List<Enzyme> enzymeList = transformToEnzyme(oldProtocol.getEnzymes().getEnzyme());
-            List<CvParam> fragmentTolerance = (oldProtocol.getFragmentTolerance()!=null)? transformToCvParam(oldProtocol.getFragmentTolerance().getCvParam()):null;
-            List<CvParam> parentTolerance = (oldProtocol.getParentTolerance() != null)? transformToCvParam(oldProtocol.getParentTolerance().getCvParam()):null;
-            List<Filter> filterList = (oldProtocol.getDatabaseFilters() != null)? transformToFilter(oldProtocol.getDatabaseFilters().getFilter()):null;
+            List<CvParam> fragmentTolerance = (oldProtocol.getFragmentTolerance() != null) ? transformToCvParam(oldProtocol.getFragmentTolerance().getCvParam()) : null;
+            List<CvParam> parentTolerance = (oldProtocol.getParentTolerance() != null) ? transformToCvParam(oldProtocol.getParentTolerance().getCvParam()) : null;
+            List<Filter> filterList = (oldProtocol.getDatabaseFilters() != null) ? transformToFilter(oldProtocol.getDatabaseFilters().getFilter()) : null;
             DataBaseTranslation dataBaseTranslation = transformToDataBaseTranslation(oldProtocol.getDatabaseTranslation());
             List<SearchModification> searchModificationList = transformToSearchModification(oldProtocol.getModificationParams().getSearchModification());
             List<MassTable> massTableList = transformToMassTable(oldProtocol.getMassTable());
@@ -745,11 +723,9 @@ public class MzIdentMLTransformer {
         SearchModification searchModification = null;
         if (oldModification != null) {
             List<CvParam> rules = null;
-            if(oldModification.getSpecificityRules() != null){
+            if (oldModification.getSpecificityRules() != null) {
                 List<uk.ac.ebi.jmzidml.model.mzidml.CvParam> cvParamRules = new ArrayList<uk.ac.ebi.jmzidml.model.mzidml.CvParam>();
-                for(SpecificityRules paramRules: oldModification.getSpecificityRules()){
-                    cvParamRules.addAll(paramRules.getCvParam());
-                }
+                cvParamRules.addAll(oldModification.getSpecificityRules().getCvParam());
                 rules = transformToCvParam(cvParamRules);
             }
 
@@ -884,6 +860,6 @@ public class MzIdentMLTransformer {
 
     public static CvParam transformDateToCvParam(Date creationDate) {
         CvTermReference cvTerm = CvTermReference.EXPERIMENT_GLOBAL_CREATIONDATE;
-        return  new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),creationDate.toString(),null,null,null);
+        return new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), creationDate.toString(), null, null, null);
     }
 }

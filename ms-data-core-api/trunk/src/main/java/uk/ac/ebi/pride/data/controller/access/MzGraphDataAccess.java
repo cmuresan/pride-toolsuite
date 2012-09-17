@@ -134,7 +134,7 @@ public interface MzGraphDataAccess {
      * Get the precursor charge of a spectrum.
      *
      * @param specId spectrum id.
-     * @return int  precursor charge.
+     * @return Integer  precursor charge, -1 means no charge.
      * @throws DataAccessException data access exception.
      */
     public int getPrecursorCharge(Comparable specId) throws DataAccessException;
@@ -185,20 +185,20 @@ public interface MzGraphDataAccess {
     /**
      * Get the index of a chromatogram by its id
      *
-     * @param id chromatogram id
+     * @param chromaId chromatogram id
      * @return int  chromatogram index
      * @throws DataAccessException data access exception
      */
-    public int getChromatogramIndex(Comparable id) throws DataAccessException;
+    public int getChromatogramIndex(Comparable chromaId) throws DataAccessException;
 
     /**
      * Get a Chromatogram object
      *
-     * @param id chromatogram string id
+     * @param chromaId chromatogram string id
      * @return Chromatogram an chromatogram object
      * @throws DataAccessException throw a exception when there is an error accessing the data source
      */
-    public Chromatogram getChromatogramById(Comparable id) throws DataAccessException;
+    public Chromatogram getChromatogramById(Comparable chromaId) throws DataAccessException;
 
     /**
      * Get a collection of chromatograms by its index and offset.

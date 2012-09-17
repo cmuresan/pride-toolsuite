@@ -7,7 +7,6 @@ import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.Collection;
-import java.util.List;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -36,70 +35,70 @@ public interface PeptideDataAccess {
     /**
      * Get a collection of peptide ids belong to the identification.
      *
-     * @param identId identification id
+     * @param proteinId identification id
      * @return Collection<Comparable>   peptide ids
      * @throws DataAccessException data access exception
      */
-    public Collection<Comparable> getPeptideIds(Comparable identId) throws DataAccessException;
+    public Collection<Comparable> getPeptideIds(Comparable proteinId) throws DataAccessException;
 
     /**
      * This is convenient method for accessing peptide.
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, this can be the index of the peptide as well.
      * @return Peptide  peptide.
      * @throws DataAccessException data access exception.
      */
-    public Peptide getPeptideByIndex(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public Peptide getPeptideByIndex(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 
     /**
      * This method is to get a list of redundant peptide sequences
      *
-     * @param identId identification id
+     * @param proteinId identification id
      * @return Collection<String>   return a list of peptide sequences.
      * @throws DataAccessException data access exception.
      */
-    public Collection<String> getPeptideSequences(Comparable identId) throws DataAccessException;
+    public Collection<String> getPeptideSequences(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get peptide sequence according to identification id and peptide id.
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, this can be the index of the peptide as well.
      * @return String   peptide sequence
      * @throws DataAccessException data access exception
      */
-    public String getPeptideSequence(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public String getPeptideSequence(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 
     /**
      * Get peptide sequence start
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, this can be the index of the peptide as well.
      * @return int  start position for the peptide
      * @throws DataAccessException data accession exception
      */
-    public int getPeptideSequenceStart(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public int getPeptideSequenceStart(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 
     /**
      * Get peptide sequence stop
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, this can be the index of the peptide as well.
      * @return int  stop position for the peptide
      * @throws DataAccessException data access exception
      */
-    public int getPeptideSequenceEnd(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public int getPeptideSequenceEnd(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 
     /**
      * Get peptide's spectrum id
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, this can be the index of the peptide as well.
      * @return Comparable   spectrum reference.
      * @throws DataAccessException data access exception
      */
-    public Comparable getPeptideSpectrumId(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public Comparable getPeptideSpectrumId(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 
     /**
      * Get the total number of peptides
@@ -112,129 +111,155 @@ public interface PeptideDataAccess {
     /**
      * Get the number peptides of a identification.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int  number of peptides.
      * @throws DataAccessException data access exception.
      */
-    public int getNumberOfPeptides(Comparable identId) throws DataAccessException;
+    public int getNumberOfPeptides(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get the number of unique peptides of a identification.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int  number of unique peptides.
      * @throws DataAccessException data access exception.
      */
-    public int getNumberOfUniquePeptides(Comparable identId) throws DataAccessException;
+    public int getNumberOfUniquePeptides(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get the number of ptms of a identification.
      * Note: this is not unique number of PTMs.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int  the number of PTMs.
      * @throws DataAccessException data access exception.
      */
-    public int getNumberOfPTMs(Comparable identId) throws DataAccessException;
+    public int getNumberOfPTMs(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get the number of PTMs for a peptide
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id
      * @return int  number of ptms
      * @throws DataAccessException data access exception
      */
-    public int getNumberOfPTMs(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public int getNumberOfPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 
     /**
      * Get the ptms assigned to a peptide
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, can be the index of the peptide
      * @return Collection<Modification> a collection of ptms
      * @throws DataAccessException data access exception
      */
-    public Collection<Modification> getPTMs(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public Collection<Modification> getPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 
     /**
      * Get the number of Substitution ptms of a identification.
      * Note: this is not unique number of PTMs.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int  the number of PTMs.
      * @throws DataAccessException data access exception.
      */
-    public int getNumberOfSubstitutionPTMs(Comparable identId) throws DataAccessException;
+    public int getNumberOfSubstitutionPTMs(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get the number of Substitution PTMs for a peptide
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id
      * @return int  number of ptms
      * @throws DataAccessException data access exception
      */
-    public int getNumberOfSubstitutionPTMs(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public int getNumberOfSubstitutionPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 
     /**
      * Get the ptms assigned to a peptide
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, can be the index of the peptide
      * @return Collection<Modification> a collection of ptms
      * @throws DataAccessException data access exception
      */
-    public Collection<SubstitutionModification> getSubstitutionPTMs(Comparable identId, Comparable peptideId)
+    public Collection<SubstitutionModification> getSubstitutionPTMs(Comparable proteinId, Comparable peptideId)
             throws DataAccessException;
 
     /**
      * Get the number of fragment ions for a peptide
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return int  number of fragment ions
      * @throws DataAccessException data access exception
      */
-    public int getNumberOfFragmentIons(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public int getNumberOfFragmentIons(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 
     /**
      * Get the fragment ions assigned to the peptide.
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return Collection<FragmentIon>  a collection of fragment ions.
      * @throws DataAccessException data access exception.
      */
-    public Collection<FragmentIon> getFragmentIons(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public Collection<FragmentIon> getFragmentIons(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 
     /**
      * Get peptide score generated by search engine.
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return PeptideScore  peptide score
      * @throws DataAccessException data access exception
      */
-    public Score getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public Score getPeptideScore(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 
     /**
      * Get all Peptide Evidence for a Peptide Identification
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return Collection<PeptideEvidence> collection of peptide Evidences.
      * @throws DataAccessException
      */
-    public Collection<PeptideEvidence> getPeptideEvidences(Comparable identId, Comparable peptideId)
+    public Collection<PeptideEvidence> getPeptideEvidences(Comparable proteinId, Comparable peptideId)
             throws DataAccessException;
 
     /**
+     * Get a collection of peptide scores in cv term reference format
      *
-     * @return
+     * @return a collection of cv term references
      * @throws DataAccessException
      */
-    public List<CvTermReference> getListPeptideCvTermReferenceScores() throws  DataAccessException;
+    public Collection<CvTermReference> getPeptideCvTermReferenceScores() throws  DataAccessException;
+
+    /**
+     * Get precursor charge on peptide level
+     * Note: sometimes, precursor charge at the peptide level is different from the precursor charge at the spectrum level
+     * As the peptide-level precursor charge is often assigned by search engine rather than ms instrument
+     *
+     * @param proteinId   identification id
+     * @param peptideId peptid eid, can be the index of the peptide as well.
+     * @return  precursor charge, null should be returned if not available
+     * @throws DataAccessException  data access exception
+     */
+    public int getPrecursorCharge(Comparable proteinId, Comparable peptideId) throws DataAccessException;
+
+
+    /**
+     * Get precursor m/z on peptide level
+     * Note: sometimes, precursor m/z at the peptide level is different from the precursor charge at the spectrum level
+     * As the peptide-level precursor charge is often assigned by search engine rather than ms instrument
+     *
+     * @param proteinId   identification id
+     * @param peptideId peptid eid, can be the index of the peptide as well.
+     * @return  precursor charge, null should be returned if not available
+     * @throws DataAccessException  data access exception
+     */
+    public double getPrecursorMz(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 }
 
 

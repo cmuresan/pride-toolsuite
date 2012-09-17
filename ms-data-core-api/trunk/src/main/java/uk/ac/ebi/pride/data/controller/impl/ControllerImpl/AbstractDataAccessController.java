@@ -27,6 +27,9 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractDataAccessController.class);
 
+    private static final int NUMBER_OF_PROTEIN_TO_CHECK = 10;
+    private static final int NUMBER_OF_PEPTIDE_TO_CHECK = 20;
+
     /**
      * Unique id to identify the data access controller
      */
@@ -66,7 +69,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Foreground protein identification, the one which user currently selected
      */
-    private Identification foregroundIdentification = null;
+    private Protein foregroundProtein = null;
 
 
     /**
@@ -432,11 +435,37 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      */
     @Override
     public int getPrecursorCharge(Comparable specId) throws DataAccessException {
-        int charge = 0;
+        int charge = -1;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
             charge = DataAccessUtilities.getPrecursorCharge(spectrum);
         }
+        return charge;
+    }
+
+    /**
+     * Get precursor charge on peptide level
+     * Note: sometimes, precursor charge at the peptide level is different from the precursor charge at the spectrum level
+     * As the peptide-level precursor charge is often assigned by search engine rather than ms instrument
+     *
+     * @param proteinId   protein identification id
+     * @param peptideId peptid eid, can be the index of the peptide as well.
+     * @return precursor charge, 0 should be returned if not available
+     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
+     *          data access exception
+     */
+    @Override
+    public int getPrecursorCharge(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+        int charge = -1;
+
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
+            if (peptide != null) {
+                charge = peptide.getPrecursorCharge();
+            }
+        }
+
         return charge;
     }
 
@@ -454,6 +483,29 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         if (spectrum != null) {
             mz = DataAccessUtilities.getPrecursorMz(spectrum);
         }
+        return mz;
+    }
+
+    /**
+     * Get precursor m/z value at the peptide level
+     *
+     * @param proteinId   identification id
+     * @param peptideId peptid eid, can be the index of the peptide as well.
+     * @return
+     * @throws DataAccessException
+     */
+    @Override
+    public double getPrecursorMz(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+        double mz = -1;
+
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
+            if (peptide != null) {
+                mz = peptide.getPrecursorMz();
+            }
+        }
+
         return mz;
     }
 
@@ -516,16 +568,16 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get the index of a chromatogram by id
      *
-     * @param id chromatogram id
+     * @param chromaId chromatogram id
      * @return int the index of the the chromatogram
      * @throws DataAccessException data access exception
      */
     @Override
-    public int getChromatogramIndex(Comparable id) throws DataAccessException {
+    public int getChromatogramIndex(Comparable chromaId) throws DataAccessException {
         int index = -1;
         Collection<Comparable> ids = getChromatogramIds();
         if (ids != null) {
-            index = CollectionUtils.getIndex(ids, id);
+            index = CollectionUtils.getIndex(ids, chromaId);
         }
         return index;
     }
@@ -562,8 +614,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      * @throws DataAccessException data access exception
      */
     @Override
-    public boolean hasIdentification() throws DataAccessException {
-        return getNumberOfIdentifications() > 0;
+    public boolean hasProtein() throws DataAccessException {
+        return getNumberOfProteins() > 0;
     }
 
     /**
@@ -574,8 +626,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      */
 
     @Override
-    public boolean hasIdentificationGroupInformation() throws DataAccessException {
-        return getNumberOfIdentifications() > 0;
+    public boolean hasProteinGroup() throws DataAccessException {
+        return getNumberOfProteins() > 0;
     }
 
 
@@ -587,7 +639,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      */
     @Override
     public boolean hasPeptide() throws DataAccessException {
-        return getNumberOfIdentifications() > 0;
+        return getNumberOfProteins() > 0;
     }
 
     /**
@@ -597,25 +649,24 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      * @throws DataAccessException data access exception
      */
     @Override
-    public int getNumberOfIdentifications() throws DataAccessException {
-        return getIdentificationIds().size();
+    public int getNumberOfProteins() throws DataAccessException {
+        return getProteinIds().size();
     }
-
 
 
     /**
      * Get the index of a identification using its id
      *
-     * @param id identification id
+     * @param proteinId identification id
      * @return int index of the identification
      * @throws DataAccessException
      */
     @Override
-    public int getIdentificationIndex(Comparable id) throws DataAccessException {
+    public int indexOfProtein(Comparable proteinId) throws DataAccessException {
         int index = -1;
-        Collection<Comparable> ids = getIdentificationIds();
+        Collection<Comparable> ids = getProteinIds();
         if (ids != null) {
-            index = CollectionUtils.getIndex(ids, id);
+            index = CollectionUtils.getIndex(ids, proteinId);
         }
         return index;
     }
@@ -630,35 +681,35 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      * @throws DataAccessException data access exception
      */
     @Override
-    public Collection<Identification> getIdentificationsByIndex(int index, int offset) throws DataAccessException {
-        List<Identification> idents = new ArrayList<Identification>();
-        Collection<Comparable> identIds = getIdentificationIds();
-        if (identIds != null && index < identIds.size()) {
+    public Collection<Protein> getProteinByIndex(int index, int offset) throws DataAccessException {
+        List<Protein> proteins = new ArrayList<Protein>();
+        Collection<Comparable> proteinIds = getProteinIds();
+        if (proteinIds != null && index < proteinIds.size()) {
             int stopIndex = index + offset;
-            int idSize = identIds.size();
+            int idSize = proteinIds.size();
             stopIndex = stopIndex >= idSize ? idSize : stopIndex;
             for (int i = index; i < stopIndex; i++) {
-                Comparable intentId = CollectionUtils.getElement(identIds, i);
-                idents.add(getIdentificationById(intentId));
+                Comparable intentId = CollectionUtils.getElement(proteinIds, i);
+                proteins.add(getProteinById(intentId));
             }
         }
 
-        return idents;
+        return proteins;
     }
 
     /**
      * Get protein accession value using identification id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return String protein accession
      * @throws DataAccessException data access exception
      */
     @Override
-    public String getProteinAccession(Comparable identId) throws DataAccessException {
+    public String getProteinAccession(Comparable proteinId) throws DataAccessException {
         String acc = null;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            acc = ident.getDbSequence().getAccessionId();
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            acc = protein.getDbSequence().getAccessionId();
         }
         return acc;
     }
@@ -666,16 +717,16 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get protein accession version using identification id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return String
      * @throws DataAccessException
      */
     @Override
-    public String getProteinAccessionVersion(Comparable identId) throws DataAccessException {
+    public String getProteinAccessionVersion(Comparable proteinId) throws DataAccessException {
         String accVersion = null;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            accVersion = ident.getDbSequence().getAccessionVersion();
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            accVersion = protein.getDbSequence().getAccessionVersion();
         }
         return accVersion;
     }
@@ -683,16 +734,16 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get the type of the protein identification
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return String  the type of the protein identification
      * @throws DataAccessException data access exception
      */
     @Override
-    public String getIdentificationType(Comparable identId) throws DataAccessException {
+    public String getProteinType(Comparable proteinId) throws DataAccessException {
         String type = null;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            type = (ident.getGel() != null) ? TWO_DIM_IDENTIFICATION_TYPE : GEL_FREE_IDENTIFICATION_TYPE;
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            type = (protein.getGel() != null) ? TWO_DIM_PROTEIN_IDENTIFICATION_TYPE : GEL_FREE_PROTEIN_IDENTIFICATION_TYPE;
         }
         return type;
     }
@@ -700,26 +751,26 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get identification score using identification id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return double identification score
      * @throws DataAccessException data access exception
      */
     @Override
-    public double getIdentificationScore(Comparable identId) throws DataAccessException {
+    public double getProteinScore(Comparable proteinId) throws DataAccessException {
         double score = -1;
-        Identification ident = getIdentificationById(identId);
-        if ((ident != null) && (ident.getScore() != null) ) {
-            score = ident.getScore().getDefaultScore();
+        Protein protein = getProteinById(proteinId);
+        if ((protein != null) && (protein.getScore() != null)) {
+            score = protein.getScore().getDefaultScore();
         }
         return score;
     }
 
     @Override
-    public DBSequence getIdentificationSequence(Comparable identId) throws DataAccessException {
+    public DBSequence getProteinSequence(Comparable proteinId) throws DataAccessException {
         DBSequence dbSequence = null;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            dbSequence = ident.getDbSequence();
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            dbSequence = protein.getDbSequence();
         }
         return dbSequence;
     }
@@ -727,16 +778,16 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get identification threshold using identification id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return double sum of intensity
      * @throws DataAccessException data access exception
      */
     @Override
-    public double getIdentificationThreshold(Comparable identId) throws DataAccessException {
+    public double getProteinThreshold(Comparable proteinId) throws DataAccessException {
         double threshold = -1;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            threshold = ident.getThreshold();
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            threshold = protein.getThreshold();
         }
         return threshold;
     }
@@ -744,18 +795,35 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get search database using identification id
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return String search database
      * @throws DataAccessException data accession exception
      */
     @Override
-    public SearchDataBase getSearchDatabase(Comparable identId) throws DataAccessException {
+    public SearchDataBase getSearchDatabase(Comparable proteinId) throws DataAccessException {
         SearchDataBase database = null;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null && (ident.getDbSequence() != null)) {
-            database = ident.getDbSequence().getSearchDataBase();
+        Protein protein = getProteinById(proteinId);
+        if (protein != null && (protein.getDbSequence() != null)) {
+            database = protein.getDbSequence().getSearchDataBase();
         }
         return database;
+    }
+
+    /**
+     * Get search database version for a given protein identification
+     *
+     * @param proteinId identification id
+     * @return String  search database version
+     * @throws DataAccessException data access exception
+     */
+    @Override
+    public String getSearchDatabaseVersion(Comparable proteinId) throws DataAccessException {
+        String version = null;
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            version = protein.getDbSequence().getSearchDataBase().getVersion();
+        }
+        return version;
     }
 
     /**
@@ -767,17 +835,19 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     @Override
     public SearchEngine getSearchEngine() throws DataAccessException {
         SearchEngine searchEngine = null;
-        Collection<Comparable> identIds = this.getIdentificationIds();
-        if (identIds.size() > 0) {
-            Identification ident = getIdentificationById(CollectionUtils.getElement(identIds, 0));
-            if (ident != null) {
-                List<SearchEngineType> engines = (ident.getScore() == null)? null:ident.getScore().getSearchEngineTypes();
-                searchEngine = new SearchEngine(null,null,engines);
+        Collection<Comparable> proteinIds = this.getProteinIds();
+        if (proteinIds.size() > 0) {
+            Protein protein = getProteinById(CollectionUtils.getElement(proteinIds, 0));
+            if (protein != null) {
+                List<SearchEngineType> engines = (protein.getScore() == null) ? null : protein.getScore().getSearchEngineTypes();
+                searchEngine = new SearchEngine(null, null, engines);
                 // check the search engine types from the data source
-                List<Peptide> peptides = ident.getPeptides();
-                Peptide peptide = peptides.get(0);
-                List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide.getSpectrumIdentification());
-                searchEngine.setSearchEngineTypes(types);
+                List<Peptide> peptides = protein.getPeptides();
+                if (peptides != null && !peptides.isEmpty()) {
+                    Peptide peptide = peptides.get(0);
+                    List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide.getSpectrumIdentification());
+                    searchEngine.setSearchEngineTypes(types);
+                }
             }
         }
 
@@ -785,12 +855,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     @Override
-    public List<CvTermReference> getListProteinCvTermReferenceScores() throws DataAccessException {
-        Collection<Comparable> identIds = this.getIdentificationIds();
-        if (identIds.size() > 0) {
-            Identification ident = getIdentificationById(CollectionUtils.getElement(identIds, 0));
-            if(ident != null){
-                Score score = DataAccessUtilities.getScore(ident);
+    public List<CvTermReference> getProteinCvTermReferenceScores() throws DataAccessException {
+        Collection<Comparable> proteinIds = this.getProteinIds();
+        if (proteinIds.size() > 0) {
+            Protein protein = getProteinById(CollectionUtils.getElement(proteinIds, 0));
+            if (protein != null) {
+                Score score = DataAccessUtilities.getScore(protein);
                 return score.getCvTermReferenceWithValues();
             }
         }
@@ -799,12 +869,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     @Override
-    public List<CvTermReference> getListPeptideCvTermReferenceScores() throws DataAccessException {
-        Collection<Comparable> identIds = this.getIdentificationIds();
-        if (identIds.size() > 0) {
-            Identification ident = getIdentificationById(CollectionUtils.getElement(identIds, 0));
-            if(ident != null){
-                List<Peptide> peptides = ident.getPeptides();
+    public List<CvTermReference> getPeptideCvTermReferenceScores() throws DataAccessException {
+        Collection<Comparable> proteinIds = this.getProteinIds();
+        if (proteinIds.size() > 0) {
+            Protein protein = getProteinById(CollectionUtils.getElement(proteinIds, 0));
+            if (protein != null) {
+                List<Peptide> peptides = protein.getPeptides();
                 Peptide peptide = peptides.get(0);
                 Score score = DataAccessUtilities.getScore(peptide.getSpectrumIdentification());
                 return score.getCvTermReferenceWithValues();
@@ -814,12 +884,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     @Override
-    public Score getIdentificationScores(Comparable identId) throws DataAccessException {
-        Identification ident = getIdentificationById(identId);
+    public Score getProteinScores(Comparable proteinId) throws DataAccessException {
+        Protein protein = getProteinById(proteinId);
         Score score = null;
-        if(ident != null){
-            score = DataAccessUtilities.getScore(ident);
-            ident.setScore(score);
+        if (protein != null) {
+            score = DataAccessUtilities.getScore(protein);
+            protein.setScore(score);
         }
         return score;
     }
@@ -827,17 +897,17 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get peptide ids using identification id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return Collection<Comparable>   peptide ids collection
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<Comparable> getPeptideIds(Comparable identId) throws DataAccessException {
+    public Collection<Comparable> getPeptideIds(Comparable proteinId) throws DataAccessException {
         Collection<Comparable> ids = new ArrayList<Comparable>();
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            List<Peptide> peptides = ident.getPeptides();
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            List<Peptide> peptides = protein.getPeptides();
             if (peptides != null) {
                 for (int index = 0; index < peptides.size(); index++) {
                     ids.add(index);
@@ -850,17 +920,17 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get peptide using its index in a protein identification
      *
-     * @param identId protein identification id
+     * @param proteinId protein identification id
      * @param index   peptide index
      * @return Peptide peptide identification
      * @throws DataAccessException data access exception
      */
     @Override
-    public Peptide getPeptideByIndex(Comparable identId, Comparable index) throws DataAccessException {
+    public Peptide getPeptideByIndex(Comparable proteinId, Comparable index) throws DataAccessException {
         Peptide peptide = null;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(index.toString()));
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(index.toString()));
         }
         return peptide;
     }
@@ -869,18 +939,18 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get peptide sequences using identification id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return Collection<Comparable>   peptide ids collection
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<String> getPeptideSequences(Comparable identId) throws DataAccessException {
+    public List<String> getPeptideSequences(Comparable proteinId) throws DataAccessException {
         List<String> sequences = new ArrayList<String>();
         // read from data source
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            List<Peptide> peptides = ident.getPeptides();
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            List<Peptide> peptides = protein.getPeptides();
             if (peptides != null) {
                 for (Peptide peptide : peptides) {
                     String seq = peptide.getPeptideSequence().getSequence();
@@ -893,25 +963,25 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     @Override
-    public Collection<PeptideEvidence> getPeptideEvidences(Comparable identId, Comparable peptideId) throws DataAccessException {
-        Peptide peptide = getPeptideByIndex(identId, peptideId);
+    public Collection<PeptideEvidence> getPeptideEvidences(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+        Peptide peptide = getPeptideByIndex(proteinId, peptideId);
         return peptide.getPeptideEvidenceList();
     }
 
     /**
      * Get number of peptides using identification id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   number of peptides
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public int getNumberOfPeptides(Comparable identId) throws DataAccessException {
+    public int getNumberOfPeptides(Comparable proteinId) throws DataAccessException {
         int cnt = 0;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            cnt = DataAccessUtilities.getNumberOfPeptides(ident);
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            cnt = DataAccessUtilities.getNumberOfPeptides(protein);
         }
         return cnt;
     }
@@ -925,7 +995,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     public int getNumberOfPeptides() throws DataAccessException {
         int cnt = 0;
 
-        Collection<Comparable> ids = getIdentificationIds();
+        Collection<Comparable> ids = getProteinIds();
         if (ids != null) {
             for (Comparable id : ids) {
                 cnt += getNumberOfPeptides(id);
@@ -938,17 +1008,17 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get number of unique peptides using identification id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   number of unique peptides
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public int getNumberOfUniquePeptides(Comparable identId) throws DataAccessException {
+    public int getNumberOfUniquePeptides(Comparable proteinId) throws DataAccessException {
         int cnt = 0;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            cnt = DataAccessUtilities.getNumberOfUniquePeptides(ident);
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            cnt = DataAccessUtilities.getNumberOfUniquePeptides(protein);
         }
         return cnt;
     }
@@ -956,17 +1026,17 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get number of ptms using identification id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   number of ptms
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public int getNumberOfPTMs(Comparable identId) throws DataAccessException {
+    public int getNumberOfPTMs(Comparable proteinId) throws DataAccessException {
         int cnt = 0;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            cnt = DataAccessUtilities.getNumberOfPTMs(ident);
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            cnt = DataAccessUtilities.getNumberOfPTMs(protein);
         }
         return cnt;
     }
@@ -974,17 +1044,17 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get number of ptms using peptide id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   number of ptms
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public int getNumberOfPTMs(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public int getNumberOfPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         int cnt = 0;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            List<Peptide> peptides = ident.getPeptides();
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            List<Peptide> peptides = protein.getPeptides();
             if (peptides != null) {
                 Peptide peptide = peptides.get(Integer.parseInt(peptideId.toString()));
                 if (peptide != null) {
@@ -1010,16 +1080,16 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get peptide sequence using identification id and peptide id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   number of unique peptides
      * @throws DataAccessException data access exception
      */
     @Override
-    public String getPeptideSequence(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public String getPeptideSequence(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         String seq = null;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
                 seq = peptide.getPeptideSequence().getSequence();
             }
@@ -1030,16 +1100,16 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get peptide sequence start using identification id and peptide id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   peptide sequence start
      * @throws DataAccessException data access exception
      */
     @Override
-    public int getPeptideSequenceStart(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public int getPeptideSequenceStart(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         int start = -1;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
                 start = peptide.getPeptideEvidenceList().get(0).getStartPosition();
                 //Todo: We need to define finally how to manage the information for pride xml object as PeptideEvidence
@@ -1051,16 +1121,16 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get peptide sequence stop using identification id and peptide id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   peptide sequence stop
      * @throws DataAccessException data access exception
      */
     @Override
-    public int getPeptideSequenceEnd(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public int getPeptideSequenceEnd(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         int stop = -1;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
                 stop = peptide.getPeptideEvidenceList().get(0).getEndPosition();
             }
@@ -1071,16 +1141,16 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get peptide spectrum id using identification id and peptide id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   peptide sequence stop
      * @throws DataAccessException data access exception
      */
     @Override
-    public Comparable getPeptideSpectrumId(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public Comparable getPeptideSpectrumId(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         Comparable specId = null;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
                 Spectrum spectrum = peptide.getSpectrum();
                 if (spectrum != null) {
@@ -1094,18 +1164,18 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get ptms using identification id nad peptide id
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, can be the index of the peptide
      * @return List<Modification>   a list of modifications.
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Modification> getPTMs(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public List<Modification> getPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         List<Modification> mods = new ArrayList<Modification>();
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
                 List<Modification> rawMods = peptide.getPeptideSequence().getModificationList();
                 mods.addAll(rawMods);
@@ -1115,11 +1185,11 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     @Override
-    public Collection<SubstitutionModification> getSubstitutionPTMs(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public Collection<SubstitutionModification> getSubstitutionPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         List<SubstitutionModification> mods = new ArrayList<SubstitutionModification>();
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
                 List<SubstitutionModification> rawMods = peptide.getPeptideSequence().getSubstitutionModificationList();
                 mods.addAll(rawMods);
@@ -1129,21 +1199,21 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     @Override
-    public int getNumberOfSubstitutionPTMs(Comparable identId) throws DataAccessException {
+    public int getNumberOfSubstitutionPTMs(Comparable proteinId) throws DataAccessException {
         int cnt = 0;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            cnt = DataAccessUtilities.getNumberOfSubstitutionPTMs(ident);
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            cnt = DataAccessUtilities.getNumberOfSubstitutionPTMs(protein);
         }
         return cnt;
     }
 
     @Override
-    public int getNumberOfSubstitutionPTMs(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public int getNumberOfSubstitutionPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         int cnt = 0;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            List<Peptide> peptides = ident.getPeptides();
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            List<Peptide> peptides = protein.getPeptides();
             if (peptides != null) {
                 Peptide peptide = peptides.get(Integer.parseInt(peptideId.toString()));
                 if (peptide != null) {
@@ -1157,17 +1227,17 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get the number of fragment ions of a given peptide
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return int the number of fragment ions
      * @throws DataAccessException data access exception
      */
     @Override
-    public int getNumberOfFragmentIons(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public int getNumberOfFragmentIons(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         int num = 0;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
                 List<FragmentIon> ions = peptide.getFragmentation();
                 if (ions != null) {
@@ -1181,17 +1251,17 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get all the fragment ions of a given peptide identification
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return Collection<FragmentIon> a collection of fragment ions
      * @throws DataAccessException data access exception
      */
     @Override
-    public Collection<FragmentIon> getFragmentIons(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public Collection<FragmentIon> getFragmentIons(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         List<FragmentIon> frags = new ArrayList<FragmentIon>();
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
                 List<FragmentIon> rawFrags = peptide.getFragmentation();
                 frags.addAll(rawFrags);
@@ -1203,17 +1273,17 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get the search score for a given peptide
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return PeptideScore    search engine score
      * @throws DataAccessException data access exception
      */
     @Override
-    public Score getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public Score getPeptideScore(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         Score score = null;
-        Identification ident = getIdentificationById(identId);
-        if (ident != null) {
-            Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
+        Protein protein = getProteinById(proteinId);
+        if (protein != null) {
+            Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
             if ((peptide != null) || (peptide.getSpectrumIdentification().getScore() == null)) {
                 score = DataAccessUtilities.getScore(peptide.getSpectrumIdentification());
                 peptide.getSpectrumIdentification().setScore(score);
@@ -1342,30 +1412,30 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      * @return Identification  protein identification
      */
     @Override
-    public synchronized Identification getForegroundIdentification() {
-        return foregroundIdentification;
+    public synchronized Protein getForegroundProtein() {
+        return foregroundProtein;
     }
 
     /**
      * Set foreground protein identification using a given id
      *
-     * @param identId identification id
+     * @param proteinId identification id
      * @throws DataAccessException data access exception
      */
     @Override
-    public void setForegroundIdentificationById(Comparable identId) throws DataAccessException {
-        logger.debug("Set foreground identification id: {}", identId);
+    public void setForegroundIdentificationById(Comparable proteinId) throws DataAccessException {
+        logger.debug("Set foreground identification id: {}", proteinId);
 
-        Identification oldIdent = null;
-        Identification newIdent = this.getIdentificationById(identId);
+        Protein oldProtein = null;
+        Protein newProtein = this.getProteinById(proteinId);
         synchronized (this) {
-            if (foregroundIdentification == null ||
-                    (newIdent != null && !foregroundIdentification.getId().equals(newIdent.getId()))) {
-                oldIdent = foregroundIdentification;
-                foregroundIdentification = getIdentificationById(identId);
+            if (foregroundProtein == null ||
+                    (newProtein != null && !foregroundProtein.getId().equals(newProtein.getId()))) {
+                oldProtein = foregroundProtein;
+                foregroundProtein = getProteinById(proteinId);
             }
         }
-        firePropertyChange(FOREGROUND_IDENTIFICATION_CHANGED, oldIdent, newIdent);
+        firePropertyChange(FOREGROUND_IDENTIFICATION_CHANGED, oldProtein, newProtein);
     }
 
     /**
@@ -1478,7 +1548,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         if (additionals != null) {
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
-            if(cvParams != null){
+            if (cvParams != null) {
                 for (CvParam cvParam : cvParams) {
                     if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
                         return true;
@@ -1506,7 +1576,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         if (additionals != null) {
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
-            if(cvParams != null){
+            if (cvParams != null) {
                 for (CvParam cvParam : cvParams) {
                     if (QuantCvTermReference.isQuantitativeMethodParam(cvParam)) {
                         methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
@@ -1533,7 +1603,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         if (additionals != null) {
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
-            if(cvParams != null){
+            if (cvParams != null) {
                 for (CvParam cvParam : cvParams) {
                     if (QuantCvTermReference.isLabelFreeMethod(cvParam)) {
                         methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
@@ -1602,7 +1672,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         if (additionals != null) {
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
-            if(cvParams !=null){
+            if (cvParams != null) {
                 for (CvParam cvParam : cvParams) {
                     if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
                         methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
@@ -1694,12 +1764,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
         int index = -1;
 
         if (hasIsotopeLabellingQuantMethods()) {
-            int cnt = 20;
+            int cnt = NUMBER_OF_PROTEIN_TO_CHECK;
             if (hasProteinQuantData()) {
-                Collection<Comparable> identIds = getIdentificationIds();
+                Collection<Comparable> proteinIds = getProteinIds();
 
-                for (Comparable identId : identIds) {
-                    Quantitation quant = getProteinQuantData(identId);
+                for (Comparable proteinId : proteinIds) {
+                    Quantitation quant = getProteinQuantData(proteinId);
                     if (quant.hasTotalIntensities()) {
                         return index;
                     } else {
@@ -1714,12 +1784,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
                     }
                 }
             } else if (hasPeptideQuantData()) {
-                Collection<Comparable> identIds = getIdentificationIds();
+                Collection<Comparable> proteinIds = getProteinIds();
 
-                for (Comparable identId : identIds) {
-                    Collection<Comparable> peptideIds = getPeptideIds(identId);
+                for (Comparable proteinId : proteinIds) {
+                    Collection<Comparable> peptideIds = getPeptideIds(proteinId);
                     for (Comparable peptideId : peptideIds) {
-                        Quantitation quant = getPeptideQuantData(identId, peptideId);
+                        Quantitation quant = getPeptideQuantData(proteinId, peptideId);
                         if (quant.hasTotalIntensities()) {
                             return index;
                         } else {
@@ -1755,22 +1825,24 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
             Sample sample = CollectionUtils.getElement(samples, 0);
             List<CvParam> cvParams = sample.getCvParams();
             // scan for all the species
-            for (CvParam cvParam : cvParams) {
-                String cvLabel = cvParam.getCvLookupID().toLowerCase();
-                if ("newt".equals(cvLabel)) {
-                    sampleDesc.setSpecies(cvParam);
-                } else if ("bto".equals(cvLabel)) {
-                    sampleDesc.setTissue(cvParam);
-                } else if ("cl".equals(cvLabel)) {
-                    sampleDesc.setCellLine(cvParam);
-                } else if ("go".equals(cvLabel)) {
-                    sampleDesc.setGOTerm(cvParam);
-                } else if ("doid".equals(cvLabel)) {
-                    sampleDesc.setDisease(cvParam);
-                } else if (QuantCvTermReference.isSubSampleDescription(cvParam)) {
-                    sampleDesc.setDescription(cvParam);
-                } else if (QuantCvTermReference.isReagent(cvParam)) {
-                    sampleDesc.setReagent(cvParam);
+            if (cvParams != null) {
+                for (CvParam cvParam : cvParams) {
+                    String cvLabel = cvParam.getCvLookupID().toLowerCase();
+                    if ("newt".equals(cvLabel)) {
+                        sampleDesc.setSpecies(cvParam);
+                    } else if ("bto".equals(cvLabel)) {
+                        sampleDesc.setTissue(cvParam);
+                    } else if ("cl".equals(cvLabel)) {
+                        sampleDesc.setCellLine(cvParam);
+                    } else if ("go".equals(cvLabel)) {
+                        sampleDesc.setGOTerm(cvParam);
+                    } else if ("doid".equals(cvLabel)) {
+                        sampleDesc.setDisease(cvParam);
+                    } else if (QuantCvTermReference.isSubSampleDescription(cvParam)) {
+                        sampleDesc.setDescription(cvParam);
+                    } else if (QuantCvTermReference.isReagent(cvParam)) {
+                        sampleDesc.setReagent(cvParam);
+                    }
                 }
             }
         }
@@ -1788,12 +1860,12 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      */
     @Override
     public QuantCvTermReference getProteinQuantUnit() throws DataAccessException {
-        Collection<Comparable> identIds = getIdentificationIds();
+        Collection<Comparable> proteinIds = getProteinIds();
 
-        int cnt = 20;
+        int cnt = NUMBER_OF_PROTEIN_TO_CHECK;
 
-        for (Comparable identId : identIds) {
-            Quantitation quant = getProteinQuantData(identId);
+        for (Comparable proteinId : proteinIds) {
+            Quantitation quant = getProteinQuantData(proteinId);
             QuantCvTermReference unit = quant.getUnit();
             cnt--;
             if (unit != null) {
@@ -1817,14 +1889,14 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      */
     @Override
     public QuantCvTermReference getPeptideQuantUnit() throws DataAccessException {
-        Collection<Comparable> identIds = getIdentificationIds();
+        Collection<Comparable> proteinIds = getProteinIds();
 
-        int cnt = 20;
+        int cnt = NUMBER_OF_PEPTIDE_TO_CHECK;
 
-        for (Comparable identId : identIds) {
-            Collection<Comparable> peptideIds = getPeptideIds(identId);
+        for (Comparable proteinId : proteinIds) {
+            Collection<Comparable> peptideIds = getPeptideIds(proteinId);
             for (Comparable peptideId : peptideIds) {
-                Quantitation quant = getPeptideQuantData(identId, peptideId);
+                Quantitation quant = getPeptideQuantData(proteinId, peptideId);
                 QuantCvTermReference unit = quant.getUnit();
                 if (unit != null) {
                     return unit;
@@ -1842,27 +1914,27 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     /**
      * Get protein level quantitative data using a given protein identification id
      *
-     * @param identId protein identification id
+     * @param proteinId protein identification id
      * @return Quantitation    quantitative data
      * @throws DataAccessException data access exception
      */
     @Override
-    public Quantitation getProteinQuantData(Comparable identId) throws DataAccessException {
-        Identification ident = getIdentificationById(identId);
-        return new Quantitation(Quantitation.Type.PROTEIN, ident.getCvParams());
+    public Quantitation getProteinQuantData(Comparable proteinId) throws DataAccessException {
+        Protein protein = getProteinById(proteinId);
+        return new Quantitation(Quantitation.Type.PROTEIN, protein.getCvParams());
     }
 
     /**
      * Get peptide level quantitative data using a given peptide identification id
      *
-     * @param identId   protein identification id
+     * @param proteinId   protein identification id
      * @param peptideId peptide id
      * @return Quantitation    quantitative data
      * @throws DataAccessException data access exception
      */
     @Override
-    public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
-        Peptide peptide = getPeptideByIndex(identId, peptideId);
+    public Quantitation getPeptideQuantData(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+        Peptide peptide = getPeptideByIndex(proteinId, peptideId);
         return new Quantitation(Quantitation.Type.PEPTIDE, peptide.getSpectrumIdentification().getCvParams());
     }
 
@@ -1877,7 +1949,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      * @return boolean
      */
     @Override
-    public boolean hasMetaDataInformation(){
+    public boolean hasMetaDataInformation() {
         return true;
     }
 }

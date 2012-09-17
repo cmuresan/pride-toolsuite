@@ -427,18 +427,18 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
 
     @Override
     public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
-        IdentificationMetaData metaData = super.getIdentificationMetaData();
-        if (metaData == null) {
-            List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = null;
-            //Todo: Try to convert the CVTerms in Pride to SpectrumIdentificationProtocol
-            Protocol proteinDetectionProtocol = null;
-            //Todo: Try to convert the CVTerms in Pride to Protocol
-            List<SearchDataBase> searchDataBaseList = null;
-            //Todo: We need to search in the peptides Identifications all of the Search Databases Used.
-            //Todo: We need to search all of the possible modifications presented in the experiment.
-
-            metaData = new IdentificationMetaData(null, null, spectrumIdentificationProtocolList, proteinDetectionProtocol, searchDataBaseList);
-        }
+//        IdentificationMetaData metaData = super.getIdentificationMetaData();
+//        if (metaData == null) {
+//            List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = null;
+//            //Todo: Try to convert the CVTerms in Pride to SpectrumIdentificationProtocol
+//            Protocol proteinDetectionProtocol = null;
+//            //Todo: Try to convert the CVTerms in Pride to Protocol
+//            List<SearchDataBase> searchDataBaseList = null;
+//            //Todo: We need to search in the peptides Identifications all of the Search Databases Used.
+//            //Todo: We need to search all of the possible modifications presented in the experiment.
+//
+//            metaData = new IdentificationMetaData(null, null, spectrumIdentificationProtocolList, proteinDetectionProtocol, searchDataBaseList);
+//        }
         //return metaData;
         return null;
     }
@@ -499,32 +499,32 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * Get identification using a identification id, gives the option to choose whether to use cache.
      * This implementation provides a way of by passing the cache.
      *
-     * @param id       identification id
+     * @param proteinId       identification id
      * @param useCache true means to use cache
      * @return Identification identification object
      * @throws DataAccessException data access exception
      */
     @Override
-    public Identification getIdentificationById(Comparable id, boolean useCache) throws DataAccessException {
-        Identification ident = super.getIdentificationById(id, useCache);
+    public Protein getProteinById(Comparable proteinId, boolean useCache) throws DataAccessException {
+        Protein ident = super.getProteinById(proteinId, useCache);
         if (ident == null) {
-            logger.debug("Get new identification from file: {}", id);
+            logger.debug("Get new identification from file: {}", proteinId);
             try {
-                ident = PrideXmlTransformer.transformIdentification(reader.getIdentById(id.toString()));
+                ident = PrideXmlTransformer.transformIdentification(reader.getIdentById(proteinId.toString()));
                 if (useCache && ident != null) {
                     // store identification into cache
-                    getCache().store(CacheCategory.IDENTIFICATION, id, ident);
+                    getCache().store(CacheCategory.PROTEIN, proteinId, ident);
                     // store precursor charge and m/z
                     for (Peptide peptide : ident.getPeptides()) {
                         Spectrum spectrum = peptide.getSpectrum();
                         if (spectrum != null) {
-                            getCache().store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
-                            getCache().store(CacheCategory.PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+                            getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
+                            getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
                         }
                     }
                 }
             } catch (Exception ex) {
-                String msg = "Error while getting identification: " + id;
+                String msg = "Error while getting identification: " + proteinId;
                 logger.error(msg, ex);
                 throw new DataAccessException(msg, ex);
             }
@@ -536,26 +536,26 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
     /**
      * Get peptide using a given identification id and a given peptide index
      *
-     * @param identId  identification id
+     * @param proteinId  identification id
      * @param index    peptide index
      * @param useCache whether to use cache
      * @return Peptide  peptide
      * @throws DataAccessException exception while getting peptide
      */
     @Override
-    public Peptide getPeptideByIndex(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
-        Peptide peptide = super.getPeptideByIndex(identId, index, useCache);
+    public Peptide getPeptideByIndex(Comparable proteinId, Comparable index, boolean useCache) throws DataAccessException {
+        Peptide peptide = super.getPeptideByIndex(proteinId, index, useCache);
         if (peptide == null) {
-            logger.debug("Get new peptide from file: {}-{}", identId, index);
-            peptide = PrideXmlTransformer.transformPeptide(reader.getPeptide(identId.toString(), Integer.parseInt(index.toString())));
+            logger.debug("Get new peptide from file: {}-{}", proteinId, index);
+            peptide = PrideXmlTransformer.transformPeptide(reader.getPeptide(proteinId.toString(), Integer.parseInt(index.toString())));
             if (useCache && peptide != null) {
                 // store peptide
-                getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, index), peptide);
+                getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(proteinId, index), peptide);
                 // store precursor charge and m/z
                 Spectrum spectrum = peptide.getSpectrum();
                 if (spectrum != null) {
-                    getCache().store(CacheCategory.PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
-                    getCache().store(CacheCategory.PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+                    getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
+                    getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
                 }
             }
         }
@@ -621,7 +621,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public Collection<Comparable> getIdentificationGroups() throws DataAccessException {
+    public Collection<Comparable> getProteinGroupIds() throws DataAccessException {
         return null;
     }
 }

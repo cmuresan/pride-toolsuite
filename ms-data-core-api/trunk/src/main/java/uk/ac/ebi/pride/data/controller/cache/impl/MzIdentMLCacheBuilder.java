@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.data.controller.cache.impl;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import org.apache.batik.ext.awt.image.renderable.CompositeRable;
 import uk.ac.ebi.jmzidml.MzIdentMLElement;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
@@ -42,11 +41,11 @@ public class MzIdentMLCacheBuilder extends AbstractAccessCacheBuilder {
                */
         Map<CacheCategory, Object> mzIdentMLMaps = unmarshaller.getPreScanIdMaps();
 
-        Map<Comparable,Map<Comparable,List<String[]>>> identProteinsMap = (Map<Comparable, Map<Comparable, List<String[]>>>) mzIdentMLMaps.get(CacheCategory.IDENTIFICATION_TO_PEPTIDE_EVIDENCES);
-        cache.storeInBatch(CacheCategory.IDENTIFICATION_TO_PEPTIDE_EVIDENCES, identProteinsMap);
+        Map<Comparable,Map<Comparable,List<String[]>>> identProteinsMap = (Map<Comparable, Map<Comparable, List<String[]>>>) mzIdentMLMaps.get(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES);
+        cache.storeInBatch(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES, identProteinsMap);
 
-        cache.clear(CacheCategory.IDENTIFICATION_ID);
-        cache.storeInBatch( CacheCategory.IDENTIFICATION_ID, new ArrayList<Comparable>(identProteinsMap.keySet()));
+        cache.clear(CacheCategory.PROTEIN_ID);
+        cache.storeInBatch( CacheCategory.PROTEIN_ID, new ArrayList<Comparable>(identProteinsMap.keySet()));
 
         Map<Comparable, List<Comparable>> spectraDataMap = (Map<Comparable, List<Comparable>>) mzIdentMLMaps.get(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS);
         cache.clear(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS);
@@ -65,7 +64,7 @@ public class MzIdentMLCacheBuilder extends AbstractAccessCacheBuilder {
             for(Comparable id: proteinHIds){
                 proteinHypothesisMap.put(unmarshaller.getDBSequencebyProteinHypothesis(id),id);
             }
-         cache.storeInBatch(CacheCategory.IDENTIFICATION_PROTEIN_GROUP_ID, proteinHypothesisMap);
+         cache.storeInBatch(CacheCategory.PROTEIN_TO_PROTEIN_GROUP_ID, proteinHypothesisMap);
         }
     }
 }

@@ -4,17 +4,15 @@ package uk.ac.ebi.pride.data.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Abstract class for both GelFreeIdentification and TwoDimIdentification
- * ToDo: this is a replica of PRIDE XML data model, additional support is needed for mzIdentML
  * <p/>
  * User: rwang
  * Date: 03-Feb-2010
  * Time: 12:21:57
  */
-public class Identification extends IdentifiableParamGroup {
+public class Protein extends IdentifiableParamGroup {
 
     /**
      * DEB Sequence
@@ -57,13 +55,13 @@ public class Identification extends IdentifiableParamGroup {
      */
     IdentifiableParamGroup proteinAmbiguityGroup = null;
 
-    public Identification(Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
-                          List<Peptide> peptides, Score score, double threshold, double sequenceCoverage, Gel gel) {
+    public Protein(Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
+                   List<Peptide> peptides, Score score, double threshold, double sequenceCoverage, Gel gel) {
         this(null, id, name, dbSequence, passThreshold, peptides, score, threshold, sequenceCoverage, gel);
     }
 
-    public Identification(ParamGroup params, Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
-                          List<Peptide> peptides, Score score, double threshold, double sequenceCoverage, Gel gel) {
+    public Protein(ParamGroup params, Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
+                   List<Peptide> peptides, Score score, double threshold, double sequenceCoverage, Gel gel) {
         super(params, id, name);
         this.dbSequence       = dbSequence;
         this.passThreshold    = passThreshold;

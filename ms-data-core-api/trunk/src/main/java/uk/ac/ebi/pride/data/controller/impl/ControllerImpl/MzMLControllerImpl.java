@@ -534,7 +534,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * @throws DataAccessException
      */
     @Override
-    public boolean hasIdentification() throws DataAccessException {
+    public boolean hasProtein() throws DataAccessException {
        return false;
     }
 

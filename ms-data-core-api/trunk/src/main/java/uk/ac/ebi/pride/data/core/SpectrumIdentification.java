@@ -14,14 +14,14 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
     /**
      * The theoretical mass-to-charge value calculated for the peptide in Daltons / charge.
      */
-    private double calculatedMassToCharge = 0.0;
+    private double calculatedMassToCharge = -1;
 
     /**
      * The calculated isoelectric point of the (poly)peptide, with relevant
      * modifications included. Do not supply this value if the PI cannot be
      * calculated properly.
      */
-    private double calculatedPI = 0.0;
+    private double calculatedPI = -1;
 
     /**
      * The charge state of the identified peptide.
@@ -31,7 +31,7 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
     /**
      * The mass-to-charge value measured in the experiment in Daltons / charge.
      */
-    private double experimentalMassToCharge = 0.0;
+    private double experimentalMassToCharge = -1;
 
     /**
      * The product ions identified in this result.

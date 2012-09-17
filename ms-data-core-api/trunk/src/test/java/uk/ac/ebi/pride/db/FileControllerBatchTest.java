@@ -131,11 +131,11 @@ public class FileControllerBatchTest {
                 }
 
                 // iterate over 50 identifications
-                if (controller.hasIdentification()) {
-                    Collection<Comparable> ids = controller.getIdentificationIds();
+                if (controller.hasProtein()) {
+                    Collection<Comparable> ids = controller.getProteinIds();
                     int cnt = 0;
                     for (Comparable id : ids) {
-                        controller.getIdentificationById(id);
+                        controller.getProteinById(id);
                         // read peptide details
                         Collection<Comparable> pepIds = controller.getPeptideIds(id);
                         for (Comparable pepId : pepIds) {

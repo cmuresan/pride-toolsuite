@@ -4,7 +4,7 @@ package uk.ac.ebi.pride.data.controller.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Chromatogram;
-import uk.ac.ebi.pride.data.core.Identification;
+import uk.ac.ebi.pride.data.core.Protein;
 import uk.ac.ebi.pride.data.core.MzGraph;
 import uk.ac.ebi.pride.data.core.Spectrum;
 
@@ -97,15 +97,15 @@ public interface TrackDataAccess {
      *
      * @return Identification identification object
      */
-    public Identification getForegroundIdentification();
+    public Protein getForegroundProtein();
 
     /**
      * Set a new foreground identification using accession.
      *
-     * @param identId identification id
+     * @param proteinId identification id
      * @throws DataAccessException throw a exception when there is an error accessing the data source
      */
-    public void setForegroundIdentificationById(Comparable identId) throws DataAccessException;
+    public void setForegroundIdentificationById(Comparable proteinId) throws DataAccessException;
 }
 
 

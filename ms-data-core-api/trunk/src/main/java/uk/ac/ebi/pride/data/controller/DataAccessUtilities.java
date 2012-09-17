@@ -100,7 +100,7 @@ public class DataAccessUtilities {
      * @return int precursor charge
      */
     public static int getPrecursorCharge(Spectrum spectrum) {
-        int charge = 0;
+        int charge = -1;
         List<Precursor> precursors = spectrum.getPrecursors();
         if (precursors != null && !precursors.isEmpty()) {
             Double c = getSelectedIonCharge(precursors.get(0), 0);
@@ -108,6 +108,25 @@ public class DataAccessUtilities {
                 charge = c.intValue();
             }
         }
+        return charge;
+    }
+
+    /**
+     * Get precursor charge from param group
+     *
+     * @param paramGroup param group
+     * @return precursor charge
+     */
+    public static int getPrecursorCharge(ParamGroup paramGroup) {
+        int charge = -1;
+
+        if (paramGroup != null) {
+            Double c = getSelectedCvParamValue(paramGroup, CvTermReference.PSI_ION_SELECTION_CHARGE_STATE, CvTermReference.ION_SELECTION_CHARGE_STATE);
+            if (c != null) {
+                charge = c.intValue();
+            }
+        }
+
         return charge;
     }
 
@@ -126,6 +145,25 @@ public class DataAccessUtilities {
                 mz = m;
             }
         }
+        return mz;
+    }
+
+    /**
+     * Get precursor m/z value
+     *
+     * @param paramGroup    param group
+     * @return  precursor m/z
+     */
+    public static double getPrecursorMz(ParamGroup paramGroup) {
+        double mz = -1;
+
+        if (paramGroup != null) {
+            Double m = getSelectedCvParamValue(paramGroup, CvTermReference.PSI_ION_SELECTION_MZ, CvTermReference.ION_SELECTION_MZ);
+            if (m != null) {
+                mz = m;
+            }
+        }
+
         return mz;
     }
 
@@ -216,11 +254,26 @@ public class DataAccessUtilities {
         if (index >= 0 && selectedIons != null && index < selectedIons.size()) {
             ParamGroup selectedIon = selectedIons.get(index);
             // search PRIDE xml based charge
-            for (CvTermReference ref : refs) {
-                List<CvParam> cvParams = getCvParam(selectedIon, ref.getCvLabel(), ref.getAccession());
-                if (cvParams != null && !cvParams.isEmpty()) {
-                    value = new Double(cvParams.get(0).getValue());
-                }
+            value = getSelectedCvParamValue(selectedIon, refs);
+        }
+        return value;
+    }
+
+
+    /**
+     * Get value of selected ion cv param
+     *
+     * @param paramGroup param group
+     * @param refs       a list of possible cv terms to search for
+     * @return Double  value of the cv paramter
+     */
+    private static Double getSelectedCvParamValue(ParamGroup paramGroup, CvTermReference... refs) {
+        Double value = null;
+        // search PRIDE xml based charge
+        for (CvTermReference ref : refs) {
+            List<CvParam> cvParams = getCvParam(paramGroup, ref.getCvLabel(), ref.getAccession());
+            if (cvParams != null && !cvParams.isEmpty()) {
+                value = new Double(cvParams.get(0).getValue());
             }
         }
         return value;
@@ -233,7 +286,7 @@ public class DataAccessUtilities {
      * @param index zero based index.
      * @return Peptide  peptide.
      */
-    public static Peptide getPeptide(Identification ident, int index) {
+    public static Peptide getPeptide(Protein ident, int index) {
         Peptide peptide = null;
         List<Peptide> peptides = ident.getPeptides();
         if (peptides != null && peptides.size() > index) {
@@ -248,7 +301,7 @@ public class DataAccessUtilities {
      * @param ident identification object
      * @return int number of peptides
      */
-    public static int getNumberOfPeptides(Identification ident) {
+    public static int getNumberOfPeptides(Protein ident) {
         List<Peptide> peptides = ident.getPeptides();
         return peptides == null ? 0 : peptides.size();
     }
@@ -259,7 +312,7 @@ public class DataAccessUtilities {
      * @param ident identification object
      * @return int  number of unique peptide sequences.
      */
-    public static int getNumberOfUniquePeptides(Identification ident) {
+    public static int getNumberOfUniquePeptides(Protein ident) {
         List<PeptideSequence> peptides = ident.getPeptidesSequence();
         int cnt = 0;
         if (peptides == null) {
@@ -306,7 +359,7 @@ public class DataAccessUtilities {
      * @param ident protein identification
      * @return int number of ptms
      */
-    public static int getNumberOfPTMs(Identification ident) {
+    public static int getNumberOfPTMs(Protein ident) {
         int cnt = 0;
         List<Peptide> peptides = ident.getPeptides();
         for (Peptide peptide : peptides) {
@@ -323,7 +376,7 @@ public class DataAccessUtilities {
      * @param ident ID of the Protein Identification
      * @return Total number of Substitution PTMs
      */
-    public static int getNumberOfSubstitutionPTMs(Identification ident) {
+    public static int getNumberOfSubstitutionPTMs(Protein ident) {
         int cnt = 0;
         List<Peptide> peptides = ident.getPeptides();
         for (Peptide peptide : peptides) {
@@ -464,8 +517,8 @@ public class DataAccessUtilities {
         List<CvParam> cps = new ArrayList<CvParam>();
         if (cvParams != null) {
             for (CvParam param : cvParams) {
-                if (param.getAccession().toLowerCase().equals(accession.toLowerCase())
-                        && param.getCvLookupID().toLowerCase().equals(cvLabel.toLowerCase())) {
+                if (param.getAccession().equalsIgnoreCase(accession.toLowerCase())
+                        && param.getCvLookupID().equalsIgnoreCase(cvLabel.toLowerCase())) {
                     cps.add(param);
                 }
             }

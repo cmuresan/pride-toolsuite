@@ -17,6 +17,7 @@ import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
+import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 
 import java.util.*;
 
@@ -208,8 +209,8 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<Comparable> getIdentificationIds() throws DataAccessException {
-        Collection<Comparable> ids = (Collection<Comparable>) cache.get(CacheCategory.IDENTIFICATION_ID);
+    public Collection<Comparable> getProteinIds() throws DataAccessException {
+        Collection<Comparable> ids = (Collection<Comparable>) cache.get(CacheCategory.PROTEIN_ID);
         return ids == null ? Collections.<Comparable>emptyList() : ids;
     }
 
@@ -243,13 +244,13 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get chromatogram object form cache
      * It uses cache by default
      *
-     * @param id chromatogram string id
+     * @param chromaId chromatogram string id
      * @return Chromatogram chromatogram object
      * @throws DataAccessException data access exception
      */
     @Override
-    public Chromatogram getChromatogramById(Comparable id) throws DataAccessException {
-        return getChromatogramById(id, true);
+    public Chromatogram getChromatogramById(Comparable chromaId) throws DataAccessException {
+        return getChromatogramById(chromaId, true);
     }
 
     /**
@@ -269,26 +270,26 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get identification object from cache
      * It uses the cache by default
      *
-     * @param id a string id of Identification
+     * @param proteinId a string id of Identification
      * @return Identification  identification object
      * @throws DataAccessException data access exception
      */
     @Override
-    public Identification getIdentificationById(Comparable id) throws DataAccessException {
-        return getIdentificationById(id, true);
+    public Protein getProteinById(Comparable proteinId) throws DataAccessException {
+        return getProteinById(proteinId, true);
     }
 
     /**
      * Get identification using a identification id, gives the option to choose whether to use cache.
      * This implementation provides a way of by passing the cache.
      *
-     * @param id       identification id
+     * @param proteinId       protein identification id
      * @param useCache true means to use cache
      * @return Identification identification object
      * @throws DataAccessException data access exception
      */
-    Identification getIdentificationById(Comparable id, boolean useCache) throws DataAccessException {
-        return useCache ? (Identification) cache.get(CacheCategory.IDENTIFICATION, id) : null;
+    Protein getProteinById(Comparable proteinId, boolean useCache) throws DataAccessException {
+        return useCache ? (Protein) cache.get(CacheCategory.PROTEIN, proteinId) : null;
     }
 
 
@@ -339,12 +340,38 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public int getPrecursorCharge(Comparable specId) throws DataAccessException {
-        Integer charge = (Integer) cache.get(CacheCategory.PRECURSOR_CHARGE, specId);
+        Integer charge = (Integer) cache.get(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && charge == null) {
             charge = super.getPrecursorCharge(specId);
-            cache.store(CacheCategory.PRECURSOR_CHARGE, specId, charge);
+            cache.store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, specId, charge);
         }
-        return charge == null ? 0 : charge;
+        return charge == null ? -1 : charge;
+    }
+
+    /**
+     * Get precursor charge on peptide level
+     * Note: sometimes, precursor charge at the peptide level is different from the precursor charge at the spectrum level
+     * As the peptide-level precursor charge is often assigned by search engine rather than ms instrument
+     *
+     * @param proteinId   identification id
+     * @param peptideId peptid eid, can be the index of the peptide as well.
+     * @return precursor charge, 0 should be returned if not available
+     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
+     *          data access exception
+     */
+    @Override
+    public int getPrecursorCharge(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+        int charge = -1;
+        // get peptide additional parameters
+        ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
+        if (paramGroup != null) {
+            // get peptide precursor charge
+            charge = DataAccessUtilities.getPrecursorCharge(paramGroup);
+        } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
+            charge = super.getPrecursorCharge(proteinId, peptideId);
+        }
+
+        return charge;
     }
 
     /**
@@ -357,12 +384,35 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public double getPrecursorMz(Comparable specId) throws DataAccessException {
-        Double mz = (Double) cache.get(CacheCategory.PRECURSOR_MZ, specId);
+        Double mz = (Double) cache.get(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && mz == null) {
             mz = super.getPrecursorMz(specId);
-            cache.store(CacheCategory.PRECURSOR_MZ, specId, mz);
+            cache.store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, specId, mz);
         }
         return mz == null ? -1 : mz;
+    }
+
+    /**
+     * Get precursor m/z from the peptide level
+     *
+     * @param proteinId   identification id
+     * @param peptideId peptid eid, can be the index of the peptide as well.
+     * @return
+     * @throws DataAccessException
+     */
+    @Override
+    public double getPrecursorMz(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+        double mz = -1;
+        // get peptide additional parameters
+        ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
+        if (paramGroup != null) {
+            // get peptide precursor charge
+            mz = DataAccessUtilities.getPrecursorMz(paramGroup);
+        } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
+            mz = super.getPrecursorMz(proteinId, peptideId);
+        }
+
+        return mz;
     }
 
     /**
@@ -405,16 +455,16 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get protein accession value using identification id.
      * This implementation will check cache first.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return String protein accession
      * @throws DataAccessException data access exception
      */
     @Override
-    public String getProteinAccession(Comparable identId) throws DataAccessException {
-        String acc = (String) cache.get(CacheCategory.PROTEIN_ACCESSION, identId);
+    public String getProteinAccession(Comparable proteinId) throws DataAccessException {
+        String acc = (String) cache.get(CacheCategory.PROTEIN_ACCESSION, proteinId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && acc == null) {
-            acc = super.getProteinAccession(identId);
-            cache.store(CacheCategory.PROTEIN_ACCESSION, identId, acc);
+            acc = super.getProteinAccession(proteinId);
+            cache.store(CacheCategory.PROTEIN_ACCESSION, proteinId, acc);
         }
         return acc;
     }
@@ -422,17 +472,17 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     /**
      * Get protein accession version using identification id.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return String
      * @throws DataAccessException
      */
     @Override
-    public String getProteinAccessionVersion(Comparable identId) throws DataAccessException {
-        String accVersion = (String) cache.get(CacheCategory.PROTEIN_ACCESSION_VERSION, identId);
+    public String getProteinAccessionVersion(Comparable proteinId) throws DataAccessException {
+        String accVersion = (String) cache.get(CacheCategory.PROTEIN_ACCESSION_VERSION, proteinId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && accVersion == null) {
-            accVersion = super.getProteinAccessionVersion(identId);
+            accVersion = super.getProteinAccessionVersion(proteinId);
             if (accVersion != null) {
-                cache.store(CacheCategory.PROTEIN_ACCESSION_VERSION, identId, accVersion);
+                cache.store(CacheCategory.PROTEIN_ACCESSION_VERSION, proteinId, accVersion);
             }
         }
         return accVersion;
@@ -442,16 +492,16 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get identification score using identification id.
      * This implementation will check cache first.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return double identification score
      * @throws DataAccessException data access exception
      */
     @Override
-    public double getIdentificationScore(Comparable identId) throws DataAccessException {
-        Double score = (Double) cache.get(CacheCategory.SCORE, identId);
+    public double getProteinScore(Comparable proteinId) throws DataAccessException {
+        Double score = (Double) cache.get(CacheCategory.SCORE, proteinId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && score == null) {
-            score = super.getIdentificationScore(identId);
-            cache.store(CacheCategory.SCORE, identId, score);
+            score = super.getProteinScore(proteinId);
+            cache.store(CacheCategory.SCORE, proteinId, score);
         }
         return score == null ? -1 : score;
     }
@@ -460,16 +510,16 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get identification threshold using identification id.
      * This implementation will check cache first.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return double sum of intensity
      * @throws DataAccessException data access exception
      */
     @Override
-    public double getIdentificationThreshold(Comparable identId) throws DataAccessException {
-        Double threshold = (Double) cache.get(CacheCategory.THRESHOLD, identId);
+    public double getProteinThreshold(Comparable proteinId) throws DataAccessException {
+        Double threshold = (Double) cache.get(CacheCategory.THRESHOLD, proteinId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && threshold == null) {
-            threshold = super.getIdentificationThreshold(identId);
-            cache.store(CacheCategory.THRESHOLD, identId, threshold);
+            threshold = super.getProteinThreshold(proteinId);
+            cache.store(CacheCategory.THRESHOLD, proteinId, threshold);
         }
         return threshold == null ? -1 : threshold;
     }
@@ -477,52 +527,71 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     /**
      * Get search database using identification id
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return String search database
      * @throws DataAccessException data accession exception
      */
     @Override
-    public SearchDataBase getSearchDatabase(Comparable identId) throws DataAccessException {
-        SearchDataBase database = (SearchDataBase) cache.get(CacheCategory.PROTEIN_SEARCH_DATABASE, identId);
+    public SearchDataBase getSearchDatabase(Comparable proteinId) throws DataAccessException {
+        SearchDataBase database = (SearchDataBase) cache.get(CacheCategory.PROTEIN_SEARCH_DATABASE, proteinId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && database == null) {
-            database = super.getSearchDatabase(identId);
+            database = super.getSearchDatabase(proteinId);
             if (database != null) {
-                cache.store(CacheCategory.PROTEIN_SEARCH_DATABASE, identId, database);
+                cache.store(CacheCategory.PROTEIN_SEARCH_DATABASE, proteinId, database);
             }
         }
         return database;
     }
 
     /**
+     * Get search database version using identification id
+     *
+     * @param proteinId identification id.
+     * @return String search database version
+     * @throws DataAccessException data accession exception
+     */
+    @Override
+    public String getSearchDatabaseVersion(Comparable proteinId) throws DataAccessException {
+        String version = (String) cache.get(CacheCategory.PROTEIN_SEARCH_DATABASE_VERSION, proteinId);
+        if (!DataAccessMode.CACHE_ONLY.equals(mode) && version == null) {
+            version = super.getSearchDatabaseVersion(proteinId);
+            if (version != null) {
+                cache.store(CacheCategory.PROTEIN_SEARCH_DATABASE_VERSION, proteinId, version);
+            }
+        }
+        return version;
+    }
+
+    /**
      * Get peptide ids using identification id.
      * This implementation will check cache first.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return Collection<Comparable>   peptide ids collection
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<Comparable> getPeptideIds(Comparable identId) throws DataAccessException {
-        Collection<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.IDENTIFICATION_TO_PEPTIDE, identId);
+    public Collection<Comparable> getPeptideIds(Comparable proteinId) throws DataAccessException {
+        Collection<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.PROTEIN_TO_PEPTIDE, proteinId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && ids == null) {
-            ids = super.getPeptideIds(identId);
-            cache.store(CacheCategory.IDENTIFICATION_TO_PEPTIDE, identId, ids);
+            ids = super.getPeptideIds(proteinId);
+            cache.store(CacheCategory.PROTEIN_TO_PEPTIDE, proteinId, ids);
         }
         return ids;
     }
 
     @Override
-    public Peptide getPeptideByIndex(Comparable identId, Comparable index) throws DataAccessException {
-        return getPeptideByIndex(identId, index, true);
+    public Peptide getPeptideByIndex(Comparable proteinId, Comparable index) throws DataAccessException {
+        return getPeptideByIndex(proteinId, index, true);
     }
 
-    public Peptide getPeptideByIndex(Comparable identId, Comparable index, boolean useCache) throws DataAccessException {
+    public Peptide getPeptideByIndex(Comparable proteinId, Comparable index, boolean useCache) throws DataAccessException {
         Peptide pep = null;
 
         if (useCache) {
             // check whether the identification exist in the cache already
-            Identification ident = (Identification) cache.get(CacheCategory.IDENTIFICATION, identId);
+            Protein ident = (Protein) cache.get(CacheCategory.PROTEIN, proteinId);
             if (ident != null) {
                 int indexInt = Integer.parseInt(index.toString());
                 List<Peptide> peptides = ident.getPeptides();
@@ -530,7 +599,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
                     pep = peptides.get(indexInt);
                 }
             } else {
-                pep = (Peptide) cache.get(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(identId, index));
+                pep = (Peptide) cache.get(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(proteinId, index));
             }
         }
 
@@ -541,14 +610,14 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get peptide sequences using identification id.
      * This implementation will check cache first.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return Collection<Comparable>   peptide ids collection
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<String> getPeptideSequences(Comparable identId) throws DataAccessException {
-        List<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.IDENTIFICATION_TO_PEPTIDE, identId);
+    public List<String> getPeptideSequences(Comparable proteinId) throws DataAccessException {
+        List<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.PROTEIN_TO_PEPTIDE, proteinId);
         List<String> sequences = new ArrayList<String>();
         if (ids != null && cache.hasCacheCategory(CacheCategory.PEPTIDE_SEQUENCE)) {
             // get each peptide sequence one by one from cache
@@ -556,7 +625,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
             sequences.addAll(seqs);
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
             // read from data source
-            sequences = super.getPeptideSequences(identId);
+            sequences = super.getPeptideSequences(proteinId);
             // note: peptide id is not supported by pride xml
             // this is why we didn't store them to cache
         }
@@ -568,19 +637,19 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get number of peptides using identification id.
      * This implementation will check cache first.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   number of peptides
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public int getNumberOfPeptides(Comparable identId) throws DataAccessException {
+    public int getNumberOfPeptides(Comparable proteinId) throws DataAccessException {
         int cnt = 0;
-        List<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.IDENTIFICATION_TO_PEPTIDE, identId);
+        List<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.PROTEIN_TO_PEPTIDE, proteinId);
         if (ids != null) {
             cnt = ids.size();
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
-            cnt = super.getNumberOfPeptides(identId);
+            cnt = super.getNumberOfPeptides(proteinId);
         }
         return cnt;
     }
@@ -589,20 +658,20 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get number of unique peptides using identification id.
      * This implementation will check cache first.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   number of unique peptides
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public int getNumberOfUniquePeptides(Comparable identId) throws DataAccessException {
+    public int getNumberOfUniquePeptides(Comparable proteinId) throws DataAccessException {
         int cnt = 0;
-        List<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.IDENTIFICATION_TO_PEPTIDE, identId);
+        List<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.PROTEIN_TO_PEPTIDE, proteinId);
         if (ids != null && cache.hasCacheCategory(CacheCategory.PEPTIDE_SEQUENCE)) {
             Collection<String> seqs = (Collection<String>) cache.getInBatch(CacheCategory.PEPTIDE_SEQUENCE, ids);
             cnt = (new HashSet<String>(seqs)).size();
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
-            cnt = super.getNumberOfUniquePeptides(identId);
+            cnt = super.getNumberOfUniquePeptides(proteinId);
         }
         return cnt;
     }
@@ -611,15 +680,15 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get number of ptms using identification id.
      * This implementation will check cache first.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   number of ptms
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public int getNumberOfPTMs(Comparable identId) throws DataAccessException {
+    public int getNumberOfPTMs(Comparable proteinId) throws DataAccessException {
         int cnt = 0;
-        List<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.IDENTIFICATION_TO_PEPTIDE, identId);
+        List<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.PROTEIN_TO_PEPTIDE, proteinId);
         if (ids != null && cache.hasCacheCategory(CacheCategory.PEPTIDE_TO_MODIFICATION)) {
             // get all ptm locations
             Collection<List<Tuple<String, Integer>>> ptms = (Collection<List<Tuple<String, Integer>>>) cache.getInBatch(CacheCategory.PEPTIDE_TO_MODIFICATION, ids);
@@ -627,7 +696,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
                 cnt += ptm.size();
             }
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
-            cnt = super.getNumberOfPTMs(identId);
+            cnt = super.getNumberOfPTMs(proteinId);
         }
 
         return cnt;
@@ -637,19 +706,19 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get number of ptms using peptide id.
      * This implementation will check cache first.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   number of ptms
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public int getNumberOfPTMs(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public int getNumberOfPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         int cnt = 0;
         List<Tuple<String, Integer>> locations = (List<Tuple<String, Integer>>) cache.get(CacheCategory.PEPTIDE_TO_MODIFICATION, peptideId);
         if (locations != null) {
             cnt = locations.size();
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
-            cnt = super.getNumberOfPTMs(identId, peptideId);
+            cnt = super.getNumberOfPTMs(proteinId, peptideId);
         }
 
         return cnt;
@@ -659,15 +728,15 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get peptide sequence using identification id and peptide id.
      * This implementation will check cache first.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   number of unique peptides
      * @throws DataAccessException data access exception
      */
     @Override
-    public String getPeptideSequence(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public String getPeptideSequence(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         String seq = (String) cache.get(CacheCategory.PEPTIDE_SEQUENCE, peptideId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && seq == null) {
-            seq = super.getPeptideSequence(identId, peptideId);
+            seq = super.getPeptideSequence(proteinId, peptideId);
             // note: peptide id is not supported by pride xml
             // this is why we didn't store them to cache
         }
@@ -678,15 +747,15 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get peptide sequence start using identification id and peptide id.
      * This implementation will check cache first.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   peptide sequence start
      * @throws DataAccessException data access exception
      */
     @Override
-    public int getPeptideSequenceStart(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public int getPeptideSequenceStart(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         Integer start = (Integer) cache.get(CacheCategory.PEPTIDE_START, peptideId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && start == null) {
-            start = super.getPeptideSequenceStart(identId, peptideId);
+            start = super.getPeptideSequenceStart(proteinId, peptideId);
             // note: peptide id is not supported by pride xml
             // this is why we didn't store them to cache
         }
@@ -697,15 +766,15 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get peptide sequence stop using identification id and peptide id.
      * This implementation will check cache first.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   peptide sequence stop
      * @throws DataAccessException data access exception
      */
     @Override
-    public int getPeptideSequenceEnd(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public int getPeptideSequenceEnd(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         Integer stop = (Integer) cache.get(CacheCategory.PEPTIDE_END, peptideId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && stop == null) {
-            stop = super.getPeptideSequenceEnd(identId, peptideId);
+            stop = super.getPeptideSequenceEnd(proteinId, peptideId);
             // note: peptide id is not supported by pride xml
             // this is why we didn't store them to cache
         }
@@ -716,15 +785,15 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get peptide spectrum id using identification id and peptide id.
      * This implementation will check cache first.
      *
-     * @param identId identification id.
+     * @param proteinId identification id.
      * @return int   peptide sequence stop
      * @throws DataAccessException data access exception
      */
     @Override
-    public Comparable getPeptideSpectrumId(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public Comparable getPeptideSpectrumId(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         Comparable specId = (Comparable) cache.get(CacheCategory.PEPTIDE_TO_SPECTRUM, peptideId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && specId == null) {
-            specId = super.getPeptideSpectrumId(identId, peptideId);
+            specId = super.getPeptideSpectrumId(proteinId, peptideId);
             // note: peptide id is not supported by pride xml
             // this is why we didn't store them to cache
         }
@@ -734,14 +803,14 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     /**
      * Get ptms using identification id nad peptide id
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, can be the index of the peptide
      * @return List<Modification>   a list of modifications.
      * @throws DataAccessException data access exception
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Modification> getPTMs(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public List<Modification> getPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         List<Tuple<String, Integer>> ptms = (List<Tuple<String, Integer>>) cache.get(CacheCategory.PEPTIDE_TO_MODIFICATION, peptideId);
         List<Modification> mods = new ArrayList<Modification>();
 
@@ -756,7 +825,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
                 mods.add(newMod);
             }
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
-            mods = super.getPTMs(identId, peptideId);
+            mods = super.getPTMs(proteinId, peptideId);
         }
         return mods;
     }
@@ -764,16 +833,16 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     /**
      * Get the number of fragment ions in a given peptide
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return int number of fragment ions
      * @throws DataAccessException data access controller
      */
     @Override
-    public int getNumberOfFragmentIons(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public int getNumberOfFragmentIons(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         Integer num = (Integer) cache.get(CacheCategory.NUMBER_OF_FRAGMENT_IONS, peptideId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && num == null) {
-            num = super.getNumberOfFragmentIons(identId, peptideId);
+            num = super.getNumberOfFragmentIons(proteinId, peptideId);
         }
         return num == null ? 0 : num;
     }
@@ -781,13 +850,13 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     /**
      * Get peptide score from search engine
      *
-     * @param identId   identification id
+     * @param proteinId   identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return PeptideScore    peptide score from search engine
      * @throws DataAccessException data access exception
      */
     @Override
-    public Score getPeptideScore(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public Score getPeptideScore(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         Score score = null;
         // get peptide additional parameters
         ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
@@ -795,7 +864,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
             // get peptide score
             score = DataAccessUtilities.getScore(paramGroup);
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
-            score = super.getPeptideScore(identId, peptideId);
+            score = super.getPeptideScore(proteinId, peptideId);
         }
 
         return score;
@@ -845,6 +914,44 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     }
 
     /**
+     * Get protein quantification unit
+     *
+     * @return QuantCvTermReference    quantification unit
+     * @throws DataAccessException data access exception
+     */
+    @Override
+    public QuantCvTermReference getProteinQuantUnit() throws DataAccessException {
+        Collection<QuantCvTermReference> units = (Collection<QuantCvTermReference>) cache.get(CacheCategory.PROTEIN_QUANT_UNIT);
+
+        if (units != null && !units.isEmpty()) {
+            return CollectionUtils.getElement(units, 0);
+        } else {
+            QuantCvTermReference unit = super.getProteinQuantUnit();
+            cache.store(CacheCategory.PROTEIN_QUANT_UNIT, unit);
+            return unit;
+        }
+    }
+
+    /**
+     * Get peptide quantification unit
+     *
+     * @return QuantCvTermReference    quantification unit
+     * @throws DataAccessException data access exception
+     */
+    @Override
+    public QuantCvTermReference getPeptideQuantUnit() throws DataAccessException {
+        Collection<QuantCvTermReference> units = (Collection<QuantCvTermReference>) cache.get(CacheCategory.PEPTIDE_QUANT_UNIT);
+
+        if (units != null && !units.isEmpty()) {
+            return CollectionUtils.getElement(units, 0);
+        } else {
+            QuantCvTermReference unit = super.getPeptideQuantUnit();
+            cache.store(CacheCategory.PEPTIDE_QUANT_UNIT, unit);
+            return unit;
+        }
+    }
+
+    /**
      * Get the Experiment Meta Data
      * @return ExperimentMetaData
      * @throws DataAccessException
@@ -866,7 +973,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
-        Collection<IdentificationMetaData> metaDatas = (Collection<IdentificationMetaData>) cache.get(CacheCategory.IDENTIFICATION_METADATA);
+        Collection<IdentificationMetaData> metaDatas = (Collection<IdentificationMetaData>) cache.get(CacheCategory.PROTEIN_METADATA);
         if (metaDatas != null && !metaDatas.isEmpty()) {
             return CollectionUtils.getElement(metaDatas, 0);
         }
@@ -889,7 +996,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     }
 
     @Override
-    public Collection<Comparable> getIdentificationGroups() throws DataAccessException {
+    public Collection<Comparable> getProteinGroupIds() throws DataAccessException {
         Collection<Comparable> groupIds = (Collection<Comparable>) cache.get(CacheCategory.PROTEIN_GROUP_ID);
 
         if (groupIds == null || groupIds.isEmpty()) {

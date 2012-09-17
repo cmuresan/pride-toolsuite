@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.data.core;
 /**
  * Data external to the XML instance document.
  * The location of the data file is given in the location attribute.
- * Created by IntelliJ IDEA.
+ *
  * User: yperez
  * Date: 09/08/11
  * Time: 14:35

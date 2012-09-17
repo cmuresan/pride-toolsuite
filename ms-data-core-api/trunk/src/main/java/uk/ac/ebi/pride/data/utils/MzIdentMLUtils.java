@@ -1,6 +1,9 @@
 package uk.ac.ebi.pride.data.utils;
 
 
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.*;
+
+import java.io.File;
 
 /**
  * Created with IntelliJ IDEA.
@@ -61,5 +64,32 @@ public class MzIdentMLUtils {
             return spectrumID.replaceAll("mzMLid=","");
         }
         return null;
+    }
+
+    /**
+     * Check the file type
+     * @param file input file
+     * @return Class    the class type of the data access controller
+     * @throws java.io.IOException exception while checking the file type
+     **/
+
+    public static Class getFileType(File file){
+        Class classType = null;
+
+        // check file type
+        if (MzMLControllerImpl.isValidFormat(file)) {
+            classType = MzMLControllerImpl.class;
+        }else if (PrideXmlControllerImpl.isValidFormat(file)) {
+            classType = PrideXmlControllerImpl.class;
+        }else if(MzIdentMLControllerImpl.isValidFormat(file)){
+            classType = MzIdentMLControllerImpl.class;
+        }else if(MzXmlControllerImpl.isValidFormat(file)){
+            classType = MzXmlControllerImpl.class;
+        }else if(MzDataControllerImpl.isValidFormat(file)){
+            classType = MzDataControllerImpl.class;
+        }else if(PeakControllerImpl.isValidFormat(file) != null){
+            classType = PeakControllerImpl.class;
+        }
+        return classType;
     }
 }

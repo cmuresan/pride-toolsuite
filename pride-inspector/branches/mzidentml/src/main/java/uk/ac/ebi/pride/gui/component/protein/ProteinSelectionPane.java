@@ -69,7 +69,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
     protected void addComponents() {
         // create identification table
         try {
-            identTable = TableFactory.createIdentificationTable(controller.getListProteinCvTermReferenceScores(), controller);
+            identTable = TableFactory.createIdentificationTable(controller.getProteinCvTermReferenceScores(), controller);
         } catch (DataAccessException e) {
             String msg = "Failed to retrieve search engine details";
             logger.error(msg, e);
@@ -124,9 +124,9 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
             metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
             // identification type
-            Collection<Comparable> identIds = controller.getIdentificationIds();
+            Collection<Comparable> identIds = controller.getProteinIds();
             Comparable identId = CollectionUtils.getElement(identIds, 0);
-            Object type = identId == null ? "Unknown" : controller.getIdentificationType(identId);
+            Object type = identId == null ? "Unknown" : controller.getProteinType(identId);
             type = type == null ? "Unknown" : type;
             JLabel identLabel = new JLabel("<html><b>Type</b>: " + type + "</html>");
             identLabel.setToolTipText(type.toString());

@@ -52,11 +52,11 @@ public class RetrievePeptideTableTask extends AbstractDataAccessTask<Void, Tuple
      *          thrown when there is error while reading the data.
      */
     public RetrievePeptideTableTask(DataAccessController controller) throws DataAccessException {
-        this(controller, 0, controller.getNumberOfIdentifications());
+        this(controller, 0, controller.getNumberOfProteins());
     }
 
     public RetrievePeptideTableTask(DataAccessController controller, Comparable identId) throws DataAccessException {
-        this(controller, controller.getIdentificationIndex(identId), 1);
+        this(controller, controller.indexOfProtein(identId), 1);
     }
 
     /**
@@ -89,7 +89,7 @@ public class RetrievePeptideTableTask extends AbstractDataAccessTask<Void, Tuple
     @Override
     protected Void retrieve() throws Exception {
         try {
-            Collection<Comparable> identIds = controller.getIdentificationIds();
+            Collection<Comparable> identIds = controller.getProteinIds();
 
             int identSize = identIds.size();
             if (start >= 0 && start < identSize && size > 0) {

@@ -96,7 +96,7 @@ public class ProteinTabPane extends PrideInspectorTabPane {
 
         // set the title for the panel
         try {
-            int ids = controller.getNumberOfIdentifications();
+            int ids = controller.getNumberOfProteins();
             String numIdent = " (" + ids + ")";
 
             this.setTitle(IDENTIFICATION_TITLE + numIdent);

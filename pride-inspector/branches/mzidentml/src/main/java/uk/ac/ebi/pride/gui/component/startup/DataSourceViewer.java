@@ -2,9 +2,13 @@ package uk.ac.ebi.pride.gui.component.startup;
 
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventSubscriber;
+import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
@@ -12,11 +16,11 @@ import uk.ac.ebi.pride.gui.component.mzidentml.SimpleMsDialog;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
+import uk.ac.ebi.pride.gui.px.PxSubmissionEntry;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
@@ -24,8 +28,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.ImageObserver;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
+
 
 /**
  * DataSourceViewer should be monitor the DataAccessControllers in
@@ -53,8 +58,6 @@ public class DataSourceViewer extends JPanel {
      * a reference to PrideInspectorContext
      */
     private PrideInspectorContext context = null;
-
-    private Map<DataAccessController,String> messages = null;
 
     /**
      * Constructor
@@ -211,9 +214,9 @@ public class DataSourceViewer extends JPanel {
     /**
      * Data access table to show experiment name as tooltip
      */
-    private static class DataAccessTable extends JTable {
+    private static class DataAccessTable extends JXTreeTable {
 
-        private DataAccessTable(TableModel dm) {
+        private DataAccessTable(TreeTableModel dm) {
             super(dm);
         }
 
@@ -245,7 +248,60 @@ public class DataSourceViewer extends JPanel {
      * It uses DataAccessMonitor as a background data model, and it also use
      * TableHeader to define the table headers.
      */
-    private class DataAccessTableModel extends AbstractTableModel {
+    private class DataAccessTableModel extends AbstractTreeTableModel {
+
+        @Override
+        public Object getValueAt(Object node, int column) {
+
+            if (root.equals(node)) {
+                return null;
+            }
+            DataAccessController dataAccessController = (DataAccessController) node;
+            if(TableHeader.values()[column].equals(TableHeader.DATA_SOURCE_COLUMN)){
+                return dataAccessController.getName();
+            }
+            return null;
+        }
+
+        @Override
+        public Object getChild(Object parent, int index) {
+            Object child = null;
+
+            if(parent instanceof MzIdentMLControllerImpl){
+                MzIdentMLControllerImpl parentEntry = (MzIdentMLControllerImpl) parent;
+                List<DataAccessController> children = parentEntry.getDataAccessControllers();
+                if (index >= 0 && index < children.size()) {
+                    child = children.get(index);
+                }
+            }
+            return child;
+        }
+
+        @Override
+        public int getColumnCount() {
+            return TableHeader.values().length;
+        }
+
+        @Override
+        public int getChildCount(Object o) {
+            if(o instanceof MzIdentMLControllerImpl){
+                MzIdentMLControllerImpl parentEntry = (MzIdentMLControllerImpl) o;
+                List<DataAccessController> children = parentEntry.getDataAccessControllers();
+                return children.size();
+            }
+            return 0;
+        }
+
+        @Override
+        public int getIndexOfChild(Object parent, Object child) {
+            int index = -1;
+            DataAccessController childEntry = (DataAccessController) child;
+            if(parent instanceof MzIdentMLControllerImpl){
+                MzIdentMLControllerImpl parentEntry = (MzIdentMLControllerImpl) parent;
+                return parentEntry.getDataAccessControllers().indexOf(childEntry);
+            }
+            return index;
+        }
 
         public String getColumnName(int column) {
             return TableHeader.values()[column].getHeader();
@@ -263,22 +319,15 @@ public class DataSourceViewer extends JPanel {
             return index;
         }
 
-        @Override
         public int getRowCount() {
             java.util.List<DataAccessController> controllers = context.getControllers();
             return controllers.size();
         }
 
-        @Override
-        public int getColumnCount() {
-            return TableHeader.values().length;
-        }
-
-        @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             // get all data access controllers
-            java.util.List<DataAccessController> controllers = context.getControllers();
 
+            java.util.List<DataAccessController> controllers = context.getControllers();
             if (rowIndex >= 0) {
                 // return data access controller if the column is data source column
                 return TableHeader.values()[columnIndex].equals(TableHeader.DATA_SOURCE_COLUMN) ? controllers.get(rowIndex).getName() : null;

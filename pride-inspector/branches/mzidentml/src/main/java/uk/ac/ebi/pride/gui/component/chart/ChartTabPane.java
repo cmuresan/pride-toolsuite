@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.chart.graphics.implementation.PrideChartException;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessController.ContentCategory;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideChartManager;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
@@ -55,6 +56,9 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
      */
     private List<PrideChartManager> managedPrideCharts;
 
+    private JPanel panelThumbnailChart;
+
+
     /**
      * Constructor
      *
@@ -70,6 +74,7 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
      */
     @Override
     protected void setupMainPane() {
+
         viewerContext = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
         setTitle(PANE_TITLE);
 
@@ -87,10 +92,12 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
      * @param charts the number of charts to be displayed
      */
     private void setupInitialMainPane(int charts) {
+        panelThumbnailChart = new JPanel();
         int border = 3;
         int rows = (int) Math.ceil(charts / (double) COLS);
-        setBorder(BorderFactory.createEmptyBorder(border, border, border, border));
-        setLayout(new GridLayout(rows, COLS, border, border));
+        panelThumbnailChart.setBorder(BorderFactory.createEmptyBorder(border, border, border, border));
+        panelThumbnailChart.setLayout(new GridLayout(rows, COLS, border, border));
+        add(panelThumbnailChart);
     }
 
     private void resetTitle() {
@@ -105,9 +112,10 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
     }
 
     private void createPrideCharts() {
-        if (DataAccessController.Type.XML_FILE.equals(controller.getType())) {
+        if (DataAccessController.Type.XML_FILE.equals(controller.getType()) ||
+                DataAccessController.Type.MZIDENTML.equals(controller.getType())){
             String msg = viewerContext.getProperty("chart.time.warning.message");
-            showWarningMessage(msg, false);
+            showWarningMessage("Start",msg, false);
         }
 
         LoadChartDataTask lcd = new LoadChartDataTask(controller);
@@ -142,16 +150,22 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
 
     public void setThumbnailView() {
         removeAll();
+        if (DataAccessController.Type.MZIDENTML.equals(controller.getType())){
+            String msg = viewerContext.getProperty("chart.time.warning.message");
+            showWarningMessage("Update",msg, true);
+        }else{
+            this.setLayout(new BorderLayout());
+        }
         setupInitialMainPane(managedPrideCharts.size());
         for (PrideChartManager managedPrideChart : managedPrideCharts) {
             ChartThumbnailPane ct = new ChartThumbnailPane(this, managedPrideChart);
-            add(ct);
+            panelThumbnailChart.add(ct);
         }
         revalidate();
         repaint();
     }
 
-    private void showWarningMessage(String msg, boolean launchButton) {
+    private void showWarningMessage(String buttonTitle, String msg, boolean launchButton) {
         this.setLayout(new BorderLayout());
 
         JPanel msgPanel = new JPanel();
@@ -173,7 +187,7 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
 
         if (launchButton) {
             // button to start calculate charts
-            JButton computeButton = new JButton("Start");
+            JButton computeButton = new JButton(buttonTitle);
             computeButton.addActionListener(new ActionListener() {
 
                 @Override
@@ -207,7 +221,7 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
             createPrideCharts();
         } else {
             String msg = viewerContext.getProperty("chart.warning.message");
-            showWarningMessage(msg, true);
+            showWarningMessage("Start", msg, true);
         }
     }
 

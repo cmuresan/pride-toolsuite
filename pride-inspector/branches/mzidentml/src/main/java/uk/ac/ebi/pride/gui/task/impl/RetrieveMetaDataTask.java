@@ -45,7 +45,7 @@ public class RetrieveMetaDataTask extends AbstractDataAccessTask<GeneralMetaData
             if(controller.hasSpectrum()){
                 mzGraphMetaData = controller.getMzGraphMetaData();
             }
-            if(controller.hasIdentification()){
+            if(controller.hasProtein()){
                 identificationMetaData = controller.getIdentificationMetaData();
             }
             groupMetaData = new GeneralMetaDataGroup(identificationMetaData,metaData,mzGraphMetaData);

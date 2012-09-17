@@ -10,6 +10,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.core.SpectraData;
+import uk.ac.ebi.pride.data.utils.MzIdentMLUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
@@ -19,7 +20,10 @@ import uk.ac.ebi.pride.gui.component.report.ReportList;
 import uk.ac.ebi.pride.gui.component.report.RoundCornerLabel;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
+import uk.ac.ebi.pride.gui.task.impl.OpenFileTask;
 import uk.ac.ebi.pride.gui.utils.Constants;
+import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
+import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -66,36 +70,31 @@ public class SimpleMsDialog extends JDialog {
         customInitComponents();
     }
 
-    public SimpleMsDialog(Dialog owner) {
-        super(owner);
-        initComponents();
-        context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
-    }
-
-
     /**
      * This method initialize the custom components in the MsDialog
      *
      */
     private void customInitComponents() {
 
-        table1.setModel(new DefaultTableModel(
-                new Object[][] {
-                        },
-                new String[] {
+        msFileTable.setModel(new DefaultTableModel(
+                new Object[][]{
+                },
+                new String[]{
                         "Spectra File Source", "No. Spectras", "MS File", "Remove"
                 }
         ) {
-            Class<?>[] columnTypes = new Class<?>[] {
+            Class<?>[] columnTypes = new Class<?>[]{
                     String.class, Double.class, String.class, ImageIcon.class
             };
-            boolean[] columnEditable = new boolean[] {
-                    false,false,false,false
+            boolean[] columnEditable = new boolean[]{
+                    false, false, false, false
             };
+
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 return columnTypes[columnIndex];
             }
+
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return columnEditable[columnIndex];
@@ -159,7 +158,7 @@ public class SimpleMsDialog extends JDialog {
     }
 
     private void clearTalbeMsFiles() {
-        DefaultTableModel model = (DefaultTableModel) table1.getModel();
+        DefaultTableModel model = (DefaultTableModel) msFileTable.getModel();
         for( int i = model.getRowCount() - 1; i >= 0; i-- ) {
             model.removeRow(i);
         }
@@ -171,7 +170,7 @@ public class SimpleMsDialog extends JDialog {
         data[1] = ((MzIdentMLControllerImpl)controller).getNumberOfSpectrabySpectraData(spectraData);
         data[2] = msFileName;
         data[3] = GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small"));
-        ((DefaultTableModel) table1.getModel()).addRow(data);
+        ((DefaultTableModel) msFileTable.getModel()).addRow(data);
         return (Integer)data[1];
     }
 
@@ -213,12 +212,18 @@ public class SimpleMsDialog extends JDialog {
             //Update the Peptide and Protein Tabs
             PeptideTabPane peptideContentPane = contentPane.getPeptideTabPane();
             peptideContentPane.getVizTabPane().addSpectrumViewPane();
-
-
-
-
-
             contentPane.populate();
+            for(File selectedFile: msFileMap.values()){
+                String msg = "Opening " + selectedFile.getName();
+                OpenFileTask newTask = new OpenFileTask(selectedFile, MzIdentMLUtils.getFileType(selectedFile), msg, msg);
+                // set task's gui blocker
+                newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
+                // add task listeners
+                // ToDo: this why we need a singleton DesktopContext
+                uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(newTask);
+            }
+
+
         } catch (DataAccessException e1) {
             logger.error("Failed to check the files as controllers", e1);
         }
@@ -229,7 +234,7 @@ public class SimpleMsDialog extends JDialog {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         scrollPane1 = new JScrollPane();
-        table1 = new JTable();
+        msFileTable = new JTable();
         addButton = new JButton();
         separator1 = new JSeparator();
         setButton = new JButton();
@@ -243,23 +248,24 @@ public class SimpleMsDialog extends JDialog {
         //======== scrollPane1 ========
         {
 
-            //---- table1 ----
-            table1.setModel(new DefaultTableModel(
-                new Object[][] {
-                    {null, null, null, null},
-                },
-                new String[] {
-                    "Spectra File Source", "No. Spectras", "MS File", "Remove"
-                }
+            //---- msFileTable ----
+            msFileTable.setModel(new DefaultTableModel(
+                    new Object[][]{
+                            {null, null, null, null},
+                    },
+                    new String[]{
+                            "Spectra File Source", "No. Spectras", "MS File", "Remove"
+                    }
             ));
             {
-                TableColumnModel cm = table1.getColumnModel();
+                TableColumnModel cm = msFileTable.getColumnModel();
                 cm.getColumn(0).setPreferredWidth(130);
                 cm.getColumn(1).setPreferredWidth(85);
                 cm.getColumn(2).setPreferredWidth(55);
                 cm.getColumn(3).setPreferredWidth(55);
             }
-            scrollPane1.setViewportView(table1);
+            scrollPane1.setViewportView(msFileTable);
+            scrollPane1.getViewport().setBackground(Color.white);
         }
 
         //---- addButton ----
@@ -335,7 +341,6 @@ public class SimpleMsDialog extends JDialog {
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
-
 
     /**
      * Get the icon of the message according to the type
@@ -414,7 +419,7 @@ public class SimpleMsDialog extends JDialog {
          return SummaryReportMessage.Type.INFO;
      }
 
-    private String getMessage(Map<SpectraData, File> spectraDataMap, Integer spectrumCount){
+     private String getMessage(Map<SpectraData, File> spectraDataMap, Integer spectrumCount){
         if(spectraDataMap == null || spectraDataMap.size() < 1){
             return SimpleMsDialog.ERROR_MESSAGE;
         }else if(spectrumCount == 0){
@@ -431,7 +436,7 @@ public class SimpleMsDialog extends JDialog {
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JScrollPane scrollPane1;
-    private JTable table1;
+    private JTable msFileTable;
     private JButton addButton;
     private JSeparator separator1;
     private JButton setButton;

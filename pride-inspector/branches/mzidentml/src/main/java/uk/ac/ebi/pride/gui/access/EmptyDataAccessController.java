@@ -91,12 +91,12 @@ public class EmptyDataAccessController extends AbstractDataAccessController {
     }
 
     @Override
-    public Collection<Comparable> getIdentificationIds() throws DataAccessException {
+    public Collection<Comparable> getProteinIds() throws DataAccessException {
         return Collections.emptyList();
     }
 
     @Override
-    public Identification getIdentificationById(Comparable id) throws DataAccessException {
+    public Protein getProteinById(Comparable id) throws DataAccessException {
         return null;
     }
 
@@ -121,7 +121,7 @@ public class EmptyDataAccessController extends AbstractDataAccessController {
     }
 
     @Override
-    public Collection<Comparable> getIdentificationGroups() throws DataAccessException {
+    public Collection<Comparable> getProteinGroupIds() throws DataAccessException {
         return null;
     }
 }

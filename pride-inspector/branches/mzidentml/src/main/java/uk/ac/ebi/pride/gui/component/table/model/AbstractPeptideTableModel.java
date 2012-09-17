@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -63,9 +64,9 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
         }
     }
 
-    private List<CvTermReference> listScores;
+    private Collection<CvTermReference> listScores;
 
-    AbstractPeptideTableModel(List<CvTermReference> listPeptideScores) {
+    AbstractPeptideTableModel(Collection<CvTermReference> listPeptideScores) {
         this.listScores = listPeptideScores;
         addAdditionalColumns();
     }

@@ -133,7 +133,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
                 }
 
                 if (categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
-                    proteinTabEnabled = controller.hasIdentification();
+                    proteinTabEnabled = controller.hasProtein();
                     contentTabPane.setEnabledAt(proteinTabIndex, proteinTabEnabled);
                     if (proteinTabEnabled) {
                         EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Proteins found", "This data source contains protein identifications")));
@@ -162,7 +162,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
                 if (categories.contains(DataAccessController.ContentCategory.SPECTRUM)
                         || categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
-                    chartTabEnabled = controller.hasSpectrum() || controller.hasIdentification();
+                    chartTabEnabled = controller.hasSpectrum() || controller.hasProtein();
                     contentTabPane.setEnabledAt(chartTabIndex, chartTabEnabled);
                 }
 

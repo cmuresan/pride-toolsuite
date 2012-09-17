@@ -81,8 +81,8 @@ public class ExportIdentificationPeptideTask extends AbstractDataAccessTask<Void
             }
 
             // number of protein identifications
-            if (controller.hasIdentification()) {
-                writer.println("# Number of protein identifications: " + controller.getNumberOfIdentifications());
+            if (controller.hasProtein()) {
+                writer.println("# Number of protein identifications: " + controller.getNumberOfProteins());
             }
 
             // number of peptides
@@ -90,7 +90,7 @@ public class ExportIdentificationPeptideTask extends AbstractDataAccessTask<Void
                 writer.println("# Number of peptides: " + controller.getNumberOfPeptides());
             }
 
-            Collection<Comparable> identIds = controller.getIdentificationIds();
+            Collection<Comparable> identIds = controller.getProteinIds();
             for (Comparable identId : identIds) {
                 String accession = controller.getProteinAccession(identId);
                 Collection<String> sequences = controller.getPeptideSequences(identId);

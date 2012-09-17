@@ -50,7 +50,7 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
     @Override
     protected Void retrieve() throws Exception {
         try {
-            Collection<Comparable> identIds = controller.getIdentificationIds();
+            Collection<Comparable> identIds = controller.getProteinIds();
             // count stores the number of peptides without any spectrum
             int missingSpectrumLinks = 0;
 

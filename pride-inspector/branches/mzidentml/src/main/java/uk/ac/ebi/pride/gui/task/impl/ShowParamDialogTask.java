@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.gui.task.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.core.Identification;
+import uk.ac.ebi.pride.data.core.Protein;
 import uk.ac.ebi.pride.data.core.ParamGroup;
 import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.gui.EDTUtils;
@@ -70,7 +70,7 @@ public class ShowParamDialogTask extends TaskAdapter<Void, Void> {
         final ParamGroup params;
         final String title;
         if (peptideId == null) {
-            Identification protIdent = controller.getIdentificationById(protId);
+            Protein protIdent = controller.getProteinById(protId);
             String name = (protIdent.getId() !=null)?protIdent.getId().toString():null;
             title = "Additional Protein Parameters: " + name;
             params = protIdent;

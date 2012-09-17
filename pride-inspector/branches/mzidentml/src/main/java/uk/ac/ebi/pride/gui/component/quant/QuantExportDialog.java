@@ -33,6 +33,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.List;
 
 import static uk.ac.ebi.pride.gui.utils.Constants.DOT;
@@ -54,9 +55,9 @@ public class QuantExportDialog extends JDialog {
     private PrideInspectorContext appContext;
     private JTable table;
     private DataAccessController controller;
-    private List<CvTermReference> listProteinScores;
+    private Collection<CvTermReference> listProteinScores;
 
-    public QuantExportDialog(Frame owner, JTable table, DataAccessController controller,List<CvTermReference> listProteinScores) {
+    public QuantExportDialog(Frame owner, JTable table, DataAccessController controller,Collection<CvTermReference> listProteinScores) {
         super(owner);
         this.table = table;
         this.controller = controller;
@@ -299,7 +300,7 @@ public class QuantExportDialog extends JDialog {
      *
      * @return JTable  a new jtable
      */
-    private JTable createProteinTable(List<CvTermReference> listProteinScores) {
+    private JTable createProteinTable(Collection<CvTermReference> listProteinScores) {
         QuantProteinTableModel tableModel = new QuantProteinTableModel(listProteinScores);
         tableModel.removeAllColumns();
 

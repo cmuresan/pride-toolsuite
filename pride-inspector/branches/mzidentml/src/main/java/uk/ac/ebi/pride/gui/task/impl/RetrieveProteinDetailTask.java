@@ -65,7 +65,7 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
     @Override
     protected Void doInBackground() throws Exception {
         // protein identification id
-        Collection<Comparable> protIdentIds = controller.getIdentificationIds();
+        Collection<Comparable> protIdentIds = controller.getProteinIds();
 
 
         //protein identification id and accession buffer

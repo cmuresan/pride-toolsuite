@@ -118,7 +118,7 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
     protected void addComponents() {
         // create identification table
         try {
-            proteinTable = TableFactory.createQuantProteinTable(controller,controller.getListProteinCvTermReferenceScores());
+            proteinTable = TableFactory.createQuantProteinTable(controller,controller.getProteinCvTermReferenceScores());
         } catch (DataAccessException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

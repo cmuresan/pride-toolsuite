@@ -66,7 +66,7 @@ public class ExportIdentificationPeptideAction extends PrideAction {
     public void onForegroundDataSourceEvent(ForegroundDataSourceEvent evt) {
         try {
             DataAccessController controller = (DataAccessController) evt.getNewForegroundDataSource();
-            this.setEnabled(controller != null && controller.hasIdentification());
+            this.setEnabled(controller != null && controller.hasProtein());
         } catch (DataAccessException e) {
             logger.error("Failed to check data access controller", e);
         }

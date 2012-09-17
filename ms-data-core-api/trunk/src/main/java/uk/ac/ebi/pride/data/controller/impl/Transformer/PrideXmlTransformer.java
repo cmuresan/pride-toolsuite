@@ -11,9 +11,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * PrideXmlTransformer contains a list of static methods which convert pride-jaxb objects to pride inspector core objects
@@ -331,7 +329,7 @@ public class PrideXmlTransformer {
      * @param identification pride xml protein identification
      * @return Identification  protein identification
      */
-    public static Identification transformIdentification(uk.ac.ebi.pride.jaxb.model.Identification identification) {
+    public static Protein transformIdentification(uk.ac.ebi.pride.jaxb.model.Identification identification) {
         return identification instanceof uk.ac.ebi.pride.jaxb.model.TwoDimensionalIdentification ?
                 transformTwoDimIdent((uk.ac.ebi.pride.jaxb.model.TwoDimensionalIdentification) identification) :
                 transformGelFreeIdent((uk.ac.ebi.pride.jaxb.model.GelFreeIdentification) identification);
@@ -345,9 +343,9 @@ public class PrideXmlTransformer {
      * @param rawIdent pride xml two dimensional identification
      * @return TwoDimIdentification    two dimentional identification
      */
-    public static Identification transformTwoDimIdent(uk.ac.ebi.pride.jaxb.model.TwoDimensionalIdentification rawIdent) {
+    public static Protein transformTwoDimIdent(uk.ac.ebi.pride.jaxb.model.TwoDimensionalIdentification rawIdent) {
 
-        Identification ident = null;
+        Protein ident = null;
 
         if (rawIdent != null) {
             // peptides
@@ -394,7 +392,7 @@ public class PrideXmlTransformer {
             } */
             SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
             DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
-            ident = new Identification(params, rawIdent.getId(), null, dbSequence, false, peptides, score, thresholdVal, seqConverageVal, gel);
+            ident = new Protein(params, rawIdent.getId(), null, dbSequence, false, peptides, score, thresholdVal, seqConverageVal, gel);
         }
 
         return ident;
@@ -406,8 +404,8 @@ public class PrideXmlTransformer {
      * @param rawIdent pride xml protein identification
      * @return GelFreeIdentification   gel free identification
      */
-    public static Identification transformGelFreeIdent(uk.ac.ebi.pride.jaxb.model.GelFreeIdentification rawIdent) {
-        Identification ident = null;
+    public static Protein transformGelFreeIdent(uk.ac.ebi.pride.jaxb.model.GelFreeIdentification rawIdent) {
+        Protein ident = null;
 
         if (rawIdent != null) {
             // peptides
@@ -447,7 +445,7 @@ public class PrideXmlTransformer {
             SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
             DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
             //SearchEngine searchEngine = new SearchEngine(null, rawIdent.getSearchEngine(),null);
-            return new Identification(params, rawIdent.getId(), null, dbSequence, false, peptides, score, thresholdVal, seqConverageVal,null);
+            return new Protein(params, rawIdent.getId(), null, dbSequence, false, peptides, score, thresholdVal, seqConverageVal,null);
 
         }
 
@@ -537,16 +535,20 @@ public class PrideXmlTransformer {
         peptideEvidences.add(peptideEvidence);
 
         //Retrieve Experimental Mass and Charge.
-        int charge = -1;
-        double mz  = 0.0;
-        if(spectrum != null){
+        int charge = DataAccessUtilities.getPrecursorCharge(params);
+        double mz  = DataAccessUtilities.getPrecursorMz(params);
+        if(charge != -1 && spectrum != null){
             charge = DataAccessUtilities.getPrecursorCharge(spectrum);
+        }
+
+        if (mz != -1 && spectrum != null) {
             mz = DataAccessUtilities.getPrecursorMz(spectrum);
         }
+
         // Retrieve Score
         Score score = DataAccessUtilities.getScore(params);
 
-        SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, charge, mz, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, score, spectrum, null);
+        SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, charge, mz, -1, -1, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, score, spectrum, null);
         return new Peptide(peptideEvidence,spectrumIdentification);
         //Todo : We need to capture the theoretical Mass Value
 

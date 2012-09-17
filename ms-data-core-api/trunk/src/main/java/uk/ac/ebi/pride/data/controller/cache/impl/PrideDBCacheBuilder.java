@@ -158,7 +158,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
     private void populateIdentificationInfo(Comparable expAcc) throws SQLException {
         logger.info("Initializing identification ids, protein accessions, scores and thresholds");
         // clear caches
-        cache.clear(CacheCategory.IDENTIFICATION_ID);
+        cache.clear(CacheCategory.PROTEIN_ID);
         cache.clear(CacheCategory.PROTEIN_ACCESSION);
         cache.clear(CacheCategory.PROTEIN_ACCESSION_VERSION);
         cache.clear(CacheCategory.PROTEIN_SEARCH_DATABASE);
@@ -173,6 +173,8 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
        Map<Comparable, String> protAccVersions = new HashMap<Comparable, String>();
         // database map
         Map<Comparable, SearchDataBase> databases = new HashMap<Comparable, SearchDataBase>();
+        // database version map
+        Map<Comparable, String> versions = new HashMap<Comparable, String>();
         // scores map
         Map<Comparable, Score> scores = new HashMap<Comparable, Score>();
         // thresholds map
@@ -194,6 +196,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
                 String acc = rs.getString("accession_number");
                 String accVersion = rs.getString("accession_version");
                 String database = rs.getString("search_database");
+                String databaseVersion = rs.getString("database_version");
                 String searchEngine = rs.getString("search_engine");
                 Double sc = rs.getDouble("score");
                 Double thd = rs.getDouble("threshold");
@@ -203,9 +206,9 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
                 protAccVersions.put(id, accVersion);
                 SearchEngineType searchEngineType = SearchEngineType.getByName(searchEngine);
                 databases.put(id, new SearchDataBase(database,databaseV));
+                versions.put(id, databaseVersion);
                 Score score = null;
                 if(sc != 0 && searchEngineType != null){
-                    CvTermReference cvTerm = SearchEngineType.getDefaultCvTerm(searchEngine);
                     Map<SearchEngineType,Map<CvTermReference,Number>> mapScores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
                     Map<CvTermReference,Number> scoreValues = new HashMap<CvTermReference, Number>();
                     scoreValues.put(SearchEngineType.getDefaultCvTerm(searchEngine), sc);
@@ -223,10 +226,11 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         }
 
         // cache everything
-        cache.storeInBatch(CacheCategory.IDENTIFICATION_ID, identIds);
+        cache.storeInBatch(CacheCategory.PROTEIN_ID, identIds);
         cache.storeInBatch(CacheCategory.PROTEIN_ACCESSION, protAccs);
         cache.storeInBatch(CacheCategory.PROTEIN_ACCESSION_VERSION, protAccVersions);
         cache.storeInBatch(CacheCategory.PROTEIN_SEARCH_DATABASE, databases);
+        cache.storeInBatch(CacheCategory.PROTEIN_SEARCH_DATABASE_VERSION, versions);
         cache.storeInBatch(CacheCategory.SCORE, scores);
         cache.storeInBatch(CacheCategory.THRESHOLD, threholds);
     }
@@ -240,8 +244,8 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
     private void populatePrecursorInfo(Comparable expAcc) throws SQLException {
         logger.info("Initializing precursor charge, m/z and intensity");
         // clear caches
-        cache.clear(CacheCategory.PRECURSOR_CHARGE);
-        cache.clear(CacheCategory.PRECURSOR_MZ);
+        cache.clear(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE);
+        cache.clear(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ);
         cache.clear(CacheCategory.PRECURSOR_INTENSITY);
 
         // precursor charges
@@ -292,8 +296,8 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         }
 
         // createAttributedSequence cache
-        cache.storeInBatch(CacheCategory.PRECURSOR_CHARGE, charges);
-        cache.storeInBatch(CacheCategory.PRECURSOR_MZ, mzs);
+        cache.storeInBatch(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, charges);
+        cache.storeInBatch(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, mzs);
         cache.storeInBatch(CacheCategory.PRECURSOR_INTENSITY, intensities);
     }
 
@@ -306,7 +310,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
     private void populatePeptideInfo(Comparable expAcc) throws SQLException {
         logger.info("Initializing peptide id, start, end, sequence and spectrum reference");
         // clear caches
-        cache.clear(CacheCategory.IDENTIFICATION_TO_PEPTIDE);
+        cache.clear(CacheCategory.PROTEIN_TO_PEPTIDE);
         cache.clear(CacheCategory.PEPTIDE_START);
         cache.clear(CacheCategory.PEPTIDE_END);
         cache.clear(CacheCategory.PEPTIDE_SEQUENCE);
@@ -373,7 +377,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         }
 
         // cache
-        cache.storeInBatch(CacheCategory.IDENTIFICATION_TO_PEPTIDE, identToPeptide);
+        cache.storeInBatch(CacheCategory.PROTEIN_TO_PEPTIDE, identToPeptide);
         cache.storeInBatch(CacheCategory.PEPTIDE_START, peptideStart);
         cache.storeInBatch(CacheCategory.PEPTIDE_END, peptideEnd);
         cache.storeInBatch(CacheCategory.PEPTIDE_SEQUENCE, peptideSequence);
@@ -439,6 +443,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             List<Double> avgMasses = new ArrayList<Double>();
             logger.debug("Getting mass delta value");
 
+            //todo: why split the original query into two? Is it faster?
             st = connection.prepareStatement("SELECT mass_delta_value FROM pride_mass_delta WHERE modification_id = ? AND classname = ?");
             st.setInt(1, Integer.parseInt(modId.toString()));
             st.setString(2, "uk.ac.ebi.pride.rdbms.ojb.model.core.MonoMassDeltaBean");
@@ -453,6 +458,8 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             while (rs.next()) {
                avgMasses.add(rs.getDouble("mass_delta_value"));
             }
+
+            //todo: the following two queries can be merged into one
             List<CvParam> cvParams = new ArrayList<CvParam>();
             st = connection.prepareStatement("SELECT accession, name, value, cv_label FROM pride_modification_param " + " WHERE parent_element_fk = ? AND cv_label is not null");
             st.setInt(1, Integer.parseInt(modId.toString()));
@@ -576,7 +583,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         logger.info("Initializing protein params");
 
         // clear cache
-        cache.clear(CacheCategory.IDENTIFICATION_TO_PARAM);
+        cache.clear(CacheCategory.PROTEIN_TO_PARAM);
 
         // map of protein id to params
         Map<Comparable, ParamGroup> params = new HashMap<Comparable, ParamGroup>();
@@ -623,7 +630,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             DBUtilities.releaseResources(connection, st, rs);
         }
         // add to cache
-        cache.storeInBatch(CacheCategory.IDENTIFICATION_TO_PARAM, params);
+        cache.storeInBatch(CacheCategory.PROTEIN_TO_PARAM, params);
     }
 
     private void populatePeptideParamInfo(Comparable expAcc) throws SQLException {

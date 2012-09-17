@@ -11,7 +11,7 @@ import java.util.*;
 
 /**
  * Score stores a number of peptide scores for a list of search engines.
- * Please Note that even if peptide scores are null if they are not provided.
+ * Please Note that peptide scores are null if they are not provided.
  * <p/>
  * User: rwang, yperez
  * Date: Dec 2, 2010

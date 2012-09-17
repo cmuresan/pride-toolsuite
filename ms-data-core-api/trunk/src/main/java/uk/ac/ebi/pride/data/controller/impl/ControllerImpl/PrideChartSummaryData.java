@@ -212,10 +212,10 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
         List<ProteinPeptide> list = new ArrayList<ProteinPeptide>();
 
         try {
-            Collection<Comparable> idenIDList = cdac.getIdentificationIds();
+            Collection<Comparable> idenIDList = cdac.getProteinIds();
             int idenIDInt= 0;
             for (Comparable idenID : idenIDList) {
-                Identification id = cdac.getIdentificationById(idenID, true);
+                Protein id = cdac.getProteinById(idenID, true);
                 //int identification_id = Integer.valueOf(id.getId().toString());
                 int identification_id = idenIDInt;
 

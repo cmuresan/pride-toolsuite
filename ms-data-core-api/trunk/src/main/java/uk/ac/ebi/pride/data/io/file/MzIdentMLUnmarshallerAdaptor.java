@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.data.io.file;
 
 
-import org.apache.batik.ext.awt.image.renderable.CompositeRable;
 import uk.ac.ebi.jmzidml.MzIdentMLElement;
 import uk.ac.ebi.jmzidml.model.mzidml.*;
 import uk.ac.ebi.jmzidml.model.mzidml.Organization;
@@ -18,10 +17,8 @@ import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.utils.MzIdentMLUtils;
 
 
-import javax.crypto.Mac;
 import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -321,7 +318,7 @@ public class MzIdentMLUnmarshallerAdaptor {
 
 
         maps.put(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS,spectraDataMap);
-        maps.put(CacheCategory.IDENTIFICATION_TO_PEPTIDE_EVIDENCES,identProteinsMap);
+        maps.put(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES,identProteinsMap);
         maps.put(CacheCategory.PEPTIDE_TO_SPECTRUM,identSpectrumMap);
 
         return maps;

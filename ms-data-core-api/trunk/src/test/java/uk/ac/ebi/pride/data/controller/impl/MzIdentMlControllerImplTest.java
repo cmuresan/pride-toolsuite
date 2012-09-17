@@ -124,16 +124,16 @@ public class MzIdentMlControllerImplTest {
 
     @Test
     public void testGetIdentificationIDs() throws DataAccessException {
-        List<Comparable> identifications = new ArrayList<Comparable>(mzIdentMlController.getIdentificationIds());
+        List<Comparable> identifications = new ArrayList<Comparable>(mzIdentMlController.getProteinIds());
         assertTrue("The numer of Identification should be 2", identifications.size()==2044);
         assertEquals("The id of the first identification should be PDH_psu|NC_LIV_020800_0",identifications.get(0).toString(),"DBSeq_1_Rnd1psu|NC_LIV_145060");
    }
 
    @Test
    public void getIdentificationbyId() throws DataAccessException{
-       List<Comparable> identificationIds = new ArrayList<Comparable>(mzIdentMlController.getIdentificationIds());
+       List<Comparable> identificationIds = new ArrayList<Comparable>(mzIdentMlController.getProteinIds());
        for (Comparable id: identificationIds){
-           Identification identification = mzIdentMlController.getIdentificationById(id,true);
+           Protein protein = mzIdentMlController.getProteinById(id, true);
        }
    }
 }

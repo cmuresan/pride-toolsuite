@@ -24,7 +24,7 @@ public class FragmentIon extends ParamGroup {
     /**
      * charge of the fragment ion
      */
-    private int charge = 0;
+    private int charge = -1;
 
     /**
      * intensity of the fragment ion

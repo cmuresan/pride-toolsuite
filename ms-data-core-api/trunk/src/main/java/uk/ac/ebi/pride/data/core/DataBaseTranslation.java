@@ -5,6 +5,8 @@ package uk.ac.ebi.pride.data.core;
 import java.util.List;
 
 /**
+ * todo: add documentation
+ *
  * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 05/08/11

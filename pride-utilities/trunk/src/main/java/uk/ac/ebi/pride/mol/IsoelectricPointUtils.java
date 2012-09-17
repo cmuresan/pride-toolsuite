@@ -31,6 +31,7 @@ public class IsoelectricPointUtils {
                 i--;
             }
         }
+
         return seq;
     }
 

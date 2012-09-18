@@ -12,6 +12,11 @@
 
 ----
 == News ==
+*_September 18. 2012:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.2.5] is now available:*
+ * Support private download for ProteomeXchange submissions
+ * New release of the PRIDE public database instance.
+ * A number of bug fixes.
+
 *_March 1. 2012:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.2.4] is now available:*
  * Support precursor information at the peptide level.
  * Additional PTM summary column for database search panel.

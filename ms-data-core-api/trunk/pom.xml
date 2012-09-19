@@ -6,7 +6,7 @@
 
     <groupId>uk.ac.ebi.pride</groupId>
     <artifactId>ms-data-core-api</artifactId>
-    <version>0.2</version>
+    <version>0.3</version>
 
 
     <licenses>
@@ -88,6 +88,12 @@
             <groupId>uk.ac.ebi.jmzidml</groupId>
             <artifactId>jmzidentml</artifactId>
             <version>1.1.2-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.jboss.jsfunit</artifactId>
+                    <groupId>jboss-jsfunit-microdeployer</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Begin of the jmzReader Dependencies. MzML and Pride XML files will be parse
           with jaxb and jmzml directly in order to keep more matadata -->

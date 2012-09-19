@@ -725,9 +725,8 @@ public class MzIdentMLTransformer {
             List<CvParam> rules = null;
             if(oldModification.getSpecificityRules() != null){
                 List<uk.ac.ebi.jmzidml.model.mzidml.CvParam> cvParamRules = new ArrayList<uk.ac.ebi.jmzidml.model.mzidml.CvParam>();
-                for(uk.ac.ebi.jmzidml.model.mzidml.SpecificityRules paramRules: oldModification.getSpecificityRules()){
-                    cvParamRules.addAll(paramRules.getCvParam());
-                }
+                uk.ac.ebi.jmzidml.model.mzidml.SpecificityRules paramRules =  oldModification.getSpecificityRules();
+                cvParamRules.addAll(paramRules.getCvParam());
                 rules = transformToCvParam(cvParamRules);
             }
 

@@ -249,11 +249,34 @@ public class TableFactory {
         Pattern pubmedPattern = Pattern.compile("[\\d,]+");
         pubmedColumn.setCellRenderer(new HyperLinkCellRenderer(pubmedPattern));
 
+        // hide taxonomy_id and brenda_id column
+        String taxonomyIdHeader = DatabaseSearchTableModel.TableHeader.TAXONOMY_ID.getHeader();
+        TableColumnExt taxonomyIdColumn = (TableColumnExt) searchTable.getColumn(taxonomyIdHeader);
+        Pattern taxonomyIdPattern = Pattern.compile("[\\d]+;{0}");
+        taxonomyIdColumn.setVisible(false);
+
+        String brendaIdHeader = DatabaseSearchTableModel.TableHeader.BRENDA_ID.getHeader();
+        TableColumnExt brendaIdColumn = (TableColumnExt) searchTable.getColumn(brendaIdHeader);
+        Pattern brendaIdPattern = Pattern.compile("BTO:\\d+");
+        brendaIdColumn.setVisible(false);
+
+        // add hyper link for species and tissue column
+        String speciesHeader = DatabaseSearchTableModel.TableHeader.SPECIES.getHeader();
+        TableColumnExt speciesColumn = (TableColumnExt) searchTable.getColumn(speciesHeader);
+        Pattern speciesPattern = Pattern.compile(".+");
+        speciesColumn.setCellRenderer(new HyperLinkCellRenderer(speciesPattern));
+
+        String tissueHeader = DatabaseSearchTableModel.TableHeader.TISSUE.getHeader();
+        TableColumnExt tissueColumn = (TableColumnExt) searchTable.getColumn(tissueHeader);
+        Pattern tissuePattern = Pattern.compile(".+");
+        tissueColumn.setCellRenderer(new HyperLinkCellRenderer(tissuePattern));
 
         // add mouse motion listener
         searchTable.addMouseMotionListener(new TableCellMouseMotionListener(searchTable, viewColumnHeader, pubmedHeader));
         searchTable.addMouseListener(new OpenExperimentMouseListener(searchTable, viewColumnHeader));
         searchTable.addMouseListener(new HyperLinkCellMouseClickListener(searchTable, pubmedHeader, new PrefixedHyperLinkGenerator(Constants.PUBMED_URL_PERFIX), pubmedPattern));
+        searchTable.addMouseListener(new HyperLinkCellMouseClickListener(searchTable, speciesHeader, taxonomyIdHeader, new PrefixedHyperLinkGenerator(Constants.OLS_URL_PREFIX), taxonomyIdPattern));
+        searchTable.addMouseListener(new HyperLinkCellMouseClickListener(searchTable, tissueHeader, brendaIdHeader, new PrefixedHyperLinkGenerator(Constants.OLS_URL_PREFIX), brendaIdPattern));
 
         return searchTable;
     }

@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table.renderer;
 
+import uk.ac.ebi.pride.gui.utils.Constants;
+
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
@@ -48,7 +50,7 @@ public class HyperLinkCellRenderer extends JLabel implements TableCellRenderer {
                 match = m.matches();
             }
 
-            if (match) {
+            if (match && ! value.toString().trim().equals(Constants.NOT_AVAILABLE)) {
                 StringBuilder builder = new StringBuilder();
                 builder.append("<html><a href='").append(text).append("'>");
                 builder.append(shorten? "Link" : text);

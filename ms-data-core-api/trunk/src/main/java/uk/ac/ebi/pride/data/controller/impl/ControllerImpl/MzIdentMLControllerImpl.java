@@ -876,6 +876,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     }
 
     public List<DataAccessController> getDataAccessControllers(){
-        return new ArrayList<DataAccessController>(msDataAccessControllers.values());
+        return (msDataAccessControllers != null)?new ArrayList<DataAccessController>(msDataAccessControllers.values()):null;
     }
 }

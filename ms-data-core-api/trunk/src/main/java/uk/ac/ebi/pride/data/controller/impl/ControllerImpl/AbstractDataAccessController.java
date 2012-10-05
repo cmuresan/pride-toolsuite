@@ -491,7 +491,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      *
      * @param proteinId   identification id
      * @param peptideId peptid eid, can be the index of the peptide as well.
-     * @return
+     * @return precursor mass
      * @throws DataAccessException
      */
     @Override

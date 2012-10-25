@@ -1,0 +1,32 @@
+# one modification
+#https://www.proteomecluster.com/thegpm-cgi/peptide.pl?ltype=&path=/tandem/archive/www.proteomecluster.com-279-c8c544be.xml&uid=51708&label=ENSP00000216181&homolog=51708&id=5092.1.1&proex=-1
+INPUT:
+HEAMITDLEER; 3; 3, 15.9949; B; 1
+OUTPUT:
+138.066
+267.109
+338.146
+485.181
+598.265
+699.313
+814.34
+927.424
+1056.467
+1185.509
+END;
+
+#two modifications
+#https://www.proteomecluster.com/thegpm-cgi/peptide.pl?ltype=&path=/tandem/archive/www.proteomecluster.com-279-c8c544be.xml&uid=51708&label=ENSP00000216181&homolog=51708&id=5092.1.1&proex=-1
+INPUT:
+YEDMAAFMK; 3; 3, 15.9949, 7, 15.9949; B; 1
+OUTPUT:
+164.071
+293.113
+408.14
+555.176
+626.213
+697.25
+844.318
+991.354
+END;
+

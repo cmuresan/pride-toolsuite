@@ -1,0 +1,43 @@
+package uk.ac.ebi.pride.iongen.utils;
+
+import uk.ac.ebi.pride.iongen.model.PrecursorIon;
+import uk.ac.ebi.pride.iongen.model.ProductIon;
+import uk.ac.ebi.pride.iongen.model.impl.ImmoniumIon;
+import uk.ac.ebi.pride.mol.ProductIonType;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author Qingwei XU
+ * @version 0.1-SNAPSHOT
+ */
+public class ProductIonFactory {
+
+    public static List<ProductIon> createDefaultProductIons(PrecursorIon precursorIon, ProductIonType type, int charge) {
+        List<ProductIon> productIons = new ArrayList<ProductIon>();
+
+        ProductIon ion = null;
+        //the default product ions cleavages position is [1..length-1]
+        for (int i = 1; i< precursorIon.getPeptide().getLength(); i++) {
+            ion = precursorIon.getProductIon(type, i, charge);
+            productIons.add(ion);
+        }
+
+        return productIons;
+    }
+
+    public  static List<ImmoniumIon> createImmoniumProductIons(PrecursorIon precursorIon, int charge) {
+        List<ImmoniumIon> productIons = new ArrayList<ImmoniumIon>();
+
+        ImmoniumIon ion = null;
+        //the immonium product ions cleavages position is [1..length]
+        for (int i = 0; i < precursorIon.getPeptide().getLength(); i++) {
+            ion = new ImmoniumIon(precursorIon, i, charge);
+            productIons.add(ion);
+        }
+
+        return productIons;
+    }
+
+}

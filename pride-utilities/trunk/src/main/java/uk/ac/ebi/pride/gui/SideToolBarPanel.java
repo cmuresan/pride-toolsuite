@@ -335,7 +335,7 @@ public class SideToolBarPanel extends JPanel implements ActionListener, SwingCon
      *
      * @param actionCommand action command to be removed
      */
-    public void removeCommand(String actionCommand) {
+    public void removeActionCommand(String actionCommand) {
         AbstractButton button = actionButtonMap.get(actionCommand);
 
         // remove the button

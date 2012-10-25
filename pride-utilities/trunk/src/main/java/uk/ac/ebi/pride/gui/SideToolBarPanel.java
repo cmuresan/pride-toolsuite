@@ -329,8 +329,26 @@ public class SideToolBarPanel extends JPanel implements ActionListener, SwingCon
         return button;
     }
 
+
     /**
-     * Remove the action command from this panel, it also removes all its related components.
+     * Remove an action command from this panel
+     *
+     * @param actionCommand action command to be removed
+     */
+    public void removeCommand(String actionCommand) {
+        AbstractButton button = actionButtonMap.get(actionCommand);
+
+        // remove the button
+        if (button != null) {
+            sideToolBar.remove(button);
+            if (centralComponent != null && centralComponent instanceof ActionListener) {
+                button.removeActionListener((ActionListener) centralComponent);
+            }
+        }
+    }
+
+    /**
+     * Remove an action from this panel, it also removes all its related components.
      *
      * @param action action command.
      */
@@ -362,10 +380,24 @@ public class SideToolBarPanel extends JPanel implements ActionListener, SwingCon
     /**
      * Set the visibility of a action command
      *
+     * @param actionCommand action command
+     * @param isEnabled     true to visible, false to invisible
+     */
+    public void enableActionCommand(String actionCommand, boolean isEnabled) {
+        enableActionControl(actionCommand, isEnabled);
+    }
+
+    /**
+     * Set the visibility of a action command
+     *
      * @param action action command
      * @param isEnabled     true to visible, false to invisible
      */
     public void enableAction(Object action, boolean isEnabled) {
+        enableActionControl(action, isEnabled);
+    }
+
+    private void enableActionControl(Object action, boolean isEnabled) {
         AbstractButton button = actionButtonMap.get(action);
         if (button != null) {
             button.setEnabled(isEnabled);

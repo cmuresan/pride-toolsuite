@@ -8,7 +8,7 @@ package uk.ac.ebi.pride.mol.ion;
  * Date: 21-Oct-2010
  * Time: 14:18:09
  */
-public class FragmentIonType {
+public class FragmentIonType implements Cloneable {
     public static final FragmentIonType A_ION = new FragmentIonType("a ion", "a");
     public static final FragmentIonType B_ION = new FragmentIonType("b ion", "b");
     public static final FragmentIonType C_ION = new FragmentIonType("c ion", "c");
@@ -62,5 +62,10 @@ public class FragmentIonType {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (label != null ? label.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

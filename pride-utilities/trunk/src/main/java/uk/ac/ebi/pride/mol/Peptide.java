@@ -1,206 +1,167 @@
 package uk.ac.ebi.pride.mol;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
- * Peptide represents a list of <cod> AminoAcid </code>
+ * A peptide including three parts: N terminal group, C terminal group and a couple of AminoAcids.
+ * In this class, we provide two mainly constructor methods to create a peptide, but there are
+ * a litter different between them. If user create a peptide instance by using sequence (String)
+ * argument, we will create a couple AminoAcids without any modifications. That is, these AminoAcids
+ * modified value always false.
  *
- * User: rwang
- * Date: 21-Oct-2010
- * Time: 13:56:07
+ * @author Qingwei XU
+ * @version 0.1-SNAPSHOT
  */
-public class Peptide implements Mass {
+public class Peptide {
+    private List<AminoAcid> acidList;
+    private Group n_terminal;
+    private Group c_terminal;
 
-    /** Stores all the amino acids */
-    private final java.util.List<AminoAcid> aminoAcids;
+    // the ptm position from [0, length-1]
+    private Map<Integer, PTModification> ptm;
 
-    /**
-     * Default constructor, this will make a empty Peptide object
-     */
-    public Peptide() {
-        this(new AminoAcid[0]);
+    private List<AminoAcid> generateAminoAcids(String sequence) {
+        List<AminoAcid> acidList = new ArrayList<AminoAcid>();
+
+        char[] cList = sequence.toCharArray();
+        int position = 0;
+        for (char c : cList) {
+            AminoAcid acid = AminoAcid.getAminoAcid(c);
+            if (null == acid) {
+                throw new IllegalArgumentException("There exist unrecognized AminoAcids in the sequence. position=" + position);
+            }
+
+            acidList.add(acid);
+            position++;
+        }
+
+
+        return acidList;
+    }
+
+    public Peptide(String sequence) {
+        this(sequence, null);
+    }
+
+    public Peptide(String sequence, Group n_terminal, Group c_terminal) {
+        this(sequence, n_terminal, c_terminal, null);
+    }
+
+    public Peptide(String sequence, Map<Integer, PTModification> ptm) {
+        this(sequence, Group.H, Group.OH, ptm);
+    }
+
+    public Peptide(String sequence, Group n_terminal, Group c_terminal, Map<Integer, PTModification> ptm) {
+        if (sequence == null || sequence.trim().length() == 0) {
+            throw new IllegalArgumentException("peptide ion sequence is empty! ");
+        }
+
+        this.acidList = generateAminoAcids(sequence);
+        this.n_terminal = n_terminal;
+        this.c_terminal = c_terminal;
+
+        if (ptm == null) {
+            this.ptm = new HashMap<Integer, PTModification>();
+        } else {
+            this.ptm = ptm;
+            addALLModification(ptm);
+        }
+    }
+
+    public Peptide(List<AminoAcid> AminoAcids) {
+        this(AminoAcids, null);
+    }
+
+    public Peptide(List<AminoAcid> AminoAcids, Group n_terminal, Group c_terminal) {
+        this(AminoAcids, n_terminal, c_terminal, null);
+    }
+
+    public Peptide(List<AminoAcid> AminoAcids, Map<Integer, PTModification> ptm) {
+        this(AminoAcids, Group.H, Group.OH, ptm);
+    }
+
+    public Peptide(List<AminoAcid> acidList, Group n_terminal, Group c_terminal, Map<Integer, PTModification> ptm) {
+        if (ptm == null) {
+            this.ptm = new HashMap<Integer, PTModification>();
+        } else {
+            this.ptm = ptm;
+            addALLModification(ptm);
+        }
+
+        this.acidList = acidList;
+        this.n_terminal = n_terminal;
+        this.c_terminal = c_terminal;
+    }
+
+    public void addModification(Integer position, PTModification modification) {
+        ptm.put(position, modification);
     }
 
     /**
-     * Constructor to ake a Peptide object with specified amino acids.
-     *
-     * @param residues  a list of amino acids
+     * if patch add modifications, we will rollback to the point of before patch add.
      */
-    public Peptide(AminoAcid... residues) {
-        aminoAcids = new ArrayList<AminoAcid>();
-        aminoAcids.addAll(Arrays.asList(residues));
+    public void addALLModification(Map<Integer, PTModification> modifications) {
+        ptm.putAll(modifications);
     }
 
-    /**
-     * Returns a new list of amino acids
-     *
-     * @return a list of amino acids
-     */
+    public void removeModification(PTModification modification) {
+        ptm.remove(modification);
+    }
+
+    public void clearModifications() {
+        ptm.clear();
+    }
+
+    public String getSequence() {
+        if (acidList == null || acidList.size() == 0) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (AminoAcid acid : acidList) {
+            sb.append(acid.getOneLetterCode());
+        }
+
+        return sb.toString();
+    }
+
     public List<AminoAcid> getAminoAcids() {
-        return new ArrayList<AminoAcid>(aminoAcids);
+        return acidList;
     }
 
-    /**
-     * Returns the amino acid with specified index
-     *
-     * @param index index is zero based.
-     * @return AminoAcid    return null when there is no index.
-     */
-    public AminoAcid getAminoAcid(int index) {
-        if (index >= 0 && aminoAcids.size() < index) {
-            return aminoAcids.get(index);
-        } else {
-            return null;
-        }
+    public Group getNTerminalGroup() {
+        return n_terminal;
     }
 
-    /**
-     * Return the number of amino acids
-     * @return int   the number of amino acids
-     */
-    public int getNumberOfAminoAcids() {
-        return aminoAcids.size();
+    public Group getCTerminalGroup() {
+        return c_terminal;
     }
 
-    /**
-     * Add a new amino acid to the end of the Peptide.
-     *
-     * @param residue   amino acid
-     */
-    public void addAminoAcid(AminoAcid residue) {
-        if (residue == null) {
-            throw new IllegalArgumentException("Can not add null amino acid to peptide");
-        } else {
-            aminoAcids.add(residue);
-        }
-    }
-
-    /**
-     * Add a collection of amino acids to the end of the Peptide.
-     *
-     * @param residues  a collection of amino acids
-     */
-    public void addAminoAcids(Collection<AminoAcid> residues) {
-        if (residues == null) {
-            throw new IllegalArgumentException("Can not add null collection of amino acids to peptide");
-        } else {
-            aminoAcids.addAll(residues);
-        }
-    }
-
-    /**
-     * Remove all amino acid
-     */
-    public void removeAll() {
-        aminoAcids.clear();
-    }
-
-    /**
-     * Remove amino acid at the index.
-     *
-     * @param index index of the amino acid
-     */
-    public void remove(int index) {
-        if (index >= 0 && aminoAcids.size() < index) {
-            aminoAcids.remove(index);
-        }
-    }
-
-    /**
-     * Get the sum of average mass.
-     *
-     * @return double   average mass of the peptide
-     */
-    public double getAvgMass() {
-        double avgMass = 0;
-
-        for (AminoAcid aminoAcid : aminoAcids) {
-            avgMass += aminoAcid.getAvgMass();
-        }
-
-        return avgMass;
-    }
-
-    /**
-     * Get the sum of monoisotopic mass.
-     *
-     * @return double   monoisotopic mass of the peptide.
-     */
-    public double getMonoMass() {
-        double monoMass = 0;
-
-        for (AminoAcid aminoAcid : aminoAcids) {
-            monoMass += aminoAcid.getMonoMass();
-        }
-
-        return monoMass;
-    }
-
-    /**
-     * Return the length of the peptide.
-     *
-     * @return int  the length of the peptide
-     */
     public int getLength() {
-        return aminoAcids.size();
+        return acidList.size();
     }
 
     /**
-     * Get the string of peptide in three letter format.
-     *
-     * @return String   three letter code string of the peptide.
+     * @return a unmodifiable collection, which just be used to browse the ptm contents.
      */
-    public String getThreeLetterCodeString() {
-        String code = "";
-
-        for (AminoAcid aminoAcid : aminoAcids) {
-            code += aminoAcid.getThreeLetterCode();
-        }
-
-        return code;
+    public Map<Integer, PTModification> getPTM() {
+        return Collections.unmodifiableMap(ptm);
     }
 
-    /**
-     * Get the string of peptide in one letter format.
-     *
-     * @return String   one letter code string of the peptide.
-     */
-    public String getOneLetterCodeString() {
-        String code = "";
-
-        for (AminoAcid aminoAcid : aminoAcids) {
-            code += aminoAcid.getOneLetterCode();
-        }
-
-        return code;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Peptide)) return false;
-
-        Peptide peptide = (Peptide) o;
-
-        if (aminoAcids != null ? !aminoAcids.equals(peptide.aminoAcids) : peptide.aminoAcids != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return aminoAcids != null ? aminoAcids.hashCode() : 0;
-    }
-
-    /**
-     * This method calls getOneLetterCodeString()
-     * @return String   peptide string.
-     */
-    @Override
     public String toString() {
-        return getOneLetterCodeString();
+        StringBuilder sb = new StringBuilder();
+
+        if (n_terminal != null && ! n_terminal.equals(Group.H)) {
+            sb.append(n_terminal.getName() + "-");
+        }
+
+        sb.append(getSequence());
+
+        if (c_terminal != null && ! c_terminal.equals(Group.OH)) {
+            sb.append("-" + c_terminal.getName());
+        }
+
+        return sb.toString();
     }
+
 }

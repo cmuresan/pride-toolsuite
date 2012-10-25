@@ -74,42 +74,42 @@ public class MoleculeUtilities {
      * @param numOfResidue   number of residues.
      * @return List<Peptide>    list of peptides.
      */
-    public static java.util.List<Peptide> searchForPeptide(double massRangeStart, double massRangeEnd,
+    public static java.util.List<AminoAcidSequence> searchForPeptide(double massRangeStart, double massRangeEnd,
                                                            boolean isMonoMass, int numOfResidue) {
-        java.util.List<Peptide> peptides = new ArrayList<Peptide>();
+        java.util.List<AminoAcidSequence> aminoAcidSequences = new ArrayList<AminoAcidSequence>();
         AminoAcid[] acEntries = AminoAcid.values();
 
         // create all combinations.
         for (int i = 0; i < numOfResidue; i++) {
-            java.util.List<Peptide> tmpPeptides = new ArrayList<Peptide>();
+            java.util.List<AminoAcidSequence> tmpAminoAcidSequences = new ArrayList<AminoAcidSequence>();
             for (AminoAcid acEntry : acEntries) {
                 if (i == 0) {
-                    Peptide peptide = new Peptide(acEntry);
-                    peptides.add(peptide);
+                    AminoAcidSequence aminoAcidSequence = new AminoAcidSequence(acEntry);
+                    aminoAcidSequences.add(aminoAcidSequence);
                 } else {
-                    for (Peptide peptide : peptides) {
-                        Peptide tmpPeptide = new Peptide();
-                        tmpPeptide.addAminoAcids(peptide.getAminoAcids());
-                        tmpPeptide.addAminoAcid(acEntry);
-                        tmpPeptides.add(tmpPeptide);
+                    for (AminoAcidSequence aminoAcidSequence : aminoAcidSequences) {
+                        AminoAcidSequence tmpAminoAcidSequence = new AminoAcidSequence();
+                        tmpAminoAcidSequence.addAminoAcids(aminoAcidSequence.getAminoAcids());
+                        tmpAminoAcidSequence.addAminoAcid(acEntry);
+                        tmpAminoAcidSequences.add(tmpAminoAcidSequence);
                     }
                 }
             }
             if (i != 0) {
-                peptides = tmpPeptides;
+                aminoAcidSequences = tmpAminoAcidSequences;
             }
         }
 
         // remove unqualified ones
-        java.util.List<Peptide> tmpPeptides = new ArrayList<Peptide>();
-        for (Peptide peptide : peptides) {
-            double mass = isMonoMass ? peptide.getMonoMass() : peptide.getAvgMass();
+        java.util.List<AminoAcidSequence> tmpAminoAcidSequences = new ArrayList<AminoAcidSequence>();
+        for (AminoAcidSequence aminoAcidSequence : aminoAcidSequences) {
+            double mass = isMonoMass ? aminoAcidSequence.getMonoMass() : aminoAcidSequence.getAvgMass();
             if (mass >= massRangeStart && mass <= massRangeEnd) {
-                tmpPeptides.add(peptide);
+                tmpAminoAcidSequences.add(aminoAcidSequence);
             }
         }
-        peptides = tmpPeptides;
-        return peptides;
+        aminoAcidSequences = tmpAminoAcidSequences;
+        return aminoAcidSequences;
     }
 
     /**
@@ -185,47 +185,47 @@ public class MoleculeUtilities {
     /**
      * Calculate peptide's monoisotopic mass.
      *
-     * @param peptide         peptide sequence.
+     * @param aminoAcidSequence         peptide sequence.
      * @param modifications   a list of modifications.
      * @param massCorrections a list of mass corrections.
      * @return double   final peptide mass.
      */
-    public static double calculatePeptideMonoMass(Peptide peptide,
+    public static double calculatePeptideMonoMass(AminoAcidSequence aminoAcidSequence,
                                                   List<PTModification> modifications,
                                                   double... massCorrections) {
-        return calculatePeptideMass(peptide, modifications, true, massCorrections);
+        return calculatePeptideMass(aminoAcidSequence, modifications, true, massCorrections);
     }
 
     /**
      * Calculate peptide's average mass.
      *
-     * @param peptide         peptide sequence.
+     * @param aminoAcidSequence         peptide sequence.
      * @param modifications   a list of modifications.
      * @param massCorrections a list of mass corrections.
      * @return double   final peptide mass.
      */
-    public static double calculatePeptideAvgMass(Peptide peptide,
+    public static double calculatePeptideAvgMass(AminoAcidSequence aminoAcidSequence,
                                                  List<PTModification> modifications,
                                                  double... massCorrections) {
-        return calculatePeptideMass(peptide, modifications, false, massCorrections);
+        return calculatePeptideMass(aminoAcidSequence, modifications, false, massCorrections);
     }
 
     /**
      * Calculate peptide's mass
      * Note: all the modification masses, massCorrections are only going to be added.
      *
-     * @param peptide         peptide sequence.
+     * @param aminoAcidSequence         peptide sequence.
      * @param modifications   a list of modifications.
      * @param monoMass        whether to use mono masses or average masses.
      * @param massCorrections a list of mass corrections.
      * @return double   final peptide mass.
      */
-    private static double calculatePeptideMass(Peptide peptide,
+    private static double calculatePeptideMass(AminoAcidSequence aminoAcidSequence,
                                                List<PTModification> modifications,
                                                boolean monoMass,
                                                double... massCorrections) {
         // calculate peptide mass
-        double mass = monoMass ? peptide.getMonoMass() : peptide.getAvgMass();
+        double mass = monoMass ? aminoAcidSequence.getMonoMass() : aminoAcidSequence.getAvgMass();
         // add modifications
         if (modifications != null) {
             for (PTModification modification : modifications) {

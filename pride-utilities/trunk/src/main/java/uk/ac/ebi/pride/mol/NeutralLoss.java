@@ -7,7 +7,7 @@ package uk.ac.ebi.pride.mol;
  * Date: 14-Jun-2010
  * Time: 17:55:53
  */
-public class NeutralLoss implements Mass {
+public class NeutralLoss implements Mass, Cloneable {
     // todo: monoisotopic mass and average mass should be different.
     public static final NeutralLoss WATER_LOSS = new NeutralLoss("H2O", "\\u00ba", 18.011, 18.011);
     public static final NeutralLoss AMMONIA_LOSS = new NeutralLoss("NH3", "*", 17.027, 17.027);
@@ -67,5 +67,10 @@ public class NeutralLoss implements Mass {
         temp = monoMass != +0.0d ? Double.doubleToLongBits(monoMass) : 0L;
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

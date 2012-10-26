@@ -15,9 +15,8 @@ import java.util.List;
  * Date: 15-Jun-2010
  * Time: 09:07:06
  */
-public class IonAnnotationInfo implements PeakAnnotationInfo {
-
-    private final List<Item> items;
+public class IonAnnotationInfo implements PeakAnnotationInfo, Cloneable {
+    private List<Item> items;
 
     public IonAnnotationInfo() {
         this.items = new ArrayList<Item>();
@@ -64,7 +63,7 @@ public class IonAnnotationInfo implements PeakAnnotationInfo {
         return items.iterator();
     }
 
-    public static class Item {
+    public static class Item implements Cloneable {
         /**
          * list is required for ambiguous annotations
          */
@@ -114,5 +113,33 @@ public class IonAnnotationInfo implements PeakAnnotationInfo {
         public void setNeutralLoss(NeutralLoss neutralLoss) {
             this.neutralLoss = neutralLoss;
         }
+
+        @Override
+        public Object clone() throws CloneNotSupportedException {
+            Item newItem = (Item) super.clone();
+
+            FragmentIonType newType = type == null ? type : (FragmentIonType) type.clone();
+            NeutralLoss newLoss = neutralLoss == null ? neutralLoss : (NeutralLoss) neutralLoss.clone();
+            newItem.setType(newType);
+            newItem.setNeutralLoss(newLoss);
+
+            return newItem;
+        }
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        IonAnnotationInfo newInfo = (IonAnnotationInfo) super.clone();
+
+        Item newItem;
+        List<Item> newItemList = new ArrayList<Item>();
+        for (Item item : this.items) {
+            newItem = (Item) item.clone();
+            newItemList.add(newItem);
+        }
+
+        newInfo.items = newItemList;
+
+        return newInfo;
     }
 }

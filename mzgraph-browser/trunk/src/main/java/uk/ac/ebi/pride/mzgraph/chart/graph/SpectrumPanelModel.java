@@ -239,7 +239,7 @@ public class SpectrumPanelModel implements PropertyChangeListener {
      *
      * @param ions a list of ion annotations.
      */
-    public void addFragmentIons(List<IonAnnotation> ions) {
+    public void addAnnotations(List<IonAnnotation> ions) {
         Map<FragmentIonType, List<IonAnnotation>> ionMap = IonAnnotationUtils.sortByType(ions);
         for (Map.Entry<FragmentIonType, List<IonAnnotation>> ionTypeListEntry : ionMap.entrySet()) {
             addFragmentIonSeries(ionTypeListEntry.getKey(), ionTypeListEntry.getValue());

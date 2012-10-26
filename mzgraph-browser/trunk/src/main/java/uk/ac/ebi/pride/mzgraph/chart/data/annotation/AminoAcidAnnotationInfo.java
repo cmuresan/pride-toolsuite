@@ -2,9 +2,9 @@ package uk.ac.ebi.pride.mzgraph.chart.data.annotation;
 
 
 import uk.ac.ebi.pride.mol.AminoAcid;
+import uk.ac.ebi.pride.mol.AminoAcidSequence;
 import uk.ac.ebi.pride.mol.NeutralLoss;
 import uk.ac.ebi.pride.mol.PTModification;
-import uk.ac.ebi.pride.mol.Peptide;
 
 import java.util.*;
 
@@ -16,7 +16,7 @@ import java.util.*;
  * Date: 15-Jun-2010
  * Time: 09:18:45
  */
-public class AminoAcidAnnotationInfo implements RangeAnnotationInfo{
+public class AminoAcidAnnotationInfo implements RangeAnnotationInfo {
 
     private final List<Item> items;
 
@@ -32,7 +32,7 @@ public class AminoAcidAnnotationInfo implements RangeAnnotationInfo{
         }
     }
 
-    public Item addItem(Peptide peptide) {
+    public Item addItem(AminoAcidSequence peptide) {
         Item item = null;
         // peptide can not null
         if (peptide != null) {
@@ -64,17 +64,17 @@ public class AminoAcidAnnotationInfo implements RangeAnnotationInfo{
 
     // todo add remove methods to this class.
     public class Item {
-        private Peptide peptide;
+        private AminoAcidSequence peptide;
         private Map<Integer, List<PTModification>> modifications;
         private Map<Integer, List<NeutralLoss>> neutralLosses;
 
-        public Item(Peptide peptide) {
+        public Item(AminoAcidSequence peptide) {
             this.peptide = peptide;
             this.modifications = new HashMap<Integer, List<PTModification>>();
             this.neutralLosses = new HashMap<Integer, List<NeutralLoss>>();
         }
 
-        public Peptide getPeptide() {
+        public AminoAcidSequence getPeptide() {
             return peptide;
         }
 

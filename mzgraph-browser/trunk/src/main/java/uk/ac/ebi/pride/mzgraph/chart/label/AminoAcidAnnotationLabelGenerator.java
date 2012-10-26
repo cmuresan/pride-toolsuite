@@ -5,8 +5,8 @@ import org.jfree.data.ComparableObjectItem;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYIntervalSeriesCollection;
 import uk.ac.ebi.pride.mol.AminoAcid;
+import uk.ac.ebi.pride.mol.AminoAcidSequence;
 import uk.ac.ebi.pride.mol.PTModification;
-import uk.ac.ebi.pride.mol.Peptide;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.AminoAcidAnnotation;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.AminoAcidAnnotationInfo;
 import uk.ac.ebi.pride.mzgraph.chart.data.util.ExtendedXYIntervalSeries;
@@ -37,7 +37,7 @@ public class AminoAcidAnnotationLabelGenerator implements XYItemLabelGenerator {
             int cnt = info.getNumberOfItems();
             for (int i = 0; i < cnt; i++) {
                 AminoAcidAnnotationInfo.Item annotationItem = info.getItem(i);
-                Peptide peptide = annotationItem.getPeptide();
+                AminoAcidSequence peptide = annotationItem.getPeptide();
                 int index = 0;
                 for (AminoAcid aminoAcid : peptide.getAminoAcids()) {
                     label.append(aminoAcid.getOneLetterCode());

@@ -6,6 +6,7 @@ import org.jfree.chart.entity.ChartEntity;
 import org.jfree.chart.entity.XYItemEntity;
 import org.jfree.data.xy.*;
 import uk.ac.ebi.pride.mol.PTModification;
+import uk.ac.ebi.pride.mol.Peptide;
 import uk.ac.ebi.pride.mol.ion.FragmentIonType;
 import uk.ac.ebi.pride.mol.ion.FragmentIonTypeColor;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.AminoAcidAnnotationGenerator;
@@ -22,6 +23,8 @@ import uk.ac.ebi.pride.mzgraph.gui.filter.FilterActionEvent;
 import uk.ac.ebi.pride.mzgraph.gui.setting.MassErrorToleranceEvent;
 import uk.ac.ebi.pride.mzgraph.gui.setting.ShowMassDifferentEvent;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
@@ -48,6 +51,7 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
      */
     public final static String HIDE_PEAK_LIST = "HIDE_PEAK_LIST";
     public final static String CLEAR_MASS_DIFF = "CLEAR_MASS_DIFF";
+    public final static String MZ_TABLE = "MZ_TABLE";
 
     /**
      * Renderer to draw the peaks
@@ -74,11 +78,11 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
      */
     private SpectrumPanelModel spectrumPanelModel;
 
-    public SpectrumPanel() {
-        this(null, null);
-    }
+    private MzTablePanel mzTablePanel;
 
-    public SpectrumPanel(double[] mz, double[] intensity) {
+    private JDialog mzTableDialog;
+
+    public SpectrumPanel() {
         super(DEFAULT_SPECTRUM_CHART_TITLE,
                 DEFAULT_MZ_AXIS_LABEL,
                 DEFAULT_INTENSITY_AXIS_LABEL,
@@ -93,14 +97,25 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
 
         // peak list dataset and renderer
         spectrumPanelModel = new SpectrumPanelModel();
-        spectrumPanelModel.setPeaks(mz, intensity);
         spectrumPanelModel.addPropertyChangeListener(this);
 
         // visibility
         this.basePeakVisibility = DEFAULT_PEAK_VISIBILITY;
 
         paintGraph();
+    }
 
+    public SpectrumPanel(double[] mz, double[] intensity) {
+        this();
+        setPeaks(mz, intensity);
+    }
+
+    /**
+     * Based on peptide, we can generate theoretical m/z list. Compared them with peak list (Experimental m/z list),
+     * we can generate a couple of ion annotations automatically.
+     */
+    public void initMzTablePanel(Peptide peptide) {
+        mzTablePanel = new MzTablePanel(peptide);
     }
 
     public SpectrumPanelModel getModel() {
@@ -113,7 +128,7 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
 
     public void reset() {
         // remove all annotations
-        java.util.List<XYAnnotation> annotations = plot.getAnnotations();
+        List<XYAnnotation> annotations = plot.getAnnotations();
         for (XYAnnotation annotation : annotations) {
             plot.removeAnnotation(annotation, true);
         }
@@ -133,11 +148,34 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
 
     public void setPeaks(double[] mz, double[] intensity) {
         spectrumPanelModel.setPeaks(mz, intensity);
+
+        if (mzTablePanel != null) {
+            mzTablePanel.setPeaks(mz, intensity);
+        }
     }
 
-    public void addFragmentIons(List<IonAnnotation> ions) {
-        spectrumPanelModel.addFragmentIons(ions);
+    /**
+     * add annotations manually.
+     */
+    public void addAllAnnotations(List<IonAnnotation> ions) {
+        spectrumPanelModel.addAnnotations(ions);
+
+        if (mzTablePanel != null) {
+            mzTablePanel.addAllAnnotations(ions);
+        }
     }
+
+//    public void setShowAutoAnnotations(boolean showAuto) {
+//        if (mzTablePanel != null) {
+//            mzTablePanel.setShowAutoAnnotations(showAuto);
+//        }
+//    }
+//
+//    public void setShowManualAnnotations(boolean showManual) {
+//        if (mzTablePanel != null) {
+//            mzTablePanel.setShowManualAnnotations(showManual);
+//        }
+//    }
 
     public void setAminoAcidAnnotationParameters(int peptideLength, Map<Integer, List<PTModification>> modifications) {
         spectrumPanelModel.setAminoAcidAnnotationParameters(peptideLength, modifications);
@@ -162,6 +200,25 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
         // reverse the visibility
         basePeakVisibility = !basePeakVisibility;
         plot.setRenderer(DEFAULT_PEAK_DATASET_INDEX, basePeakVisibility ? peakRenderer : null);
+    }
+
+    /**
+     * Popup a mzTablePanel Dialog.
+     */
+    public void mzTable(Frame owner) {
+        mzTableDialog = new JDialog(owner);
+        mzTableDialog.setTitle("m/z table");
+        mzTableDialog.getContentPane().add(mzTablePanel);
+        mzTableDialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+
+        mzTableDialog.pack();
+        mzTableDialog.setVisible(true);
+        mzTableDialog.setModal(true);
+        mzTableDialog.setResizable(false);
+    }
+
+    public JDialog getMzTableDialog() {
+        return mzTableDialog;
     }
 
     public void hideFragmentIons(Comparable seriesKey) {
@@ -396,7 +453,10 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
                 clearMassDiffAnnotations();
             } else if (HIDE_PEAK_LIST.equals(command)) {
                 hidePeakList();
+            } else if (MZ_TABLE.equals(command)) {
+                mzTable((JFrame) getRootPane().getParent());
             }
+
         }
     }
 

@@ -2,8 +2,8 @@ package uk.ac.ebi.pride.mzgraph.chart.label;
 
 import org.jfree.chart.labels.XYItemLabelGenerator;
 import org.jfree.data.xy.XYDataset;
+import uk.ac.ebi.pride.mol.AminoAcidSequence;
 import uk.ac.ebi.pride.mol.MoleculeUtilities;
-import uk.ac.ebi.pride.mol.Peptide;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,12 +48,12 @@ public class AminoAcidLabelGenerator implements XYItemLabelGenerator {
             double x2 = xyDataset.getXValue(series, item + 1);
             double massDiff = x2 - x1;
 
-            Map<Integer, List<Peptide>> peptides = new LinkedHashMap<Integer, List<Peptide>>();
+            Map<Integer, List<AminoAcidSequence>> peptides = new LinkedHashMap<Integer, List<AminoAcidSequence>>();
             int cnt = 0;
             for (int charge = 1; charge <= chargeRange; charge++) {
                 massDiff = massDiff * charge;
                 for (int number = 0; number < maxNumberOfAminoAcids; number++) {
-                    List<Peptide> pes = MoleculeUtilities.searchForPeptide(massDiff - massError, massDiff + massError, true, number);
+                    List<AminoAcidSequence> pes = MoleculeUtilities.searchForPeptide(massDiff - massError, massDiff + massError, true, number);
                     peptides.put(charge, pes);
                     cnt += pes.size();
                     if (cnt > maxNumberOfResults) {
@@ -64,8 +64,8 @@ public class AminoAcidLabelGenerator implements XYItemLabelGenerator {
 
             if (cnt <= maxNumberOfResults) {
                 for (Integer charge : peptides.keySet()) {
-                    List<Peptide> pes = peptides.get(charge);
-                    for (Peptide pe : pes) {
+                    List<AminoAcidSequence> pes = peptides.get(charge);
+                    for (AminoAcidSequence pe : pes) {
                         label += ("".equals(label) ? "" : ";") + pe.getOneLetterCodeString() + getChargeStr(charge);
                     }
                 }

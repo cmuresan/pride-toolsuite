@@ -105,10 +105,10 @@ public class AminoAcidAnnotationGenerator
             double mass = Math.abs(mz * item.getCharge());
             mass += MoleculeUtilities.calculateMonoMass(Atom.O_16, Atom.C_12) - NuclearParticle.PROTON.getMonoMass();
             // search for peptide
-            List<Peptide> peptides = MoleculeUtilities.searchForPeptide(mass - massError, mass + massError, true, 1);
+            List<AminoAcidSequence> peptides = MoleculeUtilities.searchForPeptide(mass - massError, mass + massError, true, 1);
             if (!peptides.isEmpty()) {
                 AminoAcidAnnotationInfo info = new AminoAcidAnnotationInfo();
-                for (Peptide peptide : peptides) {
+                for (AminoAcidSequence peptide : peptides) {
                     info.addItem(peptide);
                 }
                 anns.add(new AminoAcidAnnotation(mz, intensity, mz, intensity, info));
@@ -163,9 +163,9 @@ public class AminoAcidAnnotationGenerator
                         }
                     }
                     // search for all amino acids which are qualified for both the mass range and the number of residues.
-                    List<Peptide> peptides = new ArrayList<Peptide>();
+                    List<AminoAcidSequence> peptides = new ArrayList<AminoAcidSequence>();
                     for (Double md : massDiff) {
-                        List<Peptide> peptideResults = MoleculeUtilities.searchForPeptide(md - massError, md + massError, true, numOfResidues);
+                        List<AminoAcidSequence> peptideResults = MoleculeUtilities.searchForPeptide(md - massError, md + massError, true, numOfResidues);
                         if (peptideResults.size() <= combinationThreshold) {
                             peptides.addAll(peptideResults);
                         }
@@ -175,7 +175,7 @@ public class AminoAcidAnnotationGenerator
                     if (!peptides.isEmpty()) {
                         AminoAcidAnnotationInfo info = new AminoAcidAnnotationInfo();
                         // todo: add modification and neutral loss information here.
-                        for (Peptide peptide : peptides) {
+                        for (AminoAcidSequence peptide : peptides) {
                             AminoAcidAnnotationInfo.Item item = info.addItem(peptide);
                             item.addModifications(getModifications(ionLocation1 + 1, ionLocation2, isNTerminal));
                         }

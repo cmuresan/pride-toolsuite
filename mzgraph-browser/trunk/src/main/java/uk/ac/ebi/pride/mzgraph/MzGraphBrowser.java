@@ -24,7 +24,8 @@ public abstract class MzGraphBrowser extends JPanel {
         ANNOTATION("Annotation", "Show annotations", "Annotation"),
         MASS_DIFF("MassDiff", "Clear mass differences", SpectrumPanel.CLEAR_MASS_DIFF),
         PEAK_LIST("Peaks", "Hide peaks lists", SpectrumPanel.HIDE_PEAK_LIST),
-        SETTING("Settings", "Change settings", "Settings");
+        SETTING("Settings", "Change settings", "Settings"),
+        MZTABLE("MzTable", "Show MzTable", SpectrumPanel.MZ_TABLE);
 
         private final String label;
         private final String tooltip;

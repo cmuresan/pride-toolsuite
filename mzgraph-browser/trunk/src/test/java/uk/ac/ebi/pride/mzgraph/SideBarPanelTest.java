@@ -32,10 +32,9 @@ public class SideBarPanelTest {
     }
 
     private static void createGUI() {
-        double[] mzArr = new double[]{1.0, 2.012312313, 3.0, 4.234, 6.0, 7.34342};
-        double[] intentArr = new double[]{0.05, 4.345345345, 6.0, 1.4545, 5.0, 8.23423};
+        SpectrumPanel chartPanel = new SpectrumPanel(ExampleUtil.mzArr, ExampleUtil.intentArr);
+        chartPanel.initMzTablePanel(ExampleUtil.generatePeptide());
 
-        SpectrumPanel chartPanel = new SpectrumPanel(mzArr, intentArr);
         chartPanel.paintGraph();
         chartPanel.setGridLineVisibility(false);
 
@@ -67,7 +66,7 @@ public class SideBarPanelTest {
         ions.add(ion1);
         ions.add(ion2);
         ions.add(ion3);
-        chartPanel.getModel().addFragmentIons(ions);
+        chartPanel.getModel().addAnnotations(ions);
 
 
         CheckBoxFilterPanel fragPanel = new CheckBoxFilterPanel(MzGraphConstants.FRAGMENT_ION_NAME, chartPanel.getFragmentIonVisibilities());

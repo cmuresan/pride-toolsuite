@@ -82,6 +82,11 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
 
     private JDialog mzTableDialog;
 
+    // whether show auto annotations or not.
+    private boolean showAuto;
+    // whether show manual annotations or not.
+    private boolean showManual;
+
     public SpectrumPanel() {
         super(DEFAULT_SPECTRUM_CHART_TITLE,
                 DEFAULT_MZ_AXIS_LABEL,
@@ -154,28 +159,45 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
         }
     }
 
-    /**
-     * add annotations manually.
-     */
     public void addAllAnnotations(List<IonAnnotation> ions) {
         spectrumPanelModel.addAnnotations(ions);
 
         if (mzTablePanel != null) {
-            mzTablePanel.addAllAnnotations(ions);
+            mzTablePanel.addAllManualAnnotations(ions);
         }
     }
 
-//    public void setShowAutoAnnotations(boolean showAuto) {
-//        if (mzTablePanel != null) {
-//            mzTablePanel.setShowAutoAnnotations(showAuto);
-//        }
-//    }
-//
-//    public void setShowManualAnnotations(boolean showManual) {
-//        if (mzTablePanel != null) {
-//            mzTablePanel.setShowManualAnnotations(showManual);
-//        }
-//    }
+    private void showAnnotations() {
+        spectrumPanelModel.removeIonAnnotations();
+
+        if (showAuto) {
+            spectrumPanelModel.addAnnotations(mzTablePanel.getAutoAnnotationList());
+        }
+
+        if (showManual) {
+            spectrumPanelModel.addAnnotations(mzTablePanel.getManualAnnotationList());
+        }
+    }
+
+    public void setShowAutoAnnotations(boolean showAuto) {
+        this.showAuto = showAuto;
+
+        if (mzTablePanel != null) {
+            mzTablePanel.setShowAutoAnnotations(showAuto);
+        }
+
+        showAnnotations();
+    }
+
+    public void setShowManualAnnotations(boolean showManual) {
+        this.showManual = showManual;
+
+        if (mzTablePanel != null) {
+            mzTablePanel.setShowManualAnnotations(showManual);
+        }
+
+        showAnnotations();
+    }
 
     public void setAminoAcidAnnotationParameters(int peptideLength, Map<Integer, List<PTModification>> modifications) {
         spectrumPanelModel.setAminoAcidAnnotationParameters(peptideLength, modifications);

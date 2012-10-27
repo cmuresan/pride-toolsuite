@@ -25,13 +25,17 @@ public class SpectrumBrowserTest {
     private static void createGUI() {
         Peptide peptide = ExampleUtil.generatePeptide();
         SpectrumBrowser browser = new SpectrumBrowser();
-        browser.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
+
         browser.setPeptide(peptide);
+        browser.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
 
-        browser.addAnnotations(ExampleUtil.generateAnnotationList());
+        browser.addAllAnnotations(ExampleUtil.generateAnnotationList());
 
-        browser.getSpectrumPanel().setShowAutoAnnotations(true);
-        browser.getSpectrumPanel().setShowManualAnnotations(true);
+        browser.setShowAutoAnnotations(true);
+        browser.setShowManualAnnotations(true);
+
+//        browser.setShowAutoAnnotations(false);
+//        browser.setShowManualAnnotations(false);
 
         browser.setSource("Test");
         browser.setId("1111111");
@@ -79,7 +83,7 @@ public class SpectrumBrowserTest {
 //        ions.add(ion1);
 //        ions.add(ion2);
 //        ions.add(ion3);
-//        browser.addAllAnnotations(ions);
+//        browser.addAllManualAnnotations(ions);
 //
 //
 //    }

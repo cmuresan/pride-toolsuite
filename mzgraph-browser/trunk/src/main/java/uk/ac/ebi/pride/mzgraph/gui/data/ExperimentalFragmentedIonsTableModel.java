@@ -8,10 +8,7 @@ import uk.ac.ebi.pride.mol.ion.FragmentIonType;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotationInfo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Creator: Qingwei-XU
@@ -39,7 +36,7 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
 
     private double range = 0.1;
 
-    private List<ExperimentalTableModelObserver> observerList = new ArrayList<ExperimentalTableModelObserver>();
+    private Map<Integer, ExperimentalTableModelObserver> observerList = new TreeMap<Integer, ExperimentalTableModelObserver>();
 
     public boolean isShowManual() {
         return showManual;
@@ -255,7 +252,7 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
     /**
      * Generate matched data matrix based on manual annotation list.
      */
-    public boolean addAllManualAnnotation(List<IonAnnotation> manualAnnotationList) {
+    public boolean addAllManualAnnotations(List<IonAnnotation> manualAnnotationList) {
         if (manualAnnotationList == null || manualAnnotationList.size() == 0) {
             return false;
         }
@@ -304,7 +301,7 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
     public ExperimentalFragmentedIonsTableModel(PrecursorIon precursorIon, ProductIonPair ionPair,
                                                 List<IonAnnotation> manualAnnotations) {
         this(precursorIon, ionPair);
-        addAllManualAnnotation(manualAnnotations);
+        addAllManualAnnotations(manualAnnotations);
     }
 
     /**
@@ -353,12 +350,12 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
         }
     }
 
-    public void addObserver(ExperimentalTableModelObserver observer) {
-        this.observerList.add(observer);
+    public void addObserver(int order, ExperimentalTableModelObserver observer) {
+        this.observerList.put(order, observer);
     }
 
     public void notifyObservers() {
-        for (ExperimentalTableModelObserver observer : this.observerList) {
+        for (ExperimentalTableModelObserver observer : observerList.values()) {
             observer.update(this);
         }
     }

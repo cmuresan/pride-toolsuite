@@ -61,7 +61,7 @@ public class ExperimentalFragmentedIonsTableModelTest {
         ExperimentalFragmentedIonsDataset dataset = new ExperimentalFragmentedIonsDataset(model);
 
         java.util.List<IonAnnotation> annotationList = ExampleUtil.generateAnnotationList();
-        model.addAllManualAnnotation(annotationList);
+        model.addAllManualAnnotations(annotationList);
 
         for (int i = 0; i < model.getColumnCount(); i++) {
             System.out.print(model.getColumnName(i) + "\t");

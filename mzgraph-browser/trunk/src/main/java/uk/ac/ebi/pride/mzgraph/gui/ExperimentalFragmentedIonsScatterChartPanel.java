@@ -108,37 +108,24 @@ public class ExperimentalFragmentedIonsScatterChartPanel extends JPanel{
         return chartPanel;
     }
 
-    public void flush() {
-        removeAll();
-
-        JFreeChart chart = createChart(this.tableModel);
-        this.chartPanel = new ChartPanel(chart);
-        add(chartPanel);
-    }
-
     public void setShowAutoAnnotations(boolean showAuto) {
         this.tableModel.setShowAuto(showAuto);
-        flush();
     }
 
     public void setShowManualAnnotations(boolean showManual) {
         this.tableModel.setShowManual(showManual);
-        flush();
     }
 
 
     public void addAnnotation(IonAnnotation annotation) {
         this.tableModel.addManualAnnotation(annotation);
-        flush();
     }
 
     public void addAllAnnotations(java.util.List<IonAnnotation> annotationList) {
-        this.tableModel.addAllManualAnnotation(annotationList);
-        flush();
+        this.tableModel.addAllManualAnnotations(annotationList);
     }
 
     public void setPeaks(double[] mzArray, double[] intensityArray) {
         this.tableModel.setPeaks(mzArray, intensityArray);
-        flush();
     }
 }

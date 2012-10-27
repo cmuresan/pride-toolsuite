@@ -24,7 +24,7 @@ public class ExperimentalFragmentedIonsTableTest {
         //add annotation by hand
         ExperimentalFragmentedIonsTableModel tableModel = (ExperimentalFragmentedIonsTableModel) table.getModel();
         List<IonAnnotation> annotationList = ExampleUtil.generateAnnotationList();
-        tableModel.addAllManualAnnotation(annotationList);
+        tableModel.addAllManualAnnotations(annotationList);
 
         // test whether show auto and manual annotations, or not.
         table.setShowAutoAnnotations(false);

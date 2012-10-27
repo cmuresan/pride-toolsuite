@@ -168,8 +168,16 @@ public class SpectrumBrowser extends MzGraphBrowser {
         spectrum.setPeaks(mz, intensity);
     }
 
-    public void addAnnotations(List<IonAnnotation> ions) {
+    public void addAllAnnotations(List<IonAnnotation> ions) {
         spectrum.addAllAnnotations(ions);
+    }
+
+    public void setShowAutoAnnotations(boolean showAuto) {
+        spectrum.setShowAutoAnnotations(showAuto);
+    }
+
+    public void setShowManualAnnotations(boolean showManual) {
+        spectrum.setShowManualAnnotations(showManual);
     }
 
     public void setAminoAcidAnnotationParameters(int peptideLength, Map<Integer, List<PTModification>> modifications) {

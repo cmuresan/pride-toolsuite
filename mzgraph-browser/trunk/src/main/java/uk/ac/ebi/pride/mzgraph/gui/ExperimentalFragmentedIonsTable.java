@@ -20,16 +20,10 @@ import java.util.List;
 
 public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTable {
     private ExperimentalFragmentedIonsTableModel tableModel;
-    private Object[][] matchedData;
-
-    public void flush() {
-        this.matchedData = this.tableModel.getMatchedData();
-    }
 
     private void init(ExperimentalFragmentedIonsTableModel tableModel) {
         this.tableModel = tableModel;
         setModel(this.tableModel);
-        flush();
     }
 
     public ExperimentalFragmentedIonsTable(PrecursorIon precursorIon, ProductIonPair pair, int fraction,
@@ -64,12 +58,10 @@ public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTa
 
     public void setShowAutoAnnotations(boolean showAuto) {
         tableModel.setShowAuto(showAuto);
-        flush();
     }
 
     public void setShowManualAnnotations(boolean showManual) {
         this.tableModel.setShowManual(showManual);
-        flush();
     }
 
     public void setPeaks(double[] mzArray, double[] intensityArray) {
@@ -81,12 +73,12 @@ public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTa
     }
 
     public void addAllAnnotations(List<IonAnnotation> annotationList) {
-        this.tableModel.addAllManualAnnotation(annotationList);
+        this.tableModel.addAllManualAnnotations(annotationList);
     }
 
     public TableCellRenderer getCellRenderer(int row, int column) {
         if (this.tableModel.isMassColumn(column)) {
-            return new PracticeIonRenderer(getFraction(), this.matchedData, row, column);
+            return new PracticeIonRenderer(getFraction(), this.tableModel.getMatchedData(), row, column);
         } else {
             return super.getCellRenderer(row, column);
         }
@@ -96,7 +88,9 @@ public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTa
                                      int rowIndex, int vColIndex) {
         Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
         Object to = getValueAt(rowIndex, vColIndex);
-        Object po = this.matchedData[rowIndex][vColIndex];
+
+        Double[][] matchedData = tableModel.getMatchedData();
+        Object po = matchedData[rowIndex][vColIndex];
 
         if (po != null) {
             double practice = (Double) po;

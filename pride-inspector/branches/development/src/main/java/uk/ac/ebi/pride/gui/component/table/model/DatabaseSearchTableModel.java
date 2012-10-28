@@ -94,14 +94,28 @@ public class DatabaseSearchTableModel extends ListTableModel<List<Object>> {
      */
     public List<List<String>> getAllContent() {
         List<List<String>> results = new ArrayList<List<String>>();
+        int startIndexOfContent = getStartIndexOfContent();
         for (List<Object> content : contents) {
             List<String> result = new ArrayList<String>();
-            for (int i = TableHeader.values().length; i < content.size(); i++) {
+            for (int i = startIndexOfContent; i < content.size(); i++) {
                 result.add(content.get(i).toString());
             }
             results.add(result);
         }
         return results;
+    }
+
+    private int getStartIndexOfContent() {
+        int index = -1;
+
+        for (TableHeader tableHeader : TableHeader.values()) {
+            index++;
+            if (tableHeader.equals(TableHeader.EXPERIMENT_ACCESSION)) {
+                break;
+            }
+        }
+
+        return index;
     }
 
     /**

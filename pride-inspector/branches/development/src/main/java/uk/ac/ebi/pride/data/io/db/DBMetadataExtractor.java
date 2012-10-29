@@ -52,6 +52,9 @@ public class DBMetadataExtractor {
         // sort accessions
         Collections.sort(accessions);
 
+        // remove unwanted accessions
+        removeUnwantedExperiments(accessions);
+
         // load PTM mappings file
         Map<String, Tuple<String, String>> ptmMappings = getPtmMappings();
 
@@ -280,5 +283,19 @@ public class DBMetadataExtractor {
             writer.print(entry);
         }
         writer.print("\t");
+    }
+
+    private static void removeUnwantedExperiments(List<Integer> expAccs) {
+        expAccs.remove(118);
+        expAccs.remove(119);
+        expAccs.remove(120);
+        expAccs.remove(1688);
+        expAccs.remove(2573);
+        expAccs.remove(2620);
+        expAccs.remove(2623);
+        expAccs.remove(2639);
+        expAccs.remove(8159);
+        expAccs.remove(8160);
+        expAccs.remove(11900);
     }
 }

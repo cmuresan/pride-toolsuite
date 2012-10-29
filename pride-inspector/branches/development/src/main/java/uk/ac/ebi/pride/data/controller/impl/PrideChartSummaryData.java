@@ -133,23 +133,27 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
             mzHist = mzUnidentifiedHist;
         }
 
-        int charge = DataAccessUtilities.getPrecursorCharge(spectrum);
-        PrideHistogram histogram;
-        if (mzHist.containsKey(charge)) {
-            histogram = mzHist.get(charge);
-        } else {
-            histogram = new PrideHistogram();
-            mzHist.put(charge, histogram);
+        Integer charge = DataAccessUtilities.getPrecursorCharge(spectrum);
+        PrideHistogram histogram = null;
+        if (charge != null) {
+            if (mzHist.containsKey(charge)) {
+                histogram = mzHist.get(charge);
+            } else {
+                histogram = new PrideHistogram();
+                mzHist.put(charge, histogram);
+            }
         }
 
-        for (int pos = 0; pos<mzBA.getDoubleArray().length; pos++) {
-            double value = mzBA.getDoubleArray()[pos];
-            int bin = (int) Math.round(value / MZHistogramChartSpectra.BIN_SIZE);
-            double intensityValue = intensityBA.getDoubleArray()[pos];
-            if (histogram.containsKey(bin)) {
-                histogram.put(bin, histogram.get(bin) + intensityValue);
-            } else {
-                histogram.put(bin, intensityValue);
+        if (histogram != null) {
+            for (int pos = 0; pos < mzBA.getDoubleArray().length; pos++) {
+                double value = mzBA.getDoubleArray()[pos];
+                int bin = (int) Math.round(value / MZHistogramChartSpectra.BIN_SIZE);
+                double intensityValue = intensityBA.getDoubleArray()[pos];
+                if (histogram.containsKey(bin)) {
+                    histogram.put(bin, histogram.get(bin) + intensityValue);
+                } else {
+                    histogram.put(bin, intensityValue);
+                }
             }
         }
     }

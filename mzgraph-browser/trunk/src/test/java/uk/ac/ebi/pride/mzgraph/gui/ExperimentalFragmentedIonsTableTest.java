@@ -26,9 +26,11 @@ public class ExperimentalFragmentedIonsTableTest {
         List<IonAnnotation> annotationList = ExampleUtil.generateAnnotationList();
         tableModel.addAllManualAnnotations(annotationList);
 
+        tableModel.addAllManualAnnotations(ExampleUtil.specialAnnotationList());
+
         // test whether show auto and manual annotations, or not.
-        table.setShowAutoAnnotations(false);
-        table.setShowManualAnnotations(false);
+//        table.setShowAutoAnnotations(true);
+//        table.setShowManualAnnotations(false);
 
         table.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(table);

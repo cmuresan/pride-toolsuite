@@ -60,7 +60,7 @@ public class ExperimentalFragmentedIonsDataset extends XYSeriesCollection implem
             for (int row = 0; row < tableModel.getRowCount(); row++) {
                 o = tableModel.getValueAt(row, col);
                 theoreticalIon = (ProductIon) o;
-                if (matchedData[row][col] == null) {
+                if (matchedData[row][col] == null || o == null) {
                     continue;
                 }
 

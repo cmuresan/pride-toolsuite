@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ExampleUtil {
     public static double[] mzArr = new double[] {
-            146.21673968615,
+            74.21673968615,
             152,
             191.094233918164,
             407.748486097306,
@@ -76,21 +76,21 @@ public class ExampleUtil {
     public static List<IonAnnotation> generateAnnotationList() {
         IonAnnotationInfo ionInfo1 = new IonAnnotationInfo();
         // row=8 col=13 mz=500.18
-        IonAnnotationInfo.Item annotationItem = new IonAnnotationInfo.Item(2, FragmentIonType.B_ION, 9, NeutralLoss.WATER_LOSS);
+        IonAnnotationInfo.Item annotationItem = new IonAnnotationInfo.Item(2, FragmentIonType.B_ION, 8, NeutralLoss.WATER_LOSS);
         ionInfo1.addItem(annotationItem);
         // mzArr[4]=499.173902356863
         IonAnnotation ion1 = new IonAnnotation(mzArr[4], intentArr[4], ionInfo1);
 
         IonAnnotationInfo ionInfo2 = new IonAnnotationInfo();
         // row=5 col=10 mz=637.22
-        IonAnnotationInfo.Item annotationItem2 = new IonAnnotationInfo.Item(1, FragmentIonType.B_ION, 6, NeutralLoss.AMMONIA_LOSS);
+        IonAnnotationInfo.Item annotationItem2 = new IonAnnotationInfo.Item(1, FragmentIonType.B_ION, 5, NeutralLoss.AMMONIA_LOSS);
         ionInfo2.addItem(annotationItem2);
         // mzArr[9]=637.871693379752
         IonAnnotation ion2 = new IonAnnotation(mzArr[9], intentArr[9], ionInfo2);
 
         IonAnnotationInfo ionInfo3 = new IonAnnotationInfo();
         // row=7 col=10 mz=853.29
-        IonAnnotationInfo.Item annotationItem3 = new IonAnnotationInfo.Item(1, FragmentIonType.B_ION, 8, NeutralLoss.AMMONIA_LOSS);
+        IonAnnotationInfo.Item annotationItem3 = new IonAnnotationInfo.Item(1, FragmentIonType.B_ION, 7, NeutralLoss.AMMONIA_LOSS);
         ionInfo3.addItem(annotationItem3);
         // mzArr[12]=854.535170582246
         IonAnnotation ion3 = new IonAnnotation(mzArr[12], intentArr[12], ionInfo3);
@@ -99,6 +99,21 @@ public class ExampleUtil {
         annotationList.add(ion1);
         annotationList.add(ion2);
         annotationList.add(ion3);
+
+        return annotationList;
+    }
+
+    public static List<IonAnnotation> specialAnnotationList() {
+        List<IonAnnotation> annotationList = new ArrayList<IonAnnotation>();
+
+        IonAnnotationInfo ionInfo1 = new IonAnnotationInfo();
+        // row=1 col=13 mz=73.53  immonium ion
+        IonAnnotationInfo.Item annotationItem = new IonAnnotationInfo.Item(2, FragmentIonType.IMMONIUM_ION, 0, null);
+        ionInfo1.addItem(annotationItem);
+        // mzArr[0]=74.173902356863
+        IonAnnotation ion1 = new IonAnnotation(mzArr[0], intentArr[0], ionInfo1);
+
+        annotationList.add(ion1);
 
         return annotationList;
     }

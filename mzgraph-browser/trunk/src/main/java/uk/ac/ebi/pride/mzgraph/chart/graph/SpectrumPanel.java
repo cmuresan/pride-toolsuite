@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.mol.ion.FragmentIonType;
 import uk.ac.ebi.pride.mol.ion.FragmentIonTypeColor;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.AminoAcidAnnotationGenerator;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
+import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotationInfo;
 import uk.ac.ebi.pride.mzgraph.chart.data.util.MzGraphDatasetUtils;
 import uk.ac.ebi.pride.mzgraph.chart.label.AminoAcidAnnotationLabelGenerator;
 import uk.ac.ebi.pride.mzgraph.chart.label.IonAnnotationLabelGenerator;
@@ -30,10 +31,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants.*;
 
@@ -121,6 +120,7 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
      */
     public void initMzTablePanel(Peptide peptide) {
         mzTablePanel = new MzTablePanel(peptide);
+        mzTablePanel.flush();
     }
 
     public SpectrumPanelModel getModel() {
@@ -159,11 +159,48 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
         }
     }
 
+    private List<IonAnnotation> filterAnnotations(List<IonAnnotation> srcList) throws CloneNotSupportedException {
+        List<IonAnnotation> tarList = new ArrayList<IonAnnotation>();
+
+        // filter non b and y ion annotation,
+        // which not display in the mz table panel.
+        IonAnnotationInfo srcInfo;
+        IonAnnotationInfo.Item srcItem;
+        IonAnnotationInfo tarInfo;
+        IonAnnotationInfo.Item tarItem;
+        IonAnnotation tarAnnotation;
+        for (IonAnnotation annotation : srcList) {
+            srcInfo = annotation.getAnnotationInfo();
+            tarInfo = new IonAnnotationInfo();
+            for (int i = 0; i < srcInfo.getNumberOfItems(); i++) {
+                srcItem = srcInfo.getItem(i);
+                if (srcItem.getType().getName().equals(FragmentIonType.B_ION.getName()) || srcItem.getType().getName().equals(FragmentIonType.Y_ION.getName())) {
+                    tarItem = (IonAnnotationInfo.Item) srcItem.clone();
+                    tarInfo.addItem(tarItem);
+                }
+            }
+
+            if (tarInfo.getNumberOfItems() != 0) {
+                tarAnnotation = (IonAnnotation) annotation.clone();
+                tarAnnotation.setInfo(tarInfo);
+                tarList.add(tarAnnotation);
+            }
+        }
+
+        return tarList;
+    }
+
     public void addAllAnnotations(List<IonAnnotation> ions) {
         spectrumPanelModel.addAnnotations(ions);
 
-        if (mzTablePanel != null) {
-            mzTablePanel.addAllManualAnnotations(ions);
+        try {
+            List<IonAnnotation> filterAnnotations = filterAnnotations(ions);
+
+            if (mzTablePanel != null) {
+                mzTablePanel.addAllManualAnnotations(filterAnnotations);
+            }
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
         }
     }
 

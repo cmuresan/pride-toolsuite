@@ -26,7 +26,9 @@ public class ExperimentalFragmentedIonsScatterChartPanelTest {
         chartPanel.addAnnotation(annotationList.get(1));
         chartPanel.addAnnotation(annotationList.get(2));
 
-        chartPanel.setShowAutoAnnotations(true);
+//        chartPanel.addAllAnnotations(ExampleUtil.specialAnnotationList());
+
+//        chartPanel.setShowAutoAnnotations(true);
         chartPanel.setShowManualAnnotations(true);
 //
 //        chartPanel.setShowAutoAnnotations(false);

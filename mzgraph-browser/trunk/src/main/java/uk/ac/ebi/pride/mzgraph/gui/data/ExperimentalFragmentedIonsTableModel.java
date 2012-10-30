@@ -24,7 +24,16 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
     // used for storage manually annotations
     private Double[][] manualData = new Double[getRowCount()][getColumnCount()];
 
+    /**
+     * Whether show auto annotations, or not. Default, the value is {@value}.
+     * User can call {@link #setShowAuto(boolean)} to change this value.
+     */
     private boolean showAuto = false;
+
+    /**
+     * Whether show manual annotations, or not. Default, the value is {@value}.
+     * User can call {@link #setShowManual(boolean)} to change this value.
+     */
     private boolean showManual = true;
 
     private List<IonAnnotation> manualAnnotations = new ArrayList<IonAnnotation>();
@@ -34,6 +43,9 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
     private double[] mzArray;
     private double[] intensityArray;
 
+    /**
+     * just used for generate auto annotations.
+     */
     private double range = 0.1;
 
     private Map<Integer, ExperimentalTableModelObserver> observerList = new TreeMap<Integer, ExperimentalTableModelObserver>();
@@ -189,9 +201,9 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
             location = item.getLocation();
 
             if (type.equals(FragmentIonType.X_ION) || type.equals(FragmentIonType.Y_ION) || type.equals(FragmentIonType.Z_ION)) {
-                row = getRowCount() - location;
+                row = getRowCount() - 1 - location;
             } else if (type.equals(FragmentIonType.A_ION) || type.equals(FragmentIonType.B_ION) || type.equals(FragmentIonType.C_ION)) {
-                row = location - 1;
+                row = location;
             } else {
                 row = -1;
             }
@@ -260,7 +272,11 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
         // copy manual annotation list.
         List<IonAnnotation> tempAnnotationList = new ArrayList<IonAnnotation>();
         for (IonAnnotation annotation : this.manualAnnotations) {
-            tempAnnotationList.add((IonAnnotation) annotation.clone());
+            try {
+                tempAnnotationList.add((IonAnnotation) annotation.clone());
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
         }
 
         // copy manual data matrix.

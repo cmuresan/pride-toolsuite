@@ -24,6 +24,8 @@ import java.awt.*;
  */
 
 public class ExperimentalFragmentedIonsScatterChartPanel extends JPanel{
+    private double interval = 0.5;
+
     private int fraction = 3;
     private ChartPanel chartPanel;
     private ExperimentalFragmentedIonsTableModel tableModel;
@@ -57,9 +59,6 @@ public class ExperimentalFragmentedIonsScatterChartPanel extends JPanel{
 
         NumberAxis range = (NumberAxis) plot.getRangeAxis();
         range.setTickUnit(new NumberTickUnit(0.25));
-//        range.setUpperBound(0.5);
-//        range.setLowerBound(-0.5);
-
 
         return chart;
     }

@@ -37,18 +37,15 @@ public class IonAnnotation extends XYDataItem implements PeakAnnotation {
         return info;
     }
 
+    public void setInfo(IonAnnotationInfo info) {
+        this.info = info;
+    }
+
     @Override
-    public Object clone() {
-        IonAnnotation newAnnotation = null;
-
-        try {
-            newAnnotation = (IonAnnotation) super.clone();
-            IonAnnotationInfo newInfo = (IonAnnotationInfo) info.clone();
-            newAnnotation.info = newInfo;
-
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+    public Object clone() throws CloneNotSupportedException {
+        IonAnnotation newAnnotation = (IonAnnotation) super.clone();
+        IonAnnotationInfo newInfo = (IonAnnotationInfo) info.clone();
+        newAnnotation.info = newInfo;
 
         return newAnnotation;
     }

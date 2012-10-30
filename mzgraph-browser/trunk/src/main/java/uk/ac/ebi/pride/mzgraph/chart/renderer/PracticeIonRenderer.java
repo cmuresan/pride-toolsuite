@@ -21,7 +21,7 @@ public class PracticeIonRenderer extends PeptideIonRenderer {
         //Cells are by default rendered as a JLabel.
         JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 
-        if (practiceData[row][col] != null) {
+        if (practiceData[row][col] != null && label != null) {
             Font oldFont = getFont();
             label.setFont(new Font(oldFont.getFontName(), Font.BOLD, oldFont.getSize()));
 

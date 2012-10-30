@@ -92,7 +92,7 @@ public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTa
         Double[][] matchedData = tableModel.getMatchedData();
         Object po = matchedData[rowIndex][vColIndex];
 
-        if (po != null) {
+        if (po != null && to != null) {
             double practice = (Double) po;
             double theoretical = ((ProductIon) to).getMassOverCharge();
 

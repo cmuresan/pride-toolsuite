@@ -13,12 +13,16 @@ public class MzTablePanelTest {
         Peptide peptide = ExampleUtil.generatePeptide();
         PrecursorIon precursorIon = new DefaultPrecursorIon(peptide, 2);
 
-        MzTablePanel tablePanel = new MzTablePanel(peptide, ExampleUtil.mzArr, ExampleUtil.intentArr);
+        MzTablePanel tablePanel = new MzTablePanel(peptide);
 
         java.util.List<IonAnnotation> annotationList = ExampleUtil.generateAnnotationList();
         tablePanel.addManualAnnotation(annotationList.get(0));
         tablePanel.addManualAnnotation(annotationList.get(1));
         tablePanel.addManualAnnotation(annotationList.get(2));
+
+        tablePanel.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
+
+        tablePanel.addAllManualAnnotations(ExampleUtil.specialAnnotationList());
 
         tablePanel.setShowAutoAnnotations(true);
         tablePanel.setShowManualAnnotations(true);

@@ -213,6 +213,10 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
         this.tableModel.setPeaks(mzArray, intensityArray);
     }
 
+    public void flush() {
+        this.tableModel.notifyObservers();
+    }
+
     private class Point {
         int series;
         int item;
@@ -336,9 +340,9 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
         double y;
         for (int col = 1; col < tableModel.getColumnCount(); col++) {
             for (int row = 0; row < tableModel.getRowCount(); row++) {
-                if (matchedData[row][col] != null) {
+                if (matchedData[row][col] != null && (ion = (ProductIon) tableModel.getValueAt(row, col)) != null) {
+                    try {
                     matchedMass = matchedData[row][col];
-                    ion = (ProductIon) tableModel.getValueAt(row, col);
                     series = dataset.getSeries(ion.getType().getGroup().getName());
                     seriesIndex = dataset.indexOf(ion.getType().getGroup().getName());
                     x = ion.getMassOverCharge();
@@ -346,6 +350,9 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
                     itemIndex = getItemIndex(series, x, y);
                     point = new Point(seriesIndex, itemIndex);
                     pointMatrix[row][col] = point;
+                    }catch (NullPointerException e) {
+                        System.out.println(ion.toString());
+                    }
                 }
             }
         }

@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.mol;
 
 /**
- * Chemical element enumeric class. User can get the standard mass value based on
+ * Chemical element, this is a enum class. User can get the standard mass value based on
  * the element name.
  *
  * @author Qingwei XU

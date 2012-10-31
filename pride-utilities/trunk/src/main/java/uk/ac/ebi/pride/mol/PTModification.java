@@ -1,10 +1,13 @@
 package uk.ac.ebi.pride.mol;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * PTModification stores modification details, this class is not enum because
- * there are many different types of modifications.
+ * there are many different types of modifications. This is a read only class,
+ * the mono mass deltas and avg mass deltas list can not modified.
  *
  * User: rwang
  * Date: 21-Oct-2010
@@ -40,11 +43,11 @@ public class PTModification {
     }
 
     public List<Double> getMonoMassDeltas() {
-        return monoMassDeltas;
+        return Collections.unmodifiableList(monoMassDeltas);
     }
 
     public List<Double> getAvgMassDeltas() {
-        return avgMassDeltas;
+        return Collections.unmodifiableList(avgMassDeltas);
     }
 
     @Override
@@ -74,4 +77,5 @@ public class PTModification {
         result = 31 * result + (avgMassDeltas != null ? avgMassDeltas.hashCode() : 0);
         return result;
     }
+
 }

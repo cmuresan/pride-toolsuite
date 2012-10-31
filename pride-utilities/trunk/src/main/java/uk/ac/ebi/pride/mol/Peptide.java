@@ -4,10 +4,6 @@ import java.util.*;
 
 /**
  * A peptide including three parts: N terminal group, C terminal group and a couple of AminoAcids.
- * In this class, we provide two mainly constructor methods to create a peptide, but there are
- * a litter different between them. If user create a peptide instance by using sequence (String)
- * argument, we will create a couple AminoAcids without any modifications. That is, these AminoAcids
- * modified value always false.
  *
  * @author Qingwei XU
  * @version 0.1-SNAPSHOT
@@ -17,7 +13,7 @@ public class Peptide {
     private Group n_terminal;
     private Group c_terminal;
 
-    // the ptm position from [0, length-1]
+    // the ptm position from [0, sequence.length-1]
     private Map<Integer, PTModification> ptm;
 
     private List<AminoAcid> generateAminoAcids(String sequence) {
@@ -39,24 +35,57 @@ public class Peptide {
         return acidList;
     }
 
+    /**
+     * Create a peptide without PTM. C terminal is {@link Group#H}, and n terminal is {@link Group#OH}.
+     * @param sequence can not set null or space string. System will translate sequence into a list of
+     *                 {@link AminoAcid}. If can not recognize the amino acid character, system will throw
+     *                 IllegalArgumentException.
+     */
     public Peptide(String sequence) {
         this(sequence, null);
     }
 
+    /**
+     * Create a peptide without PTM.
+     * @param sequence can not set null or space string. System will translate sequence into a list of
+     *                 {@link AminoAcid}. If can not recognize the amino acid character, system will throw
+     *                 IllegalArgumentException.
+     * @param n_terminal can set null, if peptide have no N terminal.
+     * @param c_terminal can set null, if peptide have no C terminal.
+     */
     public Peptide(String sequence, Group n_terminal, Group c_terminal) {
         this(sequence, n_terminal, c_terminal, null);
     }
 
+    /**
+     * Create a peptide with PTM. C terminal is {@link Group#H}, and n terminal is {@link Group#OH}.
+     * @param sequence can not set null or space string. System will translate sequence into a list of
+     *                 {@link AminoAcid}. If can not recognize the amino acid character, system will throw
+     *                 IllegalArgumentException.
+     * @param ptm can set null, if no PTM on the peptide. Otherwise,
+     *            system call {@link #addALLModification(java.util.Map)} method to put ptm.
+     */
     public Peptide(String sequence, Map<Integer, PTModification> ptm) {
         this(sequence, Group.H, Group.OH, ptm);
     }
 
+    /**
+     * Create a peptide with PTM.
+     * @param sequence can not set null or space string. System will translate sequence into a list of
+     *                 {@link AminoAcid}. If can not recognize the amino acid character, system will throw
+     *                 IllegalArgumentException.
+     * @param n_terminal can set null, if peptide have no N terminal.
+     * @param c_terminal can set null, if peptide have no C terminal.
+     * @param ptm can set null, if no PTM on the peptide. Otherwise,
+     *            system call {@link #addALLModification(java.util.Map)} method to put ptm.
+     */
     public Peptide(String sequence, Group n_terminal, Group c_terminal, Map<Integer, PTModification> ptm) {
         if (sequence == null || sequence.trim().length() == 0) {
             throw new IllegalArgumentException("peptide ion sequence is empty! ");
         }
 
         this.acidList = generateAminoAcids(sequence);
+
         this.n_terminal = n_terminal;
         this.c_terminal = c_terminal;
 
@@ -68,19 +97,48 @@ public class Peptide {
         }
     }
 
-    public Peptide(List<AminoAcid> AminoAcids) {
-        this(AminoAcids, null);
+
+    /**
+     * Create a peptide without PTM. C terminal is {@link Group#H}, and n terminal is {@link Group#OH}.
+     * @param acidList amino acid list. Can not set null or empty list.
+     */
+    public Peptide(List<AminoAcid> acidList) {
+        this(acidList, null);
     }
 
-    public Peptide(List<AminoAcid> AminoAcids, Group n_terminal, Group c_terminal) {
-        this(AminoAcids, n_terminal, c_terminal, null);
+    /**
+     * Create a peptide without PTM.
+     * @param acidList amino acid list. Can not set null or empty list.
+     * @param n_terminal can set null, if peptide have no N terminal.
+     * @param c_terminal can set null, if peptide have no C terminal.
+     */
+    public Peptide(List<AminoAcid> acidList, Group n_terminal, Group c_terminal) {
+        this(acidList, n_terminal, c_terminal, null);
     }
 
-    public Peptide(List<AminoAcid> AminoAcids, Map<Integer, PTModification> ptm) {
-        this(AminoAcids, Group.H, Group.OH, ptm);
+    /**
+     * Create a peptide with PTM. C terminal is {@link Group#H}, and n terminal is {@link Group#OH}.
+     * @param acidList amino acid list. Can not set null or empty list.
+     * @param ptm can set null, if no PTM on the peptide. Otherwise,
+     *            system call {@link #addALLModification(java.util.Map)} method to put ptm.
+     */
+    public Peptide(List<AminoAcid> acidList, Map<Integer, PTModification> ptm) {
+        this(acidList, Group.H, Group.OH, ptm);
     }
 
+    /**
+     * Create a peptide with PTM.
+     * @param acidList amino acid list. Can not set null or empty list.
+     * @param n_terminal can set null, if peptide have no N terminal.
+     * @param c_terminal can set null, if peptide have no C terminal.
+     * @param ptm can set null, if no PTM on the peptide. Otherwise,
+     *            system call {@link #addALLModification(java.util.Map)} method to put ptm.
+     */
     public Peptide(List<AminoAcid> acidList, Group n_terminal, Group c_terminal, Map<Integer, PTModification> ptm) {
+        if (acidList == null || acidList.size() == 0) {
+            throw new IllegalArgumentException("Amino acid list can not set null or empty!");
+        }
+
         if (ptm == null) {
             this.ptm = new HashMap<Integer, PTModification>();
         } else {
@@ -93,15 +151,53 @@ public class Peptide {
         this.c_terminal = c_terminal;
     }
 
-    public void addModification(Integer position, PTModification modification) {
+    /**
+     * Add a modification into peptide.
+     * @param position value [0..peptide.length-1]
+     * @param modification can not set null.
+     */
+    public boolean addModification(Integer position, PTModification modification) {
+        if (modification == null) {
+            return false;
+        }
+
+        if (position < 0 || position >= getLength()) {
+            return false;
+        }
+
         ptm.put(position, modification);
+
+        return true;
     }
 
     /**
-     * if patch add modifications, we will rollback to the point of before patch add.
+     * If patch add modifications, we will rollback to the point of before patch add.
      */
-    public void addALLModification(Map<Integer, PTModification> modifications) {
-        ptm.putAll(modifications);
+    public boolean addALLModification(Map<Integer, PTModification> modifications) {
+        // create save point. Because PTModification is read only class, so
+        // we can clone ptm just using putAll method.
+        Map<Integer, PTModification> tmpPTM = new HashMap<Integer, PTModification>();
+        tmpPTM.putAll(this.ptm);
+
+        Integer position;
+        PTModification modification;
+        Iterator<Integer> it = modifications.keySet().iterator();
+        while (it.hasNext()) {
+            position = it.next();
+            modification = modifications.get(position);
+
+            if (! addModification(position, modification)) {
+                //rollback to save point.
+                ptm = tmpPTM;
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void removeModification(int location) {
+        ptm.remove(location);
     }
 
     public void removeModification(PTModification modification) {

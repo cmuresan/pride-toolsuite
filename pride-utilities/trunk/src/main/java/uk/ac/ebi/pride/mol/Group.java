@@ -4,6 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Chemical Group, which including at least one Element. User can get mass value of chemical group.
+ * This is a read only class, which implements {@link #hashCode()} and {@link #equals(Object)}
+ * methods.
+ *
+ * @see Element
+ *
  * @author Qingwei XU
  */
 public class Group {
@@ -54,6 +60,10 @@ public class Group {
      * @exception NullPointerException
      */
     public Group(Element... elementList) {
+        if (elementList == null) {
+            throw new NullPointerException("Elements can not set null!");
+        }
+
         this.elements = Arrays.asList(elementList);
 
         for (Element e : elements) {
@@ -70,8 +80,8 @@ public class Group {
     }
 
     /**
-     * User can get the group name based on the elements's name which are included in the chemical group.
-     * We comment user to call getName() method, to display chemical group in their visilization interface.
+     * User can get the group name based on the elements name which are included in the chemical group.
+     * We comment user to call getName() method, to display chemical group in their visualization interface.
      */
     public String getName() {
         StringBuilder builder = new StringBuilder();

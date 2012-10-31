@@ -85,7 +85,6 @@ public class Peptide {
         }
 
         this.acidList = generateAminoAcids(sequence);
-
         this.n_terminal = n_terminal;
         this.c_terminal = c_terminal;
 
@@ -135,10 +134,6 @@ public class Peptide {
      *            system call {@link #addALLModification(java.util.Map)} method to put ptm.
      */
     public Peptide(List<AminoAcid> acidList, Group n_terminal, Group c_terminal, Map<Integer, PTModification> ptm) {
-        if (acidList == null || acidList.size() == 0) {
-            throw new IllegalArgumentException("Amino acid list can not set null or empty!");
-        }
-
         if (ptm == null) {
             this.ptm = new HashMap<Integer, PTModification>();
         } else {
@@ -156,44 +151,15 @@ public class Peptide {
      * @param position value [0..peptide.length-1]
      * @param modification can not set null.
      */
-    public boolean addModification(Integer position, PTModification modification) {
-        if (modification == null) {
-            return false;
-        }
-
-        if (position < 0 || position >= getLength()) {
-            return false;
-        }
-
+    public void addModification(Integer position, PTModification modification) {
         ptm.put(position, modification);
-
-        return true;
     }
 
     /**
      * If patch add modifications, we will rollback to the point of before patch add.
      */
-    public boolean addALLModification(Map<Integer, PTModification> modifications) {
-        // create save point. Because PTModification is read only class, so
-        // we can clone ptm just using putAll method.
-        Map<Integer, PTModification> tmpPTM = new HashMap<Integer, PTModification>();
-        tmpPTM.putAll(this.ptm);
-
-        Integer position;
-        PTModification modification;
-        Iterator<Integer> it = modifications.keySet().iterator();
-        while (it.hasNext()) {
-            position = it.next();
-            modification = modifications.get(position);
-
-            if (! addModification(position, modification)) {
-                //rollback to save point.
-                ptm = tmpPTM;
-                return false;
-            }
-        }
-
-        return true;
+    public void addALLModification(Map<Integer, PTModification> modifications) {
+        ptm.putAll(modifications);
     }
 
     public void removeModification(int location) {

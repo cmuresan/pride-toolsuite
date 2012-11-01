@@ -14,7 +14,7 @@ public class Peptide {
     private Group c_terminal;
 
     // the ptm position from [0, sequence.length-1]
-    private Map<Integer, PTModification> ptm;
+    private Map<Integer, PTModification> ptm = new HashMap<Integer, PTModification>();
 
     private List<AminoAcid> generateAminoAcids(String sequence) {
         List<AminoAcid> acidList = new ArrayList<AminoAcid>();
@@ -88,12 +88,7 @@ public class Peptide {
         this.n_terminal = n_terminal;
         this.c_terminal = c_terminal;
 
-        if (ptm == null) {
-            this.ptm = new HashMap<Integer, PTModification>();
-        } else {
-            this.ptm = ptm;
-            addALLModification(ptm);
-        }
+        addALLModification(ptm);
     }
 
 
@@ -134,32 +129,66 @@ public class Peptide {
      *            system call {@link #addALLModification(java.util.Map)} method to put ptm.
      */
     public Peptide(List<AminoAcid> acidList, Group n_terminal, Group c_terminal, Map<Integer, PTModification> ptm) {
-        if (ptm == null) {
-            this.ptm = new HashMap<Integer, PTModification>();
-        } else {
-            this.ptm = ptm;
-            addALLModification(ptm);
+        if (acidList == null || acidList.size() == 0) {
+            throw new NullPointerException("Peptide amino acid list is empty!");
         }
 
         this.acidList = acidList;
         this.n_terminal = n_terminal;
         this.c_terminal = c_terminal;
+
+        addALLModification(ptm);
     }
 
     /**
      * Add a modification into peptide.
-     * @param position value [0..peptide.length-1]
-     * @param modification can not set null.
+     * @param position value [0..peptide.length-1]. If overflow, return false.
+     * @param modification if null, return false.
      */
-    public void addModification(Integer position, PTModification modification) {
-        ptm.put(position, modification);
+    public boolean addModification(Integer position, PTModification modification) {
+        if (modification == null) {
+            return false;
+        }
+
+        if (position < 0 || position >= getLength()) {
+            return false;
+        }
+
+        this.ptm.put(position, modification);
+
+        return true;
+
     }
 
     /**
      * If patch add modifications, we will rollback to the point of before patch add.
      */
-    public void addALLModification(Map<Integer, PTModification> modifications) {
-        ptm.putAll(modifications);
+    public boolean addALLModification(Map<Integer, PTModification> modifications) {
+        if (modifications == null) {
+            return false;
+        }
+
+        // create save point. Because PTModification is read only class, so
+        // we can clone ptm by using Map.putAll method.
+        Map<Integer, PTModification> tmpPTM = new HashMap<Integer, PTModification>();
+        tmpPTM.putAll(this.ptm);
+
+        Integer position;
+        PTModification modification;
+        Iterator<Integer> it = modifications.keySet().iterator();
+        while (it.hasNext()) {
+            position = it.next();
+            modification = modifications.get(position);
+
+            if (! addModification(position, modification)) {
+                //rollback to save point.
+                ptm = tmpPTM;
+                return false;
+            }
+        }
+
+        return true;
+
     }
 
     public void removeModification(int location) {

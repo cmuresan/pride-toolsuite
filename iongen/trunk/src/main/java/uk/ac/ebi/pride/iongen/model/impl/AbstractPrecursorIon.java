@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.iongen.model.impl;
 
+import uk.ac.ebi.pride.iongen.model.IonCleavageException;
 import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.iongen.model.ProductIon;
 import uk.ac.ebi.pride.mol.*;
@@ -11,6 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Implement most of methods of {@link PrecursorIon}. Extends {@link DefaultPeptideIon} which inherit
+ * peptide ion methods: such as {@link uk.ac.ebi.pride.iongen.model.impl.DefaultPeptideIon#getMass()},
+ * {@link uk.ac.ebi.pride.iongen.model.impl.DefaultPeptideIon#getMassOverCharge()}, and so on.
+ *
  * @author Qingwei XU
  * @version 0.1-SNAPSHOT
  */
@@ -40,26 +45,43 @@ public abstract class AbstractPrecursorIon extends DefaultPeptideIon implements 
     }
 
     /**
-     * position [1..length)
+     * A precursor ion can cleavage different type of product ions.
+     *
+     * @param type can not set null.
+     * @param position from [1..peptide.length-1]
+     * @param charge from [1..3], based on the precursor charge.
+     * @return {@link ProductIon}, can not return a null.
+     * @throws IonCleavageException, when user set position and charge overflow the range of setting.
+     * @throws NullPointerException, when type is null.
      */
     @Override
-    public ProductIon getProductIon(ProductIonType type, int position, int charge) {
+    public ProductIon getProductIon(ProductIonType type, int position, int charge) throws IonCleavageException {
+        if (type == null) {
+            throw new NullPointerException("Product ion type can not be null!");
+        }
+
+        if (position <= 0) {
+            throw new IonCleavageException("The product ion cleavages position (" + position + ") cannot be less than 1");
+        } else if (position >= getPeptide().getLength()) {
+            throw new IonCleavageException("The product ion cleavages position (" + position + ") cannot be greater then the precursor ion length (" + getPeptide().getLength() + "). ");
+        }
+
+        if (charge <= 0 || charge >= 3) {
+            throw new IonCleavageException("The product ion charge(" + charge + ") should be from 1 to 3.");
+        } else if (charge > getCharge()) {
+            throw new IonCleavageException("The product ion charge(" + charge + ") should be less or equal to precursor ion charge(" + getCharge() + ")");
+        }
+
         List<AminoAcid> acidList = getPeptide().getAminoAcids();
         Group n_terminal = getPeptide().getNTerminalGroup();
         Group c_terminal = getPeptide().getCTerminalGroup();
         int length = getPeptide().getLength();
 
-        if (position <= 0) {
-            throw new IllegalArgumentException("The product ion cleavages position (" + position + ") cannot be less than 1");
-        } else if (position > getPeptide().getLength()) {
-            throw new IllegalArgumentException("The product ion cleavages position (" + position + ") cannot be greater then the precursor ion length (" + length + "). ");
-        }
-
         int start;
         int end;
         List<AminoAcid> prodAcidList;
-        Peptide prodPeptide = null;
-        ProductIon productIon = null;
+        Peptide prodPeptide;
+        ProductIon productIon;
         Map<Integer, PTModification> ptm;
 
         FragmentIonType fragmentIonType = type.getGroup();
@@ -78,7 +100,7 @@ public abstract class AbstractPrecursorIon extends DefaultPeptideIon implements 
             prodPeptide = new Peptide(prodAcidList, null, c_terminal, ptm);
             productIon = new DefaultProductIon(this, type, length - position, prodPeptide, charge);
         } else {
-            throw new IllegalArgumentException(type + " is not A, B, C, X, Y, Z ions");
+            throw new IonCleavageException(type.getGroup() + " is not A, B, C, X, Y, Z ions");
         }
 
         return productIon;

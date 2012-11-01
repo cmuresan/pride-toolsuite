@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.iongen.utils;
 
 import org.junit.Test;
 import uk.ac.ebi.pride.iongen.TestUtils;
+import uk.ac.ebi.pride.iongen.model.IonCleavageException;
 import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.iongen.model.ProductIon;
 import uk.ac.ebi.pride.iongen.model.impl.DefaultPrecursorIon;
@@ -32,7 +33,7 @@ public class ProductIonFactoryTest {
      * This is a demo code to generate default product ions.
      */
     @Test
-    public void testDefaultProductIons() {
+    public void testDefaultProductIons() throws IonCleavageException {
         String sequence = "SSEDPNEDIVER";
         PrecursorIon precursorIon = new DefaultPrecursorIon(sequence, 3);
         List<ProductIon> ionList = ProductIonFactory.createDefaultProductIons(precursorIon, ProductIonType.Y, 2);
@@ -68,7 +69,7 @@ public class ProductIonFactoryTest {
     }
 
     @Test
-    public void testModificatedProductIons() {
+    public void testModificatedProductIons() throws IonCleavageException {
         String sequence = "HEAMITDLEER";
 
         PrecursorIon precursorIon = new DefaultPrecursorIon(sequence, 3);

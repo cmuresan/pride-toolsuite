@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ *
  * @author Qingwei XU
  * @version 0.1-SNAPSHOT
  */
@@ -17,7 +18,7 @@ public class DefaultPeptideIon implements PeptideIon {
     private int charge;
     private double mass;
 
-    private double calcuteMass() {
+    private double calculateMass() {
         double mass = 0;
         Group c_terminal = this.peptide.getCTerminalGroup();
         Group n_terminal = this.peptide.getNTerminalGroup();
@@ -29,7 +30,7 @@ public class DefaultPeptideIon implements PeptideIon {
         }
         mass += n_terminal == null ? 0 : n_terminal.getMass();
 
-        //calcute modifications
+        //calculate modifications
         Map<Integer, PTModification> ptm = peptide.getPTM();
         Integer position;
         PTModification modification;
@@ -44,14 +45,19 @@ public class DefaultPeptideIon implements PeptideIon {
         return mass;
     }
 
+    /**
+     * Create a peptide ion.
+     * @param peptide can not set null, otherwise throw NullPointerException.
+     * @param charge
+     */
     public DefaultPeptideIon(Peptide peptide, int charge) {
         if (peptide == null) {
-            throw new IllegalArgumentException("Peptide is null!");
+            throw new NullPointerException("Peptide is null!");
         }
 
         this.peptide = peptide;
         this.charge = charge;
-        this.mass = calcuteMass();
+        this.mass = calculateMass();
     }
 
     @Override
@@ -83,4 +89,37 @@ public class DefaultPeptideIon implements PeptideIon {
         return peptide;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DefaultPeptideIon that = (DefaultPeptideIon) o;
+
+        if (charge != that.charge) return false;
+        if (Double.compare(that.mass, mass) != 0) return false;
+        if (peptide != null ? !peptide.equals(that.peptide) : that.peptide != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = peptide != null ? peptide.hashCode() : 0;
+        result = 31 * result + charge;
+        temp = mass != +0.0d ? Double.doubleToLongBits(mass) : 0L;
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "DefaultPeptideIon{" +
+                "peptide=" + peptide +
+                ", charge=" + charge +
+                ", mass=" + mass +
+                '}';
+    }
 }

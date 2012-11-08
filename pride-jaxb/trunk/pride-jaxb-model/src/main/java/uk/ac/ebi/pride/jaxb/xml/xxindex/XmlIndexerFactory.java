@@ -87,8 +87,16 @@ public class XmlIndexerFactory {
                 // generate XXINDEX
                 xpathAccess = new StandardXpathAccess(xmlFile, xpaths);
 
-                // create xml element extractor
-                xmlExtractor = new SimpleXmlElementExtractor();
+                // check if we have a compressed file
+                if (xmlFile.getName().endsWith(".gz")) {
+                    // create xml element extractor
+                    xmlExtractor = new GzXmlElementExtractor();
+                } else {
+                    // create xml element extractor
+                    xmlExtractor = new SimpleXmlElementExtractor();
+                }
+
+
                 String encoding = xmlExtractor.detectFileEncoding(xmlFile.toURI().toURL());
                 if (encoding != null) {
                     xmlExtractor.setEncoding(encoding);

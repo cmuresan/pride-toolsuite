@@ -73,4 +73,11 @@ public class NeutralLoss implements Mass, Cloneable {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    @Override
+    public String toString() {
+        return "NeutralLoss{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

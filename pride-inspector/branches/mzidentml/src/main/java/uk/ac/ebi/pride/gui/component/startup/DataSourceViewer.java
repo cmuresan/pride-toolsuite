@@ -1,38 +1,35 @@
 package uk.ac.ebi.pride.gui.component.startup;
 
-import com.sun.xml.xsom.impl.ListSimpleTypeImpl;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventSubscriber;
-import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.mzidentml.SimpleMsDialog;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
-
 import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
-import uk.ac.ebi.pride.gui.px.PxSubmissionEntry;
-import uk.ac.ebi.pride.util.NumberUtilities;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.ImageObserver;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -61,8 +58,6 @@ public class DataSourceViewer extends JPanel {
      * a reference to PrideInspectorContext
      */
     private PrideInspectorContext context = null;
-
-    private Map<DataAccessController,String> messages = null;
 
     /**
      * Constructor
@@ -167,8 +162,6 @@ public class DataSourceViewer extends JPanel {
             // highlight the selected foreground data source
             final int rowNum = sourceTableModel.getRowIndex(controller);
 
-            //Create Balloon
-
             code = new Runnable() {
 
                 @Override
@@ -189,9 +182,7 @@ public class DataSourceViewer extends JPanel {
 
     @EventSubscriber(eventClass = AddDataSourceEvent.class)
     public void onAddDataSourceEvent(AddDataSourceEvent evt) {
-        sourceTableModel.updateModel(context.getForegroundDataAccessController());
-        sourceTable.revalidate();
-        sourceTable.repaint();
+        sourceTableModel.update();
     }
 
     /**
@@ -224,8 +215,9 @@ public class DataSourceViewer extends JPanel {
      */
     private static class DataAccessTable extends JXTreeTable {
 
-        private DataAccessTable(AbstractTreeTableModel dm) {
+        private DataAccessTable(TreeTableModel dm) {
             super(dm);
+            this.setRootVisible(false);
         }
 
         @Override
@@ -258,20 +250,12 @@ public class DataSourceViewer extends JPanel {
      */
     private class DataAccessTableModel extends AbstractTreeTableModel {
 
-        public DataAccessTableModel(){
-            super(new DataSourceEntry(null,null));
+        public DataAccessTableModel() {
+            super(new DataSourceEntry(null, null));
         }
 
         public String getColumnName(int column) {
             return TableHeader.values()[column].getHeader();
-        }
-
-        @Override
-        public Class<?> getColumnClass(int column) {
-            if (TableHeader.values()[column].equals(TableHeader.DATA_SOURCE_COLUMN)) {
-                return Boolean.class;
-            }
-            return super.getColumnClass(column);
         }
 
         @Override
@@ -280,12 +264,11 @@ public class DataSourceViewer extends JPanel {
                 return null;
             }
             TableHeader columnHeader = TableHeader.values()[column];
-            DataSourceEntry dataAccessController = (DataSourceEntry) node;
-            if(columnHeader.equals(TableHeader.DATA_SOURCE_COLUMN)){
+            DataAccessController dataAccessController = (DataAccessController) node;
+            if (columnHeader.equals(TableHeader.DATA_SOURCE_COLUMN)) {
                 return dataAccessController.getName();
             }
             return null;
-
         }
 
         @Override
@@ -295,29 +278,54 @@ public class DataSourceViewer extends JPanel {
 
         @Override
         public Object getChild(Object parent, int index) {
-            List<DataSourceEntry> msFiles = ((DataSourceEntry) parent).getMsFiles();
-            if(msFiles != null && msFiles.size() > 0){
-                return msFiles.get(index);
+            if (parent.equals(root)) {
+                List<DataAccessController> dataAccessControllers = context.getControllers();
+                return dataAccessControllers.isEmpty() ? null : dataAccessControllers.get(index);
+            } else {
+                if (parent instanceof MzIdentMLControllerImpl) {
+                    List<DataAccessController> msFiles = ((MzIdentMLControllerImpl) parent).getDataAccessControllers();
+                    if (msFiles != null && msFiles.size() > 0) {
+                        return msFiles.get(index);
+                    }
+                }
             }
             return null;
         }
 
         @Override
         public int getChildCount(Object node) {
-            List<DataSourceEntry> msFiles = ((DataSourceEntry) node).getMsFiles();
-            return (msFiles != null)? msFiles.size():0;
+            if (node.equals(root)) {
+                List<DataAccessController> dataAccessControllers = context.getControllers();
+                return dataAccessControllers.isEmpty() ? 0 : dataAccessControllers.size();
+            } else {
+                if (node instanceof MzIdentMLControllerImpl) {
+                    List<DataAccessController> msFiles = ((MzIdentMLControllerImpl) node).getDataAccessControllers();
+                    return msFiles == null ? 0 : msFiles.size();
+                } else {
+                    return 0;
+                }
+            }
         }
 
         @Override
-        public int getIndexOfChild(Object o, Object o1) {
+        public int getIndexOfChild(Object parent, Object child) {
             int index = -1;
-            DataSourceEntry parent = (DataSourceEntry) o;
-            DataSourceEntry chield = (DataSourceEntry) o1;
-            if(parent.getMsFiles() != null){
-                return parent.getMsFiles().indexOf(chield);
+            if (parent.equals(root)) {
+                List<DataAccessController> dataAccessControllers = context.getControllers();
+                if (!dataAccessControllers.isEmpty()){
+                    index = dataAccessControllers.indexOf(child);
+                }
+            } else {
+                if (parent instanceof MzIdentMLControllerImpl) {
+                    List<DataAccessController> msFiles = ((MzIdentMLControllerImpl) child).getDataAccessControllers();
+                    if (!msFiles.isEmpty()) {
+                        index = msFiles.indexOf(child);
+                    }
+                }
             }
             return index;
         }
+
 
         public int getColumnIndex(TableHeader header) {
             int index = -1;
@@ -331,58 +339,63 @@ public class DataSourceViewer extends JPanel {
             return index;
         }
 
-        public int getRowCount() {
-            int controllerCount = 0;
-            List<DataAccessController> controllers = context.getControllers();
-            for(DataAccessController controller: controllers){
-                if(controller instanceof MzIdentMLControllerImpl){
-                    List<DataAccessController> msFiles = ((MzIdentMLControllerImpl) controller).getDataAccessControllers();
-                    controllerCount += (msFiles!=null)? msFiles.size():0;
-                }
-                controllerCount ++;
-            }
-            return controllerCount;
-        }
 
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            // get all data access controllers
-            java.util.List<DataAccessController> controllers = context.getControllers();
-            if (rowIndex >= 0) {
-                if(TableHeader.values()[columnIndex].equals(TableHeader.DATA_SOURCE_COLUMN)){
-                    int countRows = 0;
-                    for(DataAccessController controller: controllers){
-                        if(countRows == rowIndex){
-                            return controllers.get(countRows).getName();
-                        }else{
-                            if(controller instanceof MzIdentMLControllerImpl){
-                                List<DataAccessController> msFiles = ((MzIdentMLControllerImpl) controller).getDataAccessControllers();
-                                if(msFiles != null){
-                                    countRows++;
-                                    for (DataAccessController msFile: msFiles){
-                                        if(countRows == rowIndex){
-                                            return controllers.get(countRows).getName();
-                                        }
-                                        countRows++;
-                                    }
-                                }
-                            }
-                        }
-                        countRows++;
-                    }
-                }
-            }
-            return null;
+        public void update() {
+            TreePath path = (root != null) ? new TreePath(root) : null;
+            modelSupport.fireTreeStructureChanged(path);
         }
-
+//
+//        public int getRowCount() {
+//            int controllerCount = 0;
+//            List<DataAccessController> controllers = context.getControllers();
+//            for(DataAccessController controller: controllers){
+//                if(controller instanceof MzIdentMLControllerImpl){
+//                    List<DataAccessController> msFiles = ((MzIdentMLControllerImpl) controller).getDataAccessControllers();
+//                    controllerCount += (msFiles!=null)? msFiles.size():0;
+//                }
+//                controllerCount ++;
+//            }
+//            return controllerCount;
+//        }
+//
+//        public Object getValueAt(int rowIndex, int columnIndex) {
+//            // get all data access controllers
+//            java.util.List<DataAccessController> controllers = context.getControllers();
+//            if (rowIndex >= 0) {
+//                if(TableHeader.values()[columnIndex].equals(TableHeader.DATA_SOURCE_COLUMN)){
+//                    int countRows = 0;
+//                    for(DataAccessController controller: controllers){
+//                        if(countRows == rowIndex){
+//                            return controllers.get(countRows).getName();
+//                        }else{
+//                            if(controller instanceof MzIdentMLControllerImpl){
+//                                List<DataAccessController> msFiles = ((MzIdentMLControllerImpl) controller).getDataAccessControllers();
+//                                if(msFiles != null){
+//                                    for (DataAccessController msFile: msFiles){
+//                                        countRows++;
+//                                        if(countRows == rowIndex){
+//                                            return msFile.getName();
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                        countRows++;
+//                    }
+//                }
+//            }
+//            return null;
+//        }
+//
         public int getRowIndex(Object controller) {
             // get all data access controllers
             java.util.List<DataAccessController> controllers = context.getControllers();
             int countRow = 0;
             for(DataAccessController dataAccessController: controllers){
-                if(dataAccessController != controller){
+                if(dataAccessController.equals(controller)){
                     if(dataAccessController instanceof MzIdentMLControllerImpl){
                         List<DataAccessController> msFiles = ((MzIdentMLControllerImpl) dataAccessController).getDataAccessControllers();
-                        if(msFiles != null && msFiles.size() != 0){
+                        if(msFiles != null && msFiles.size() > 0){
                             for(DataAccessController msFile: msFiles){
                                 countRow++;
                                 if(msFile == controller){
@@ -398,28 +411,28 @@ public class DataSourceViewer extends JPanel {
             }
             return -1;
         }
-
-        public void updateModel(DataAccessController controller){
-            DataSourceEntry newDataSource = new DataSourceEntry(controller.getName(),null);
-            if(controller instanceof MzIdentMLControllerImpl &&
-               ((MzIdentMLControllerImpl) controller).getDataAccessControllers() != null &&
-               ((MzIdentMLControllerImpl) controller).getDataAccessControllers().size() > 0){
-                List<DataSourceEntry> msFiles = new ArrayList<DataSourceEntry>();
-                for(DataAccessController dataAccessController: ((MzIdentMLControllerImpl) controller).getDataAccessControllers()){
-                    msFiles.add(new DataSourceEntry(dataAccessController.getName(),null));
-                }
-                newDataSource.setMsFiles(msFiles);
-            }
-            ((DataSourceEntry)root).addMsFile(newDataSource);
-            modelSupport.fireTreeStructureChanged(new TreePath(root));
-        }
+//
+//        public void updateModel(DataAccessController controller){
+//            DataSourceEntry newDataSource = new DataSourceEntry(controller.getName(),null);
+//            if(controller instanceof MzIdentMLControllerImpl &&
+//               ((MzIdentMLControllerImpl) controller).getDataAccessControllers() != null &&
+//               ((MzIdentMLControllerImpl) controller).getDataAccessControllers().size() > 0){
+//                List<DataSourceEntry> msFiles = new ArrayList<DataSourceEntry>();
+//                for(DataAccessController dataAccessController: ((MzIdentMLControllerImpl) controller).getDataAccessControllers()){
+//                    msFiles.add(new DataSourceEntry(dataAccessController.getName(),null));
+//                }
+//                newDataSource.setMsFiles(msFiles);
+//            }
+//            ((DataSourceEntry)root).addMsFile(newDataSource);
+//            modelSupport.fireTreeStructureChanged(new TreePath(root));
+//        }
 
     }
 
-    private class DataSourceEntry{
+    private class DataSourceEntry {
         String name = null;
 
-        List<DataSourceEntry>  msFiles = null;
+        List<DataSourceEntry> msFiles = null;
 
         private DataSourceEntry(String name, List<DataSourceEntry> msFiles) {
             this.name = name;
@@ -433,6 +446,7 @@ public class DataSourceViewer extends JPanel {
         public void setName(String name) {
             this.name = name;
         }
+
         public List<DataSourceEntry> getMsFiles() {
             return msFiles;
         }
@@ -442,7 +456,7 @@ public class DataSourceViewer extends JPanel {
         }
 
         public void addMsFile(DataSourceEntry newDataSource) {
-            if(msFiles == null) msFiles = new ArrayList<DataSourceEntry>();
+            if (msFiles == null) msFiles = new ArrayList<DataSourceEntry>();
             msFiles.add(newDataSource);
         }
     }
@@ -488,51 +502,51 @@ public class DataSourceViewer extends JPanel {
 
         }   */
 
-       @Override
-       public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                      boolean hasFocus, int row, int column) {
-           // get the original component
-           final JLabel cell = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                       boolean hasFocus, int row, int column) {
+            // get the original component
+            final JLabel cell = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-           // get the current data access controller
-           DataAccessController controller = context.getControllers().get(row);
-           // get its content categories
-           Collection<DataAccessController.ContentCategory> categories = controller.getContentCategories();
+            // get the current data access controller
+            DataAccessController controller = context.getControllers().get(row);
+            // get its content categories
+            Collection<DataAccessController.ContentCategory> categories = controller.getContentCategories();
 
-           // get the icon depending on the type of the data access controller
-           ImageIcon icon = null;
-           DataAccessController.Type type = controller.getType();
-           if (DataAccessController.Type.XML_FILE.equals(type) || DataAccessController.Type.MZIDENTML.equals(type)) {
-               icon = GUIUtilities.loadImageIcon(context.getProperty(categories.isEmpty() ? "file.source.loading.small.icon" : "file.source.small.icon"));
+            // get the icon depending on the type of the data access controller
+            ImageIcon icon = null;
+            DataAccessController.Type type = controller.getType();
+            if (DataAccessController.Type.XML_FILE.equals(type) || DataAccessController.Type.MZIDENTML.equals(type)) {
+                icon = GUIUtilities.loadImageIcon(context.getProperty(categories.isEmpty() ? "file.source.loading.small.icon" : "file.source.small.icon"));
 
-           } else if (DataAccessController.Type.DATABASE.equals(type)) {
-               icon = GUIUtilities.loadImageIcon(context.getProperty(categories.isEmpty() ? "database.source.loading.small.icon" : "database.source.small.icon"));
-           }
+            } else if (DataAccessController.Type.DATABASE.equals(type)) {
+                icon = GUIUtilities.loadImageIcon(context.getProperty(categories.isEmpty() ? "database.source.loading.small.icon" : "database.source.small.icon"));
+            }
 
-           // set the icon
-           cell.setIcon(icon);
+            // set the icon
+            cell.setIcon(icon);
 
-           if (icon != null && icon.getImageObserver() == null) {
-               icon.setImageObserver(new CellImageObserver(table));
-           }
+            if (icon != null && icon.getImageObserver() == null) {
+                icon.setImageObserver(new CellImageObserver(table));
+            }
 
-           return cell;
-       }
+            return cell;
+        }
     }
 
     private DataAccessController getController(List<DataAccessController> controllers, int rowIndex) {
         if (rowIndex >= 0) {
             int countRows = 0;
-            for(DataAccessController controller: controllers){
-                if(countRows == rowIndex){
+            for (DataAccessController controller : controllers) {
+                if (countRows == rowIndex) {
                     return controllers.get(countRows);
-                }else{
-                    if(controller instanceof MzIdentMLControllerImpl){
+                } else {
+                    if (controller instanceof MzIdentMLControllerImpl) {
                         List<DataAccessController> msFiles = ((MzIdentMLControllerImpl) controller).getDataAccessControllers();
-                        if(msFiles != null){
+                        if (msFiles != null) {
                             countRows++;
-                            for (DataAccessController msFile: msFiles){
-                                if(countRows == rowIndex){
+                            for (DataAccessController msFile : msFiles) {
+                                if (countRows == rowIndex) {
                                     return controllers.get(countRows);
                                 }
                                 countRows++;
@@ -593,8 +607,8 @@ public class DataSourceViewer extends JPanel {
 
     /**
      * Draw a red cross for close the data access controller
-     * */
-     private class MzidentMLMSCellRenderer extends DefaultTableCellRenderer {
+     */
+    private class MzidentMLMSCellRenderer extends DefaultTableCellRenderer {
 
 
         @Override
@@ -623,7 +637,7 @@ public class DataSourceViewer extends JPanel {
                 // set the component to none focusable
                 cell.setFocusable(false);
 
-            }else{
+            } else {
                 cell.setBackground(Color.white);
                 cell.setIcon(null);
             }
@@ -671,7 +685,7 @@ public class DataSourceViewer extends JPanel {
             String colName = sourceTable.getColumnName(col);
             if (colName.equals(TableHeader.CLOSE_COLUMN.getHeader())) {
                 // remove the data access controller from data access monitor
-                MzidentMLMSCellRenderer cellRender = (MzidentMLMSCellRenderer) sourceTable.getCellRenderer(row,col-1);
+                MzidentMLMSCellRenderer cellRender = (MzidentMLMSCellRenderer) sourceTable.getCellRenderer(row, col - 1);
 
                 java.util.List<DataAccessController> controllers = context.getControllers();
                 if (row >= 0 && row < controllers.size()) {
@@ -685,7 +699,7 @@ public class DataSourceViewer extends JPanel {
 
     /**
      * CloseDataSourceMouseListener  is triggered when a close action has been made on a data source
-     **/
+     */
     private class MzidentMLOpenMSMouseListener extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -699,8 +713,8 @@ public class DataSourceViewer extends JPanel {
                 java.util.List<DataAccessController> controllers = context.getControllers();
                 if (row >= 0 && row < controllers.size()) {
                     DataAccessController controller = controllers.get(row);
-                    if(controller.getType().equals(DataAccessController.Type.MZIDENTML)){
-                        Dialog dialog = new SimpleMsDialog(uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getMainComponent(),controller);
+                    if (controller.getType().equals(DataAccessController.Type.MZIDENTML)) {
+                        Dialog dialog = new SimpleMsDialog(uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getMainComponent(), controller);
                         dialog.setVisible(true);
                     }
 

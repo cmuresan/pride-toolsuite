@@ -150,7 +150,7 @@ public class Peptide {
             return false;
         }
 
-        if (position < 0 || position >= getLength()) {
+        if (position < 0) {
             return false;
         }
 

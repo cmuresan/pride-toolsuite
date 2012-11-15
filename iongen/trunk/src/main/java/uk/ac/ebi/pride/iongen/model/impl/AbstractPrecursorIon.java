@@ -96,7 +96,8 @@ public abstract class AbstractPrecursorIon extends DefaultPeptideIon implements 
             start = position;
             end = length;
             prodAcidList = acidList.subList(start, end);
-            ptm = getProductIonPTM(start, end, getPeptide().getPTM());
+            // there exists c-terminal modification, which position equals the sequence length.
+            ptm = getProductIonPTM(start, end + 1, getPeptide().getPTM());
             prodPeptide = new Peptide(prodAcidList, null, c_terminal, ptm);
             productIon = new DefaultProductIon(this, type, length - position, prodPeptide, charge);
         } else {

@@ -25,20 +25,20 @@ public class AminoAcidAnnotationTest {
     }
 
     private static void createGUI() {
-        SpectrumBrowser browser = new SpectrumBrowser(ExampleUtil.mzArr, ExampleUtil.intentArr);
-        browser.setPeptide(ExampleUtil.generatePeptide());
+//        SpectrumBrowser browser = new SpectrumBrowser(ExampleUtil.mzArr, ExampleUtil.intentArr);
+//        browser.setPeptide(ExampleUtil.generatePeptide());
 
-        JFrame frame = new JFrame("Amino acid annotation test");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(browser, BorderLayout.CENTER);
-        frame.pack();
-        frame.setVisible(true);
-
-
-        try {
-            SaveComponentUtils.writeAsPDF(new File("/test.pdf"), browser.getSpectrumPanel());
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+//        JFrame frame = new JFrame("Amino acid annotation test");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.getContentPane().add(browser, BorderLayout.CENTER);
+//        frame.pack();
+//        frame.setVisible(true);
+//
+//
+//        try {
+//            SaveComponentUtils.writeAsPDF(new File("/test.pdf"), browser.getSpectrumPanel());
+//        } catch (IOException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
     }
 }

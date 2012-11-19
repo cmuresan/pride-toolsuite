@@ -8,19 +8,33 @@ import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mol.ProductIonType;
 import uk.ac.ebi.pride.mol.ion.FragmentIonType;
 
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Theoretical Fragmented Ions table model. Which include five modules:
+ * <ol>
+ *     <li>ID: show previous matrix id, which values from [sequence.length-1..1]. The last row is empty.</li>
+ *     <li>Previous matrix: The last row is empty.</li>
+ *     <li>Seq: the peptide sequence, each row display one amino acid. If there exists modification, enclosed by bracket.</li>
+ *     <li>Posterior matrix: the first row is empty.</li>
+ *     <li>ID: show posterior matrix id, which values from [1..sequence.length-1]. The first row is empty.</li>
+ * </ol>
+ *
  * Creator: Qingwei-XU
  * Date: 10/10/12
  */
 
-public class TheoreticalFragmentedIonsTableModel extends DefaultTableModel {
-    private List<List<ProductIon>> predMatrix = null;
-    private List<List<ProductIon>> postMatrix = null;
+public class TheoreticalFragmentedIonsTableModel extends AbstractTableModel {
     private ProductIonPair ionPair;
+
+    private PrecursorIon precursorIon;
+
+    private Object[] columnNames;
+    private Object[][] data;
 
     private List<List<ProductIon>> createProductIonListByCharge(PrecursorIon precursorIon, ProductIonType type) {
         List<List<ProductIon>> matrix = new ArrayList<List<ProductIon>>();
@@ -30,6 +44,7 @@ public class TheoreticalFragmentedIonsTableModel extends DefaultTableModel {
             throw new IllegalArgumentException("precursor charge can not less than 1");
         }
 
+        // the product ions charge up to 3.
         int prodCharge;
         if (charge <= 3) {
             prodCharge = charge;
@@ -81,20 +96,25 @@ public class TheoreticalFragmentedIonsTableModel extends DefaultTableModel {
 
         columns.add("#");
         for (List<ProductIon> ionList : predMatrix) {
-            columns.add(ionList.get(0).getName());
+            columns.add(ionList.get(0).toString());
         }
         columns.add("seq");
         for (List<ProductIon> ionList : postMatrix) {
-            columns.add(ionList.get(0).getName());
+            columns.add(ionList.get(0).toString());
         }
         columns.add("#");
 
         return columns.toArray();
     }
 
+    /**
+     * @see TheoreticalFragmentedIonsTableModel
+     */
     private Object[][] createData(PrecursorIon precursorIon,
                                   List<List<ProductIon>> predMatrix,
                                   List<List<ProductIon>> postMatrix) {
+        this.precursorIon = precursorIon;
+
         List<AminoAcid> acidList = precursorIon.getPeptide().getAminoAcids();
         Object[][] data = new Object[acidList.size()][predMatrix.size() + postMatrix.size() + 3];
 
@@ -130,51 +150,98 @@ public class TheoreticalFragmentedIonsTableModel extends DefaultTableModel {
     }
 
    public TheoreticalFragmentedIonsTableModel(PrecursorIon precursorIon, ProductIonPair ionPair) {
-        Object[] columnNames;
-        Object[][] data;
+       if (precursorIon == null) {
+           throw new IllegalArgumentException("Precursor ion can not be null!");
+       }
+
+       this.precursorIon = precursorIon;
+
+       setProductIonPair(ionPair);
+    }
+
+    public boolean setProductIonPair(ProductIonPair ionPair) {
+        if (ionPair == null) {
+            ionPair = ProductIonPair.B_Y;
+        }
+
+        if (ionPair == this.ionPair) {
+            return false;
+        }
 
         this.ionPair = ionPair;
 
-        if (precursorIon == null) {
-            throw new IllegalArgumentException("Precursor ion can not be null!");
-        }
+        /**
+         * Previous matrix: display x, y, z ions m/z values, based on the {@link #ionPair}.
+         * Most matrix has three columns (precursor ion have one charge) or six columns (have two charges).
+         * The six columns based on the following order:
+         * y+, y++(optional), y_NH3, y_NH3++(optional), y_WATER, y_WATER++(optional)
+         *
+         * <P>Notice: the matrix up to have nine columns, if precursor ion have three charges. </P>
+         * <P>Notice: the last row of previous matrix is empty</P>
+         * <P>Notice: the order is descending. </P>
+         */
+        List<List<ProductIon>> prevMatrix = null;
+
+        /**
+         * Posterior matrix: display a, b, c ions m/z values, based on the {@link #ionPair}.
+         * matrix has three columns (precursor ion have one charge) or six columns (have two charges).
+         * The six columns based on the following order:
+         * b+, b++(optional), b_NH3, b_NH3++(optional), b_WATER, b_WATER++(optional)
+         *
+         * <P>Notice: the first row of posterior matrix is empty</P>
+         */
+        List<List<ProductIon>> postMatrix = null;
 
         switch (ionPair) {
             case A_X:
-                predMatrix =  createProductIonMatrix(precursorIon, FragmentIonType.X_ION);
+                prevMatrix =  createProductIonMatrix(precursorIon, FragmentIonType.X_ION);
                 postMatrix = createProductIonMatrix(precursorIon, FragmentIonType.A_ION);
                 break;
             case B_Y:
-                predMatrix =  createProductIonMatrix(precursorIon, FragmentIonType.Y_ION);
+                prevMatrix =  createProductIonMatrix(precursorIon, FragmentIonType.Y_ION);
                 postMatrix = createProductIonMatrix(precursorIon, FragmentIonType.B_ION);
                 break;
             case C_Z:
-                predMatrix =  createProductIonMatrix(precursorIon, FragmentIonType.Z_ION);
+                prevMatrix =  createProductIonMatrix(precursorIon, FragmentIonType.Z_ION);
                 postMatrix = createProductIonMatrix(precursorIon, FragmentIonType.C_ION);
                 break;
         }
 
-        columnNames = createColumnNames(predMatrix, postMatrix);
-        for (int i = 0; i < columnNames.length; i++) {
-            addColumn(columnNames[i]);
-        }
+        columnNames = createColumnNames(prevMatrix, postMatrix);
+//        fireTableStructureChanged();
 
-        data = createData(precursorIon, predMatrix, postMatrix);
-        for (int i = 0; i < data.length; i++) {
-            addRow(data[i]);
-        }
+        data = createData(precursorIon, prevMatrix, postMatrix);
+        fireTableDataChanged();
+
+        return true;
+    }
+
+    @Override
+    public int getRowCount() {
+        return data.length;
+    }
+
+    @Override
+    public int getColumnCount() {
+        return columnNames.length;
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return (String) columnNames[column];
     }
 
     public boolean isCellEditable(int row, int col) {
         return false;
     }
 
-    public boolean isMassColumn(int columnIndex) {
-        return isPredMatrixColumn(columnIndex) || isPostMatrixColumn(columnIndex);
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        return data[rowIndex][columnIndex];
     }
 
-    public int getMassColumnCount() {
-        return getColumnCount() - 3;
+    public boolean isMassColumn(int columnIndex) {
+        return isPredMatrixColumn(columnIndex) || isPostMatrixColumn(columnIndex);
     }
 
     public boolean isPredMatrixColumn(int columnIndex) {
@@ -193,15 +260,11 @@ public class TheoreticalFragmentedIonsTableModel extends DefaultTableModel {
         return columnIndex == 0 || columnIndex == getColumnCount() - 1;
     }
 
-    public List<List<ProductIon>> getPredMatrix() {
-        return predMatrix;
-    }
-
-    public List<List<ProductIon>> getPostMatrix() {
-        return postMatrix;
-    }
-
     public ProductIonPair getIonPair() {
         return ionPair;
+    }
+
+    public PrecursorIon getPrecursorIon() {
+        return precursorIon;
     }
 }

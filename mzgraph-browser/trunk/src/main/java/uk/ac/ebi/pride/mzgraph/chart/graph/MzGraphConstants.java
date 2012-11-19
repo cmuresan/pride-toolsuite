@@ -188,5 +188,30 @@ public class MzGraphConstants {
      */
     public static final String DALTON = "Da";
 
+    /**
+     * theoretical and experimental fragmented ions table mz fraction.
+     */
+    public static final int TABLE_FRACTION = 3;
+    public static final String TABLE_FONT_NAME = "sansserif";
+    public static final int TABLE_COLUMN_FONT_SIZE = 16;
+    public static final int TABLE_CELL_FONT_SIZE = 12;
 
+    /**
+     * Peptide Spectra Matches Algorithm range interval from [-0.5Da, 0.5Da]
+     */
+    public static final double INTERVAL_RANGE = 0.5;
+
+    /**
+     * Pride-asa-pipeline noise filter algorithm parameters
+     */
+    public static final double ASA_PRECURSOR_MASS_WINDOW = 18.0;
+    public static final double ASA_WINSORISATION_CONSTANT = 1.5;
+    public static final double ASA_OUTLIER_LIMIT = 2;
+    public static final double ASA_CONVERGENCE_CRITERIUM = 0.001;
+    public static final double ASA_MEAN_RATIO_THRESHOLD = 0.8;
+    public static final double ASA_DENSITY_THRESHOLD = 1.0;
+
+    public static final String DELTA_MZ_ERROR = "Delta m/z is too large, no fragmentation table!                ";
+    public static final String AUTO_ANNOTATIONS = "Show auto annotations.                                       ";
+    public static final String MANUAL_ANNOTATIONS = "Show manual annotations.                                   ";
 }

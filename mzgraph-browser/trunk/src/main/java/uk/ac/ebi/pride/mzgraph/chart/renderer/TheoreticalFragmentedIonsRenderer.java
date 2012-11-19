@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.mzgraph.chart.renderer;
 
 import uk.ac.ebi.pride.iongen.model.PeptideIon;
+import uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -12,7 +13,7 @@ import java.text.NumberFormat;
  * Date: 11/10/12
  */
 
-public class PeptideIonRenderer extends DefaultTableCellRenderer {
+public class TheoreticalFragmentedIonsRenderer extends DefaultTableCellRenderer {
     private NumberFormat formatter;
 
     /**
@@ -23,13 +24,13 @@ public class PeptideIonRenderer extends DefaultTableCellRenderer {
     private static int highlightRow;
     private static int highlightColumn;
 
-    public PeptideIonRenderer(int fraction, int row, int column) {
+    public TheoreticalFragmentedIonsRenderer(int row, int column) {
         if (row == highlightRow && column == highlightColumn) {
             setBackground(Color.lightGray);
         }
 
         this.formatter = NumberFormat.getNumberInstance();
-        this.formatter.setMaximumFractionDigits(fraction);
+        this.formatter.setMaximumFractionDigits(MzGraphConstants.TABLE_FRACTION);
         setHorizontalAlignment(SwingConstants.RIGHT);
     }
 

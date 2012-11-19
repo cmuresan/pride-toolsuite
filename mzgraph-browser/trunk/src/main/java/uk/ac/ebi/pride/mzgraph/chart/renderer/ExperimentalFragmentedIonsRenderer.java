@@ -8,11 +8,11 @@ import java.awt.*;
  * Date: 11/10/12
  */
 
-public class PracticeIonRenderer extends PeptideIonRenderer {
+public class ExperimentalFragmentedIonsRenderer extends TheoreticalFragmentedIonsRenderer {
     private Object[][] practiceData;
 
-    public PracticeIonRenderer(int fraction, Object[][] practiceData, int row, int col) {
-        super(fraction, row, col);
+    public ExperimentalFragmentedIonsRenderer(Object[][] practiceData, int row, int col) {
+        super(row, col);
         this.practiceData = practiceData;
     }
 

@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.mzgraph.gui.table;
 
-import org.junit.Test;
 import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.iongen.model.ProductIon;
 import uk.ac.ebi.pride.iongen.model.impl.DefaultPrecursorIon;
@@ -13,9 +12,7 @@ import uk.ac.ebi.pride.mzgraph.gui.data.TheoreticalFragmentedIonsTableModel;
  */
 
 public class TheoreticalFragmentedIonsTableModelTest {
-
-    @Test
-    public void testModel() {
+    public static void main(String[] args) {
         String sequence = "EASPLSSNKLILR";
         PrecursorIon precursorIon = new DefaultPrecursorIon(sequence, 3);
         TheoreticalFragmentedIonsTableModel model = new TheoreticalFragmentedIonsTableModel(precursorIon, ProductIonPair.B_Y);

@@ -4,13 +4,17 @@ import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.mol.AminoAcid;
 import uk.ac.ebi.pride.mol.PTModification;
 import uk.ac.ebi.pride.mol.ProductIonPair;
+import uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants;
 import uk.ac.ebi.pride.mzgraph.chart.renderer.AminoAcidRenderer;
-import uk.ac.ebi.pride.mzgraph.chart.renderer.PeptideIonRenderer;
+import uk.ac.ebi.pride.mzgraph.chart.renderer.TheoreticalFragmentedIonsRenderer;
+import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
 import uk.ac.ebi.pride.mzgraph.gui.data.TheoreticalFragmentedIonsTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.util.Map;
 
@@ -20,12 +24,9 @@ import java.util.Map;
  */
 
 public class TheoreticalFragmentedIonsTable extends JTable {
-    // define default fraction position of ion mass is 3.
-    private int fraction;
-
-    private String fontName = "sansserif";
-    private int columnFontSize = 16;
-    private int cellFontSize = 12;
+    private String fontName = MzGraphConstants.TABLE_FONT_NAME;
+    private int columnFontSize = MzGraphConstants.TABLE_COLUMN_FONT_SIZE;
+    private int cellFontSize = MzGraphConstants.TABLE_CELL_FONT_SIZE;
     private TheoreticalFragmentedIonsTableModel tableModel;
 
     private Map<Integer, PTModification> ptm;
@@ -36,7 +37,7 @@ public class TheoreticalFragmentedIonsTable extends JTable {
 
     public TableCellRenderer getCellRenderer(int row, int column) {
         if (tableModel.isMassColumn(column)) {
-            return new PeptideIonRenderer(fraction, row, column);
+            return new TheoreticalFragmentedIonsRenderer(row, column);
         } else if (tableModel.isIDColumn(column)) {
             return new DefaultTableCellRenderer() {
                 public void setHorizontalAlignment(int alignment) {
@@ -64,15 +65,9 @@ public class TheoreticalFragmentedIonsTable extends JTable {
 
     public TheoreticalFragmentedIonsTable(PrecursorIon precursorIon,
                                           ProductIonPair ionPair) {
-        this(precursorIon, ionPair, 3);
-    }
-
-    public TheoreticalFragmentedIonsTable(PrecursorIon precursorIon,
-                                          ProductIonPair ionPair,
-                                          int fraction) {
         tableModel = new TheoreticalFragmentedIonsTableModel(precursorIon, ionPair);
         setModel(tableModel);
-        this.fraction = fraction;
+        tableModel.addTableModelListener(this);
         this.ptm = precursorIon.getPeptide().getPTM();
 
         setPreferredScrollableViewportSize(new Dimension(1400, 300));
@@ -93,8 +88,15 @@ public class TheoreticalFragmentedIonsTable extends JTable {
         getTableHeader().setReorderingAllowed(false);
     }
 
-    public int getFraction() {
-        return fraction;
+    public void setProductIonPair(ProductIonPair ionPair) {
+        this.tableModel.setProductIonPair(ionPair);
+
+        TableColumnModel columnModel = getColumnModel();
+        TableColumn column;
+        for (int i = 0; i < columnModel.getColumnCount(); i++) {
+            column = columnModel.getColumn(i);
+            column.setHeaderValue(tableModel.getColumnName(i));
+        }
     }
 
     public Component prepareRenderer(TableCellRenderer renderer,

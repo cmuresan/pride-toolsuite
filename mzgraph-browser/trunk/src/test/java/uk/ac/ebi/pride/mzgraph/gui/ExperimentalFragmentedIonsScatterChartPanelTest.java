@@ -22,14 +22,13 @@ public class ExperimentalFragmentedIonsScatterChartPanelTest {
         ExperimentalFragmentedIonsScatterChartPanel chartPanel = new ExperimentalFragmentedIonsScatterChartPanel(precursorIon, ProductIonPair.B_Y, ExampleUtil.mzArr, ExampleUtil.intentArr);
 
         java.util.List<IonAnnotation> annotationList = ExampleUtil.generateAnnotationList();
-        chartPanel.addAnnotation(annotationList.get(0));
-        chartPanel.addAnnotation(annotationList.get(1));
-        chartPanel.addAnnotation(annotationList.get(2));
+        chartPanel.addManualAnnotation(annotationList.get(0));
+        chartPanel.addManualAnnotation(annotationList.get(1));
+        chartPanel.addManualAnnotation(annotationList.get(2));
 
-//        chartPanel.addAllAnnotations(ExampleUtil.specialAnnotationList());
+//        chartPanel.addAllManualAnnotations(ExampleUtil.specialAnnotationList());
 
-//        chartPanel.setShowAutoAnnotations(true);
-        chartPanel.setShowManualAnnotations(true);
+        chartPanel.setShowAutoAnnotations(true);
 //
 //        chartPanel.setShowAutoAnnotations(false);
 //        chartPanel.setShowManualAnnotations(false);

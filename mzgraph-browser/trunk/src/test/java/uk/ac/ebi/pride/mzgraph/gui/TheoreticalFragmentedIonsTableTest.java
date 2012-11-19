@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.mzgraph.gui;
 
 import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.iongen.model.impl.DefaultPrecursorIon;
+import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mzgraph.ExampleUtil;
 
 import javax.swing.*;
@@ -17,6 +18,8 @@ public class TheoreticalFragmentedIonsTableTest {
         // which stored in the test resources directory.
         PrecursorIon precursorIon = new DefaultPrecursorIon(ExampleUtil.generatePeptide(), 2);
         TheoreticalFragmentedIonsTable table = new TheoreticalFragmentedIonsTable(precursorIon);
+
+        table.setProductIonPair(ProductIonPair.A_X);
         table.setFillsViewportHeight(true);
 
         JScrollPane scrollPane = new JScrollPane(table);

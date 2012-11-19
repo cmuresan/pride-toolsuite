@@ -8,32 +8,29 @@ import uk.ac.ebi.pride.mol.Peptide;
 import uk.ac.ebi.pride.mzgraph.ExampleUtil;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 
+import java.awt.*;
+
 public class MzTablePanelTest {
     public static void main(String[] args) {
         Peptide peptide = ExampleUtil.generatePeptide();
         PrecursorIon precursorIon = new DefaultPrecursorIon(peptide, 2);
 
-        MzTablePanel tablePanel = new MzTablePanel(peptide);
+        MzTablePanel panel = new MzTablePanel(peptide);
 
         java.util.List<IonAnnotation> annotationList = ExampleUtil.generateAnnotationList();
-        tablePanel.addManualAnnotation(annotationList.get(0));
-        tablePanel.addManualAnnotation(annotationList.get(1));
-        tablePanel.addManualAnnotation(annotationList.get(2));
-
-        tablePanel.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
-
-        tablePanel.addAllManualAnnotations(ExampleUtil.specialAnnotationList());
-
-        tablePanel.setShowAutoAnnotations(true);
-        tablePanel.setShowManualAnnotations(true);
+        panel.addAllManualAnnotations(annotationList);
 //
-//        tablePanel.setShowAutoAnnotations(false);
-//        tablePanel.setShowManualAnnotations(false);
+        panel.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
+//
+//        panel.addAllManualAnnotations(ExampleUtil.specialAnnotationList());
 
         ApplicationFrame mainFrame = new ApplicationFrame("test");
 
 
-        mainFrame.getContentPane().add(tablePanel);
+        mainFrame.getContentPane().add(panel);
+        mainFrame.setPreferredSize(new Dimension(1200, 350));
+        panel.getTablePanel().setPreferredSize(new Dimension(1000, 250));
+        panel.getChartPanel().setPreferredSize(new Dimension(200, 250));
         mainFrame.pack();
         mainFrame.setVisible(true);
         RefineryUtilities.centerFrameOnScreen(mainFrame);

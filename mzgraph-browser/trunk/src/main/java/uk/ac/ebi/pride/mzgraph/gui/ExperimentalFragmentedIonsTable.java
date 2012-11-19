@@ -4,11 +4,15 @@ import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.iongen.model.ProductIon;
 import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
-import uk.ac.ebi.pride.mzgraph.chart.renderer.PracticeIonRenderer;
+import uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants;
+import uk.ac.ebi.pride.mzgraph.chart.renderer.ExperimentalFragmentedIonsRenderer;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
+import uk.ac.ebi.pride.mzgraph.gui.data.PeakSet;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.text.NumberFormat;
 import java.util.List;
@@ -21,47 +25,52 @@ import java.util.List;
 public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTable {
     private ExperimentalFragmentedIonsTableModel tableModel;
 
-    private void init(ExperimentalFragmentedIonsTableModel tableModel) {
-        this.tableModel = tableModel;
+    public ExperimentalFragmentedIonsTable(PrecursorIon precursorIon, ProductIonPair pair, PeakSet peakSet) {
+        super(precursorIon, pair);
+
+        this.tableModel = new ExperimentalFragmentedIonsTableModel(precursorIon, pair);
+        this.tableModel.setPeaks(peakSet);
         setModel(this.tableModel);
     }
 
-    public ExperimentalFragmentedIonsTable(PrecursorIon precursorIon, ProductIonPair pair, int fraction,
+    public ExperimentalFragmentedIonsTable(PrecursorIon precursorIon, ProductIonPair pair,
                                            double[] mzArray, double[] intensityArray) {
-        super(precursorIon, pair, fraction);
+        super(precursorIon, pair);
 
-        init(new ExperimentalFragmentedIonsTableModel(precursorIon, pair, mzArray, intensityArray));
+        this.tableModel = new ExperimentalFragmentedIonsTableModel(precursorIon, pair);
+        this.tableModel.setPeaks(mzArray, intensityArray);
+        setModel(this.tableModel);
     }
 
-    public ExperimentalFragmentedIonsTable(PrecursorIon precursorIon, ProductIonPair pair, int fraction) {
-        this(precursorIon, pair, fraction, null, null);
+    public ExperimentalFragmentedIonsTable(PrecursorIon precursorIon, ProductIonPair pair) {
+        this(precursorIon, pair, null, null);
+    }
+
+    public ExperimentalFragmentedIonsTable(PrecursorIon precursorIon, PeakSet peakSet) {
+        this(precursorIon, ProductIonPair.B_Y, peakSet);
     }
 
     public ExperimentalFragmentedIonsTable(PrecursorIon precursorIon, double[] mzArray, double[] intensityArray) {
-        this(precursorIon, ProductIonPair.B_Y, 3, mzArray, intensityArray);
+        this(precursorIon, ProductIonPair.B_Y, mzArray, intensityArray);
     }
 
     public ExperimentalFragmentedIonsTable(PrecursorIon precursorIon) {
-        this(precursorIon, ProductIonPair.B_Y, 3);
+        this(precursorIon, ProductIonPair.B_Y);
     }
 
-    public ExperimentalFragmentedIonsTable(PrecursorIon precursorIon, ProductIonPair pair, int fraction,
-                                           List<IonAnnotation> ionAnnotationList) {
-        super(precursorIon, pair, fraction);
+    public void setProductIonPair(ProductIonPair ionPair) {
+        this.tableModel.setProductIonPair(ionPair);
 
-        init(new ExperimentalFragmentedIonsTableModel(precursorIon, pair, ionAnnotationList));
-    }
-
-    public ExperimentalFragmentedIonsTable(PrecursorIon precursorIon, List<IonAnnotation> ionAnnotationList) {
-        this(precursorIon, ProductIonPair.B_Y, 3, ionAnnotationList);
+        TableColumnModel columnModel = getColumnModel();
+        TableColumn column;
+        for (int i = 0; i < columnModel.getColumnCount(); i++) {
+            column = columnModel.getColumn(i);
+            column.setHeaderValue(tableModel.getColumnName(i));
+        }
     }
 
     public void setShowAutoAnnotations(boolean showAuto) {
-        tableModel.setShowAuto(showAuto);
-    }
-
-    public void setShowManualAnnotations(boolean showManual) {
-        this.tableModel.setShowManual(showManual);
+        this.tableModel.setShowAuto(showAuto);
     }
 
     public void setPeaks(double[] mzArray, double[] intensityArray) {
@@ -78,7 +87,7 @@ public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTa
 
     public TableCellRenderer getCellRenderer(int row, int column) {
         if (this.tableModel.isMassColumn(column)) {
-            return new PracticeIonRenderer(getFraction(), this.tableModel.getMatchedData(), row, column);
+            return new ExperimentalFragmentedIonsRenderer(this.tableModel.getMatchedData(), row, column);
         } else {
             return super.getCellRenderer(row, column);
         }
@@ -89,21 +98,19 @@ public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTa
         Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
         Object to = getValueAt(rowIndex, vColIndex);
 
-        Double[][] matchedData = tableModel.getMatchedData();
-        Object po = matchedData[rowIndex][vColIndex];
+        IonAnnotation[][] matchedData = tableModel.getMatchedData();
+        IonAnnotation po = matchedData[rowIndex][vColIndex];
 
         if (po != null && to != null) {
-            double practice = (Double) po;
+            double practice = po.getMz().doubleValue();
             double theoretical = ((ProductIon) to).getMassOverCharge();
 
             NumberFormat formatter = NumberFormat.getInstance();
-            formatter.setMaximumFractionDigits(getFraction());
+            formatter.setMaximumFractionDigits(MzGraphConstants.TABLE_FRACTION);
 
             JComponent jc = (JComponent)c;
-            jc.setToolTipText(
-                    "m/z:" + formatter.format(practice) + " " +
-                    "Error: " + formatter.format(practice - theoretical)
-            );
+            jc.setToolTipText("m/z:" + formatter.format(practice) + " " +
+                              "Error: " + formatter.format(practice - theoretical));
         }
 
 

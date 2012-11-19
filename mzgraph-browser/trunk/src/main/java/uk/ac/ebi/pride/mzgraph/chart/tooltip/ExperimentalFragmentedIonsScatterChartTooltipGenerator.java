@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.mzgraph.chart.tooltip;
 
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.data.xy.XYDataset;
+import uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants;
 
 import java.text.NumberFormat;
 
@@ -12,10 +13,7 @@ import java.text.NumberFormat;
  */
 
 public class ExperimentalFragmentedIonsScatterChartTooltipGenerator extends StandardXYToolTipGenerator {
-    private int fraction;
-
-    public ExperimentalFragmentedIonsScatterChartTooltipGenerator(int fraction) {
-        this.fraction = fraction;
+    public ExperimentalFragmentedIonsScatterChartTooltipGenerator() {
     }
 
     public String generateToolTip(XYDataset xyDataset, int series, int item) {
@@ -23,7 +21,7 @@ public class ExperimentalFragmentedIonsScatterChartTooltipGenerator extends Stan
         double mass = xyDataset.getXValue(series, item);
 
         NumberFormat formatter = NumberFormat.getInstance();
-        formatter.setMaximumFractionDigits(fraction);
+        formatter.setMaximumFractionDigits(MzGraphConstants.TABLE_FRACTION);
 
         StringBuilder sb = new StringBuilder();
         sb.append("m/z:" + formatter.format(mass) + ", ");

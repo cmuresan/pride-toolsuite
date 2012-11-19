@@ -26,13 +26,10 @@ public class SpectrumBrowserTest {
         Peptide peptide = ExampleUtil.generatePeptide();
         SpectrumBrowser browser = new SpectrumBrowser();
 
-        browser.setPeptide(peptide);
         browser.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
 
-        browser.addAllAnnotations(ExampleUtil.generateAnnotationList());
+        browser.addFragmentIons(ExampleUtil.generateAnnotationList());
 
-        browser.setShowAutoAnnotations(true);
-        browser.setShowManualAnnotations(true);
 
 //        browser.setShowAutoAnnotations(false);
 //        browser.setShowManualAnnotations(false);

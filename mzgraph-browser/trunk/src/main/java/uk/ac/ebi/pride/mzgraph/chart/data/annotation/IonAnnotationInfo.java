@@ -125,6 +125,16 @@ public class IonAnnotationInfo implements PeakAnnotationInfo, Cloneable {
 
             return newItem;
         }
+
+        @Override
+        public String toString() {
+            return "Item{" +
+                    "charge=" + charge +
+                    ", type=" + type +
+                    ", location=" + location +
+                    ", neutralLoss=" + neutralLoss +
+                    '}';
+        }
     }
 
     @Override

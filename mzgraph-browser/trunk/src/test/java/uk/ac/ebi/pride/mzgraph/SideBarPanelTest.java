@@ -33,7 +33,7 @@ public class SideBarPanelTest {
 
     private static void createGUI() {
         SpectrumPanel chartPanel = new SpectrumPanel(ExampleUtil.mzArr, ExampleUtil.intentArr);
-        chartPanel.initMzTablePanel(ExampleUtil.generatePeptide());
+//        chartPanel.setPeptide(ExampleUtil.generatePeptide());
 
         chartPanel.paintGraph();
         chartPanel.setGridLineVisibility(false);

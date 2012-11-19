@@ -43,7 +43,7 @@ public class SpectrumChartPanelTest {
         java.util.List<IonAnnotation> ions = new ArrayList<IonAnnotation>();
         ions.add(ion1);
         ions.add(ion2);
-        chartPanel.addAllAnnotations(ions);
+        chartPanel.addFragmentIons(ions);
     }
 
 //    public static void main(String[] args) {

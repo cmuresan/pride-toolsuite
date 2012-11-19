@@ -6,12 +6,10 @@ import org.jfree.chart.entity.ChartEntity;
 import org.jfree.chart.entity.XYItemEntity;
 import org.jfree.data.xy.*;
 import uk.ac.ebi.pride.mol.PTModification;
-import uk.ac.ebi.pride.mol.Peptide;
 import uk.ac.ebi.pride.mol.ion.FragmentIonType;
 import uk.ac.ebi.pride.mol.ion.FragmentIonTypeColor;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.AminoAcidAnnotationGenerator;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
-import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotationInfo;
 import uk.ac.ebi.pride.mzgraph.chart.data.util.MzGraphDatasetUtils;
 import uk.ac.ebi.pride.mzgraph.chart.label.AminoAcidAnnotationLabelGenerator;
 import uk.ac.ebi.pride.mzgraph.chart.label.IonAnnotationLabelGenerator;
@@ -24,15 +22,15 @@ import uk.ac.ebi.pride.mzgraph.gui.filter.FilterActionEvent;
 import uk.ac.ebi.pride.mzgraph.gui.setting.MassErrorToleranceEvent;
 import uk.ac.ebi.pride.mzgraph.gui.setting.ShowMassDifferentEvent;
 
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants.*;
 
@@ -50,7 +48,6 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
      */
     public final static String HIDE_PEAK_LIST = "HIDE_PEAK_LIST";
     public final static String CLEAR_MASS_DIFF = "CLEAR_MASS_DIFF";
-    public final static String MZ_TABLE = "MZ_TABLE";
 
     /**
      * Renderer to draw the peaks
@@ -77,16 +74,11 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
      */
     private SpectrumPanelModel spectrumPanelModel;
 
-    private MzTablePanel mzTablePanel;
-
-    private JDialog mzTableDialog;
-
-    // whether show auto annotations or not.
-    private boolean showAuto;
-    // whether show manual annotations or not.
-    private boolean showManual;
-
     public SpectrumPanel() {
+        this(null, null);
+    }
+
+    public SpectrumPanel(double[] mz, double[] intensity) {
         super(DEFAULT_SPECTRUM_CHART_TITLE,
                 DEFAULT_MZ_AXIS_LABEL,
                 DEFAULT_INTENSITY_AXIS_LABEL,
@@ -101,26 +93,14 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
 
         // peak list dataset and renderer
         spectrumPanelModel = new SpectrumPanelModel();
+        spectrumPanelModel.setPeaks(mz, intensity);
         spectrumPanelModel.addPropertyChangeListener(this);
 
         // visibility
         this.basePeakVisibility = DEFAULT_PEAK_VISIBILITY;
 
         paintGraph();
-    }
 
-    public SpectrumPanel(double[] mz, double[] intensity) {
-        this();
-        setPeaks(mz, intensity);
-    }
-
-    /**
-     * Based on peptide, we can generate theoretical m/z list. Compared them with peak list (Experimental m/z list),
-     * we can generate a couple of ion annotations automatically.
-     */
-    public void initMzTablePanel(Peptide peptide) {
-        mzTablePanel = new MzTablePanel(peptide);
-        mzTablePanel.flush();
     }
 
     public SpectrumPanelModel getModel() {
@@ -133,7 +113,7 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
 
     public void reset() {
         // remove all annotations
-        List<XYAnnotation> annotations = plot.getAnnotations();
+        java.util.List<XYAnnotation> annotations = plot.getAnnotations();
         for (XYAnnotation annotation : annotations) {
             plot.removeAnnotation(annotation, true);
         }
@@ -153,87 +133,10 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
 
     public void setPeaks(double[] mz, double[] intensity) {
         spectrumPanelModel.setPeaks(mz, intensity);
-
-        if (mzTablePanel != null) {
-            mzTablePanel.setPeaks(mz, intensity);
-        }
     }
 
-    private List<IonAnnotation> filterAnnotations(List<IonAnnotation> srcList) throws CloneNotSupportedException {
-        List<IonAnnotation> tarList = new ArrayList<IonAnnotation>();
-
-        // filter non b and y ion annotation,
-        // which not display in the mz table panel.
-        IonAnnotationInfo srcInfo;
-        IonAnnotationInfo.Item srcItem;
-        IonAnnotationInfo tarInfo;
-        IonAnnotationInfo.Item tarItem;
-        IonAnnotation tarAnnotation;
-        for (IonAnnotation annotation : srcList) {
-            srcInfo = annotation.getAnnotationInfo();
-            tarInfo = new IonAnnotationInfo();
-            for (int i = 0; i < srcInfo.getNumberOfItems(); i++) {
-                srcItem = srcInfo.getItem(i);
-                if (srcItem.getType().getName().equals(FragmentIonType.B_ION.getName()) || srcItem.getType().getName().equals(FragmentIonType.Y_ION.getName())) {
-                    tarItem = (IonAnnotationInfo.Item) srcItem.clone();
-                    tarInfo.addItem(tarItem);
-                }
-            }
-
-            if (tarInfo.getNumberOfItems() != 0) {
-                tarAnnotation = (IonAnnotation) annotation.clone();
-                tarAnnotation.setInfo(tarInfo);
-                tarList.add(tarAnnotation);
-            }
-        }
-
-        return tarList;
-    }
-
-    public void addAllAnnotations(List<IonAnnotation> ions) {
+    public void addFragmentIons(List<IonAnnotation> ions) {
         spectrumPanelModel.addAnnotations(ions);
-
-        try {
-            List<IonAnnotation> filterAnnotations = filterAnnotations(ions);
-
-            if (mzTablePanel != null) {
-                mzTablePanel.addAllManualAnnotations(filterAnnotations);
-            }
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void showAnnotations() {
-        spectrumPanelModel.removeIonAnnotations();
-
-        if (showAuto) {
-            spectrumPanelModel.addAnnotations(mzTablePanel.getAutoAnnotationList());
-        }
-
-        if (showManual) {
-            spectrumPanelModel.addAnnotations(mzTablePanel.getManualAnnotationList());
-        }
-    }
-
-    public void setShowAutoAnnotations(boolean showAuto) {
-        this.showAuto = showAuto;
-
-        if (mzTablePanel != null) {
-            mzTablePanel.setShowAutoAnnotations(showAuto);
-        }
-
-        showAnnotations();
-    }
-
-    public void setShowManualAnnotations(boolean showManual) {
-        this.showManual = showManual;
-
-        if (mzTablePanel != null) {
-            mzTablePanel.setShowManualAnnotations(showManual);
-        }
-
-        showAnnotations();
     }
 
     public void setAminoAcidAnnotationParameters(int peptideLength, Map<Integer, List<PTModification>> modifications) {
@@ -259,25 +162,6 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
         // reverse the visibility
         basePeakVisibility = !basePeakVisibility;
         plot.setRenderer(DEFAULT_PEAK_DATASET_INDEX, basePeakVisibility ? peakRenderer : null);
-    }
-
-    /**
-     * Popup a mzTablePanel Dialog.
-     */
-    public void mzTable(Frame owner) {
-        mzTableDialog = new JDialog(owner);
-        mzTableDialog.setTitle("m/z table");
-        mzTableDialog.getContentPane().add(mzTablePanel);
-        mzTableDialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-
-        mzTableDialog.pack();
-        mzTableDialog.setVisible(true);
-        mzTableDialog.setModal(true);
-        mzTableDialog.setResizable(false);
-    }
-
-    public JDialog getMzTableDialog() {
-        return mzTableDialog;
     }
 
     public void hideFragmentIons(Comparable seriesKey) {
@@ -512,10 +396,7 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
                 clearMassDiffAnnotations();
             } else if (HIDE_PEAK_LIST.equals(command)) {
                 hidePeakList();
-            } else if (MZ_TABLE.equals(command)) {
-                mzTable((JFrame) getRootPane().getParent());
             }
-
         }
     }
 

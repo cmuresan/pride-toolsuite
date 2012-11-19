@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ public class ExperimentalFragmentedIonsTableTest {
     public static void main(String[] args) {
         PrecursorIon precursorIon = new DefaultPrecursorIon(ExampleUtil.generatePeptide());
 
-        ExperimentalFragmentedIonsTable table = new ExperimentalFragmentedIonsTable(precursorIon, ProductIonPair.B_Y, 2, ExampleUtil.mzArr, ExampleUtil.intentArr);
+        ExperimentalFragmentedIonsTable table = new ExperimentalFragmentedIonsTable(precursorIon, ProductIonPair.B_Y, ExampleUtil.mzArr, ExampleUtil.intentArr);
 
         //add annotation by hand
         ExperimentalFragmentedIonsTableModel tableModel = (ExperimentalFragmentedIonsTableModel) table.getModel();
@@ -30,13 +31,16 @@ public class ExperimentalFragmentedIonsTableTest {
 
         // test whether show auto and manual annotations, or not.
 //        table.setShowAutoAnnotations(true);
-//        table.setShowManualAnnotations(false);
+//        table.setShowAutoAnnotations(false);
+
+//        table.setProductIonPair(ProductIonPair.A_X);
 
         table.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(table);
         JFrame mainFrame = new JFrame();
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.getContentPane().add(scrollPane);
+        mainFrame.setPreferredSize(new Dimension(1000, 300));
         mainFrame.pack();
         mainFrame.setVisible(true);
     }

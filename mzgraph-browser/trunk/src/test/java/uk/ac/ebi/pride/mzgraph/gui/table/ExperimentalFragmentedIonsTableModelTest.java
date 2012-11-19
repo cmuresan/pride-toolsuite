@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.mzgraph.gui.table;
 
-import org.junit.Test;
 import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.iongen.model.ProductIon;
 import uk.ac.ebi.pride.iongen.model.impl.DefaultPrecursorIon;
@@ -8,7 +7,6 @@ import uk.ac.ebi.pride.mol.Peptide;
 import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mzgraph.ExampleUtil;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
-import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsDataset;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
 
 import java.util.Random;
@@ -24,11 +22,11 @@ public class ExperimentalFragmentedIonsTableModelTest {
      *
      * random generate about thirty practice data based on the theoretical fragment ions mass over charge.
      */
-    private Double[][] generateMatchedData() {
+    public Double[][] generateMatchedData() {
         Peptide peptide = ExampleUtil.generatePeptide();
         PrecursorIon precursorIon = new DefaultPrecursorIon(peptide, 2);
-
-        ExperimentalFragmentedIonsTableModel model = new ExperimentalFragmentedIonsTableModel(precursorIon, ProductIonPair.B_Y, ExampleUtil.mzArr, ExampleUtil.intentArr);
+        ExperimentalFragmentedIonsTableModel model = new ExperimentalFragmentedIonsTableModel(precursorIon, ProductIonPair.B_Y);
+        model.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
 
         Double[][] matchedData = new Double[model.getRowCount()][model.getColumnCount()];
 
@@ -51,14 +49,11 @@ public class ExperimentalFragmentedIonsTableModelTest {
         return matchedData;
     }
 
-
-    @Test
-    public void testModel() {
+    public static void main(String[] args) {
         Peptide peptide = ExampleUtil.generatePeptide();
         PrecursorIon precursorIon = new DefaultPrecursorIon(peptide, 2);
-
-        ExperimentalFragmentedIonsTableModel model = new ExperimentalFragmentedIonsTableModel(precursorIon, ProductIonPair.B_Y, ExampleUtil.mzArr, ExampleUtil.intentArr);
-        ExperimentalFragmentedIonsDataset dataset = new ExperimentalFragmentedIonsDataset(model);
+        ExperimentalFragmentedIonsTableModel model = new ExperimentalFragmentedIonsTableModel(precursorIon, ProductIonPair.B_Y);
+        model.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
 
         java.util.List<IonAnnotation> annotationList = ExampleUtil.generateAnnotationList();
         model.addAllManualAnnotations(annotationList);
@@ -68,15 +63,15 @@ public class ExperimentalFragmentedIonsTableModelTest {
         }
         System.out.println();
 
-        Double o;
+        IonAnnotation annotation;
         for (int i = 0; i < model.getRowCount(); i++) {
             for (int j = 0; j < model.getColumnCount(); j++) {
-                o = model.getMatchedData()[i][j];
+                annotation = model.getMatchedData()[i][j];
 
-                if (o == null) {
+                if (annotation == null) {
                     System.out.print("N" + "\t");
                 } else {
-                    System.out.print(o + "\t");
+                    System.out.print(annotation.getMz().doubleValue() + "\t");
                 }
             }
             System.out.println();

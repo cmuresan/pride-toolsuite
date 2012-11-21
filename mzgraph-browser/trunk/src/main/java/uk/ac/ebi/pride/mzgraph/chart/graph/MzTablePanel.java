@@ -36,6 +36,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.NumberFormat;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -51,25 +52,33 @@ import java.util.List;
 public class MzTablePanel extends JPanel implements ExperimentalTableModelObserver {
     private ExperimentalFragmentedIonsScatterChartPanel scatterChartPanel;
 
+    public static final String FLUSH_TABLEMODEL = "flush tablemodel";
+
     private JScrollPane tablePanel;
     private ChartPanel chartPanel;
 
     private ExperimentalFragmentedIonsTableModel tableModel;
 
-    private JPanel configPanel;
+    /**
+     * whether show annotations or not.
+     */
+    private boolean showAnnotation = true;
+
     private JLabel commentLabel = new JLabel();
     private JLabel ionPairLabel;
     private JComboBox ionPairChooser;
     private JLabel rangeLabel;
     private JSlider rangeSlider;
 
-    private void flushConfigPanel() {
-        if (this.tableModel == null) {
+    private void flushPanel() {
+        if (this.tableModel == null || ! showAnnotation) {
             commentLabel.setText(MzGraphConstants.DELTA_MZ_ERROR);
             ionPairLabel.setVisible(false);
             ionPairChooser.setVisible(false);
             rangeLabel.setVisible(false);
             rangeSlider.setVisible(false);
+            tablePanel.setVisible(false);
+            chartPanel.setVisible(false);
         } else if (this.tableModel.getAllManualAnnotations().size() == 0) {
             commentLabel.setText(MzGraphConstants.AUTO_ANNOTATIONS);
             setShowAuto(true);
@@ -77,6 +86,8 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
             ionPairChooser.setVisible(true);
             rangeLabel.setVisible(true);
             rangeSlider.setVisible(true);
+            tablePanel.setVisible(true);
+            chartPanel.setVisible(true);
         } else {
             commentLabel.setText(MzGraphConstants.MANUAL_ANNOTATIONS);
             setShowAuto(false);
@@ -84,10 +95,13 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
             ionPairChooser.setVisible(true);
             rangeLabel.setVisible(false);
             rangeSlider.setVisible(false);
+            tablePanel.setVisible(true);
+            chartPanel.setVisible(true);
         }
     }
 
     private void init(final ExperimentalFragmentedIonsTable table) {
+        int height = 50;
         tablePanel = new JScrollPane(table);
         this.tableModel = (ExperimentalFragmentedIonsTableModel) table.getModel();
 
@@ -109,13 +123,13 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
         ionPairChooser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JComboBox chooser = (JComboBox)e.getSource();
+                JComboBox chooser = (JComboBox) e.getSource();
                 ProductIonPair ionPair = (ProductIonPair) chooser.getSelectedItem();
                 table.setProductIonPair(ionPair);
+                firePropertyChange(FLUSH_TABLEMODEL, null, table.getModel());
             }
         });
-
-        rangeLabel = new JLabel("Range(Da):");
+        rangeLabel = new JLabel("                    Range(Da):");
         rangeSlider = new JSlider(
                 JSlider.HORIZONTAL,
                 1,        // minimum range is 0.1 Da
@@ -123,8 +137,17 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
                 5         // default range is 0.5 Da
         );
         rangeSlider.setMinorTickSpacing(1);
-        rangeSlider.setPaintLabels(false);
+        rangeSlider.setMajorTickSpacing(1);
+        rangeSlider.setPaintLabels(true);
         rangeSlider.setPaintTicks(true);
+        Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
+        for (int i = 1; i <= 9; i++) {
+            labelTable.put(i, new JLabel("0." + i));
+        }
+        labelTable.put(10, new JLabel("1.0"));
+        rangeSlider.setLabelTable(labelTable);
+
+        rangeSlider.setPreferredSize(new Dimension(300, height));
         rangeSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -135,19 +158,20 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
                     table.revalidate();
                     table.repaint();
                     source.setToolTipText(newRange + "Da");
+                    firePropertyChange(FLUSH_TABLEMODEL, null, table.getModel());
                 }
             }
         });
 
-        configPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-        configPanel.setMinimumSize(new Dimension(1000, 30));
+        JPanel configPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        configPanel.setPreferredSize(new Dimension(1000, height));
         configPanel.add(commentLabel);
         configPanel.add(ionPairLabel);
         configPanel.add(ionPairChooser);
         configPanel.add(rangeLabel);
         configPanel.add(rangeSlider);
 
-        flushConfigPanel();
+        flushPanel();
 
         add(configPanel, BorderLayout.NORTH);
         add(contentPane, BorderLayout.CENTER);
@@ -184,6 +208,24 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
         init(table);
     }
 
+    public MzTablePanel(PrecursorIon precursorIon, PeakSet peakSet) {
+        init(new ExperimentalFragmentedIonsTable(precursorIon, peakSet));
+    }
+
+    public MzTablePanel(PrecursorIon precursorIon, double[] mzArray, double[] intensityArray) {
+        init(new ExperimentalFragmentedIonsTable(precursorIon, mzArray, intensityArray));
+    }
+
+    public MzTablePanel(PrecursorIon precursorIon) {
+        this(precursorIon, null, null);
+    }
+
+    public MzTablePanel(PrecursorIon precursorIon, List<IonAnnotation> ionAnnotationList) {
+        ExperimentalFragmentedIonsTable table = new ExperimentalFragmentedIonsTable(precursorIon);
+        table.addAllAnnotations(ionAnnotationList);
+        init(table);
+    }
+
     public ChartPanel getChartPanel() {
         return chartPanel;
     }
@@ -207,19 +249,28 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
 
     public void addManualAnnotation(IonAnnotation annotation) {
         this.tableModel.addManualAnnotation(annotation);
-        flushConfigPanel();
+        flushPanel();
     }
 
     public void addAllManualAnnotations(List<IonAnnotation> ionAnnotationList) {
         this.tableModel.addAllManualAnnotations(ionAnnotationList);
-        flushConfigPanel();
+        flushPanel();
     }
 
     /**
-     * whether calculate auto annotations, or not.
+     * whether show annotations (including auto and manual), or not.
      */
-    public void setCalcuteAuto(boolean calcuteAuto) {
-        this.tableModel.setCalcuteAuto(calcuteAuto);
+    public void setShowAnnotations(boolean showAnnotation) {
+        if (this.tableModel != null) {
+            this.tableModel.setShowAnnotation(showAnnotation);
+        }
+
+        this.showAnnotation = showAnnotation;
+        flushPanel();
+    }
+
+    public boolean isShowAnnotation() {
+        return this.showAnnotation;
     }
 
     public void setPeaks(double[] mzArray, double[] intensityArray) {

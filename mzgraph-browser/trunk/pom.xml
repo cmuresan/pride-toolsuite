@@ -9,6 +9,12 @@
     <version>1.0.11</version>
 
     <dependencies>
+        <!-- use ms-data-core-api package to create test set. -->
+        <dependency>
+            <groupId>uk.ac.ebi.pride</groupId>
+            <artifactId>ms-data-core-api</artifactId>
+            <version>0.3</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -24,11 +30,6 @@
             <groupId>jfree</groupId>
             <artifactId>jcommon</artifactId>
             <version>1.0.16</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.ebi.pride.util</groupId>
-            <artifactId>pride-utilities</artifactId>
-            <version>0.1.16</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.pride.iongen</groupId>

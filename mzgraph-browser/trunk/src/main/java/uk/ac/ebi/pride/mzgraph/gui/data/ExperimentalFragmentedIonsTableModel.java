@@ -42,7 +42,7 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
      * Whether using PSM algorithm to generate auto annotations. For example, if delta m/z is bigger,
      * not calculate.
      */
-    private boolean calcuteAuto = true;
+    private boolean showAnnotation = true;
 
     /**
      * store all manual annotations. including a, b, c, x, y, z ions annotations,
@@ -393,7 +393,7 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
      * @return
      */
     private IonAnnotation[][]  match() {
-        if (! calcuteAuto) {
+        if (!showAnnotation) {
             return new IonAnnotation[getRowCount()][getColumnCount()];
         } else {
             return PSMMatcher.getInstance().match(this, this.peakSet);
@@ -402,15 +402,21 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
 
     /**
      * whether calculate auto annotations.
-     * @param calcuteAuto {@link #calcuteAuto}
+     * @param showAnnotation {@link #showAnnotation}
      */
-    public void setCalcuteAuto(boolean calcuteAuto) {
-        if (calcuteAuto != this.calcuteAuto) {
+    public void setShowAnnotation(boolean showAnnotation) {
+        if (showAnnotation != this.showAnnotation) {
+            this.showAnnotation = showAnnotation;
+
             this.autoData = match();
             this.autoAnnotations = toList(autoData);
 
             notifyObservers();
         }
+    }
+
+    public boolean isShowAnnotation() {
+        return showAnnotation;
     }
 
     /**

@@ -6,7 +6,6 @@ import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.iongen.model.impl.DefaultPrecursorIon;
 import uk.ac.ebi.pride.mol.Peptide;
 import uk.ac.ebi.pride.mzgraph.ExampleUtil;
-import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 
 import java.awt.*;
 
@@ -15,18 +14,22 @@ public class MzTablePanelTest {
         Peptide peptide = ExampleUtil.generatePeptide();
         PrecursorIon precursorIon = new DefaultPrecursorIon(peptide, 2);
 
-        MzTablePanel panel = new MzTablePanel(peptide);
+        MzTablePanel panel = new MzTablePanel(precursorIon);
 
-        java.util.List<IonAnnotation> annotationList = ExampleUtil.generateAnnotationList();
-        panel.addAllManualAnnotations(annotationList);
-//
+        // case 1: when delta m/z overflow.
+//        panel.setShowAnnotations(false);
+
+        // case 2: show auto annotations:
+        panel.setShowAnnotations(true);
         panel.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
-//
-//        panel.addAllManualAnnotations(ExampleUtil.specialAnnotationList());
 
+        // case 3: show manual annotations:
+//        panel.setShowAnnotations(true);
+//        java.util.List<IonAnnotation> annotationList = ExampleUtil.generateAnnotationList();
+//        panel.addAllManualAnnotations(annotationList);
+
+        // create main frame.
         ApplicationFrame mainFrame = new ApplicationFrame("test");
-
-
         mainFrame.getContentPane().add(panel);
         mainFrame.setPreferredSize(new Dimension(1200, 350));
         panel.getTablePanel().setPreferredSize(new Dimension(1000, 250));

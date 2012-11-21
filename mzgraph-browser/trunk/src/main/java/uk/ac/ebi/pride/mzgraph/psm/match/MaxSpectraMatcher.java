@@ -74,7 +74,7 @@ public class MaxSpectraMatcher implements SpectraMatcher {
                         intensity = peak.getIntensity();
 
                         charge = ion.getCharge();
-                        location = ion.getPosition() + 1;
+                        location = ion.getPosition();
                         type = ion.getType().getGroup();
                         loss = ion.getType().getLoss();
 

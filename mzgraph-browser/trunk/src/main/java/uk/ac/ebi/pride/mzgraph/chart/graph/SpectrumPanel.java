@@ -131,6 +131,10 @@ public class SpectrumPanel extends MzGraphPanel implements PropertyChangeListene
         super.reset();
     }
 
+    public void removeIonAnnotations() {
+        spectrumPanelModel.removeIonAnnotations();
+    }
+
     public void setPeaks(double[] mz, double[] intensity) {
         spectrumPanelModel.setPeaks(mz, intensity);
     }

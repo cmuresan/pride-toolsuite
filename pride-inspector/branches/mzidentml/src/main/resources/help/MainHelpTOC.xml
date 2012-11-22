@@ -23,6 +23,7 @@
         </tocitem>
         <tocitem text="Visualizing Spectra and Chromatogram" target="help.mzgraph">
             <tocitem text="Spectra Browser" target="help.mzgraph.spectra"/>
+            <tocitem text="Fragmentation Table" target="help.mzgraph.fragmentation"/>
             <tocitem text="Chromatogram Browser" target="help.mzgraph.chroma"/>
         </tocitem>
         <tocitem text="Showing Protein Details" target="help.protein">

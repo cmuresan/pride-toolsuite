@@ -33,6 +33,7 @@
 
     <mapID target="help.mzgraph" url="html/usage/vis_mzgraph.html"/>
     <mapID target="help.mzgraph.spectra" url="html/usage/mzgraph/spectra.html"/>
+    <mapID target="help.mzgraph.fragmentation" url="html/usage/mzgraph/fragmentation.html"/>
     <mapID target="help.mzgraph.chroma" url="html/usage/mzgraph/chromatogram.html"/>
 
     <mapID target="help.protein" url="html/usage/vis_protein.html"/>
@@ -74,7 +75,6 @@
     <mapID target="help.faq.pridedb" url="html/faq/pride_db.html"/>
     <mapID target="help.faq.pridexml" url="html/faq/pride_xml.html"/>
     <mapID target="help.faq.mzml" url="html/faq/mzml.html"/>
-    <mapID target="help.faq.mzidentml" url="html/faq/mzidentml.html"/>
     <mapID target="help.faq.memory" url="html/faq/memory.html"/>
     <mapID target="help.faq.deltamz" url="html/faq/deltamz.html"/>
     <mapID target="help.faq.shared.peptide" url="html/faq/shared_peptide.html"/>

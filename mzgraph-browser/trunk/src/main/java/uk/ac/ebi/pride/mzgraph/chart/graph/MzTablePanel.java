@@ -60,41 +60,63 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
     private ExperimentalFragmentedIonsTableModel tableModel;
 
     /**
-     * whether show annotations or not.
+     * whether calculate auto annotations or not.
      */
-    private boolean showAnnotation = true;
+    private boolean calculate = true;
 
     private JLabel commentLabel = new JLabel();
+    private JCheckBox waterChecker = new JCheckBox("Show Water Loss");
+    private JCheckBox ammoniaChecker = new JCheckBox("Show Immonia Loss");
     private JLabel ionPairLabel;
     private JComboBox ionPairChooser;
     private JLabel rangeLabel;
     private JSlider rangeSlider;
 
     private void flushPanel() {
-        if (this.tableModel == null || ! showAnnotation) {
-            commentLabel.setText(MzGraphConstants.DELTA_MZ_ERROR);
+        if (this.tableModel == null) {
+            // not generate the fragmentation table yet.
+            commentLabel.setText(MzGraphConstants.FRAG_NO_PEPTIDE);
+            waterChecker.setVisible(false);
+            ammoniaChecker.setVisible(false);
             ionPairLabel.setVisible(false);
             ionPairChooser.setVisible(false);
             rangeLabel.setVisible(false);
             rangeSlider.setVisible(false);
             tablePanel.setVisible(false);
             chartPanel.setVisible(false);
-        } else if (this.tableModel.getAllManualAnnotations().size() == 0) {
-            commentLabel.setText(MzGraphConstants.AUTO_ANNOTATIONS);
-            setShowAuto(true);
-            ionPairLabel.setVisible(true);
-            ionPairChooser.setVisible(true);
-            rangeLabel.setVisible(true);
-            rangeSlider.setVisible(true);
-            tablePanel.setVisible(true);
-            chartPanel.setVisible(true);
-        } else {
-            commentLabel.setText(MzGraphConstants.MANUAL_ANNOTATIONS);
+        } else if (this.tableModel.getAllManualAnnotations().size() > 0) {
+            // have manual annotations.
+            commentLabel.setText(MzGraphConstants.FRAG_MANUAL_ANNOTATIONS);
             setShowAuto(false);
+            waterChecker.setVisible(false);
+            ammoniaChecker.setVisible(false);
             ionPairLabel.setVisible(true);
             ionPairChooser.setVisible(true);
             rangeLabel.setVisible(false);
             rangeSlider.setVisible(false);
+            tablePanel.setVisible(true);
+            chartPanel.setVisible(true);
+        } else if (! calculate) {
+            // no manual annotations, and not calculate auto annotations too!
+            commentLabel.setText(MzGraphConstants.FRAG_DELTA_MZ_ERROR);
+            waterChecker.setVisible(false);
+            ammoniaChecker.setVisible(false);
+            ionPairLabel.setVisible(false);
+            ionPairChooser.setVisible(false);
+            rangeLabel.setVisible(false);
+            rangeSlider.setVisible(false);
+            tablePanel.setVisible(false);
+            chartPanel.setVisible(false);
+        } else {
+            // no manual annotations, but have calculated auto annotations.
+            commentLabel.setText(MzGraphConstants.FRAG_AUTO_ANNOTATIONS);
+            setShowAuto(true);
+            waterChecker.setVisible(true);
+            ammoniaChecker.setVisible(true);
+            ionPairLabel.setVisible(true);
+            ionPairChooser.setVisible(true);
+            rangeLabel.setVisible(true);
+            rangeSlider.setVisible(true);
             tablePanel.setVisible(true);
             chartPanel.setVisible(true);
         }
@@ -115,7 +137,27 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
         contentPane.add(scatterChartPanel, BorderLayout.EAST);
         contentPane.add(tablePanel, BorderLayout.CENTER);
 
-        ionPairLabel = new JLabel("Choose Ion Type: ");
+        waterChecker.setSelected(tableModel.isShowWaterLoss());
+        waterChecker.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JCheckBox checker = (JCheckBox) e.getSource();
+                table.setShowWaterLoss(checker.isSelected());
+                firePropertyChange(FLUSH_TABLEMODEL, null, table.getModel());
+            }
+        });
+
+        ammoniaChecker.setSelected(tableModel.isShowAmmoniaLoss());
+        ammoniaChecker.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JCheckBox checker = (JCheckBox) e.getSource();
+                table.setShowAmmoniaLoss(checker.isSelected());
+                firePropertyChange(FLUSH_TABLEMODEL, null, table.getModel());
+            }
+        });
+
+        ionPairLabel = new JLabel("           Choose Ion Type: ");
         ionPairChooser = new JComboBox();
         ionPairChooser.addItem(ProductIonPair.B_Y);
         ionPairChooser.addItem(ProductIonPair.A_X);
@@ -129,7 +171,7 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
                 firePropertyChange(FLUSH_TABLEMODEL, null, table.getModel());
             }
         });
-        rangeLabel = new JLabel("                    Range(Da):");
+        rangeLabel = new JLabel("            Range(Da):");
         rangeSlider = new JSlider(
                 JSlider.HORIZONTAL,
                 1,        // minimum range is 0.1 Da
@@ -165,7 +207,9 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
 
         JPanel configPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
         configPanel.setPreferredSize(new Dimension(1000, height));
-        configPanel.add(commentLabel);
+//        configPanel.add(commentLabel);
+        configPanel.add(waterChecker);
+        configPanel.add(ammoniaChecker);
         configPanel.add(ionPairLabel);
         configPanel.add(ionPairChooser);
         configPanel.add(rangeLabel);
@@ -204,7 +248,7 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
     public MzTablePanel(Peptide peptide, List<IonAnnotation> ionAnnotationList) {
         PrecursorIon precursorIon = new DefaultPrecursorIon(peptide);
         ExperimentalFragmentedIonsTable table = new ExperimentalFragmentedIonsTable(precursorIon);
-        table.addAllAnnotations(ionAnnotationList);
+        table.addAllManualAnnotations(ionAnnotationList);
         init(table);
     }
 
@@ -222,7 +266,7 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
 
     public MzTablePanel(PrecursorIon precursorIon, List<IonAnnotation> ionAnnotationList) {
         ExperimentalFragmentedIonsTable table = new ExperimentalFragmentedIonsTable(precursorIon);
-        table.addAllAnnotations(ionAnnotationList);
+        table.addAllManualAnnotations(ionAnnotationList);
         init(table);
     }
 
@@ -258,19 +302,15 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
     }
 
     /**
-     * whether show annotations (including auto and manual), or not.
+     * whether calculate auto annotations, or not.
      */
-    public void setShowAnnotations(boolean showAnnotation) {
+    public void calculateAuto(boolean calculate) {
         if (this.tableModel != null) {
-            this.tableModel.setShowAnnotation(showAnnotation);
+            this.tableModel.calculateAuto(calculate);
         }
 
-        this.showAnnotation = showAnnotation;
+        this.calculate = calculate;
         flushPanel();
-    }
-
-    public boolean isShowAnnotation() {
-        return this.showAnnotation;
     }
 
     public void setPeaks(double[] mzArray, double[] intensityArray) {
@@ -284,7 +324,7 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
     /**
      * If there are matched data in the clicked cell, highlight the corresponding point in the chart.
      */
-    private void addTableAction(ExperimentalFragmentedIonsTable table, ChartPanel chartPanel) {
+    private void addTableAction(ExperimentalFragmentedIonsTable table, final ChartPanel chartPanel) {
         final ExperimentalFragmentedIonsTableModel tableModel = (ExperimentalFragmentedIonsTableModel) table.getModel();
         final ExperimentalFragmentedIonsDataset dataset = (ExperimentalFragmentedIonsDataset) chartPanel.getChart().getXYPlot().getDataset();
 
@@ -311,11 +351,16 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
                     double x = dataset.getXValue(series, item);
                     double y = dataset.getYValue(series, item);
 
+                    Dimension size = chartPanel.getPreferredSize();
+                    double width = size.getWidth();
+                    double height = size.getHeight();
+
                     plot.clearAnnotations();
                     NumberAxis range = (NumberAxis) plot.getRangeAxis();
-                    double ySize = range.getTickUnit().getSize() / 10;
+                    double ySize = height / range.getTickUnit().getSize() / 40;
                     NumberAxis domain = (NumberAxis) plot.getDomainAxis();
-                    double xSize = domain.getTickUnit().getSize() / 10;
+                    double xSize = width / domain.getTickUnit().getSize() / 40;
+
                     XYBoxAnnotation boxAnnotation = new XYBoxAnnotation(x - xSize, y - ySize, x + xSize, y + ySize, new BasicStroke(0.0f), Color.green, Color.green);
 
                     NumberFormat formatter = NumberFormat.getInstance();

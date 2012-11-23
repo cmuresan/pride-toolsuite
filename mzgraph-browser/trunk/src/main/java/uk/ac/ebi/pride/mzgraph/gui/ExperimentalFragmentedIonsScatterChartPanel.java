@@ -86,17 +86,17 @@ public class ExperimentalFragmentedIonsScatterChartPanel extends JPanel{
 
         chart.removeLegend();
 
-        NumberAxis yAxis = (NumberAxis) plot.getDomainAxis();
+        NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
         yAxis.setTickUnit(new NumberTickUnit(200d));
         yAxis.setAutoRange(true);
-        plot.setDomainAxis(yAxis);
+        plot.setRangeAxis(yAxis);
 
-        NumberAxis xAxis = (NumberAxis) plot.getRangeAxis();
+        NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
         xAxis.setTickUnit(new NumberTickUnit(MzGraphConstants.INTERVAL_RANGE));
         xAxis.setAutoRange(true);
         xAxis.setDefaultAutoRange(new Range(-0.5, 0.5));
         xAxis.setTickLabelsVisible(false);
-        plot.setRangeAxis(xAxis);
+        plot.setDomainAxis(xAxis);
 
         return chart;
     }

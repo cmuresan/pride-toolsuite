@@ -30,7 +30,7 @@ public class ExperimentalFragmentedIonsScatterChartPanelTest {
 
         chartPanel.setShowAutoAnnotations(true);
 //
-//        chartPanel.setShowAutoAnnotations(false);
+//        chartPanel.setShowAuto(false);
 //        chartPanel.setShowManualAnnotations(false);
 
         ApplicationFrame mainFrame = new ApplicationFrame("test");

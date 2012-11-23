@@ -69,19 +69,33 @@ public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTa
         }
     }
 
-    public void setShowAutoAnnotations(boolean showAuto) {
+    public void setShowAuto(boolean showAuto) {
         this.tableModel.setShowAuto(showAuto);
+    }
+
+    public void setShowWaterLoss(boolean showWaterLoss) {
+        this.tableModel.setShowWaterLoss(showWaterLoss);
+
+        revalidate();
+        repaint();
+    }
+
+    public void setShowAmmoniaLoss(boolean showAmmoniaLoss) {
+        this.tableModel.setShowAmmoniaLoss(showAmmoniaLoss);
+
+        revalidate();
+        repaint();
     }
 
     public void setPeaks(double[] mzArray, double[] intensityArray) {
         this.tableModel.setPeaks(mzArray, intensityArray);
     }
 
-    public void addAnnotation(IonAnnotation annotation) {
+    public void addManualAnnotation(IonAnnotation annotation) {
         this.tableModel.addManualAnnotation(annotation);
     }
 
-    public void addAllAnnotations(List<IonAnnotation> annotationList) {
+    public void addAllManualAnnotations(List<IonAnnotation> annotationList) {
         this.tableModel.addAllManualAnnotations(annotationList);
     }
 

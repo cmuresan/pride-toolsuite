@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.iongen.model.impl.DefaultPrecursorIon;
 import uk.ac.ebi.pride.mol.Peptide;
 import uk.ac.ebi.pride.mzgraph.ExampleUtil;
+import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 
 import java.awt.*;
 
@@ -17,14 +18,14 @@ public class MzTablePanelTest {
         MzTablePanel panel = new MzTablePanel(precursorIon);
 
         // case 1: when delta m/z overflow.
-//        panel.setShowAnnotations(false);
+//        panel.calculateAuto(false);
 
         // case 2: show auto annotations:
-        panel.setShowAnnotations(true);
+        panel.calculateAuto(true);
         panel.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
 
         // case 3: show manual annotations:
-//        panel.setShowAnnotations(true);
+//        panel.calculateAuto(true);
 //        java.util.List<IonAnnotation> annotationList = ExampleUtil.generateAnnotationList();
 //        panel.addAllManualAnnotations(annotationList);
 

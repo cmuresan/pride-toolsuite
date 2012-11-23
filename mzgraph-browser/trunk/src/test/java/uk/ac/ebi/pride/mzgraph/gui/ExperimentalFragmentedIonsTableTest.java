@@ -30,8 +30,8 @@ public class ExperimentalFragmentedIonsTableTest {
         tableModel.addAllManualAnnotations(ExampleUtil.specialAnnotationList());
 
         // test whether show auto and manual annotations, or not.
-//        table.setShowAutoAnnotations(true);
-//        table.setShowAutoAnnotations(false);
+//        table.setShowAuto(true);
+//        table.setShowAuto(false);
 
 //        table.setProductIonPair(ProductIonPair.A_X);
 

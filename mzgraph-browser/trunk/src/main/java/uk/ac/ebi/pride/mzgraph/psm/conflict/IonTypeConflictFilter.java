@@ -24,22 +24,28 @@ public class IonTypeConflictFilter implements ConflictFilter {
      * Currently, we not consider about the neutral loss.
      */
     private int getScore(IonAnnotationInfo.Item item) {
+        int store = 0;
+
         if (item == null) {
-            return 50;
+            store = 0;
         }
 
         FragmentIonType type = item.getType();
         if (type.equals(FragmentIonType.B_ION)) {
-            return 100;
+            store = 100;
         } else if (type.equals(FragmentIonType.Y_ION)) {
-            return 90;
+            store = 99;
         } else if (type.equals(FragmentIonType.A_ION)) {
-            return 80;
+            store = 98;
         } else if (type.equals(FragmentIonType.C_ION)) {
-            return 70;
+            store = 97;
         }
 
-        return 50;
+        if (item.getNeutralLoss() != null) {
+            store -= 5;
+        }
+
+        return store;
     }
 
     private void filterConflictMatrixCell(IonAnnotation[][] src, IonAnnotation annotation,
@@ -55,20 +61,19 @@ public class IonTypeConflictFilter implements ConflictFilter {
             score = getScore(item);
             if (score > maxScore) {
                 maxScore = score;
+
+                if (maxItem != null) {
+                    row = tableModel.getRowNumber(maxItem.getType(), maxItem.getLocation());
+                    col = tableModel.getColumnNumber(maxItem.getType(), maxItem.getCharge(), maxItem.getNeutralLoss());
+                    src[row][col] = null;
+                }
+
                 maxItem = item;
             } else {
-                if (item.getLocation() == tableModel.getRowCount()) {
-                    continue;
-                }
                 // erase mirror item from matrix
                 row = tableModel.getRowNumber(item.getType(), item.getLocation());
                 col = tableModel.getColumnNumber(item.getType(), item.getCharge(), item.getNeutralLoss());
-                try {
-                    src[row][col] = null;
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println(item);
-                    System.out.println("row:" + row + " col:" + col);
-                }
+                src[row][col] = null;
             }
         }
 
@@ -88,8 +93,11 @@ public class IonTypeConflictFilter implements ConflictFilter {
         }
 
         IonAnnotation annotation;
-        for (int row = 0; row < src.length; row++) {
-            for (int col = 0; col < src[row].length; col++) {
+        int rowCount = src.length;
+        int colCount = src[0].length;
+
+        for (int col = 0; col < colCount; col++) {
+            for (int row = 0; row < rowCount; row++) {
                 annotation = src[row][col];
                 // there exists more than one annotation for one peak.
                 if (annotation != null && annotation.getAnnotationInfo().getNumberOfItems() > 1) {

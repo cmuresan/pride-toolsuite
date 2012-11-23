@@ -31,7 +31,7 @@ public class SpectrumBrowserTest {
         browser.addFragmentIons(ExampleUtil.generateAnnotationList());
 
 
-//        browser.setShowAutoAnnotations(false);
+//        browser.setShowAuto(false);
 //        browser.setShowManualAnnotations(false);
 
         browser.setSource("Test");

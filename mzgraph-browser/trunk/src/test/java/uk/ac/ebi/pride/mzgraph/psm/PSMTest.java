@@ -1,12 +1,5 @@
 package uk.ac.ebi.pride.mzgraph.psm;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import uk.ac.ebi.jmzml.model.mzml.CVParam;
-import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzDataControllerImpl;
-import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzXmlControllerImpl;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
 import uk.ac.ebi.pride.data.core.CvParam;
 import uk.ac.ebi.pride.data.core.FragmentIon;
@@ -27,8 +20,6 @@ import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.text.NumberFormat;
 import java.util.*;
 

@@ -38,11 +38,9 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
      */
     private boolean showAuto = false;
 
-    /**
-     * Whether using PSM algorithm to generate auto annotations. For example, if delta m/z is bigger,
-     * not calculate.
-     */
-    private boolean showAnnotation = true;
+    private boolean showWaterLoss = false;
+
+    private boolean showAmmoniaLoss = false;
 
     /**
      * store all manual annotations. including a, b, c, x, y, z ions annotations,
@@ -99,19 +97,24 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
         return false;
     }
 
-    public boolean isShowAuto() {
-        return showAuto;
+    public void setShowWaterLoss(boolean showWaterLoss) {
+        this.showWaterLoss = showWaterLoss;
+
+        notifyObservers();
     }
 
-    /**
-     * Experimental fragmented ions table model can only show auto or manual annotations at one time.
-     * @see #getAnnotations()
-     * @see #getMatchedData()
-     * @param showAuto set true means show auto annotations, set false show manual annotations.
-     */
-    public void setShowAuto(boolean showAuto) {
-        this.showAuto = showAuto;
+    public void setShowAmmoniaLoss(boolean showAmmoniaLoss) {
+        this.showAmmoniaLoss = showAmmoniaLoss;
+
         notifyObservers();
+    }
+
+    public boolean isShowWaterLoss() {
+        return showWaterLoss;
+    }
+
+    public boolean isShowAmmoniaLoss() {
+        return showAmmoniaLoss;
     }
 
     private List<IonAnnotation> toList(IonAnnotation[][] matrix) {
@@ -272,9 +275,9 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
     }
 
     /**
-     * Based on Product Ions Pairs to decide whether add manual annotations, or not.
+     * Based on Product Ions Pairs to decide whether show manual annotations, or not.
      */
-    private boolean isFit(IonAnnotation annotation) {
+    private boolean isFitManual(IonAnnotation annotation) {
         FragmentIonType type = annotation.getAnnotationInfo().getItem(0).getType();
         switch (getIonPair()) {
             case B_Y:
@@ -301,6 +304,34 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
     }
 
     /**
+     * based on {@link #showAmmoniaLoss} and {@link #showWaterLoss}, to decide whether show
+     * auto annotations or not.
+     */
+    private boolean isFitAuto(IonAnnotation annotation) {
+        IonAnnotationInfo info = annotation.getAnnotationInfo();
+
+        NeutralLoss loss;
+        for (int i = 0; i < info.getNumberOfItems(); i++) {
+            loss = info.getItem(i).getNeutralLoss();
+
+            if (loss == null) {
+                // no neutral loss, do not filter
+                continue;
+            }
+
+            if (! showWaterLoss && loss.equals(NeutralLoss.WATER_LOSS)) {
+                return false;
+            }
+
+            if (! showAmmoniaLoss && loss.equals(NeutralLoss.AMMONIA_LOSS)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Based on Product Ions Pairs to show according manual annotations.
      * This is a read only ion annotation list. Can not do add, remove operations, just used for browse.
      */
@@ -308,7 +339,7 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
         List<IonAnnotation> newManualAnnotations = new ArrayList<IonAnnotation>();
 
         for (IonAnnotation annotation : manualAnnotations) {
-            if (isFit(annotation)) {
+            if (isFitManual(annotation)) {
                 newManualAnnotations.add(annotation);
             }
         }
@@ -326,7 +357,15 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
     }
 
     public List<IonAnnotation> getAutoAnnotations() {
-        return Collections.unmodifiableList(autoAnnotations);
+        List<IonAnnotation> newAutoAnnotations = new ArrayList<IonAnnotation>();
+
+        for (IonAnnotation annotation : autoAnnotations) {
+            if (isFitAuto(annotation)) {
+                newAutoAnnotations.add(annotation);
+            }
+        }
+
+        return Collections.unmodifiableList(newAutoAnnotations);
     }
 
     /**
@@ -393,30 +432,39 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
      * @return
      */
     private IonAnnotation[][]  match() {
-        if (!showAnnotation) {
-            return new IonAnnotation[getRowCount()][getColumnCount()];
-        } else {
-            return PSMMatcher.getInstance().match(this, this.peakSet);
-        }
+        return PSMMatcher.getInstance().match(this, this.peakSet);
     }
 
     /**
-     * whether calculate auto annotations.
-     * @param showAnnotation {@link #showAnnotation}
+     * Whether using PSM algorithm to generate auto annotations. For example, if delta m/z is bigger,
+     * not calculate.
      */
-    public void setShowAnnotation(boolean showAnnotation) {
-        if (showAnnotation != this.showAnnotation) {
-            this.showAnnotation = showAnnotation;
 
+    public void calculateAuto(boolean calculate) {
+        if (calculate) {
             this.autoData = match();
             this.autoAnnotations = toList(autoData);
-
-            notifyObservers();
+        } else {
+            this.autoData = new IonAnnotation[getRowCount()][getColumnCount()];
+            this.autoAnnotations = toList(autoData);
         }
+
+        notifyObservers();
     }
 
-    public boolean isShowAnnotation() {
-        return showAnnotation;
+    public boolean isShowAuto() {
+        return showAuto;
+    }
+
+    /**
+     * Experimental fragmented ions table model can only show auto or manual annotations at one time.
+     * @see #getAnnotations()
+     * @see #getMatchedData()
+     * @param showAuto set true means show auto annotations, set false show manual annotations.
+     */
+    public void setShowAuto(boolean showAuto) {
+        this.showAuto = showAuto;
+        notifyObservers();
     }
 
     /**
@@ -424,21 +472,28 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
      * @see #setShowAuto(boolean)
      */
     public IonAnnotation[][] getMatchedData() {
+        IonAnnotation[][] matchedData = new IonAnnotation[getRowCount()][getColumnCount()];
+
         if (showAuto) {
-            return autoData;
+            for (int i = 0; i < getRowCount(); i++) {
+                for (int j = 0; j < getColumnCount(); j++) {
+                    if (autoData[i][j] != null && isFitAuto(autoData[i][j])) {
+                        matchedData[i][j] = autoData[i][j];
+                    }
+                }
+            }
         } else {
-            IonAnnotation[][] matchedData = new IonAnnotation[getRowCount()][getColumnCount()];
             for (int i = 0; i < getRowCount(); i++) {
                 for (int j = 0; j < getColumnCount(); j++) {
                     // based on product ion pair the show manual data.
-                    if (manualData[i][j] != null && isFit(manualData[i][j])) {
+                    if (manualData[i][j] != null && isFitManual(manualData[i][j])) {
                         matchedData[i][j] = manualData[i][j];
                     }
                 }
             }
-
-            return matchedData;
         }
+
+        return matchedData;
     }
 
     /**

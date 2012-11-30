@@ -10,11 +10,9 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.Range;
-import org.jfree.ui.RectangleAnchor;
-import org.jfree.ui.TextAnchor;
 import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.mol.ProductIonPair;
+import uk.ac.ebi.pride.mzgraph.chart.axis.DiffDaltonAxis;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants;
 import uk.ac.ebi.pride.mzgraph.chart.tooltip.ExperimentalFragmentedIonsScatterChartTooltipGenerator;
@@ -62,19 +60,10 @@ public class ExperimentalFragmentedIonsScatterChartPanel extends JPanel{
 
         final Marker startMarker = new ValueMarker(-0.5);
         startMarker.setPaint(Color.black);
-        startMarker.setLabel("-0.5Da");
-        startMarker.setLabelAnchor(RectangleAnchor.TOP);
-        startMarker.setLabelTextAnchor(TextAnchor.TOP_CENTER);
         final Marker zeroMarker = new ValueMarker(0);
         zeroMarker.setPaint(Color.black);
-        zeroMarker.setLabel("0");
-        zeroMarker.setLabelAnchor(RectangleAnchor.TOP);
-        zeroMarker.setLabelTextAnchor(TextAnchor.TOP_CENTER);
         final Marker endMarker = new ValueMarker(0.5);
         endMarker.setPaint(Color.black);
-        endMarker.setLabel("0.5Da");
-        endMarker.setLabelAnchor(RectangleAnchor.TOP);
-        endMarker.setLabelTextAnchor(TextAnchor.TOP_CENTER);
         plot.addRangeMarker(startMarker);
         plot.addRangeMarker(zeroMarker);
         plot.addRangeMarker(endMarker);
@@ -89,14 +78,14 @@ public class ExperimentalFragmentedIonsScatterChartPanel extends JPanel{
         NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
         yAxis.setTickUnit(new NumberTickUnit(200d));
         yAxis.setAutoRange(true);
-        plot.setRangeAxis(yAxis);
+        plot.setDomainAxis(yAxis);
 
-        NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
+        DiffDaltonAxis xAxis = new DiffDaltonAxis(-1, 1);
+        xAxis.setRange(-1, 1);
         xAxis.setTickUnit(new NumberTickUnit(MzGraphConstants.INTERVAL_RANGE));
         xAxis.setAutoRange(true);
-        xAxis.setDefaultAutoRange(new Range(-0.5, 0.5));
-        xAxis.setTickLabelsVisible(false);
-        plot.setDomainAxis(xAxis);
+        xAxis.setTickLabelsVisible(true);
+        plot.setRangeAxis(xAxis);
 
         return chart;
     }

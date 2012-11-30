@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.mzgraph.chart.graph;
 
 import org.jfree.chart.*;
+import org.jfree.chart.annotations.XYAnnotation;
+import org.jfree.chart.annotations.XYTextAnnotation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.TickUnitSource;
 import org.jfree.chart.axis.ValueAxis;
@@ -10,6 +12,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
+import org.jfree.ui.TextAnchor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
@@ -28,6 +31,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.NumberFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -118,6 +122,21 @@ public abstract class MzGraphPanel extends JPanel implements ChartMouseListener,
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public void addDeltaOverflowAnnotation() {
+        java.util.List<XYAnnotation> annotations = plot.getAnnotations();
+        for (XYAnnotation annotation : annotations) {
+            plot.removeAnnotation(annotation, true);
+        }
+
+        ValueAxis domainAxis = plot.getDomainAxis();
+        ValueAxis rangeAxis = plot.getRangeAxis();
+        double lx = domainAxis.getRange().getLength() * 0.02;
+        double ly = rangeAxis.getRange().getLength() * 0.85;
+        XYTextAnnotation mzAnnotation = new XYTextAnnotation(MzGraphConstants.DELTA_MZ_OVERFLOW, lx, ly);
+        mzAnnotation.setTextAnchor(TextAnchor.TOP_LEFT);
+        plot.addAnnotation(mzAnnotation, true);
     }
 
     public String getSource() {

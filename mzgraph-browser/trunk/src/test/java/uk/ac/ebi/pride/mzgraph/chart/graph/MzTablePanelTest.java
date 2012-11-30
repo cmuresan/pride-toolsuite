@@ -21,13 +21,13 @@ public class MzTablePanelTest {
 //        panel.calculateAuto(false);
 
         // case 2: show auto annotations:
-        panel.calculateAuto(true);
-        panel.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
+//        panel.calculateAuto(true);
+//        panel.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
 
         // case 3: show manual annotations:
-//        panel.calculateAuto(true);
-//        java.util.List<IonAnnotation> annotationList = ExampleUtil.generateAnnotationList();
-//        panel.addAllManualAnnotations(annotationList);
+        panel.calculateAuto(false);
+        java.util.List<IonAnnotation> annotationList = ExampleUtil.generateAnnotationList();
+        panel.addAllManualAnnotations(annotationList);
 
         // create main frame.
         ApplicationFrame mainFrame = new ApplicationFrame("test");

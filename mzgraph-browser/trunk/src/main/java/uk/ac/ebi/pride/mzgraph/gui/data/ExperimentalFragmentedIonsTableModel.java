@@ -38,6 +38,8 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
      */
     private boolean showAuto = false;
 
+    private boolean calculate = false;
+
     private boolean showWaterLoss = false;
 
     private boolean showAmmoniaLoss = false;
@@ -435,12 +437,17 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
         return PSMMatcher.getInstance().match(this, this.peakSet);
     }
 
+    public boolean isCalculate() {
+        return calculate;
+    }
+
     /**
      * Whether using PSM algorithm to generate auto annotations. For example, if delta m/z is bigger,
      * not calculate.
      */
-
     public void calculateAuto(boolean calculate) {
+        this.calculate = calculate;
+
         if (calculate) {
             this.autoData = match();
             this.autoAnnotations = toList(autoData);

@@ -211,11 +211,5 @@ public class MzGraphConstants {
     public static final double ASA_MEAN_RATIO_THRESHOLD = 0.8;
     public static final double ASA_DENSITY_THRESHOLD = 1.0;
 
-    /**
-     * Fragmentation Table Messages:
-     */
-    public static final String FRAG_NO_PEPTIDE = "No peptide yet, can not generate fragmentation table!";
-    public static final String FRAG_DELTA_MZ_ERROR = "Delta m/z is too large, no fragmentation table!";
-    public static final String FRAG_AUTO_ANNOTATIONS = "Show auto annotations.";
-    public static final String FRAG_MANUAL_ANNOTATIONS = "Show manual annotations.";
+    public static final String DELTA_MZ_OVERFLOW = "Delta m/z value higher than 1 Da, ms/ms automatic spectrum annotations and fragmentation table not provided";
 }

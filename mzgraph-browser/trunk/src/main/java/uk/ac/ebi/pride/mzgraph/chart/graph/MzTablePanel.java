@@ -56,26 +56,31 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
 
     private JScrollPane tablePanel;
     private ChartPanel chartPanel;
+    private JPanel toolbar;
 
     private ExperimentalFragmentedIonsTableModel tableModel;
+
+    /**
+     * MzTablePanel have initial or not.
+     */
+    private boolean initial = false;
 
     /**
      * whether calculate auto annotations or not.
      */
     private boolean calculate = true;
 
-    private JLabel commentLabel = new JLabel();
-    private JCheckBox waterChecker = new JCheckBox("Show Water Loss");
-    private JCheckBox ammoniaChecker = new JCheckBox("Show Immonia Loss");
+    private JCheckBox waterChecker = new JCheckBox("Show H2O Neutral Loss");
+    private JCheckBox ammoniaChecker = new JCheckBox("Show NH3 Neutral Loss");
     private JLabel ionPairLabel;
     private JComboBox ionPairChooser;
     private JLabel rangeLabel;
     private JSlider rangeSlider;
+    private JToggleButton helpButton;
 
     private void flushPanel() {
-        if (this.tableModel == null) {
+        if (! initial) {
             // not generate the fragmentation table yet.
-            commentLabel.setText(MzGraphConstants.FRAG_NO_PEPTIDE);
             waterChecker.setVisible(false);
             ammoniaChecker.setVisible(false);
             ionPairLabel.setVisible(false);
@@ -86,7 +91,6 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
             chartPanel.setVisible(false);
         } else if (this.tableModel.getAllManualAnnotations().size() > 0) {
             // have manual annotations.
-            commentLabel.setText(MzGraphConstants.FRAG_MANUAL_ANNOTATIONS);
             setShowAuto(false);
             waterChecker.setVisible(false);
             ammoniaChecker.setVisible(false);
@@ -96,9 +100,9 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
             rangeSlider.setVisible(false);
             tablePanel.setVisible(true);
             chartPanel.setVisible(true);
-        } else if (! calculate) {
+        } else if (! isCalculate()) {
             // no manual annotations, and not calculate auto annotations too!
-            commentLabel.setText(MzGraphConstants.FRAG_DELTA_MZ_ERROR);
+            setShowAuto(true);
             waterChecker.setVisible(false);
             ammoniaChecker.setVisible(false);
             ionPairLabel.setVisible(false);
@@ -109,7 +113,6 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
             chartPanel.setVisible(false);
         } else {
             // no manual annotations, but have calculated auto annotations.
-            commentLabel.setText(MzGraphConstants.FRAG_AUTO_ANNOTATIONS);
             setShowAuto(true);
             waterChecker.setVisible(true);
             ammoniaChecker.setVisible(true);
@@ -123,9 +126,10 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
     }
 
     private void init(final ExperimentalFragmentedIonsTable table) {
-        int height = 50;
+        int height = 35;
         tablePanel = new JScrollPane(table);
         this.tableModel = (ExperimentalFragmentedIonsTableModel) table.getModel();
+        initial = true;
 
         // the second table model observer.
         this.tableModel.addObserver(2, this);
@@ -181,12 +185,17 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
         rangeSlider.setMinorTickSpacing(1);
         rangeSlider.setMajorTickSpacing(1);
         rangeSlider.setPaintLabels(true);
-        rangeSlider.setPaintTicks(true);
+        rangeSlider.setPaintTicks(false);
         Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
+        JLabel unitLabel;
         for (int i = 1; i <= 9; i++) {
-            labelTable.put(i, new JLabel("0." + i));
+            unitLabel = new JLabel("0." + i);
+            unitLabel.setFont(new Font(unitLabel.getFont().getFontName(), unitLabel.getFont().getStyle(), unitLabel.getFont().getSize() - 4));
+            labelTable.put(i, unitLabel);
         }
-        labelTable.put(10, new JLabel("1.0"));
+        unitLabel = new JLabel("1.0");
+        unitLabel.setFont(new Font(unitLabel.getFont().getFontName(), unitLabel.getFont().getStyle(), unitLabel.getFont().getSize() - 4));
+        labelTable.put(10, unitLabel);
         rangeSlider.setLabelTable(labelTable);
 
         rangeSlider.setPreferredSize(new Dimension(300, height));
@@ -205,19 +214,59 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
             }
         });
 
-        JPanel configPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-        configPanel.setPreferredSize(new Dimension(1000, height));
-//        configPanel.add(commentLabel);
-        configPanel.add(waterChecker);
-        configPanel.add(ammoniaChecker);
-        configPanel.add(ionPairLabel);
-        configPanel.add(ionPairChooser);
-        configPanel.add(rangeLabel);
-        configPanel.add(rangeSlider);
+        helpButton = new JToggleButton();
+        helpButton.setFocusable(false);
+        helpButton.setOpaque(false);
+        helpButton.setBorderPainted(false);
+
+        toolbar = new JPanel(null);
+        toolbar.setPreferredSize(new Dimension(1000, height));
+        toolbar.add(waterChecker);
+        toolbar.add(ammoniaChecker);
+        toolbar.add(ionPairLabel);
+        toolbar.add(ionPairChooser);
+        toolbar.add(rangeLabel);
+        toolbar.add(rangeSlider);
+        toolbar.add(helpButton);
+
+        // absolute layout
+        Insets insets = toolbar.getInsets();
+        int x_offset = 20 + insets.left;
+        int y_offset = 5 + insets.top;
+
+        Dimension size = waterChecker.getPreferredSize();
+        waterChecker.setBounds(x_offset, y_offset, size.width, size.height);
+        x_offset += size.width + 5;
+
+        size = ammoniaChecker.getPreferredSize();
+        ammoniaChecker.setBounds(x_offset, y_offset, size.width, size.height);
+        x_offset += size.width + 30;
+
+        size = ionPairLabel.getPreferredSize();
+        ionPairLabel.setBounds(x_offset, y_offset + 5, size.width, size.height);
+        x_offset += size.width + 5;
+
+        ionPairChooser.setPreferredSize(new Dimension(70, ionPairLabel.getHeight()));
+        size = ionPairChooser.getPreferredSize();
+        ionPairChooser.setBounds(x_offset, y_offset + 5, size.width, size.height);
+        x_offset += size.width + 30;
+
+        size = rangeLabel.getPreferredSize();
+        rangeLabel.setBounds(x_offset, y_offset + 5, size.width, size.height);
+        x_offset += size.width + 5;
+
+        size = rangeSlider.getPreferredSize();
+        rangeSlider.setBounds(x_offset, y_offset - 2, size.width, size.height);
+        x_offset += size.width + 90;
+
+        size = helpButton.getPreferredSize();
+        helpButton.setBounds(x_offset, y_offset + 2, size.width, 25);
+        helpButton.setVisible(false);
 
         flushPanel();
 
-        add(configPanel, BorderLayout.NORTH);
+        setLayout(new BorderLayout());
+        add(toolbar, BorderLayout.NORTH);
         add(contentPane, BorderLayout.CENTER);
 
 
@@ -270,12 +319,27 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
         init(table);
     }
 
+    public boolean hasInitial() {
+        return initial;
+    }
+
     public ChartPanel getChartPanel() {
         return chartPanel;
     }
 
     public JScrollPane getTablePanel() {
         return tablePanel;
+    }
+
+    public JPanel getToolbar() {
+        return toolbar;
+    }
+
+    /**
+     * This button default is invisible. User can add some Action in it.
+     */
+    public JToggleButton getHelpButton() {
+        return helpButton;
     }
 
     public void setTable(ExperimentalFragmentedIonsTable table) {
@@ -313,12 +377,24 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
         flushPanel();
     }
 
+    public boolean isCalculate() {
+        return calculate;
+    }
+
     public void setPeaks(double[] mzArray, double[] intensityArray) {
         this.tableModel.setPeaks(mzArray, intensityArray);
     }
 
     public void setPeaks(PeakSet peakSet) {
         this.tableModel.setPeaks(peakSet);
+    }
+
+    /**
+     * Whether show auto annotations, or show manual annotations. Default, the value is {@value}.
+     * User can call {@link #setShowAuto(boolean)} to change this value.
+     */
+    public boolean isShowAuto() {
+        return this.tableModel.isShowAuto();
     }
 
     /**
@@ -352,14 +428,12 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
                     double y = dataset.getYValue(series, item);
 
                     Dimension size = chartPanel.getPreferredSize();
-                    double width = size.getWidth();
-                    double height = size.getHeight();
 
                     plot.clearAnnotations();
-                    NumberAxis range = (NumberAxis) plot.getRangeAxis();
-                    double ySize = height / range.getTickUnit().getSize() / 40;
-                    NumberAxis domain = (NumberAxis) plot.getDomainAxis();
-                    double xSize = width / domain.getTickUnit().getSize() / 40;
+                    NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
+                    double ySize = yAxis.getRange().getLength() / 50;
+                    NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
+                    double xSize = xAxis.getRange().getLength() / 50;
 
                     XYBoxAnnotation boxAnnotation = new XYBoxAnnotation(x - xSize, y - ySize, x + xSize, y + ySize, new BasicStroke(0.0f), Color.green, Color.green);
 

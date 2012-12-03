@@ -537,11 +537,11 @@ public class PrideXmlTransformer {
         //Retrieve Experimental Mass and Charge.
         int charge = DataAccessUtilities.getPrecursorCharge(params);
         double mz  = DataAccessUtilities.getPrecursorMz(params);
-        if(charge != -1 && spectrum != null){
+        if(charge == -1 && spectrum != null){
             charge = DataAccessUtilities.getPrecursorCharge(spectrum);
         }
 
-        if (mz != -1 && spectrum != null) {
+        if (mz == -1 && spectrum != null) {
             mz = DataAccessUtilities.getPrecursorMz(spectrum);
         }
 

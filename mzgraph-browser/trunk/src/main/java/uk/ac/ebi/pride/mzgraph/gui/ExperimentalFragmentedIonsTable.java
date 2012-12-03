@@ -25,6 +25,9 @@ import java.util.List;
 public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTable {
     private ExperimentalFragmentedIonsTableModel tableModel;
 
+    public static final String FLUSH_TABLEMODEL = "flush tablemodel";
+    private boolean calculate = false;
+
     public ExperimentalFragmentedIonsTable(PrecursorIon precursorIon, ProductIonPair pair, PeakSet peakSet) {
         super(precursorIon, pair);
 
@@ -59,7 +62,9 @@ public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTa
     }
 
     public void setProductIonPair(ProductIonPair ionPair) {
-        this.tableModel.setProductIonPair(ionPair);
+        if (this.tableModel != null && ! this.tableModel.getIonPair().equals(ionPair)) {
+            this.tableModel.setProductIonPair(ionPair);
+        }
 
         TableColumnModel columnModel = getColumnModel();
         TableColumn column;
@@ -67,36 +72,86 @@ public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTa
             column = columnModel.getColumn(i);
             column.setHeaderValue(tableModel.getColumnName(i));
         }
+
+        firePropertyChange(FLUSH_TABLEMODEL, null, this.tableModel);
     }
 
     public void setShowAuto(boolean showAuto) {
-        this.tableModel.setShowAuto(showAuto);
+        if (this.tableModel != null && this.tableModel.isShowAuto() != showAuto) {
+            this.tableModel.setShowAuto(showAuto);
+            firePropertyChange(FLUSH_TABLEMODEL, null, this.tableModel);
+        }
+    }
+
+    public boolean isShowAuto() {
+        return this.tableModel.isShowAuto();
+    }
+
+    /**
+     * whether calculate auto annotations, or not.
+     */
+    public void setCalculate(boolean calculate) {
+        if (this.tableModel != null && calculate != this.tableModel.isCalculate()) {
+            this.tableModel.setCalculate(calculate);
+            firePropertyChange(FLUSH_TABLEMODEL, null, this.tableModel);
+        }
+    }
+
+    public boolean isCalculate() {
+        return tableModel.isCalculate();
     }
 
     public void setShowWaterLoss(boolean showWaterLoss) {
-        this.tableModel.setShowWaterLoss(showWaterLoss);
-
-        revalidate();
-        repaint();
+        if (this.tableModel != null && showWaterLoss != this.tableModel.isShowWaterLoss()) {
+            this.tableModel.setShowWaterLoss(showWaterLoss);
+            firePropertyChange(FLUSH_TABLEMODEL, null, this.tableModel);
+        }
     }
 
     public void setShowAmmoniaLoss(boolean showAmmoniaLoss) {
-        this.tableModel.setShowAmmoniaLoss(showAmmoniaLoss);
-
-        revalidate();
-        repaint();
+        if (this.tableModel != null && showAmmoniaLoss != this.tableModel.isShowAmmoniaLoss()) {
+            this.tableModel.setShowAmmoniaLoss(showAmmoniaLoss);
+            firePropertyChange(FLUSH_TABLEMODEL, null, this.tableModel);
+        }
     }
 
     public void setPeaks(double[] mzArray, double[] intensityArray) {
-        this.tableModel.setPeaks(mzArray, intensityArray);
+        if (this.tableModel != null) {
+            this.tableModel.setPeaks(mzArray, intensityArray);
+            firePropertyChange(FLUSH_TABLEMODEL, null, this.tableModel);
+        }
+    }
+
+    public void setPeaks(PeakSet peakSet) {
+        if (this.tableModel != null) {
+            this.tableModel.setPeaks(peakSet);
+            firePropertyChange(FLUSH_TABLEMODEL, "", this.tableModel);
+        }
+    }
+
+    public void setRange(double range) {
+        if (this.tableModel != null) {
+            this.tableModel.setRange(range);
+            firePropertyChange(FLUSH_TABLEMODEL, "", this.tableModel);
+        }
     }
 
     public void addManualAnnotation(IonAnnotation annotation) {
-        this.tableModel.addManualAnnotation(annotation);
+        if (this.tableModel != null) {
+            this.tableModel.addManualAnnotation(annotation);
+            firePropertyChange(FLUSH_TABLEMODEL, "", this.tableModel);
+        }
     }
 
     public void addAllManualAnnotations(List<IonAnnotation> annotationList) {
-        this.tableModel.addAllManualAnnotations(annotationList);
+        if (this.tableModel != null) {
+            this.tableModel.addAllManualAnnotations(annotationList);
+            firePropertyChange(FLUSH_TABLEMODEL, "", this.tableModel);
+        }
+    }
+
+    public boolean hasManualAnnotations() {
+        return this.tableModel.getAllManualAnnotations().size() > 0;
     }
 
     public TableCellRenderer getCellRenderer(int row, int column) {
@@ -126,7 +181,6 @@ public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTa
             jc.setToolTipText("m/z:" + formatter.format(practice) + " " +
                               "Error: " + formatter.format(practice - theoretical));
         }
-
 
         return c;
     }

@@ -159,13 +159,9 @@ public class TheoreticalFragmentedIonsTableModel extends AbstractTableModel {
        setProductIonPair(ionPair);
     }
 
-    public boolean setProductIonPair(ProductIonPair ionPair) {
+    public void setProductIonPair(ProductIonPair ionPair) {
         if (ionPair == null) {
             ionPair = ProductIonPair.B_Y;
-        }
-
-        if (ionPair == this.ionPair) {
-            return false;
         }
 
         this.ionPair = ionPair;
@@ -208,12 +204,9 @@ public class TheoreticalFragmentedIonsTableModel extends AbstractTableModel {
         }
 
         columnNames = createColumnNames(prevMatrix, postMatrix);
-//        fireTableStructureChanged();
 
         data = createData(precursorIon, prevMatrix, postMatrix);
         fireTableDataChanged();
-
-        return true;
     }
 
     @Override

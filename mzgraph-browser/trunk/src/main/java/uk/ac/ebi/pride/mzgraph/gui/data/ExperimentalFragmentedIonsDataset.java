@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.mzgraph.gui.data;
 
-import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import uk.ac.ebi.pride.iongen.model.ProductIon;
@@ -15,8 +15,19 @@ import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
  * Date: 11/10/12
  */
 
-public class ExperimentalFragmentedIonsDataset extends XYSeriesCollection implements ExperimentalTableModelObserver {
-    private void generateSeriesList(ProductIonPair ionPair) {
+public class ExperimentalFragmentedIonsDataset extends XYSeriesCollection {
+    public ExperimentalFragmentedIonsDataset(ExperimentalFragmentedIonsTableModel tableModel) {
+        update(tableModel);
+    }
+
+    public void update(ExperimentalFragmentedIonsTableModel tableModel) {
+        if (tableModel == null) {
+            throw new NullPointerException("ExperimentalFragmentedIonsTableModel is null!");
+        }
+
+        // Step 1 : update series list.
+        ProductIonPair ionPair = tableModel.getIonPair();
+
         // delete all old series.
         removeAllSeries();
 
@@ -34,20 +45,8 @@ public class ExperimentalFragmentedIonsDataset extends XYSeriesCollection implem
                 addSeries(new XYSeries(FragmentIonType.C_ION.getName()));
                 break;
         }
-    }
 
-    public ExperimentalFragmentedIonsDataset(ExperimentalFragmentedIonsTableModel tableModel) {
-        // the first table model observer, which update called first too.
-        tableModel.addObserver(1, this);
-        update(tableModel);
-    }
-
-    @Override
-    public void update(ExperimentalFragmentedIonsTableModel tableModel) {
         IonAnnotation[][] matchedData = tableModel.getMatchedData();
-
-        ProductIonPair ionPair = tableModel.getIonPair();
-        generateSeriesList(ionPair);
 
         Object o;
         ProductIon theoreticalIon;
@@ -80,7 +79,125 @@ public class ExperimentalFragmentedIonsDataset extends XYSeriesCollection implem
                 series.add(x, y);
             }
         }
+
+        //Step 2: update point matrix
+        pointMatrix = new Point[tableModel.getRowCount()][tableModel.getColumnCount()];
+        Point point;
+
+        ProductIon ion;
+        int itemIndex;
+        for (int col = 1; col < tableModel.getColumnCount(); col++) {
+            for (int row = 0; row < tableModel.getRowCount(); row++) {
+                if (matchedData[row][col] != null && (ion = (ProductIon) tableModel.getValueAt(row, col)) != null) {
+                    matchedMass = matchedData[row][col].getMz().doubleValue();
+                    series = getSeries(ion.getType().getGroup().getName());
+                    seriesIndex = indexOf(ion.getType().getGroup().getName());
+                    x = ion.getMassOverCharge();
+                    y = matchedMass - x;
+                    itemIndex = getItemIndex(series, x, y);
+                    point = new Point(seriesIndex, itemIndex);
+                    pointMatrix[row][col] = point;
+                }
+            }
+        }
     }
 
+    private class Point {
+        int series;
+        int item;
 
+        Point(int series, int item) {
+            this.series = series;
+            this.item = item;
+        }
+
+        public int getSeries() {
+            return series;
+        }
+
+        public int getItem() {
+            return item;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Point point = (Point) o;
+
+            return item == point.item && series == point.series;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = series;
+            result = 31 * result + item;
+            return result;
+        }
+    }
+
+    /**
+     * this matrix use to store the series and item value of each matched data.
+     */
+    private Point[][] pointMatrix;
+
+    private int getItemIndex(XYSeries series, double x, double y) {
+        XYDataItem item;
+        for (int i = 0; i < series.getItemCount(); i++) {
+            item = series.getDataItem(i);
+
+            if (item.getXValue() == x && item.getYValue() == y) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public int getRowNumber(int seriesIndex, int itemIndex) {
+        Point point;
+        for (int row = 0; row < pointMatrix.length; row++) {
+            for (int col = 0; col < pointMatrix[row].length; col++) {
+                point = pointMatrix[row][col];
+                if (point != null && point.getSeries() == seriesIndex && point.getItem() == itemIndex) {
+                    return row;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    public int getColNumber(int series, int itemIndex) {
+        Point point;
+        for (int row = 0; row < pointMatrix.length; row++) {
+            for (int col = 0; col < pointMatrix[row].length; col++) {
+                point = pointMatrix[row][col];
+                if (point != null && point.getSeries() == series && point.getItem() == itemIndex) {
+                    return col;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    public int getItemNumber(int row, int col) {
+        Point point = pointMatrix[row][col];
+        if (point == null) {
+            return -1;
+        } else {
+            return point.getItem();
+        }
+    }
+
+    public int getSeriesNumber(int row, int col) {
+        Point point = pointMatrix[row][col];
+        if (point == null) {
+            return -1;
+        } else {
+            return point.getSeries();
+        }
+    }
 }

@@ -1,10 +1,8 @@
 package uk.ac.ebi.pride.mzgraph.psm;
 
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
+import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
 import uk.ac.ebi.pride.mzgraph.gui.data.PeakSet;
-import uk.ac.ebi.pride.mzgraph.gui.data.TheoreticalFragmentedIonsTableModel;
-
-import java.util.List;
 
 /**
  * Creator: Qingwei-XU
@@ -12,5 +10,5 @@ import java.util.List;
  */
 
 public interface SpectraMatcher {
-    public IonAnnotation[][] match(PeakSet peakSet, TheoreticalFragmentedIonsTableModel tableModel);
+    public IonAnnotation[][] match(PeakSet peakSet, ExperimentalFragmentedIonsTableModel tableModel);
 }

@@ -10,11 +10,15 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.xy.XYDataItem;
+import org.jfree.data.xy.XYSeries;
 import uk.ac.ebi.pride.iongen.model.PrecursorIon;
+import uk.ac.ebi.pride.iongen.model.ProductIon;
 import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mzgraph.chart.axis.DiffDaltonAxis;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants;
+import uk.ac.ebi.pride.mzgraph.chart.graph.MzTablePanel;
 import uk.ac.ebi.pride.mzgraph.chart.tooltip.ExperimentalFragmentedIonsScatterChartTooltipGenerator;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsDataset;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
@@ -22,22 +26,24 @@ import uk.ac.ebi.pride.mzgraph.gui.data.PeakSet;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * Creator: Qingwei-XU
  * Date: 11/10/12
  */
 
-public class ExperimentalFragmentedIonsScatterChartPanel extends JPanel{
+public class ExperimentalFragmentedIonsScatterChartPanel extends JPanel implements PropertyChangeListener {
     /**
      * m/z fraction, the values is {@value}.
      */
     private ChartPanel chartPanel;
-    private ExperimentalFragmentedIonsTableModel tableModel;
+
     private ExperimentalFragmentedIonsDataset dataset;
 
-    private JFreeChart createChart(ExperimentalFragmentedIonsTableModel tableModel) {
-        dataset = new ExperimentalFragmentedIonsDataset(tableModel);
+    private void init(ExperimentalFragmentedIonsDataset dataset) {
+        this.dataset = dataset;
 
         JFreeChart chart = ChartFactory.createScatterPlot(
                 null,
@@ -87,13 +93,6 @@ public class ExperimentalFragmentedIonsScatterChartPanel extends JPanel{
         xAxis.setTickLabelsVisible(true);
         plot.setRangeAxis(xAxis);
 
-        return chart;
-    }
-
-    private void init(ExperimentalFragmentedIonsTableModel tableModel) {
-        this.tableModel = tableModel;
-        JFreeChart chart = createChart(tableModel);
-
         this.chartPanel = new ChartPanel(chart);
         setLayout(new BorderLayout());
         add(chartPanel, BorderLayout.CENTER);
@@ -103,18 +102,20 @@ public class ExperimentalFragmentedIonsScatterChartPanel extends JPanel{
                                                        PeakSet peakSet) {
         ExperimentalFragmentedIonsTableModel tableModel = new ExperimentalFragmentedIonsTableModel(precursorIon, ionPair);
         tableModel.setPeaks(peakSet);
-        init(tableModel);
+        ExperimentalFragmentedIonsDataset dataset = new ExperimentalFragmentedIonsDataset(tableModel);
+        init(dataset);
     }
 
     public ExperimentalFragmentedIonsScatterChartPanel(PrecursorIon precursorIon, ProductIonPair ionPair,
                                                        double[] mzArray, double[] intensityArray) {
         ExperimentalFragmentedIonsTableModel tableModel = new ExperimentalFragmentedIonsTableModel(precursorIon, ionPair);
         tableModel.setPeaks(mzArray, intensityArray);
-        init(tableModel);
+        ExperimentalFragmentedIonsDataset dataset = new ExperimentalFragmentedIonsDataset(tableModel);
+        init(dataset);
     }
 
-    public ExperimentalFragmentedIonsScatterChartPanel(ExperimentalFragmentedIonsTableModel tableModel) {
-        init(tableModel);
+    public ExperimentalFragmentedIonsScatterChartPanel(ExperimentalFragmentedIonsDataset dataset) {
+        init(dataset);
     }
 
     public ExperimentalFragmentedIonsScatterChartPanel(PrecursorIon precursorIon, double[] mzArray, double[] intensityArray) {
@@ -128,31 +129,26 @@ public class ExperimentalFragmentedIonsScatterChartPanel extends JPanel{
     public ExperimentalFragmentedIonsScatterChartPanel(PrecursorIon precursorIon, ProductIonPair ionPair,
                                                        java.util.List<IonAnnotation> manualAnnotations) {
         ExperimentalFragmentedIonsTableModel tableModel = new ExperimentalFragmentedIonsTableModel(precursorIon, ionPair, manualAnnotations);
-        init(tableModel);
+        ExperimentalFragmentedIonsDataset dataset = new ExperimentalFragmentedIonsDataset(tableModel);
+        init(dataset);
     }
 
     public ExperimentalFragmentedIonsScatterChartPanel(PrecursorIon precursorIon, java.util.List<IonAnnotation> manualAnnotations) {
         this(precursorIon, ProductIonPair.B_Y, manualAnnotations);
     }
 
-
     public ChartPanel getChartPanel() {
         return chartPanel;
     }
 
-    public void setShowAutoAnnotations(boolean showAuto) {
-        this.tableModel.setShowAuto(showAuto);
-    }
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL)) {
+            ExperimentalFragmentedIonsTableModel tableModel = (ExperimentalFragmentedIonsTableModel) evt.getNewValue();
+            dataset.update(tableModel);
 
-    public void addManualAnnotation(IonAnnotation annotation) {
-        this.tableModel.addManualAnnotation(annotation);
-    }
-
-    public void addAllManualAnnotations(java.util.List<IonAnnotation> annotationList) {
-        this.tableModel.addAllManualAnnotations(annotationList);
-    }
-
-    public void setPeaks(double[] mzArray, double[] intensityArray) {
-        this.tableModel.setPeaks(mzArray, intensityArray);
+            validate();
+            repaint();
+        }
     }
 }

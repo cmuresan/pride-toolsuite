@@ -37,12 +37,16 @@ public class IonTypeConflictFilter implements ConflictFilter {
             store = 99;
         } else if (type.equals(FragmentIonType.A_ION)) {
             store = 98;
-        } else if (type.equals(FragmentIonType.C_ION)) {
+        } else if (type.equals(FragmentIonType.X_ION)) {
             store = 97;
+        } else if (type.equals(FragmentIonType.C_ION)) {
+            store = 96;
+        } else if (type.equals(FragmentIonType.Z_ION)) {
+            store = 95;
         }
 
         if (item.getNeutralLoss() != null) {
-            store -= 5;
+            store -= 6;
         }
 
         return store;

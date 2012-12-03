@@ -7,7 +7,6 @@ import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants;
 import uk.ac.ebi.pride.mzgraph.chart.renderer.AminoAcidRenderer;
 import uk.ac.ebi.pride.mzgraph.chart.renderer.TheoreticalFragmentedIonsRenderer;
-import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
 import uk.ac.ebi.pride.mzgraph.gui.data.TheoreticalFragmentedIonsTableModel;
 
 import javax.swing.*;

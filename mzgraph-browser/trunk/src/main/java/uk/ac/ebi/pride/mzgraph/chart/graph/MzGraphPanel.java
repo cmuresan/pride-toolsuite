@@ -69,6 +69,7 @@ public abstract class MzGraphPanel extends JPanel implements ChartMouseListener,
     protected ValueAxis yAxis;
     protected ChartPanel chartPanel;
     protected XYPlot plot;
+    private XYTextAnnotation overflowAnnotation;
 
     public MzGraphPanel(String title,
                         String xAxisLabel,
@@ -132,11 +133,17 @@ public abstract class MzGraphPanel extends JPanel implements ChartMouseListener,
 
         ValueAxis domainAxis = plot.getDomainAxis();
         ValueAxis rangeAxis = plot.getRangeAxis();
-        double lx = domainAxis.getRange().getLength() * 0.02;
-        double ly = rangeAxis.getRange().getLength() * 0.85;
-        XYTextAnnotation mzAnnotation = new XYTextAnnotation(MzGraphConstants.DELTA_MZ_OVERFLOW, lx, ly);
-        mzAnnotation.setTextAnchor(TextAnchor.TOP_LEFT);
-        plot.addAnnotation(mzAnnotation, true);
+        double lx = domainAxis.getRange().getLength() * 0.98;
+        double ly = rangeAxis.getRange().getLength() * 0.95;
+        overflowAnnotation = new XYTextAnnotation(MzGraphConstants.DELTA_MZ_OVERFLOW, lx, ly);
+        overflowAnnotation.setTextAnchor(TextAnchor.TOP_RIGHT);
+        plot.addAnnotation(overflowAnnotation, true);
+    }
+
+    public void removeDeltaOverflowAnnotation() {
+        if (this.overflowAnnotation != null) {
+            plot.removeAnnotation(this.overflowAnnotation, true);
+        }
     }
 
     public String getSource() {

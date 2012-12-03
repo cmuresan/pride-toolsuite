@@ -10,9 +10,6 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.entity.ChartEntity;
 import org.jfree.chart.entity.XYItemEntity;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.xy.XYDataItem;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.iongen.model.ProductIon;
 import uk.ac.ebi.pride.iongen.model.impl.DefaultPrecursorIon;
@@ -24,7 +21,6 @@ import uk.ac.ebi.pride.mzgraph.gui.ExperimentalFragmentedIonsScatterChartPanel;
 import uk.ac.ebi.pride.mzgraph.gui.ExperimentalFragmentedIonsTable;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsDataset;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
-import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalTableModelObserver;
 import uk.ac.ebi.pride.mzgraph.gui.data.PeakSet;
 
 import javax.swing.*;
@@ -35,6 +31,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.Hashtable;
 import java.util.List;
@@ -49,16 +47,15 @@ import java.util.List;
  * Date: 15/10/12
  */
 
-public class MzTablePanel extends JPanel implements ExperimentalTableModelObserver {
+public class MzTablePanel extends JPanel implements PropertyChangeListener{
     private ExperimentalFragmentedIonsScatterChartPanel scatterChartPanel;
-
-    public static final String FLUSH_TABLEMODEL = "flush tablemodel";
 
     private JScrollPane tablePanel;
     private ChartPanel chartPanel;
     private JPanel toolbar;
 
-    private ExperimentalFragmentedIonsTableModel tableModel;
+//    private ExperimentalFragmentedIonsTableModel tableModel;
+    private ExperimentalFragmentedIonsTable table;
 
     /**
      * MzTablePanel have initial or not.
@@ -68,7 +65,7 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
     /**
      * whether calculate auto annotations or not.
      */
-    private boolean calculate = true;
+//    private boolean calculate = true;
 
     private JCheckBox waterChecker = new JCheckBox("Show H2O Neutral Loss");
     private JCheckBox ammoniaChecker = new JCheckBox("Show NH3 Neutral Loss");
@@ -79,19 +76,9 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
     private JToggleButton helpButton;
 
     private void flushPanel() {
-        if (! initial) {
-            // not generate the fragmentation table yet.
-            waterChecker.setVisible(false);
-            ammoniaChecker.setVisible(false);
-            ionPairLabel.setVisible(false);
-            ionPairChooser.setVisible(false);
-            rangeLabel.setVisible(false);
-            rangeSlider.setVisible(false);
-            tablePanel.setVisible(false);
-            chartPanel.setVisible(false);
-        } else if (this.tableModel.getAllManualAnnotations().size() > 0) {
+        if (table.hasManualAnnotations()) {
             // have manual annotations.
-            setShowAuto(false);
+            table.setShowAuto(false);
             waterChecker.setVisible(false);
             ammoniaChecker.setVisible(false);
             ionPairLabel.setVisible(true);
@@ -100,9 +87,9 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
             rangeSlider.setVisible(false);
             tablePanel.setVisible(true);
             chartPanel.setVisible(true);
-        } else if (! isCalculate()) {
+        } else if (! table.isCalculate()) {
             // no manual annotations, and not calculate auto annotations too!
-            setShowAuto(true);
+            table.setShowAuto(true);
             waterChecker.setVisible(false);
             ammoniaChecker.setVisible(false);
             ionPairLabel.setVisible(false);
@@ -113,7 +100,7 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
             chartPanel.setVisible(false);
         } else {
             // no manual annotations, but have calculated auto annotations.
-            setShowAuto(true);
+            table.setShowAuto(true);
             waterChecker.setVisible(true);
             ammoniaChecker.setVisible(true);
             ionPairLabel.setVisible(true);
@@ -127,15 +114,16 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
 
     private void init(final ExperimentalFragmentedIonsTable table) {
         int height = 35;
+        this.table = table;
         tablePanel = new JScrollPane(table);
-        this.tableModel = (ExperimentalFragmentedIonsTableModel) table.getModel();
         initial = true;
 
-        // the second table model observer.
-        this.tableModel.addObserver(2, this);
-
-        scatterChartPanel = new ExperimentalFragmentedIonsScatterChartPanel(this.tableModel);
+        ExperimentalFragmentedIonsTableModel tableModel = (ExperimentalFragmentedIonsTableModel) table.getModel();
+        ExperimentalFragmentedIonsDataset dataset = new ExperimentalFragmentedIonsDataset(tableModel);
+        scatterChartPanel = new ExperimentalFragmentedIonsScatterChartPanel(dataset);
         chartPanel = scatterChartPanel.getChartPanel();
+        table.addPropertyChangeListener(scatterChartPanel);
+        table.addPropertyChangeListener(this);
 
         JPanel contentPane = new JPanel(new BorderLayout());
         contentPane.add(scatterChartPanel, BorderLayout.EAST);
@@ -147,7 +135,7 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
             public void actionPerformed(ActionEvent e) {
                 JCheckBox checker = (JCheckBox) e.getSource();
                 table.setShowWaterLoss(checker.isSelected());
-                firePropertyChange(FLUSH_TABLEMODEL, null, table.getModel());
+//                firePropertyChange(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL, "", table.getModel());
             }
         });
 
@@ -157,7 +145,7 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
             public void actionPerformed(ActionEvent e) {
                 JCheckBox checker = (JCheckBox) e.getSource();
                 table.setShowAmmoniaLoss(checker.isSelected());
-                firePropertyChange(FLUSH_TABLEMODEL, null, table.getModel());
+//                firePropertyChange(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL, "", table.getModel());
             }
         });
 
@@ -172,9 +160,10 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
                 JComboBox chooser = (JComboBox) e.getSource();
                 ProductIonPair ionPair = (ProductIonPair) chooser.getSelectedItem();
                 table.setProductIonPair(ionPair);
-                firePropertyChange(FLUSH_TABLEMODEL, null, table.getModel());
+//                firePropertyChange(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL, "", table.getModel());
             }
         });
+
         rangeLabel = new JLabel("            Range(Da):");
         rangeSlider = new JSlider(
                 JSlider.HORIZONTAL,
@@ -197,7 +186,6 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
         unitLabel.setFont(new Font(unitLabel.getFont().getFontName(), unitLabel.getFont().getStyle(), unitLabel.getFont().getSize() - 4));
         labelTable.put(10, unitLabel);
         rangeSlider.setLabelTable(labelTable);
-
         rangeSlider.setPreferredSize(new Dimension(300, height));
         rangeSlider.addChangeListener(new ChangeListener() {
             @Override
@@ -205,11 +193,9 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
                 JSlider source = (JSlider)e.getSource();
                 if (! source.getValueIsAdjusting()) {
                     double newRange = source.getValue() / 10d;
-                    setRange(newRange);
-                    table.revalidate();
-                    table.repaint();
+                    table.setRange(newRange);
+//                    firePropertyChange(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL, "", table.getModel());
                     source.setToolTipText(newRange + "Da");
-                    firePropertyChange(FLUSH_TABLEMODEL, null, table.getModel());
                 }
             }
         });
@@ -278,46 +264,46 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
 
     }
 
-    public MzTablePanel(Peptide peptide, PeakSet peakSet) {
-        PrecursorIon precursorIon = new DefaultPrecursorIon(peptide);
-
-        init(new ExperimentalFragmentedIonsTable(precursorIon, peakSet));
-    }
-
-    public MzTablePanel(Peptide peptide, double[] mzArray, double[] intensityArray) {
-        PrecursorIon precursorIon = new DefaultPrecursorIon(peptide);
-
-        init(new ExperimentalFragmentedIonsTable(precursorIon, mzArray, intensityArray));
-    }
-
-    public MzTablePanel(Peptide peptide) {
-        this(peptide, null, null);
-    }
-
-    public MzTablePanel(Peptide peptide, List<IonAnnotation> ionAnnotationList) {
-        PrecursorIon precursorIon = new DefaultPrecursorIon(peptide);
-        ExperimentalFragmentedIonsTable table = new ExperimentalFragmentedIonsTable(precursorIon);
-        table.addAllManualAnnotations(ionAnnotationList);
-        init(table);
-    }
-
-    public MzTablePanel(PrecursorIon precursorIon, PeakSet peakSet) {
-        init(new ExperimentalFragmentedIonsTable(precursorIon, peakSet));
-    }
-
-    public MzTablePanel(PrecursorIon precursorIon, double[] mzArray, double[] intensityArray) {
-        init(new ExperimentalFragmentedIonsTable(precursorIon, mzArray, intensityArray));
-    }
-
-    public MzTablePanel(PrecursorIon precursorIon) {
-        this(precursorIon, null, null);
-    }
-
-    public MzTablePanel(PrecursorIon precursorIon, List<IonAnnotation> ionAnnotationList) {
-        ExperimentalFragmentedIonsTable table = new ExperimentalFragmentedIonsTable(precursorIon);
-        table.addAllManualAnnotations(ionAnnotationList);
-        init(table);
-    }
+//    public MzTablePanel(Peptide peptide, PeakSet peakSet) {
+//        PrecursorIon precursorIon = new DefaultPrecursorIon(peptide);
+//
+//        init(new ExperimentalFragmentedIonsTable(precursorIon, peakSet));
+//    }
+//
+//    public MzTablePanel(Peptide peptide, double[] mzArray, double[] intensityArray) {
+//        PrecursorIon precursorIon = new DefaultPrecursorIon(peptide);
+//
+//        init(new ExperimentalFragmentedIonsTable(precursorIon, mzArray, intensityArray));
+//    }
+//
+//    public MzTablePanel(Peptide peptide) {
+//        this(peptide, null, null);
+//    }
+//
+//    public MzTablePanel(Peptide peptide, List<IonAnnotation> ionAnnotationList) {
+//        PrecursorIon precursorIon = new DefaultPrecursorIon(peptide);
+//        ExperimentalFragmentedIonsTable table = new ExperimentalFragmentedIonsTable(precursorIon);
+//        table.addAllManualAnnotations(ionAnnotationList);
+//        init(table);
+//    }
+//
+//    public MzTablePanel(PrecursorIon precursorIon, PeakSet peakSet) {
+//        init(new ExperimentalFragmentedIonsTable(precursorIon, peakSet));
+//    }
+//
+//    public MzTablePanel(PrecursorIon precursorIon, double[] mzArray, double[] intensityArray) {
+//        init(new ExperimentalFragmentedIonsTable(precursorIon, mzArray, intensityArray));
+//    }
+//
+//    public MzTablePanel(PrecursorIon precursorIon) {
+//        this(precursorIon, null, null);
+//    }
+//
+//    public MzTablePanel(PrecursorIon precursorIon, List<IonAnnotation> ionAnnotationList) {
+//        ExperimentalFragmentedIonsTable table = new ExperimentalFragmentedIonsTable(precursorIon);
+//        table.addAllManualAnnotations(ionAnnotationList);
+//        init(table);
+//    }
 
     public boolean hasInitial() {
         return initial;
@@ -329,6 +315,10 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
 
     public JScrollPane getTablePanel() {
         return tablePanel;
+    }
+
+    public ExperimentalFragmentedIonsTable getTable() {
+        return table;
     }
 
     public JPanel getToolbar() {
@@ -343,58 +333,45 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
     }
 
     public void setTable(ExperimentalFragmentedIonsTable table) {
+        if (this.table != null) {
+            for (PropertyChangeListener propertyChangeListener : this.table.getPropertyChangeListeners()) {
+                this.table.removePropertyChangeListener(propertyChangeListener);
+            }
+        }
+
         removeAll();
         init(table);
     }
 
-    private void setRange(double range) {
-        this.tableModel.setRange(range);
-    }
-
-    private void setShowAuto(boolean showAuto) {
-        this.tableModel.setShowAuto(showAuto);
-    }
-
-    public void addManualAnnotation(IonAnnotation annotation) {
-        this.tableModel.addManualAnnotation(annotation);
-        flushPanel();
-    }
-
     public void addAllManualAnnotations(List<IonAnnotation> ionAnnotationList) {
-        this.tableModel.addAllManualAnnotations(ionAnnotationList);
+        this.table.addAllManualAnnotations(ionAnnotationList);
+
         flushPanel();
     }
-
+//
     /**
      * whether calculate auto annotations, or not.
      */
-    public void calculateAuto(boolean calculate) {
-        if (this.tableModel != null) {
-            this.tableModel.calculateAuto(calculate);
+    public void setCalculate(boolean calculate) {
+        if (this.table != null) {
+            this.table.setCalculate(calculate);
+            flushPanel();
         }
-
-        this.calculate = calculate;
-        flushPanel();
     }
 
     public boolean isCalculate() {
-        return calculate;
+        return this.table.isCalculate();
     }
 
     public void setPeaks(double[] mzArray, double[] intensityArray) {
-        this.tableModel.setPeaks(mzArray, intensityArray);
-    }
-
-    public void setPeaks(PeakSet peakSet) {
-        this.tableModel.setPeaks(peakSet);
+        this.table.setPeaks(mzArray, intensityArray);
     }
 
     /**
      * Whether show auto annotations, or show manual annotations. Default, the value is {@value}.
-     * User can call {@link #setShowAuto(boolean)} to change this value.
      */
     public boolean isShowAuto() {
-        return this.tableModel.isShowAuto();
+        return this.table.isShowAuto();
     }
 
     /**
@@ -421,8 +398,8 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
                 if (matchedData[row][column] != null) {
                     ProductIon ion = (ProductIon) tableModel.getValueAt(row, column);
 
-                    item = getItemNumber(row, column);
-                    series = getSeriesNumber(row, column);
+                    item = dataset.getItemNumber(row, column);
+                    series = dataset.getSeriesNumber(row, column);
 
                     double x = dataset.getXValue(series, item);
                     double y = dataset.getYValue(series, item);
@@ -462,6 +439,8 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
      * If click one point in the chart, highlight corresponding table cell.
      */
     private void addChartAction(final ExperimentalFragmentedIonsTable table, ChartPanel chartPanel) {
+        final ExperimentalFragmentedIonsDataset dataset = (ExperimentalFragmentedIonsDataset) chartPanel.getChart().getXYPlot().getDataset();
+
         chartPanel.addChartMouseListener(new ChartMouseListener() {
             @Override
             public void chartMouseClicked(ChartMouseEvent chartMouseEvent) {
@@ -477,8 +456,8 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
                     item = itemEntity.getItem();
                     series = itemEntity.getSeriesIndex();
 
-                    row = getRowNumber(series, item);
-                    col = getColNumber(series, item);
+                    row = dataset.getRowNumber(series, item);
+                    col = dataset.getColNumber(series, item);
 
                     if (row != -1 && col != -1) {
                         TheoreticalFragmentedIonsRenderer cellRenderer = (TheoreticalFragmentedIonsRenderer) table.getCellRenderer(row, col);
@@ -496,137 +475,10 @@ public class MzTablePanel extends JPanel implements ExperimentalTableModelObserv
         });
     }
 
-    private class Point {
-        int series;
-        int item;
-
-        Point(int series, int item) {
-            this.series = series;
-            this.item = item;
-        }
-
-        public int getSeries() {
-            return series;
-        }
-
-        public int getItem() {
-            return item;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Point point = (Point) o;
-
-            return item == point.item && series == point.series;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = series;
-            result = 31 * result + item;
-            return result;
-        }
-    }
-
-    /**
-     * this matrix use to store the series and item value of each matched data.
-     */
-    private Point[][] pointMatrix;
-
-    private int getItemIndex(XYSeries series, double x, double y) {
-        XYDataItem item;
-        for (int i = 0; i < series.getItemCount(); i++) {
-            item = series.getDataItem(i);
-
-            if (item.getXValue() == x && item.getYValue() == y) {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    public int getRowNumber(int seriesIndex, int itemIndex) {
-        Point point;
-        for (int row = 0; row < pointMatrix.length; row++) {
-            for (int col = 0; col < pointMatrix[row].length; col++) {
-                point = pointMatrix[row][col];
-                if (point != null && point.getSeries() == seriesIndex && point.getItem() == itemIndex) {
-                    return row;
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public int getColNumber(int series, int itemIndex) {
-        Point point;
-        for (int row = 0; row < pointMatrix.length; row++) {
-            for (int col = 0; col < pointMatrix[row].length; col++) {
-                point = pointMatrix[row][col];
-                if (point != null && point.getSeries() == series && point.getItem() == itemIndex) {
-                    return col;
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public int getItemNumber(int row, int col) {
-        Point point = pointMatrix[row][col];
-        if (point == null) {
-            return -1;
-        } else {
-            return point.getItem();
-        }
-    }
-
-    public int getSeriesNumber(int row, int col) {
-        Point point = pointMatrix[row][col];
-        if (point == null) {
-            return -1;
-        } else {
-            return point.getSeries();
-        }
-    }
-
-    /**
-     * update point matrix based on the experimental fragmentation table model.
-     */
     @Override
-    public void update(ExperimentalFragmentedIonsTableModel tableModel) {
-        IonAnnotation[][] matchedData = tableModel.getMatchedData();
-        XYSeriesCollection dataset = (XYSeriesCollection) scatterChartPanel.getChartPanel().getChart().getXYPlot().getDataset();
-
-        this.pointMatrix = new Point[tableModel.getRowCount()][tableModel.getColumnCount()];
-
-        Point point;
-        Double matchedMass;
-
-        XYSeries series;
-        ProductIon ion;
-        int seriesIndex;
-        int itemIndex;
-        double x;
-        double y;
-        for (int col = 1; col < tableModel.getColumnCount(); col++) {
-            for (int row = 0; row < tableModel.getRowCount(); row++) {
-                if (matchedData[row][col] != null && (ion = (ProductIon) tableModel.getValueAt(row, col)) != null) {
-                    matchedMass = matchedData[row][col].getMz().doubleValue();
-                    series = dataset.getSeries(ion.getType().getGroup().getName());
-                    seriesIndex = dataset.indexOf(ion.getType().getGroup().getName());
-                    x = ion.getMassOverCharge();
-                    y = matchedMass - x;
-                    itemIndex = getItemIndex(series, x, y);
-                    point = new Point(seriesIndex, itemIndex);
-                    pointMatrix[row][col] = point;
-                }
-            }
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL)) {
+           firePropertyChange(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL, evt.getOldValue(), evt.getNewValue());
         }
     }
 }

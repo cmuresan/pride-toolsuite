@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.mol.ion.FragmentIonType;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotationInfo;
 import uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants;
+import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
 import uk.ac.ebi.pride.mzgraph.gui.data.Peak;
 import uk.ac.ebi.pride.mzgraph.gui.data.PeakSet;
 import uk.ac.ebi.pride.mzgraph.gui.data.TheoreticalFragmentedIonsTableModel;
@@ -36,12 +37,12 @@ public class MaxSpectraMatcher implements SpectraMatcher {
     }
 
     @Override
-    public IonAnnotation[][] match(PeakSet peakSet, TheoreticalFragmentedIonsTableModel tableModel) {
+    public IonAnnotation[][] match(PeakSet peakSet, ExperimentalFragmentedIonsTableModel tableModel) {
         if (peakSet == null || tableModel == null) {
             return null;
         }
 
-        double range = PSMParams.getInstance().getRange();
+        double range = tableModel.getRange();
 
         IonAnnotation[][] autoData = new IonAnnotation[tableModel.getRowCount()][tableModel.getColumnCount()];
         List<IonAnnotation> autoAnnotations = new ArrayList<IonAnnotation>();

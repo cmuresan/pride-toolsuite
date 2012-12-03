@@ -76,7 +76,7 @@ public class ExampleUtil {
     public static List<IonAnnotation> generateAnnotationList() {
         IonAnnotationInfo ionInfo1 = new IonAnnotationInfo();
         // row=8 col=13 mz=500.18
-        IonAnnotationInfo.Item annotationItem = new IonAnnotationInfo.Item(2, FragmentIonType.B_ION, 8, NeutralLoss.WATER_LOSS);
+        IonAnnotationInfo.Item annotationItem = new IonAnnotationInfo.Item(2, FragmentIonType.Z_ION, 8, NeutralLoss.WATER_LOSS);
         ionInfo1.addItem(annotationItem);
         // mzArr[4]=499.173902356863
         IonAnnotation ion1 = new IonAnnotation(mzArr[4], intentArr[4], ionInfo1);

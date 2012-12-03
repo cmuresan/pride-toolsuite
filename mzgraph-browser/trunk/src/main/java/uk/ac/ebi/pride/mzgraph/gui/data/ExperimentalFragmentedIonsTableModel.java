@@ -1,15 +1,20 @@
 package uk.ac.ebi.pride.mzgraph.gui.data;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.mol.NeutralLoss;
 import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mol.ion.FragmentIonType;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotationInfo;
+import uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants;
 import uk.ac.ebi.pride.mzgraph.psm.PSMMatcher;
 import uk.ac.ebi.pride.mzgraph.psm.PSMParams;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Based on the theoretical fragmented ions table model, we allow user add annotations in experimental data.
@@ -24,13 +29,9 @@ import java.util.*;
  */
 
 public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedIonsTableModel {
+    private static final Logger logger = LoggerFactory.getLogger(ExperimentalFragmentedIonsTableModel.class);
+
     private PrecursorIon precursorIon;
-
-    // used for storage automatically annotations
-    private IonAnnotation[][] autoData = new IonAnnotation[getRowCount()][getColumnCount()];
-
-    // used for storage manually annotations
-    private IonAnnotation[][] manualData = new IonAnnotation[getRowCount()][getColumnCount()];
 
     /**
      * Whether show auto annotations, or show manual annotations. Default, the value is {@value}.
@@ -38,22 +39,25 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
      */
     private boolean showAuto = false;
 
-    private boolean calculate = false;
+    /**
+     * Whether need calculate auto annotations or not.
+     */
+    private boolean calculate = true;
 
     private boolean showWaterLoss = false;
 
     private boolean showAmmoniaLoss = false;
 
     /**
-     * store all manual annotations. including a, b, c, x, y, z ions annotations,
-     * excluding immonium ion.
+     * default psm abs(range interval) is [0Da, 0.5Da]
      */
-    private List<IonAnnotation> manualAnnotations = new ArrayList<IonAnnotation>();
+    private double range = MzGraphConstants.INTERVAL_RANGE;
 
     /**
-     * generate dynamically, based on the precursor ion, product ion pair, peak set and psm algorithm.
+     * store all manual annotations. including a, b, c, x, y, z ions annotations,
+     * excluding ammonium ion.
      */
-    private List<IonAnnotation> autoAnnotations = new ArrayList<IonAnnotation>();
+    private List<IonAnnotation> manualAnnotations = new ArrayList<IonAnnotation>();
 
     /**
      * store all peak set, base on m/z ascent order.
@@ -65,8 +69,6 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
      * In our system, we use a sorted map to store the observers, which key means the update order.
      * All observers update their data with ascending order.
      */
-    private Map<Integer, ExperimentalTableModelObserver> observerList = new TreeMap<Integer, ExperimentalTableModelObserver>();
-
     public ExperimentalFragmentedIonsTableModel(PrecursorIon precursorIon, ProductIonPair ionPair) {
         super(precursorIon, ionPair);
         this.precursorIon = precursorIon;
@@ -79,36 +81,19 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
     }
 
     /**
-     * if change product ion pair successful, system should regenerate {@link #autoData} and {@link #autoAnnotations},
-     * then call {@link #notifyObservers()} to update their contents.
-     * @param ionPair
-     * @return
+     * if change product ion pair successful
      */
     @Override
-    public boolean setProductIonPair(ProductIonPair ionPair) {
-        boolean success = super.setProductIonPair(ionPair);
-
-        if (success) {
-            this.autoData = match();
-            this.autoAnnotations = toList(autoData);
-
-            notifyObservers();
-            return true;
-        }
-
-        return false;
+    public void setProductIonPair(ProductIonPair ionPair) {
+        super.setProductIonPair(ionPair);
     }
 
     public void setShowWaterLoss(boolean showWaterLoss) {
         this.showWaterLoss = showWaterLoss;
-
-        notifyObservers();
     }
 
     public void setShowAmmoniaLoss(boolean showAmmoniaLoss) {
         this.showAmmoniaLoss = showAmmoniaLoss;
-
-        notifyObservers();
     }
 
     public boolean isShowWaterLoss() {
@@ -140,16 +125,10 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
     }
 
     /**
-     * if change peak set successful, system should regenerate {@link #autoData} and {@link #autoAnnotations},
-     * then call {@link #notifyObservers()} to update their contents.
+     * set peak set
      */
     public void setPeaks(PeakSet peakSet) {
         this.peakSet = peakSet;
-
-        this.autoData = match();
-        this.autoAnnotations = toList(autoData);
-
-        notifyObservers();
     }
 
 
@@ -217,62 +196,19 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
 
     /**
      * Add a manual annotation, and update manual data matrix. This method will reused by the
-     * {@link #addManualAnnotation(uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation)}
-     * {@link #addAllManualAnnotations(java.util.List)}
-     * methods.
-     */
-    private boolean addAnnotation(IonAnnotation annotation) {
-        int charge;
-        FragmentIonType type;
-        int location;
-        NeutralLoss loss;
-        int row;
-        int col;
-
-        IonAnnotationInfo annotationInfo;
-        IonAnnotationInfo.Item item;
-
-        annotationInfo = annotation.getAnnotationInfo();
-
-        for (int i = 0; i < annotationInfo.getNumberOfItems(); i++) {
-            item = annotationInfo.getItem(i);
-            charge = item.getCharge();
-            type = item.getType();
-            loss = item.getNeutralLoss();
-            location = item.getLocation();
-
-            // ignore the annotation which location on n-terminal or c-terminal.
-            if (location == getRowCount()) {
-                return true;
-            }
-
-            row = getRowNumber(type, location);
-            col = getColumnNumber(type, charge, loss);
-
-            if (row == -1 || col == -1) {
-                return false;
-            }
-
-            manualData[row][col] = annotation;
-        }
-
-        return true;
-    }
-
-    /**
-     * Add a manual annotation, and update manual data matrix. This method will reused by the
-     * {@link #addManualAnnotation(uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation)}
      * {@link #addAllManualAnnotations(java.util.List)}
      * methods.
      */
     public boolean addManualAnnotation(IonAnnotation annotation) {
-        if (! addAnnotation(annotation)) {
+        /**
+         * No allow two annotation work on same peak.
+         * @see IonAnnotation#equals(Object)
+         */
+        if (manualAnnotations.contains(annotation)) {
             return false;
         }
 
         manualAnnotations.add(annotation);
-
-        notifyObservers();
         return true;
     }
 
@@ -280,57 +216,32 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
      * Based on Product Ions Pairs to decide whether show manual annotations, or not.
      */
     private boolean isFitManual(IonAnnotation annotation) {
-        FragmentIonType type = annotation.getAnnotationInfo().getItem(0).getType();
-        switch (getIonPair()) {
-            case B_Y:
-                if (type.equals(FragmentIonType.B_ION) || type.equals(FragmentIonType.Y_ION)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            case A_X:
-                if (type.equals(FragmentIonType.A_ION) || type.equals(FragmentIonType.X_ION)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            case C_Z:
-                if (type.equals(FragmentIonType.C_ION) || type.equals(FragmentIonType.Z_ION)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * based on {@link #showAmmoniaLoss} and {@link #showWaterLoss}, to decide whether show
-     * auto annotations or not.
-     */
-    private boolean isFitAuto(IonAnnotation annotation) {
         IonAnnotationInfo info = annotation.getAnnotationInfo();
 
-        NeutralLoss loss;
+        FragmentIonType type;
         for (int i = 0; i < info.getNumberOfItems(); i++) {
-            loss = info.getItem(i).getNeutralLoss();
+            type = info.getItem(i).getType();
 
-            if (loss == null) {
-                // no neutral loss, do not filter
-                continue;
-            }
-
-            if (! showWaterLoss && loss.equals(NeutralLoss.WATER_LOSS)) {
-                return false;
-            }
-
-            if (! showAmmoniaLoss && loss.equals(NeutralLoss.AMMONIA_LOSS)) {
-                return false;
+            switch (getIonPair()) {
+                case B_Y:
+                    if (type.equals(FragmentIonType.B_ION) || type.equals(FragmentIonType.Y_ION)) {
+                        return true;
+                    }
+                    break;
+                case A_X:
+                    if (type.equals(FragmentIonType.A_ION) || type.equals(FragmentIonType.X_ION)) {
+                        return true;
+                    }
+                    break;
+                case C_Z:
+                    if (type.equals(FragmentIonType.C_ION) || type.equals(FragmentIonType.Z_ION)) {
+                        return true;
+                    }
+                    break;
             }
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -340,7 +251,14 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
     public List<IonAnnotation> getManualAnnotations() {
         List<IonAnnotation> newManualAnnotations = new ArrayList<IonAnnotation>();
 
-        for (IonAnnotation annotation : manualAnnotations) {
+        /**
+         * filteredManualAnnotations is subset of manualAnnotationList, which only include b, y, a, x, c, z ion
+         * annotations. While, manualAnnotations include all annotations. the {@link #getManualAnnotations()}
+         * will get ion annotations based on ion pairs.
+         */
+        List<IonAnnotation> filteredManualAnnotations = filterAnnotations(manualAnnotations);
+
+        for (IonAnnotation annotation : filteredManualAnnotations) {
             if (isFitManual(annotation)) {
                 newManualAnnotations.add(annotation);
             }
@@ -352,34 +270,52 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
     /**
      * Get all manual annotations, not based on the product ions pairs.
      * This is unmodifiable list.
-     * @return
      */
     public List<IonAnnotation> getAllManualAnnotations() {
         return Collections.unmodifiableList(manualAnnotations);
     }
 
-    public List<IonAnnotation> getAutoAnnotations() {
-        List<IonAnnotation> newAutoAnnotations = new ArrayList<IonAnnotation>();
+    private java.util.List<IonAnnotation> filterAnnotations(java.util.List<IonAnnotation> srcList) {
+        java.util.List<IonAnnotation> tarList = new ArrayList<IonAnnotation>();
 
-        for (IonAnnotation annotation : autoAnnotations) {
-            if (isFitAuto(annotation)) {
-                newAutoAnnotations.add(annotation);
+        // filter non- a, b, c, x, y, z ions annotation
+        // filter charge > 2 ions annotation.
+        // which not display in the mz table panel.
+        IonAnnotationInfo srcInfo;
+        IonAnnotationInfo.Item srcItem;
+        IonAnnotationInfo tarInfo;
+        IonAnnotationInfo.Item tarItem;
+        IonAnnotation tarAnnotation;
+        for (IonAnnotation annotation : srcList) {
+            srcInfo = annotation.getAnnotationInfo();
+            tarInfo = new IonAnnotationInfo();
+            for (int i = 0; i < srcInfo.getNumberOfItems(); i++) {
+                srcItem = srcInfo.getItem(i);
+                if (srcItem.getType().getName().equals(FragmentIonType.B_ION.getName()) ||
+                        srcItem.getType().getName().equals(FragmentIonType.Y_ION.getName()) ||
+                        srcItem.getType().getName().equals(FragmentIonType.A_ION.getName()) ||
+                        srcItem.getType().getName().equals(FragmentIonType.X_ION.getName()) ||
+                        srcItem.getType().getName().equals(FragmentIonType.C_ION.getName()) ||
+                        srcItem.getType().getName().equals(FragmentIonType.Z_ION.getName())) {
+
+                    try {
+                        if (srcItem.getCharge() <= 2) {
+                            tarItem = (IonAnnotationInfo.Item) srcItem.clone();
+                            tarInfo.addItem(tarItem);
+                        }
+                    } catch (CloneNotSupportedException e) {
+                        logger.error(e.getMessage());
+                    }
+                }
+            }
+
+            if (tarInfo.getNumberOfItems() != 0) {
+                tarAnnotation = new IonAnnotation(annotation.getMz(), annotation.getIntensity(), tarInfo);
+                tarList.add(tarAnnotation);
             }
         }
 
-        return Collections.unmodifiableList(newAutoAnnotations);
-    }
-
-    /**
-     * based on {@link #isShowAuto()} the decide to show auto annotations or manual annotations.
-     * @return
-     */
-    public List<IonAnnotation> getAnnotations() {
-        if (showAuto) {
-            return getAutoAnnotations();
-        } else {
-            return getManualAnnotations();
-        }
+        return tarList;
     }
 
     /**
@@ -387,7 +323,7 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
      * If patch operation failure, system will rollback all add annotations.
      */
     public boolean addAllManualAnnotations(List<IonAnnotation> manualAnnotationList) {
-        if (manualAnnotationList == null || manualAnnotationList.size() == 0) {
+        if (manualAnnotationList == null) {
             return false;
         }
 
@@ -401,26 +337,15 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
             }
         }
 
-        // clone manual data matrix.
-        IonAnnotation[][] tempManualData = new IonAnnotation[getRowCount()][getColumnCount()];
-        for (int i = 0; i < getRowCount(); i++) {
-            for (int j = 0; j < getColumnCount(); j++) {
-                tempManualData[i][j] = this.manualData[i][j];
-            }
-        }
-
         for (IonAnnotation annotation : manualAnnotationList) {
-            if (! addAnnotation(annotation)) {
+            if (! addManualAnnotation(annotation)) {
                 // rollback
                 this.manualAnnotations = tempAnnotationList;
-                this.manualData = tempManualData;
+//                this.manualData = tempManualData;
 
                 return false;
             }
-            this.manualAnnotations.add(annotation);
         }
-
-        notifyObservers();
 
         return true;
     }
@@ -431,32 +356,21 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
 
     /**
      * call PSM algorithm to generate auto annotations.
-     * @return
      */
     private IonAnnotation[][]  match() {
         return PSMMatcher.getInstance().match(this, this.peakSet);
-    }
-
-    public boolean isCalculate() {
-        return calculate;
     }
 
     /**
      * Whether using PSM algorithm to generate auto annotations. For example, if delta m/z is bigger,
      * not calculate.
      */
-    public void calculateAuto(boolean calculate) {
+    public void setCalculate(boolean calculate) {
         this.calculate = calculate;
+    }
 
-        if (calculate) {
-            this.autoData = match();
-            this.autoAnnotations = toList(autoData);
-        } else {
-            this.autoData = new IonAnnotation[getRowCount()][getColumnCount()];
-            this.autoAnnotations = toList(autoData);
-        }
-
-        notifyObservers();
+    public boolean isCalculate() {
+        return calculate;
     }
 
     public boolean isShowAuto() {
@@ -471,7 +385,96 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
      */
     public void setShowAuto(boolean showAuto) {
         this.showAuto = showAuto;
-        notifyObservers();
+    }
+
+    public List<IonAnnotation> getAllAutoAnnotations() {
+        IonAnnotation[][] autoData = calculate ? match() : new IonAnnotation[getRowCount()][getColumnCount()];
+        return toList(autoData);
+    }
+
+    private boolean haveNeutralLoss(IonAnnotation annotation) {
+        IonAnnotationInfo info = annotation.getAnnotationInfo();
+        NeutralLoss loss = info.getItem(0).getNeutralLoss();
+
+        boolean fit = false;
+        if (loss == null) {
+            fit = true;
+        } else if (loss.equals(NeutralLoss.WATER_LOSS) && showWaterLoss) {
+            fit = true;
+        } else if (loss.equals(NeutralLoss.AMMONIA_LOSS) && showAmmoniaLoss) {
+            fit = true;
+        }
+
+        return fit;
+    }
+
+    public List<IonAnnotation> getAutoAnnotations() {
+        List<IonAnnotation> autoAnnotations = getAllAutoAnnotations();
+
+        List<IonAnnotation> newAutoAnnotations = new ArrayList<IonAnnotation>();
+        for (IonAnnotation annotation : autoAnnotations) {
+            if (haveNeutralLoss(annotation)) {
+                newAutoAnnotations.add(annotation);
+            }
+        }
+
+        return Collections.unmodifiableList(newAutoAnnotations);
+    }
+
+    /**
+     * based on {@link #isShowAuto()} the decide to show auto annotations or manual annotations.
+     */
+    public List<IonAnnotation> getAnnotations() {
+        if (showAuto) {
+            return getAutoAnnotations();
+        } else {
+            return getManualAnnotations();
+        }
+    }
+
+    private IonAnnotation[][] createManualData(List<IonAnnotation> annotationList) {
+        IonAnnotation[][] manualData = new IonAnnotation[getRowCount()][getColumnCount()];
+
+        if (annotationList == null || annotationList.size() == 0) {
+            return manualData;
+        }
+
+        int charge;
+        FragmentIonType type;
+        int location;
+        NeutralLoss loss;
+        int row;
+        int col;
+
+        IonAnnotationInfo annotationInfo;
+        IonAnnotationInfo.Item item;
+        for (IonAnnotation annotation : annotationList) {
+            if (! isFitManual(annotation)) {
+                continue;
+            }
+
+            annotationInfo = annotation.getAnnotationInfo();
+
+            for (int i = 0; i < annotationInfo.getNumberOfItems(); i++) {
+                item = annotationInfo.getItem(i);
+                charge = item.getCharge();
+                type = item.getType();
+                loss = item.getNeutralLoss();
+                location = item.getLocation();
+
+                // ignore the annotation which location on n-terminal or c-terminal.
+                if (location == getRowCount()) {
+                    continue;
+                }
+
+                row = getRowNumber(type, location);
+                col = getColumnNumber(type, charge, loss);
+
+                manualData[row][col] = annotation;
+            }
+        }
+
+        return manualData;
     }
 
     /**
@@ -482,22 +485,16 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
         IonAnnotation[][] matchedData = new IonAnnotation[getRowCount()][getColumnCount()];
 
         if (showAuto) {
+            IonAnnotation[][] autoData = calculate ? match() : new IonAnnotation[getRowCount()][getColumnCount()];
             for (int i = 0; i < getRowCount(); i++) {
                 for (int j = 0; j < getColumnCount(); j++) {
-                    if (autoData[i][j] != null && isFitAuto(autoData[i][j])) {
+                    if (autoData[i][j] != null && haveNeutralLoss(autoData[i][j])) {
                         matchedData[i][j] = autoData[i][j];
                     }
                 }
             }
         } else {
-            for (int i = 0; i < getRowCount(); i++) {
-                for (int j = 0; j < getColumnCount(); j++) {
-                    // based on product ion pair the show manual data.
-                    if (manualData[i][j] != null && isFitManual(manualData[i][j])) {
-                        matchedData[i][j] = manualData[i][j];
-                    }
-                }
-            }
+            matchedData = createManualData(manualAnnotations);
         }
 
         return matchedData;
@@ -505,35 +502,16 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
 
     /**
      * If user modify interval range, system will store the new value into {@link PSMParams},
-     * then call PSM algorithm to regenerate {@link #autoAnnotations} and {@link #autoData},
-     * and call {@link #notifyObservers()} to update their contents.
-     * @param range
      */
     public void setRange(double range) {
-        PSMParams.getInstance().setRange(range);
-
-        //if range changed, we need to re-calculate the auto data matrix.
-        this.autoData = match();
-        this.autoAnnotations = toList(autoData);
-
-        notifyObservers();
+        if (Double.compare(range, 0) == 1) {
+            this.range = range;
+        } else {
+            throw new IllegalArgumentException(range + " should great than 0!");
+        }
     }
 
-    /**
-     * add a {@link ExperimentalTableModelObserver}
-     * @param order : is update order, the minor order observer will update earlier.
-     */
-    public void addObserver(int order, ExperimentalTableModelObserver observer) {
-        this.observerList.put(order, observer);
-    }
-
-    private void notifyObservers() {
-        if (observerList == null) {
-            return;
-        }
-
-        for (ExperimentalTableModelObserver observer : observerList.values()) {
-            observer.update(this);
-        }
+    public double getRange() {
+        return range;
     }
 }

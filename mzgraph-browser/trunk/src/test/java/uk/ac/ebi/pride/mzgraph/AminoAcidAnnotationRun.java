@@ -1,11 +1,6 @@
 package uk.ac.ebi.pride.mzgraph;
 
-import uk.ac.ebi.pride.gui.io.SaveComponentUtils;
-
-import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,7 +8,7 @@ import java.io.IOException;
  * Date: 12-Aug-2010
  * Time: 13:45:03
  */
-public class AminoAcidAnnotationTest {
+public class AminoAcidAnnotationRun {
     public static void main(String[] args) {
         Runnable runner = new Runnable() {
             public void run() {

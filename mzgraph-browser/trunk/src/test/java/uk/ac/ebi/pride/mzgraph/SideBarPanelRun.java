@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Date: 22-Jun-2010
  * Time: 12:37:00
  */
-public class SideBarPanelTest {
+public class SideBarPanelRun {
     public static void main(String[] args) {
         Runnable runner = new Runnable() {
             public void run() {

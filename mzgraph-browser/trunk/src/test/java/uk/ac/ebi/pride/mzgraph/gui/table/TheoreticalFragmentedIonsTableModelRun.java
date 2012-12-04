@@ -11,7 +11,7 @@ import uk.ac.ebi.pride.mzgraph.gui.data.TheoreticalFragmentedIonsTableModel;
  * Date: 10/10/12
  */
 
-public class TheoreticalFragmentedIonsTableModelTest {
+public class TheoreticalFragmentedIonsTableModelRun {
     public static void main(String[] args) {
         String sequence = "EASPLSSNKLILR";
         PrecursorIon precursorIon = new DefaultPrecursorIon(sequence, 3);

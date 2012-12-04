@@ -7,13 +7,11 @@ import uk.ac.ebi.pride.iongen.model.impl.DefaultPrecursorIon;
 import uk.ac.ebi.pride.mol.Peptide;
 import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mzgraph.ExampleUtil;
-import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.gui.ExperimentalFragmentedIonsTable;
-import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
 
 import java.awt.*;
 
-public class MzTablePanelTest {
+public class MzTablePanelRun {
     public static void main(String[] args) {
         Peptide peptide = ExampleUtil.generatePeptide();
         PrecursorIon precursorIon = new DefaultPrecursorIon(peptide, 2);

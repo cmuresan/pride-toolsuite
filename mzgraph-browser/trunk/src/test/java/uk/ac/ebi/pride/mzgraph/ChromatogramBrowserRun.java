@@ -9,7 +9,7 @@ import java.awt.*;
  * Date: 15-Aug-2010
  * Time: 16:48:31
  */
-public class ChromatogramBrowserTest {
+public class ChromatogramBrowserRun {
         public static void main(String[] args) {
         Runnable runner = new Runnable() {
             public void run() {

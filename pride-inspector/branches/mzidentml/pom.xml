@@ -89,9 +89,9 @@
             <version>0.3</version>
         </dependency>
         <dependency>
-            <groupId>uk.ac.ebi.pride.mzgraph</groupId>
+            <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>pride-mzgraph-browser</artifactId>
-            <version>1.0.11</version>
+            <version>1.0.12-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.pride.chart</groupId>

@@ -363,13 +363,6 @@ public class PrideInspector extends Desktop {
         String exportPeptideDescTitle = context.getProperty("export.peptide.desc.title");
         PrideAction exportPeptideAction = new ExportPeptideDescAction(exportPeptideDescTitle, null);
 
-        // make experiment public
-        String makeExpPublicTitle = context.getProperty("make.experiment.public.title");
-        PrideAction makeExpPublicAction = new MakeExperimentPublicAction(makeExpPublicTitle, null);
-
-        String createReviewerTitle = context.getProperty("create.reviewer.title");
-        PrideAction createReviewerAction = new CreateReviewerAction(createReviewerTitle, null);
-
         // check update
         String updateDescTitle = context.getProperty("check.update.desc.title");
         PrideAction updateAction = new UpdateAction(updateDescTitle, null);
@@ -405,14 +398,6 @@ public class PrideInspector extends Desktop {
                 exportIdentDescAction, exportPeptideAction);
         exportMenu.setMnemonic(java.awt.event.KeyEvent.VK_E);
         menuBar.add(exportMenu);
-
-        // curation menu
-        boolean showCurationMenu = Boolean.parseBoolean(context.getProperty("include.curation.menu"));
-        if (showCurationMenu) {
-            JMenu curationMenu = MenuFactory.createMenu("Curation", makeExpPublicAction, createReviewerAction);
-            curationMenu.setMnemonic(java.awt.event.KeyEvent.VK_C);
-            menuBar.add(curationMenu);
-        }
 
         // help menu
         JMenu helpMenu = MenuFactory.createMenu("Help",

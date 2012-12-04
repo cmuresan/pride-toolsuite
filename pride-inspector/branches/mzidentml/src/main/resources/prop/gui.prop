@@ -256,11 +256,6 @@ pride.inspector.logo.medium.icon=icon/32x32/prideInspector-logo-medium.png
 exception.notify.small.icon=icon/16x16/exception_notify.png
 no.exception.notify.small.icon=icon/16x16/no_exception_notify.png
 
-#curation
-include.curation.menu=false
-make.experiment.public.title=Make Experiment Public...
-create.reviewer.title=Create Reviewer Account...
-
 # invalid experiment accession message
 invalid.experiment.accession=<html>\n\
                               <b>Cannot open PRIDE accessions: \n\

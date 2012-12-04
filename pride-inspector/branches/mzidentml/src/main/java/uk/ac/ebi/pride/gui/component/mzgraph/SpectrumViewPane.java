@@ -24,9 +24,12 @@ import uk.ac.ebi.pride.gui.utils.AnnotationUtils;
 import uk.ac.ebi.pride.mol.PTModification;
 import uk.ac.ebi.pride.mzgraph.SpectrumBrowser;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
+import uk.ac.ebi.pride.mzgraph.gui.ExperimentalFragmentedIonsTable;
+import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.util.Map;
 
@@ -204,5 +207,32 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
             isFirstSpectrum = false;
         }
         this.firePropertyChange(DataAccessController.MZGRAPH_TYPE, "", spectrum);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        super.propertyChange(evt);
+
+        if (evt.getPropertyName().equals(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL)) {
+            ExperimentalFragmentedIonsTableModel tableModel = (ExperimentalFragmentedIonsTableModel) evt.getNewValue();
+
+            spectrumBrowser.getSpectrumPanel().removeIonAnnotations();
+            spectrumBrowser.getSpectrumPanel().removeDeltaOverflowAnnotation();
+
+            if (! tableModel.isShowAuto()) {
+                spectrumBrowser.addFragmentIons(tableModel.getAllManualAnnotations());
+            } else if (tableModel.isCalculate()){
+                java.util.List<IonAnnotation> ionAnnotations = tableModel.getAutoAnnotations();
+                spectrumBrowser.addFragmentIons(ionAnnotations);
+            } else {
+                // delta m/z too high, not generate auto annotations.
+                spectrumBrowser.getSpectrumPanel().addDeltaOverflowAnnotation();
+            }
+
+            spectrumBrowser.revalidate();
+            spectrumBrowser.repaint();
+            this.revalidate();
+            this.repaint();
+        }
     }
 }

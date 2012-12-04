@@ -86,7 +86,7 @@
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>ms-data-core-api</artifactId>
-            <version>0.3</version>
+            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
@@ -108,35 +108,6 @@
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>pride-utilities</artifactId>
             <version>0.1.17</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.ebi.pride.curation</groupId>
-            <artifactId>pride-curation</artifactId>
-            <version>0.0.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>hsqldb</groupId>
-                    <artifactId>hsqldb</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>xalan</groupId>
-                    <artifactId>xalan</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>jdo</groupId>
-                    <artifactId>jdori</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>proteomics</groupId>
-                    <artifactId>proteomics-common</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- calendar component -->
-        <dependency>
-            <groupId>com.toedter</groupId>
-            <artifactId>jcalendar</artifactId>
-            <version>1.3.2</version>
         </dependency>
         <dependency>
             <!--Use the following command to add jnlp.jar file to your local maven repository-->

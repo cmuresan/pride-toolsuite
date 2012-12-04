@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * Date: 17-Jun-2010
  * Time: 16:24:48
  */
-public class SpectrumChartPanelTest {
+public class SpectrumChartPanelRun {
     public static void main(String[] args) {
 //        SpectrumPanel chartPanel = new SpectrumPanel(ExampleUtil.mzArr, ExampleUtil.intentArr);
 //        chartPanel.setPeptide(ExampleUtil.generatePeptide());

@@ -11,7 +11,7 @@ import java.awt.*;
  * Version: 0.1-SNAPSHOT
  */
 
-public class PrideInspectorTest {
+public class PrideInspectorRun {
     public static void main(String[] args) {
 //        SpectrumBrowser browser = new SpectrumBrowser();
 //        browser.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);

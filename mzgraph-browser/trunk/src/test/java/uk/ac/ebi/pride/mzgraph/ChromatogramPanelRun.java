@@ -11,7 +11,7 @@ import java.awt.*;
  * Date: 07-Jun-2010
  * Time: 12:09:51
  */
-public class ChromatogramPanelTest {
+public class ChromatogramPanelRun {
     public static void main(String[] args) {
         Runnable runner = new Runnable() {
             public void run() {

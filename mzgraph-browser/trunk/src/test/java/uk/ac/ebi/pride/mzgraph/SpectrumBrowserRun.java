@@ -11,7 +11,7 @@ import java.awt.*;
  * Date: 15-Aug-2010
  * Time: 14:45:11
  */
-public class SpectrumBrowserTest {
+public class SpectrumBrowserRun {
     public static void main(String[] args) {
         Runnable runner = new Runnable() {
             public void run() {

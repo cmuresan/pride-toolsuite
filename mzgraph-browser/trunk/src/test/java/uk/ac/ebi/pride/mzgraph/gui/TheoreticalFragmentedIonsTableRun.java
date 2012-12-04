@@ -12,7 +12,7 @@ import javax.swing.*;
  * Date: 11/10/12
  */
 
-public class TheoreticalFragmentedIonsTableTest {
+public class TheoreticalFragmentedIonsTableRun {
     public static void main(String[] args) {
         // table value matrix reference: theoretical_fragmented_ions.proteomecluster file
         // which stored in the test resources directory.

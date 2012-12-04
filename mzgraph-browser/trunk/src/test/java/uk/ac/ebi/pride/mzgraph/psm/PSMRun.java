@@ -28,7 +28,7 @@ import java.util.*;
  * Date: 07/11/12
  */
 
-public class PSMTest {
+public class PSMRun {
     private Peptide toPeptide(uk.ac.ebi.pride.data.core.Peptide oldPeptide) {
         String sequence = oldPeptide.getSequence();
         List<uk.ac.ebi.pride.data.core.Modification> oldModifications = oldPeptide.getModifications();
@@ -222,7 +222,7 @@ public class PSMTest {
         Protein protein;
         Spectrum spectrum;
         uk.ac.ebi.pride.data.core.Peptide peptide;
-        PSMTest test = new PSMTest();
+        PSMRun test = new PSMRun();
         int count = 0;
         for (int i = 0; i < controller.getProteinIds().size(); i++) {
             protein = controller.getProteinById(i);

@@ -16,7 +16,7 @@ import java.util.List;
  * Date: 11/10/12
  */
 
-public class ExperimentalFragmentedIonsTableTest {
+public class ExperimentalFragmentedIonsTableRun {
     public static void main(String[] args) {
         PrecursorIon precursorIon = new DefaultPrecursorIon(ExampleUtil.generatePeptide());
 

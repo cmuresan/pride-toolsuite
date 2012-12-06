@@ -31,6 +31,7 @@ import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.chart.graph.MzTablePanel;
 import uk.ac.ebi.pride.mzgraph.gui.ExperimentalFragmentedIonsTable;
+import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalParams;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import javax.swing.*;
@@ -46,6 +47,8 @@ import java.util.regex.Pattern;
 public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Void> implements EventBusSubscribable {
     private static final Logger logger = LoggerFactory.getLogger(FragmentationTablePane.class);
 
+    private ExperimentalParams params = ExperimentalParams.getInstance();
+
     private MzTablePanel mzTablePanel;
 
     private DataAccessController controller;
@@ -55,7 +58,7 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
      * great than this, means maybe there exists some errors in the experimental,
      * system not show any annotations (including auto and manual) in table panel.
      */
-    private final double DELTA_MZ_THRESHOLD = 1;
+    public final static double DELTA_MZ_THRESHOLD = 1;
 
     /**
      * Subscribe to peptide event
@@ -193,7 +196,7 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
             PrecursorIon precursorIon = new DefaultPrecursorIon(newPeptide, charge);
             ExperimentalFragmentedIonsTable table = new ExperimentalFragmentedIonsTable(
                     precursorIon,
-                    ProductIonPair.B_Y,
+                    params.getIonPair(),
                     mzBinary.getDoubleArray(),
                     intentBinary.getDoubleArray()
             );
@@ -215,7 +218,7 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
 
                 JTabbedPane tabbedPane = (JTabbedPane) getParent();
                 // set fragmentation table tab panel enable or disable.
-                if (mzTablePanel.isCalculate()) {
+                if (table.isCalculate()) {
                     tabbedPane.setEnabledAt(1, true);
                 } else {
                     tabbedPane.setEnabledAt(1, false);
@@ -229,7 +232,7 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
 
                 // Summary Report Message
                 EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile(".*Annotation.*"))));
-                if (mzTablePanel.isShowAuto()) {
+                if (mzTablePanel.getTable().isShowAuto()) {
                     EventBus.publish(new SummaryReportEvent(
                             this,
                             controller,

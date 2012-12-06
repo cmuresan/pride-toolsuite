@@ -10,10 +10,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.entity.ChartEntity;
 import org.jfree.chart.entity.XYItemEntity;
 import org.jfree.chart.plot.XYPlot;
-import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.iongen.model.ProductIon;
-import uk.ac.ebi.pride.iongen.model.impl.DefaultPrecursorIon;
-import uk.ac.ebi.pride.mol.Peptide;
 import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.chart.renderer.TheoreticalFragmentedIonsRenderer;
@@ -21,7 +18,7 @@ import uk.ac.ebi.pride.mzgraph.gui.ExperimentalFragmentedIonsScatterChartPanel;
 import uk.ac.ebi.pride.mzgraph.gui.ExperimentalFragmentedIonsTable;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsDataset;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
-import uk.ac.ebi.pride.mzgraph.gui.data.PeakSet;
+import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalParams;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -49,6 +46,7 @@ import java.util.List;
 
 public class MzTablePanel extends JPanel implements PropertyChangeListener{
     private ExperimentalFragmentedIonsScatterChartPanel scatterChartPanel;
+    private ExperimentalParams params = ExperimentalParams.getInstance();
 
     private JScrollPane tablePanel;
     private ChartPanel chartPanel;
@@ -60,7 +58,7 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
     /**
      * MzTablePanel have initial or not.
      */
-    private boolean initial = false;
+//    private boolean initial = false;
 
     /**
      * whether calculate auto annotations or not.
@@ -116,7 +114,7 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
         int height = 35;
         this.table = table;
         tablePanel = new JScrollPane(table);
-        initial = true;
+//        initial = true;
 
         ExperimentalFragmentedIonsTableModel tableModel = (ExperimentalFragmentedIonsTableModel) table.getModel();
         ExperimentalFragmentedIonsDataset dataset = new ExperimentalFragmentedIonsDataset(tableModel);
@@ -129,23 +127,21 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
         contentPane.add(scatterChartPanel, BorderLayout.EAST);
         contentPane.add(tablePanel, BorderLayout.CENTER);
 
-        waterChecker.setSelected(tableModel.isShowWaterLoss());
+        waterChecker.setSelected(params.isShowWaterLoss());
         waterChecker.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JCheckBox checker = (JCheckBox) e.getSource();
                 table.setShowWaterLoss(checker.isSelected());
-//                firePropertyChange(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL, "", table.getModel());
             }
         });
 
-        ammoniaChecker.setSelected(tableModel.isShowAmmoniaLoss());
+        ammoniaChecker.setSelected(params.isShowAmmoniaLoss());
         ammoniaChecker.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JCheckBox checker = (JCheckBox) e.getSource();
                 table.setShowAmmoniaLoss(checker.isSelected());
-//                firePropertyChange(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL, "", table.getModel());
             }
         });
 
@@ -154,13 +150,29 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
         ionPairChooser.addItem(ProductIonPair.B_Y);
         ionPairChooser.addItem(ProductIonPair.A_X);
         ionPairChooser.addItem(ProductIonPair.C_Z);
+
+        int ionPairIndex;
+        switch (params.getIonPair()) {
+            case B_Y:
+                ionPairIndex = 0;
+                break;
+            case A_X:
+                ionPairIndex = 1;
+                break;
+            case C_Z:
+                ionPairIndex = 2;
+                break;
+            default:
+                ionPairIndex = 0;
+        }
+
+        ionPairChooser.setSelectedIndex(ionPairIndex);
         ionPairChooser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JComboBox chooser = (JComboBox) e.getSource();
                 ProductIonPair ionPair = (ProductIonPair) chooser.getSelectedItem();
                 table.setProductIonPair(ionPair);
-//                firePropertyChange(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL, "", table.getModel());
             }
         });
 
@@ -169,7 +181,7 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
                 JSlider.HORIZONTAL,
                 1,        // minimum range is 0.1 Da
                 10,        // maximum range is 1 Da
-                5         // default range is 0.5 Da
+                (int) (params.getRange() * 10)         // default range is 0.5 Da
         );
         rangeSlider.setMinorTickSpacing(1);
         rangeSlider.setMajorTickSpacing(1);
@@ -194,7 +206,6 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
                 if (! source.getValueIsAdjusting()) {
                     double newRange = source.getValue() / 10d;
                     table.setRange(newRange);
-//                    firePropertyChange(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL, "", table.getModel());
                     source.setToolTipText(newRange + "Da");
                 }
             }
@@ -249,6 +260,7 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
         helpButton.setBounds(x_offset, y_offset + 2, size.width, 25);
         helpButton.setVisible(false);
 
+        table.flush();
         flushPanel();
 
         setLayout(new BorderLayout());
@@ -305,9 +317,9 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
 //        init(table);
 //    }
 
-    public boolean hasInitial() {
-        return initial;
-    }
+//    public boolean hasInitial() {
+//        return initial;
+//    }
 
     public ChartPanel getChartPanel() {
         return chartPanel;
@@ -359,19 +371,8 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
         }
     }
 
-    public boolean isCalculate() {
-        return this.table.isCalculate();
-    }
-
     public void setPeaks(double[] mzArray, double[] intensityArray) {
         this.table.setPeaks(mzArray, intensityArray);
-    }
-
-    /**
-     * Whether show auto annotations, or show manual annotations. Default, the value is {@value}.
-     */
-    public boolean isShowAuto() {
-        return this.table.isShowAuto();
     }
 
     /**
@@ -478,7 +479,7 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL)) {
-           firePropertyChange(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL, evt.getOldValue(), evt.getNewValue());
+            firePropertyChange(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL, evt.getOldValue(), evt.getNewValue());
         }
     }
 }

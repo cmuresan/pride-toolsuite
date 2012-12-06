@@ -61,6 +61,9 @@ public class SpectrumPanelModel implements PropertyChangeListener {
      */
     private PropertyChangeSupport supporter;
 
+    private boolean peaksReady = false;
+    private boolean ionsReady = false;
+
 
     public SpectrumPanelModel() {
         peakDataset = MzGraphDatasetUtils.createXYDataset(DEFAULT_PEAK_LIST_DATASET_NAME, null, null);
@@ -104,7 +107,11 @@ public class SpectrumPanelModel implements PropertyChangeListener {
     public void setPeaks(double[] mz, double[] intensity) {
         MzGraphDatasetUtils.removeXYSeries(peakDataset, DEFAULT_PEAK_LIST_DATASET_NAME);
         MzGraphDatasetUtils.addXYSeries(peakDataset, DEFAULT_PEAK_LIST_DATASET_NAME, mz, intensity);
-        firePropertyChange(NEW_PEAK_SERIES_PROP, null, peakDataset.getSeries(DEFAULT_PEAK_LIST_DATASET_NAME));
+
+        peaksReady = true;
+        if (peaksReady && ionsReady) {
+            firePropertyChange(NEW_PEAK_SERIES_PROP, null, peakDataset.getSeries(DEFAULT_PEAK_LIST_DATASET_NAME));
+        }
     }
 
     /**
@@ -241,6 +248,9 @@ public class SpectrumPanelModel implements PropertyChangeListener {
      */
     public void addAnnotations(List<IonAnnotation> ions) {
         Map<FragmentIonType, List<IonAnnotation>> ionMap = IonAnnotationUtils.sortByType(ions);
+
+        ionsReady = true;
+
         for (Map.Entry<FragmentIonType, List<IonAnnotation>> ionTypeListEntry : ionMap.entrySet()) {
             addFragmentIonSeries(ionTypeListEntry.getKey(), ionTypeListEntry.getValue());
         }

@@ -16,6 +16,8 @@ import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
  */
 
 public class ExperimentalFragmentedIonsDataset extends XYSeriesCollection {
+    private ExperimentalParams params = ExperimentalParams.getInstance();
+
     public ExperimentalFragmentedIonsDataset(ExperimentalFragmentedIonsTableModel tableModel) {
         update(tableModel);
     }
@@ -26,7 +28,7 @@ public class ExperimentalFragmentedIonsDataset extends XYSeriesCollection {
         }
 
         // Step 1 : update series list.
-        ProductIonPair ionPair = tableModel.getIonPair();
+        ProductIonPair ionPair = params.getIonPair();
 
         // delete all old series.
         removeAllSeries();

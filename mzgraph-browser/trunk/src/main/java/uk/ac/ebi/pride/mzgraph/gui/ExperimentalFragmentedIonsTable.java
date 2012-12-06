@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants;
 import uk.ac.ebi.pride.mzgraph.chart.renderer.ExperimentalFragmentedIonsRenderer;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
+import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalParams;
 import uk.ac.ebi.pride.mzgraph.gui.data.PeakSet;
 
 import javax.swing.*;
@@ -24,9 +25,9 @@ import java.util.List;
 
 public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTable {
     private ExperimentalFragmentedIonsTableModel tableModel;
+    private ExperimentalParams params = ExperimentalParams.getInstance();
 
     public static final String FLUSH_TABLEMODEL = "flush tablemodel";
-    private boolean calculate = false;
 
     public ExperimentalFragmentedIonsTable(PrecursorIon precursorIon, ProductIonPair pair, PeakSet peakSet) {
         super(precursorIon, pair);
@@ -62,7 +63,7 @@ public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTa
     }
 
     public void setProductIonPair(ProductIonPair ionPair) {
-        if (this.tableModel != null && ! this.tableModel.getIonPair().equals(ionPair)) {
+        if (this.tableModel != null && ! params.getIonPair().equals(ionPair)) {
             this.tableModel.setProductIonPair(ionPair);
         }
 
@@ -87,6 +88,10 @@ public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTa
         return this.tableModel.isShowAuto();
     }
 
+    public void flush() {
+        firePropertyChange(FLUSH_TABLEMODEL, null, tableModel);
+    }
+
     /**
      * whether calculate auto annotations, or not.
      */
@@ -98,18 +103,18 @@ public class ExperimentalFragmentedIonsTable extends TheoreticalFragmentedIonsTa
     }
 
     public boolean isCalculate() {
-        return tableModel.isCalculate();
+        return this.tableModel.isCalculate();
     }
 
     public void setShowWaterLoss(boolean showWaterLoss) {
-        if (this.tableModel != null && showWaterLoss != this.tableModel.isShowWaterLoss()) {
+        if (this.tableModel != null && showWaterLoss != params.isShowWaterLoss()) {
             this.tableModel.setShowWaterLoss(showWaterLoss);
             firePropertyChange(FLUSH_TABLEMODEL, null, this.tableModel);
         }
     }
 
     public void setShowAmmoniaLoss(boolean showAmmoniaLoss) {
-        if (this.tableModel != null && showAmmoniaLoss != this.tableModel.isShowAmmoniaLoss()) {
+        if (this.tableModel != null && showAmmoniaLoss != params.isShowAmmoniaLoss()) {
             this.tableModel.setShowAmmoniaLoss(showAmmoniaLoss);
             firePropertyChange(FLUSH_TABLEMODEL, null, this.tableModel);
         }

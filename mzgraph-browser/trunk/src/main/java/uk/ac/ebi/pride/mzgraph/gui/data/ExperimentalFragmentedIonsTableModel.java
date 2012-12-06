@@ -8,9 +8,7 @@ import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mol.ion.FragmentIonType;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotationInfo;
-import uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants;
 import uk.ac.ebi.pride.mzgraph.psm.PSMMatcher;
-import uk.ac.ebi.pride.mzgraph.psm.PSMParams;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,25 +31,14 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
 
     private PrecursorIon precursorIon;
 
+    private ExperimentalParams params = ExperimentalParams.getInstance();
+
+    private boolean calculate = false;
+
     /**
      * Whether show auto annotations, or show manual annotations. Default, the value is {@value}.
-     * User can call {@link #setShowAuto(boolean)} to change this value.
      */
     private boolean showAuto = false;
-
-    /**
-     * Whether need calculate auto annotations or not.
-     */
-    private boolean calculate = true;
-
-    private boolean showWaterLoss = false;
-
-    private boolean showAmmoniaLoss = false;
-
-    /**
-     * default psm abs(range interval) is [0Da, 0.5Da]
-     */
-    private double range = MzGraphConstants.INTERVAL_RANGE;
 
     /**
      * store all manual annotations. including a, b, c, x, y, z ions annotations,
@@ -89,19 +76,11 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
     }
 
     public void setShowWaterLoss(boolean showWaterLoss) {
-        this.showWaterLoss = showWaterLoss;
+        params.setShowWaterLoss(showWaterLoss);
     }
 
     public void setShowAmmoniaLoss(boolean showAmmoniaLoss) {
-        this.showAmmoniaLoss = showAmmoniaLoss;
-    }
-
-    public boolean isShowWaterLoss() {
-        return showWaterLoss;
-    }
-
-    public boolean isShowAmmoniaLoss() {
-        return showAmmoniaLoss;
+        params.setShowAmmoniaLoss(showAmmoniaLoss);
     }
 
     private List<IonAnnotation> toList(IonAnnotation[][] matrix) {
@@ -222,7 +201,7 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
         for (int i = 0; i < info.getNumberOfItems(); i++) {
             type = info.getItem(i).getType();
 
-            switch (getIonPair()) {
+            switch (params.getIonPair()) {
                 case B_Y:
                     if (type.equals(FragmentIonType.B_ION) || type.equals(FragmentIonType.Y_ION)) {
                         return true;
@@ -361,20 +340,16 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
         return PSMMatcher.getInstance().match(this, this.peakSet);
     }
 
+    public boolean isCalculate() {
+        return calculate;
+    }
+
     /**
      * Whether using PSM algorithm to generate auto annotations. For example, if delta m/z is bigger,
      * not calculate.
      */
     public void setCalculate(boolean calculate) {
         this.calculate = calculate;
-    }
-
-    public boolean isCalculate() {
-        return calculate;
-    }
-
-    public boolean isShowAuto() {
-        return showAuto;
     }
 
     /**
@@ -385,6 +360,10 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
      */
     public void setShowAuto(boolean showAuto) {
         this.showAuto = showAuto;
+    }
+
+    public boolean isShowAuto() {
+        return showAuto;
     }
 
     public List<IonAnnotation> getAllAutoAnnotations() {
@@ -399,9 +378,9 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
         boolean fit = false;
         if (loss == null) {
             fit = true;
-        } else if (loss.equals(NeutralLoss.WATER_LOSS) && showWaterLoss) {
+        } else if (loss.equals(NeutralLoss.WATER_LOSS) && params.isShowWaterLoss()) {
             fit = true;
-        } else if (loss.equals(NeutralLoss.AMMONIA_LOSS) && showAmmoniaLoss) {
+        } else if (loss.equals(NeutralLoss.AMMONIA_LOSS) && params.isShowAmmoniaLoss()) {
             fit = true;
         }
 
@@ -422,7 +401,7 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
     }
 
     /**
-     * based on {@link #isShowAuto()} the decide to show auto annotations or manual annotations.
+     * based on {@link #params#isShowAuto()} the decide to show auto annotations or manual annotations.
      */
     public List<IonAnnotation> getAnnotations() {
         if (showAuto) {
@@ -432,12 +411,14 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
         }
     }
 
-    private IonAnnotation[][] createManualData(List<IonAnnotation> annotationList) {
+    public IonAnnotation[][] getManualData(List<IonAnnotation> annotationList) {
         IonAnnotation[][] manualData = new IonAnnotation[getRowCount()][getColumnCount()];
 
         if (annotationList == null || annotationList.size() == 0) {
             return manualData;
         }
+
+        List<IonAnnotation> filteredAnnotationList = filterAnnotations(annotationList);
 
         int charge;
         FragmentIonType type;
@@ -448,7 +429,7 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
 
         IonAnnotationInfo annotationInfo;
         IonAnnotationInfo.Item item;
-        for (IonAnnotation annotation : annotationList) {
+        for (IonAnnotation annotation : filteredAnnotationList) {
             if (! isFitManual(annotation)) {
                 continue;
             }
@@ -477,41 +458,37 @@ public class ExperimentalFragmentedIonsTableModel extends TheoreticalFragmentedI
         return manualData;
     }
 
+    public IonAnnotation[][] getAutoData() {
+        IonAnnotation[][] autoData = new IonAnnotation[getRowCount()][getColumnCount()];
+
+        IonAnnotation[][] psmData = calculate ? match() : new IonAnnotation[getRowCount()][getColumnCount()];
+        for (int i = 0; i < getRowCount(); i++) {
+            for (int j = 0; j < getColumnCount(); j++) {
+                if (psmData[i][j] != null && haveNeutralLoss(psmData[i][j])) {
+                    autoData[i][j] = psmData[i][j];
+                }
+            }
+        }
+
+        return autoData;
+    }
+
     /**
-     * based on {@link #showAuto} parameter, display auto data matrix or manual data matrix.
+     * based on {@link #params#isShowAuto()} parameter, display auto data matrix or manual data matrix.
      * @see #setShowAuto(boolean)
      */
     public IonAnnotation[][] getMatchedData() {
-        IonAnnotation[][] matchedData = new IonAnnotation[getRowCount()][getColumnCount()];
-
         if (showAuto) {
-            IonAnnotation[][] autoData = calculate ? match() : new IonAnnotation[getRowCount()][getColumnCount()];
-            for (int i = 0; i < getRowCount(); i++) {
-                for (int j = 0; j < getColumnCount(); j++) {
-                    if (autoData[i][j] != null && haveNeutralLoss(autoData[i][j])) {
-                        matchedData[i][j] = autoData[i][j];
-                    }
-                }
-            }
+            return getAutoData();
         } else {
-            matchedData = createManualData(manualAnnotations);
+            return getManualData(manualAnnotations);
         }
-
-        return matchedData;
     }
 
     /**
-     * If user modify interval range, system will store the new value into {@link PSMParams},
+     * If user modify interval range, system will store the new value into {@link ExperimentalParams},
      */
     public void setRange(double range) {
-        if (Double.compare(range, 0) == 1) {
-            this.range = range;
-        } else {
-            throw new IllegalArgumentException(range + " should great than 0!");
-        }
-    }
-
-    public double getRange() {
-        return range;
+        params.setRange(range);
     }
 }

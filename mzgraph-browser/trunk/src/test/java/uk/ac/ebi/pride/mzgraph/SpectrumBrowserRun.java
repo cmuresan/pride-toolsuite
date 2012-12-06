@@ -26,9 +26,11 @@ public class SpectrumBrowserRun {
         Peptide peptide = ExampleUtil.generatePeptide();
         SpectrumBrowser browser = new SpectrumBrowser();
 
-        browser.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
+//        browser.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
 
         browser.addFragmentIons(ExampleUtil.generateAnnotationList());
+
+        browser.setPeaks(ExampleUtil.mzArr, ExampleUtil.intentArr);
 
 
 //        browser.setShowAuto(false);

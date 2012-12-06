@@ -211,5 +211,6 @@ public class MzGraphConstants {
     public static final double ASA_MEAN_RATIO_THRESHOLD = 0.8;
     public static final double ASA_DENSITY_THRESHOLD = 1.0;
 
-    public static final String DELTA_MZ_OVERFLOW = "Delta m/z value higher than 1 Da, ms/ms automatic spectrum annotations and fragmentation table not provided";
+    public static final String DELTA_MZ_OVERFLOW1 = "Delta m/z value higher than 1 Da, ms/ms automatic ";
+    public static final String DELTA_MZ_OVERFLOW2 = "spectrum annotations and fragmentation table not provided";
 }

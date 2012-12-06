@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.NumberFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -69,7 +68,8 @@ public abstract class MzGraphPanel extends JPanel implements ChartMouseListener,
     protected ValueAxis yAxis;
     protected ChartPanel chartPanel;
     protected XYPlot plot;
-    private XYTextAnnotation overflowAnnotation;
+    private XYTextAnnotation overflowAnnotation1;
+    private XYTextAnnotation overflowAnnotation2;
 
     public MzGraphPanel(String title,
                         String xAxisLabel,
@@ -135,14 +135,22 @@ public abstract class MzGraphPanel extends JPanel implements ChartMouseListener,
         ValueAxis rangeAxis = plot.getRangeAxis();
         double lx = domainAxis.getRange().getLength() * 0.98;
         double ly = rangeAxis.getRange().getLength() * 0.95;
-        overflowAnnotation = new XYTextAnnotation(MzGraphConstants.DELTA_MZ_OVERFLOW, lx, ly);
-        overflowAnnotation.setTextAnchor(TextAnchor.TOP_RIGHT);
-        plot.addAnnotation(overflowAnnotation, true);
+        overflowAnnotation1 = new XYTextAnnotation(MzGraphConstants.DELTA_MZ_OVERFLOW1, lx, ly);
+        overflowAnnotation1.setTextAnchor(TextAnchor.TOP_RIGHT);
+        plot.addAnnotation(overflowAnnotation1, true);
+
+        ly = rangeAxis.getRange().getLength() * 0.90;
+        overflowAnnotation2 = new XYTextAnnotation(MzGraphConstants.DELTA_MZ_OVERFLOW2, lx, ly);
+        overflowAnnotation2.setTextAnchor(TextAnchor.TOP_RIGHT);
+        plot.addAnnotation(overflowAnnotation2, true);
     }
 
     public void removeDeltaOverflowAnnotation() {
-        if (this.overflowAnnotation != null) {
-            plot.removeAnnotation(this.overflowAnnotation, true);
+        if (this.overflowAnnotation1 != null) {
+            plot.removeAnnotation(this.overflowAnnotation1, true);
+        }
+        if (this.overflowAnnotation2 != null) {
+            plot.removeAnnotation(this.overflowAnnotation2, true);
         }
     }
 

@@ -47,8 +47,8 @@ public class ExperimentalFragmentedIonsScatterChartPanel extends JPanel implemen
 
         JFreeChart chart = ChartFactory.createScatterPlot(
                 null,
-                "Mass (Da)",
                 "Error (Da)",
+                "M/Z (Da)",
                 dataset,
                 PlotOrientation.HORIZONTAL,
                 true,

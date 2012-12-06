@@ -176,7 +176,7 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
             }
         });
 
-        rangeLabel = new JLabel("            Range(Da):");
+        rangeLabel = new JLabel("            Tolerance(Da):");
         rangeSlider = new JSlider(
                 JSlider.HORIZONTAL,
                 1,        // minimum range is 0.1 Da

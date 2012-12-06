@@ -29,7 +29,7 @@ import java.util.List;
  */
 
 public class TheoreticalFragmentedIonsTableModel extends AbstractTableModel {
-    private ProductIonPair ionPair;
+    private ExperimentalParams params = ExperimentalParams.getInstance();
 
     private PrecursorIon precursorIon;
 
@@ -44,12 +44,12 @@ public class TheoreticalFragmentedIonsTableModel extends AbstractTableModel {
             throw new IllegalArgumentException("precursor charge can not less than 1");
         }
 
-        // the product ions charge up to 3.
+        // the product ions charge up to 2.
         int prodCharge;
-        if (charge <= 3) {
+        if (charge <= 2) {
             prodCharge = charge;
         } else {
-            prodCharge = 3;
+            prodCharge = 2;
         }
 
         for (int i = 1; i <= prodCharge; i++) {
@@ -160,11 +160,7 @@ public class TheoreticalFragmentedIonsTableModel extends AbstractTableModel {
     }
 
     public void setProductIonPair(ProductIonPair ionPair) {
-        if (ionPair == null) {
-            ionPair = ProductIonPair.B_Y;
-        }
-
-        this.ionPair = ionPair;
+        params.setIonPair(ionPair);
 
         /**
          * Previous matrix: display x, y, z ions m/z values, based on the {@link #ionPair}.
@@ -188,7 +184,7 @@ public class TheoreticalFragmentedIonsTableModel extends AbstractTableModel {
          */
         List<List<ProductIon>> postMatrix = null;
 
-        switch (ionPair) {
+        switch (params.getIonPair()) {
             case A_X:
                 prevMatrix =  createProductIonMatrix(precursorIon, FragmentIonType.X_ION);
                 postMatrix = createProductIonMatrix(precursorIon, FragmentIonType.A_ION);
@@ -251,10 +247,6 @@ public class TheoreticalFragmentedIonsTableModel extends AbstractTableModel {
 
     public boolean isIDColumn(int columnIndex) {
         return columnIndex == 0 || columnIndex == getColumnCount() - 1;
-    }
-
-    public ProductIonPair getIonPair() {
-        return ionPair;
     }
 
     public PrecursorIon getPrecursorIon() {

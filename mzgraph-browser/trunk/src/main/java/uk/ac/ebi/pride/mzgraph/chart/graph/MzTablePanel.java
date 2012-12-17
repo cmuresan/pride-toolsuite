@@ -276,51 +276,6 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
 
     }
 
-//    public MzTablePanel(Peptide peptide, PeakSet peakSet) {
-//        PrecursorIon precursorIon = new DefaultPrecursorIon(peptide);
-//
-//        init(new ExperimentalFragmentedIonsTable(precursorIon, peakSet));
-//    }
-//
-//    public MzTablePanel(Peptide peptide, double[] mzArray, double[] intensityArray) {
-//        PrecursorIon precursorIon = new DefaultPrecursorIon(peptide);
-//
-//        init(new ExperimentalFragmentedIonsTable(precursorIon, mzArray, intensityArray));
-//    }
-//
-//    public MzTablePanel(Peptide peptide) {
-//        this(peptide, null, null);
-//    }
-//
-//    public MzTablePanel(Peptide peptide, List<IonAnnotation> ionAnnotationList) {
-//        PrecursorIon precursorIon = new DefaultPrecursorIon(peptide);
-//        ExperimentalFragmentedIonsTable table = new ExperimentalFragmentedIonsTable(precursorIon);
-//        table.addAllManualAnnotations(ionAnnotationList);
-//        init(table);
-//    }
-//
-//    public MzTablePanel(PrecursorIon precursorIon, PeakSet peakSet) {
-//        init(new ExperimentalFragmentedIonsTable(precursorIon, peakSet));
-//    }
-//
-//    public MzTablePanel(PrecursorIon precursorIon, double[] mzArray, double[] intensityArray) {
-//        init(new ExperimentalFragmentedIonsTable(precursorIon, mzArray, intensityArray));
-//    }
-//
-//    public MzTablePanel(PrecursorIon precursorIon) {
-//        this(precursorIon, null, null);
-//    }
-//
-//    public MzTablePanel(PrecursorIon precursorIon, List<IonAnnotation> ionAnnotationList) {
-//        ExperimentalFragmentedIonsTable table = new ExperimentalFragmentedIonsTable(precursorIon);
-//        table.addAllManualAnnotations(ionAnnotationList);
-//        init(table);
-//    }
-
-//    public boolean hasInitial() {
-//        return initial;
-//    }
-
     public ChartPanel getChartPanel() {
         return chartPanel;
     }

@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.mzgraph.psm.noise;
 
+import uk.ac.ebi.pride.iongen.model.Peak;
+import uk.ac.ebi.pride.iongen.model.PeakSet;
 import uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
-import uk.ac.ebi.pride.mzgraph.gui.data.Peak;
-import uk.ac.ebi.pride.mzgraph.gui.data.PeakSet;
 import uk.ac.ebi.pride.mzgraph.psm.NoiseFilter;
 
 import java.util.Arrays;

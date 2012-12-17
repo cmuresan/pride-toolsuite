@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.mzgraph.gui;
 
+import uk.ac.ebi.pride.iongen.model.PeakSet;
 import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.iongen.model.ProductIon;
 import uk.ac.ebi.pride.mol.ProductIonPair;
@@ -8,7 +9,6 @@ import uk.ac.ebi.pride.mzgraph.chart.graph.MzGraphConstants;
 import uk.ac.ebi.pride.mzgraph.chart.renderer.ExperimentalFragmentedIonsRenderer;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalParams;
-import uk.ac.ebi.pride.mzgraph.gui.data.PeakSet;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;

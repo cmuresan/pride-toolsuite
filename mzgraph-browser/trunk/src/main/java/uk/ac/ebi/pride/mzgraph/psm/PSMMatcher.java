@@ -1,10 +1,10 @@
 package uk.ac.ebi.pride.mzgraph.psm;
 
+import uk.ac.ebi.pride.iongen.model.PeakSet;
 import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
-import uk.ac.ebi.pride.mzgraph.gui.data.PeakSet;
 import uk.ac.ebi.pride.mzgraph.psm.conflict.IonTypeConflictFilter;
 import uk.ac.ebi.pride.mzgraph.psm.match.MaxSpectraMatcher;
 import uk.ac.ebi.pride.mzgraph.psm.noise.ASANoiseFilter;

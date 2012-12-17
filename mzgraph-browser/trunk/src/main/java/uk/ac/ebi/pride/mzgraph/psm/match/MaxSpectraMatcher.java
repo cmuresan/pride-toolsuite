@@ -1,11 +1,15 @@
 package uk.ac.ebi.pride.mzgraph.psm.match;
 
+import uk.ac.ebi.pride.iongen.model.Peak;
+import uk.ac.ebi.pride.iongen.model.PeakSet;
 import uk.ac.ebi.pride.iongen.model.ProductIon;
+import uk.ac.ebi.pride.iongen.utils.ApproximateComparator;
 import uk.ac.ebi.pride.mol.NeutralLoss;
 import uk.ac.ebi.pride.mol.ion.FragmentIonType;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotationInfo;
-import uk.ac.ebi.pride.mzgraph.gui.data.*;
+import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
+import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalParams;
 import uk.ac.ebi.pride.mzgraph.psm.SpectraMatcher;
 
 import java.util.ArrayList;
@@ -17,13 +21,15 @@ import java.util.List;
  */
 
 public class MaxSpectraMatcher implements SpectraMatcher {
+    private ApproximateComparator comparator = new ApproximateComparator();
+
     private IonAnnotation findAnnotation(double mz, List<IonAnnotation> annotationList) {
         if (annotationList == null) {
             return null;
         }
 
         for (IonAnnotation annotation : annotationList) {
-            if (Double.compare(annotation.getMz().doubleValue(), mz) == 0) {
+            if (comparator.compare(annotation.getMz().doubleValue(), mz) == 0) {
                 return annotation;
             }
         }

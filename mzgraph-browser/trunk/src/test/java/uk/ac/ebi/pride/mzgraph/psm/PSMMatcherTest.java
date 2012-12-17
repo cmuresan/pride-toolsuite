@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.mzgraph.psm;
 
 import org.junit.Test;
+import uk.ac.ebi.pride.iongen.model.PeakSet;
 import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.iongen.model.impl.DefaultPrecursorIon;
 import uk.ac.ebi.pride.mol.NeutralLoss;
@@ -10,7 +11,6 @@ import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mol.ion.FragmentIonType;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotationInfo;
-import uk.ac.ebi.pride.mzgraph.gui.data.PeakSet;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -73,7 +73,7 @@ public class ExperimentalParams {
     }
 
     public void setRange(double range) {
-        if (Double.compare(range, 0) == 1) {
+        if (Double.compare(range, 0) > 0) {
             this.range = range;
         } else {
             throw new IllegalArgumentException(range + " should great than 0!");

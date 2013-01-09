@@ -237,14 +237,19 @@ public class PeptideScore {
             throw new IllegalArgumentException("Weight list is null or empty!");
         }
 
-        double score = 0;
+        double totalScore = 0;
         double weightSum = 0;
+        double score;
         for (int depth = 0; depth < weightList.length; depth++) {
-            score += getScore(productIonSet, depth + 1, splitSize) * weightList[depth];
+            score = getScore(productIonSet, depth + 1, splitSize);
+            if (Double.isInfinite(score)) {
+                break;
+            }
+            totalScore += score * weightList[depth];
             weightSum += weightList[depth];
         }
 
-        return score / weightSum;
+        return totalScore / weightSum;
     }
 
 }

@@ -1,27 +1,30 @@
 package uk.ac.ebi.pride.jaxb.xml.marshaller;
 
+import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.jaxb.model.ExperimentCollection;
 import uk.ac.ebi.pride.jaxb.model.ModelConstants;
 import uk.ac.ebi.pride.jaxb.model.PrideXmlObject;
+import uk.ac.ebi.pride.jaxb.xml.util.EscapingXMLStreamWriter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 
 /**
- * Created by IntelliJ IDEA.
- * User: rcote
- * Date: 13-Aug-2010
- * Time: 14:15:35
- * To change this template use File | Settings | File Templates.
+ * @author rcote
+ * @author florian
  */
+@SuppressWarnings("unused")
 public class PrideXmlMarshallerFactory {
 
     private static final Logger logger = Logger.getLogger(PrideXmlMarshallerFactory.class);
@@ -73,19 +76,29 @@ public class PrideXmlMarshallerFactory {
         }
 
         public <T extends PrideXmlObject> void marshall(T object, OutputStream os) {
+            // pass on to the marshall(PrideXmlObject, Writer) method
             this.marshall(object, new OutputStreamWriter(os));
         }
 
         public <T extends PrideXmlObject> void marshall(T object, Writer out) {
+            // pass on to the marshall(PrideXmlObject, XMLStreamWriter) method
+            try {
+                XMLStreamWriter xmlStreamWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(out);
+                this.marshall(object, xmlStreamWriter);
+            } catch (XMLStreamException e) {
+                logger.error("could not create XMLStreamWriter from provided Writer!", e);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T extends PrideXmlObject> void marshall(T object, XMLStreamWriter xmlStreamWriter) {
 
             if (object == null) {
                 throw new IllegalArgumentException("Cannot marshall a NULL object");
             }
 
             try {
-
-                // Set JAXB_FRAGMENT_PROPERTY to true for all objects that do not have
-                // a @XmlRootElement annotation
+                // Set JAXB_FRAGMENT_PROPERTY to true for all objects that do not have a @XmlRootElement annotation
                 if (!(object instanceof ExperimentCollection)) {
                     marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
                 } else {
@@ -93,7 +106,12 @@ public class PrideXmlMarshallerFactory {
                 }
 
                 QName aQName = ModelConstants.getQNameForClass(object.getClass());
-                marshaller.marshal(new JAXBElement(aQName, object.getClass(), object), out);
+
+                // before marshalling out, wrap in a Custom XMLStreamWriter
+                // to fix a JAXB bug: http://java.net/jira/browse/JAXB-614
+                // also wrapping in IndentingXMLStreamWriter to generate formatted XML
+                IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(new EscapingXMLStreamWriter(xmlStreamWriter));
+                marshaller.marshal(new JAXBElement(aQName, object.getClass(), object), writer);
 
             } catch (JAXBException e) {
                 logger.error("PrideXmlMarshaller.marshall", e);
@@ -102,6 +120,6 @@ public class PrideXmlMarshallerFactory {
 
         }
 
-    }
+    } // end of inner class
 
 }

@@ -344,8 +344,10 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             if(spectraDataList != null){
                 Set<CvParam> cvParamList = new HashSet<CvParam>();
                 for (SpectraData spectraData: spectraDataList){
-                    cvParamList.add(spectraData.getSpectrumIdFormat());
-                    cvParamList.add(spectraData.getFileFormat());
+                    if(spectraData.getSpectrumIdFormat() != null)
+                        cvParamList.add(spectraData.getSpectrumIdFormat());
+                    if(spectraData.getFileFormat() != null)
+                        cvParamList.add(spectraData.getFileFormat());
                 }
                 List<CvParam> list = new ArrayList<CvParam>(cvParamList);
                 additionals.addCvParams(list);

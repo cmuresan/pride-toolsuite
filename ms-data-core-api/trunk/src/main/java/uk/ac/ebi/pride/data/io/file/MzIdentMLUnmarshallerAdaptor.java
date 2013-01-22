@@ -206,8 +206,7 @@ public class MzIdentMLUnmarshallerAdaptor {
         return peptideRefs;
     }
 
-    public Comparable getDBSequencebyProteinHypothesis(Comparable id) throws JAXBException
-    {
+    public Comparable getDBSequencebyProteinHypothesis(Comparable id) throws JAXBException {
         return unmarshaller.unmarshal(ProteinDetectionHypothesis.class,(String) id).getDBSequenceRef();
     }
 
@@ -241,36 +240,50 @@ public class MzIdentMLUnmarshallerAdaptor {
         return spectrumIds;  //To change body of created methods use File | Settings | File Templates.
     }
 
+    /*
+     * This function try to Map in memory ids mapping and relation for an mzidentml file. The structure of the
+     * mzidentml files is from spectrum->peptide->protein, but most for the end users is more interesting to
+     * have an information structure from protein->peptide->spectrum. The function take the information from
+     * spectrumItems and read the Peptide Evidences and the Proteins related with these peptideEvidence. Finally
+     * the function construct a map in from proteins to spectrums named identProteinsMap.
+     *
+     * @return
+     * @throws ConfigurationException
+     * @throws JAXBException
+     */
     public Map<CacheCategory, Object> getPreScanIdMaps() throws ConfigurationException, JAXBException {
 
         Map<CacheCategory, Object> maps = new HashMap<CacheCategory, Object>();
 
-        long time = System.currentTimeMillis();
-
 
         Map<Comparable, SpectraData> spectraDataIds = getSpectraDataMap();
 
-        System.out.println("1:" + String.valueOf(System.currentTimeMillis() - time));
-
-        time = System.currentTimeMillis();
 
 
-        // First Map is the Relation bettwen an Spectrum file and all the Spectrums ids in the file
+        /* First Map is the Relation between an Spectrum file and all the Spectrums ids in the file
+         * This information is useful to retrieve the for each spectrum File with spectrums are really
+         * SpectrumIdentificationItems. For PRIDE Inspector is important for one of the windows that
+         * shows the number of missing spectrum for an mzidentml file.
+         */
         Map<Comparable, List<Comparable>> spectraDataMap = new HashMap<Comparable, List<Comparable>>(spectraDataIds.size());
 
+        /* The relation between the peptide evidence and the spectrumIdentificationItem. This map allow the access to the peptide evidence and
+         * spectrum information without the Protein information.
+        * */
 
         Map<Comparable, String[]> identSpectrumMap = new HashMap<Comparable, String[]>();
 
 
         ArrayList<Comparable> spectrumMatchResultsIds  = new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.SpectrumIdentificationResult));
 
-        System.out.println("2:" + String.valueOf(System.currentTimeMillis() - time));
-
-        time = System.currentTimeMillis();
-
-
+        /**
+         * This Protein Map represents the Protein identification in the DBSequence Section that contains SpectrumIdentification Items
+         * Each key is the Protein Id, the Map related with each key is a Peptide Evidence Map. Each Peptide Evidence Map contains a key
+         * of the for a PeptideEvidence and a list of SpectrumIdentificationItems. Each Sepctrum Identification Item is that contains
+         * the original id of the spectrum in the Spectrum file and the id of the spectrum file.
+         *
+         */
         Map<Comparable,Map<Comparable,List<String[]>>> identProteinsMap = new HashMap<Comparable, Map<Comparable, List<String[]>>>();
-
 
 
         for(Comparable idSpectrumResult: spectrumMatchResultsIds){
@@ -312,17 +325,14 @@ public class MzIdentMLUnmarshallerAdaptor {
             }
         }
 
-        System.out.println("3:" + String.valueOf(System.currentTimeMillis() - time));
-
-        time = System.currentTimeMillis();
-
-
         maps.put(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS,spectraDataMap);
         maps.put(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES,identProteinsMap);
         maps.put(CacheCategory.PEPTIDE_TO_SPECTRUM,identSpectrumMap);
 
         return maps;
     }
+
+
 }
 
 

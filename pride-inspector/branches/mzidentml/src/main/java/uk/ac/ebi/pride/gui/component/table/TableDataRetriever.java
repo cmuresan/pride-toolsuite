@@ -53,7 +53,7 @@ public class TableDataRetriever {
         // Original Protein Accession
         String protAcc = controller.getProteinAccession(identId);
         String protAccVersion = controller.getProteinAccessionVersion(identId);
-        String database = controller.getSearchDatabase(identId).getName();
+        String database = (controller.getSearchDatabase(identId).getName() == null)?"":controller.getSearchDatabase(identId).getName();
         content.add(protAcc);
 
         // Mapped Protein Accession
@@ -241,7 +241,7 @@ public class TableDataRetriever {
         String protAcc = controller.getProteinAccession(identId);
 
         String protAccVersion = controller.getProteinAccessionVersion(identId);
-        String database = controller.getSearchDatabase(identId).getName();
+        String database = (controller.getSearchDatabase(identId).getName() == null)?"":controller.getSearchDatabase(identId).getName();
         content.add(protAcc);
 
         // Mapped Protein Accession

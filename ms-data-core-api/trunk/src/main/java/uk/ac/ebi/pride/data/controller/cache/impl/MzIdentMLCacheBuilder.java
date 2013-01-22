@@ -36,13 +36,13 @@ public class MzIdentMLCacheBuilder extends AbstractAccessCacheBuilder {
         MzIdentMLUnmarshallerAdaptor unmarshaller = ((MzIdentMLControllerImpl) controller).getUnmarshaller();
 
 
-        /* Get a preScan of the File, the PreCan of the Mzidentml File gets the information
+        /* Get a preScan of the File, the PreCan of the mzidentml File gets the information
          * about all the spectrums, protein identifications, and peptide-spectrum matchs with the
          * same structure that currently follow the mzidentml library.
-         */
+         * */
         Map<CacheCategory, Object> mzIdentMLMaps = unmarshaller.getPreScanIdMaps();
 
-        // Protein To
+        // Protein To to Peptides Evidences, It retrieve the peptides per Proteins
         Map<Comparable,Map<Comparable,List<String[]>>> identProteinsMap = (Map<Comparable, Map<Comparable, List<String[]>>>) mzIdentMLMaps.get(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES);
         cache.storeInBatch(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES, identProteinsMap);
 
@@ -60,13 +60,14 @@ public class MzIdentMLCacheBuilder extends AbstractAccessCacheBuilder {
         cache.clear(CacheCategory.PROTEIN_GROUP_ID);
         cache.storeInBatch(CacheCategory.PROTEIN_GROUP_ID, new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.ProteinAmbiguityGroup)));
         if(cache.hasCacheCategory(CacheCategory.PROTEIN_GROUP_ID)){
-            ArrayList<Comparable> proteinHIds = new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.ProteinDetectionHypothesis));
-            Map<Comparable, Comparable> proteinHypothesisMap = new HashMap<Comparable, Comparable>(proteinHIds.size());
+           ArrayList<Comparable> proteinHIds = new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.ProteinDetectionHypothesis));
+           Map<Comparable, Comparable> proteinHypothesisMap = new HashMap<Comparable, Comparable>(proteinHIds.size());
             for(Comparable id: proteinHIds){
-                proteinHypothesisMap.put(unmarshaller.getDBSequencebyProteinHypothesis(id),id);
+               proteinHypothesisMap.put(unmarshaller.getDBSequencebyProteinHypothesis(id),id);
             }
-         cache.storeInBatch(CacheCategory.PROTEIN_TO_PROTEIN_GROUP_ID, proteinHypothesisMap);
+            cache.storeInBatch(CacheCategory.PROTEIN_TO_PROTEIN_GROUP_ID, proteinHypothesisMap);
         }
+
     }
 }
 

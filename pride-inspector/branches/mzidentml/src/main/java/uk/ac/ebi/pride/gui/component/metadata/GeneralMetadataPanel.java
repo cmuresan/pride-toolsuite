@@ -72,11 +72,13 @@ public class GeneralMetadataPanel extends JPanel {
         if (cvs != null) {
             for (CvParam cv : cvs) {
                 // get project name
-                if (CvTermReference.PROJECT_NAME.getAccession().equals(cv.getAccession())) {
-                    projectField.setText(cv.getValue());
-                } else if (CvTermReference.EXPERIMENT_DESCRIPTION.getAccession().equals(cv.getAccession())) {
-                    // get experiment description
-                    expDescArea.setText(cv.getValue());
+                if(cv != null){
+                    if (CvTermReference.PROJECT_NAME.getAccession().equals(cv.getAccession())) {
+                        projectField.setText(cv.getValue());
+                    } else if (CvTermReference.EXPERIMENT_DESCRIPTION.getAccession().equals(cv.getAccession())) {
+                        // get experiment description
+                        expDescArea.setText(cv.getValue());
+                    }
                 }
             }
         }
@@ -153,11 +155,13 @@ public class GeneralMetadataPanel extends JPanel {
         List<CvParam> cvParams = metaData.getMetaData().getCvParams();
         if (cvParams != null) {
             for (CvParam cvParam : cvParams) {
-                String acc = cvParam.getAccession();
-                // get project name
-                if (!CvTermReference.PROJECT_NAME.getAccession().equals(acc) &&
+                if(cvParam != null){
+                    String acc = cvParam.getAccession();
+                    // get project name
+                    if (!CvTermReference.PROJECT_NAME.getAccession().equals(acc) &&
                         !CvTermReference.EXPERIMENT_DESCRIPTION.getAccession().equals(acc)) {
                     paramGroup.addCvParam(cvParam);
+                    }
                 }
             }
         }

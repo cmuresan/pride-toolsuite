@@ -116,7 +116,7 @@ public class PeptideScoreTest {
         monoMass.add(79.96633);
         PTModification modification = new PTModification("x", null, null, monoMass, null);
         peptide.addModification(8, modification);
-        PrecursorIon precursor = new DefaultPrecursorIon(peptide, 2);
+        PrecursorIon precursor = new DefaultPrecursorIon(peptide, 5);
         PeptideScore peptideScore = new PeptideScore(precursor, peakset);
         ProductIonSet productIonSet = peptideScore.getProductIonSet();
         double[] weightList = {0.5, 0.75, 1, 1, 1, 1, 0.75, 0.5, 0.25, 0.25};

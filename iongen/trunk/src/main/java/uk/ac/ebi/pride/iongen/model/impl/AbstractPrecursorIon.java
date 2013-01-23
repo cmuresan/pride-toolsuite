@@ -66,7 +66,7 @@ public abstract class AbstractPrecursorIon extends DefaultPeptideIon implements 
             throw new IonCleavageException("The product ion cleavages position (" + position + ") cannot be greater then the precursor ion length (" + getPeptide().getLength() + "). ");
         }
 
-        if (charge <= 0 || charge >= 3) {
+        if (charge <= 0 || charge > 3) {
             throw new IonCleavageException("The product ion charge(" + charge + ") should be from 1 to 3.");
         } else if (charge > getCharge()) {
             throw new IonCleavageException("The product ion charge(" + charge + ") should be less or equal to precursor ion charge(" + getCharge() + ")");

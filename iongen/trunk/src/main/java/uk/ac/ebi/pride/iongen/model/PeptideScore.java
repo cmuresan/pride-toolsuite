@@ -152,6 +152,7 @@ public class PeptideScore {
 
         List<ProductIon> ionList;
         int charge = precursorIon.getCharge();
+        charge = charge > 3 ? 3 : charge;
         for (int i = 1; i <= charge; i++) {
             ionList = addProductIonListByCharge(precursorIon, i);
             productIonSet.addAll(ionList);

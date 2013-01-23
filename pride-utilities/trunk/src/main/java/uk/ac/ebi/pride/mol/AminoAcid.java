@@ -121,6 +121,8 @@ public enum AminoAcid implements Mass {
                 return AminoAcid.T;
             case 'V':
                 return AminoAcid.V;
+            case 'U':
+                return AminoAcid.U;
             case 'W':
                 return AminoAcid.W;
             case 'Y':

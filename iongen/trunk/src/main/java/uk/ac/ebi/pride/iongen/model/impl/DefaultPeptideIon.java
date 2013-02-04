@@ -54,6 +54,9 @@ public class DefaultPeptideIon implements PeptideIon {
         if (peptide == null) {
             throw new NullPointerException("Peptide is null!");
         }
+        if (charge <= 0) {
+            throw new IllegalArgumentException("ion charge should be great than 0.");
+        }
 
         this.peptide = peptide;
         this.charge = charge;

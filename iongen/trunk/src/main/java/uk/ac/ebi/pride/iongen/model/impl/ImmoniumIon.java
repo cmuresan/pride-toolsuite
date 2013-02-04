@@ -31,6 +31,9 @@ public class ImmoniumIon implements Comparable<ImmoniumIon> {
         if (precursorIon == null) {
             throw new IllegalArgumentException("Precursor is not null!");
         }
+        if (charge <= 0) {
+            throw new IllegalArgumentException("Precursor charge should great than 0!");
+        }
 
         this.acid = precursorIon.getPeptide().getAminoAcids().get(position);
         this.position = position;

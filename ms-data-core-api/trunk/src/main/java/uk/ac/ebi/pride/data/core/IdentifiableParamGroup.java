@@ -27,12 +27,12 @@ public class IdentifiableParamGroup extends ParamGroup {
     /**
      * Constructor without param groups
      *
-     * @param id ID
+     * @param id   ID
      * @param name Name
      */
     public IdentifiableParamGroup(Comparable id, String name) {
         super(null);
-        this.id   = id;
+        this.id = id;
         this.name = name;
     }
 
@@ -40,12 +40,12 @@ public class IdentifiableParamGroup extends ParamGroup {
      * Constructor using the ParamGroup (CvTerms and User Params)
      *
      * @param params ParamGroup (CvTerms and User Params)
-     * @param id ID
-     * @param name Name
+     * @param id     ID
+     * @param name   Name
      */
     public IdentifiableParamGroup(ParamGroup params, Comparable id, String name) {
         super(params);
-        this.id   = id;
+        this.id = id;
         this.name = name;
     }
 
@@ -85,55 +85,25 @@ public class IdentifiableParamGroup extends ParamGroup {
         this.id = id;
     }
 
-    /**
-     * Get true if the input object is equal to the current object
-     *
-     * @param o IdentifiableParamGroup Objetc
-     * @return boolean
-     */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if ((o == null) || (getClass() != o.getClass())) {
-            return false;
-        }
-
-        if (!super.equals(o)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof IdentifiableParamGroup)) return false;
+        if (!super.equals(o)) return false;
 
         IdentifiableParamGroup that = (IdentifiableParamGroup) o;
 
-        if (!id.equals(that.id)) {
-            return false;
-        }
-
-        if (!name.equals(that.name)) {
-            return false;
-        }
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
 
         return true;
     }
 
-    /**
-     * Get an Integer number (hashcode of the Object)
-     *
-     * @return hashcode
-     */
     @Override
     public int hashCode() {
         int result = super.hashCode();
-
-        result = 31 * result + ((id != null)
-                                ? id.hashCode()
-                                : 0);
-        result = 31 * result + ((name != null)
-                                ? name.hashCode()
-                                : 0);
-
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
 }

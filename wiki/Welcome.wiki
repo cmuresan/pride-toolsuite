@@ -12,6 +12,10 @@
 
 ----
 == News ==
+* February 12. 2013:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.2.6] is now available:*
+ * Integrated Peptidome dataset into PRIDE public instance.
+ * A number of bug fixes relate to database search.
+
 *_October 29. 2012:_ [http://code.google.com/p/pride-toolsuite/downloads/list PRIDE Inspector Release Version 1.2.6] is now available:*
  * A number of bug fixes relate to summary chart generation and database search.
 

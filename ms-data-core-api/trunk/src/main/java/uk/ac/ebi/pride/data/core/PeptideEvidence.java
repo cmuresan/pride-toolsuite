@@ -210,13 +210,10 @@ public class PeptideEvidence extends IdentifiableParamGroup {
             return false;
         }
 
-        if ((translationTable != null)
-            ? !translationTable.equals(that.translationTable)
-            : that.translationTable != null) {
-            return false;
-        }
+        return !((translationTable != null)
+                ? !translationTable.equals(that.translationTable)
+                : that.translationTable != null);
 
-        return true;
     }
 
     @Override

@@ -962,6 +962,8 @@ public class PrideXmlTransformer {
                 List<CvParam> cvParams = DataAccessUtilities.getCvParam(rawContact.getName(), contactTerm.getCvLabel(), contactTerm.getAccession(), contactTerm.getName());
                 CvTermReference contactOrg = CvTermReference.CONTACT_ORG;
                 cvParams.add(new CvParam(contactOrg.getAccession(), contactOrg.getName(), contactOrg.getCvLabel(), rawContact.getInstitution(), null, null, null));
+                CvTermReference contactMail = CvTermReference.CONTACT_EMAIL;
+                cvParams.add(new CvParam(contactMail.getAccession(),contactMail.getName(),contactMail.getCvLabel(),rawContact.getContactInfo(),null,null,null));
                 List<UserParam> userParams = null;
                 String contactInfo = rawContact.getContactInfo();
                 if (contactInfo != null) {
@@ -971,7 +973,7 @@ public class PrideXmlTransformer {
                 List<Organization> affiliation = new ArrayList<Organization>();
                 affiliation.add(new Organization(null, rawContact.getInstitution(), null, null));
                 ParamGroup contact = new ParamGroup(cvParams, userParams);
-                Person contactPerson = new Person(contact, null, rawContact.getName(), null, null, null, affiliation, null);
+                Person contactPerson = new Person(contact, rawContact.getName(), rawContact.getName(), null, null, null, affiliation, rawContact.getContactInfo());
                 persons.add(contactPerson);
             }
             return persons;

@@ -29,9 +29,9 @@ public class Person extends AbstractContact {
     private String lastname = null;
 
     /**
-     * mail
+     * contactInfo
      */
-    private String mail = null;
+    private String contactInfo = null;
 
     /**
      * The Person's middle initial.
@@ -43,10 +43,10 @@ public class Person extends AbstractContact {
      *
      * @param params
      * @param firstname
-     * @param mail
+     * @param contactInfo
      */
-    public Person(ParamGroup params, String firstname, String mail) {
-        this(params, null, null, null, firstname, null, null, mail);
+    public Person(ParamGroup params, String firstname, String contactInfo) {
+        this(params, null, null, null, firstname, null, null, contactInfo);
     }
 
     /**
@@ -56,11 +56,11 @@ public class Person extends AbstractContact {
      * @param firstname
      * @param midInitials
      * @param affiliation
-     * @param mail
+     * @param contactInfo
      */
     public Person(Comparable id, String name, String lastname, String firstname, String midInitials,
-                  List<Organization> affiliation, String mail) {
-        this(null, id, name, lastname, firstname, midInitials, affiliation, mail);
+                  List<Organization> affiliation, String contactInfo) {
+        this(null, id, name, lastname, firstname, midInitials, affiliation, contactInfo);
     }
 
     /**
@@ -71,16 +71,16 @@ public class Person extends AbstractContact {
      * @param firstname
      * @param midInitials
      * @param affiliation
-     * @param mail
+     * @param contactInfo
      */
     public Person(ParamGroup params, Comparable id, String name, String lastname, String firstname, String midInitials,
-                  List<Organization> affiliation, String mail) {
+                  List<Organization> affiliation, String contactInfo) {
         super(params, id, name);
         this.lastname    = lastname;
         this.firstname   = firstname;
         this.midInitials = midInitials;
         this.affiliation = affiliation;
-        this.mail        = mail;
+        this.contactInfo = contactInfo;
     }
 
     public String getLastname() {
@@ -115,12 +115,12 @@ public class Person extends AbstractContact {
         this.affiliation = affiliation;
     }
 
-    public String getMail() {
-        return mail;
+    public String getContactInfo() {
+        return contactInfo;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
     }
 }
 

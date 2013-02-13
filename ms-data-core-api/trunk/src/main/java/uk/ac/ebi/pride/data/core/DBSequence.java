@@ -215,11 +215,8 @@ public class DBSequence extends IdentifiableParamGroup {
             return false;
         }
 
-        if (!spliceIsoform.equals(that.spliceIsoform)) {
-            return false;
-        }
+        return spliceIsoform.equals(that.spliceIsoform);
 
-        return true;
     }
 
     @Override

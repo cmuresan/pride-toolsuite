@@ -88,13 +88,10 @@ public class Organization extends AbstractContact {
             return false;
         }
 
-        if ((parentOrganization != null)
-            ? !parentOrganization.equals(that.parentOrganization)
-            : that.parentOrganization != null) {
-            return false;
-        }
+        return !((parentOrganization != null)
+                ? !parentOrganization.equals(that.parentOrganization)
+                : that.parentOrganization != null);
 
-        return true;
     }
 
     @Override

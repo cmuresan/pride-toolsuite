@@ -58,7 +58,7 @@ public class SimpleMsDialog extends JDialog {
     private static final int START_ALPHA = 100;
     private static final int STOP_ALPHA = 150;
     private static final String ERROR_MESSAGE = "No Supported Spectra Data Files for this mzIdentml";
-    private static final String WARNING = "Missing Spectra Information";
+    private static final String WARNING = " spectra missing";
     private static final String TOTAL_SPECTRUMS = "All Spectrums Found";
 
 

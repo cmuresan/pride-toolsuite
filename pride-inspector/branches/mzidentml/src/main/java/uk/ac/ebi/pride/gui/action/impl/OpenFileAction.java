@@ -240,8 +240,8 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
 
         Map<File, List<File>> mzIdentMLFiles = null;
         if(mzidFileList.size() > 0){
-            int option = JOptionPane.showConfirmDialog(null, "<html><b>In the file list are mzIdentMl files</b>.<br><br> " +
-                            "Would you like upload the spectrum files related?</html>", "MzIdentMl Info", JOptionPane.YES_NO_OPTION);
+            int option = JOptionPane.showConfirmDialog(null, "<html><b>About to load mzIdentML</b>.<br><br> " +
+                            "Would you like to load related spectrum files?</html>", "mzIdentML Detected", JOptionPane.YES_NO_OPTION);
 
             if (option == JOptionPane.YES_OPTION) {
                 MzIdMsDialog mzidDialog = new MzIdMsDialog(Desktop.getInstance().getMainComponent(),mzidFileList);

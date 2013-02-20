@@ -44,7 +44,7 @@ public class SimpleMsDialog extends JDialog {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleMsDialog.class);
 
-    private static final String OPEN_FILE = "Open MS Files for ";
+    private static final String OPEN_FILE = "Load related spectrum files";
 
     private PrideInspectorContext context = null;
 
@@ -242,7 +242,7 @@ public class SimpleMsDialog extends JDialog {
         panelMessage = new JPanel();
 
         //======== this ========
-        setTitle("Open Ms files for");
+        setTitle("Load related spectrum files");
         Container contentPane = getContentPane();
 
         //======== scrollPane1 ========

@@ -31,6 +31,8 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +62,7 @@ public class SimpleMsDialog extends JDialog {
     private static final String ERROR_MESSAGE = "No Supported Spectra Data Files for this mzIdentml";
     private static final String WARNING = " spectra missing";
     private static final String TOTAL_SPECTRUMS = "All Spectrums Found";
+    private static final String COLUMN_HEADER_REMOVE = "Remove";
 
 
     public SimpleMsDialog(Frame owner, DataAccessController controller) {
@@ -80,7 +83,7 @@ public class SimpleMsDialog extends JDialog {
                 new Object[][]{
                 },
                 new String[]{
-                        "Spectra File Source", "No. Spectras", "MS File", "Remove"
+                        "Spectra File Source", "No. Spectras", "MS File", COLUMN_HEADER_REMOVE
                 }
         ) {
             Class<?>[] columnTypes = new Class<?>[]{
@@ -108,11 +111,29 @@ public class SimpleMsDialog extends JDialog {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         updateMSFileList(msFileMap);
+        msFileTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                msFileTableMouseReleased(e);
+            }
+        });
+    }
+
+    private void msFileTableMouseReleased(MouseEvent e){
+        int row = msFileTable.rowAtPoint(e.getPoint());
+        int col = msFileTable.columnAtPoint(e.getPoint());
+        String colName = msFileTable.getColumnName(col);
+        if(colName.equals(COLUMN_HEADER_REMOVE) && row >= 0){
+            DefaultTableModel model = (DefaultTableModel)msFileTable.getModel();
+            String fileName = (String) model.getValueAt(row,2);
+            removeMStoSpectraDataSet(row,fileName);
+        }
+
     }
 
     private void addNewMsFile(ActionEvent e) {
 
-        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzid/PRIDE xml Files", null, true, Constants.MGF_FILE);
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzData/Peak Files ", null, true, Constants.MGF_FILE);
 
         int result = ofd.showDialog(this, null);
 
@@ -139,6 +160,41 @@ public class SimpleMsDialog extends JDialog {
         updateMSFileList(msFileMap);
     }
 
+    private void removeMStoSpectraDataSet(int row, String fileName){
+        try {
+            msFileMap = ((MzIdentMLControllerImpl) controller).getSpectraDataMSFiles();
+            int totalSpectras = 0;
+            int noMissSpectrums = 0;
+            for(SpectraData spectraData: msFileMap.keySet()){
+                String msFileName = (msFileMap.get(spectraData) == null)? "" : msFileMap.get(spectraData).getAbsolutePath();
+                int msSpectrums =  ((MzIdentMLControllerImpl)controller).getNumberOfSpectrabySpectraData(spectraData);
+                totalSpectras  +=  msSpectrums;
+                if(msFileName.equalsIgnoreCase(fileName)){
+                    msFileMap.remove(spectraData);
+                    msFileMap.put(spectraData,null);
+                    msFileName = "";
+                }
+                updateTableRow(row, spectraData, msFileName);
+                noMissSpectrums =+ ((msFileMap.get(spectraData) == null)?0:msSpectrums);
+            }
+            String message = getMessage(msFileMap, totalSpectras - noMissSpectrums);
+            SummaryReportMessage.Type type = getMessageType(msFileMap,totalSpectras-noMissSpectrums);
+            updateMessage(type,message);
+            updateStatusSet(noMissSpectrums);
+            updateButtonStatus(type);
+        } catch (DataAccessException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+    }
+
+    private void updateTableRow(int row, SpectraData spectraData, String msFileName) {
+        msFileTable.getModel().setValueAt(spectraData.getId() + " " + ((spectraData.getName() == null)? "" : ": " + spectraData.getName()),row,0);
+        msFileTable.getModel().setValueAt(((MzIdentMLControllerImpl)controller).getNumberOfSpectrabySpectraData(spectraData),row,1);
+        msFileTable.getModel().setValueAt(msFileName,row,2);
+        msFileTable.getModel().setValueAt((msFileName.length()  == 0 )?GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small.disable")): GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small")),row,3);
+    }
+
     private void updateMSFileList(Map<SpectraData, File> spectraDataFileMap) {
         if(spectraDataFileMap != null){
             clearTalbeMsFiles();
@@ -154,6 +210,7 @@ public class SimpleMsDialog extends JDialog {
             SummaryReportMessage.Type type = getMessageType(spectraDataFileMap,totalSpectras-noMissSpectrums);
             updateMessage(type,message);
             updateButtonStatus(type);
+            updateStatusSet(noMissSpectrums);
         }
     }
 
@@ -169,9 +226,18 @@ public class SimpleMsDialog extends JDialog {
         data[0] = spectraData.getId() + " " + ((spectraData.getName() == null)? "" : ": " + spectraData.getName());
         data[1] = ((MzIdentMLControllerImpl)controller).getNumberOfSpectrabySpectraData(spectraData);
         data[2] = msFileName;
-        data[3] = GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small"));
+        data[3] = (msFileName.length()  == 0 )?GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small.disable")): GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small"));
         ((DefaultTableModel) msFileTable.getModel()).addRow(data);
         return (Integer)data[1];
+    }
+
+    private void updateStatusSet(int numberOfSpectrums){
+        if(numberOfSpectrums > 0){
+            setButton.setEnabled(true);
+        }else{
+            setButton.setEnabled(false);
+        }
+
     }
 
     private void updateMessage(SummaryReportMessage.Type type, String message){
@@ -188,7 +254,11 @@ public class SimpleMsDialog extends JDialog {
             setButton.setEnabled(false);
         }else if(type == SummaryReportMessage.Type.SUCCESS){
             addButton.setEnabled(false);
+            setButton.setEnabled(true);
+        }else if(type == SummaryReportMessage.Type.WARNING){
+            addButton.setEnabled(true);
         }
+
     }
 
     private void cancelbuttonActionPerformed(ActionEvent e) {

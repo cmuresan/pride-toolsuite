@@ -205,6 +205,7 @@ public class MzIdMsDialog extends JDialog {
 
         //---- setButton ----
         setButton.setText("Set");
+        setButton.setEnabled(false);
         setButton.setMaximumSize(new Dimension(75, 25));
         setButton.setMinimumSize(new Dimension(75, 25));
 
@@ -516,6 +517,9 @@ public class MzIdMsDialog extends JDialog {
             files.remove(row);
             mzidentmlFiles.put(file,files);
         }
+        boolean enableSet = false;
+        for(File file: mzidentmlFiles.keySet())if(mzidentmlFiles.get(file) != null && mzidentmlFiles.get(file).size() > 0) enableSet = true;
+        setButton.setEnabled(enableSet);
     }
 
     private void addButtonActionPerformed(ActionEvent e) {
@@ -543,8 +547,10 @@ public class MzIdMsDialog extends JDialog {
             currentFiles.addAll(files);
             mzidentmlFiles.put(fileList.get(sourceTable.getSelectedRow()), currentFiles);
             addTableMSFiles(currentFiles);
-            System.out.println(mzidentmlFiles.size());
+            if(mzidentmlFiles.size()>0) setButton.setEnabled(true);
+            //System.out.println(mzidentmlFiles.size());
         }
+
 
     }
 

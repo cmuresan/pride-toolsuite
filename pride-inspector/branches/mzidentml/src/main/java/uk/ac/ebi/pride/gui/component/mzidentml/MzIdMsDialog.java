@@ -43,7 +43,7 @@ public class MzIdMsDialog extends JDialog {
 
     private static final Logger logger = LoggerFactory.getLogger(MzIdMsDialog.class);
 
-    private static final String TITLE_FILES          = "MzIdentMl Files";
+    private static final String TITLE_FILES          = "mzIdentMl Files";
 
     private static final String TITLE_FILES_TOOLTIP  = "Files for the Analysis";
 
@@ -55,7 +55,7 @@ public class MzIdMsDialog extends JDialog {
 
     private static final String COLUMN_HEADER_REMOVE = "Remove";
 
-    private static final String DIALOG_TITLE         = "Upload Ms Files for MzIdentMl's";
+    private static final String DIALOG_TITLE         = "Load spectrum files";
 
     private static final String MZML_FILE            = "MZML";
 

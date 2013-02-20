@@ -19,6 +19,8 @@ close.source.disable.icon.small=icon/16x16/delete_disable.gif
 
 open.mzidentml.ms.icon.small=icon/16x16/peak.png
 delete.mzidentml.ms.icon.small=icon/16x16/delete_enable.gif
+delete.mzidentml.ms.icon.small.disable=icon/16x16/delete_disable.gif
+
 
 reviewer.download.title=Private Download
 reviewer.download.tooltip=Private download

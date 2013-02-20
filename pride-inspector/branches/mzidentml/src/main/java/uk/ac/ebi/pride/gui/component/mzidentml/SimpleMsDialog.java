@@ -60,7 +60,7 @@ public class SimpleMsDialog extends JDialog {
     private static final int START_ALPHA = 100;
     private static final int STOP_ALPHA = 150;
     private static final String ERROR_MESSAGE = "No Supported Spectra Data Files for this mzIdentml";
-    private static final String WARNING = " spectra missing";
+    private static final String WARNING = "spectra missing";
     private static final String TOTAL_SPECTRUMS = "All Spectrums Found";
     private static final String COLUMN_HEADER_REMOVE = "Remove";
 
@@ -283,7 +283,7 @@ public class SimpleMsDialog extends JDialog {
             PeptideTabPane peptideContentPane = contentPane.getPeptideTabPane();
             peptideContentPane.getVizTabPane().addSpectrumViewPane();
             contentPane.populate();
-            for(File selectedFile: msFileMap.values()){
+            /*for(File selectedFile: msFileMap.values()){
                 String msg = "Opening " + selectedFile.getName();
                 OpenFileTask newTask = new OpenFileTask(selectedFile, MzIdentMLUtils.getFileType(selectedFile), msg, msg);
                 // set task's gui blocker
@@ -291,7 +291,7 @@ public class SimpleMsDialog extends JDialog {
                 // add task listeners
                 // ToDo: this why we need a singleton DesktopContext
                 uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(newTask);
-            }
+            } */
 
 
         } catch (DataAccessException e1) {
@@ -495,7 +495,7 @@ public class SimpleMsDialog extends JDialog {
         }else if(spectrumCount == 0){
             return SimpleMsDialog.TOTAL_SPECTRUMS;
         }else if(spectrumCount > 0){
-            return SimpleMsDialog.WARNING + " [" + spectrumCount +"]";
+            return "[" + spectrumCount +"] " + SimpleMsDialog.WARNING;
         }
         return SimpleMsDialog.ERROR_MESSAGE;
 

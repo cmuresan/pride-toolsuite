@@ -869,6 +869,18 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
     @Override
     public int getNumberOfSpectra() throws DataAccessException {
+        int numberOfSpectra = 0;
+        for(Comparable idMsFile: msDataAccessControllers.keySet()){
+            if(msDataAccessControllers.get(idMsFile) != null){
+                numberOfSpectra += msDataAccessControllers.get(idMsFile).getNumberOfSpectra();
+            }
+        }
+        return numberOfSpectra;
+
+    }
+
+    @Override
+    public int getNumberOfIdentifiedSpectra() throws DataAccessException {
         Map<Comparable, List<Comparable>> spectraDataIdMap = (Map<Comparable, List<Comparable>>) getCache().get(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS);
         int countSpectra = 0;
         for(Comparable id: spectraDataIdMap.keySet()){
@@ -880,4 +892,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public List<DataAccessController> getDataAccessControllers(){
         return (msDataAccessControllers != null)?new ArrayList<DataAccessController>(msDataAccessControllers.values()):null;
     }
+
+
 }

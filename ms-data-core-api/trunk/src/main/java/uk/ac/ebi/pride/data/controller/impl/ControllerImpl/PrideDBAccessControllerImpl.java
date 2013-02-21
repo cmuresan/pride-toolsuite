@@ -865,20 +865,11 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return protein;
     }
 
-    /**
-     * ===========================This section is added to overcome the database retrieve speed issue =====================
-     */
-
     @Override
     public boolean isIdentifiedSpectrum(Comparable specId) throws DataAccessException {
         Map<Comparable, Comparable> peptideToSpectrum = (Map<Comparable, Comparable>) getCache().get(CacheCategory.PEPTIDE_TO_SPECTRUM);
         return peptideToSpectrum != null && peptideToSpectrum.containsValue(specId);
     }
-
-    /**
-     * ===========================This section is added by rwang 31/08/2010 ===============================================
-     */
-
 
     @Override
     public Peptide getPeptideByIndex(Comparable proteinId, Comparable peptideId, boolean useCache) throws DataAccessException {

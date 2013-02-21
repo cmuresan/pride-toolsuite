@@ -65,6 +65,14 @@ public interface MzGraphDataAccess {
     public int getNumberOfSpectra() throws DataAccessException;
 
     /**
+     * Get the number of identified spectra.
+     *
+     * @return int  number of identified spectra.
+     * @throws DataAccessException throw a exception when there is an error accessing the data source.
+     */
+    public int getNumberOfIdentifiedSpectra() throws DataAccessException;
+
+    /**
      * Get a collection of spectrum ids
      *
      * @return Collection   a string collection of spectrum ids

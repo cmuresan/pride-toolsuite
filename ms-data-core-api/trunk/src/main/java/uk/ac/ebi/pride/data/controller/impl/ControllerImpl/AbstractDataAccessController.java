@@ -339,6 +339,18 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     /**
+     * This function in the abstract class return 0 number of identified spectrum by default.
+     * each identification file should implement this method to retrieve the real number of
+     * identified peptides.
+     *
+     * @return int  number of identified spectra.
+     * @throws DataAccessException throw a exception when there is an error accessing the data source.
+     */
+    public int getNumberOfIdentifiedSpectra() throws DataAccessException{
+          return 0;
+    }
+
+    /**
      * Get the index of the spectrum
      *
      * @param id spectrum id

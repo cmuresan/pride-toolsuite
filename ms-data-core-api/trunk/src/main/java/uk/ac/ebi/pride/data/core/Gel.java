@@ -93,6 +93,39 @@ public class Gel extends ParamGroup {
     public void setPI(double pI) {
         this.pI = pI;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Gel gel = (Gel) o;
+
+        if (Double.compare(gel.molecularWeight, molecularWeight) != 0) return false;
+        if (Double.compare(gel.pI, pI) != 0) return false;
+        if (Double.compare(gel.xCoordinate, xCoordinate) != 0) return false;
+        if (Double.compare(gel.yCoordinate, yCoordinate) != 0) return false;
+        if (gelLink != null ? !gelLink.equals(gel.gelLink) : gel.gelLink != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        long temp;
+        result = 31 * result + (gelLink != null ? gelLink.hashCode() : 0);
+        temp = molecularWeight != +0.0d ? Double.doubleToLongBits(molecularWeight) : 0L;
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = pI != +0.0d ? Double.doubleToLongBits(pI) : 0L;
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = xCoordinate != +0.0d ? Double.doubleToLongBits(xCoordinate) : 0L;
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = yCoordinate != +0.0d ? Double.doubleToLongBits(yCoordinate) : 0L;
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }
 
 

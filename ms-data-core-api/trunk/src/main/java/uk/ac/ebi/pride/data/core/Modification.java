@@ -225,6 +225,38 @@ public class Modification extends IdentifiableParamGroup {
     public void setMonoisotopicMassDelta(List<Double> monoisotopicMassDelta) {
         this.monoisotopicMassDelta = monoisotopicMassDelta;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Modification that = (Modification) o;
+
+        if (location != that.location) return false;
+        if (avgMassDelta != null ? !avgMassDelta.equals(that.avgMassDelta) : that.avgMassDelta != null) return false;
+        if (modDatabase != null ? !modDatabase.equals(that.modDatabase) : that.modDatabase != null) return false;
+        if (modDatabaseVersion != null ? !modDatabaseVersion.equals(that.modDatabaseVersion) : that.modDatabaseVersion != null)
+            return false;
+        if (monoisotopicMassDelta != null ? !monoisotopicMassDelta.equals(that.monoisotopicMassDelta) : that.monoisotopicMassDelta != null)
+            return false;
+        if (residues != null ? !residues.equals(that.residues) : that.residues != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (avgMassDelta != null ? avgMassDelta.hashCode() : 0);
+        result = 31 * result + location;
+        result = 31 * result + (modDatabase != null ? modDatabase.hashCode() : 0);
+        result = 31 * result + (modDatabaseVersion != null ? modDatabaseVersion.hashCode() : 0);
+        result = 31 * result + (monoisotopicMassDelta != null ? monoisotopicMassDelta.hashCode() : 0);
+        result = 31 * result + (residues != null ? residues.hashCode() : 0);
+        return result;
+    }
 }
 
 

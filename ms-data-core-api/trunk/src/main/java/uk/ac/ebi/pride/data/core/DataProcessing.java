@@ -59,6 +59,24 @@ public class DataProcessing extends Identifiable {
     public void setProcessingMethods(List<ProcessingMethod> processingMethods) {
         this.processingMethods = processingMethods;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DataProcessing that = (DataProcessing) o;
+
+        if (processingMethods != null ? !processingMethods.equals(that.processingMethods) : that.processingMethods != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return processingMethods != null ? processingMethods.hashCode() : 0;
+    }
 }
 
 

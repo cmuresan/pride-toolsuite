@@ -133,6 +133,34 @@ public abstract class MzGraph extends IdentifiableParamGroup {
     public void setIndex(int index) {
         this.index = index;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        MzGraph mzGraph = (MzGraph) o;
+
+        if (defaultArrayLength != mzGraph.defaultArrayLength) return false;
+        if (index != mzGraph.index) return false;
+        if (binaryDataArrays != null ? !binaryDataArrays.equals(mzGraph.binaryDataArrays) : mzGraph.binaryDataArrays != null)
+            return false;
+        if (defaultDataProcessing != null ? !defaultDataProcessing.equals(mzGraph.defaultDataProcessing) : mzGraph.defaultDataProcessing != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (binaryDataArrays != null ? binaryDataArrays.hashCode() : 0);
+        result = 31 * result + defaultArrayLength;
+        result = 31 * result + (defaultDataProcessing != null ? defaultDataProcessing.hashCode() : 0);
+        result = 31 * result + index;
+        return result;
+    }
 }
 
 

@@ -172,6 +172,23 @@ public class Score {
         }
         return listReference;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Score score = (Score) o;
+
+        if (scores != null ? !scores.equals(score.scores) : score.scores != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return scores != null ? scores.hashCode() : 0;
+    }
 }
 
 

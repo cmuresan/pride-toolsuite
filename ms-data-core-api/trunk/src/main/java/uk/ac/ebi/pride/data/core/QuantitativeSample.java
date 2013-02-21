@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -533,5 +534,22 @@ public class QuantitativeSample {
         public void setGoTerm(CvParam goTerm) {
             this.goTerm = goTerm;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        QuantitativeSample that = (QuantitativeSample) o;
+
+        if (!Arrays.equals(samples, that.samples)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return samples != null ? Arrays.hashCode(samples) : 0;
     }
 }

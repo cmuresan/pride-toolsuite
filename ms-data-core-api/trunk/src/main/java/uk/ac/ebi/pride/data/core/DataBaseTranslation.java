@@ -36,6 +36,27 @@ public class DataBaseTranslation {
     public void setTranslationTableList(List<IdentifiableParamGroup> translationTableList) {
         this.translationTableList = translationTableList;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DataBaseTranslation that = (DataBaseTranslation) o;
+
+        if (alowedFrames != null ? !alowedFrames.equals(that.alowedFrames) : that.alowedFrames != null) return false;
+        if (translationTableList != null ? !translationTableList.equals(that.translationTableList) : that.translationTableList != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = alowedFrames != null ? alowedFrames.hashCode() : 0;
+        result = 31 * result + (translationTableList != null ? translationTableList.hashCode() : 0);
+        return result;
+    }
 }
 
 

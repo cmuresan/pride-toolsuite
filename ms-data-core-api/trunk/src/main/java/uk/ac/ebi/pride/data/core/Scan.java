@@ -119,6 +119,36 @@ public class Scan extends ParamGroup {
     public void setScanWindows(List<ParamGroup> scanWindows) {
         this.scanWindows = scanWindows;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Scan scan = (Scan) o;
+
+        if (externalSpecRef != null ? !externalSpecRef.equals(scan.externalSpecRef) : scan.externalSpecRef != null)
+            return false;
+        if (instrumentConfiguration != null ? !instrumentConfiguration.equals(scan.instrumentConfiguration) : scan.instrumentConfiguration != null)
+            return false;
+        if (scanWindows != null ? !scanWindows.equals(scan.scanWindows) : scan.scanWindows != null) return false;
+        if (sourceFile != null ? !sourceFile.equals(scan.sourceFile) : scan.sourceFile != null) return false;
+        if (spectrumRef != null ? !spectrumRef.equals(scan.spectrumRef) : scan.spectrumRef != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (externalSpecRef != null ? externalSpecRef.hashCode() : 0);
+        result = 31 * result + (instrumentConfiguration != null ? instrumentConfiguration.hashCode() : 0);
+        result = 31 * result + (scanWindows != null ? scanWindows.hashCode() : 0);
+        result = 31 * result + (sourceFile != null ? sourceFile.hashCode() : 0);
+        result = 31 * result + (spectrumRef != null ? spectrumRef.hashCode() : 0);
+        return result;
+    }
 }
 
 

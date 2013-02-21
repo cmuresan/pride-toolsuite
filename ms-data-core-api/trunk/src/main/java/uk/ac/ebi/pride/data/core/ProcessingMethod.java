@@ -61,6 +61,28 @@ public class ProcessingMethod extends ParamGroup {
     public void setSoftware(Software software) {
         this.software = software;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ProcessingMethod that = (ProcessingMethod) o;
+
+        if (order != that.order) return false;
+        if (software != null ? !software.equals(that.software) : that.software != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + order;
+        result = 31 * result + (software != null ? software.hashCode() : 0);
+        return result;
+    }
 }
 
 

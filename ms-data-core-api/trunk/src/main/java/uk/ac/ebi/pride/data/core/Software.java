@@ -114,6 +114,33 @@ public class Software extends IdentifiableParamGroup {
     public void setVersion(String version) {
         this.version = version;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Software software = (Software) o;
+
+        if (contact != null ? !contact.equals(software.contact) : software.contact != null) return false;
+        if (customization != null ? !customization.equals(software.customization) : software.customization != null)
+            return false;
+        if (uri != null ? !uri.equals(software.uri) : software.uri != null) return false;
+        if (version != null ? !version.equals(software.version) : software.version != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (contact != null ? contact.hashCode() : 0);
+        result = 31 * result + (customization != null ? customization.hashCode() : 0);
+        result = 31 * result + (uri != null ? uri.hashCode() : 0);
+        result = 31 * result + (version != null ? version.hashCode() : 0);
+        return result;
+    }
 }
 
 

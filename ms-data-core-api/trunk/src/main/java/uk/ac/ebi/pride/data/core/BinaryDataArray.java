@@ -68,6 +68,29 @@ public class BinaryDataArray extends ParamGroup {
     public void setDataProcessing(DataProcessing dataProcessing) {
         this.dataProcessing = dataProcessing;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        BinaryDataArray that = (BinaryDataArray) o;
+
+        if (!Arrays.equals(binaryDoubleArray, that.binaryDoubleArray)) return false;
+        if (dataProcessing != null ? !dataProcessing.equals(that.dataProcessing) : that.dataProcessing != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (binaryDoubleArray != null ? Arrays.hashCode(binaryDoubleArray) : 0);
+        result = 31 * result + (dataProcessing != null ? dataProcessing.hashCode() : 0);
+        return result;
+    }
 }
 
 

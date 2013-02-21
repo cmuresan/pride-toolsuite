@@ -52,6 +52,26 @@ public class CvParam extends Parameter {
     public String getAccession() {
         return accession;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CvParam cvParam = (CvParam) o;
+
+        if (accession != null ? !accession.equals(cvParam.accession) : cvParam.accession != null) return false;
+        if (cvLookupID != null ? !cvLookupID.equals(cvParam.cvLookupID) : cvParam.cvLookupID != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = accession != null ? accession.hashCode() : 0;
+        result = 31 * result + (cvLookupID != null ? cvLookupID.hashCode() : 0);
+        return result;
+    }
 }
 
 

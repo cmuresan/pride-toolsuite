@@ -145,6 +145,44 @@ public class Protein extends IdentifiableParamGroup {
     public void setProteinAmbiguityGroup(IdentifiableParamGroup proteinAmbiguityGroup) {
         this.proteinAmbiguityGroup = proteinAmbiguityGroup;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Protein protein = (Protein) o;
+
+        if (passThreshold != protein.passThreshold) return false;
+        if (Double.compare(protein.sequenceCoverage, sequenceCoverage) != 0) return false;
+        if (Double.compare(protein.threshold, threshold) != 0) return false;
+        if (dbSequence != null ? !dbSequence.equals(protein.dbSequence) : protein.dbSequence != null) return false;
+        if (gel != null ? !gel.equals(protein.gel) : protein.gel != null) return false;
+        if (peptides != null ? !peptides.equals(protein.peptides) : protein.peptides != null) return false;
+        if (proteinAmbiguityGroup != null ? !proteinAmbiguityGroup.equals(protein.proteinAmbiguityGroup) : protein.proteinAmbiguityGroup != null)
+            return false;
+        if (score != null ? !score.equals(protein.score) : protein.score != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        long temp;
+        result = 31 * result + (dbSequence != null ? dbSequence.hashCode() : 0);
+        result = 31 * result + (passThreshold ? 1 : 0);
+        result = 31 * result + (peptides != null ? peptides.hashCode() : 0);
+        result = 31 * result + (score != null ? score.hashCode() : 0);
+        temp = sequenceCoverage != +0.0d ? Double.doubleToLongBits(sequenceCoverage) : 0L;
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = threshold != +0.0d ? Double.doubleToLongBits(threshold) : 0L;
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (gel != null ? gel.hashCode() : 0);
+        result = 31 * result + (proteinAmbiguityGroup != null ? proteinAmbiguityGroup.hashCode() : 0);
+        return result;
+    }
 }
 
 

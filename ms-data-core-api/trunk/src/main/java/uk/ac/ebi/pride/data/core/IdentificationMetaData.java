@@ -119,6 +119,33 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
     public void setSearchDataBaseList(List<SearchDataBase> searchDataBaseList) {
         this.searchDataBaseList = searchDataBaseList;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        IdentificationMetaData that = (IdentificationMetaData) o;
+
+        if (proteinDetectionProtocol != null ? !proteinDetectionProtocol.equals(that.proteinDetectionProtocol) : that.proteinDetectionProtocol != null)
+            return false;
+        if (searchDataBaseList != null ? !searchDataBaseList.equals(that.searchDataBaseList) : that.searchDataBaseList != null)
+            return false;
+        if (spectrumIdentificationProtocolList != null ? !spectrumIdentificationProtocolList.equals(that.spectrumIdentificationProtocolList) : that.spectrumIdentificationProtocolList != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (proteinDetectionProtocol != null ? proteinDetectionProtocol.hashCode() : 0);
+        result = 31 * result + (searchDataBaseList != null ? searchDataBaseList.hashCode() : 0);
+        result = 31 * result + (spectrumIdentificationProtocolList != null ? spectrumIdentificationProtocolList.hashCode() : 0);
+        return result;
+    }
 }
 
 

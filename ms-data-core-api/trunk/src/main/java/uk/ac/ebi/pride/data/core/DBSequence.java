@@ -230,6 +230,8 @@ public class DBSequence extends IdentifiableParamGroup {
         result = 31 * result + (spliceIsoform != null ? spliceIsoform.hashCode() : 0);
         return result;
     }
+
+
 }
 
 

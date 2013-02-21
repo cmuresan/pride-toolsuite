@@ -107,6 +107,42 @@ public class RunInfo extends ParamGroup {
     public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        RunInfo runInfo = (RunInfo) o;
+
+        if (chromatogramList != null ? !chromatogramList.equals(runInfo.chromatogramList) : runInfo.chromatogramList != null)
+            return false;
+        if (defaultInstrumentConfiguration != null ? !defaultInstrumentConfiguration.equals(runInfo.defaultInstrumentConfiguration) : runInfo.defaultInstrumentConfiguration != null)
+            return false;
+        if (defaultSourceFile != null ? !defaultSourceFile.equals(runInfo.defaultSourceFile) : runInfo.defaultSourceFile != null)
+            return false;
+        if (id != null ? !id.equals(runInfo.id) : runInfo.id != null) return false;
+        if (sampleRef != null ? !sampleRef.equals(runInfo.sampleRef) : runInfo.sampleRef != null) return false;
+        if (spectrumList != null ? !spectrumList.equals(runInfo.spectrumList) : runInfo.spectrumList != null)
+            return false;
+        if (timeStamp != null ? !timeStamp.equals(runInfo.timeStamp) : runInfo.timeStamp != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (chromatogramList != null ? chromatogramList.hashCode() : 0);
+        result = 31 * result + (defaultInstrumentConfiguration != null ? defaultInstrumentConfiguration.hashCode() : 0);
+        result = 31 * result + (defaultSourceFile != null ? defaultSourceFile.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (sampleRef != null ? sampleRef.hashCode() : 0);
+        result = 31 * result + (spectrumList != null ? spectrumList.hashCode() : 0);
+        result = 31 * result + (timeStamp != null ? timeStamp.hashCode() : 0);
+        return result;
+    }
 }
 
 

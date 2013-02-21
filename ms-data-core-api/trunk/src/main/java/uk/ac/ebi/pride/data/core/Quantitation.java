@@ -317,6 +317,37 @@ public class Quantitation {
                ? index
                : -1;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Quantitation that = (Quantitation) o;
+
+        if (!Arrays.equals(isotopeLabellingDeviations, that.isotopeLabellingDeviations)) return false;
+        if (!Arrays.equals(isotopeLabellingErrors, that.isotopeLabellingErrors)) return false;
+        if (isotopeLabellingMethod != that.isotopeLabellingMethod) return false;
+        if (!Arrays.equals(isotopeLabellingResults, that.isotopeLabellingResults)) return false;
+        if (labelFreeResults != null ? !labelFreeResults.equals(that.labelFreeResults) : that.labelFreeResults != null)
+            return false;
+        if (type != that.type) return false;
+        if (unit != that.unit) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = isotopeLabellingDeviations != null ? Arrays.hashCode(isotopeLabellingDeviations) : 0;
+        result = 31 * result + (isotopeLabellingErrors != null ? Arrays.hashCode(isotopeLabellingErrors) : 0);
+        result = 31 * result + (isotopeLabellingMethod != null ? isotopeLabellingMethod.hashCode() : 0);
+        result = 31 * result + (isotopeLabellingResults != null ? Arrays.hashCode(isotopeLabellingResults) : 0);
+        result = 31 * result + (labelFreeResults != null ? labelFreeResults.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (unit != null ? unit.hashCode() : 0);
+        return result;
+    }
 }
 
 

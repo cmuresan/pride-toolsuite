@@ -84,6 +84,24 @@ public class SearchEngine extends Identifiable {
     public void addSearchEngineType(SearchEngineType searchEngineType) {
         this.searchEngineTypes.add(searchEngineType);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SearchEngine that = (SearchEngine) o;
+
+        if (searchEngineTypes != null ? !searchEngineTypes.equals(that.searchEngineTypes) : that.searchEngineTypes != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return searchEngineTypes != null ? searchEngineTypes.hashCode() : 0;
+    }
 }
 
 

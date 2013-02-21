@@ -109,6 +109,37 @@ public class Precursor implements MassSpecObject {
     public void setSpectrum(Spectrum spectrum) {
         this.spectrum = spectrum;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Precursor precursor = (Precursor) o;
+
+        if (activation != null ? !activation.equals(precursor.activation) : precursor.activation != null) return false;
+        if (externalSpectrumID != null ? !externalSpectrumID.equals(precursor.externalSpectrumID) : precursor.externalSpectrumID != null)
+            return false;
+        if (isolationWindow != null ? !isolationWindow.equals(precursor.isolationWindow) : precursor.isolationWindow != null)
+            return false;
+        if (selectedIons != null ? !selectedIons.equals(precursor.selectedIons) : precursor.selectedIons != null)
+            return false;
+        if (sourceFile != null ? !sourceFile.equals(precursor.sourceFile) : precursor.sourceFile != null) return false;
+        if (spectrum != null ? !spectrum.equals(precursor.spectrum) : precursor.spectrum != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = activation != null ? activation.hashCode() : 0;
+        result = 31 * result + (externalSpectrumID != null ? externalSpectrumID.hashCode() : 0);
+        result = 31 * result + (isolationWindow != null ? isolationWindow.hashCode() : 0);
+        result = 31 * result + (selectedIons != null ? selectedIons.hashCode() : 0);
+        result = 31 * result + (sourceFile != null ? sourceFile.hashCode() : 0);
+        result = 31 * result + (spectrum != null ? spectrum.hashCode() : 0);
+        return result;
+    }
 }
 
 

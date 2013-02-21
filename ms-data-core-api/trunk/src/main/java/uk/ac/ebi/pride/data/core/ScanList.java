@@ -37,6 +37,26 @@ public class ScanList extends ParamGroup {
     public void setScans(List<Scan> scans) {
         this.scans = scans;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ScanList scanList = (ScanList) o;
+
+        if (scans != null ? !scans.equals(scanList.scans) : scanList.scans != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (scans != null ? scans.hashCode() : 0);
+        return result;
+    }
 }
 
 

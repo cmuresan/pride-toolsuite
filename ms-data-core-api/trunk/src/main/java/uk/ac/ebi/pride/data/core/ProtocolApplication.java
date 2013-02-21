@@ -22,6 +22,23 @@ public class ProtocolApplication extends Identifiable {
     public void setActiveDate(String activeDate) {
         this.activeDate = activeDate;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProtocolApplication that = (ProtocolApplication) o;
+
+        if (activeDate != null ? !activeDate.equals(that.activeDate) : that.activeDate != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return activeDate != null ? activeDate.hashCode() : 0;
+    }
 }
 
 

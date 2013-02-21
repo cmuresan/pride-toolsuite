@@ -76,6 +76,30 @@ public class CVLookup implements MassSpecObject {
     public void setVersion(String version) {
         this.version = version;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CVLookup cvLookup = (CVLookup) o;
+
+        if (address != null ? !address.equals(cvLookup.address) : cvLookup.address != null) return false;
+        if (cvLabel != null ? !cvLabel.equals(cvLookup.cvLabel) : cvLookup.cvLabel != null) return false;
+        if (fullName != null ? !fullName.equals(cvLookup.fullName) : cvLookup.fullName != null) return false;
+        if (version != null ? !version.equals(cvLookup.version) : cvLookup.version != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = address != null ? address.hashCode() : 0;
+        result = 31 * result + (cvLabel != null ? cvLabel.hashCode() : 0);
+        result = 31 * result + (fullName != null ? fullName.hashCode() : 0);
+        result = 31 * result + (version != null ? version.hashCode() : 0);
+        return result;
+    }
 }
 
 

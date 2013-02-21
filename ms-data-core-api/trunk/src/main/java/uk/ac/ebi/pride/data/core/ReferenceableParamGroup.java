@@ -42,6 +42,23 @@ public class ReferenceableParamGroup implements MassSpecObject {
     public ParamGroup getRefParamGroup(String ref) {
         return refMap.get(ref);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ReferenceableParamGroup that = (ReferenceableParamGroup) o;
+
+        if (refMap != null ? !refMap.equals(that.refMap) : that.refMap != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return refMap != null ? refMap.hashCode() : 0;
+    }
 }
 
 

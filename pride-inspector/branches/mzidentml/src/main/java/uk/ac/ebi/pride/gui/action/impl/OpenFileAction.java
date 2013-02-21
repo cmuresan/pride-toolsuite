@@ -251,15 +251,35 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
                 System.out.println(mzIdentMLFiles.size());
             }
         }
+        // Open all mzIdentML Files
+        for(File mzIdentML: mzIdentMLFiles.keySet()){
 
+            if(mzIdentMLFiles.get(mzIdentML) != null && mzIdentMLFiles.get(mzIdentML).size() > 0){
+
+                String msg = "Opening " + mzIdentML.getName();
+
+                OpenFileTask newTask = new OpenFileTask(mzIdentML, mzIdentMLFiles.get(mzIdentML), openFiles.get(mzIdentML), msg, msg);
+                // set task's gui blocker
+                newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
+                // add task listeners
+                // ToDo: this why we need a singleton DesktopContext
+                Desktop.getInstance().getDesktopContext().addTask(newTask);
+            }
+
+        }
+
+        // Open the rest of the selected files
         for (File selectedFile : openFiles.keySet()) {
             String msg = "Opening " + selectedFile.getName();
-            OpenFileTask newTask = new OpenFileTask(selectedFile, openFiles.get(selectedFile), msg, msg);
-            // set task's gui blocker
-            newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-            // add task listeners
-            // ToDo: this why we need a singleton DesktopContext
-            Desktop.getInstance().getDesktopContext().addTask(newTask);
+            if(openFiles.get(selectedFile) != MzIdentMLControllerImpl.class){
+                OpenFileTask newTask = new OpenFileTask(selectedFile, openFiles.get(selectedFile), msg, msg);
+                // set task's gui blocker
+                newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
+                // add task listeners
+                // ToDo: this why we need a singleton DesktopContext
+                Desktop.getInstance().getDesktopContext().addTask(newTask);
+            }
+
         }
     }
 

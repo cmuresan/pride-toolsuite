@@ -43,6 +43,8 @@ public class Chromatogram extends MzGraph {
     public BinaryDataArray getTimeArray() {
         return getBinaryDataArray(CvTermReference.TIME_ARRAY.getAccession());
     }
+
+
 }
 
 

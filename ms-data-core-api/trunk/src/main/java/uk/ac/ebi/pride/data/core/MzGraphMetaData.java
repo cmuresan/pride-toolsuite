@@ -98,6 +98,31 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
         this.dataProcessingList = dataProcessingList;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        MzGraphMetaData that = (MzGraphMetaData) o;
+
+        if (dataProcessingList != null ? !dataProcessingList.equals(that.dataProcessingList) : that.dataProcessingList != null)
+            return false;
+        if (instrumentConfigurations != null ? !instrumentConfigurations.equals(that.instrumentConfigurations) : that.instrumentConfigurations != null)
+            return false;
+        if (scanSettings != null ? !scanSettings.equals(that.scanSettings) : that.scanSettings != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (dataProcessingList != null ? dataProcessingList.hashCode() : 0);
+        result = 31 * result + (instrumentConfigurations != null ? instrumentConfigurations.hashCode() : 0);
+        result = 31 * result + (scanSettings != null ? scanSettings.hashCode() : 0);
+        return result;
+    }
 }
 
 

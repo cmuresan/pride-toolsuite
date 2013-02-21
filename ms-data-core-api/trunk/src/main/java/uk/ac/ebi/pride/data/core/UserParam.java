@@ -37,6 +37,23 @@ public class UserParam extends Parameter {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserParam userParam = (UserParam) o;
+
+        if (type != null ? !type.equals(userParam.type) : userParam.type != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return type != null ? type.hashCode() : 0;
+    }
 }
 
 

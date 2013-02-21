@@ -127,6 +127,36 @@ public class InstrumentConfiguration extends ParamGroup {
     public void setDetector(List<InstrumentComponent> detector) {
         this.detector = detector;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        InstrumentConfiguration that = (InstrumentConfiguration) o;
+
+        if (analyzer != null ? !analyzer.equals(that.analyzer) : that.analyzer != null) return false;
+        if (detector != null ? !detector.equals(that.detector) : that.detector != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (scanSetting != null ? !scanSetting.equals(that.scanSetting) : that.scanSetting != null) return false;
+        if (software != null ? !software.equals(that.software) : that.software != null) return false;
+        if (source != null ? !source.equals(that.source) : that.source != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (analyzer != null ? analyzer.hashCode() : 0);
+        result = 31 * result + (detector != null ? detector.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (scanSetting != null ? scanSetting.hashCode() : 0);
+        result = 31 * result + (software != null ? software.hashCode() : 0);
+        result = 31 * result + (source != null ? source.hashCode() : 0);
+        return result;
+    }
 }
 
 

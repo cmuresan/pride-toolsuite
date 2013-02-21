@@ -212,6 +212,48 @@ public class Reference extends IdentifiableParamGroup {
     public void setAuthors(String authors) {
         this.authors = authors;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Reference reference = (Reference) o;
+
+        if (authors != null ? !authors.equals(reference.authors) : reference.authors != null) return false;
+        if (doi != null ? !doi.equals(reference.doi) : reference.doi != null) return false;
+        if (editor != null ? !editor.equals(reference.editor) : reference.editor != null) return false;
+        if (fullReference != null ? !fullReference.equals(reference.fullReference) : reference.fullReference != null)
+            return false;
+        if (issue != null ? !issue.equals(reference.issue) : reference.issue != null) return false;
+        if (pages != null ? !pages.equals(reference.pages) : reference.pages != null) return false;
+        if (publication != null ? !publication.equals(reference.publication) : reference.publication != null)
+            return false;
+        if (publisher != null ? !publisher.equals(reference.publisher) : reference.publisher != null) return false;
+        if (title != null ? !title.equals(reference.title) : reference.title != null) return false;
+        if (volume != null ? !volume.equals(reference.volume) : reference.volume != null) return false;
+        if (year != null ? !year.equals(reference.year) : reference.year != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (authors != null ? authors.hashCode() : 0);
+        result = 31 * result + (doi != null ? doi.hashCode() : 0);
+        result = 31 * result + (editor != null ? editor.hashCode() : 0);
+        result = 31 * result + (fullReference != null ? fullReference.hashCode() : 0);
+        result = 31 * result + (issue != null ? issue.hashCode() : 0);
+        result = 31 * result + (pages != null ? pages.hashCode() : 0);
+        result = 31 * result + (publication != null ? publication.hashCode() : 0);
+        result = 31 * result + (publisher != null ? publisher.hashCode() : 0);
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (volume != null ? volume.hashCode() : 0);
+        result = 31 * result + (year != null ? year.hashCode() : 0);
+        return result;
+    }
 }
 
 

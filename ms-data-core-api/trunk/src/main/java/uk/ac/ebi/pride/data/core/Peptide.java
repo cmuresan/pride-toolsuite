@@ -1,8 +1,5 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
-
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -82,6 +79,28 @@ public class Peptide {
 
     public double getPrecursorMz() {
         return this.getSpectrumIdentification().getExperimentalMassToCharge();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Peptide peptide = (Peptide) o;
+
+        if (peptideEvidence != null ? !peptideEvidence.equals(peptide.peptideEvidence) : peptide.peptideEvidence != null)
+            return false;
+        if (spectrumIdentification != null ? !spectrumIdentification.equals(peptide.spectrumIdentification) : peptide.spectrumIdentification != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = peptideEvidence != null ? peptideEvidence.hashCode() : 0;
+        result = 31 * result + (spectrumIdentification != null ? spectrumIdentification.hashCode() : 0);
+        return result;
     }
 }
 

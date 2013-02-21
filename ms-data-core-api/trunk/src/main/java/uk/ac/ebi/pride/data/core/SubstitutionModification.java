@@ -70,6 +70,38 @@ public class SubstitutionModification {
     public void setMonoisotopicMassDelta(double monoisotopicMassDelta) {
         this.monoisotopicMassDelta = monoisotopicMassDelta;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SubstitutionModification that = (SubstitutionModification) o;
+
+        if (Double.compare(that.avgMassDelta, avgMassDelta) != 0) return false;
+        if (location != that.location) return false;
+        if (Double.compare(that.monoisotopicMassDelta, monoisotopicMassDelta) != 0) return false;
+        if (originalResidue != null ? !originalResidue.equals(that.originalResidue) : that.originalResidue != null)
+            return false;
+        if (replacementResidue != null ? !replacementResidue.equals(that.replacementResidue) : that.replacementResidue != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        temp = avgMassDelta != +0.0d ? Double.doubleToLongBits(avgMassDelta) : 0L;
+        result = (int) (temp ^ (temp >>> 32));
+        result = 31 * result + location;
+        temp = monoisotopicMassDelta != +0.0d ? Double.doubleToLongBits(monoisotopicMassDelta) : 0L;
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (originalResidue != null ? originalResidue.hashCode() : 0);
+        result = 31 * result + (replacementResidue != null ? replacementResidue.hashCode() : 0);
+        return result;
+    }
 }
 
 

@@ -40,6 +40,28 @@ public class Filter {
     public void setExclude(ParamGroup exclude) {
         this.exclude = exclude;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Filter filter = (Filter) o;
+
+        if (exclude != null ? !exclude.equals(filter.exclude) : filter.exclude != null) return false;
+        if (filterType != null ? !filterType.equals(filter.filterType) : filter.filterType != null) return false;
+        if (include != null ? !include.equals(filter.include) : filter.include != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = exclude != null ? exclude.hashCode() : 0;
+        result = 31 * result + (filterType != null ? filterType.hashCode() : 0);
+        result = 31 * result + (include != null ? include.hashCode() : 0);
+        return result;
+    }
 }
 
 

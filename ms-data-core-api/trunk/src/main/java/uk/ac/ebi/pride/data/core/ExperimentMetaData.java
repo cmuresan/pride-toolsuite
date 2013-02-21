@@ -406,6 +406,52 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
     public void setSpectraDataList(List<SpectraData> spectraDataList) {
         this.spectraDataList = spectraDataList;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ExperimentMetaData that = (ExperimentMetaData) o;
+
+        if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
+        if (organizationList != null ? !organizationList.equals(that.organizationList) : that.organizationList != null)
+            return false;
+        if (personList != null ? !personList.equals(that.personList) : that.personList != null) return false;
+        if (protocol != null ? !protocol.equals(that.protocol) : that.protocol != null) return false;
+        if (provider != null ? !provider.equals(that.provider) : that.provider != null) return false;
+        if (publicDate != null ? !publicDate.equals(that.publicDate) : that.publicDate != null) return false;
+        if (references != null ? !references.equals(that.references) : that.references != null) return false;
+        if (sampleList != null ? !sampleList.equals(that.sampleList) : that.sampleList != null) return false;
+        if (shortLabel != null ? !shortLabel.equals(that.shortLabel) : that.shortLabel != null) return false;
+        if (softwareList != null ? !softwareList.equals(that.softwareList) : that.softwareList != null) return false;
+        if (sourceFiles != null ? !sourceFiles.equals(that.sourceFiles) : that.sourceFiles != null) return false;
+        if (spectraDataList != null ? !spectraDataList.equals(that.spectraDataList) : that.spectraDataList != null)
+            return false;
+        if (version != null ? !version.equals(that.version) : that.version != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
+        result = 31 * result + (organizationList != null ? organizationList.hashCode() : 0);
+        result = 31 * result + (personList != null ? personList.hashCode() : 0);
+        result = 31 * result + (protocol != null ? protocol.hashCode() : 0);
+        result = 31 * result + (provider != null ? provider.hashCode() : 0);
+        result = 31 * result + (publicDate != null ? publicDate.hashCode() : 0);
+        result = 31 * result + (references != null ? references.hashCode() : 0);
+        result = 31 * result + (sampleList != null ? sampleList.hashCode() : 0);
+        result = 31 * result + (shortLabel != null ? shortLabel.hashCode() : 0);
+        result = 31 * result + (softwareList != null ? softwareList.hashCode() : 0);
+        result = 31 * result + (sourceFiles != null ? sourceFiles.hashCode() : 0);
+        result = 31 * result + (spectraDataList != null ? spectraDataList.hashCode() : 0);
+        result = 31 * result + (version != null ? version.hashCode() : 0);
+        return result;
+    }
 }
 
 

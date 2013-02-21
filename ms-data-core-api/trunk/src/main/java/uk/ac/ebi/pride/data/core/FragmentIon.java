@@ -180,6 +180,46 @@ public class FragmentIon extends ParamGroup {
     public void setLocation(int location) {
         this.location = location;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        FragmentIon that = (FragmentIon) o;
+
+        if (charge != that.charge) return false;
+        if (Double.compare(that.intensity, intensity) != 0) return false;
+        if (location != that.location) return false;
+        if (Double.compare(that.massError, massError) != 0) return false;
+        if (Double.compare(that.mz, mz) != 0) return false;
+        if (Double.compare(that.retentionTimeError, retentionTimeError) != 0) return false;
+        if (ionType != null ? !ionType.equals(that.ionType) : that.ionType != null) return false;
+        if (ionTypeAccession != null ? !ionTypeAccession.equals(that.ionTypeAccession) : that.ionTypeAccession != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        long temp;
+        result = 31 * result + charge;
+        temp = intensity != +0.0d ? Double.doubleToLongBits(intensity) : 0L;
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (ionType != null ? ionType.hashCode() : 0);
+        result = 31 * result + (ionTypeAccession != null ? ionTypeAccession.hashCode() : 0);
+        result = 31 * result + location;
+        temp = massError != +0.0d ? Double.doubleToLongBits(massError) : 0L;
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = mz != +0.0d ? Double.doubleToLongBits(mz) : 0L;
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = retentionTimeError != +0.0d ? Double.doubleToLongBits(retentionTimeError) : 0L;
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }
 
 

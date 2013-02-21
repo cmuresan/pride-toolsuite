@@ -79,6 +79,29 @@ public class Protocol extends IdentifiableParamGroup {
     public void setThreshold(ParamGroup threshold) {
         this.threshold = threshold;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Protocol protocol = (Protocol) o;
+
+        if (analysisSoftware != null ? !analysisSoftware.equals(protocol.analysisSoftware) : protocol.analysisSoftware != null)
+            return false;
+        if (threshold != null ? !threshold.equals(protocol.threshold) : protocol.threshold != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (analysisSoftware != null ? analysisSoftware.hashCode() : 0);
+        result = 31 * result + (threshold != null ? threshold.hashCode() : 0);
+        return result;
+    }
 }
 
 

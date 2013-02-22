@@ -108,7 +108,7 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
      * Read and filter summary the file
      */
     private void searchDatabaseSummaryFile() {
-        InputStream input = this.getClass().getClassLoader().getResourceAsStream("metadata/database_summary.tsv");
+        InputStream input = this.getClass().getClassLoader().getResourceAsStream("metadata/database_summary_new.tsv");
         // input stream of the database file
         BufferedReader reader = null;
         try {
@@ -210,8 +210,8 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
     private List<Object> prepareRowContent(String[] parts) {
         List<Object> rowParts = new ArrayList<Object>();
         DatabaseSearchTableModel.TableHeader[] headers = DatabaseSearchTableModel.TableHeader.values();
-        for (int i = 0; i < parts.length; i++) {
-            String part = parts[i];
+        for (int i = 0; i < headers.length; i++) {
+            String part = parts.length <= i ? "" : parts[i];
             if (part == null || "".equals(part.trim())) {
                 rowParts.add(" " + Constants.NOT_AVAILABLE);
             } else if (headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.EXPERIMENT_ACCESSION) ||

@@ -351,15 +351,15 @@ public class TableDataRetriever {
         List<Object> headers = new ArrayList<Object>();
 
         // label free methods
-        if (controller.hasLabelFreeQuantMethods()) {
-            Collection<QuantCvTermReference> methods = isProteinIdent ? controller.getProteinLabelFreeQuantMethods() : controller.getPeptideLabelFreeQuantMethods();
-            headers.addAll(getLabelFreeMethodHeaders(methods));
+        if (controller.hasSingleSampleQuantMethods()) {
+            Collection<QuantCvTermReference> methods = isProteinIdent ? controller.getProteinLevelSingleSampleQuantMethods() : controller.getPeptideLevelSingleSampleQuantMethods();
+            headers.addAll(getSingleSampleMethodHeaders(methods));
         }
 
         // isotope labelling methods
-        if (controller.hasIsotopeLabellingQuantMethods()) {
-            Collection<QuantCvTermReference> methods = isProteinIdent ? controller.getProteinIsotopeLabellingQuantMethods() : controller.getPeptideIsotopeLabellingQuantMethods();
-            headers.addAll(getIsotopeLabellingMethodHeaders(methods, controller, refSampleIndex, isProteinIdent));
+        if (controller.hasMultiSampleQuantMethods()) {
+            Collection<QuantCvTermReference> methods = isProteinIdent ? controller.getProteinLevelMultiSampleQuantMethods() : controller.getPeptideLevelMultiSampleQuantMethods();
+            headers.addAll(getMultiSampleMethodHeaders(methods, controller, refSampleIndex, isProteinIdent));
         }
 
         return headers;
@@ -375,16 +375,16 @@ public class TableDataRetriever {
      * @return List<Object>    a list of headers
      * @throws DataAccessException data access exception
      */
-    private static List<Object> getIsotopeLabellingMethodHeaders(Collection<QuantCvTermReference> methods,
-                                                                 DataAccessController controller,
-                                                                 int refSampleIndex,
-                                                                 boolean isProteinIdent) throws DataAccessException {
+    private static List<Object> getMultiSampleMethodHeaders(Collection<QuantCvTermReference> methods,
+                                                            DataAccessController controller,
+                                                            int refSampleIndex,
+                                                            boolean isProteinIdent) throws DataAccessException {
         List<Object> headers = new ArrayList<Object>();
 
         if (methods.size() > 0) {
             QuantitativeSample sample = controller.getQuantSample();
             // total intensities
-            boolean hasTotalIntensities = isProteinIdent ? controller.hasProteinTotalIntensities() : controller.hasPeptideTotalIntensities();
+            boolean hasTotalIntensities = isProteinIdent ? controller.hasProteinLevelTotalIntensities() : controller.hasPeptideLevelTotalIntensities();
             if (hasTotalIntensities) {
                 headers.addAll(getTotalIntensityHeaders(sample));
             }
@@ -414,7 +414,7 @@ public class TableDataRetriever {
      * @param methods label free methods
      * @return List<Object>    label free method headers
      */
-    private static List<Object> getLabelFreeMethodHeaders(Collection<QuantCvTermReference> methods) {
+    private static List<Object> getSingleSampleMethodHeaders(Collection<QuantCvTermReference> methods) {
         List<Object> headers = new ArrayList<Object>();
 
         for (QuantCvTermReference method : methods) {
@@ -455,13 +455,22 @@ public class TableDataRetriever {
 
         // get reference reagent
         CvParam referenceReagent = sample.getReagent(refSampleIndex);
+
         // get short label for the reagent
-        String shortenedReferenceReagent = QuantCvTermReference.getReagentShortLabel(referenceReagent);
-        for (int i = 1; i < QuantitativeSample.MAX_SUB_SAMPLE_SIZE; i++) {
-            if (refSampleIndex != i) {
-                CvParam reagent = sample.getReagent(i);
-                if (reagent != null) {
-                    headers.add(QuantCvTermReference.getReagentShortLabel(reagent) + Constants.QUANTIFICATION_RATIO_CHAR + shortenedReferenceReagent);
+        if (referenceReagent != null) {
+            String shortenedReferenceReagent = QuantCvTermReference.getReagentShortLabel(referenceReagent);
+            for (int i = 1; i <= QuantitativeSample.MAX_SUB_SAMPLE_SIZE; i++) {
+                if (refSampleIndex != i) {
+                    CvParam reagent = sample.getReagent(i);
+                    if (reagent != null) {
+                        headers.add(QuantCvTermReference.getReagentShortLabel(reagent) + Constants.QUANTIFICATION_RATIO_CHAR + shortenedReferenceReagent);
+                    }
+                }
+            }
+        } else {
+            for (int i = 1; i <= sample.getNumberOfSubSamples(); i++) {
+                if (refSampleIndex != i) {
+                    headers.add("Sample" + i + Constants.QUANTIFICATION_RATIO_CHAR + "Sample" + refSampleIndex);
                 }
             }
         }
@@ -481,7 +490,7 @@ public class TableDataRetriever {
     public static List<Object> getProteinQuantTableRow(DataAccessController controller,
                                                        Comparable identId,
                                                        int referenceSubSampleIndex) throws DataAccessException {
-        Quantitation quant = controller.getProteinQuantData(identId);
+        Quantification quant = controller.getProteinQuantData(identId);
         return getQuantTableRow(controller, quant, referenceSubSampleIndex, true);
     }
 
@@ -500,7 +509,7 @@ public class TableDataRetriever {
                                                        Comparable identId,
                                                        Comparable peptideId,
                                                        int referenceSubSampleIndex) throws DataAccessException {
-        Quantitation quant = controller.getPeptideQuantData(identId, peptideId);
+        Quantification quant = controller.getPeptideQuantData(identId, peptideId);
         return getQuantTableRow(controller, quant, referenceSubSampleIndex, false);
     }
 
@@ -514,19 +523,19 @@ public class TableDataRetriever {
      * @return List<String>    a list of quantitative table headers
      * @throws DataAccessException data access exception
      */
-    private static List<Object> getQuantTableRow(DataAccessController controller, Quantitation quant, int refSampleIndex, boolean isProteinIdent) throws DataAccessException {
+    private static List<Object> getQuantTableRow(DataAccessController controller, Quantification quant, int refSampleIndex, boolean isProteinIdent) throws DataAccessException {
         List<Object> contents = new ArrayList<Object>();
 
         // label free methods
-        if (controller.hasLabelFreeQuantMethods()) {
-            Collection<QuantCvTermReference> methods = isProteinIdent ? controller.getProteinLabelFreeQuantMethods() : controller.getPeptideLabelFreeQuantMethods();
-            contents.addAll(getLabelFreeQuantData(methods, quant));
+        if (controller.hasSingleSampleQuantMethods()) {
+            Collection<QuantCvTermReference> methods = isProteinIdent ? controller.getProteinLevelSingleSampleQuantMethods() : controller.getPeptideLevelSingleSampleQuantMethods();
+            contents.addAll(getSingleSampleQuantData(methods, quant));
         }
 
         // isotope labelling methods
-        if (controller.hasIsotopeLabellingQuantMethods()) {
-            Collection<QuantCvTermReference> methods = isProteinIdent ? controller.getProteinIsotopeLabellingQuantMethods() : controller.getPeptideIsotopeLabellingQuantMethods();
-            contents.addAll(getIsotopeLabellingQuantData(methods, controller, quant, refSampleIndex, isProteinIdent));
+        if (controller.hasMultiSampleQuantMethods()) {
+            Collection<QuantCvTermReference> methods = isProteinIdent ? controller.getProteinLevelMultiSampleQuantMethods() : controller.getPeptideLevelMultiSampleQuantMethods();
+            contents.addAll(getMultiSampleQuantData(methods, controller, quant, refSampleIndex, isProteinIdent));
         }
 
         return contents;
@@ -539,8 +548,8 @@ public class TableDataRetriever {
      * @param quant   quantitative object
      * @return List<Double>    a list of label free results
      */
-    private static List<Double> getLabelFreeQuantData(Collection<QuantCvTermReference> methods, Quantitation quant) {
-        return quant.getLabelFreeResults(methods);
+    private static List<Double> getSingleSampleQuantData(Collection<QuantCvTermReference> methods, Quantification quant) {
+        return quant.getSingleSampleResults(methods);
     }
 
     /**
@@ -554,15 +563,15 @@ public class TableDataRetriever {
      * @return List<Object>    a list of results
      * @throws DataAccessException data access exception
      */
-    private static List<Object> getIsotopeLabellingQuantData(Collection<QuantCvTermReference> methods, DataAccessController controller,
-                                                             Quantitation quant, int refSampleIndex, boolean isProteinIdent) throws DataAccessException {
+    private static List<Object> getMultiSampleQuantData(Collection<QuantCvTermReference> methods, DataAccessController controller,
+                                                        Quantification quant, int refSampleIndex, boolean isProteinIdent) throws DataAccessException {
 
         List<Object> contents = new ArrayList<Object>();
 
         if (methods.size() > 0) {
             QuantitativeSample sample = controller.getQuantSample();
             // total intensities
-            boolean hasTotalIntensities = isProteinIdent ? controller.hasProteinTotalIntensities() : controller.hasPeptideTotalIntensities();
+            boolean hasTotalIntensities = isProteinIdent ? controller.hasProteinLevelTotalIntensities() : controller.hasPeptideLevelTotalIntensities();
             if (hasTotalIntensities) {
                 contents.addAll(getTotalIntensityQuantData(sample, quant));
             }
@@ -573,11 +582,11 @@ public class TableDataRetriever {
                 // show the original ratios
                 if (existingRefSampleIndex >= 1) {
                     // the original quant data has a reference sample already
-                    contents.addAll(getReagentRatioQuantData(sample, quant, existingRefSampleIndex));
+                    contents.addAll(getReagentRatioQuantData(quant, existingRefSampleIndex));
                 }
             } else {
                 // show the newly calculated ratios
-                contents.addAll(getReagentRatioQuantData(sample, quant, refSampleIndex));
+                contents.addAll(getReagentRatioQuantData(quant, refSampleIndex));
             }
 
         }
@@ -592,13 +601,13 @@ public class TableDataRetriever {
      * @param quant  quantitative data
      * @return List<Object>    a list of total intensities
      */
-    private static List<Object> getTotalIntensityQuantData(QuantitativeSample sample, Quantitation quant) {
+    private static List<Object> getTotalIntensityQuantData(QuantitativeSample sample, Quantification quant) {
         List<Object> contents = new ArrayList<Object>();
 
         for (int i = 1; i <= QuantitativeSample.MAX_SUB_SAMPLE_SIZE; i++) {
             CvParam reagent = sample.getReagent(i);
             if (reagent != null) {
-                contents.add(quant.getIsotopeLabellingResult(i));
+                contents.add(quant.getMultiSampleIntensity(i));
             }
         }
 
@@ -609,29 +618,24 @@ public class TableDataRetriever {
     /**
      * Get reagent quantitative data
      *
-     * @param sample         quantitative sample
      * @param quant          quantitative data
      * @param refSampleIndex reference sub sample index
      * @return List<Object>    a list of reagent ratio data
      */
-    private static List<Object> getReagentRatioQuantData(QuantitativeSample sample,
-                                                         Quantitation quant,
+    private static List<Object> getReagentRatioQuantData(Quantification quant,
                                                          int refSampleIndex) {
         List<Object> contents = new ArrayList<Object>();
 
         // get reference reagent
-        Double referenceReagentResult = quant.getIsotopeLabellingResult(refSampleIndex);
+        Double referenceReagentResult = quant.getMultiSampleIntensity(refSampleIndex);
         // get short label for the reagent
         for (int i = 1; i < QuantitativeSample.MAX_SUB_SAMPLE_SIZE; i++) {
             if (refSampleIndex != i) {
-                CvParam reagent = sample.getReagent(i);
-                if (reagent != null) {
-                    Double reagentResult = quant.getIsotopeLabellingResult(i);
-                    if (referenceReagentResult != null && reagentResult != null) {
-                        contents.add(reagentResult / referenceReagentResult);
-                    } else {
-                        contents.add(null);
-                    }
+                Double reagentResult = quant.getMultiSampleIntensity(i);
+                if (referenceReagentResult != null && reagentResult != null) {
+                    contents.add(reagentResult / referenceReagentResult);
+                } else {
+                    contents.add(null);
                 }
             }
         }

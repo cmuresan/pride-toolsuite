@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.data.controller.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.Quantitation;
+import uk.ac.ebi.pride.data.core.Quantification;
 import uk.ac.ebi.pride.data.core.QuantitativeSample;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 
@@ -31,7 +31,7 @@ public interface QuantDataAccess {
      * @return boolean true means quantitative data available
      * @throws DataAccessException data access exception
      */
-    public boolean hasProteinQuantData() throws DataAccessException;
+    public boolean hasProteinLevelQuantData() throws DataAccessException;
 
     /**
      * Check whether the experiment contains total intensities at the protein level
@@ -39,7 +39,7 @@ public interface QuantDataAccess {
      * @return boolean  true means there are total intensities
      * @throws DataAccessException data access exception
      */
-    public boolean hasProteinTotalIntensities() throws DataAccessException;
+    public boolean hasProteinLevelTotalIntensities() throws DataAccessException;
 
     /**
      * Check whether the experiment contains quantitative data at the peptide level
@@ -47,7 +47,7 @@ public interface QuantDataAccess {
      * @return boolean true means quantitative data available
      * @throws DataAccessException data access exception
      */
-    public boolean hasPeptideQuantData() throws DataAccessException;
+    public boolean hasPeptideLevelQuantData() throws DataAccessException;
 
     /**
      * Check whether the experiment contains total intensities at the protein level
@@ -55,71 +55,71 @@ public interface QuantDataAccess {
      * @return boolean true means quantitative data available
      * @throws DataAccessException data access exception
      */
-    public boolean hasPeptideTotalIntensities() throws DataAccessException;
+    public boolean hasPeptideLevelTotalIntensities() throws DataAccessException;
 
     /**
-     * Check whether the experiment contains quantitative data using label free methods
+     * Check whether the experiment contains quantitative data from quantification methods using a single sample
      *
-     * @return boolean true means label free methods (e.g. TIC, emPAI) have been used
+     * @return boolean true means single sample methods (e.g. TIC, emPAI) have been used
      * @throws DataAccessException data access exception
      */
-    public boolean hasLabelFreeQuantMethods() throws DataAccessException;
+    public boolean hasSingleSampleQuantMethods() throws DataAccessException;
 
     /**
-     * Get all the label free methods used
+     * Get all the single sample methods used
      *
-     * @return Collection<QuantCvTermReference>    a collection of label free methods
+     * @return Collection<QuantCvTermReference>    a collection of single sample methods
      * @throws DataAccessException data access exception
      */
-    public Collection<QuantCvTermReference> getLabelFreeQuantMethods() throws DataAccessException;
+    public Collection<QuantCvTermReference> getSingleSampleQuantMethods() throws DataAccessException;
 
     /**
-     * Get the label free methods at the protein identification level
+     * Get the single sample methods at the protein identification level
      *
-     * @return Collection<QuantCvTermReference>    a collection of label free methods
+     * @return Collection<QuantCvTermReference>    a collection of single sample methods
      * @throws DataAccessException data access exception
      */
-    public Collection<QuantCvTermReference> getProteinLabelFreeQuantMethods() throws DataAccessException;
+    public Collection<QuantCvTermReference> getProteinLevelSingleSampleQuantMethods() throws DataAccessException;
 
     /**
-     * Get the label free methods at the peptide identification level
+     * Get the single sample methods at the peptide identification level
      *
-     * @return Collection<QuantCvTermReference>    a collection of label free methods
+     * @return Collection<QuantCvTermReference>    a collection of single sample methods
      * @throws DataAccessException data access exception
      */
-    public Collection<QuantCvTermReference> getPeptideLabelFreeQuantMethods() throws DataAccessException;
+    public Collection<QuantCvTermReference> getPeptideLevelSingleSampleQuantMethods() throws DataAccessException;
 
     /**
-     * Check whether the experiment contains quantitative data using isotope labelling methods
+     * Check whether the experiment contains quantitative data from quantification methods using multiple samples
      *
-     * @return boolean true means isotope labelling methods have been used
+     * @return boolean true means multiple sample methods have been used
      * @throws DataAccessException data access exception
      */
-    public boolean hasIsotopeLabellingQuantMethods() throws DataAccessException;
+    public boolean hasMultiSampleQuantMethods() throws DataAccessException;
 
     /**
-     * Get the isotope labelling methods at the protein level
+     * Get the multiple sample methods at the protein level
      *
-     * @return Collection<QuantCvTermReference>    a collection of isotope labelling methods
+     * @return Collection<QuantCvTermReference>    a collection of multiple sample methods
      * @throws DataAccessException data access exception
      */
-    public Collection<QuantCvTermReference> getProteinIsotopeLabellingQuantMethods() throws DataAccessException;
+    public Collection<QuantCvTermReference> getProteinLevelMultiSampleQuantMethods() throws DataAccessException;
 
     /**
-     * Get the isotope labelling methods at the peptide level
+     * Get the multiple sample methods at the peptide level
      *
-     * @return Collection<QuantCvTermReference>    a collection of isotope labelling methods
+     * @return Collection<QuantCvTermReference>    a collection of multiple sample methods
      * @throws DataAccessException data access exception
      */
-    public Collection<QuantCvTermReference> getPeptideIsotopeLabellingQuantMethods() throws DataAccessException;
+    public Collection<QuantCvTermReference> getPeptideLevelMultiSampleQuantMethods() throws DataAccessException;
 
     /**
-     * Get all the isotope labelling methods
+     * Get all the multiple sample methods
      *
-     * @return Collection<QuantCvTermReference>    a collection of isotope labelling methods
+     * @return Collection<QuantCvTermReference>    a collection of multiple sample methods
      * @throws DataAccessException data access exception
      */
-    public Collection<QuantCvTermReference> getIsotopeLabellingQuantMethods() throws DataAccessException;
+    public Collection<QuantCvTermReference> getMultiSampleQuantMethods() throws DataAccessException;
 
     /**
      * Get quantitative method type
@@ -182,7 +182,7 @@ public interface QuantDataAccess {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *          error while getting the data from source
      */
-    public Quantitation getProteinQuantData(Comparable identId) throws DataAccessException;
+    public Quantification getProteinQuantData(Comparable identId) throws DataAccessException;
 
     /**
      * Get quantitative data related to a given peptide
@@ -193,5 +193,5 @@ public interface QuantDataAccess {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *          error while getting the data from source
      */
-    public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException;
+    public Quantification getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException;
 }

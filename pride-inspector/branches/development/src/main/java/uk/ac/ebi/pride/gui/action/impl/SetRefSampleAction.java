@@ -12,6 +12,7 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.ReferenceSampleChangeEvent;
+import uk.ac.ebi.pride.gui.utils.Constants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,16 +54,21 @@ public class SetRefSampleAction extends PrideAction {
 
         try {
             QuantitativeSample sample = controller.getQuantSample();
-            int refSampelIndex = controller.getReferenceSubSampleIndex();
+            int refSampleIndex = controller.getReferenceSubSampleIndex();
             ButtonGroup buttonGroup = new ButtonGroup();
-            for (int i = 1; i <= QuantitativeSample.MAX_SUB_SAMPLE_SIZE; i++) {
+            for (int i = 1; i <= sample.getNumberOfSubSamples(); i++) {
                 CvParam reagent = sample.getReagent(i);
+                String reagentName;
                 if (reagent != null) {
-                    JRadioButtonMenuItem radioButton = new JRadioButtonMenuItem(reagent.getName(), i == refSampelIndex);
-                    radioButton.addActionListener(new RefSampleActionListener(source, i));
-                    menu.add(radioButton);
-                    buttonGroup.add(radioButton);
+                    reagentName = reagent.getName();
+                } else {
+                    reagentName = Constants.SAMPLE + i;
                 }
+
+                JRadioButtonMenuItem radioButton = new JRadioButtonMenuItem(reagentName, i == refSampleIndex);
+                radioButton.addActionListener(new RefSampleActionListener(source, i));
+                menu.add(radioButton);
+                buttonGroup.add(radioButton);
             }
 
         } catch (DataAccessException e) {

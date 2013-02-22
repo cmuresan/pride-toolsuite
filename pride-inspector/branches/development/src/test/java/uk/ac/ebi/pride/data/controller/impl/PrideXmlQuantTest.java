@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.data.controller.impl;
 import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.Quantitation;
+import uk.ac.ebi.pride.data.core.Quantification;
 import uk.ac.ebi.pride.data.core.QuantitativeSample;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
@@ -155,22 +155,22 @@ public class PrideXmlQuantTest {
 
     @Test
     public void testHasIdentQuantData() throws Exception {
-        assertTrue(prideController.hasProteinQuantData());
+        assertTrue(prideController.hasProteinLevelQuantData());
     }
 
     @Test
     public void testHasPeptideQuantData() throws Exception {
-        assertTrue(prideController.hasPeptideQuantData());
+        assertTrue(prideController.hasPeptideLevelQuantData());
     }
 
     @Test
     public void testHasLabelFreeQuantMethod() throws Exception {
-        assertFalse(prideController.hasLabelFreeQuantMethods());
+        assertFalse(prideController.hasSingleSampleQuantMethods());
     }
 
     @Test
     public void testHashIostopeLabellingQuantMethod() throws Exception {
-        assertTrue(prideController.hasIsotopeLabellingQuantMethods());
+        assertTrue(prideController.hasMultiSampleQuantMethods());
     }
 
     @Test
@@ -202,8 +202,8 @@ public class PrideXmlQuantTest {
     public void testIdentQuantData() throws Exception {
         Collection<Comparable> identIds = prideController.getIdentificationIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
-        assertEquals(Quantitation.Type.PROTEIN, quant.getType());
+        Quantification quant = prideController.getProteinQuantData(identId);
+        assertEquals(Quantification.Type.PROTEIN, quant.getType());
     }
 
     @Test
@@ -212,48 +212,48 @@ public class PrideXmlQuantTest {
         Comparable identId = CollectionUtils.getElement(identIds, 0);
         Collection<Comparable> peptideIds = prideController.getPeptideIds(identId);
         Comparable peptideId = CollectionUtils.getElement(peptideIds, 0);
-        Quantitation quant = prideController.getPeptideQuantData(identId, peptideId);
-        assertEquals(Quantitation.Type.PEPTIDE, quant.getType());
+        Quantification quant = prideController.getPeptideQuantData(identId, peptideId);
+        assertEquals(Quantification.Type.PEPTIDE, quant.getType());
     }
 
     @Test
     public void testQuantHasLabelFree() throws Exception {
         Collection<Comparable> identIds = prideController.getIdentificationIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
-        assertFalse(quant.hasLabelFreeMethod());
+        Quantification quant = prideController.getProteinQuantData(identId);
+        assertFalse(quant.hasSingleSampleMethod());
     }
 
     @Test
     public void testQuantGetLabelFreeMethods() throws Exception {
         Collection<Comparable> identIds = prideController.getIdentificationIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
-        assertEquals(0, quant.getLabelFreeMethods().size());
+        Quantification quant = prideController.getProteinQuantData(identId);
+        assertEquals(0, quant.getSingleSampleMethods().size());
     }
 
     @Test
     public void testQuantHasIsotopeLabelliing() throws Exception {
         Collection<Comparable> identIds = prideController.getIdentificationIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
-        assertTrue(quant.hasIsotopeLabellingMethod());
+        Quantification quant = prideController.getProteinQuantData(identId);
+        assertTrue(quant.hasMultiSampleMethod());
     }
 
     @Test
     public void testQuantHasIsotopeLabellingMethod() throws Exception {
         Collection<Comparable> identIds = prideController.getIdentificationIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
-        assertTrue(quant.hasIsotopeLabellingMethod());
+        Quantification quant = prideController.getProteinQuantData(identId);
+        assertTrue(quant.hasMultiSampleMethod());
     }
 
     @Test
     public void testQuantGetIsotopeLabellingMethod() throws Exception {
         Collection<Comparable> identIds = prideController.getIdentificationIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
-        QuantCvTermReference cvTermReference = quant.getIsotopeLabellingMethod();
+        Quantification quant = prideController.getProteinQuantData(identId);
+        QuantCvTermReference cvTermReference = quant.getMultiSampleMethod();
         assertEquals("PRIDE:0000313", cvTermReference.getAccession());
     }
 
@@ -261,8 +261,8 @@ public class PrideXmlQuantTest {
     public void testQuantGetIsotopeLabellingResults() throws Exception {
         Collection<Comparable> identIds = prideController.getIdentificationIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
-        List<Double> results = quant.getIsotopeLabellingResults();
+        Quantification quant = prideController.getProteinQuantData(identId);
+        List<Double> results = quant.getMultiSampleIntensities();
         assertEquals(1.0, results.get(0));
         assertNull(results.get(4));
     }
@@ -271,15 +271,15 @@ public class PrideXmlQuantTest {
     public void testQuantGetIsotopeLabellingResult() throws Exception {
         Collection<Comparable> identIds = prideController.getIdentificationIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
-        assertEquals(1.004, quant.getIsotopeLabellingResult(3));
+        Quantification quant = prideController.getProteinQuantData(identId);
+        assertEquals(1.004, quant.getMultiSampleIntensity(3));
     }
 
     @Test
     public void testQuantHasTotalIntensities() throws Exception {
         Collection<Comparable> identIds = prideController.getIdentificationIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
+        Quantification quant = prideController.getProteinQuantData(identId);
         assertFalse(quant.hasTotalIntensities());
     }
 
@@ -287,7 +287,7 @@ public class PrideXmlQuantTest {
     public void testQuantGetUnit() throws Exception {
         Collection<Comparable> identIds = prideController.getIdentificationIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
+        Quantification quant = prideController.getProteinQuantData(identId);
         assertEquals("Ratio", quant.getUnit().getName());
     }
 }

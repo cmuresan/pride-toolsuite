@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.Quantitation;
+import uk.ac.ebi.pride.data.core.Quantification;
 import uk.ac.ebi.pride.data.core.QuantitativeSample;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
@@ -32,6 +32,7 @@ import uk.ac.ebi.pride.gui.event.ReferenceSampleChangeEvent;
 import uk.ac.ebi.pride.gui.io.FileExtension;
 import uk.ac.ebi.pride.gui.io.SaveComponentUtils;
 import uk.ac.ebi.pride.gui.io.SaveImageDialog;
+import uk.ac.ebi.pride.gui.utils.Constants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -172,7 +173,7 @@ public class QuantProteinComparisonChart extends DataAccessControllerPane implem
      * Create a popup menu for saving and zoom out the jfreechart
      *
      * @param chartPanel
-     * @return  JPopupMenu
+     * @return JPopupMenu
      */
     private JPopupMenu createPopupMenu(final ChartPanel chartPanel) {
         JPopupMenu popupMenu = new JPopupMenu();
@@ -365,36 +366,46 @@ public class QuantProteinComparisonChart extends DataAccessControllerPane implem
             // get protein accession
             String proteinAcc = controller.getProteinAccession(id);
             // get quantitation data
-            Quantitation quantitation = controller.getProteinQuantData(id);
+            Quantification quantitation = controller.getProteinQuantData(id);
             QuantitativeSample sample = controller.getQuantSample();
             if (referenceSampleIndex < 1) {
                 referenceSampleIndex = controller.getReferenceSubSampleIndex();
             }
             // get reference reagent
-            Double referenceReagentResult = quantitation.getIsotopeLabellingResult(referenceSampleIndex);
-            CvParam referenceReagent = sample.getReagent(referenceSampleIndex);
+            Double referenceReagentResult = quantitation.getMultiSampleIntensity(referenceSampleIndex);
             // get short label for the reagent
-            for (int i = 1; i < QuantitativeSample.MAX_SUB_SAMPLE_SIZE; i++) {
+            for (int i = 1; i <= sample.getNumberOfSubSamples(); i++) {
                 if (referenceSampleIndex != i) {
-                    CvParam reagent = sample.getReagent(i);
-                    if (reagent != null) {
-                        Double reagentResult = quantitation.getIsotopeLabellingResult(i);
-                        double value = (referenceReagentResult == null || reagentResult == null) ? 0 : (reagentResult / referenceReagentResult);
-                        Comparable column = QuantCvTermReference.getReagentShortLabel(reagent)
-                                + "/" + QuantCvTermReference.getReagentShortLabel(referenceReagent);
-                        dataset.addValue(value, proteinAcc, id, column);
-                        java.util.List<Comparable> columns = idMapping.get(id);
-                        if (columns == null) {
-                            columns = new ArrayList<Comparable>();
-                            idMapping.put(id, columns);
-                        }
-                        columns.add(column);
+                    Double reagentResult = quantitation.getMultiSampleIntensity(i);
+                    double value = (referenceReagentResult == null || reagentResult == null) ? 0 : (reagentResult / referenceReagentResult);
+                    Comparable column = getColumn(sample, referenceSampleIndex, i);
+                    dataset.addValue(value, proteinAcc, id, column);
+                    java.util.List<Comparable> columns = idMapping.get(id);
+                    if (columns == null) {
+                        columns = new ArrayList<Comparable>();
+                        idMapping.put(id, columns);
                     }
+                    columns.add(column);
                 }
             }
         } catch (DataAccessException e) {
             logger.error("Failed to retrieve quantitative data", e);
         }
+    }
+
+    private Comparable getColumn(QuantitativeSample sample, int referenceSampleIndex, int sampleIndex) {
+        Comparable column;
+
+        CvParam referenceReagent = sample.getReagent(referenceSampleIndex);
+        CvParam reagent = sample.getReagent(sampleIndex);
+        if (referenceReagent != null && reagent != null) {
+            column = QuantCvTermReference.getReagentShortLabel(reagent)
+                    + Constants.QUANTIFICATION_RATIO_CHAR + QuantCvTermReference.getReagentShortLabel(referenceReagent);
+        } else {
+            column = Constants.SAMPLE + sampleIndex + Constants.QUANTIFICATION_RATIO_CHAR + Constants.SAMPLE + referenceSampleIndex;
+        }
+
+        return column;
     }
 
     /**

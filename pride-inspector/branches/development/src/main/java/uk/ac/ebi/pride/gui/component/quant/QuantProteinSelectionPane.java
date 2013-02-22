@@ -171,12 +171,12 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
 
             // qauntitation methods
             String method = "";
-            Collection<QuantCvTermReference> labelFreeMethods = controller.getProteinLabelFreeQuantMethods();
+            Collection<QuantCvTermReference> labelFreeMethods = controller.getProteinLevelSingleSampleQuantMethods();
             for (QuantCvTermReference labelFreeMethod : labelFreeMethods) {
                 method += labelFreeMethod.getName() + ",";
             }
 
-            Collection<QuantCvTermReference> isotopeLabellingMethods = controller.getProteinIsotopeLabellingQuantMethods();
+            Collection<QuantCvTermReference> isotopeLabellingMethods = controller.getProteinLevelMultiSampleQuantMethods();
             for (QuantCvTermReference isotopeLabellingMethod : isotopeLabellingMethods) {
                 method += isotopeLabellingMethod.getName() + ",";
             }

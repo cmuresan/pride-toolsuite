@@ -1216,7 +1216,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      * @throws DataAccessException data access exception
      */
     @Override
-    public boolean hasProteinQuantData() throws DataAccessException {
+    public boolean hasProteinLevelQuantData() throws DataAccessException {
         logger.debug("Check the present of protein quantification data");
         Collection<QuantCvTermReference> methods = getQuantMethods();
 
@@ -1236,7 +1236,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      * @throws DataAccessException data access exception
      */
     @Override
-    public boolean hasPeptideQuantData() throws DataAccessException {
+    public boolean hasPeptideLevelQuantData() throws DataAccessException {
         logger.debug("Check the present of peptide quantification data");
         Collection<QuantCvTermReference> methods = getQuantMethods();
 
@@ -1256,7 +1256,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      * @throws DataAccessException data access exception
      */
     @Override
-    public boolean hasProteinTotalIntensities() throws DataAccessException {
+    public boolean hasProteinLevelTotalIntensities() throws DataAccessException {
         logger.debug("Check the present of protein total intensities");
         return getProteinQuantUnit() == null;
     }
@@ -1268,19 +1268,19 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      * @throws DataAccessException data access exception
      */
     @Override
-    public boolean hasPeptideTotalIntensities() throws DataAccessException {
+    public boolean hasPeptideLevelTotalIntensities() throws DataAccessException {
         logger.debug("Check the present of total intensities at the peptide level");
         return getPeptideQuantUnit() == null;
     }
 
     /**
-     * Check whether label free methods have been used
+     * Check whether single sample methods have been used
      *
      * @return boolean true means there are label free methods
      * @throws DataAccessException data access exception
      */
     @Override
-    public boolean hasLabelFreeQuantMethods() throws DataAccessException {
+    public boolean hasSingleSampleQuantMethods() throws DataAccessException {
         logger.debug("Check the present of label free quantification methods");
         // get the samples
         ParamGroup additionals = getAdditional();
@@ -1289,7 +1289,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
             for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isLabelFreeMethod(cvParam)) {
+                if (QuantCvTermReference.isSingleSampleMethod(cvParam)) {
                     return true;
                 }
             }
@@ -1299,13 +1299,13 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
-     * Check whether isotope labelling methods have been used
+     * Check whether multiple sample methods have been used
      *
      * @return boolean true means isotope labelling methods present
      * @throws DataAccessException data access exception
      */
     @Override
-    public boolean hasIsotopeLabellingQuantMethods() throws DataAccessException {
+    public boolean hasMultiSampleQuantMethods() throws DataAccessException {
         logger.debug("Check the present of isotope labelling quantification methods");
         // get the samples
         ParamGroup additionals = getAdditional();
@@ -1314,7 +1314,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
             for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
+                if (QuantCvTermReference.isMultiSampleMethod(cvParam)) {
                     return true;
                 }
             }
@@ -1341,8 +1341,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
             for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isQuantitativeMethodParam(cvParam)) {
-                    methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
+                if (QuantCvTermReference.isQuantificationMethod(cvParam)) {
+                    methods.add(QuantCvTermReference.getQuantificationMethod(cvParam));
                 }
             }
         }
@@ -1351,13 +1351,13 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
-     * Get a collection of all the label free methods used
+     * Get a collection of all the single sample methods used
      *
-     * @return Collection<QuantCvTermReference>    a collection of label free methods
+     * @return Collection<QuantCvTermReference>    a collection of single sample methods
      * @throws DataAccessException data access exception
      */
     @Override
-    public Collection<QuantCvTermReference> getLabelFreeQuantMethods() throws DataAccessException {
+    public Collection<QuantCvTermReference> getSingleSampleQuantMethods() throws DataAccessException {
         logger.debug("Get a list of label free quantification methods");
         Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
 
@@ -1368,8 +1368,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
             for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isLabelFreeMethod(cvParam)) {
-                    methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
+                if (QuantCvTermReference.isSingleSampleMethod(cvParam)) {
+                    methods.add(QuantCvTermReference.getQuantificationMethod(cvParam));
                 }
             }
         }
@@ -1378,15 +1378,15 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
-     * Get all the label free methods used at the protein identification level
+     * Get all the single sample methods used at the protein identification level
      *
-     * @return Collection<QuantCvTermReference>    a collection of label free methods
+     * @return Collection<QuantCvTermReference>    a collection of single sample methods
      * @throws DataAccessException data access exception
      */
     @Override
-    public Collection<QuantCvTermReference> getProteinLabelFreeQuantMethods() throws DataAccessException {
+    public Collection<QuantCvTermReference> getProteinLevelSingleSampleQuantMethods() throws DataAccessException {
         logger.debug("Get a list of label free quantification methods at the protein level");
-        Collection<QuantCvTermReference> methods = getLabelFreeQuantMethods();
+        Collection<QuantCvTermReference> methods = getSingleSampleQuantMethods();
         Collection<QuantCvTermReference> protMethods = new ArrayList<QuantCvTermReference>();
 
         for (QuantCvTermReference method : methods) {
@@ -1399,15 +1399,15 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
-     * Get all the label free methods used at the peptide identification level
+     * Get all the single sample methods used at the peptide identification level
      *
-     * @return Collection<QuantCvTermReference>    a collection of label free methods
+     * @return Collection<QuantCvTermReference>    a collection of single sample methods
      * @throws DataAccessException data access exception
      */
     @Override
-    public Collection<QuantCvTermReference> getPeptideLabelFreeQuantMethods() throws DataAccessException {
+    public Collection<QuantCvTermReference> getPeptideLevelSingleSampleQuantMethods() throws DataAccessException {
         logger.debug("Get a list of label free quantification methods at the peptide level");
-        Collection<QuantCvTermReference> methods = getLabelFreeQuantMethods();
+        Collection<QuantCvTermReference> methods = getSingleSampleQuantMethods();
         Collection<QuantCvTermReference> peptideMethods = new ArrayList<QuantCvTermReference>();
 
         for (QuantCvTermReference method : methods) {
@@ -1420,13 +1420,13 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
-     * Get all the isotope labelling methods used
+     * Get all the multiple sample methods used
      *
-     * @return Collection<QuantCvTermReference>    a collection of isotope labelling methods
+     * @return Collection<QuantCvTermReference>    a collection of multiple sample methods
      * @throws DataAccessException data access exception
      */
     @Override
-    public Collection<QuantCvTermReference> getIsotopeLabellingQuantMethods() throws DataAccessException {
+    public Collection<QuantCvTermReference> getMultiSampleQuantMethods() throws DataAccessException {
         logger.debug("Get a list of isotope labelling quantification methods");
         Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
 
@@ -1437,8 +1437,8 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
             for (CvParam cvParam : cvParams) {
-                if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
-                    methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
+                if (QuantCvTermReference.isMultiSampleMethod(cvParam)) {
+                    methods.add(QuantCvTermReference.getQuantificationMethod(cvParam));
                 }
             }
         }
@@ -1447,15 +1447,15 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
-     * Get protein identification level isotope labelling methods
+     * Get protein identification level multiple sample methods
      *
-     * @return Collection<QuantCvTermReference>    a collection of isotope labelling methods
+     * @return Collection<QuantCvTermReference>    a collection of multiple sample methods
      * @throws DataAccessException data access exception
      */
     @Override
-    public Collection<QuantCvTermReference> getProteinIsotopeLabellingQuantMethods() throws DataAccessException {
+    public Collection<QuantCvTermReference> getProteinLevelMultiSampleQuantMethods() throws DataAccessException {
         logger.debug("Get a list of isotope labelling quantification methods at the protein level");
-        Collection<QuantCvTermReference> methods = getIsotopeLabellingQuantMethods();
+        Collection<QuantCvTermReference> methods = getMultiSampleQuantMethods();
         Collection<QuantCvTermReference> protMethods = new ArrayList<QuantCvTermReference>();
 
         for (QuantCvTermReference method : methods) {
@@ -1468,15 +1468,15 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
     }
 
     /**
-     * Get peptide identification level isotope labelling methods
+     * Get peptide identification level multiple sample methods
      *
-     * @return Collection<QuantCvTermReference>    a collection of isotope labelling methods
+     * @return Collection<QuantCvTermReference>    a collection of multiple sample methods
      * @throws DataAccessException data access exception
      */
     @Override
-    public Collection<QuantCvTermReference> getPeptideIsotopeLabellingQuantMethods() throws DataAccessException {
+    public Collection<QuantCvTermReference> getPeptideLevelMultiSampleQuantMethods() throws DataAccessException {
         logger.debug("Get a list isotope labelling quantification methods at the peptide level");
-        Collection<QuantCvTermReference> methods = getIsotopeLabellingQuantMethods();
+        Collection<QuantCvTermReference> methods = getMultiSampleQuantMethods();
         Collection<QuantCvTermReference> peptideMethods = new ArrayList<QuantCvTermReference>();
 
         for (QuantCvTermReference method : methods) {
@@ -1499,7 +1499,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         logger.debug("Get number of reagents");
         int num = 0;
 
-        if (hasIsotopeLabellingQuantMethods()) {
+        if (hasMultiSampleQuantMethods()) {
             // get samples
             Collection<Sample> samples = getSamples();
 
@@ -1529,13 +1529,13 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         logger.debug("Get reference sample index");
         int index = -1;
 
-        if (hasIsotopeLabellingQuantMethods()) {
+        if (hasMultiSampleQuantMethods()) {
             int cnt = NUMBER_OF_PROTEIN_TO_CHECK;
-            if (hasProteinQuantData()) {
+            if (hasProteinLevelQuantData()) {
                 Collection<Comparable> identIds = getIdentificationIds();
 
                 for (Comparable identId : identIds) {
-                    Quantitation quant = getProteinQuantData(identId);
+                    Quantification quant = getProteinQuantData(identId);
                     if (quant.hasTotalIntensities()) {
                         return index;
                     } else {
@@ -1549,13 +1549,13 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
                         break;
                     }
                 }
-            } else if (hasPeptideQuantData()) {
+            } else if (hasPeptideLevelQuantData()) {
                 Collection<Comparable> identIds = getIdentificationIds();
 
                 for (Comparable identId : identIds) {
                     Collection<Comparable> peptideIds = getPeptideIds(identId);
                     for (Comparable peptideId : peptideIds) {
-                        Quantitation quant = getPeptideQuantData(identId, peptideId);
+                        Quantification quant = getPeptideQuantData(identId, peptideId);
                         if (quant.hasTotalIntensities()) {
                             return index;
                         } else {
@@ -1633,7 +1633,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         int cnt = NUMBER_OF_PROTEIN_TO_CHECK;
 
         for (Comparable identId : identIds) {
-            Quantitation quant = getProteinQuantData(identId);
+            Quantification quant = getProteinQuantData(identId);
             QuantCvTermReference unit = quant.getUnit();
             cnt--;
             if (unit != null) {
@@ -1665,7 +1665,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
         for (Comparable identId : identIds) {
             Collection<Comparable> peptideIds = getPeptideIds(identId);
             for (Comparable peptideId : peptideIds) {
-                Quantitation quant = getPeptideQuantData(identId, peptideId);
+                Quantification quant = getPeptideQuantData(identId, peptideId);
                 QuantCvTermReference unit = quant.getUnit();
                 if (unit != null) {
                     return unit;
@@ -1688,10 +1688,10 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      * @throws DataAccessException data access exception
      */
     @Override
-    public Quantitation getProteinQuantData(Comparable identId) throws DataAccessException {
+    public Quantification getProteinQuantData(Comparable identId) throws DataAccessException {
         logger.debug("Get protein quantification: {}", identId);
         Identification ident = getIdentificationById(identId);
-        return new Quantitation(Quantitation.Type.PROTEIN, ident.getCvParams());
+        return new Quantification(Quantification.Type.PROTEIN, ident.getCvParams());
     }
 
     /**
@@ -1703,10 +1703,10 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper
      * @throws DataAccessException data access exception
      */
     @Override
-    public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public Quantification getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
         logger.debug("Get peptide quantification: {}-{}", identId, peptideId);
         Peptide peptide = getPeptideById(identId, peptideId);
-        return new Quantitation(Quantitation.Type.PEPTIDE, peptide.getCvParams());
+        return new Quantification(Quantification.Type.PEPTIDE, peptide.getCvParams());
     }
 
     @Override

@@ -1030,22 +1030,22 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public Quantitation getProteinQuantData(Comparable identId) throws DataAccessException {
+    public Quantification getProteinQuantData(Comparable identId) throws DataAccessException {
         ParamGroup paramGroup = (ParamGroup) getCache().get(CacheCategory.IDENTIFICATION_TO_PARAM, identId);
 
         if (paramGroup != null) {
-            return new Quantitation(Quantitation.Type.PROTEIN, paramGroup.getCvParams());
+            return new Quantification(Quantification.Type.PROTEIN, paramGroup.getCvParams());
         }
 
         return null;
     }
 
     @Override
-    public Quantitation getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public Quantification getPeptideQuantData(Comparable identId, Comparable peptideId) throws DataAccessException {
         ParamGroup paramGroup = (ParamGroup) getCache().get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
 
         if (paramGroup != null) {
-            return new Quantitation(Quantitation.Type.PEPTIDE, paramGroup.getCvParams());
+            return new Quantification(Quantification.Type.PEPTIDE, paramGroup.getCvParams());
         }
 
         return null;

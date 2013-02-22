@@ -33,7 +33,8 @@ public class DatabaseSearchTableModel extends ListTableModel<List<Object>> {
         NUMBER_OF_PROTEIN("#Proteins", "Number of proteins"),
         NUMBER_OF_PEPTIDE("#Peptides", "Number of peptides"),
         REFERENCE("Reference", "Full Reference Line"),
-        PUBMED_ID("PubMed ID", "PubMed ID");
+        PUBMED_ID("PubMed ID", "PubMed ID"),
+        OTHER_IDENTIFIER("Other identifier", "Other identifier");
 
         private final String header;
         private final String toolTip;

@@ -94,6 +94,7 @@ public interface Constants {
     /**
      * Quantification
      */
+    public static final String SAMPLE = "Sample";
     public static final String QUANTIFICATION_RATIO_CHAR = "/";
 
     /**

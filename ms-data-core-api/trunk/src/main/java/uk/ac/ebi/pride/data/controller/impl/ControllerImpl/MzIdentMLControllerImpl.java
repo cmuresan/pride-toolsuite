@@ -870,13 +870,14 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     @Override
     public int getNumberOfSpectra() throws DataAccessException {
         int numberOfSpectra = 0;
-        for(Comparable idMsFile: msDataAccessControllers.keySet()){
-            if(msDataAccessControllers.get(idMsFile) != null){
-                numberOfSpectra += msDataAccessControllers.get(idMsFile).getNumberOfSpectra();
+        if(msDataAccessControllers != null && msDataAccessControllers.size()>0){
+            for(Comparable idMsFile: msDataAccessControllers.keySet()){
+                if(msDataAccessControllers.get(idMsFile) != null){
+                    numberOfSpectra += msDataAccessControllers.get(idMsFile).getNumberOfSpectra();
+                }
             }
         }
         return numberOfSpectra;
-
     }
 
     @Override

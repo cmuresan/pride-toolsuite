@@ -4,6 +4,7 @@
 
 package uk.ac.ebi.pride.gui.component.mzidentml;
 
+import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -16,10 +17,12 @@ import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
+import uk.ac.ebi.pride.gui.component.report.RemovalReportMessage;
 import uk.ac.ebi.pride.gui.component.report.ReportList;
 import uk.ac.ebi.pride.gui.component.report.RoundCornerLabel;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
+import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 import uk.ac.ebi.pride.gui.task.impl.OpenFileTask;
 import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
@@ -38,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author User #2
@@ -54,8 +58,6 @@ public class SimpleMsDialog extends JDialog {
 
     Map<SpectraData, File> msFileMap = null;
 
-    private ReportList container;
-
     private static final int DEFAULT_HEIGHT = 30;
     private static final int START_ALPHA = 100;
     private static final int STOP_ALPHA = 150;
@@ -63,6 +65,8 @@ public class SimpleMsDialog extends JDialog {
     private static final String WARNING = "spectra missing";
     private static final String TOTAL_SPECTRUMS = "All Spectrums Found";
     private static final String COLUMN_HEADER_REMOVE = "Remove";
+    private String message;
+    private SummaryReportMessage.Type type;
 
 
     public SimpleMsDialog(Frame owner, DataAccessController controller) {
@@ -177,8 +181,8 @@ public class SimpleMsDialog extends JDialog {
                 updateTableRow(row, spectraData, msFileName);
                 noMissSpectrums =+ ((msFileMap.get(spectraData) == null)?0:msSpectrums);
             }
-            String message = getMessage(msFileMap, totalSpectras - noMissSpectrums);
-            SummaryReportMessage.Type type = getMessageType(msFileMap,totalSpectras-noMissSpectrums);
+            message = getMessage(msFileMap, totalSpectras - noMissSpectrums);
+            type = getMessageType(msFileMap,totalSpectras-noMissSpectrums);
             updateMessage(type,message);
             updateStatusSet(noMissSpectrums);
             updateButtonStatus(type);
@@ -206,8 +210,8 @@ public class SimpleMsDialog extends JDialog {
                 totalSpectras =+ countFile;
                 noMissSpectrums =+ ((spectraDataFileMap.get(spectraData) == null)?0:countFile);
             }
-            String message = getMessage(spectraDataFileMap, totalSpectras - noMissSpectrums);
-            SummaryReportMessage.Type type = getMessageType(spectraDataFileMap,totalSpectras-noMissSpectrums);
+            message = getMessage(spectraDataFileMap, totalSpectras - noMissSpectrums);
+            type = getMessageType(spectraDataFileMap,totalSpectras-noMissSpectrums);
             updateMessage(type,message);
             updateButtonStatus(type);
             updateStatusSet(noMissSpectrums);
@@ -267,6 +271,7 @@ public class SimpleMsDialog extends JDialog {
 
     private void setMSFilesActionPerformed(ActionEvent e) {
         try {
+
             ((MzIdentMLControllerImpl)controller).addMSController(msFileMap);
             ControllerContentPane contentPane = (ControllerContentPane) context.getDataContentPane(controller);
 
@@ -283,15 +288,13 @@ public class SimpleMsDialog extends JDialog {
             PeptideTabPane peptideContentPane = contentPane.getPeptideTabPane();
             peptideContentPane.getVizTabPane().addSpectrumViewPane();
             contentPane.populate();
-            /*for(File selectedFile: msFileMap.values()){
-                String msg = "Opening " + selectedFile.getName();
-                OpenFileTask newTask = new OpenFileTask(selectedFile, MzIdentMLUtils.getFileType(selectedFile), msg, msg);
-                // set task's gui blocker
-                newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-                // add task listeners
-                // ToDo: this why we need a singleton DesktopContext
-                uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(newTask);
-            } */
+
+            //context.replaceDataAccessController(controller,controller,true);
+            EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile("Spectra not found.*"))));
+            EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile("Missing spectra.*"))));
+            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(type, message, message)));
+            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Spectra found", "This data source contains spectra")));
+
 
 
         } catch (DataAccessException e1) {

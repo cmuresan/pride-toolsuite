@@ -252,26 +252,37 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
             }
         }
         // Open all mzIdentML Files
-        for(File mzIdentML: mzIdentMLFiles.keySet()){
 
-            if(mzIdentMLFiles.get(mzIdentML) != null && mzIdentMLFiles.get(mzIdentML).size() > 0){
-
+        if(mzIdentMLFiles != null){
+            for(File mzIdentML: mzIdentMLFiles.keySet()){
                 String msg = "Opening " + mzIdentML.getName();
 
-                OpenFileTask newTask = new OpenFileTask(mzIdentML, mzIdentMLFiles.get(mzIdentML), openFiles.get(mzIdentML), msg, msg);
-                // set task's gui blocker
-                newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-                // add task listeners
-                // ToDo: this why we need a singleton DesktopContext
-                Desktop.getInstance().getDesktopContext().addTask(newTask);
-            }
+                if(mzIdentMLFiles.get(mzIdentML) != null && mzIdentMLFiles.get(mzIdentML).size() > 0){
 
+                    OpenFileTask newTask = new OpenFileTask(mzIdentML, mzIdentMLFiles.get(mzIdentML), openFiles.get(mzIdentML), msg, msg);
+                    // set task's gui blocker
+                    newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
+                    // add task listeners
+                    // ToDo: this why we need a singleton DesktopContext
+                    Desktop.getInstance().getDesktopContext().addTask(newTask);
+                }else{
+
+                    OpenFileTask newTask = new OpenFileTask(mzIdentML, openFiles.get(mzIdentML), msg, msg);
+                    // set task's gui blocker
+                    newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
+                    // add task listeners
+                    // ToDo: this why we need a singleton DesktopContext
+                    Desktop.getInstance().getDesktopContext().addTask(newTask);
+
+                }
+            }
         }
 
         // Open the rest of the selected files
         for (File selectedFile : openFiles.keySet()) {
             String msg = "Opening " + selectedFile.getName();
-            if(openFiles.get(selectedFile) != MzIdentMLControllerImpl.class){
+            if( mzIdentMLFiles == null || !mzIdentMLFiles.containsKey(selectedFile)){
+
                 OpenFileTask newTask = new OpenFileTask(selectedFile, openFiles.get(selectedFile), msg, msg);
                 // set task's gui blocker
                 newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));

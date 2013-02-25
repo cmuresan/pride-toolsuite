@@ -30,6 +30,7 @@ import java.awt.*;
  * Time: 10:58:28
  */
 public class CentralContentPane extends JPanel {
+
     private static final Logger logger = LoggerFactory.getLogger(CentralContentPane.class);
 
     private boolean locked = false;
@@ -121,6 +122,7 @@ public class CentralContentPane extends JPanel {
             dataContentPane = new ControllerContentPane(controller);
             inspectorContext.addDataContentPane(controller, dataContentPane);
         }
+
         return dataContentPane;
     }
 

@@ -59,4 +59,8 @@ public class SummaryReportViewer extends JPanel{
             currentController = controller;
         }
     }
+
+    public ReportList getContainer() {
+        return container;
+    }
 }

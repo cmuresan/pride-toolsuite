@@ -179,7 +179,7 @@ public class LeftControlPane extends JPanel {
         dataSourceLabel.setToolTipText(dataSourceToolTip);
 
         // experiment tree viewer
-        SummaryReportViewer summaryReportViewer = new SummaryReportViewer();
+        summaryReportViewer = new SummaryReportViewer();
         summaryReportViewer.setBorder(new DropShadowBorder(Color.DARK_GRAY, 5));
         summaryPanel.add(summaryReportViewer, BorderLayout.CENTER);
 
@@ -208,5 +208,14 @@ public class LeftControlPane extends JPanel {
     private JLabel summaryLabel;
     private JPanel summaryPanel;
     private JPanel launchMenuPanel;
+    private SummaryReportViewer summaryReportViewer;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+
+    public void setSummaryReportViewer(SummaryReportViewer summaryReportViewer) {
+        this.summaryReportViewer = summaryReportViewer;
+    }
+
+    public SummaryReportViewer getSummaryReportViewer() {
+        return summaryReportViewer;
+    }
 }

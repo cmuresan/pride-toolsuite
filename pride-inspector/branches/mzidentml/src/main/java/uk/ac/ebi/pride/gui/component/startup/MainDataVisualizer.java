@@ -35,6 +35,10 @@ public class MainDataVisualizer extends JPanel implements PropertyChangeListener
      */
     private PrideInspectorContext context;
 
+    private  LeftControlPane dataSourceBrowser;
+
+
+
     public MainDataVisualizer() {
         // setup the main pane
         setupMainPane();
@@ -60,7 +64,7 @@ public class MainDataVisualizer extends JPanel implements PropertyChangeListener
     private void addComponents() {
 
         // data source browser
-        LeftControlPane dataSourceBrowser = new LeftControlPane();
+        dataSourceBrowser = new LeftControlPane();
 
         // central pane
         CentralContentPane dataContentBrowser = new CentralContentPane();

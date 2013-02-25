@@ -238,7 +238,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
                     if (spectrum != null) {
 
                         // ToDo: the spectrum is a Comparable not an Integer!!
-                        int spectrumID = (Integer) spectrum.getId();
+                        int spectrumID = Integer.parseInt(spectrum.getId().toString());
 
                         pp = new ProteinPeptide(spectrumID, identification_id, seq, ptmMass);
                     } else {

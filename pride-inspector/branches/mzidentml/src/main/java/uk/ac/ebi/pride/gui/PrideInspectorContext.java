@@ -52,6 +52,12 @@ public class PrideInspectorContext extends DesktopContext {
     private final Map<DataAccessController, JComponent> dataContentPaneCache;
 
     /**
+     * This map maintains a reference between DataAccessController and its Summary pane
+     */
+
+    private final Map<DataAccessController, JComponent> dataSummaryPaneCache;
+
+    /**
      * This map maintains a reference between DataAccessController and its action
      */
     private final Map<DataAccessController, Map<Class<? extends PrideAction>, PrideAction>> sharedActionCache;
@@ -100,6 +106,9 @@ public class PrideInspectorContext extends DesktopContext {
 
         // data content pane cache
         this.dataContentPaneCache = Collections.synchronizedMap(new HashMap<DataAccessController, JComponent>());
+
+        // data summary pane cache
+        this.dataSummaryPaneCache = Collections.synchronizedMap(new HashMap<DataAccessController, JComponent>());
 
         // action map
         this.sharedActionCache = Collections.synchronizedMap(new HashMap<DataAccessController, Map<Class<? extends PrideAction>, PrideAction>>());
@@ -227,6 +236,26 @@ public class PrideInspectorContext extends DesktopContext {
     }
 
     /**
+     * Remove summary report
+     * <p/>
+     * This method will close data access controller, it will also stop all ongoing tasks related to this
+     * data access controller.
+     *
+     * @param controller  data access controller
+     */
+    public final synchronized void replaceSummaryReport(DataAccessController controller, DataAccessController replacement) {
+        // remove summary report
+        summaryReportTracker.remove(controller);
+        // add new summary report for the new data access controller
+        getSummaryReportModel(replacement);
+
+
+
+    }
+
+
+
+    /**
      * Replace one data access controller with another.
      *
      * @param original    original data access controller
@@ -296,6 +325,18 @@ public class PrideInspectorContext extends DesktopContext {
     }
 
     /**
+     * Get summary pane created using the input data access controller
+     * <p/>
+     * Delegate method
+     *
+     * @param controller data access controller
+     * @return JComponent   DataContentDisplayPane
+     */
+    public final synchronized JComponent getSummaryPane(DataAccessController controller) {
+        return dataSummaryPaneCache.get(controller);
+    }
+
+    /**
      * Cache a content display pane for a data access controller
      * <p/>
      * Delegate method
@@ -305,6 +346,18 @@ public class PrideInspectorContext extends DesktopContext {
      */
     public final void addDataContentPane(DataAccessController controller, JComponent component) {
         dataContentPaneCache.put(controller, component);
+    }
+
+    /**
+     * Cache a content display summary for a data access controller
+     * <p/>
+     * Delegate method
+     *
+     * @param controller data access controller
+     * @param component  summary pane
+     */
+    public final void addSummaryContentPane(DataAccessController controller, JComponent component) {
+        dataSummaryPaneCache.put(controller, component);
     }
 
     /**

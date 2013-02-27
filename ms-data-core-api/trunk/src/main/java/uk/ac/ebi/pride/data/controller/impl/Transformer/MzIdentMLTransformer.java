@@ -1,8 +1,29 @@
 package uk.ac.ebi.pride.data.controller.impl.Transformer;
 
 
+import uk.ac.ebi.jmzidml.model.mzidml.*;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.core.AbstractContact;
+import uk.ac.ebi.pride.data.core.CvParam;
+import uk.ac.ebi.pride.data.core.DBSequence;
+import uk.ac.ebi.pride.data.core.Enzyme;
+import uk.ac.ebi.pride.data.core.Filter;
+import uk.ac.ebi.pride.data.core.MassTable;
+import uk.ac.ebi.pride.data.core.Modification;
+import uk.ac.ebi.pride.data.core.Organization;
+import uk.ac.ebi.pride.data.core.Peptide;
+import uk.ac.ebi.pride.data.core.PeptideEvidence;
+import uk.ac.ebi.pride.data.core.Person;
+import uk.ac.ebi.pride.data.core.Provider;
+import uk.ac.ebi.pride.data.core.Sample;
+import uk.ac.ebi.pride.data.core.SearchModification;
+import uk.ac.ebi.pride.data.core.SourceFile;
+import uk.ac.ebi.pride.data.core.SpectraData;
+import uk.ac.ebi.pride.data.core.SpectrumIdentification;
+import uk.ac.ebi.pride.data.core.SpectrumIdentificationProtocol;
+import uk.ac.ebi.pride.data.core.SubstitutionModification;
+import uk.ac.ebi.pride.data.core.UserParam;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.*;
@@ -706,15 +727,19 @@ public class MzIdentMLTransformer {
             Software analysisSoftware = transformToSoftware(oldProtocol.getAnalysisSoftware());
             ParamGroup threshold = new ParamGroup(transformToCvParam(oldProtocol.getThreshold().getCvParam()), transformToUserParam(oldProtocol.getThreshold().getUserParam()));
             ParamGroup searchType = new ParamGroup(transformToCvParam(oldProtocol.getSearchType().getCvParam()), transformToUserParam(oldProtocol.getSearchType().getUserParam()));
-            boolean enzymeIndependent = (oldProtocol.getEnzymes().isIndependent() == null) ? false : oldProtocol.getEnzymes().isIndependent();
-            List<Enzyme> enzymeList = transformToEnzyme(oldProtocol.getEnzymes().getEnzyme());
+            boolean enzymeIndependent = (oldProtocol.getEnzymes() == null || oldProtocol.getEnzymes().isIndependent() == null) ? false : oldProtocol.getEnzymes().isIndependent();
+            List<uk.ac.ebi.jmzidml.model.mzidml.Enzyme> enzymes = (oldProtocol.getEnzymes() != null)? oldProtocol.getEnzymes().getEnzyme(): null;
+            List<Enzyme> enzymeList = transformToEnzyme(enzymes);
             List<CvParam> fragmentTolerance = (oldProtocol.getFragmentTolerance() != null) ? transformToCvParam(oldProtocol.getFragmentTolerance().getCvParam()) : null;
             List<CvParam> parentTolerance = (oldProtocol.getParentTolerance() != null) ? transformToCvParam(oldProtocol.getParentTolerance().getCvParam()) : null;
             List<Filter> filterList = (oldProtocol.getDatabaseFilters() != null) ? transformToFilter(oldProtocol.getDatabaseFilters().getFilter()) : null;
             DataBaseTranslation dataBaseTranslation = transformToDataBaseTranslation(oldProtocol.getDatabaseTranslation());
-            List<SearchModification> searchModificationList = transformToSearchModification(oldProtocol.getModificationParams().getSearchModification());
+            List<uk.ac.ebi.jmzidml.model.mzidml.SearchModification> modifications = (oldProtocol.getModificationParams() != null)? oldProtocol.getModificationParams().getSearchModification():null;
+            List<SearchModification> searchModificationList = transformToSearchModification(modifications);
             List<MassTable> massTableList = transformToMassTable(oldProtocol.getMassTable());
-            spectrumIdentificationProtocol = new SpectrumIdentificationProtocol(new ParamGroup(transformToCvParam(oldProtocol.getAdditionalSearchParams().getCvParam()), transformToUserParam(oldProtocol.getAdditionalSearchParams().getUserParam())), oldProtocol.getId(), oldProtocol.getName(), analysisSoftware, threshold, searchType, searchModificationList, enzymeIndependent, enzymeList, massTableList, fragmentTolerance, parentTolerance, filterList, dataBaseTranslation);
+            List<uk.ac.ebi.jmzidml.model.mzidml.CvParam> oldCvParam = (oldProtocol.getAdditionalSearchParams() != null) ? oldProtocol.getAdditionalSearchParams().getCvParam():null;
+            List<uk.ac.ebi.jmzidml.model.mzidml.UserParam> oldUserParam = (oldProtocol.getAdditionalSearchParams() != null) ? oldProtocol.getAdditionalSearchParams().getUserParam():null;
+            spectrumIdentificationProtocol = new SpectrumIdentificationProtocol(new ParamGroup(transformToCvParam(oldCvParam), transformToUserParam(oldUserParam)), oldProtocol.getId(), oldProtocol.getName(), analysisSoftware, threshold, searchType, searchModificationList, enzymeIndependent, enzymeList, massTableList, fragmentTolerance, parentTolerance, filterList, dataBaseTranslation);
         }
         return spectrumIdentificationProtocol;
     }

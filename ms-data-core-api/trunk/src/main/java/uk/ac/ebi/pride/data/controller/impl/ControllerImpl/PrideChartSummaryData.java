@@ -224,9 +224,9 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
 
                     for (Modification modification : pep.getPeptideSequence().getModificationList()) {
                         try {
-                            ptmMass += (modification.getMonoisotopicMassDelta().size() > 0)
+                            ptmMass += (modification.getMonoisotopicMassDelta() != null && modification.getMonoisotopicMassDelta().size() > 0)
                                     ? modification.getMonoisotopicMassDelta().get(0)
-                                    : modification.getAvgMassDelta().get(0);
+                                    : (modification.getAvgMassDelta() !=null && modification.getAvgMassDelta().size()>0)?modification.getAvgMassDelta().get(0):0.0;
                         } catch (IndexOutOfBoundsException e) { /* Nothing here */
                         }
                     }

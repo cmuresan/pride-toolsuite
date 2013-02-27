@@ -45,9 +45,11 @@ public class PeptideIdentificationMetadataPanel extends JPanel{
         // Enzyme
         List<Enzyme> enzymeList = peptideProtocol.getEnzymeList();
         ParamGroup enzymeParamGroup = new ParamGroup();
-        for (Enzyme enzyme: enzymeList){
-            if(enzyme.getEnzymeName().getCvParams() !=null) enzymeParamGroup.addCvParams(enzyme.getEnzymeName().getCvParams());
-            if(enzyme.getEnzymeName().getUserParams() !=null) enzymeParamGroup.addUserParams(enzyme.getEnzymeName().getUserParams());
+        if(enzymeList != null){
+            for (Enzyme enzyme: enzymeList){
+                if(enzyme.getEnzymeName().getCvParams() !=null) enzymeParamGroup.addCvParams(enzyme.getEnzymeName().getCvParams());
+                if(enzyme.getEnzymeName().getUserParams() !=null) enzymeParamGroup.addUserParams(enzyme.getEnzymeName().getUserParams());
+            }
         }
 
         if (enzymeParamGroup != null) {

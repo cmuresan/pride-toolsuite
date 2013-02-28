@@ -303,7 +303,7 @@ public class MzIdentMLTransformer {
                                                     uk.ac.ebi.jmzidml.model.mzidml.DBSequence oldDbSequence,
                                                     List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> spectrumIdentificationItemList,
                                                     uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
-        Protein ident = null;
+        Protein ident;
 
         if (FragmentationTable == null) {
             FragmentationTable = transformToFragmentationTable(oldFragmentationTable);
@@ -446,7 +446,7 @@ public class MzIdentMLTransformer {
                     boolean found = false;
                     int j = 0;
                     while ((!found) && (j < listIds.size())) {
-                        if (ionType.getIndex().get(i) == listIds.get(j)) {
+                        if (ionType.getIndex().get(i).equals(listIds.get(j))) {
                             found = true;
                         }
                         j++;

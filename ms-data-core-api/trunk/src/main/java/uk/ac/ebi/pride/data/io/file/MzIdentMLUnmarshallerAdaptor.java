@@ -90,7 +90,6 @@ public class MzIdentMLUnmarshallerAdaptor {
     }
 
     public int getNumIdentifiedPeptides() throws ConfigurationException, JAXBException {
-        int total = 0;
         Set<String> listIDs = unmarshaller.getIDsForElement(MzIdentMLElement.SpectrumIdentificationItem);
         return listIDs.size();
     }
@@ -128,8 +127,7 @@ public class MzIdentMLUnmarshallerAdaptor {
          */
         Date dateCreation = null;
         if(properties.containsKey("creationDate")){
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");
-                Calendar calendar = javax.xml.bind.DatatypeConverter.parseDateTime(properties.get("creationDate"));
+            Calendar calendar = javax.xml.bind.DatatypeConverter.parseDateTime(properties.get("creationDate"));
                 dateCreation = calendar.getTime();
         }
         return dateCreation;
@@ -228,7 +226,6 @@ public class MzIdentMLUnmarshallerAdaptor {
     }
 
     public Map<Comparable,String[]> getSpectrumIdentificationsbySpectrumResult(Comparable id) throws JAXBException {
-        ArrayList<SpectrumIdentificationItem> spectrumIdentificationItems = null;
         SpectrumIdentificationResult results  = unmarshaller.unmarshal(SpectrumIdentificationResult.class, (String) id);
         Map<Comparable, String[]> spectrumIds = new HashMap<Comparable, String[]>(results.getSpectrumIdentificationItem().size());
         for(SpectrumIdentificationItem idSpectrumItem: results.getSpectrumIdentificationItem()){

@@ -391,7 +391,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
             paramGroup = fileContent;
         }
         Date dateCreation = unmarshaller.getCreationDate();
-        if(dateCreation != null){
+        if(dateCreation != null && paramGroup != null){
             paramGroup.addCvParam(MzMLTransformer.transformDateToCvParam(dateCreation));
 
         }

@@ -56,11 +56,14 @@ public class MzXmlUnmarshallerAdaptor {
         List<Software> softwares = null;
         List<MsInstrument> msInstruments     = unmarshaller.getMsInstrument();
         List<DataProcessing> dataProcessings = unmarshaller.getDataProcessing();
-        if((msInstruments != null && msInstruments.size() !=0) || (dataProcessings != null && dataProcessings.size() !=0)){
+        if((msInstruments != null && msInstruments.size() !=0)){
             softwares = new ArrayList<Software>();
             for(MsInstrument msInstrument: msInstruments){
                 softwares.add(msInstrument.getSoftware());
             }
+        }
+        if((dataProcessings != null && dataProcessings.size() !=0)){
+            if (softwares == null) softwares = new ArrayList<Software>();
             for(DataProcessing dataProcessing: dataProcessings){
                 softwares.add(dataProcessing.getSoftware());
             }

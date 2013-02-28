@@ -147,8 +147,8 @@ public interface ProteinDataAccess {
     /**
      * Get protein identification score
      *
-     * @param proteinId
-     * @return
+     * @param proteinId   Protein Id
+     * @return  Protein Score List
      * @throws DataAccessException
      */
     public Score getProteinScores(Comparable proteinId) throws DataAccessException;
@@ -190,7 +190,7 @@ public interface ProteinDataAccess {
     /**
      * get a list of present protein scores in CV terms
      *
-     * @return
+     * @return List of Protein Scores in CvTerm
      * @throws DataAccessException
      */
     public Collection<CvTermReference> getProteinCvTermReferenceScores() throws  DataAccessException;

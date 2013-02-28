@@ -474,8 +474,9 @@ public enum QuantCvTermReference {
     /**
      * Checks whether the passed quantification method
      * contains peptide quantification values
+     * Quatitation Methods (O18, AQUA, ICAT, ICPL, SILAC, TMT, ITRAQ,TIC)
      *
-     * @return
+     * @return return true if the quantitation method is supported
      */
     public static boolean containsPeptideQuantification(QuantCvTermReference cvTerm) {
         String accession = cvTerm.getAccession();

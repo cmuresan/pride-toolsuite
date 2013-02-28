@@ -683,7 +683,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     CvTermReference massSpecCv = CvTermReference.MASS_SPECTRUM;
                     spectrumParams.addCvParam(new CvParam(massSpecCv.getAccession(), massSpecCv.getName(), massSpecCv.getCvLabel(),
                             null, null, null, null));
-                    if ((String) result.get("spectrum_type") != null) {
+                    if (result.get("spectrum_type") != null) {
                         spectrumParams.addCvParam(getSpectrumType((String) result.get("spectrum_type")));
                     }
                     // add spectrum instrument
@@ -954,7 +954,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
                 // get binary data array
                 if (mzArrId != -1) {
-                    BinaryDataArray mzBinaryArray = null;
+                    BinaryDataArray mzBinaryArray;
                     try {
                         mzBinaryArray = getBinaryDataArray(mzArrId, CvTermReference.MZ_ARRAY);
                         cnt = mzBinaryArray.getDoubleArray().length;

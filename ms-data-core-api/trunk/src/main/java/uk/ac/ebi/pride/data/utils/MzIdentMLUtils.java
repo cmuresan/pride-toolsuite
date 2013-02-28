@@ -6,7 +6,9 @@ import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.*;
 import java.io.File;
 
 /**
- * Created with IntelliJ IDEA.
+ * MzIdentML utilities class. It contains all functions related with mzidentMl validation
+ * file format,
+ *
  * User: yperez
  * Date: 8/14/12
  * Time: 4:17 PM
@@ -70,7 +72,6 @@ public class MzIdentMLUtils {
      * Check the file type
      * @param file input file
      * @return Class    the class type of the data access controller
-     * @throws java.io.IOException exception while checking the file type
      **/
 
     public static Class getFileType(File file){

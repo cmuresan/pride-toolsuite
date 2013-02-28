@@ -18,9 +18,8 @@ public class Constants {
      *  Supported id format used in the spectrum file.
      *
      **/
-    public static enum SpecIdFormat{
-        MASCOT_QUERY_NUM, MULTI_PEAK_LIST_NATIVE_ID, SINGLE_PEAK_LIST_NATIVE_ID, MZML_ID, NONE
-    };
+    public static enum SpecIdFormat{ MASCOT_QUERY_NUM, MULTI_PEAK_LIST_NATIVE_ID, SINGLE_PEAK_LIST_NATIVE_ID, MZML_ID, NONE
+    }
     /**
      * An enum of the supported spectra file types
      *

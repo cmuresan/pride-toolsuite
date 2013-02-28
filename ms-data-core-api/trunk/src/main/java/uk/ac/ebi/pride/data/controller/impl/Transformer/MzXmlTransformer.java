@@ -264,7 +264,7 @@ public class MzXmlTransformer {
         DataProcessing dataProcessing = null;
         if(oldDataProcessing != null){
             List<CvParam> cvParams = new ArrayList<CvParam>();
-            CvTermReference cvReference = null;
+            CvTermReference cvReference;
             if(oldDataProcessing.isCentroided() != null && oldDataProcessing.isCentroided()){
                 cvReference = CvTermReference.MS_DATAPROCESSING_CENTROID;
                 CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),null,null,null,null);

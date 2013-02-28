@@ -97,7 +97,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
 
         File file = (File) this.getSource();
         // create unmarshaller
-        MzXMLFile um = null;
+        MzXMLFile um;
         try {
             um = new MzXMLFile(file);
             unmarshaller = new MzXmlUnmarshallerAdaptor(um);
@@ -331,7 +331,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
     @Override
     public ParamGroup getAdditional() throws DataAccessException {
         ParamGroup fileContent = getFileContent();
-        Duration startDate = null;
+        Duration startDate;
 
         try {
             startDate = unmarshaller.getStartDate();
@@ -358,7 +358,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
     Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
         Spectrum spectrum = super.getSpectrumById(id, useCache);
         if (spectrum == null) {
-            uk.ac.ebi.pride.tools.jmzreader.model.Spectrum rawSpec = null;
+            uk.ac.ebi.pride.tools.jmzreader.model.Spectrum rawSpec;
             try {
                 rawSpec = unmarshaller.getSpectrumById(id.toString());
                 spectrum = MzXmlTransformer.transformSpectrum(rawSpec);

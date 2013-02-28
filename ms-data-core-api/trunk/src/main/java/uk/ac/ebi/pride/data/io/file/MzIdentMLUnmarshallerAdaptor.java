@@ -64,7 +64,7 @@ public class MzIdentMLUnmarshallerAdaptor {
         uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftwareList asl =
             unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftwareList.class);
 
-        return asl.getAnalysisSoftware();
+        return (asl != null)?asl.getAnalysisSoftware():null;
     }
 
     public List<Person> getPersonContacts() {
@@ -139,7 +139,8 @@ public class MzIdentMLUnmarshallerAdaptor {
     }
 
     public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtcol() {
-        return (unmarshaller.unmarshal(AnalysisProtocolCollection.class)).getSpectrumIdentificationProtocol();
+        AnalysisProtocolCollection apc = unmarshaller.unmarshal(AnalysisProtocolCollection.class);
+        return (apc != null)?apc.getSpectrumIdentificationProtocol():null;
     }
 
     public ProteinDetectionProtocol getProteinDetectionProtocol() {
@@ -161,9 +162,11 @@ public class MzIdentMLUnmarshallerAdaptor {
         Inputs dc = unmarshaller.unmarshal(Inputs.class);
         List<SpectraData> spectraDataList =  dc.getSpectraData();
         Map<Comparable,SpectraData> spectraDataMap = null;
-        if(spectraDataList != null && spectraDataList.size()>0) spectraDataMap = new HashMap<Comparable, SpectraData>();
-        for(SpectraData spectraData: spectraDataList){
-            spectraDataMap.put(spectraData.getId(),spectraData);
+        if(spectraDataList != null && spectraDataList.size()>0){
+            spectraDataMap = new HashMap<Comparable, SpectraData>();
+            for(SpectraData spectraData: spectraDataList){
+                spectraDataMap.put(spectraData.getId(),spectraData);
+            }
         }
         return spectraDataMap;
     }

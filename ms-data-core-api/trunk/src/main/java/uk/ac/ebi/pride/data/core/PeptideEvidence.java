@@ -174,45 +174,7 @@ public class PeptideEvidence extends IdentifiableParamGroup {
 
         PeptideEvidence that = (PeptideEvidence) o;
 
-        if (decoy != that.decoy) {
-            return false;
-        }
-
-        if (endPosition != that.endPosition) {
-            return false;
-        }
-
-        if (frame != that.frame) {
-            return false;
-        }
-
-        if (postResidue != that.postResidue) {
-            return false;
-        }
-
-        if (preResidue != that.preResidue) {
-            return false;
-        }
-
-        if (startPosition != that.startPosition) {
-            return false;
-        }
-
-        if ((dbSequence != null)
-            ? !dbSequence.equals(that.dbSequence)
-            : that.dbSequence != null) {
-            return false;
-        }
-
-        if ((peptideSequence != null)
-            ? !peptideSequence.equals(that.peptideSequence)
-            : that.peptideSequence != null) {
-            return false;
-        }
-
-        return !((translationTable != null)
-                ? !translationTable.equals(that.translationTable)
-                : that.translationTable != null);
+        return decoy == that.decoy && endPosition == that.endPosition && frame == that.frame && postResidue == that.postResidue && preResidue == that.preResidue && startPosition == that.startPosition && !((dbSequence != null) ? !dbSequence.equals(that.dbSequence) : that.dbSequence != null) && !((peptideSequence != null) ? !peptideSequence.equals(that.peptideSequence) : that.peptideSequence != null) && !((translationTable != null) ? !translationTable.equals(that.translationTable) : that.translationTable != null);
 
     }
 

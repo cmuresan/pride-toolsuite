@@ -30,7 +30,7 @@ public class Score {
 
     /**
      * Constructor for Scores
-     * @param scores
+     * @param scores List of Scores
      */
     public Score(Map<SearchEngineType, Map<CvTermReference, Number>> scores) {
         this.scores = scores;
@@ -40,7 +40,7 @@ public class Score {
      * Get peptide scores for search engine
      *
      * @param se search engine
-     * @return Map<CvTermReference, Number>    peptide score map
+     * @return   peptide score map
      */
     public Map<CvTermReference, Number> getPeptideScores(SearchEngineType se) {
         return new LinkedHashMap<CvTermReference, Number>(scores.get(se));
@@ -143,9 +143,9 @@ public class Score {
         Object[] scoresArray = scores.values().toArray();
         Object[] scoresArrayValue = ((Map<CvTermReference, Number>) scoresArray[0]).values().toArray();
         double scoreValue = -1;
-        for (int i= 0; i < scoresArrayValue.length;i++){
-            if(scoresArrayValue[i] != null) {
-                scoreValue  = ((Double)scoresArrayValue[i]);
+        for (Object aScoresArrayValue : scoresArrayValue) {
+            if (aScoresArrayValue != null) {
+                scoreValue = ((Double) aScoresArrayValue);
                 break;
             }
         }
@@ -154,7 +154,8 @@ public class Score {
 
     /**
      * Get Default Search Engine for Scores.
-     * @return
+     *
+     * @return Default Search Engine for the Scores
      */
     public SearchEngineType getDefaultSearchEngine(){
         Object[] searchengines = scores.keySet().toArray();
@@ -180,9 +181,8 @@ public class Score {
 
         Score score = (Score) o;
 
-        if (scores != null ? !scores.equals(score.scores) : score.scores != null) return false;
+        return !(scores != null ? !scores.equals(score.scores) : score.scores != null);
 
-        return true;
     }
 
     @Override

@@ -123,13 +123,8 @@ public class Software extends IdentifiableParamGroup {
 
         Software software = (Software) o;
 
-        if (contact != null ? !contact.equals(software.contact) : software.contact != null) return false;
-        if (customization != null ? !customization.equals(software.customization) : software.customization != null)
-            return false;
-        if (uri != null ? !uri.equals(software.uri) : software.uri != null) return false;
-        if (version != null ? !version.equals(software.version) : software.version != null) return false;
+        return !(contact != null ? !contact.equals(software.contact) : software.contact != null) && !(customization != null ? !customization.equals(software.customization) : software.customization != null) && !(uri != null ? !uri.equals(software.uri) : software.uri != null) && !(version != null ? !version.equals(software.version) : software.version != null);
 
-        return true;
     }
 
     @Override

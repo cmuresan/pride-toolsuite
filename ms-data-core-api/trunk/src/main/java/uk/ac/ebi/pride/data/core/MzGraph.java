@@ -36,12 +36,12 @@ public abstract class MzGraph extends IdentifiableParamGroup {
     private int index = -1;
 
     /**
-     * @param id
-     * @param name
-     * @param index
-     * @param defaultDataProcessing
-     * @param defaultArrayLength
-     * @param binaryDataArrays
+     * @param id      Generic Id for MzGraph
+     * @param name    Generic Name for MzGraph
+     * @param index   Consecutive Index zero-based
+     * @param defaultDataProcessing  Appropriate data processing method
+     * @param defaultArrayLength  Default length of binary data arrays
+     * @param binaryDataArrays    List of binary data arrays
      */
     protected MzGraph(Comparable id, String name, int index, DataProcessing defaultDataProcessing,
                       int defaultArrayLength, List<BinaryDataArray> binaryDataArrays) {
@@ -53,13 +53,13 @@ public abstract class MzGraph extends IdentifiableParamGroup {
     }
 
     /**
-     * @param params
-     * @param id
-     * @param name
-     * @param index
-     * @param defaultDataProcessing
-     * @param defaultArrayLength
-     * @param binaryDataArrays
+     * @param params  CvParams of MzGraph
+     * @param id      Generic Id for MzGraph
+     * @param name    Generic Name for MzGraph
+     * @param index   Consecutive Index zero-based
+     * @param defaultDataProcessing  Appropriate data processing method
+     * @param defaultArrayLength  Default length of binary data arrays
+     * @param binaryDataArrays    List of binary data arrays
      */
     protected MzGraph(ParamGroup params, Comparable id, String name, int index, DataProcessing defaultDataProcessing,
                       int defaultArrayLength, List<BinaryDataArray> binaryDataArrays) {
@@ -106,7 +106,6 @@ public abstract class MzGraph extends IdentifiableParamGroup {
     }
 
     protected void setBinaryDataArray(Double[] values, String cvAcc){
-        BinaryDataArray arr = null;
 
     }
 
@@ -142,14 +141,8 @@ public abstract class MzGraph extends IdentifiableParamGroup {
 
         MzGraph mzGraph = (MzGraph) o;
 
-        if (defaultArrayLength != mzGraph.defaultArrayLength) return false;
-        if (index != mzGraph.index) return false;
-        if (binaryDataArrays != null ? !binaryDataArrays.equals(mzGraph.binaryDataArrays) : mzGraph.binaryDataArrays != null)
-            return false;
-        if (defaultDataProcessing != null ? !defaultDataProcessing.equals(mzGraph.defaultDataProcessing) : mzGraph.defaultDataProcessing != null)
-            return false;
+        return defaultArrayLength == mzGraph.defaultArrayLength && index == mzGraph.index && !(binaryDataArrays != null ? !binaryDataArrays.equals(mzGraph.binaryDataArrays) : mzGraph.binaryDataArrays != null) && !(defaultDataProcessing != null ? !defaultDataProcessing.equals(mzGraph.defaultDataProcessing) : mzGraph.defaultDataProcessing != null);
 
-        return true;
     }
 
     @Override

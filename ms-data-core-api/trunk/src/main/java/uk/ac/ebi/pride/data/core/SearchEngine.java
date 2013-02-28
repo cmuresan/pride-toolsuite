@@ -92,10 +92,8 @@ public class SearchEngine extends Identifiable {
 
         SearchEngine that = (SearchEngine) o;
 
-        if (searchEngineTypes != null ? !searchEngineTypes.equals(that.searchEngineTypes) : that.searchEngineTypes != null)
-            return false;
+        return !(searchEngineTypes != null ? !searchEngineTypes.equals(that.searchEngineTypes) : that.searchEngineTypes != null);
 
-        return true;
     }
 
     @Override

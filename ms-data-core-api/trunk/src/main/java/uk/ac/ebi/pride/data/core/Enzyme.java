@@ -108,17 +108,8 @@ public class Enzyme {
 
         Enzyme enzyme = (Enzyme) o;
 
-        if (minDistance != enzyme.minDistance) return false;
-        if (missedCleavages != enzyme.missedCleavages) return false;
-        if (semiSpecific != enzyme.semiSpecific) return false;
-        if (cTermGain != null ? !cTermGain.equals(enzyme.cTermGain) : enzyme.cTermGain != null) return false;
-        if (enzymeName != null ? !enzymeName.equals(enzyme.enzymeName) : enzyme.enzymeName != null) return false;
-        if (id != null ? !id.equals(enzyme.id) : enzyme.id != null) return false;
-        if (nTermGain != null ? !nTermGain.equals(enzyme.nTermGain) : enzyme.nTermGain != null) return false;
-        if (name != null ? !name.equals(enzyme.name) : enzyme.name != null) return false;
-        if (siteRegExp != null ? !siteRegExp.equals(enzyme.siteRegExp) : enzyme.siteRegExp != null) return false;
+        return minDistance == enzyme.minDistance && missedCleavages == enzyme.missedCleavages && semiSpecific == enzyme.semiSpecific && !(cTermGain != null ? !cTermGain.equals(enzyme.cTermGain) : enzyme.cTermGain != null) && !(enzymeName != null ? !enzymeName.equals(enzyme.enzymeName) : enzyme.enzymeName != null) && !(id != null ? !id.equals(enzyme.id) : enzyme.id != null) && !(nTermGain != null ? !nTermGain.equals(enzyme.nTermGain) : enzyme.nTermGain != null) && !(name != null ? !name.equals(enzyme.name) : enzyme.name != null) && !(siteRegExp != null ? !siteRegExp.equals(enzyme.siteRegExp) : enzyme.siteRegExp != null);
 
-        return true;
     }
 
     @Override

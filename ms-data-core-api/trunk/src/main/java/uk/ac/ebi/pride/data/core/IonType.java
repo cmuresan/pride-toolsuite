@@ -88,12 +88,8 @@ public class IonType extends CvParam {
 
         IonType ionType = (IonType) o;
 
-        if (charge != ionType.charge) return false;
-        if (index != null ? !index.equals(ionType.index) : ionType.index != null) return false;
-        if (measureListHashMap != null ? !measureListHashMap.equals(ionType.measureListHashMap) : ionType.measureListHashMap != null)
-            return false;
+        return charge == ionType.charge && !(index != null ? !index.equals(ionType.index) : ionType.index != null) && !(measureListHashMap != null ? !measureListHashMap.equals(ionType.measureListHashMap) : ionType.measureListHashMap != null);
 
-        return true;
     }
 
     @Override

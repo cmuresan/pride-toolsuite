@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.data.core;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 /**
@@ -62,20 +64,20 @@ public class SpectrumIdentificationProtocol extends Protocol {
     /**
      * SpectrumIdentificationProtocol Constructor
      *
-     * @param id
-     * @param name
-     * @param analysisSoftware
-     * @param analysisParam
-     * @param threshold
-     * @param searchType
-     * @param searchModificationList
-     * @param enzymeIndependent
-     * @param enzymeList
-     * @param massTableList
-     * @param fragmentTolerance
-     * @param parentTolerance
-     * @param filterList
-     * @param dataBaseTranslation
+     * @param id                 Generic Id for Spectrum Identification Protocol
+     * @param name               Generic Name for Spectrum Identification Protocol
+     * @param analysisSoftware   Analysis Software
+     * @param analysisParam      Analysis CvPram Group
+     * @param threshold          Threshold
+     * @param searchType         Search Type
+     * @param searchModificationList   Modification List
+     * @param enzymeIndependent        Enzyme Independent
+     * @param enzymeList               List of Enzymes used in the Experiment
+     * @param massTableList            Mass Table used in the Experiment
+     * @param fragmentTolerance        Fragment Tolerance
+     * @param parentTolerance          Precursor or Parent Tolerance
+     * @param filterList               List of Filters used during the identification
+     * @param dataBaseTranslation      Translation Database
      */
     public SpectrumIdentificationProtocol(Comparable id, String name, Software analysisSoftware,
             ParamGroup analysisParam, ParamGroup threshold, ParamGroup searchType,
@@ -86,7 +88,8 @@ public class SpectrumIdentificationProtocol extends Protocol {
              enzymeList, massTableList, fragmentTolerance, parentTolerance, filterList, dataBaseTranslation);
     }
 
-    public SpectrumIdentificationProtocol(ParamGroup analysisParam, Comparable id, String name,
+
+    public SpectrumIdentificationProtocol(@Nullable ParamGroup analysisParam, Comparable id, String name,
             Software analysisSoftware, ParamGroup threshold, ParamGroup searchType,
             List<SearchModification> searchModificationList, boolean enzymeIndependent, List<Enzyme> enzymeList,
             List<MassTable> massTableList, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
@@ -183,22 +186,8 @@ public class SpectrumIdentificationProtocol extends Protocol {
 
         SpectrumIdentificationProtocol that = (SpectrumIdentificationProtocol) o;
 
-        if (enzymeIndependent != that.enzymeIndependent) return false;
-        if (dataBaseTranslation != null ? !dataBaseTranslation.equals(that.dataBaseTranslation) : that.dataBaseTranslation != null)
-            return false;
-        if (enzymeList != null ? !enzymeList.equals(that.enzymeList) : that.enzymeList != null) return false;
-        if (filterList != null ? !filterList.equals(that.filterList) : that.filterList != null) return false;
-        if (fragmentTolerance != null ? !fragmentTolerance.equals(that.fragmentTolerance) : that.fragmentTolerance != null)
-            return false;
-        if (massTableList != null ? !massTableList.equals(that.massTableList) : that.massTableList != null)
-            return false;
-        if (parentTolerance != null ? !parentTolerance.equals(that.parentTolerance) : that.parentTolerance != null)
-            return false;
-        if (searchModificationList != null ? !searchModificationList.equals(that.searchModificationList) : that.searchModificationList != null)
-            return false;
-        if (searchType != null ? !searchType.equals(that.searchType) : that.searchType != null) return false;
+        return enzymeIndependent == that.enzymeIndependent && !(dataBaseTranslation != null ? !dataBaseTranslation.equals(that.dataBaseTranslation) : that.dataBaseTranslation != null) && !(enzymeList != null ? !enzymeList.equals(that.enzymeList) : that.enzymeList != null) && !(filterList != null ? !filterList.equals(that.filterList) : that.filterList != null) && !(fragmentTolerance != null ? !fragmentTolerance.equals(that.fragmentTolerance) : that.fragmentTolerance != null) && !(massTableList != null ? !massTableList.equals(that.massTableList) : that.massTableList != null) && !(parentTolerance != null ? !parentTolerance.equals(that.parentTolerance) : that.parentTolerance != null) && !(searchModificationList != null ? !searchModificationList.equals(that.searchModificationList) : that.searchModificationList != null) && !(searchType != null ? !searchType.equals(that.searchType) : that.searchType != null);
 
-        return true;
     }
 
     @Override

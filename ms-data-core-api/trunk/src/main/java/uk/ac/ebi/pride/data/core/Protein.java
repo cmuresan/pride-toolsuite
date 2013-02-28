@@ -154,17 +154,8 @@ public class Protein extends IdentifiableParamGroup {
 
         Protein protein = (Protein) o;
 
-        if (passThreshold != protein.passThreshold) return false;
-        if (Double.compare(protein.sequenceCoverage, sequenceCoverage) != 0) return false;
-        if (Double.compare(protein.threshold, threshold) != 0) return false;
-        if (dbSequence != null ? !dbSequence.equals(protein.dbSequence) : protein.dbSequence != null) return false;
-        if (gel != null ? !gel.equals(protein.gel) : protein.gel != null) return false;
-        if (peptides != null ? !peptides.equals(protein.peptides) : protein.peptides != null) return false;
-        if (proteinAmbiguityGroup != null ? !proteinAmbiguityGroup.equals(protein.proteinAmbiguityGroup) : protein.proteinAmbiguityGroup != null)
-            return false;
-        if (score != null ? !score.equals(protein.score) : protein.score != null) return false;
+        return passThreshold == protein.passThreshold && Double.compare(protein.sequenceCoverage, sequenceCoverage) == 0 && Double.compare(protein.threshold, threshold) == 0 && !(dbSequence != null ? !dbSequence.equals(protein.dbSequence) : protein.dbSequence != null) && !(gel != null ? !gel.equals(protein.gel) : protein.gel != null) && !(peptides != null ? !peptides.equals(protein.peptides) : protein.peptides != null) && !(proteinAmbiguityGroup != null ? !proteinAmbiguityGroup.equals(protein.proteinAmbiguityGroup) : protein.proteinAmbiguityGroup != null) && !(score != null ? !score.equals(protein.score) : protein.score != null);
 
-        return true;
     }
 
     @Override

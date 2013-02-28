@@ -128,14 +128,8 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
 
         IdentificationMetaData that = (IdentificationMetaData) o;
 
-        if (proteinDetectionProtocol != null ? !proteinDetectionProtocol.equals(that.proteinDetectionProtocol) : that.proteinDetectionProtocol != null)
-            return false;
-        if (searchDataBaseList != null ? !searchDataBaseList.equals(that.searchDataBaseList) : that.searchDataBaseList != null)
-            return false;
-        if (spectrumIdentificationProtocolList != null ? !spectrumIdentificationProtocolList.equals(that.spectrumIdentificationProtocolList) : that.spectrumIdentificationProtocolList != null)
-            return false;
+        return !(proteinDetectionProtocol != null ? !proteinDetectionProtocol.equals(that.proteinDetectionProtocol) : that.proteinDetectionProtocol != null) && !(searchDataBaseList != null ? !searchDataBaseList.equals(that.searchDataBaseList) : that.searchDataBaseList != null) && !(spectrumIdentificationProtocolList != null ? !spectrumIdentificationProtocolList.equals(that.spectrumIdentificationProtocolList) : that.spectrumIdentificationProtocolList != null);
 
-        return true;
     }
 
     @Override

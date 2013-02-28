@@ -189,17 +189,8 @@ public class FragmentIon extends ParamGroup {
 
         FragmentIon that = (FragmentIon) o;
 
-        if (charge != that.charge) return false;
-        if (Double.compare(that.intensity, intensity) != 0) return false;
-        if (location != that.location) return false;
-        if (Double.compare(that.massError, massError) != 0) return false;
-        if (Double.compare(that.mz, mz) != 0) return false;
-        if (Double.compare(that.retentionTimeError, retentionTimeError) != 0) return false;
-        if (ionType != null ? !ionType.equals(that.ionType) : that.ionType != null) return false;
-        if (ionTypeAccession != null ? !ionTypeAccession.equals(that.ionTypeAccession) : that.ionTypeAccession != null)
-            return false;
+        return charge == that.charge && Double.compare(that.intensity, intensity) == 0 && location == that.location && Double.compare(that.massError, massError) == 0 && Double.compare(that.mz, mz) == 0 && Double.compare(that.retentionTimeError, retentionTimeError) == 0 && !(ionType != null ? !ionType.equals(that.ionType) : that.ionType != null) && !(ionTypeAccession != null ? !ionTypeAccession.equals(that.ionTypeAccession) : that.ionTypeAccession != null);
 
-        return true;
     }
 
     @Override

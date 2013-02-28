@@ -34,10 +34,10 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
     /**
      * Constructor for peptides without SubstitutionModificationList (PRIDE Peptides)
      *
-     * @param id
-     * @param name
-     * @param sequence
-     * @param modificationList
+     * @param id    Generic Id
+     * @param name  Generic Name
+     * @param sequence Sequence
+     * @param modificationList  Modification List
      */
     public PeptideSequence(String id, String name, String sequence, List<Modification> modificationList) {
         this(null, id, name, sequence, modificationList, null);
@@ -46,11 +46,12 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
     /**
      * Constructor for peptides without SubstitutionModificationList (PRIDE Peptides)
      *
-     * @param params
-     * @param id
-     * @param name
-     * @param sequence
-     * @param modificationList
+     *
+     * @param params   ParamGroup for PeptideSequence
+     * @param id       Generic Id
+     * @param name  Generic Name
+     * @param sequence Sequence
+     * @param modificationList  Modification List
      */
     public PeptideSequence(ParamGroup params, String id, String name, String sequence,
                            List<Modification> modificationList) {
@@ -60,11 +61,11 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
     /**
      * Constructor for peptides with SubstitutionModificationList
      *
-     * @param id
-     * @param name
-     * @param sequence
-     * @param modificationList
-     * @param substitutionModificationList
+     * @param id    Generic Id
+     * @param name  Generic Name
+     * @param sequence Sequence
+     * @param modificationList  Modification List
+     * @param substitutionModificationList Substitution Modification List
      */
     public PeptideSequence(String id, String name, String sequence, List<Modification> modificationList,
                            List<SubstitutionModification> substitutionModificationList) {
@@ -74,12 +75,12 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
     /**
      * Constructor for peptides without SubstitutionModificationList (PRIDE Peptides)
      *
-     * @param cvParams
-     * @param userParams
-     * @param id
-     * @param name
-     * @param sequence
-     * @param modificationList
+     * @param cvParams    CvParams
+     * @param userParams  UserParams
+     * @param id    Generic Id
+     * @param name  Generic Name
+     * @param sequence Sequence
+     * @param modificationList  Modification List
      */
     public PeptideSequence(List<CvParam> cvParams, List<UserParam> userParams, String id, String name, String sequence,
                            List<Modification> modificationList) {
@@ -89,12 +90,12 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
     /**
      * Constructor for peptides with SubstitutionModificationList
      *
-     * @param params
-     * @param id
-     * @param name
-     * @param sequence
-     * @param modificationList
-     * @param substitutionModificationList
+     * @param params ParamGroup for PeptideSequence
+     * @param id    Generic Id
+     * @param name  Generic Name
+     * @param sequence Sequence
+     * @param modificationList  Modification List
+     * @param substitutionModificationList Substitution Modification List
      */
     public PeptideSequence(ParamGroup params, String id, String name, String sequence,
                            List<Modification> modificationList,
@@ -108,13 +109,13 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
     /**
      * Constructor for peptides with SubstitutionModificationList
      *
-     * @param cvParams
-     * @param userParams
-     * @param id
-     * @param name
-     * @param sequence
-     * @param modificationList
-     * @param substitutionModificationList
+     * @param cvParams    CvParams
+     * @param userParams  UserParams
+     * @param id    Generic Id
+     * @param name  Generic Name
+     * @param sequence Sequence
+     * @param modificationList  Modification List
+     * @param substitutionModificationList Substitution Modification List
      */
     public PeptideSequence(List<CvParam> cvParams, List<UserParam> userParams, String id, String name, String sequence,
                            List<Modification> modificationList,
@@ -154,13 +155,8 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
 
         PeptideSequence that = (PeptideSequence) o;
 
-        if (modificationList != null ? !modificationList.equals(that.modificationList) : that.modificationList != null)
-            return false;
-        if (sequence != null ? !sequence.equals(that.sequence) : that.sequence != null) return false;
-        if (substitutionModificationList != null ? !substitutionModificationList.equals(that.substitutionModificationList) : that.substitutionModificationList != null)
-            return false;
+        return !(modificationList != null ? !modificationList.equals(that.modificationList) : that.modificationList != null) && !(sequence != null ? !sequence.equals(that.sequence) : that.sequence != null) && !(substitutionModificationList != null ? !substitutionModificationList.equals(that.substitutionModificationList) : that.substitutionModificationList != null);
 
-        return true;
     }
 
     @Override

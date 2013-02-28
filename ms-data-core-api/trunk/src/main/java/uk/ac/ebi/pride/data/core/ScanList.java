@@ -46,9 +46,8 @@ public class ScanList extends ParamGroup {
 
         ScanList scanList = (ScanList) o;
 
-        if (scans != null ? !scans.equals(scanList.scans) : scanList.scans != null) return false;
+        return !(scans != null ? !scans.equals(scanList.scans) : scanList.scans != null);
 
-        return true;
     }
 
     @Override

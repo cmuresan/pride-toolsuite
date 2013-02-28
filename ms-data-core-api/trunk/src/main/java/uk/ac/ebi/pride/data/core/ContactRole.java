@@ -74,10 +74,8 @@ public class ContactRole {
 
         ContactRole that = (ContactRole) o;
 
-        if (!contact.equals(that.contact)) return false;
-        if (role != null ? !role.equals(that.role) : that.role != null) return false;
+        return contact.equals(that.contact) && !(role != null ? !role.equals(that.role) : that.role != null);
 
-        return true;
     }
 
     @Override

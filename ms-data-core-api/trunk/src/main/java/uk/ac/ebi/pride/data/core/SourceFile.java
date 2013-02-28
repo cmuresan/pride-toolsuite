@@ -147,12 +147,8 @@ public class SourceFile extends IdentifiableParamGroup {
 
         SourceFile that = (SourceFile) o;
 
-        if (externalFormatDocumentationURI != null ? !externalFormatDocumentationURI.equals(that.externalFormatDocumentationURI) : that.externalFormatDocumentationURI != null)
-            return false;
-        if (fileFormat != null ? !fileFormat.equals(that.fileFormat) : that.fileFormat != null) return false;
-        if (path != null ? !path.equals(that.path) : that.path != null) return false;
+        return !(externalFormatDocumentationURI != null ? !externalFormatDocumentationURI.equals(that.externalFormatDocumentationURI) : that.externalFormatDocumentationURI != null) && !(fileFormat != null ? !fileFormat.equals(that.fileFormat) : that.fileFormat != null) && !(path != null ? !path.equals(that.path) : that.path != null);
 
-        return true;
     }
 
     @Override

@@ -68,9 +68,7 @@ public class Peptide {
     }
 
     public boolean hasModification() {
-        if(this.getPeptideSequence().getModificationList() == null) return false;
-        if(this.getPeptideSequence().getModificationList().size() == 0) return false;
-        return true;
+        return this.getPeptideSequence().getModificationList() != null && this.getPeptideSequence().getModificationList().size() != 0;
     }
 
     public int getPrecursorCharge() {
@@ -88,12 +86,8 @@ public class Peptide {
 
         Peptide peptide = (Peptide) o;
 
-        if (peptideEvidence != null ? !peptideEvidence.equals(peptide.peptideEvidence) : peptide.peptideEvidence != null)
-            return false;
-        if (spectrumIdentification != null ? !spectrumIdentification.equals(peptide.spectrumIdentification) : peptide.spectrumIdentification != null)
-            return false;
+        return !(peptideEvidence != null ? !peptideEvidence.equals(peptide.peptideEvidence) : peptide.peptideEvidence != null) && !(spectrumIdentification != null ? !spectrumIdentification.equals(peptide.spectrumIdentification) : peptide.spectrumIdentification != null);
 
-        return true;
     }
 
     @Override

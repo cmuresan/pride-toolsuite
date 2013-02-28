@@ -36,11 +36,11 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
     /**
      * Constructor for MzGraphMetaData
      *
-     * @param id
-     * @param name
-     * @param scanSettings
-     * @param instrumentConfigurations
-     * @param dataProcessingList
+     * @param id           Generic Id of MzGraphMetaData
+     * @param name         Generic Name
+     * @param scanSettings Scan Settings
+     * @param instrumentConfigurations  Instrument Configurations
+     * @param dataProcessingList        Data Processing List
      */
     public MzGraphMetaData(Comparable id, String name, List<ScanSetting> scanSettings,
                            List<InstrumentConfiguration> instrumentConfigurations,
@@ -49,12 +49,12 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
     }
 
     /**
-     * @param params
-     * @param id
-     * @param name
-     * @param scanSettings
-     * @param instrumentConfigurations
-     * @param dataProcessingList
+     * @param params       ParamGroup of MzGraphMetaData
+     * @param id           Generic Id of MzGraphMetaData
+     * @param name         Generic Name
+     * @param scanSettings Scan Settings
+     * @param instrumentConfigurations  Instrument Configurations
+     * @param dataProcessingList        Data Processing List
      */
     public MzGraphMetaData(ParamGroup params, Comparable id, String name, List<ScanSetting> scanSettings,
                            List<InstrumentConfiguration> instrumentConfigurations,
@@ -106,13 +106,8 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
 
         MzGraphMetaData that = (MzGraphMetaData) o;
 
-        if (dataProcessingList != null ? !dataProcessingList.equals(that.dataProcessingList) : that.dataProcessingList != null)
-            return false;
-        if (instrumentConfigurations != null ? !instrumentConfigurations.equals(that.instrumentConfigurations) : that.instrumentConfigurations != null)
-            return false;
-        if (scanSettings != null ? !scanSettings.equals(that.scanSettings) : that.scanSettings != null) return false;
+        return !(dataProcessingList != null ? !dataProcessingList.equals(that.dataProcessingList) : that.dataProcessingList != null) && !(instrumentConfigurations != null ? !instrumentConfigurations.equals(that.instrumentConfigurations) : that.instrumentConfigurations != null) && !(scanSettings != null ? !scanSettings.equals(that.scanSettings) : that.scanSettings != null);
 
-        return true;
     }
 
     @Override

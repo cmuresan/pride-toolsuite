@@ -42,9 +42,8 @@ public class InstrumentComponent extends ParamGroup {
 
         InstrumentComponent that = (InstrumentComponent) o;
 
-        if (order != that.order) return false;
+        return order == that.order;
 
-        return true;
     }
 
     @Override

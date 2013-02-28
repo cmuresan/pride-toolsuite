@@ -234,16 +234,8 @@ public class Modification extends IdentifiableParamGroup {
 
         Modification that = (Modification) o;
 
-        if (location != that.location) return false;
-        if (avgMassDelta != null ? !avgMassDelta.equals(that.avgMassDelta) : that.avgMassDelta != null) return false;
-        if (modDatabase != null ? !modDatabase.equals(that.modDatabase) : that.modDatabase != null) return false;
-        if (modDatabaseVersion != null ? !modDatabaseVersion.equals(that.modDatabaseVersion) : that.modDatabaseVersion != null)
-            return false;
-        if (monoisotopicMassDelta != null ? !monoisotopicMassDelta.equals(that.monoisotopicMassDelta) : that.monoisotopicMassDelta != null)
-            return false;
-        if (residues != null ? !residues.equals(that.residues) : that.residues != null) return false;
+        return location == that.location && !(avgMassDelta != null ? !avgMassDelta.equals(that.avgMassDelta) : that.avgMassDelta != null) && !(modDatabase != null ? !modDatabase.equals(that.modDatabase) : that.modDatabase != null) && !(modDatabaseVersion != null ? !modDatabaseVersion.equals(that.modDatabaseVersion) : that.modDatabaseVersion != null) && !(monoisotopicMassDelta != null ? !monoisotopicMassDelta.equals(that.monoisotopicMassDelta) : that.monoisotopicMassDelta != null) && !(residues != null ? !residues.equals(that.residues) : that.residues != null);
 
-        return true;
     }
 
     @Override

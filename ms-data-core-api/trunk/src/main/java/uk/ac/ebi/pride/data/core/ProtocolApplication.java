@@ -30,9 +30,8 @@ public class ProtocolApplication extends Identifiable {
 
         ProtocolApplication that = (ProtocolApplication) o;
 
-        if (activeDate != null ? !activeDate.equals(that.activeDate) : that.activeDate != null) return false;
+        return !(activeDate != null ? !activeDate.equals(that.activeDate) : that.activeDate != null);
 
-        return true;
     }
 
     @Override

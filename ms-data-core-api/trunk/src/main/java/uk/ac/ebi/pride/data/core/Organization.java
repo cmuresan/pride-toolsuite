@@ -82,15 +82,7 @@ public class Organization extends AbstractContact {
 
         Organization that = (Organization) o;
 
-        if ((mail != null)
-            ? !mail.equals(that.mail)
-            : that.mail != null) {
-            return false;
-        }
-
-        return !((parentOrganization != null)
-                ? !parentOrganization.equals(that.parentOrganization)
-                : that.parentOrganization != null);
+        return !((mail != null) ? !mail.equals(that.mail) : that.mail != null) && !((parentOrganization != null) ? !parentOrganization.equals(that.parentOrganization) : that.parentOrganization != null);
 
     }
 

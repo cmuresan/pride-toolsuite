@@ -41,22 +41,22 @@ public class Person extends AbstractContact {
     /**
      * Constructor for MzMl and Pride Person Contact
      *
-     * @param params
-     * @param firstname
-     * @param contactInfo
+     * @param params ParamGroup of Person
+     * @param firstname First Name of the Person
+     * @param contactInfo Contact Info
      */
     public Person(ParamGroup params, String firstname, String contactInfo) {
         this(params, null, null, null, firstname, null, null, contactInfo);
     }
 
     /**
-     * @param id
-     * @param name
-     * @param lastname
-     * @param firstname
-     * @param midInitials
-     * @param affiliation
-     * @param contactInfo
+     * @param id         Generic Id
+     * @param name       Generic Name
+     * @param lastname   LastName
+     * @param firstname  FirstName
+     * @param midInitials Middle Initials
+     * @param affiliation Affiliation
+     * @param contactInfo Contact Info
      */
     public Person(Comparable id, String name, String lastname, String firstname, String midInitials,
                   List<Organization> affiliation, String contactInfo) {
@@ -64,14 +64,14 @@ public class Person extends AbstractContact {
     }
 
     /**
-     * @param params
-     * @param id
-     * @param name
-     * @param lastname
-     * @param firstname
-     * @param midInitials
-     * @param affiliation
-     * @param contactInfo
+     * @param params     ParamGroup of Person
+     * @param id         Generic Id
+     * @param name       Generic Name
+     * @param lastname   LastName
+     * @param firstname  FirstName
+     * @param midInitials Middle Initials
+     * @param affiliation Affiliation
+     * @param contactInfo Contact Info
      */
     public Person(ParamGroup params, Comparable id, String name, String lastname, String firstname, String midInitials,
                   List<Organization> affiliation, String contactInfo) {
@@ -131,13 +131,8 @@ public class Person extends AbstractContact {
 
         Person person = (Person) o;
 
-        if (affiliation != null ? !affiliation.equals(person.affiliation) : person.affiliation != null) return false;
-        if (contactInfo != null ? !contactInfo.equals(person.contactInfo) : person.contactInfo != null) return false;
-        if (firstname != null ? !firstname.equals(person.firstname) : person.firstname != null) return false;
-        if (lastname != null ? !lastname.equals(person.lastname) : person.lastname != null) return false;
-        if (midInitials != null ? !midInitials.equals(person.midInitials) : person.midInitials != null) return false;
+        return !(affiliation != null ? !affiliation.equals(person.affiliation) : person.affiliation != null) && !(contactInfo != null ? !contactInfo.equals(person.contactInfo) : person.contactInfo != null) && !(firstname != null ? !firstname.equals(person.firstname) : person.firstname != null) && !(lastname != null ? !lastname.equals(person.lastname) : person.lastname != null) && !(midInitials != null ? !midInitials.equals(person.midInitials) : person.midInitials != null);
 
-        return true;
     }
 
     @Override

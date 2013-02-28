@@ -325,16 +325,8 @@ public class Quantitation {
 
         Quantitation that = (Quantitation) o;
 
-        if (!Arrays.equals(isotopeLabellingDeviations, that.isotopeLabellingDeviations)) return false;
-        if (!Arrays.equals(isotopeLabellingErrors, that.isotopeLabellingErrors)) return false;
-        if (isotopeLabellingMethod != that.isotopeLabellingMethod) return false;
-        if (!Arrays.equals(isotopeLabellingResults, that.isotopeLabellingResults)) return false;
-        if (labelFreeResults != null ? !labelFreeResults.equals(that.labelFreeResults) : that.labelFreeResults != null)
-            return false;
-        if (type != that.type) return false;
-        if (unit != that.unit) return false;
+        return Arrays.equals(isotopeLabellingDeviations, that.isotopeLabellingDeviations) && Arrays.equals(isotopeLabellingErrors, that.isotopeLabellingErrors) && isotopeLabellingMethod == that.isotopeLabellingMethod && Arrays.equals(isotopeLabellingResults, that.isotopeLabellingResults) && !(labelFreeResults != null ? !labelFreeResults.equals(that.labelFreeResults) : that.labelFreeResults != null) && type == that.type && unit == that.unit;
 
-        return true;
     }
 
     @Override

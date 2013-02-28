@@ -136,14 +136,8 @@ public class InstrumentConfiguration extends ParamGroup {
 
         InstrumentConfiguration that = (InstrumentConfiguration) o;
 
-        if (analyzer != null ? !analyzer.equals(that.analyzer) : that.analyzer != null) return false;
-        if (detector != null ? !detector.equals(that.detector) : that.detector != null) return false;
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (scanSetting != null ? !scanSetting.equals(that.scanSetting) : that.scanSetting != null) return false;
-        if (software != null ? !software.equals(that.software) : that.software != null) return false;
-        if (source != null ? !source.equals(that.source) : that.source != null) return false;
+        return !(analyzer != null ? !analyzer.equals(that.analyzer) : that.analyzer != null) && !(detector != null ? !detector.equals(that.detector) : that.detector != null) && !(id != null ? !id.equals(that.id) : that.id != null) && !(scanSetting != null ? !scanSetting.equals(that.scanSetting) : that.scanSetting != null) && !(software != null ? !software.equals(that.software) : that.software != null) && !(source != null ? !source.equals(that.source) : that.source != null);
 
-        return true;
     }
 
     @Override

@@ -55,12 +55,8 @@ public class MassTable extends ParamGroup {
 
         MassTable massTable = (MassTable) o;
 
-        if (ambiguousResidues != null ? !ambiguousResidues.equals(massTable.ambiguousResidues) : massTable.ambiguousResidues != null)
-            return false;
-        if (msLevel != null ? !msLevel.equals(massTable.msLevel) : massTable.msLevel != null) return false;
-        if (residues != null ? !residues.equals(massTable.residues) : massTable.residues != null) return false;
+        return !(ambiguousResidues != null ? !ambiguousResidues.equals(massTable.ambiguousResidues) : massTable.ambiguousResidues != null) && !(msLevel != null ? !msLevel.equals(massTable.msLevel) : massTable.msLevel != null) && !(residues != null ? !residues.equals(massTable.residues) : massTable.residues != null);
 
-        return true;
     }
 
     @Override

@@ -78,15 +78,8 @@ public class SubstitutionModification {
 
         SubstitutionModification that = (SubstitutionModification) o;
 
-        if (Double.compare(that.avgMassDelta, avgMassDelta) != 0) return false;
-        if (location != that.location) return false;
-        if (Double.compare(that.monoisotopicMassDelta, monoisotopicMassDelta) != 0) return false;
-        if (originalResidue != null ? !originalResidue.equals(that.originalResidue) : that.originalResidue != null)
-            return false;
-        if (replacementResidue != null ? !replacementResidue.equals(that.replacementResidue) : that.replacementResidue != null)
-            return false;
+        return Double.compare(that.avgMassDelta, avgMassDelta) == 0 && location == that.location && Double.compare(that.monoisotopicMassDelta, monoisotopicMassDelta) == 0 && !(originalResidue != null ? !originalResidue.equals(that.originalResidue) : that.originalResidue != null) && !(replacementResidue != null ? !replacementResidue.equals(that.replacementResidue) : that.replacementResidue != null);
 
-        return true;
     }
 
     @Override

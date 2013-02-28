@@ -106,12 +106,8 @@ public class ExternalData extends Identifiable {
 
         ExternalData that = (ExternalData) o;
 
-        if (FileFormat != null ? !FileFormat.equals(that.FileFormat) : that.FileFormat != null) return false;
-        if (externalFormatDocumentationURI != null ? !externalFormatDocumentationURI.equals(that.externalFormatDocumentationURI) : that.externalFormatDocumentationURI != null)
-            return false;
-        if (location != null ? !location.equals(that.location) : that.location != null) return false;
+        return !(FileFormat != null ? !FileFormat.equals(that.FileFormat) : that.FileFormat != null) && !(externalFormatDocumentationURI != null ? !externalFormatDocumentationURI.equals(that.externalFormatDocumentationURI) : that.externalFormatDocumentationURI != null) && !(location != null ? !location.equals(that.location) : that.location != null);
 
-        return true;
     }
 
     @Override

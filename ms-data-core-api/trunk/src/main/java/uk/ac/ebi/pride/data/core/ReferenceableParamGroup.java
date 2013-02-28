@@ -50,9 +50,8 @@ public class ReferenceableParamGroup implements MassSpecObject {
 
         ReferenceableParamGroup that = (ReferenceableParamGroup) o;
 
-        if (refMap != null ? !refMap.equals(that.refMap) : that.refMap != null) return false;
+        return !(refMap != null ? !refMap.equals(that.refMap) : that.refMap != null);
 
-        return true;
     }
 
     @Override

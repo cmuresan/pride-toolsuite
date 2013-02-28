@@ -23,57 +23,64 @@ public class PeptideIdentificationMetadataPanel extends JPanel{
 
     private void populateComponents(SpectrumIdentificationProtocol peptideProtocol) {
         // SearchType
-
-        ParamGroup searchType = peptideProtocol.getSearchType();
-        ParamGroup analysisParam = peptideProtocol.getAnalysisParam();
-        if(searchType != null){
-            if(analysisParam != null){
-                searchType.addCvParams(analysisParam.getCvParams());
-                searchType.addUserParams(analysisParam.getUserParams());
+        if(peptideProtocol != null){
+            ParamGroup searchType = peptideProtocol.getSearchType();
+            ParamGroup analysisParam = peptideProtocol.getAnalysisParam();
+            if(searchType != null){
+                if(analysisParam != null){
+                    searchType.addCvParams(analysisParam.getCvParams());
+                    searchType.addUserParams(analysisParam.getUserParams());
+                }
+            }else if(analysisParam!=null){
+                searchType = analysisParam;
             }
-        }else if(analysisParam!=null){
-            searchType = analysisParam;
-        }
+            if(searchType != null){
+                searchtypeTable = TableFactory.createParamTable(searchType);
+            } else {
+                searchtypeTable = TableFactory.createParamTable(new ArrayList<Parameter>());
+            }
+            // Enzyme
+            List<Enzyme> enzymeList = peptideProtocol.getEnzymeList();
+            ParamGroup enzymeParamGroup = new ParamGroup();
+            if(enzymeList != null){
+                for (Enzyme enzyme: enzymeList){
+                    if(enzyme.getEnzymeName().getCvParams() !=null) enzymeParamGroup.addCvParams(enzyme.getEnzymeName().getCvParams());
+                    if(enzyme.getEnzymeName().getUserParams() !=null) enzymeParamGroup.addUserParams(enzyme.getEnzymeName().getUserParams());
+                }
+            }
 
+            if (enzymeParamGroup != null) {
+                thresholdTable = TableFactory.createParamTable(enzymeParamGroup);
+            } else {
+                thresholdTable = TableFactory.createParamTable(new ArrayList<Parameter>());
+            }
 
-        if(searchType != null){
-           searchtypeTable = TableFactory.createParamTable(searchType);
-        } else {
+            // detector
+            List<CvParam> fragmentTolerance = peptideProtocol.getFragmentTolerance();
+            List<CvParam> parentTolerance   = peptideProtocol.getParentTolerance();
+            ParamGroup threshold = peptideProtocol.getThreshold();
+
+            ParamGroup allThreshold = new ParamGroup();
+
+            if(threshold.getCvParams()!=null) allThreshold.addCvParams(threshold.getCvParams());
+            if(threshold.getUserParams()!=null) allThreshold.addUserParams(threshold.getUserParams());
+            if(fragmentTolerance != null) allThreshold.addCvParams(fragmentTolerance);
+            if(parentTolerance != null) allThreshold.addCvParams(parentTolerance);
+
+            if (allThreshold != null) {
+                enzymesTable = TableFactory.createParamTable(allThreshold);
+            } else {
+                enzymesTable = TableFactory.createParamTable(new ArrayList<Parameter>());
+            }
+        }else{
             searchtypeTable = TableFactory.createParamTable(new ArrayList<Parameter>());
-        }
-
-        // Enzyme
-        List<Enzyme> enzymeList = peptideProtocol.getEnzymeList();
-        ParamGroup enzymeParamGroup = new ParamGroup();
-        if(enzymeList != null){
-            for (Enzyme enzyme: enzymeList){
-                if(enzyme.getEnzymeName().getCvParams() !=null) enzymeParamGroup.addCvParams(enzyme.getEnzymeName().getCvParams());
-                if(enzyme.getEnzymeName().getUserParams() !=null) enzymeParamGroup.addUserParams(enzyme.getEnzymeName().getUserParams());
-            }
-        }
-
-        if (enzymeParamGroup != null) {
-            thresholdTable = TableFactory.createParamTable(enzymeParamGroup);
-        } else {
             thresholdTable = TableFactory.createParamTable(new ArrayList<Parameter>());
-        }
-
-        // detector
-        List<CvParam> fragmentTolerance = peptideProtocol.getFragmentTolerance();
-        List<CvParam> parentTolerance   = peptideProtocol.getParentTolerance();
-        ParamGroup threshold = peptideProtocol.getThreshold();
-
-        ParamGroup allThreshold = new ParamGroup();
-        if(threshold.getCvParams()!=null) allThreshold.addCvParams(threshold.getCvParams());
-        if(threshold.getUserParams()!=null) allThreshold.addUserParams(threshold.getUserParams());
-        if(fragmentTolerance != null) allThreshold.addCvParams(fragmentTolerance);
-        if(parentTolerance != null) allThreshold.addCvParams(parentTolerance);
-
-        if (allThreshold != null) {
-            enzymesTable = TableFactory.createParamTable(allThreshold);
-        } else {
             enzymesTable = TableFactory.createParamTable(new ArrayList<Parameter>());
         }
+
+
+
+
     }
 
     private void initComponents() {

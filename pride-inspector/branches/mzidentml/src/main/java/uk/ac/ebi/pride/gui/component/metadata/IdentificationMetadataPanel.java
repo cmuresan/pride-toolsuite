@@ -75,6 +75,9 @@ public class IdentificationMetadataPanel extends JPanel {
                 PeptideIdentificationMetadataPanel peptideComp = new PeptideIdentificationMetadataPanel(spectrumIdentificationProtocol);
                 peptideProtocolTabbedPane.addTab("Protocol " + name + ", Software" + software, peptideComp);
             }
+        }else{
+            PeptideIdentificationMetadataPanel peptideComp = new PeptideIdentificationMetadataPanel(null);
+            peptideProtocolTabbedPane.addTab("Default Peptide Protocol", peptideComp);
         }
     }
 

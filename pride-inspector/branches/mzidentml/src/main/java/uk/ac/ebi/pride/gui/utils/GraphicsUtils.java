@@ -72,7 +72,7 @@ public class GraphicsUtils {
         for (int i = 0; i < data.length; i++) {
             data[i] /= total;
         }
-        Kernel kernel = null;
+        Kernel kernel;
         if (horizontal) {
             kernel = new Kernel(size, 1, data);
         } else {

@@ -70,10 +70,8 @@ public class ProcessingMethod extends ParamGroup {
 
         ProcessingMethod that = (ProcessingMethod) o;
 
-        if (order != that.order) return false;
-        if (software != null ? !software.equals(that.software) : that.software != null) return false;
+        return order == that.order && !(software != null ? !software.equals(that.software) : that.software != null);
 
-        return true;
     }
 
     @Override

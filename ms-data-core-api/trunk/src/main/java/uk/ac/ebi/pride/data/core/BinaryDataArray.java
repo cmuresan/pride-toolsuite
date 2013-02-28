@@ -77,11 +77,8 @@ public class BinaryDataArray extends ParamGroup {
 
         BinaryDataArray that = (BinaryDataArray) o;
 
-        if (!Arrays.equals(binaryDoubleArray, that.binaryDoubleArray)) return false;
-        if (dataProcessing != null ? !dataProcessing.equals(that.dataProcessing) : that.dataProcessing != null)
-            return false;
+        return Arrays.equals(binaryDoubleArray, that.binaryDoubleArray) && !(dataProcessing != null ? !dataProcessing.equals(that.dataProcessing) : that.dataProcessing != null);
 
-        return true;
     }
 
     @Override

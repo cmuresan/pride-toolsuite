@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.util.List;
 
@@ -221,21 +220,8 @@ public class Reference extends IdentifiableParamGroup {
 
         Reference reference = (Reference) o;
 
-        if (authors != null ? !authors.equals(reference.authors) : reference.authors != null) return false;
-        if (doi != null ? !doi.equals(reference.doi) : reference.doi != null) return false;
-        if (editor != null ? !editor.equals(reference.editor) : reference.editor != null) return false;
-        if (fullReference != null ? !fullReference.equals(reference.fullReference) : reference.fullReference != null)
-            return false;
-        if (issue != null ? !issue.equals(reference.issue) : reference.issue != null) return false;
-        if (pages != null ? !pages.equals(reference.pages) : reference.pages != null) return false;
-        if (publication != null ? !publication.equals(reference.publication) : reference.publication != null)
-            return false;
-        if (publisher != null ? !publisher.equals(reference.publisher) : reference.publisher != null) return false;
-        if (title != null ? !title.equals(reference.title) : reference.title != null) return false;
-        if (volume != null ? !volume.equals(reference.volume) : reference.volume != null) return false;
-        if (year != null ? !year.equals(reference.year) : reference.year != null) return false;
+        return !(authors != null ? !authors.equals(reference.authors) : reference.authors != null) && !(doi != null ? !doi.equals(reference.doi) : reference.doi != null) && !(editor != null ? !editor.equals(reference.editor) : reference.editor != null) && !(fullReference != null ? !fullReference.equals(reference.fullReference) : reference.fullReference != null) && !(issue != null ? !issue.equals(reference.issue) : reference.issue != null) && !(pages != null ? !pages.equals(reference.pages) : reference.pages != null) && !(publication != null ? !publication.equals(reference.publication) : reference.publication != null) && !(publisher != null ? !publisher.equals(reference.publisher) : reference.publisher != null) && !(title != null ? !title.equals(reference.title) : reference.title != null) && !(volume != null ? !volume.equals(reference.volume) : reference.volume != null) && !(year != null ? !year.equals(reference.year) : reference.year != null);
 
-        return true;
     }
 
     @Override

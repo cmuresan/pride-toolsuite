@@ -140,22 +140,22 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
 
     /**
      *
-     * @param params
-     * @param id
-     * @param name
-     * @param version
-     * @param shortLabel
-     * @param sampleList
-     * @param softwareList
-     * @param personList
-     * @param sourceFiles
-     * @param provider
-     * @param organizationList
-     * @param references
-     * @param creationDate
-     * @param publicDate
-     * @param protocol
-     * @param spectraDataList
+     * @param params       Params Group of Experiment Meta Data
+     * @param id           Generic Id of the Experiment
+     * @param name         Generic Name of the Experiment
+     * @param version      File version
+     * @param shortLabel   Short Label of the Experiment (PRIDE XML and PRIDE Database)
+     * @param sampleList   Sample List
+     * @param softwareList Software List used in the Experiment
+     * @param personList   Contact List
+     * @param sourceFiles  Source Files related with the Experiment
+     * @param provider     Last Software and Contact that Provide the File or Experiment Results (mzidentML)
+     * @param organizationList Organization List involve in the Experiment
+     * @param references       References related with the Experiments
+     * @param creationDate     Creation Date
+     * @param publicDate       Publication Date (PRIDE XML)
+     * @param protocol         Experiment General Protocol (PRIDE XML)
+     * @param spectraDataList  Spectra Data Files related with the Experiment (mzIdentML)
      */
     public ExperimentMetaData(ParamGroup params, Comparable id, String name, String version, String shortLabel,
                               List<Sample> sampleList, List<Software> softwareList, List<Person> personList,
@@ -415,23 +415,8 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
 
         ExperimentMetaData that = (ExperimentMetaData) o;
 
-        if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
-        if (organizationList != null ? !organizationList.equals(that.organizationList) : that.organizationList != null)
-            return false;
-        if (personList != null ? !personList.equals(that.personList) : that.personList != null) return false;
-        if (protocol != null ? !protocol.equals(that.protocol) : that.protocol != null) return false;
-        if (provider != null ? !provider.equals(that.provider) : that.provider != null) return false;
-        if (publicDate != null ? !publicDate.equals(that.publicDate) : that.publicDate != null) return false;
-        if (references != null ? !references.equals(that.references) : that.references != null) return false;
-        if (sampleList != null ? !sampleList.equals(that.sampleList) : that.sampleList != null) return false;
-        if (shortLabel != null ? !shortLabel.equals(that.shortLabel) : that.shortLabel != null) return false;
-        if (softwareList != null ? !softwareList.equals(that.softwareList) : that.softwareList != null) return false;
-        if (sourceFiles != null ? !sourceFiles.equals(that.sourceFiles) : that.sourceFiles != null) return false;
-        if (spectraDataList != null ? !spectraDataList.equals(that.spectraDataList) : that.spectraDataList != null)
-            return false;
-        if (version != null ? !version.equals(that.version) : that.version != null) return false;
+        return !(creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) && !(organizationList != null ? !organizationList.equals(that.organizationList) : that.organizationList != null) && !(personList != null ? !personList.equals(that.personList) : that.personList != null) && !(protocol != null ? !protocol.equals(that.protocol) : that.protocol != null) && !(provider != null ? !provider.equals(that.provider) : that.provider != null) && !(publicDate != null ? !publicDate.equals(that.publicDate) : that.publicDate != null) && !(references != null ? !references.equals(that.references) : that.references != null) && !(sampleList != null ? !sampleList.equals(that.sampleList) : that.sampleList != null) && !(shortLabel != null ? !shortLabel.equals(that.shortLabel) : that.shortLabel != null) && !(softwareList != null ? !softwareList.equals(that.softwareList) : that.softwareList != null) && !(sourceFiles != null ? !sourceFiles.equals(that.sourceFiles) : that.sourceFiles != null) && !(spectraDataList != null ? !spectraDataList.equals(that.spectraDataList) : that.spectraDataList != null) && !(version != null ? !version.equals(that.version) : that.version != null);
 
-        return true;
     }
 
     @Override

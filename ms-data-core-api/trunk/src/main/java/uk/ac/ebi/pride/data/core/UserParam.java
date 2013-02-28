@@ -45,9 +45,8 @@ public class UserParam extends Parameter {
 
         UserParam userParam = (UserParam) o;
 
-        if (type != null ? !type.equals(userParam.type) : userParam.type != null) return false;
+        return !(type != null ? !type.equals(userParam.type) : userParam.type != null);
 
-        return true;
     }
 
     @Override

@@ -64,14 +64,8 @@ public class ProteinDetection extends ProtocolApplication {
 
         ProteinDetection that = (ProteinDetection) o;
 
-        if (proteinDetectionListRef != null ? !proteinDetectionListRef.equals(that.proteinDetectionListRef) : that.proteinDetectionListRef != null)
-            return false;
-        if (proteinDetectionProtocolRef != null ? !proteinDetectionProtocolRef.equals(that.proteinDetectionProtocolRef) : that.proteinDetectionProtocolRef != null)
-            return false;
-        if (spectrumIdentificationListRef != null ? !spectrumIdentificationListRef.equals(that.spectrumIdentificationListRef) : that.spectrumIdentificationListRef != null)
-            return false;
+        return !(proteinDetectionListRef != null ? !proteinDetectionListRef.equals(that.proteinDetectionListRef) : that.proteinDetectionListRef != null) && !(proteinDetectionProtocolRef != null ? !proteinDetectionProtocolRef.equals(that.proteinDetectionProtocolRef) : that.proteinDetectionProtocolRef != null) && !(spectrumIdentificationListRef != null ? !spectrumIdentificationListRef.equals(that.spectrumIdentificationListRef) : that.spectrumIdentificationListRef != null);
 
-        return true;
     }
 
     @Override

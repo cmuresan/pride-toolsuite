@@ -543,9 +543,8 @@ public class QuantitativeSample {
 
         QuantitativeSample that = (QuantitativeSample) o;
 
-        if (!Arrays.equals(samples, that.samples)) return false;
+        return Arrays.equals(samples, that.samples);
 
-        return true;
     }
 
     @Override

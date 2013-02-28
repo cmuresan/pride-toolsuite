@@ -82,15 +82,8 @@ public class SearchModification {
 
         SearchModification that = (SearchModification) o;
 
-        if (fixedMod != that.fixedMod) return false;
-        if (Double.compare(that.massDelta, massDelta) != 0) return false;
-        if (cvParamList != null ? !cvParamList.equals(that.cvParamList) : that.cvParamList != null) return false;
-        if (specificityList != null ? !specificityList.equals(that.specificityList) : that.specificityList != null)
-            return false;
-        if (specificityRuleList != null ? !specificityRuleList.equals(that.specificityRuleList) : that.specificityRuleList != null)
-            return false;
+        return fixedMod == that.fixedMod && Double.compare(that.massDelta, massDelta) == 0 && !(cvParamList != null ? !cvParamList.equals(that.cvParamList) : that.cvParamList != null) && !(specificityList != null ? !specificityList.equals(that.specificityList) : that.specificityList != null) && !(specificityRuleList != null ? !specificityRuleList.equals(that.specificityRuleList) : that.specificityRuleList != null);
 
-        return true;
     }
 
     @Override

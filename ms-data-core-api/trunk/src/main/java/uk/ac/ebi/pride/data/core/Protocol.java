@@ -26,9 +26,9 @@ public class Protocol extends IdentifiableParamGroup {
     private ParamGroup threshold = null;
 
     /**
-     * @param id
-     * @param name
-     * @param analysisParam
+     * @param id      Generic Id
+     * @param name    Generic Name
+     * @param analysisParam Analysis ParamGroup
      */
     public Protocol(Comparable id, String name, ParamGroup analysisParam) {
         super(analysisParam, id, name);
@@ -37,11 +37,11 @@ public class Protocol extends IdentifiableParamGroup {
     /**
      * Detection Protocol for MzIdentMl Experiments at the Protein and Spectrum Level.
      *
-     * @param id
-     * @param name
-     * @param analysisSoftware
-     * @param analysisParam
-     * @param threshold
+     * @param id      Generic Id
+     * @param name    Generic Name
+     * @param analysisSoftware Analysis Software
+     * @param analysisParam  Analysis ParamGroup
+     * @param threshold      Threshold
      */
     public Protocol(ParamGroup analysisParam, Comparable id, String name, Software analysisSoftware,
                     ParamGroup threshold) {
@@ -88,11 +88,8 @@ public class Protocol extends IdentifiableParamGroup {
 
         Protocol protocol = (Protocol) o;
 
-        if (analysisSoftware != null ? !analysisSoftware.equals(protocol.analysisSoftware) : protocol.analysisSoftware != null)
-            return false;
-        if (threshold != null ? !threshold.equals(protocol.threshold) : protocol.threshold != null) return false;
+        return !(analysisSoftware != null ? !analysisSoftware.equals(protocol.analysisSoftware) : protocol.analysisSoftware != null) && !(threshold != null ? !threshold.equals(protocol.threshold) : protocol.threshold != null);
 
-        return true;
     }
 
     @Override

@@ -60,10 +60,8 @@ public class CvParam extends Parameter {
 
         CvParam cvParam = (CvParam) o;
 
-        if (accession != null ? !accession.equals(cvParam.accession) : cvParam.accession != null) return false;
-        if (cvLookupID != null ? !cvLookupID.equals(cvParam.cvLookupID) : cvParam.cvLookupID != null) return false;
+        return !(accession != null ? !accession.equals(cvParam.accession) : cvParam.accession != null) && !(cvLookupID != null ? !cvLookupID.equals(cvParam.cvLookupID) : cvParam.cvLookupID != null);
 
-        return true;
     }
 
     @Override

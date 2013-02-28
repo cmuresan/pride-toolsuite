@@ -117,17 +117,8 @@ public class Precursor implements MassSpecObject {
 
         Precursor precursor = (Precursor) o;
 
-        if (activation != null ? !activation.equals(precursor.activation) : precursor.activation != null) return false;
-        if (externalSpectrumID != null ? !externalSpectrumID.equals(precursor.externalSpectrumID) : precursor.externalSpectrumID != null)
-            return false;
-        if (isolationWindow != null ? !isolationWindow.equals(precursor.isolationWindow) : precursor.isolationWindow != null)
-            return false;
-        if (selectedIons != null ? !selectedIons.equals(precursor.selectedIons) : precursor.selectedIons != null)
-            return false;
-        if (sourceFile != null ? !sourceFile.equals(precursor.sourceFile) : precursor.sourceFile != null) return false;
-        if (spectrum != null ? !spectrum.equals(precursor.spectrum) : precursor.spectrum != null) return false;
+        return !(activation != null ? !activation.equals(precursor.activation) : precursor.activation != null) && !(externalSpectrumID != null ? !externalSpectrumID.equals(precursor.externalSpectrumID) : precursor.externalSpectrumID != null) && !(isolationWindow != null ? !isolationWindow.equals(precursor.isolationWindow) : precursor.isolationWindow != null) && !(selectedIons != null ? !selectedIons.equals(precursor.selectedIons) : precursor.selectedIons != null) && !(sourceFile != null ? !sourceFile.equals(precursor.sourceFile) : precursor.sourceFile != null) && !(spectrum != null ? !spectrum.equals(precursor.spectrum) : precursor.spectrum != null);
 
-        return true;
     }
 
     @Override

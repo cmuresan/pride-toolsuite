@@ -56,25 +56,25 @@ public class SearchDataBase extends ExternalData {
     /**
      * Constructor for Pride SearchDatabase Object
      *
-     * @param name
-     * @param databaseVersion
+     * @param name Name of the Database
+     * @param databaseVersion Version of the Database
      */
     public SearchDataBase(String name, String databaseVersion) {
         this(null, name, null, null, null, databaseVersion, null, -1, -1, null, null);
     }
 
     /**
-     * @param id
-     * @param name
-     * @param location
-     * @param fileFormat
-     * @param externalFormatDocumentationURI
-     * @param version
-     * @param releaseDate
-     * @param numDatabaseSequence
-     * @param numDatabaseResidue
-     * @param nameDatabase
-     * @param description
+     * @param id           Generic Id of SearchDatabase
+     * @param name         Generic Name of SearchDatabase
+     * @param location     Location
+     * @param fileFormat   File format of the SearchDatabase in CvTerm
+     * @param externalFormatDocumentationURI External Format Documentation in CvTerm
+     * @param version                        Database Version
+     * @param releaseDate                    Date Release
+     * @param numDatabaseSequence            Number of Database Sequences
+     * @param numDatabaseResidue             Number of Database Residues
+     * @param nameDatabase                   Database Name
+     * @param description                    Database Description
      */
     public SearchDataBase(String id, String name, String location, CvParam fileFormat,
                           String externalFormatDocumentationURI, String version, String releaseDate,
@@ -144,14 +144,8 @@ public class SearchDataBase extends ExternalData {
 
         SearchDataBase that = (SearchDataBase) o;
 
-        if (numDatabaseResidue != that.numDatabaseResidue) return false;
-        if (numDatabaseSequence != that.numDatabaseSequence) return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        if (nameDatabase != null ? !nameDatabase.equals(that.nameDatabase) : that.nameDatabase != null) return false;
-        if (releaseDate != null ? !releaseDate.equals(that.releaseDate) : that.releaseDate != null) return false;
-        if (version != null ? !version.equals(that.version) : that.version != null) return false;
+        return numDatabaseResidue == that.numDatabaseResidue && numDatabaseSequence == that.numDatabaseSequence && !(description != null ? !description.equals(that.description) : that.description != null) && !(nameDatabase != null ? !nameDatabase.equals(that.nameDatabase) : that.nameDatabase != null) && !(releaseDate != null ? !releaseDate.equals(that.releaseDate) : that.releaseDate != null) && !(version != null ? !version.equals(that.version) : that.version != null);
 
-        return true;
     }
 
     @Override

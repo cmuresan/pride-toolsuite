@@ -98,14 +98,8 @@ public abstract class Parameter implements MassSpecObject {
 
         Parameter parameter = (Parameter) o;
 
-        if (name != null ? !name.equals(parameter.name) : parameter.name != null) return false;
-        if (unitAcc != null ? !unitAcc.equals(parameter.unitAcc) : parameter.unitAcc != null) return false;
-        if (unitCVLookupID != null ? !unitCVLookupID.equals(parameter.unitCVLookupID) : parameter.unitCVLookupID != null)
-            return false;
-        if (unitName != null ? !unitName.equals(parameter.unitName) : parameter.unitName != null) return false;
-        if (value != null ? !value.equals(parameter.value) : parameter.value != null) return false;
+        return !(name != null ? !name.equals(parameter.name) : parameter.name != null) && !(unitAcc != null ? !unitAcc.equals(parameter.unitAcc) : parameter.unitAcc != null) && !(unitCVLookupID != null ? !unitCVLookupID.equals(parameter.unitCVLookupID) : parameter.unitCVLookupID != null) && !(unitName != null ? !unitName.equals(parameter.unitName) : parameter.unitName != null) && !(value != null ? !value.equals(parameter.value) : parameter.value != null);
 
-        return true;
     }
 
     @Override

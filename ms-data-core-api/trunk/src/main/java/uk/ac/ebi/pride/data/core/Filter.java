@@ -48,11 +48,8 @@ public class Filter {
 
         Filter filter = (Filter) o;
 
-        if (exclude != null ? !exclude.equals(filter.exclude) : filter.exclude != null) return false;
-        if (filterType != null ? !filterType.equals(filter.filterType) : filter.filterType != null) return false;
-        if (include != null ? !include.equals(filter.include) : filter.include != null) return false;
+        return !(exclude != null ? !exclude.equals(filter.exclude) : filter.exclude != null) && !(filterType != null ? !filterType.equals(filter.filterType) : filter.filterType != null) && !(include != null ? !include.equals(filter.include) : filter.include != null);
 
-        return true;
     }
 
     @Override

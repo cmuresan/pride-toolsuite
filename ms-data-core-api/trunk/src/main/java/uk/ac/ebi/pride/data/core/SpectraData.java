@@ -7,15 +7,16 @@ package uk.ac.ebi.pride.data.core;
  * Time: 12:07
  */
 public class SpectraData extends ExternalData {
+
     private CvParam spectrumIdFormat = null;
 
     /**
-     * @param id
-     * @param name
-     * @param location
-     * @param fileFormat
-     * @param externalFormatDocumentationURI
-     * @param spectrumIdFormat
+     * @param id    Generic Id of Spectra Data File
+     * @param name  Generic Name of Spectra Data File
+     * @param location  Location of the Spectra Data File
+     * @param fileFormat  File Format in CvTerm
+     * @param externalFormatDocumentationURI   External Format Documentation in CvTerm
+     * @param spectrumIdFormat                 Spectrum Id Format
      */
     public SpectraData(String id, String name, String location, CvParam fileFormat,
                        String externalFormatDocumentationURI, CvParam spectrumIdFormat) {
@@ -38,10 +39,8 @@ public class SpectraData extends ExternalData {
 
         SpectraData that = (SpectraData) o;
 
-        if (spectrumIdFormat != null ? !spectrumIdFormat.equals(that.spectrumIdFormat) : that.spectrumIdFormat != null)
-            return false;
+        return !(spectrumIdFormat != null ? !spectrumIdFormat.equals(that.spectrumIdFormat) : that.spectrumIdFormat != null);
 
-        return true;
     }
 
     @Override

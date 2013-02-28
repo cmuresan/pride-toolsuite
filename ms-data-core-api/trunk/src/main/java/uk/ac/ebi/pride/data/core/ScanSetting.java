@@ -76,11 +76,8 @@ public class ScanSetting extends ParamGroup {
 
         ScanSetting that = (ScanSetting) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (sourceFile != null ? !sourceFile.equals(that.sourceFile) : that.sourceFile != null) return false;
-        if (targets != null ? !targets.equals(that.targets) : that.targets != null) return false;
+        return !(id != null ? !id.equals(that.id) : that.id != null) && !(sourceFile != null ? !sourceFile.equals(that.sourceFile) : that.sourceFile != null) && !(targets != null ? !targets.equals(that.targets) : that.targets != null);
 
-        return true;
     }
 
     @Override

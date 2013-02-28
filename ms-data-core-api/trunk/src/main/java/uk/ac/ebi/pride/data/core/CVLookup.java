@@ -84,12 +84,8 @@ public class CVLookup implements MassSpecObject {
 
         CVLookup cvLookup = (CVLookup) o;
 
-        if (address != null ? !address.equals(cvLookup.address) : cvLookup.address != null) return false;
-        if (cvLabel != null ? !cvLabel.equals(cvLookup.cvLabel) : cvLookup.cvLabel != null) return false;
-        if (fullName != null ? !fullName.equals(cvLookup.fullName) : cvLookup.fullName != null) return false;
-        if (version != null ? !version.equals(cvLookup.version) : cvLookup.version != null) return false;
+        return !(address != null ? !address.equals(cvLookup.address) : cvLookup.address != null) && !(cvLabel != null ? !cvLabel.equals(cvLookup.cvLabel) : cvLookup.cvLabel != null) && !(fullName != null ? !fullName.equals(cvLookup.fullName) : cvLookup.fullName != null) && !(version != null ? !version.equals(cvLookup.version) : cvLookup.version != null);
 
-        return true;
     }
 
     @Override

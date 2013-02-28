@@ -116,19 +116,8 @@ public class RunInfo extends ParamGroup {
 
         RunInfo runInfo = (RunInfo) o;
 
-        if (chromatogramList != null ? !chromatogramList.equals(runInfo.chromatogramList) : runInfo.chromatogramList != null)
-            return false;
-        if (defaultInstrumentConfiguration != null ? !defaultInstrumentConfiguration.equals(runInfo.defaultInstrumentConfiguration) : runInfo.defaultInstrumentConfiguration != null)
-            return false;
-        if (defaultSourceFile != null ? !defaultSourceFile.equals(runInfo.defaultSourceFile) : runInfo.defaultSourceFile != null)
-            return false;
-        if (id != null ? !id.equals(runInfo.id) : runInfo.id != null) return false;
-        if (sampleRef != null ? !sampleRef.equals(runInfo.sampleRef) : runInfo.sampleRef != null) return false;
-        if (spectrumList != null ? !spectrumList.equals(runInfo.spectrumList) : runInfo.spectrumList != null)
-            return false;
-        if (timeStamp != null ? !timeStamp.equals(runInfo.timeStamp) : runInfo.timeStamp != null) return false;
+        return !(chromatogramList != null ? !chromatogramList.equals(runInfo.chromatogramList) : runInfo.chromatogramList != null) && !(defaultInstrumentConfiguration != null ? !defaultInstrumentConfiguration.equals(runInfo.defaultInstrumentConfiguration) : runInfo.defaultInstrumentConfiguration != null) && !(defaultSourceFile != null ? !defaultSourceFile.equals(runInfo.defaultSourceFile) : runInfo.defaultSourceFile != null) && !(id != null ? !id.equals(runInfo.id) : runInfo.id != null) && !(sampleRef != null ? !sampleRef.equals(runInfo.sampleRef) : runInfo.sampleRef != null) && !(spectrumList != null ? !spectrumList.equals(runInfo.spectrumList) : runInfo.spectrumList != null) && !(timeStamp != null ? !timeStamp.equals(runInfo.timeStamp) : runInfo.timeStamp != null);
 
-        return true;
     }
 
     @Override

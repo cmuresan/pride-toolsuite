@@ -32,11 +32,11 @@ public class Provider extends Identifiable {
     private Software software = null;
 
     /**
-     * @param id
-     * @param name
-     * @param software
-     * @param contact
-     * @param role
+     * @param id  Generic Id of Provider Object
+     * @param name Generic Name of Provider Object
+     * @param software Provider software of the file or experiment
+     * @param contact  Provider Contact
+     * @param role     Role of the Provider Contact
      */
     public Provider(Comparable id, String name, Software software, AbstractContact contact, CvParam role) {
         super(id, name);
@@ -76,11 +76,8 @@ public class Provider extends Identifiable {
 
         Provider provider = (Provider) o;
 
-        if (contact != null ? !contact.equals(provider.contact) : provider.contact != null) return false;
-        if (role != null ? !role.equals(provider.role) : provider.role != null) return false;
-        if (software != null ? !software.equals(provider.software) : provider.software != null) return false;
+        return !(contact != null ? !contact.equals(provider.contact) : provider.contact != null) && !(role != null ? !role.equals(provider.role) : provider.role != null) && !(software != null ? !software.equals(provider.software) : provider.software != null);
 
-        return true;
     }
 
     @Override

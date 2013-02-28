@@ -22,10 +22,8 @@ public class ProteinDetectionList extends ParamGroup {
 
         ProteinDetectionList that = (ProteinDetectionList) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        return !(id != null ? !id.equals(that.id) : that.id != null) && !(name != null ? !name.equals(that.name) : that.name != null);
 
-        return true;
     }
 
     @Override

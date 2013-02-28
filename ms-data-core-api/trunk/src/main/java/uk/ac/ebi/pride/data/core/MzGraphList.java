@@ -45,11 +45,8 @@ public class MzGraphList {
 
         MzGraphList that = (MzGraphList) o;
 
-        if (defaultDataProcessingRef != null ? !defaultDataProcessingRef.equals(that.defaultDataProcessingRef) : that.defaultDataProcessingRef != null)
-            return false;
-        if (mzGraphList != null ? !mzGraphList.equals(that.mzGraphList) : that.mzGraphList != null) return false;
+        return !(defaultDataProcessingRef != null ? !defaultDataProcessingRef.equals(that.defaultDataProcessingRef) : that.defaultDataProcessingRef != null) && !(mzGraphList != null ? !mzGraphList.equals(that.mzGraphList) : that.mzGraphList != null);
 
-        return true;
     }
 
     @Override

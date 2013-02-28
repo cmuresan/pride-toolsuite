@@ -61,18 +61,18 @@ public class Spectrum extends MzGraph {
 
 
     /**
-     * @param id
-     * @param name
-     * @param index
-     * @param defaultDataProcessing
-     * @param defaultArrayLength
-     * @param binaryDataArrays
-     * @param spotID
-     * @param sourceFile
-     * @param scanList
-     * @param precursors
-     * @param products
-     * @param peptide
+     * @param id       Generic Id
+     * @param name     Generic Name
+     * @param index    Spectrum Index
+     * @param defaultDataProcessing  Default Data Processing
+     * @param defaultArrayLength     Default Array Length
+     * @param binaryDataArrays       List of BinaryDataArrays
+     * @param spotID                 Spot Id
+     * @param sourceFile             Source File
+     * @param scanList               Scan List
+     * @param precursors             List of Precursors
+     * @param products               Products
+     * @param peptide                Peptide Assigned to Spectrum
      */
     public Spectrum(Comparable id, String name, int index, DataProcessing defaultDataProcessing,
                     int defaultArrayLength, List<BinaryDataArray> binaryDataArrays, String spotID,
@@ -83,18 +83,18 @@ public class Spectrum extends MzGraph {
     }
 
     /**
-     * @param params
-     * @param id
-     * @param name
-     * @param index
-     * @param defaultDataProcessing
-     * @param defaultArrayLength
-     * @param binaryDataArrays
-     * @param spotID
-     * @param sourceFile
-     * @param scanList
-     * @param precursors
-     * @param products
+     * @param params   ParamGroup related with the Spectrum
+     * @param id       Generic Id
+     * @param name     Generic Name
+     * @param index    Spectrum Index
+     * @param defaultDataProcessing  Default Data Processing
+     * @param defaultArrayLength     Default Array Length
+     * @param binaryDataArrays       List of BinaryDataArrays
+     * @param spotID                 Spot Id
+     * @param sourceFile             Source File
+     * @param scanList               Scan List
+     * @param precursors             List of Precursors
+     * @param products               Products
      */
     public Spectrum(ParamGroup params, Comparable id, String name, int index, DataProcessing defaultDataProcessing,
                     int defaultArrayLength, List<BinaryDataArray> binaryDataArrays, String spotID,
@@ -104,19 +104,19 @@ public class Spectrum extends MzGraph {
     }
 
     /**
-     * @param params
-     * @param id
-     * @param name
-     * @param index
-     * @param defaultDataProcessing
-     * @param defaultArrayLength
-     * @param binaryDataArrays
-     * @param spotID
-     * @param sourceFile
-     * @param scanList
-     * @param precursors
-     * @param products
-     * @param peptide
+     * @param params   ParamGroup related with the Spectrum
+     * @param id       Generic Id
+     * @param name     Generic Name
+     * @param index    Spectrum Index
+     * @param defaultDataProcessing  Default Data Processing
+     * @param defaultArrayLength     Default Array Length
+     * @param binaryDataArrays       List of BinaryDataArrays
+     * @param spotID                 Spot Id
+     * @param sourceFile             Source File
+     * @param scanList               Scan List
+     * @param precursors             List of Precursors
+     * @param products               Products
+     * @param peptide                Peptide Assigned to Spectrum
      */
     public Spectrum(ParamGroup params, Comparable id, String name, int index, DataProcessing defaultDataProcessing,
                     int defaultArrayLength, List<BinaryDataArray> binaryDataArrays, String spotID,
@@ -195,14 +195,8 @@ public class Spectrum extends MzGraph {
 
         Spectrum spectrum = (Spectrum) o;
 
-        if (peptide != null ? !peptide.equals(spectrum.peptide) : spectrum.peptide != null) return false;
-        if (precursors != null ? !precursors.equals(spectrum.precursors) : spectrum.precursors != null) return false;
-        if (products != null ? !products.equals(spectrum.products) : spectrum.products != null) return false;
-        if (scanList != null ? !scanList.equals(spectrum.scanList) : spectrum.scanList != null) return false;
-        if (sourceFile != null ? !sourceFile.equals(spectrum.sourceFile) : spectrum.sourceFile != null) return false;
-        if (spotID != null ? !spotID.equals(spectrum.spotID) : spectrum.spotID != null) return false;
+        return !(peptide != null ? !peptide.equals(spectrum.peptide) : spectrum.peptide != null) && !(precursors != null ? !precursors.equals(spectrum.precursors) : spectrum.precursors != null) && !(products != null ? !products.equals(spectrum.products) : spectrum.products != null) && !(scanList != null ? !scanList.equals(spectrum.scanList) : spectrum.scanList != null) && !(sourceFile != null ? !sourceFile.equals(spectrum.sourceFile) : spectrum.sourceFile != null) && !(spotID != null ? !spotID.equals(spectrum.spotID) : spectrum.spotID != null);
 
-        return true;
     }
 
     @Override

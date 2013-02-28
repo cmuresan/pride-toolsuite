@@ -102,13 +102,8 @@ public class Gel extends ParamGroup {
 
         Gel gel = (Gel) o;
 
-        if (Double.compare(gel.molecularWeight, molecularWeight) != 0) return false;
-        if (Double.compare(gel.pI, pI) != 0) return false;
-        if (Double.compare(gel.xCoordinate, xCoordinate) != 0) return false;
-        if (Double.compare(gel.yCoordinate, yCoordinate) != 0) return false;
-        if (gelLink != null ? !gelLink.equals(gel.gelLink) : gel.gelLink != null) return false;
+        return Double.compare(gel.molecularWeight, molecularWeight) == 0 && Double.compare(gel.pI, pI) == 0 && Double.compare(gel.xCoordinate, xCoordinate) == 0 && Double.compare(gel.yCoordinate, yCoordinate) == 0 && !(gelLink != null ? !gelLink.equals(gel.gelLink) : gel.gelLink != null);
 
-        return true;
     }
 
     @Override

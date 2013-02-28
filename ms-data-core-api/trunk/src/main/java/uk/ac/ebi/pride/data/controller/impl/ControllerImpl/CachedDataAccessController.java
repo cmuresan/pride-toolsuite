@@ -921,7 +921,8 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public QuantCvTermReference getProteinQuantUnit() throws DataAccessException {
-        Collection<QuantCvTermReference> units = (Collection<QuantCvTermReference>) cache.get(CacheCategory.PROTEIN_QUANT_UNIT);
+        Collection<QuantCvTermReference> units;
+        units = (Collection<QuantCvTermReference>) cache.get(CacheCategory.PROTEIN_QUANT_UNIT);
 
         if (units != null && !units.isEmpty()) {
             return CollectionUtils.getElement(units, 0);
@@ -940,7 +941,8 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public QuantCvTermReference getPeptideQuantUnit() throws DataAccessException {
-        Collection<QuantCvTermReference> units = (Collection<QuantCvTermReference>) cache.get(CacheCategory.PEPTIDE_QUANT_UNIT);
+        Collection<QuantCvTermReference> units;
+        units = (Collection<QuantCvTermReference>) cache.get(CacheCategory.PEPTIDE_QUANT_UNIT);
 
         if (units != null && !units.isEmpty()) {
             return CollectionUtils.getElement(units, 0);

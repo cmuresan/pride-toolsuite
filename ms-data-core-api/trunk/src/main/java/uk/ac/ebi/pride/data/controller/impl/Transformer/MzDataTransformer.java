@@ -137,7 +137,6 @@ public class MzDataTransformer {
 
         if (oldCvParams != null) {
             for (uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.CvParam oldParam : oldCvParams) {
-                String cvLookupID = null;
                 CvParam newParam = new CvParam(oldParam.getAccession(), oldParam.getName(), oldParam.getCvLabel(),
                         oldParam.getValue(), null,null,null);
                 newCvParams.add(newParam);
@@ -167,9 +166,10 @@ public class MzDataTransformer {
     }
 
     /**
+     * Convert to a List of BinaryDataArray a Peak List Map.
      *
-     * @param peakList
-     * @return
+     * @param peakList Peak List as A Double Array of mz - intensity values
+     * @return List<BinaryDataArray> List of compress BinaryDataArray
      */
 
     private static List<BinaryDataArray> transformBinaryDataArrayList(Map<Double, Double> peakList) {
@@ -290,7 +290,7 @@ public class MzDataTransformer {
         if (oldInstrument != null) {
             instrumentConfigurations = new ArrayList<InstrumentConfiguration>();
 
-            InstrumentConfiguration instrumentConfiguration = null;
+            InstrumentConfiguration instrumentConfiguration;
             String id = oldInstrument.getInstrumentName();
             ScanSetting scanSetting = null;
             //Todo: It could be vry interesting to capture the information about the ScanSettings
@@ -359,7 +359,6 @@ public class MzDataTransformer {
         List<DataProcessing> dataProcessings = null;
         if (oldDataProcessing != null) {
             dataProcessings = new ArrayList<DataProcessing>();
-            String id = null;
             List<ProcessingMethod> methods = null;
 
             if(oldDataProcessing.getSoftware() != null || oldDataProcessing.getProcessingMethod() != null){
@@ -413,7 +412,7 @@ public class MzDataTransformer {
     /**
      * Method to retrieve the Contact Persons From the FileDescription Object in the mzData Files
      *
-     * @param oldPersons
+     * @param oldPersons mzData Person Structure to convert to Person Contact
      * @return List<Person> List of Person Contacts
      */
     public static List<Person> transformToPerson(List<uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.Person> oldPersons) {

@@ -375,7 +375,7 @@ public class PrideXmlTransformer {
             Double threshold = rawIdent.getThreshold();
             double thresholdVal = threshold == null ? -1 : threshold;
 
-            SearchEngineType searchEngine = SearchEngineType.getByName(rawIdent.getSearchEngine());
+            //SearchEngineType searchEngine = SearchEngineType.getByName(rawIdent.getSearchEngine());
             Score score = null;
             /*if(searchEngine != null && rawIdent.getScore()!=null){
                 CvTermReference cvTerm = SearchEngineType.getDefaultCvTerm(rawIdent.getSearchEngine());
@@ -1055,7 +1055,7 @@ public class PrideXmlTransformer {
     /**
      * Transform additional params from pride xml to core data model format.
      *
-     * @param rawAdditionalParams
+     * @param rawAdditionalParams  Additional params from pride xml
      * @return ParamGroup   additional param groups
      */
     public static ParamGroup transformAdditional(uk.ac.ebi.pride.jaxb.model.Param rawAdditionalParams) {

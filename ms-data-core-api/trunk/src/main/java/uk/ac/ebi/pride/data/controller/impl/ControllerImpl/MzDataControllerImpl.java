@@ -87,7 +87,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     private void initialize() throws DataAccessException {
         File file = (File) this.getSource();
         // create unmarshaller
-        MzDataFile um = null;
+        MzDataFile um;
         try {
             um = new MzDataFile(file);
             unmarshaller = new MzDataUnmarshallerAdaptor(um);
@@ -222,9 +222,9 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * Get the information of Organizations. Tje organizations is not supported in mzData
+     * Get the information of Organizations. The organizations is not supported in mzData
      *
-     * @return
+     * @return Organization List (for mzData files this method is not supported)
      * @throws DataAccessException
      */
     @Override
@@ -234,7 +234,8 @@ public class MzDataControllerImpl extends CachedDataAccessController {
 
     /**
      * Get the information of SourceFiles.
-     * @return
+     *
+     * @return List of Source Files
      * @throws DataAccessException
      */
     @Override

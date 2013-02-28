@@ -235,7 +235,7 @@ public class PeakControllerImpl extends CachedDataAccessController {
     public Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
         Spectrum spectrum = super.getSpectrumById(id, useCache);
         if (spectrum == null) {
-            uk.ac.ebi.pride.tools.jmzreader.model.Spectrum rawSpec = null;
+            uk.ac.ebi.pride.tools.jmzreader.model.Spectrum rawSpec;
             try {
                 rawSpec = unmarshaller.getSpectrumById(id.toString());
                 spectrum = PeakTransformer.transformSpectrum(rawSpec);
@@ -322,8 +322,6 @@ public class PeakControllerImpl extends CachedDataAccessController {
      */
     public static Class isValidFormat(File file) {
 
-        boolean valid = false;
-
         String filename = file.getName().toLowerCase();
         if(filename.endsWith(Constants.DTA_EXT)){
             return DtaFile.class;
@@ -340,8 +338,7 @@ public class PeakControllerImpl extends CachedDataAccessController {
     /**
      * The only file format that not contain any MetaData are the pure peak files.
      *
-     * @return
-     * @throws DataAccessException
+     * @return  Return allways false because the MetaData Information is not supported for Peak Files
      */
     @Override
     public boolean hasMetaDataInformation(){

@@ -276,7 +276,7 @@ public class SimpleMsDialog extends JDialog {
             ControllerContentPane contentPane = (ControllerContentPane) context.getDataContentPane(controller);
 
             //Update the Spectrum Tab
-            MzDataTabPane mzDataPane = contentPane.getMzDataTab();
+            MzDataTabPane mzDataPane =  contentPane.getMzDataTab();
             int index = contentPane.getMzDataTabIndex();
             mzDataPane = new MzDataTabPane(controller, contentPane);
             contentPane.removeTab(index);

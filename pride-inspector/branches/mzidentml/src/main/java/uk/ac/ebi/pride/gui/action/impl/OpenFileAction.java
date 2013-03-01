@@ -187,7 +187,9 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
      */
     private List<File> createFileOpenDialog() {
 
-        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzid/PRIDE xml Files", null, true, Constants.MZIDENT_FILE,
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzid/PRIDE xml Files", null, true,
+                Constants.MZIDENT_FILE,
+                Constants.MZIDENT_FILE_LARGE,
                 Constants.MZML_FILE,
                 Constants.XML_FILE,
                 Constants.MZXML_FILE,

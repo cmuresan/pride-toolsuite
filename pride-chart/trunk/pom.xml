@@ -4,7 +4,7 @@
     <groupId>uk.ac.ebi.pride.chart</groupId>
     <artifactId>pride-chart</artifactId>
     <packaging>jar</packaging>
-    <version>0.2.35</version>
+    <version>0.2.36</version>
     <name>pride-chart</name>
     <url>http://maven.apache.org</url>
 
@@ -102,6 +102,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.3.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -136,7 +137,7 @@
         <dependency>
             <groupId>uk.ac.ebi.pride.util</groupId>
             <artifactId>pride-utilities</artifactId>
-            <version>0.1.2</version>
+            <version>0.1.16</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>

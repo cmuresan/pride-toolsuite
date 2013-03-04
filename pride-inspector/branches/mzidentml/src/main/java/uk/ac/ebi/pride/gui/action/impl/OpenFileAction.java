@@ -297,6 +297,7 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
     }
 
     private void openGzippedFiles(List<File> files, String path) {
+
         OpenGzippedFileTask newTask = new OpenGzippedFileTask(files, path);
 
         // listen this this task

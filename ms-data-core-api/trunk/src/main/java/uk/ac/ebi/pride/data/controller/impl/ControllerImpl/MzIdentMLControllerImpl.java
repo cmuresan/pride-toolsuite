@@ -778,8 +778,13 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         for(SpectraData spectraData: spectraDataControllerMap.keySet()){
             for(SpectraData spectraDataFile: spectraDataFileMap.keySet()){
                 if(spectraDataControllerMap.get(spectraData) == null &&
-                        spectraData.getId().compareTo(spectraDataFile.getId()) == 0){
-                    msDataAccessControllers.put(spectraData.getId(), new PeakControllerImpl(spectraDataFileMap.get(spectraDataFile)));
+                   spectraData.getId().compareTo(spectraDataFile.getId()) == 0){
+                    if(MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.MZXML)
+                        msDataAccessControllers.put(spectraData.getId(), new MzXmlControllerImpl(spectraDataFileMap.get(spectraDataFile)));
+                    if(MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.MGF)
+                        msDataAccessControllers.put(spectraData.getId(), new PeakControllerImpl(spectraDataFileMap.get(spectraDataFile)));
+                    if(MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.MZML)
+                        msDataAccessControllers.put(spectraData.getId(), new MzMLControllerImpl(spectraDataFileMap.get(spectraDataFile)));
                     //Todo: Need to check if changes
 
                 }

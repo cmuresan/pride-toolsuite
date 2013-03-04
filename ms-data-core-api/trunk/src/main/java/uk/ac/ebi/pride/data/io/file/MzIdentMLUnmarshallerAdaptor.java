@@ -287,6 +287,7 @@ public class MzIdentMLUnmarshallerAdaptor {
 
 
         for(Comparable idSpectrumResult: spectrumMatchResultsIds){
+
             SpectrumIdentificationResult spectrumResult = unmarshaller.unmarshal(SpectrumIdentificationResult.class,(String) idSpectrumResult);
 
             // SpectraDataMap fill

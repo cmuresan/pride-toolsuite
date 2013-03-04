@@ -30,14 +30,18 @@ public class MzIdentMLUtils {
 
     public static Constants.SpecFileFormat getSpectraDataFormat(uk.ac.ebi.pride.data.core.SpectraData spectraData){
         uk.ac.ebi.pride.data.core.CvParam specFileFormat = spectraData.getFileFormat();
-        if (specFileFormat.getAccession().equals("MS:1000613"))
-            return Constants.SpecFileFormat.DTA;
-        if (specFileFormat.getAccession().equals("MS:1001062"))
-            return Constants.SpecFileFormat.MGF;
-        if (specFileFormat.getAccession().equals("MS:1000565"))
-            return Constants.SpecFileFormat.PKL;
-        if (specFileFormat.getAccession().equals("MS:1000584"))
-            return Constants.SpecFileFormat.MZML;
+        if(specFileFormat != null){
+            if (specFileFormat.getAccession().equals("MS:1000613"))
+                return Constants.SpecFileFormat.DTA;
+            if (specFileFormat.getAccession().equals("MS:1001062"))
+                return Constants.SpecFileFormat.MGF;
+            if (specFileFormat.getAccession().equals("MS:1000565"))
+                return Constants.SpecFileFormat.PKL;
+            if (specFileFormat.getAccession().equals("MS:1000584"))
+                return Constants.SpecFileFormat.MZML;
+            if (specFileFormat.getAccession().equals("MS:1000566"))
+                return Constants.SpecFileFormat.MZXML;
+        }
         return Constants.SpecFileFormat.NONE;
     }
 
@@ -50,6 +54,8 @@ public class MzIdentMLUtils {
             return Constants.SpecIdFormat.SINGLE_PEAK_LIST_NATIVE_ID;
         if (accession.equals("MS:1001530"))
             return Constants.SpecIdFormat.MZML_ID;
+        if (accession.equals("MS:1000776"))
+            return Constants.SpecIdFormat.SCAN_NUMBER_NATIVE_ID;
         return Constants.SpecIdFormat.NONE;
     }
 

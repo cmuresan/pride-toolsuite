@@ -18,6 +18,7 @@ import java.util.zip.GZIPInputStream;
  * Time: 12:16
  */
 public class OpenGzippedFileTask extends TaskAdapter<Void, File> {
+
     private static final int BUFFER_SIZE = 2048;
 
     /**

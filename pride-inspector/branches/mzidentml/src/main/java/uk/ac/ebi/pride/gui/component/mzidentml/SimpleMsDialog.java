@@ -22,7 +22,9 @@ import uk.ac.ebi.pride.gui.component.report.ReportList;
 import uk.ac.ebi.pride.gui.component.report.RoundCornerLabel;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
+import uk.ac.ebi.pride.gui.desktop.*;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
+import uk.ac.ebi.pride.gui.task.impl.AddMsDataAccessControllersTask;
 import uk.ac.ebi.pride.gui.task.impl.OpenFileTask;
 import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
@@ -137,7 +139,11 @@ public class SimpleMsDialog extends JDialog {
 
     private void addNewMsFile(ActionEvent e) {
 
-        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzData/Peak Files ", null, true, Constants.MGF_FILE);
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzData/Peak Files ",
+                                                    null, true,
+                                                    Constants.MGF_FILE,
+                                                    Constants.MZXML_FILE,
+                                                    Constants.MZML_FILE);
 
         int result = ofd.showDialog(this, null);
 
@@ -270,37 +276,15 @@ public class SimpleMsDialog extends JDialog {
     }
 
     private void setMSFilesActionPerformed(ActionEvent e) {
-        try {
-
-            ((MzIdentMLControllerImpl)controller).addMSController(msFileMap);
-            ControllerContentPane contentPane = (ControllerContentPane) context.getDataContentPane(controller);
-
-            //Update the Spectrum Tab
-            MzDataTabPane mzDataPane =  contentPane.getMzDataTab();
-            int index = contentPane.getMzDataTabIndex();
-            mzDataPane = new MzDataTabPane(controller, contentPane);
-            contentPane.removeTab(index);
-            contentPane.setMzDataTab(mzDataPane);
-            contentPane.insertTab(mzDataPane.getTitle(), mzDataPane.getIcon(), mzDataPane, mzDataPane.getTitle(), index);
-            mzDataPane.populate();
-
-            //Update the Peptide and Protein Tabs
-            PeptideTabPane peptideContentPane = contentPane.getPeptideTabPane();
-            peptideContentPane.getVizTabPane().addSpectrumViewPane();
-            contentPane.populate();
-
-            //context.replaceDataAccessController(controller,controller,true);
-            EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile("Spectra not found.*"))));
-            EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile("Missing spectra.*"))));
-            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(type, message, message)));
-            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Spectra found", "This data source contains spectra")));
-
-
-
-        } catch (DataAccessException e1) {
-            logger.error("Failed to check the files as controllers", e1);
-        }
+        AddMsDataAccessControllersTask task = new AddMsDataAccessControllersTask(controller,msFileMap);
+        uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(task);
+        //context.replaceDataAccessController(controller,controller,true);
+        EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile("Spectra not found.*"))));
+        EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile("Missing spectra.*"))));
+        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(type, message, message)));
+        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Spectra found", "This data source contains spectra")));
         dispose();
+
     }
 
     private void initComponents() {

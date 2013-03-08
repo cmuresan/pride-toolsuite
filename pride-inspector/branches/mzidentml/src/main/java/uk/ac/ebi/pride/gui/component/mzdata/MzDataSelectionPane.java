@@ -56,6 +56,7 @@ import java.awt.event.ActionListener;
  * Time: 14:55:11
  */
 public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void> implements EventBusSubscribable {
+
     private static final Logger logger = LoggerFactory.getLogger(MzDataTabPane.class.getName());
     /**
      * Tab index for spectrum table

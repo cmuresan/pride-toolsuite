@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
  * Time: 11:21
  */
 public class SpectrumEvent extends AbstractEventServiceEvent {
+
     private DataAccessController controller;
     private Comparable spectrumId;
 

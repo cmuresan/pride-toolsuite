@@ -55,6 +55,7 @@ public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<Spectr
             //Update the Peptide and Protein Tabs
             PeptideTabPane peptideContentPane = contentPane.getPeptideTabPane();
             peptideContentPane.getVizTabPane().addSpectrumViewPane();
+
             contentPane.populate();
 
         } catch (DataAccessException e) {

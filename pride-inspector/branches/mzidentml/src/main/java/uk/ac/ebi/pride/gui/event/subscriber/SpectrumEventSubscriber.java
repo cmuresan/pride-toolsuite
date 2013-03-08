@@ -31,6 +31,7 @@ public class SpectrumEventSubscriber implements EventSubscriber<SpectrumEvent> {
 
     @Override
     public void onEvent(SpectrumEvent event) {
+
         Comparable specturmId = event.getSpectrumId();
 
         Task newTask = new RetrieveSpectrumTask(controller, specturmId);

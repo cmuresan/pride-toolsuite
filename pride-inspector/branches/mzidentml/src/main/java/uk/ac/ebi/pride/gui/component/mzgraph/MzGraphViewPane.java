@@ -31,6 +31,7 @@ import java.awt.*;
  * Time: 14:53:52
  */
 public class MzGraphViewPane extends DataAccessControllerPane {
+
     private static final Logger logger = LoggerFactory.getLogger(MzGraphViewPane.class);
     /**
      * DataAccessController this component belongs to

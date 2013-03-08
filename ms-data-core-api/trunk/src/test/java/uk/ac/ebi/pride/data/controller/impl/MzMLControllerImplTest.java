@@ -132,5 +132,6 @@ public class MzMLControllerImplTest {
         Chromatogram chromatogram = mzMLController.getChromatogramById("tic");
         assertTrue("The id of the chromatogram should be", chromatogram.getId().equals("tic"));
         assertEquals("CvTerm Scan List Scan Windows", chromatogram.getBinaryDataArrays().get(0).getDataProcessing().getProcessingMethods().get(0).getCvParams().get(0).getName(),"Conversion to mzML");
+        mzMLController.close();
     }
 }

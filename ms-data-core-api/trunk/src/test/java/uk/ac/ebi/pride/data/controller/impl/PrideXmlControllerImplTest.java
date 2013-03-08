@@ -145,6 +145,7 @@ public class PrideXmlControllerImplTest {
         // test binary array
         assertEquals("Mz Binary array precision", spectrum.getMzBinaryDataArray().getCvParams().get(0).getAccession(), "MS:1000523");
         assertEquals("Mz binary array compression", spectrum.getMzBinaryDataArray().getCvParams().get(1).getAccession(), "MS:1000576");
+        prideController.close();
         
     }
 }

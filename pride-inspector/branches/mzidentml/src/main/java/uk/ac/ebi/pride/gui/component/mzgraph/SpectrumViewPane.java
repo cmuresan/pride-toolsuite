@@ -48,6 +48,7 @@ import java.util.Map;
  * Time: 14:42
  */
 public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> implements EventBusSubscribable {
+
     private static final Logger logger = LoggerFactory.getLogger(SpectrumViewPane.class);
 
     /**
@@ -74,6 +75,7 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
      * Subscribe to peptide event
      */
     private PeptideSpectrumEventSubscriber spectrumSubscriber;
+
     private SpectrumEventSubscriber spectrumSelectSubscriber;
 
     public SpectrumViewPane(DataAccessController controller, boolean showSidePanel) {

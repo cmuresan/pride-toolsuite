@@ -155,7 +155,7 @@ public abstract class DataAccessControllerPane<T, V> extends JPanel
     public DataAccessController getController() {
         return controller;
     }
-
+    /*
     private void setController(DataAccessController controller) {
         // remove existing controller
         if (this.controller != null) {
@@ -166,7 +166,7 @@ public abstract class DataAccessControllerPane<T, V> extends JPanel
         if (this.controller != null) {
             this.controller.addPropertyChangeListener(this);
         }
-    }
+    } */
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {

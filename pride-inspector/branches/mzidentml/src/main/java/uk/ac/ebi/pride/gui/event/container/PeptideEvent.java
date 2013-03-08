@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
  * Time: 11:33
  */
 public class PeptideEvent extends AbstractEventServiceEvent {
+
     private Comparable identificationId;
     private Comparable peptideId;
     private DataAccessController controller;

@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.data.controller.impl.ControllerImpl;
 
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -85,7 +84,7 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      *
      * @param source data source
      */
-    protected AbstractDataAccessController(@Nullable Object source) {
+    protected AbstractDataAccessController(Object source) {
         setSource(source);
         // initialize content categories
         categories = new HashSet<ContentCategory>();

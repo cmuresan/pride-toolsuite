@@ -208,7 +208,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
-            logger.error("Get samples");
+            logger.debug("Get samples");
             List<Sample> samples = new ArrayList<Sample>();
             try {
                 Sample sample = PrideXmlTransformer.transformSample(reader.getAdmin());

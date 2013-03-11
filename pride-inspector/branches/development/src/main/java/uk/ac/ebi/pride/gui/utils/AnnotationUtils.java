@@ -111,21 +111,21 @@ public class AnnotationUtils {
         return newMods;
     }
 
-    public static Peptide getPeptideFromString(String peptideStr) {
-        Peptide peptide = new Peptide();
-        if (peptideStr != null) {
-            char[] chars = peptideStr.toCharArray();
-            for (char aChar : chars) {
-                AminoAcid aminoAcid = MoleculeUtilities.getAminoacid(aChar);
-                if (aminoAcid != null) {
-                    peptide.addAminoAcid(aminoAcid);
-                }
-            }
-
-            if (peptide.getNumberOfAminoAcids() != peptideStr.length()) {
-                peptide.removeAll();
-            }
-        }
-        return peptide;
-    }
+//    public static Peptide getPeptideFromString(String peptideStr) {
+//        Peptide peptide = new Peptide();
+//        if (peptideStr != null) {
+//            char[] chars = peptideStr.toCharArray();
+//            for (char aChar : chars) {
+//                AminoAcid aminoAcid = MoleculeUtilities.getAminoacid(aChar);
+//                if (aminoAcid != null) {
+//                    peptide.addAminoAcid(aminoAcid);
+//                }
+//            }
+//
+//            if (peptide.getNumberOfAminoAcids() != peptideStr.length()) {
+//                peptide.removeAll();
+//            }
+//        }
+//        return peptide;
+//    }
 }

@@ -285,6 +285,8 @@ report.item.plain.icon.small=icon/16x16/report_plain.png
 # spectrum and protein sequence tab details
 spectrum.tab.title=Spectrum
 spectrum.tab.tooltip=Spectrum for selected peptide
+fragment.tab.title=Fragmentation Table
+fragment.tab.tooltip=Fragmentation table for selected peptide
 protein.sequence.tab.title=Sequence
 protein.sequence.tab.tooltip=Protein sequence converage for selected protein
 protein.sequence.missing.icon.small=icon/16x16/warning.png

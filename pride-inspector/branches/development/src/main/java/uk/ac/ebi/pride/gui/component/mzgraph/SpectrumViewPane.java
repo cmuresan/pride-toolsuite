@@ -24,12 +24,17 @@ import uk.ac.ebi.pride.gui.utils.AnnotationUtils;
 import uk.ac.ebi.pride.mol.PTModification;
 import uk.ac.ebi.pride.mzgraph.SpectrumBrowser;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
+import uk.ac.ebi.pride.mzgraph.chart.graph.MzTablePanel;
+import uk.ac.ebi.pride.mzgraph.gui.ExperimentalFragmentedIonsTable;
+import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
 
 import javax.help.CSH;
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
 import java.io.File;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 /**
  * Panel to display spectrum
@@ -104,7 +109,7 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
         // add spectrum help pane
         Icon helpIcon = GUIUtilities.loadIcon(appContext.getProperty("help.icon.small"));
         String helpTooltip = appContext.getProperty("help.tooltip");
-        PrideAction helpAction = new OpenHelpAction(null, helpIcon, "help.mzgraph.spectra");
+        PrideAction helpAction = new OpenHelpAction(null, helpIcon, "help.mzgraph.fragmentation");
         helpAction.putValue(Action.SHORT_DESCRIPTION, helpTooltip);
         spectrumBrowser.getSidePane().addAction(helpAction, false);
 
@@ -204,5 +209,29 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
             isFirstSpectrum = false;
         }
         this.firePropertyChange(DataAccessController.MZGRAPH_TYPE, "", spectrum);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        super.propertyChange(evt);
+
+        if (evt.getPropertyName().equals(ExperimentalFragmentedIonsTable.FLUSH_TABLEMODEL)) {
+            ExperimentalFragmentedIonsTableModel tableModel = (ExperimentalFragmentedIonsTableModel) evt.getNewValue();
+
+            spectrumBrowser.getSpectrumPanel().removeIonAnnotations();
+            spectrumBrowser.getSpectrumPanel().removeDeltaOverflowAnnotation();
+
+            if (! tableModel.isShowAuto()) {
+                spectrumBrowser.addFragmentIons(tableModel.getAllManualAnnotations());
+            } else if (tableModel.isCalculate()){
+                spectrumBrowser.addFragmentIons(tableModel.getAutoAnnotations());
+            } else {
+                // delta m/z too high, not generate auto annotations.
+                spectrumBrowser.getSpectrumPanel().addDeltaOverflowAnnotation();
+            }
+
+            spectrumBrowser.revalidate();
+            spectrumBrowser.repaint();
+        }
     }
 }

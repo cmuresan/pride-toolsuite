@@ -33,6 +33,7 @@
 
     <mapID target="help.mzgraph" url="html/usage/vis_mzgraph.html"/>
     <mapID target="help.mzgraph.spectra" url="html/usage/mzgraph/spectra.html"/>
+    <mapID target="help.mzgraph.fragmentation" url="html/usage/mzgraph/fragmentation.html"/>
     <mapID target="help.mzgraph.chroma" url="html/usage/mzgraph/chromatogram.html"/>
 
     <mapID target="help.protein" url="html/usage/vis_protein.html"/>

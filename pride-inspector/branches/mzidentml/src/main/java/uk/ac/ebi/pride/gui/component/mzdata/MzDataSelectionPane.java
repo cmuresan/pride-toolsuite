@@ -112,6 +112,7 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
      * Subscribe to export spectrum detail event
      */
     private ExportSpectrumDetailEventSubscriber exportEventSubscriber;
+
     private LoadBatchEventSubscriber loadBatchSubscriber;
 
     /**
@@ -509,4 +510,13 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
             }
         }
     }
+
+    public Comparable getFirstSpectrum(){
+        TableModel tableModel = spectrumTable.getModel();
+        int columnNum = ((SpectrumTableModel) tableModel).getColumnIndex(SpectrumTableModel.TableHeader.SPECTRUM_ID_COLUMN.getHeader());
+        Comparable id = (Comparable) spectrumTable.getValueAt(0, columnNum);
+        return id;
+    }
+
+
 }

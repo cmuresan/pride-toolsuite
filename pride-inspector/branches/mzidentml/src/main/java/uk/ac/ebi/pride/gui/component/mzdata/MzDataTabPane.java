@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.gui.component.mzdata;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.bushe.swing.event.ContainerEventServiceFinder;
+import org.bushe.swing.event.EventService;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
@@ -9,6 +11,7 @@ import uk.ac.ebi.pride.gui.component.PrideInspectorTabPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
+import uk.ac.ebi.pride.gui.event.container.SpectrumEvent;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 
 import javax.swing.*;
@@ -37,6 +40,17 @@ public class MzDataTabPane extends PrideInspectorTabPane {
      * Title for chromatogram
      */
     private static final String CHROMATOGRAM_TITLE = "Chromatogram";
+
+    /*
+     * MzDataSelection Pane
+     */
+    private MzDataSelectionPane mzSelectionPane;
+
+    /*
+     * Display peak list or chromatogram
+     */
+    private MzDataVizPane mzDataVizPane;
+
 
     /**
      * Constructor
@@ -92,10 +106,10 @@ public class MzDataTabPane extends PrideInspectorTabPane {
     @Override
     protected void addComponents() {
         // Selection pane to select different spectra or chromatogram
-        MzDataSelectionPane mzSelectionPane = new MzDataSelectionPane(controller, this);
+        mzSelectionPane = new MzDataSelectionPane(controller, this);
 
         // Display peak list or chromatogram
-        MzDataVizPane mzDataVizPane = new MzDataVizPane(controller);
+        mzDataVizPane = new MzDataVizPane(controller);
         mzDataVizPane.setPreferredSize(new Dimension(400, 500));
 
         // add components to split pane
@@ -132,5 +146,12 @@ public class MzDataTabPane extends PrideInspectorTabPane {
             ControllerContentPane contentPane = (ControllerContentPane) parentComponent;
             contentPane.setTabIcon(contentPane.getMzDataTabIndex(), icon);
         }
+    }
+
+    public void spectrumChange(){
+        // local event bus
+        EventService eventBus = ContainerEventServiceFinder.getEventService(mzSelectionPane);
+        Comparable id = mzSelectionPane.getFirstSpectrum();
+        eventBus.publish(new SpectrumEvent(mzSelectionPane, controller, id));
     }
 }

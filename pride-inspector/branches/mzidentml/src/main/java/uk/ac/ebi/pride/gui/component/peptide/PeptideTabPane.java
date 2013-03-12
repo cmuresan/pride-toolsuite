@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.gui.component.peptide;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.bushe.swing.event.ContainerEventServiceFinder;
+import org.bushe.swing.event.EventService;
 import org.bushe.swing.event.EventSubscriber;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
@@ -11,7 +13,9 @@ import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
+import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 
 import javax.swing.*;
@@ -197,6 +201,32 @@ public class PeptideTabPane extends PrideInspectorTabPane {
             outterSplitPane.setDividerSize(visible ? 0 : DIVIDER_SIZE);
             outterSplitPane.resetToPreferredSizes();
         }
+    }
+
+    public void peptideChange(){
+        int rowNum = peptideDescPane.getPeptideTable().getSelectedRow();
+        if (rowNum >= 0) {
+                // get table model
+                PeptideTableModel pepTableModel = (PeptideTableModel) peptideDescPane.getPeptideTable().getModel();
+
+                // get spectrum reference column
+                int identColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
+                int peptideColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
+
+                // get spectrum id
+                int modelRowIndex = peptideDescPane.getPeptideTable().convertRowIndexToModel(rowNum);
+                Comparable identId = (Comparable) pepTableModel.getValueAt(modelRowIndex, identColNum);
+                Comparable peptideId = (Comparable) pepTableModel.getValueAt(modelRowIndex, peptideColNum);
+
+                // fire a background task to retrieve peptide
+                if (peptideId != null && identId != null) {
+                    // publish the event to local event bus
+                    EventService eventBus = ContainerEventServiceFinder.getEventService(peptideDescPane);
+                    eventBus.publish(new PeptideEvent(peptideDescPane, controller, identId, peptideId));
+
+                }
+            }
+
     }
 
 

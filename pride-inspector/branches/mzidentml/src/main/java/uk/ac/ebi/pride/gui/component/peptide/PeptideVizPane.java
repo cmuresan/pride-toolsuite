@@ -25,6 +25,7 @@ import java.awt.*;
  * Time: 16:43
  */
 public class PeptideVizPane extends DataAccessControllerPane implements EventBusSubscribable {
+
     private static Logger logger = LoggerFactory.getLogger(PeptideVizPane.class);
     /**
      * the default background color
@@ -32,8 +33,6 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
     private static final Color BACKGROUND_COLOUR = Color.white;
 
     private SpectrumViewPane spectrumViewPane;
-
-    private int spectrumViewPaneIndex = 0;
 
     private ProteinSequencePane proteinSequencePane;
 
@@ -113,7 +112,7 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
         spectrumViewPane = new SpectrumViewPane(controller, true);
         tabbedPane.insertTab(appContext.getProperty("spectrum.tab.title"), null,
                 spectrumViewPane, appContext.getProperty("spectrum.tab.tooltip"), tabIndex);
-        spectrumViewPaneIndex = tabIndex;
+
     }
 
     public void addSpectrumViewPane(){
@@ -126,7 +125,6 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
 
         tabbedPane.insertTab(appContext.getProperty("spectrum.tab.title"), null,
                 spectrumViewPane, appContext.getProperty("spectrum.tab.tooltip"), tabbedPaneIndex);
-        spectrumViewPaneIndex = tabbedPaneIndex;
         tabbedPaneIndex++;
 
         JScrollPane scrollPane = new JScrollPane(proteinSequencePane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

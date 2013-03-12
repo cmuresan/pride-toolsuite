@@ -19,6 +19,7 @@ import uk.ac.ebi.pride.gui.utils.GUIBlocker;
  * Time: 09:31
  */
 public class PeptideSpectrumEventSubscriber implements EventSubscriber<PeptideEvent> {
+
     private DataAccessController controller;
     private TaskListener taskListener;
     private PrideInspectorContext appContext;

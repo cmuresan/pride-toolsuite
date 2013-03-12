@@ -317,15 +317,6 @@ public class ControllerContentPane extends DataAccessControllerPane {
      * Return mzdata tab pane
      *
      * @return MzDataTabPane    mzdata tab pane
-     */
-    public MzDataTabPane getMzDataTab() {
-        return mzDataTab;
-    }
-
-    /**
-     * Return mzdata tab pane
-     *
-     * @return MzDataTabPane    mzdata tab pane
      **/
 
     public void setMzDataTab(MzDataTabPane mzDataTabPane) {

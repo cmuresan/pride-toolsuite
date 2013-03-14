@@ -110,7 +110,6 @@ public class PrideXmlMarshallerFactory {
                 // before marshalling out, wrap in a Custom XMLStreamWriter
                 // to fix a JAXB bug: http://java.net/jira/browse/JAXB-614
                 // also wrapping in IndentingXMLStreamWriter to generate formatted XML
-                // ToDo: this is a sun.com class and may not be supported or may not work on all platforms!! A better solution should be found!
                 IndentingXMLStreamWriter writer = new IndentingXMLStreamWriter(new EscapingXMLStreamWriter(xmlStreamWriter));
                 marshaller.marshal(new JAXBElement(aQName, object.getClass(), object), writer);
 

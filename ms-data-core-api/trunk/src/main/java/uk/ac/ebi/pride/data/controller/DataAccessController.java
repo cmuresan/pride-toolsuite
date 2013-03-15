@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.data.controller;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import uk.ac.ebi.pride.data.controller.access.*;
 import uk.ac.ebi.pride.data.core.*;
@@ -9,14 +8,13 @@ import uk.ac.ebi.pride.gui.prop.PropertyChangeHandler;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * DataAccessController is an aggregate interface for data access.
  * It extends a list of interfaces, also added methods for accessing metadata.
  * Setting the state of the data access controller.
  * <p/>
- * User: rwang
+ * User: yperez
  * Date: 09-Apr-2010
  * Time: 14:25:49
  */

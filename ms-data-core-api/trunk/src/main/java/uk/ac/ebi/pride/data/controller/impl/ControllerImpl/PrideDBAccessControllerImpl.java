@@ -45,12 +45,18 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     private static final DataAccessMode DEFAULT_ACCESS_MODE = DataAccessMode.CACHE_ONLY;
 
     private final static String SAMPLE_ID = "sample1";
+
     private final static String COMMENTS = "comments";
+
     private final static int PROCESSING_METHOD_ORDER = 1;
+
     private final static String DATA_PROCESSING_ID = "dataprocessing1";
+
     private final static String PROTOCOL_ID = "protocol1";
 
     private final JdbcTemplate jdbcTemplate;
+
+    private Comparable experimentAcc;
 
     public PrideDBAccessControllerImpl() throws DataAccessException {
         this(DEFAULT_ACCESS_MODE, null);
@@ -98,13 +104,12 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 ContentCategory.DATA_PROCESSING,
                 ContentCategory.QUANTITATION);
 
-        // set the foreground experiment acc
-        if (experimentAcc != null) {
-            setForegroundExperimentAcc(experimentAcc);
-        }
-
         // set cache builder
         setCacheBuilder(new PrideDBCacheBuilder(this));
+
+        if(experimentAcc != null){
+           this.experimentAcc = experimentAcc;
+        }
 
         // populate cache
         populateCache();
@@ -115,8 +120,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         String uid = super.getUid();
         if (uid == null) {
             // create a new unique id
-            Comparable acc = getForegroundExperimentAcc();
-            String msg = "PRIDE public mysql instance accession: " + (acc == null ? Constants.NOT_AVAILABLE : acc);
+            String msg = "PRIDE public mysql instance accession: " + (experimentAcc == null ? Constants.NOT_AVAILABLE : experimentAcc);
             try {
                 uid = MD5Utils.generateHash(msg);
             } catch (NoSuchAlgorithmException e) {
@@ -150,7 +154,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         String query = "SELECT sf.name_of_file, sf.path_to_file FROM mzdata_source_file sf, mzdata_mz_data mz " +
                 "WHERE mz.accession_number= ? and mz.source_file_id=sf.source_file_id";
 
-        return jdbcTemplate.query(query, new SourceFileRowMapper(), getForegroundExperimentAcc());
+        return jdbcTemplate.query(query, new SourceFileRowMapper(), experimentAcc);
     }
 
 
@@ -160,7 +164,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         String query = "SELECT contact_name, institution, contact_info FROM mzdata_contact sf, mzdata_mz_data mz " +
                 "WHERE mz.accession_number= ? and mz.mz_data_id=sf.mz_data_id";
 
-        return jdbcTemplate.query(query, new ContactRowMapper(), getForegroundExperimentAcc());
+        return jdbcTemplate.query(query, new ContactRowMapper(), experimentAcc);
     }
 
     @Override
@@ -170,7 +174,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             String query = "SELECT contact_name, institution, contact_info FROM mzdata_contact sf, mzdata_mz_data mz " +
                     "WHERE mz.accession_number= ? and mz.mz_data_id=sf.mz_data_id";
 
-            return jdbcTemplate.query(query, new PersonRowMapper(), getForegroundExperimentAcc());
+            return jdbcTemplate.query(query, new PersonRowMapper(), experimentAcc);
         }
         return metadata.getPersonList();
     }
@@ -182,7 +186,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             String query = "SELECT contact_name, institution, contact_info FROM mzdata_contact sf, mzdata_mz_data mz " +
                     "WHERE mz.accession_number= ? and mz.mz_data_id=sf.mz_data_id";
 
-            return jdbcTemplate.query(query, new OrganizationRowMapper(), getForegroundExperimentAcc());
+            return jdbcTemplate.query(query, new OrganizationRowMapper(), experimentAcc);
         }
         return metadata.getOrganizationList();
     }
@@ -196,7 +200,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
             String query = "SELECT mz_data_id, sample_name FROM mzdata_mz_data mz WHERE mz.accession_number= ?";
 
-            List<Map<String, Object>> results = jdbcTemplate.queryForList(query, getForegroundExperimentAcc());
+            List<Map<String, Object>> results = jdbcTemplate.queryForList(query, experimentAcc);
 
             List<Sample> samples = new ArrayList<Sample>();
 
@@ -223,7 +227,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
             String query = "SELECT software_name, software_version, software_completion_time, software_comments FROM mzdata_mz_data mz WHERE mz.accession_number= ?";
 
-            return jdbcTemplate.query(query, new SoftwareRowMapper(), getForegroundExperimentAcc());
+            return jdbcTemplate.query(query, new SoftwareRowMapper(), experimentAcc);
         }
         return metaData.getSoftwares();
     }
@@ -268,7 +272,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             // get instrument
             String query = "SELECT instrument_name, mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?";
 
-            List<Map<String, Object>> results = jdbcTemplate.queryForList(query, getForegroundExperimentAcc());
+            List<Map<String, Object>> results = jdbcTemplate.queryForList(query, experimentAcc);
             for (Map<String, Object> result : results) {
                 int mz_data_id = ((Long) result.get("mz_data_id")).intValue();
                 //instrument params
@@ -321,7 +325,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             List<ProcessingMethod> procMethods = new ArrayList<ProcessingMethod>();
             List<DataProcessing> dataProcessings = new ArrayList<DataProcessing>();
             String query = "SELECT mz_data_id FROM mzdata_mz_data mz WHERE mz.accession_number= ?";
-            List<Map<String, Object>> results = jdbcTemplate.queryForList(query, getForegroundExperimentAcc());
+            List<Map<String, Object>> results = jdbcTemplate.queryForList(query, experimentAcc);
 
             for (Map<String, Object> result : results) {
                 int mz_data_id = ((Long) result.get("mz_data_id")).intValue();
@@ -356,9 +360,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
         // protocol name
         String query = "SELECT protocol_name FROM pride_experiment WHERE accession= ?";
-        String protocol_name = jdbcTemplate.queryForObject(query, String.class, getForegroundExperimentAcc());
+        String protocol_name = jdbcTemplate.queryForObject(query, String.class, experimentAcc);
 
-        List<Integer> protocol_steps = getProtocolStepsById(Integer.parseInt(getForegroundExperimentAcc().toString()));
+        List<Integer> protocol_steps = getProtocolStepsById(Integer.parseInt(experimentAcc.toString()));
 
         //for each protocol_step, get the paramGroup
         List<ParamGroup> paramGroup = new ArrayList<ParamGroup>();
@@ -384,7 +388,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         String query = "SELECT reference_line, pr.reference_id FROM pride_experiment pe, pride_reference pr, pride_reference_exp_link pl WHERE " +
                 "pe.accession = ? AND pl.reference_id = pr.reference_id AND pl.experiment_id = pe.experiment_id";
 
-        List<Map<String, Object>> results = jdbcTemplate.queryForList(query, getForegroundExperimentAcc());
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(query, experimentAcc);
         for (Map<String, Object> result : results) {
             List<UserParam> userParams = getUserParams("pride_reference_param", ((Long) result.get("reference_id")).intValue());
             List<CvParam> cvParams = getCvParams("pride_reference_param", ((Long) result.get("reference_id")).intValue());
@@ -408,7 +412,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         if (metaData == null) {
             logger.debug("Get additional params");
 
-            int experiment_id = getExperimentId(getForegroundExperimentAcc());
+            int experiment_id = getExperimentId(experimentAcc);
             List<UserParam> userParam = getUserParams("pride_experiment_param", experiment_id);
             List<CvParam> cvParam = getCvParams("pride_experiment_param", experiment_id);
             return new ParamGroup(cvParam, userParam);
@@ -436,7 +440,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         if (metaData == null) {
 
             String query = "SELECT pe.title, pe.accession, pe.short_label FROM pride_experiment pe WHERE pe.accession = ?";
-            Map<String, Object> result = jdbcTemplate.queryForMap(query, getForegroundExperimentAcc());
+            Map<String, Object> result = jdbcTemplate.queryForMap(query, experimentAcc);
 
             String accession = (String) result.get("accession");
             String version = "2.1";
@@ -465,7 +469,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
         String query = "SELECT sf.cv_label, sf.version, sf.address, sf.full_name FROM mzdata_cv_lookup sf, mzdata_mz_data mz, mzdata_cv_lookup_mzdata_lnk ln WHERE mz.accession_number= ? and mz.mz_data_id=ln.mz_data_id and sf.cv_lookup_id=ln.cv_lookup_id";
 
-        return jdbcTemplate.query(query, new CVLookupRowMapper(), getForegroundExperimentAcc());
+        return jdbcTemplate.query(query, new CVLookupRowMapper(), experimentAcc);
     }
 
     private BinaryDataArray getBinaryDataArray(int array_binary_id, CvTermReference binaryType) throws UnsupportedEncodingException {
@@ -835,7 +839,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     "search_engine, sequence_coverage, splice_isoform, threshold, gel_id, x_coordinate, y_coordinate, " +
                     "molecular_weight, pi, identification_id, pi.experiment_id, pi.classname, pi.spectrum_ref FROM pride_identification pi, pride_experiment pe " +
                     "WHERE pe.accession = ? AND pi.experiment_id = pe.experiment_id AND pi.identification_id = ?";
-            List<Map<String, Object>> results = jdbcTemplate.queryForList(query, getForegroundExperimentAcc(), proteinId);
+            List<Map<String, Object>> results = jdbcTemplate.queryForList(query, experimentAcc, proteinId);
 
             for (Map<String, Object> result : results) {
                 String accession = (String) result.get("accession_number");
@@ -1052,7 +1056,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 "   c.intermediate_data is not null " +
                 "order by c.chart_type";
 
-        List<Map<String, Object>> results = jdbcTemplate.queryForList(query, getForegroundExperimentAcc());
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(query, experimentAcc);
         Map<Integer, PrideChartManager> map = new HashMap<Integer, PrideChartManager>();
         for (Map<String, Object> result : results) {
             int type = ((Long) result.get("chart_type")).intValue();
@@ -1078,7 +1082,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                  * instead of using the intermediate data (because it could not be retrieved
                  * in the above step)
                  */
-                String accession = getForegroundExperimentAcc().toString();
+                String accession = experimentAcc.toString();
                 connection = PooledConnectionFactory.getConnection();
                 PrideChartSummaryData summaryData = new PrideChartSummaryData(accession, connection);
                 for (PrideChart prideChart : PrideChartFactory.getAllCharts(summaryData)) {
@@ -1095,6 +1099,10 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         }
 
         return list;
+    }
+
+    public Comparable getExperimentAcc() {
+        return experimentAcc;
     }
 
 

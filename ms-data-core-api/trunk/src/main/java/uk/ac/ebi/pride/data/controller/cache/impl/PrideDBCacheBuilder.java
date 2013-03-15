@@ -29,6 +29,7 @@ import java.util.Map;
  * Time: 09:29:56
  */
 public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
+
     private static final Logger logger = LoggerFactory.getLogger(PrideDBCacheBuilder.class);
 
     /**
@@ -37,7 +38,8 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
      */
     private final Map<Comparable, Comparable> spectrumRefToId;
 
-//    private boolean memorySaving = false;
+    // private boolean memorySaving = false;
+
 
     public PrideDBCacheBuilder(PrideDBAccessControllerImpl dbAccessController) {
         super(dbAccessController);
@@ -48,20 +50,20 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
     public void populate() throws Exception {
         super.populate();
 
-        Comparable foregroundExperimentAcc = controller.getForegroundExperimentAcc();
-        if (foregroundExperimentAcc == null) {
+        Comparable experimentAcc = ((PrideDBAccessControllerImpl) controller).getExperimentAcc();
+        if (experimentAcc == null) {
             // populate experiment accession only once
             populateExperimentAccs();
         } else {
             // populate the rest every time the foreground experiment accession has changed.
-            populateSpectrumInfo(foregroundExperimentAcc);
-            populateIdentificationInfo(foregroundExperimentAcc);
-            populatePrecursorInfo(foregroundExperimentAcc);
-            populatePeptideInfo(foregroundExperimentAcc);
-            populatePTMInfo(foregroundExperimentAcc);
-            populateFragmentIonInfo(foregroundExperimentAcc);
-            populateIdentificationParamInfo(foregroundExperimentAcc);
-            populatePeptideParamInfo(foregroundExperimentAcc);
+            populateSpectrumInfo(experimentAcc);
+            populateIdentificationInfo(experimentAcc);
+            populatePrecursorInfo(experimentAcc);
+            populatePeptideInfo(experimentAcc);
+            populatePTMInfo(experimentAcc);
+            populateFragmentIonInfo(experimentAcc);
+            populateIdentificationParamInfo(experimentAcc);
+            populatePeptideParamInfo(experimentAcc);
             populateTheRest();
         }
     }
@@ -72,6 +74,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
      * @throws java.sql.SQLException an error while querying database.
      */
     private void populateExperimentAccs() throws SQLException {
+
         logger.info("Initializing experiment accessions");
         // clear previous experiment accessions
         cache.clear(CacheCategory.EXPERIMENT_ACC);

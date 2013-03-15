@@ -21,8 +21,7 @@ import java.util.Collection;
  * Time: 14:25:49
  */
 public interface DataAccessController
-        extends MzGraphDataAccess, ProteinDataAccess, TrackDataAccess, PeptideDataAccess, QuantDataAccess, ChartAccess,
-        PropertyChangeHandler, PropertyChangeListener {
+        extends MzGraphDataAccess, ProteinDataAccess, PeptideDataAccess, QuantDataAccess, ChartAccess {
 
     /**
      * fired when data controller is closed

@@ -106,7 +106,7 @@ public class OpenPrideDatabaseTask extends TaskAdapter<DataAccessController, Voi
         java.util.List<DataAccessController> controllers = context.getControllers();
         for (DataAccessController controller : controllers) {
             if (DataAccessController.Type.DATABASE.equals(controller.getType())&&
-                    controller.getForegroundExperimentAcc().equals(acc)) {
+                    ((PrideDBAccessControllerImpl)controller).getExperimentAcc().equals(acc)) {
                 exist = true;
             }
         }
@@ -142,7 +142,7 @@ public class OpenPrideDatabaseTask extends TaskAdapter<DataAccessController, Voi
             EmptyDataAccessController dummy = null;
             if (acc != null) {
                 dummy = new EmptyDataAccessController();
-                dummy.setForegroundExperimentAcc(acc);
+                //dummy.setForegroundExperimentAcc(acc);
                 dummy.setName("PRIDE Experiment " + acc);
                 dummy.setType(DataAccessController.Type.DATABASE);
                 // add a closure hook

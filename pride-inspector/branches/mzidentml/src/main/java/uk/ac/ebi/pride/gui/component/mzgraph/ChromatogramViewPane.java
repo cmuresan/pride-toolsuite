@@ -6,6 +6,7 @@ import org.bushe.swing.event.EventSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideDBAccessControllerImpl;
 import uk.ac.ebi.pride.data.core.Chromatogram;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.action.PrideAction;
@@ -96,7 +97,7 @@ public class ChromatogramViewPane extends DataAccessControllerPane<Chromatogram,
         if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
             chromaBrowser.setSource(((File) controller.getSource()).getName());
         } else if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
-            chromaBrowser.setSource("Pride Experiment " + controller.getForegroundExperimentAcc());
+            chromaBrowser.setSource("Pride Experiment " + ((PrideDBAccessControllerImpl) controller).getExperimentAcc());
         }
         // set id
         chromaBrowser.setId(chroma.getId());

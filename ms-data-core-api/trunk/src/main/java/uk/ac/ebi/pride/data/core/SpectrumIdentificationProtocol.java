@@ -1,8 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
 
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -89,7 +87,7 @@ public class SpectrumIdentificationProtocol extends Protocol {
     }
 
 
-    public SpectrumIdentificationProtocol(@Nullable ParamGroup analysisParam, Comparable id, String name,
+    public SpectrumIdentificationProtocol(ParamGroup analysisParam, Comparable id, String name,
             Software analysisSoftware, ParamGroup threshold, ParamGroup searchType,
             List<SearchModification> searchModificationList, boolean enzymeIndependent, List<Enzyme> enzymeList,
             List<MassTable> massTableList, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,

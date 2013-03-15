@@ -19,11 +19,11 @@ import java.util.*;
  * AbstractDataAccessController provides an abstract implementation of DataAccessController.
  * This is solely based on getting the data directly from data source.
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 03-Feb-2010
  * Time: 12:22:24
  */
-public abstract class AbstractDataAccessController extends PropertyChangeHelper implements DataAccessController {
+public abstract class AbstractDataAccessController implements DataAccessController {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractDataAccessController.class);
 
@@ -54,23 +54,6 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      * Data source, such as: File
      */
     private Object source = null;
-    /**
-     * Foreground experiment accession, the one which user is currently viewing/analysing
-     */
-    private Comparable foregroundExperimentAcc = null;
-    /**
-     * Foreground spectrum, the one which user currently selected
-     */
-    private Spectrum foregroundSpectrum = null;
-    /**
-     * Foreground chromatogram, the one which user currently selected
-     */
-    private Chromatogram foregroundChromatogram = null;
-    /**
-     * Foreground protein identification, the one which user currently selected
-     */
-    private Protein foregroundProtein = null;
-
 
     /**
      * Create a data access controller without source
@@ -216,8 +199,6 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
      */
     @Override
     public void close() {
-        removeAllPropertyChangeListeners();
-        firePropertyChange(DATA_SOURCE_CLOSED, false, true);
     }
 
     /**
@@ -1305,152 +1286,6 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     }
 
     /**
-     * Get foreground experiment accession
-     *
-     * @return Comparable  experiment accession
-     */
-    @Override
-    public synchronized Comparable getForegroundExperimentAcc() {
-        return foregroundExperimentAcc;
-    }
-
-    /**
-     * Set foreground experiment accession
-     *
-     * @param expAcc new experiment accession
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    public void setForegroundExperimentAcc(Comparable expAcc) throws DataAccessException {
-        logger.debug("Set foreground experiment accession: {}", expAcc);
-        Comparable acc = foregroundExperimentAcc;
-        if (!expAcc.equals(acc)) {
-            Comparable oldExp, newExp;
-            synchronized (this) {
-                oldExp = foregroundExperimentAcc;
-                foregroundExperimentAcc = expAcc;
-                newExp = foregroundExperimentAcc;
-            }
-            firePropertyChange(FOREGROUND_EXPERIMENT_CHANGED, oldExp, newExp);
-        }
-    }
-
-    /**
-     * Get foreground chromatogram
-     *
-     * @return Chromatogram    foreground chromatogram
-     */
-    @Override
-    public synchronized Chromatogram getForegroundChromatogram() {
-        return foregroundChromatogram;
-    }
-
-    /**
-     * Set foreground chromatogram
-     *
-     * @param chromaId chromatogram id
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    public void setForegroundChromatogramById(Comparable chromaId) throws DataAccessException {
-        logger.debug("Set foreground chromatogram id: {}", chromaId);
-
-        Chromatogram oldChroma = null;
-        Chromatogram newChroma = this.getChromatogramById(chromaId);
-        synchronized (this) {
-            if (foregroundChromatogram == null ||
-                    (newChroma != null && !foregroundChromatogram.getId().equals(newChroma.getId()))) {
-                oldChroma = foregroundChromatogram;
-                foregroundChromatogram = newChroma;
-            }
-        }
-        firePropertyChange(FOREGROUND_CHROMATOGRAM_CHANGED, oldChroma, newChroma);
-    }
-
-    /**
-     * get foreground spectrum
-     *
-     * @return spectrum    foreground spectrum
-     */
-    @Override
-    public synchronized Spectrum getForegroundSpectrum() {
-        return foregroundSpectrum;
-    }
-
-    /**
-     * Set foreground spectrum using a given id
-     *
-     * @param specId spectrum id
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    public void setForegroundSpectrumById(Comparable specId) throws DataAccessException {
-        logger.debug("Set foreground spectrum id: {}", specId);
-
-        Spectrum oldSpec = null;
-        Spectrum newSpec = this.getSpectrumById(specId);
-        synchronized (this) {
-            if (foregroundSpectrum == null ||
-                    (newSpec != null && !foregroundSpectrum.getId().equals(newSpec.getId()))) {
-                oldSpec = foregroundSpectrum;
-                foregroundSpectrum = this.getSpectrumById(specId);
-            }
-        }
-        firePropertyChange(FOREGROUND_SPECTRUM_CHANGED, oldSpec, newSpec);
-    }
-
-    /**
-     * Get the foreground mzgraph, can be either chromatogram or spectrum, depends on the given class type
-     *
-     * @param classType classes that extends MzGraph
-     * @return MzGraph foreground mzgrap object
-     */
-    @Override
-    public MzGraph getForegroundMzGraph(Class<? extends MzGraph> classType) {
-        MzGraph mzGraph = null;
-
-        if (classType.equals(Spectrum.class)) {
-            mzGraph = getForegroundSpectrum();
-        } else if (classType.equals(Chromatogram.class)) {
-            mzGraph = getForegroundChromatogram();
-        }
-
-        return mzGraph;
-    }
-
-    /**
-     * Get foreground protein identification
-     *
-     * @return Identification  protein identification
-     */
-    @Override
-    public synchronized Protein getForegroundProtein() {
-        return foregroundProtein;
-    }
-
-    /**
-     * Set foreground protein identification using a given id
-     *
-     * @param proteinId identification id
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    public void setForegroundIdentificationById(Comparable proteinId) throws DataAccessException {
-        logger.debug("Set foreground identification id: {}", proteinId);
-
-        Protein oldProtein = null;
-        Protein newProtein = this.getProteinById(proteinId);
-        synchronized (this) {
-            if (foregroundProtein == null ||
-                    (newProtein != null && !foregroundProtein.getId().equals(newProtein.getId()))) {
-                oldProtein = foregroundProtein;
-                foregroundProtein = getProteinById(proteinId);
-            }
-        }
-        firePropertyChange(FOREGROUND_IDENTIFICATION_CHANGED, oldProtein, newProtein);
-    }
-
-    /**
      * Check the availability of quantitative data
      *
      * @return boolean true mean there is quantitative data
@@ -1948,11 +1783,6 @@ public abstract class AbstractDataAccessController extends PropertyChangeHelper 
     public Quantitation getPeptideQuantData(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         Peptide peptide = getPeptideByIndex(proteinId, peptideId);
         return new Quantitation(Quantitation.Type.PEPTIDE, peptide.getSpectrumIdentification().getCvParams());
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        // empty method
     }
 
     /**

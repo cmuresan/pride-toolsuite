@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.action.impl;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventSubscriber;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideDBAccessControllerImpl;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
@@ -39,7 +40,7 @@ public class ExportPrideXmlAction extends PrideAction {
         PrideInspectorContext appContext = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
         DataAccessController controller = appContext.getForegroundDataAccessController();
         // experiment accession
-        Comparable accession = controller.getForegroundExperimentAcc();
+        Comparable accession = ((PrideDBAccessControllerImpl)controller).getExperimentAcc();
 
         String defaultFilePath = controller.getName() + ".xml";
         SimpleFileDialog ofd = new SimpleFileDialog(appContext.getOpenFilePath(), "Export PRIDE XML", defaultFilePath, false, ".xml");

@@ -460,20 +460,14 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
 
                     // get the column number for mzgraph id
                     int columnNum;
-                    try {
-                        if (tableModel instanceof SpectrumTableModel) {
-                            columnNum = ((SpectrumTableModel) tableModel).getColumnIndex(SpectrumTableModel.TableHeader.SPECTRUM_ID_COLUMN.getHeader());
-                            Comparable id = (Comparable) table.getValueAt(rowNum, columnNum);
-                            controller.setForegroundSpectrumById(id);
-                            eventBus.publish(new SpectrumEvent(this, controller, id));
-                        } else if (tableModel instanceof ChromatogramTableModel) {
-                            columnNum = ((ChromatogramTableModel) tableModel).getColumnIndex(ChromatogramTableModel.TableHeader.CHROMATOGRAM_ID_COLUMN.getHeader());
-                            Comparable id = (Comparable) table.getValueAt(rowNum, columnNum);
-                            controller.setForegroundChromatogramById(id);
-                            eventBus.publish(new ChromatogramEvent(this, controller, id));
-                        }
-                    } catch (DataAccessException e1) {
-                        logger.error("Failed to set foreground id", e1);
+                    if (tableModel instanceof SpectrumTableModel) {
+                        columnNum = ((SpectrumTableModel) tableModel).getColumnIndex(SpectrumTableModel.TableHeader.SPECTRUM_ID_COLUMN.getHeader());
+                        Comparable id = (Comparable) table.getValueAt(rowNum, columnNum);
+                        eventBus.publish(new SpectrumEvent(this, controller, id));
+                    } else if (tableModel instanceof ChromatogramTableModel) {
+                        columnNum = ((ChromatogramTableModel) tableModel).getColumnIndex(ChromatogramTableModel.TableHeader.CHROMATOGRAM_ID_COLUMN.getHeader());
+                        Comparable id = (Comparable) table.getValueAt(rowNum, columnNum);
+                        eventBus.publish(new ChromatogramEvent(this, controller, id));
                     }
                 }
             }
@@ -492,17 +486,25 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
             // local event bus
             EventService eventBus = ContainerEventServiceFinder.getEventService(MzDataSelectionPane.this);
 
+            int columnNum;
+            int rowNum;
+            int rowCnt;
+
             switch (pane.getSelectedIndex()) {
                 case 0:
-                    Spectrum spectrum = controller.getForegroundSpectrum();
-                    Comparable spectrumId = spectrum == null ? null : spectrum.getId();
+                    columnNum = ((SpectrumTableModel) spectrumTable.getModel()).getColumnIndex(SpectrumTableModel.TableHeader.SPECTRUM_ID_COLUMN.getHeader());
+                    rowNum = spectrumTable.getSelectedRow();
+                    rowCnt = spectrumTable.getRowCount();
+                    Comparable spectrumId = (rowCnt > 0 && rowNum >= 0)? (Comparable) spectrumTable.getValueAt(rowNum, columnNum):null;
                     eventBus.publish(new SpectrumEvent(this, controller, spectrumId));
                     exportButton.setEnabled(true);
                     exportButton.setForeground(Color.blue);
                     break;
                 case 1:
-                    Chromatogram chroma = controller.getForegroundChromatogram();
-                    Comparable chromaId = chroma == null ? null : chroma.getId();
+                    columnNum = ((ChromatogramTableModel) chromaTable.getModel()).getColumnIndex(ChromatogramTableModel.TableHeader.CHROMATOGRAM_ID_COLUMN.getHeader());
+                    rowNum = chromaTable.getSelectedRow();
+                    rowCnt = chromaTable.getRowCount();
+                    Comparable chromaId = (rowCnt > 0 && rowNum >= 0)? (Comparable) chromaTable.getValueAt(rowNum, columnNum):null;
                     eventBus.publish(new ChromatogramEvent(this, controller, chromaId));
                     exportButton.setEnabled(false);
                     exportButton.setForeground(Color.gray);

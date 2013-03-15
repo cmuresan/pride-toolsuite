@@ -31,17 +31,17 @@ public class UpdateForegroundEntryTask<T> extends AbstractDataAccessTask<T, Void
     protected T retrieve() throws Exception {
         Object result = null;
         if (ExperimentMetaData.class.equals(classType)) {
-            controller.setForegroundExperimentAcc(id);
-            result = controller.getForegroundExperimentAcc();
+           // controller.setForegroundExperimentAcc(id);
+           // result = controller.getForegroundExperimentAcc();
         } else if (Spectrum.class.equals(classType)) {
-            controller.setForegroundSpectrumById(id);
-            result = controller.getForegroundSpectrum();
+           // controller.setForegroundSpectrumById(id);
+           // result = controller.getForegroundSpectrum();
         } else if (Chromatogram.class.equals(classType)) {
-            controller.setForegroundChromatogramById(id);
-            result = controller.getForegroundChromatogram();
+           // controller.setForegroundChromatogramById(id);
+           // result = controller.getForegroundChromatogram();
         } else if (Protein.class.equals(classType)) {
-            controller.setForegroundIdentificationById(id);
-            result = controller.getForegroundProtein();
+           // controller.setForegroundIdentificationById(id);
+           // result = controller.getForegroundProtein();
         }
         
         return (T)result;

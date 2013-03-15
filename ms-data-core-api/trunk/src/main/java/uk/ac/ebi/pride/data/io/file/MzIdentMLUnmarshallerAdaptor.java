@@ -3,23 +3,12 @@ package uk.ac.ebi.pride.data.io.file;
 
 import uk.ac.ebi.jmzidml.MzIdentMLElement;
 import uk.ac.ebi.jmzidml.model.mzidml.*;
-import uk.ac.ebi.jmzidml.model.mzidml.Organization;
-import uk.ac.ebi.jmzidml.model.mzidml.Peptide;
-import uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidence;
-import uk.ac.ebi.jmzidml.model.mzidml.Person;
-import uk.ac.ebi.jmzidml.model.mzidml.Provider;
-import uk.ac.ebi.jmzidml.model.mzidml.Sample;
-import uk.ac.ebi.jmzidml.model.mzidml.SourceFile;
-import uk.ac.ebi.jmzidml.model.mzidml.SpectraData;
-import uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationProtocol;
 import uk.ac.ebi.jmzidml.xml.io.MzIdentMLUnmarshaller;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.utils.MzIdentMLUtils;
 
-
 import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -208,7 +197,8 @@ public class MzIdentMLUnmarshallerAdaptor {
     }
 
     public Comparable getDBSequencebyProteinHypothesis(Comparable id) throws JAXBException {
-        return unmarshaller.unmarshal(ProteinDetectionHypothesis.class,(String) id).getDBSequenceRef();
+        Map<String, String> attributes = unmarshaller.getElementAttributes((String) id, ProteinDetectionHypothesis.class);
+        return attributes.get("dBSequence_ref");
     }
 
     public DBSequence getDBSequenceById(Comparable id) throws JAXBException {

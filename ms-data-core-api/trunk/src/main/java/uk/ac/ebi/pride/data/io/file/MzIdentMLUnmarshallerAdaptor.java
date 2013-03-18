@@ -230,7 +230,7 @@ public class MzIdentMLUnmarshallerAdaptor {
         return spectrumIds;  //To change body of created methods use File | Settings | File Templates.
     }
 
-    /*
+    /**
      * This function try to Map in memory ids mapping and relation for an mzidentml file. The structure of the
      * mzidentml files is from spectrum->peptide->protein, but most for the end users is more interesting to
      * have an information structure from protein->peptide->spectrum. The function take the information from
@@ -243,28 +243,44 @@ public class MzIdentMLUnmarshallerAdaptor {
      */
     public Map<CacheCategory, Object> getPreScanIdMaps() throws ConfigurationException, JAXBException {
 
+        /**
+         * Map of Maps. Store several lookup maps as defined below.
+         */
         Map<CacheCategory, Object> maps = new HashMap<CacheCategory, Object>();
 
+//        Map<String, String> peToDbSeq = new HashMap<String, String>();
 
+        /**
+         * Map of IDs to SpectraData, e.g. IDs to spectra files
+         */
         Map<Comparable, SpectraData> spectraDataIds = getSpectraDataMap();
 
 
 
-        /* First Map is the Relation between an Spectrum file and all the Spectrums ids in the file
+        /**
+         * First Map is the Relation between an Spectrum file and all the Spectrums ids in the file
          * This information is useful to retrieve the for each spectrum File with spectrums are really
          * SpectrumIdentificationItems. For PRIDE Inspector is important for one of the windows that
          * shows the number of missing spectrum for an mzidentml file.
+         * Map of SpectraData IDs to List of spectrum IDs, e.g. which spectra come from which file
          */
         Map<Comparable, List<Comparable>> spectraDataMap = new HashMap<Comparable, List<Comparable>>(spectraDataIds.size());
 
-        /* The relation between the peptide evidence and the spectrumIdentificationItem. This map allow the access to the peptide evidence and
-         * spectrum information without the Protein information.
-        * */
-
+        /**
+         * The relation between the peptide evidence and the spectrumIdentificationItem.
+         * This map allow the access to the peptide evidence and spectrum information
+         * without the Protein information.
+         * ???? PeptideEvidence ????
+         *
+         * Map of SII IDs to a String[2] of spectrum ID and spectrum file ID
+         */
         Map<Comparable, String[]> identSpectrumMap = new HashMap<Comparable, String[]>();
 
 
-        ArrayList<Comparable> spectrumMatchResultsIds  = new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.SpectrumIdentificationResult));
+        /**
+         * List of PSMs, e.g. SpectrumIdentificationResult IDs
+         */
+        ArrayList<String> spectrumMatchResultsIds  = new ArrayList<String>(unmarshaller.getIDsForElement(MzIdentMLElement.SpectrumIdentificationResult));
 
         /**
          * This Protein Map represents the Protein identification in the DBSequence Section that contains SpectrumIdentification Items
@@ -280,19 +296,26 @@ public class MzIdentMLUnmarshallerAdaptor {
 
             SpectrumIdentificationResult spectrumResult = unmarshaller.unmarshal(SpectrumIdentificationResult.class,(String) idSpectrumResult);
 
-            // SpectraDataMap fill
+            // fill the SpectraDataMap
+            // for the currently referenced spectra file, retrieve the List (if it exists already) that is to store all the spectra IDs
             List<Comparable> spectrumIds = spectraDataMap.get(spectrumResult.getSpectraDataRef());
-            if(spectrumIds == null) spectrumIds = new ArrayList<Comparable>(1);
+            // if there is no spectra ID list for the spectrum file yet, then create one and add it to the map
+            if(spectrumIds == null) {
+                spectrumIds = new ArrayList<Comparable>();
+                spectraDataMap.put(spectrumResult.getSpectraDataRef(),spectrumIds);
+            }
+            // add the spectrum ID to the list of spectrum IDs for the current spectrum file
             spectrumIds.add(spectrumResult.getSpectrumID());
-            spectraDataMap.put(spectrumResult.getSpectraDataRef(),spectrumIds);
 
+            // proceed to populate the identSpectrumMap
             for(SpectrumIdentificationItem spectrumIdentItem: spectrumResult.getSpectrumIdentificationItem()){
 
                 // fill the SpectrumIdentification and the Spectrum information
                 String[] spectrumFeatures = new String[2];
                 SpectraData spectraData = spectraDataIds.get(spectrumResult.getSpectraDataRef());
 
-                String spectrumId   = MzIdentMLUtils.getSpectrumId(spectraData,spectrumResult.getSpectrumID());
+                // extract the spectrum ID from the provided identifier
+                String spectrumId   = MzIdentMLUtils.getSpectrumId(spectraData, spectrumResult.getSpectrumID());
                 spectrumFeatures[0] = spectrumId;
                 spectrumFeatures[1] = spectrumResult.getSpectraDataRef();
 
@@ -303,7 +326,10 @@ public class MzIdentMLUnmarshallerAdaptor {
                 for (PeptideEvidenceRef evidenceRef: spectrumIdentItem.getPeptideEvidenceRef()){
                     String[] evidence = new String[2];
                     evidence[0] = evidenceRef.getPeptideEvidenceRef();
-                    evidence[1] = evidenceRef.getPeptideEvidence().getDBSequenceRef();
+                    Map<String, String> attributes = unmarshaller.getElementAttributes(evidence[0], PeptideEvidence.class);
+                    evidence[1] = attributes.get("dBSequence_ref");
+                    // ToDo: this will get around the auto-resolving, but perhaps we have to check performance
+//                    evidence[1] = evidenceRef.getPeptideEvidence().getDBSequenceRef();
                     evidences.add(evidence);
                     idProteins.add(evidence[1]);
                 }

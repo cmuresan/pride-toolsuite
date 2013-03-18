@@ -503,7 +503,11 @@ public class DataAccessUtilities {
 
     /**
      * Get cv param by accession number and cv label.
+     * This method tries to find the CvParam for the given accession and cvLabel.
+     * IMPORTANT NOTE: As the cvLabel may not always be present, the method will
+     *                 assume a valid match if the accession alone matches.
      *
+     * ToDo: perhaps separate method without cvLabel would be better (then this one could fail if no cvLabel was found)
      * @param paramGroup parameter group
      * @param cvLabel    cv label.
      * @param accession  cv accession.
@@ -517,8 +521,12 @@ public class DataAccessUtilities {
         List<CvParam> cps = new ArrayList<CvParam>();
         if (cvParams != null) {
             for (CvParam param : cvParams) {
-                if (param.getAccession().equalsIgnoreCase(accession.toLowerCase())
-                        && param.getCvLookupID().equalsIgnoreCase(cvLabel.toLowerCase())) {
+                if ( param.getAccession().equalsIgnoreCase(accession) ) {
+                    if (param.getCvLookupID() != null && !param.getCvLookupID().equalsIgnoreCase(cvLabel)) {
+                        // this could be the wrong CV param!!
+                        System.out.println("We may have got the wrong CV param!!");
+                        // ToDo: proper logging (should perhaps fail, see comment above)
+                    }
                     cps.add(param);
                 }
             }

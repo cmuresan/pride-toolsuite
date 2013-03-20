@@ -6,7 +6,7 @@
 
     <groupId>uk.ac.ebi.pride</groupId>
     <artifactId>pride-mzgraph-browser</artifactId>
-    <version>1.0.12-SNAPSHOT</version>
+    <version>1.0.13-SNAPSHOT</version>
 
     <dependencies>
         <!-- use ms-data-core-api package to create test set. -->
@@ -14,6 +14,7 @@
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>ms-data-core-api</artifactId>
             <version>0.3</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -34,7 +35,7 @@
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>ion-generator</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         <!-- logging dependencies -->
         <dependency>
@@ -119,16 +120,15 @@
     </build>
 
     <distributionManagement>
+        <!-- EBI repo -->
         <repository>
-            <id>ebi-repo</id>
-            <name>EBI Repository</name>
-            <url>scp://lobster.ebi.ac.uk/homes/maven/public_html/m2repo</url>
+            <id>nexus-ebi-repo</id>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo</url>
         </repository>
+        <!-- EBI SNAPSHOT repo -->
         <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>ebi-repo-snapshots</id>
-            <name>EBI Snapshots Repository</name>
-            <url>scp://lobster.ebi.ac.uk/homes/maven/public_html/m2repo_snapshots</url>
+            <id>nexus-ebi-repo-snapshots</id>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo-snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 

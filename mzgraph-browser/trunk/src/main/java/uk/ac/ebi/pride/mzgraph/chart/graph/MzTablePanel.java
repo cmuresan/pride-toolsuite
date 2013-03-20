@@ -292,6 +292,14 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
         return toolbar;
     }
 
+    public boolean isCalculate() {
+        return this.table.isCalculate();
+    }
+
+    public boolean isShowAuto() {
+        return this.table.isShowAuto();
+    }
+
     /**
      * This button default is invisible. User can add some Action in it.
      */

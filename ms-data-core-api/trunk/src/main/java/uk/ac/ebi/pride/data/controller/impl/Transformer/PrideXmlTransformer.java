@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.data.controller.impl.Transformer;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
-import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
@@ -422,7 +421,6 @@ public class PrideXmlTransformer {
             ParamGroup params = transformParamGroup(rawIdent.getAdditional());
 
 
-
             Double seqConverage = rawIdent.getSequenceCoverage();
             double seqConverageVal = seqConverage == null ? -1 : seqConverage;
             Double threshold = rawIdent.getThreshold();
@@ -445,7 +443,7 @@ public class PrideXmlTransformer {
             SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
             DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
             //SearchEngine searchEngine = new SearchEngine(null, rawIdent.getSearchEngine(),null);
-            return new Protein(params, rawIdent.getId(), null, dbSequence, false, peptides, score, thresholdVal, seqConverageVal,null);
+            return new Protein(params, rawIdent.getId(), null, dbSequence, false, peptides, score, thresholdVal, seqConverageVal, null);
 
         }
 
@@ -536,8 +534,8 @@ public class PrideXmlTransformer {
 
         //Retrieve Experimental Mass and Charge.
         int charge = DataAccessUtilities.getPrecursorCharge(params);
-        double mz  = DataAccessUtilities.getPrecursorMz(params);
-        if(charge == -1 && spectrum != null){
+        double mz = DataAccessUtilities.getPrecursorMz(params);
+        if (charge == -1 && spectrum != null) {
             charge = DataAccessUtilities.getPrecursorCharge(spectrum);
         }
 
@@ -549,7 +547,7 @@ public class PrideXmlTransformer {
         Score score = DataAccessUtilities.getScore(params);
 
         SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, charge, mz, -1, -1, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, score, spectrum, null);
-        return new Peptide(peptideEvidence,spectrumIdentification);
+        return new Peptide(peptideEvidence, spectrumIdentification);
         //Todo : We need to capture the theoretical Mass Value
 
     }
@@ -764,7 +762,7 @@ public class PrideXmlTransformer {
             if (completionTime != null) {
                 userParams.add(new UserParam(COMPLETION_TIME, null, completionTime.toString(), null, null, null));
             }
-            software = new Software(new ParamGroup(cvParams, userParams), null, rawSoftware.getName(), null,null,null,rawSoftware.getVersion());
+            software = new Software(new ParamGroup(cvParams, userParams), null, rawSoftware.getName(), null, null, null, rawSoftware.getVersion());
         }
 
         return software;
@@ -963,7 +961,7 @@ public class PrideXmlTransformer {
                 CvTermReference contactOrg = CvTermReference.CONTACT_ORG;
                 cvParams.add(new CvParam(contactOrg.getAccession(), contactOrg.getName(), contactOrg.getCvLabel(), rawContact.getInstitution(), null, null, null));
                 CvTermReference contactMail = CvTermReference.CONTACT_EMAIL;
-                cvParams.add(new CvParam(contactMail.getAccession(),contactMail.getName(),contactMail.getCvLabel(),rawContact.getContactInfo(),null,null,null));
+                cvParams.add(new CvParam(contactMail.getAccession(), contactMail.getName(), contactMail.getCvLabel(), rawContact.getContactInfo(), null, null, null));
                 List<UserParam> userParams = null;
                 String contactInfo = rawContact.getContactInfo();
                 if (contactInfo != null) {
@@ -1045,7 +1043,13 @@ public class PrideXmlTransformer {
         if (rawReferences != null) {
             references = new ArrayList<Reference>();
             for (uk.ac.ebi.pride.jaxb.model.Reference rawReference : rawReferences) {
-                references.add(new Reference(transformParamGroup(rawReference.getAdditional()).getCvParams(), transformParamGroup(rawReference.getAdditional()).getUserParams(), null, null, rawReference.getRefLine()));
+                Reference newReference;
+                if (rawReference.getAdditional() != null) {
+                    newReference = new Reference(transformParamGroup(rawReference.getAdditional()).getCvParams(), transformParamGroup(rawReference.getAdditional()).getUserParams(), null, null, rawReference.getRefLine());
+                } else {
+                    newReference = new Reference(new ArrayList<CvParam>(), new ArrayList<UserParam>(), null, null, rawReference.getRefLine());
+                }
+                references.add(newReference);
             }
         }
 
@@ -1055,7 +1059,7 @@ public class PrideXmlTransformer {
     /**
      * Transform additional params from pride xml to core data model format.
      *
-     * @param rawAdditionalParams  Additional params from pride xml
+     * @param rawAdditionalParams Additional params from pride xml
      * @return ParamGroup   additional param groups
      */
     public static ParamGroup transformAdditional(uk.ac.ebi.pride.jaxb.model.Param rawAdditionalParams) {

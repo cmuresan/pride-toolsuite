@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
 
@@ -13,13 +13,13 @@ import java.util.List;
  */
 public class MzGraphList {
 
-    private DataProcessing defaultDataProcessingRef = null;
+    private DataProcessing defaultDataProcessingRef;
 
-    private List<MzGraph>  mzGraphList              = null;
+    private List<MzGraph>  mzGraphList;
 
     public MzGraphList(DataProcessing defaultDataProcessingRef, List<MzGraph> mzGraphList) {
         this.defaultDataProcessingRef = defaultDataProcessingRef;
-        this.mzGraphList              = mzGraphList;
+        this.mzGraphList = CollectionUtils.createListFromList(mzGraphList);
     }
 
     public DataProcessing getDefaultDataProcessingRef() {
@@ -35,24 +35,27 @@ public class MzGraphList {
     }
 
     public void setMzGraphList(List<MzGraph> mzGraphList) {
-        this.mzGraphList = mzGraphList;
+        CollectionUtils.replaceValuesInCollection(mzGraphList, this.mzGraphList);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof MzGraphList)) return false;
 
         MzGraphList that = (MzGraphList) o;
 
-        return !(defaultDataProcessingRef != null ? !defaultDataProcessingRef.equals(that.defaultDataProcessingRef) : that.defaultDataProcessingRef != null) && !(mzGraphList != null ? !mzGraphList.equals(that.mzGraphList) : that.mzGraphList != null);
+        if (defaultDataProcessingRef != null ? !defaultDataProcessingRef.equals(that.defaultDataProcessingRef) : that.defaultDataProcessingRef != null)
+            return false;
+        if (!mzGraphList.equals(that.mzGraphList)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = defaultDataProcessingRef != null ? defaultDataProcessingRef.hashCode() : 0;
-        result = 31 * result + (mzGraphList != null ? mzGraphList.hashCode() : 0);
+        result = 31 * result + mzGraphList.hashCode();
         return result;
     }
 }

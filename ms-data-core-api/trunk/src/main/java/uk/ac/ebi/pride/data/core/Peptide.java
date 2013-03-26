@@ -10,9 +10,9 @@ import java.util.List;
  */
 public class Peptide {
 
-    PeptideEvidence peptideEvidence = null;
+    private PeptideEvidence peptideEvidence;
 
-    SpectrumIdentification spectrumIdentification = null;
+    private SpectrumIdentification spectrumIdentification;
 
     public Peptide(PeptideEvidence peptideEvidence, SpectrumIdentification spectrumIdentification){
         this.peptideEvidence = peptideEvidence;
@@ -68,7 +68,7 @@ public class Peptide {
     }
 
     public boolean hasModification() {
-        return this.getPeptideSequence().getModificationList() != null && this.getPeptideSequence().getModificationList().size() != 0;
+        return this.getPeptideSequence().getModificationList().size() != 0;
     }
 
     public int getPrecursorCharge() {

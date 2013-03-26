@@ -9,47 +9,47 @@ package uk.ac.ebi.pride.data.core;
  */
 public class RunInfo extends ParamGroup {
 
-    private MzGraphList chromatogramList = null;
+    private MzGraphList chromatogramList;
 
     /**
      * default instrument configuration, important to have an overview of the instrument
      * configuration used in the experiment
      */
-    private InstrumentConfiguration defaultInstrumentConfiguration = null;
+    private InstrumentConfiguration defaultInstrumentConfiguration;
 
     /**
      * Source file used to extract all the mass spectrum or chromatograms.
      */
-    private SourceFile defaultSourceFile = null;
+    private SourceFile defaultSourceFile;
 
     /**
      * identifier of each run
      */
-    private String id = null;
+    private String id;
 
     /**
      * Reference to the sample used to obtain these spectrum or chromatograms list.
      */
-    private Sample      sampleRef    = null;
+    private Sample sample;
 
-    private MzGraphList spectrumList = null;
+    private MzGraphList spectrumList;
 
     /**
      * Timedate of the experiment measure
      */
-    private String timeStamp = null;
+    private String timeStamp;
 
     public RunInfo(ParamGroup params, String id, InstrumentConfiguration defaultInstrumentConfiguration,
                    SourceFile defaultSourceFile, Sample sampleRef, String timeStamp, MzGraphList spectrumList,
                    MzGraphList chromatogramList) {
         super(params);
-        this.id                             = id;
+        this.id = id;
         this.defaultInstrumentConfiguration = defaultInstrumentConfiguration;
-        this.defaultSourceFile              = defaultSourceFile;
-        this.sampleRef                      = sampleRef;
-        this.timeStamp                      = timeStamp;
-        this.spectrumList                   = spectrumList;
-        this.chromatogramList               = chromatogramList;
+        this.defaultSourceFile = defaultSourceFile;
+        this.sample = sampleRef;
+        this.timeStamp = timeStamp;
+        this.spectrumList = spectrumList;
+        this.chromatogramList = chromatogramList;
     }
 
     public MzGraphList getSpectrumList() {
@@ -92,12 +92,12 @@ public class RunInfo extends ParamGroup {
         this.defaultSourceFile = defaultSourceFile;
     }
 
-    public Sample getSampleRef() {
-        return sampleRef;
+    public Sample getSample() {
+        return sample;
     }
 
-    public void setSampleRef(Sample sampleRef) {
-        this.sampleRef = sampleRef;
+    public void setSample(Sample sample) {
+        this.sample = sample;
     }
 
     public String getTimeStamp() {
@@ -111,13 +111,24 @@ public class RunInfo extends ParamGroup {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof RunInfo)) return false;
         if (!super.equals(o)) return false;
 
         RunInfo runInfo = (RunInfo) o;
 
-        return !(chromatogramList != null ? !chromatogramList.equals(runInfo.chromatogramList) : runInfo.chromatogramList != null) && !(defaultInstrumentConfiguration != null ? !defaultInstrumentConfiguration.equals(runInfo.defaultInstrumentConfiguration) : runInfo.defaultInstrumentConfiguration != null) && !(defaultSourceFile != null ? !defaultSourceFile.equals(runInfo.defaultSourceFile) : runInfo.defaultSourceFile != null) && !(id != null ? !id.equals(runInfo.id) : runInfo.id != null) && !(sampleRef != null ? !sampleRef.equals(runInfo.sampleRef) : runInfo.sampleRef != null) && !(spectrumList != null ? !spectrumList.equals(runInfo.spectrumList) : runInfo.spectrumList != null) && !(timeStamp != null ? !timeStamp.equals(runInfo.timeStamp) : runInfo.timeStamp != null);
+        if (chromatogramList != null ? !chromatogramList.equals(runInfo.chromatogramList) : runInfo.chromatogramList != null)
+            return false;
+        if (defaultInstrumentConfiguration != null ? !defaultInstrumentConfiguration.equals(runInfo.defaultInstrumentConfiguration) : runInfo.defaultInstrumentConfiguration != null)
+            return false;
+        if (defaultSourceFile != null ? !defaultSourceFile.equals(runInfo.defaultSourceFile) : runInfo.defaultSourceFile != null)
+            return false;
+        if (id != null ? !id.equals(runInfo.id) : runInfo.id != null) return false;
+        if (sample != null ? !sample.equals(runInfo.sample) : runInfo.sample != null) return false;
+        if (spectrumList != null ? !spectrumList.equals(runInfo.spectrumList) : runInfo.spectrumList != null)
+            return false;
+        if (timeStamp != null ? !timeStamp.equals(runInfo.timeStamp) : runInfo.timeStamp != null) return false;
 
+        return true;
     }
 
     @Override
@@ -127,7 +138,7 @@ public class RunInfo extends ParamGroup {
         result = 31 * result + (defaultInstrumentConfiguration != null ? defaultInstrumentConfiguration.hashCode() : 0);
         result = 31 * result + (defaultSourceFile != null ? defaultSourceFile.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
-        result = 31 * result + (sampleRef != null ? sampleRef.hashCode() : 0);
+        result = 31 * result + (sample != null ? sample.hashCode() : 0);
         result = 31 * result + (spectrumList != null ? spectrumList.hashCode() : 0);
         result = 31 * result + (timeStamp != null ? timeStamp.hashCode() : 0);
         return result;

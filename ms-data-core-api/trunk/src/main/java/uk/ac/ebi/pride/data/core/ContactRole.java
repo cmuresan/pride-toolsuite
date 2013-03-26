@@ -18,12 +18,12 @@ public class ContactRole {
     /**
      * Could be an Organization or a Person
      */
-    AbstractContact contact = null;
+    AbstractContact contact;
 
     /**
      * Role of an specific Contact
      */
-    CvParam role = null;
+    CvParam role;
 
     /**
      * Constructor for a Contact Role

@@ -1,13 +1,10 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- non-JDK imports --------------------------------------------------------
-
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.engine.SearchEngineType;
 
 import java.util.ArrayList;
 import java.util.List;
-
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * SearchEngine store the original search engine title and identified search engine types.
@@ -21,7 +18,7 @@ public class SearchEngine extends Identifiable {
     /**
      * Identified search engine types using the data source
      */
-    private List<SearchEngineType> searchEngineTypes = new ArrayList<SearchEngineType>();
+    private List<SearchEngineType> searchEngineTypes;
 
     /**
      * @param searchengine
@@ -37,7 +34,7 @@ public class SearchEngine extends Identifiable {
      */
     public SearchEngine(Comparable id, String name) {
         super(id, name);
-        this.searchEngineTypes = null;
+        this.searchEngineTypes = new ArrayList<SearchEngineType>();
     }
 
     /**
@@ -49,6 +46,7 @@ public class SearchEngine extends Identifiable {
         super(id, name);
 
         if (searchEngineTypes != null) {
+            this.searchEngineTypes = new ArrayList<SearchEngineType>();
             this.searchEngineTypes.addAll(searchEngineTypes);
         }
     }
@@ -68,12 +66,7 @@ public class SearchEngine extends Identifiable {
      * @param searchEngineTypes a list of search engine types
      */
     public void setSearchEngineTypes(List<SearchEngineType> searchEngineTypes) {
-        if(this.searchEngineTypes == null){
-            this.searchEngineTypes = new ArrayList<SearchEngineType>();
-        }else{
-            this.searchEngineTypes.clear();
-        }
-        this.searchEngineTypes.addAll(searchEngineTypes);
+        CollectionUtils.replaceValuesInCollection(searchEngineTypes, this.searchEngineTypes);
     }
 
     /**
@@ -88,17 +81,21 @@ public class SearchEngine extends Identifiable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof SearchEngine)) return false;
+        if (!super.equals(o)) return false;
 
         SearchEngine that = (SearchEngine) o;
 
-        return !(searchEngineTypes != null ? !searchEngineTypes.equals(that.searchEngineTypes) : that.searchEngineTypes != null);
+        if (!searchEngineTypes.equals(that.searchEngineTypes)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return searchEngineTypes != null ? searchEngineTypes.hashCode() : 0;
+        int result = super.hashCode();
+        result = 31 * result + searchEngineTypes.hashCode();
+        return result;
     }
 }
 

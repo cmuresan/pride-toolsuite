@@ -19,17 +19,17 @@ public class Provider extends Identifiable {
      * A reference to the Contact person that provide the mzIdentMl File.
      * (mzIndetMl description: When a ContactRole is used, it specifies which Contact the role is associated with.
      */
-    private AbstractContact contact = null;
+    private AbstractContact contact;
 
     /*
      * Role in CvParam
      */
-    private CvParam role = null;
+    private CvParam role;
 
     /**
      * The Software that produced the document instance. mzIdentML
      */
-    private Software software = null;
+    private Software software;
 
     /**
      * @param id  Generic Id of Provider Object
@@ -41,8 +41,8 @@ public class Provider extends Identifiable {
     public Provider(Comparable id, String name, Software software, AbstractContact contact, CvParam role) {
         super(id, name);
         this.software = software;
-        this.contact  = contact;
-        this.role     = role;
+        this.contact = contact;
+        this.role = role;
     }
 
     public Software getSoftware() {

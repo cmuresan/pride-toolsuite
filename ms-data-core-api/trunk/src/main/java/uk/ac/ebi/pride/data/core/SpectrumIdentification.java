@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
 
@@ -14,52 +14,52 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
     /**
      * The theoretical mass-to-charge value calculated for the peptide in Daltons / charge.
      */
-    private double calculatedMassToCharge = -1;
+    private double calculatedMassToCharge;
 
     /**
      * The calculated isoelectric point of the (poly)peptide, with relevant
      * modifications included. Do not supply this value if the PI cannot be
      * calculated properly.
      */
-    private double calculatedPI = -1;
+    private double calculatedPI;
 
     /**
      * The charge state of the identified peptide.
      */
-    private int chargeState = -1;
+    private int chargeState;
 
     /**
      * The mass-to-charge value measured in the experiment in Daltons / charge.
      */
-    private double experimentalMassToCharge = -1;
+    private double experimentalMassToCharge;
 
     /**
      * The product ions identified in this result.
      */
-    private List<FragmentIon> fragmentation = null;
+    private List<FragmentIon> fragmentation;
 
     /**
      * A reference should be given to the MassTable used to calculate the
      * sequenceMass only if more than one MassTable has been given.
      */
-    private MassTable massTableRef = null;
+    private MassTable massTable;
 
     /**
      * Reference to the PeptideEvidence element identified. If a specific
      * sequence can be assigned to multiple proteins and or positions in a
      * protein all possible PeptideEvidence elements should be referenced here.
      */
-    private List<PeptideEvidence> peptideEvidenceList = null;
+    private List<PeptideEvidence> peptideEvidenceList;
 
     /**
      * Score stores a number of peptide scores for a list of search engines.
      */
-    private Score score = null;
+    private Score score;
 
     /**
      * A reference to the identified (poly)peptide sequence in the Peptide element.
      */
-    private PeptideSequence peptideSequence = null;
+    private PeptideSequence peptideSequence;
 
     /**
      * For an MS/MS result set, this is the rank of the identification quality as
@@ -67,7 +67,7 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
      * have the same top score, they should all be assigned rank =1. For PMF data, the
      * rank attribute may be meaningless and values of rank = 0 should be given.
      */
-    private int rank = -1;
+    private int rank;
 
     /**
      * Set to true if the producers of the file has deemed that the identification
@@ -75,26 +75,26 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
      * If no such threshold has been set, value of true should be given for all
      * results.
      */
-    private boolean passThreshold = false;
+    private boolean passThreshold;
 
     /**
      * A reference should be provided to link the SpectrumIdentificationItem
      * to a Sample if more than one sample has been described in the
      * AnalysisSampleCollection.
      */
-    private Sample sample = null;
+    private Sample sample;
 
     /**
      * A reference to a spectra data set (e.g. a spectra file).
      */
-    private SpectraData spectraData = null;
+    private SpectraData spectraData;
 
     /**
      * The locally unique id for the spectrum in the spectra data set specified
      * by SpectraData_ref. External guidelines are provided on the use of
      * consistent identifiers for spectra in different external formats.
      */
-    private Spectrum spectrum = null;
+    private Spectrum spectrum;
 
     /**
      * @param id
@@ -106,7 +106,7 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
      * @param peptideSequence
      * @param rank
      * @param passThreshold
-     * @param massTableRef
+     * @param massTable
      * @param sample
      * @param peptideEvidenceList
      * @param fragmentation
@@ -116,34 +116,34 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
      */
     public SpectrumIdentification(Comparable id, String name, int chargeState, double experimentalMassToCharge,
                    double calculatedMassToCharge, double calculatedPI, PeptideSequence peptideSequence, int rank,
-                   boolean passThreshold, MassTable massTableRef, Sample sample,
+                   boolean passThreshold, MassTable massTable, Sample sample,
                    List<PeptideEvidence> peptideEvidenceList, List<FragmentIon> fragmentation,
                    Score score, Spectrum spectrum, SpectraData spectraData) {
         this(null, id, name, chargeState, experimentalMassToCharge, calculatedMassToCharge, calculatedPI,
-             peptideSequence, rank, passThreshold, massTableRef, sample, peptideEvidenceList, fragmentation,
+             peptideSequence, rank, passThreshold, massTable, sample, peptideEvidenceList, fragmentation,
                 score, spectrum, spectraData);
     }
 
     public SpectrumIdentification(ParamGroup params, Comparable id, String name, int chargeState, double experimentalMassToCharge,
                    double calculatedMassToCharge, double calculatedPI, PeptideSequence peptideSequence, int rank,
-                   boolean passThreshold, MassTable massTableRef, Sample sample,
+                   boolean passThreshold, MassTable massTable, Sample sample,
                    List<PeptideEvidence> peptideEvidenceList, List<FragmentIon> fragmentation,
                    Score score, Spectrum spectrum, SpectraData spectraData) {
         super(params, id, name);
-        this.chargeState              = chargeState;
+        this.chargeState = chargeState;
         this.experimentalMassToCharge = experimentalMassToCharge;
-        this.calculatedMassToCharge   = calculatedMassToCharge;
-        this.calculatedPI             = calculatedPI;
-        this.peptideSequence          = peptideSequence;
-        this.rank                     = rank;
-        this.passThreshold            = passThreshold;
-        this.massTableRef             = massTableRef;
-        this.sample                   = sample;
-        this.peptideEvidenceList      = peptideEvidenceList;
-        this.fragmentation            = fragmentation;
+        this.calculatedMassToCharge = calculatedMassToCharge;
+        this.calculatedPI = calculatedPI;
+        this.peptideSequence = peptideSequence;
+        this.rank = rank;
+        this.passThreshold = passThreshold;
+        this.massTable = massTable;
+        this.sample = sample;
+        this.peptideEvidenceList = CollectionUtils.createListFromList(peptideEvidenceList);
+        this.fragmentation = CollectionUtils.createListFromList(fragmentation);
         this.score = score;
-        this.spectrum                 = spectrum;
-        this.spectraData              = spectraData;
+        this.spectrum = spectrum;
+        this.spectraData = spectraData;
     }
 
     public int getChargeState() {
@@ -202,12 +202,12 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
         this.passThreshold = passThreshold;
     }
 
-    public MassTable getMassTableRef() {
-        return massTableRef;
+    public MassTable getMassTable() {
+        return massTable;
     }
 
-    public void setMassTableRef(MassTable massTableRef) {
-        this.massTableRef = massTableRef;
+    public void setMassTable(MassTable massTable) {
+        this.massTable = massTable;
     }
 
     public Sample getSample() {
@@ -223,7 +223,7 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
     }
 
     public void setPeptideEvidenceList(List<PeptideEvidence> peptideEvidenceList) {
-        this.peptideEvidenceList = peptideEvidenceList;
+        CollectionUtils.replaceValuesInCollection(peptideEvidenceList, this.peptideEvidenceList);
     }
 
     public List<FragmentIon> getFragmentation() {
@@ -231,7 +231,7 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
     }
 
     public void setFragmentation(List<FragmentIon> fragmentation) {
-        this.fragmentation = fragmentation;
+        CollectionUtils.replaceValuesInCollection(fragmentation, this.fragmentation);
     }
 
     public Score getScore() {
@@ -277,13 +277,28 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof SpectrumIdentification)) return false;
         if (!super.equals(o)) return false;
 
         SpectrumIdentification that = (SpectrumIdentification) o;
 
-        return Double.compare(that.calculatedMassToCharge, calculatedMassToCharge) == 0 && Double.compare(that.calculatedPI, calculatedPI) == 0 && chargeState == that.chargeState && Double.compare(that.experimentalMassToCharge, experimentalMassToCharge) == 0 && passThreshold == that.passThreshold && rank == that.rank && !(fragmentation != null ? !fragmentation.equals(that.fragmentation) : that.fragmentation != null) && !(massTableRef != null ? !massTableRef.equals(that.massTableRef) : that.massTableRef != null) && !(peptideEvidenceList != null ? !peptideEvidenceList.equals(that.peptideEvidenceList) : that.peptideEvidenceList != null) && !(peptideSequence != null ? !peptideSequence.equals(that.peptideSequence) : that.peptideSequence != null) && !(sample != null ? !sample.equals(that.sample) : that.sample != null) && !(score != null ? !score.equals(that.score) : that.score != null) && !(spectraData != null ? !spectraData.equals(that.spectraData) : that.spectraData != null) && !(spectrum != null ? !spectrum.equals(that.spectrum) : that.spectrum != null);
+        if (Double.compare(that.calculatedMassToCharge, calculatedMassToCharge) != 0) return false;
+        if (Double.compare(that.calculatedPI, calculatedPI) != 0) return false;
+        if (chargeState != that.chargeState) return false;
+        if (Double.compare(that.experimentalMassToCharge, experimentalMassToCharge) != 0) return false;
+        if (passThreshold != that.passThreshold) return false;
+        if (rank != that.rank) return false;
+        if (!fragmentation.equals(that.fragmentation)) return false;
+        if (massTable != null ? !massTable.equals(that.massTable) : that.massTable != null) return false;
+        if (!peptideEvidenceList.equals(that.peptideEvidenceList)) return false;
+        if (peptideSequence != null ? !peptideSequence.equals(that.peptideSequence) : that.peptideSequence != null)
+            return false;
+        if (sample != null ? !sample.equals(that.sample) : that.sample != null) return false;
+        if (score != null ? !score.equals(that.score) : that.score != null) return false;
+        if (spectraData != null ? !spectraData.equals(that.spectraData) : that.spectraData != null) return false;
+        if (spectrum != null ? !spectrum.equals(that.spectrum) : that.spectrum != null) return false;
 
+        return true;
     }
 
     @Override
@@ -297,9 +312,9 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
         result = 31 * result + chargeState;
         temp = experimentalMassToCharge != +0.0d ? Double.doubleToLongBits(experimentalMassToCharge) : 0L;
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (fragmentation != null ? fragmentation.hashCode() : 0);
-        result = 31 * result + (massTableRef != null ? massTableRef.hashCode() : 0);
-        result = 31 * result + (peptideEvidenceList != null ? peptideEvidenceList.hashCode() : 0);
+        result = 31 * result + fragmentation.hashCode();
+        result = 31 * result + (massTable != null ? massTable.hashCode() : 0);
+        result = 31 * result + peptideEvidenceList.hashCode();
         result = 31 * result + (score != null ? score.hashCode() : 0);
         result = 31 * result + (peptideSequence != null ? peptideSequence.hashCode() : 0);
         result = 31 * result + rank;

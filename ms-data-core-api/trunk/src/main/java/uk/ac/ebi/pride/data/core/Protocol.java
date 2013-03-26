@@ -16,14 +16,14 @@ public class Protocol extends IdentifiableParamGroup {
      * The protein or Spectrum detection software used,
      * given as a reference to the SoftwareCollection section.
      */
-    private Software analysisSoftware = null;
+    private Software analysisSoftware;
 
     /**
      * The threshold(s) applied to determine that a result is significant.
      * If multiple terms are used it is assumed that all conditions are satisfied
      * by the passing results.
      */
-    private ParamGroup threshold = null;
+    private ParamGroup threshold;
 
     /**
      * @param id      Generic Id

@@ -12,27 +12,27 @@ public abstract class Parameter implements MassSpecObject {
     /**
      * The name of cv term
      */
-    private String name = null;
+    private String name;
 
     /**
      * The unit accession number from controlled vocabulary
      */
-    private String unitAcc = null;
+    private String unitAcc;
 
     /**
      * The cvlookup id for unit
      */
-    private String unitCVLookupID = null;
+    private String unitCVLookupID;
 
     /**
      * The unit name of unit cv term
      */
-    private String unitName = null;
+    private String unitName;
 
     /**
      * The value of cv term
      */
-    private String value = null;
+    private String value;
 
     /**
      * Constructor

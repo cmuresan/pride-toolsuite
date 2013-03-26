@@ -17,12 +17,12 @@ public class IdentifiableParamGroup extends ParamGroup {
      * An identifier is an unambiguous string that is unique within the scope
      * (i.e. a document, a set of related documents, or a repository) of its use.
      */
-    private Comparable id = null;
+    private Comparable id;
 
     /**
      * The potentially ambiguous common identifier, such as a human-readable name for the instance.
      */
-    private String name = null;
+    private String name;
 
     /**
      * Constructor without param groups

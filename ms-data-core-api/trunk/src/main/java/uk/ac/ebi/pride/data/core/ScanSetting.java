@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
 
@@ -17,17 +17,17 @@ public class ScanSetting extends ParamGroup {
     /**
      * identifier of the scan setting
      */
-    private String id = null;
+    private String id;
 
     /**
      * source file
      */
-    private List<SourceFile> sourceFile = null;
+    private List<SourceFile> sourceFile;
 
     /**
      * target list
      */
-    private List<ParamGroup> targets = null;
+    private List<ParamGroup> targets;
 
     /**
      * Constructor
@@ -40,8 +40,8 @@ public class ScanSetting extends ParamGroup {
     public ScanSetting(String id, List<SourceFile> sourceFile, List<ParamGroup> targets, ParamGroup params) {
         super(params);
         this.id         = id;
-        this.sourceFile = sourceFile;
-        this.targets    = targets;
+        this.sourceFile = CollectionUtils.createListFromList(sourceFile);
+        this.targets    = CollectionUtils.createListFromList(targets);
     }
 
     public String getId() {
@@ -57,7 +57,7 @@ public class ScanSetting extends ParamGroup {
     }
 
     public void setSourceFile(List<SourceFile> sourceFile) {
-        this.sourceFile = sourceFile;
+        CollectionUtils.replaceValuesInCollection(sourceFile, this.sourceFile);
     }
 
     public List<ParamGroup> getTargets() {
@@ -65,27 +65,30 @@ public class ScanSetting extends ParamGroup {
     }
 
     public void setTargets(List<ParamGroup> targets) {
-        this.targets = targets;
+        CollectionUtils.replaceValuesInCollection(targets, this.targets);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ScanSetting)) return false;
         if (!super.equals(o)) return false;
 
         ScanSetting that = (ScanSetting) o;
 
-        return !(id != null ? !id.equals(that.id) : that.id != null) && !(sourceFile != null ? !sourceFile.equals(that.sourceFile) : that.sourceFile != null) && !(targets != null ? !targets.equals(that.targets) : that.targets != null);
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (!sourceFile.equals(that.sourceFile)) return false;
+        if (!targets.equals(that.targets)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (id != null ? id.hashCode() : 0);
-        result = 31 * result + (sourceFile != null ? sourceFile.hashCode() : 0);
-        result = 31 * result + (targets != null ? targets.hashCode() : 0);
+        result = 31 * result + sourceFile.hashCode();
+        result = 31 * result + targets.hashCode();
         return result;
     }
 }

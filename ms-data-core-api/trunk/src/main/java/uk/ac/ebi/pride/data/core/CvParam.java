@@ -12,12 +12,12 @@ public class CvParam extends Parameter {
     /**
      * Cv term accession
      */
-    private String accession = null;
+    private String accession;
 
     /**
      * Id of the referenced CvLookup object
      */
-    private String cvLookupID = null;
+    private String cvLookupID;
 
     /**
      * Constructor

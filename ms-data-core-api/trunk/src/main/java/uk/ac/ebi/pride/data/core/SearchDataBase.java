@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
 
@@ -22,36 +22,36 @@ public class SearchDataBase extends ExternalData {
     /**
      * Description of the database with CVTerms
      */
-    private List<CvParam> description = null;
+    private List<CvParam> description;
 
     /**
      * The database name may be given as a cvParam if it maps exactly to one
      * of the release databases listed in the CV, otherwise a userParam should be
      * used.
      */
-    private ParamGroup nameDatabase = null;
+    private ParamGroup nameDatabase;
 
     /**
      * The number of residues in the database.
      */
-    private long numDatabaseResidue = -1;
+    private long numDatabaseResidue;
 
     /**
      * The total number of sequences in the database.
      */
-    private int numDatabaseSequence = -1;
+    private int numDatabaseSequence;
 
     /**
      * The date and time the database was released to the public; omit this
      * attribute when the date and time are unknown or not applicable
      * (e.g. custom databases).
      */
-    private String releaseDate = null;
+    private String releaseDate;
 
     /**
      * The version of the database.
      */
-    private String version = null;
+    private String version;
 
     /**
      * Constructor for Pride SearchDatabase Object
@@ -86,7 +86,7 @@ public class SearchDataBase extends ExternalData {
         this.numDatabaseSequence = numDatabaseSequence;
         this.numDatabaseResidue  = numDatabaseResidue;
         this.nameDatabase        = nameDatabase;
-        this.description         = description;
+        this.description         = CollectionUtils.createListFromList(description);
     }
 
     public String getVersion() {
@@ -134,23 +134,31 @@ public class SearchDataBase extends ExternalData {
     }
 
     public void setDescription(List<CvParam> description) {
-        this.description = description;
+        CollectionUtils.replaceValuesInCollection(description, this.description);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof SearchDataBase)) return false;
+        if (!super.equals(o)) return false;
 
         SearchDataBase that = (SearchDataBase) o;
 
-        return numDatabaseResidue == that.numDatabaseResidue && numDatabaseSequence == that.numDatabaseSequence && !(description != null ? !description.equals(that.description) : that.description != null) && !(nameDatabase != null ? !nameDatabase.equals(that.nameDatabase) : that.nameDatabase != null) && !(releaseDate != null ? !releaseDate.equals(that.releaseDate) : that.releaseDate != null) && !(version != null ? !version.equals(that.version) : that.version != null);
+        if (numDatabaseResidue != that.numDatabaseResidue) return false;
+        if (numDatabaseSequence != that.numDatabaseSequence) return false;
+        if (!description.equals(that.description)) return false;
+        if (nameDatabase != null ? !nameDatabase.equals(that.nameDatabase) : that.nameDatabase != null) return false;
+        if (releaseDate != null ? !releaseDate.equals(that.releaseDate) : that.releaseDate != null) return false;
+        if (version != null ? !version.equals(that.version) : that.version != null) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = description != null ? description.hashCode() : 0;
+        int result = super.hashCode();
+        result = 31 * result + description.hashCode();
         result = 31 * result + (nameDatabase != null ? nameDatabase.hashCode() : 0);
         result = 31 * result + (int) (numDatabaseResidue ^ (numDatabaseResidue >>> 32));
         result = 31 * result + numDatabaseSequence;

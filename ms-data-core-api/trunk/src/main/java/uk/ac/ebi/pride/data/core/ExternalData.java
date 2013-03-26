@@ -13,19 +13,19 @@ public class ExternalData extends Identifiable {
     /**
      * The format of the ExternalData file, for example "tiff" for image files.
      */
-    private CvParam FileFormat = null;
+    private CvParam FileFormat;
 
     /**
      * A URI to access documentation and tools to interpret the external format
      * of the ExternalData instance. For example, XML Schema or static libraries
      * (APIs) to access binary formats.
      */
-    private String externalFormatDocumentationURI = null;
+    private String externalFormatDocumentationURI;
 
     /**
      * The location of the data file.
      */
-    private String location = null;
+    private String location;
 
     /**
      * Constructor of External Data Objects

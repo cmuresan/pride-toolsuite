@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.data.core;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
+
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +16,7 @@ import java.util.List;
  * - File Creation Date.
  * - An a List of References.
  * <p/>
- * User: rwang, yperez
+ * User: yperez
  * Date: 08-Mar-2010
  * Time: 10:48:29
  */
@@ -23,12 +25,12 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
     /**
      * The date when the experiment is created
      */
-    private Date creationDate = null;
+    private Date creationDate;
 
     /**
      * The complete set of Contacts Organisations for this file.
      */
-    private List<Organization> organizationList = null;
+    private List<Organization> organizationList;
 
     /**
      * The complete set of Contacts People for this file.
@@ -39,51 +41,51 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      * May include one or more child terms of "contact person attribute"
      * (contact name, contact address, contact email and et al)
      */
-    private List<Person> personList = null;
+    private List<Person> personList;
 
     /**
      * The Experiment Protocols is an small view of the protocols used in the Experiment
      * the idea is to define an small object like pride experiments that could be used also for MzIdentMl in order
      * to put and small description of the steps in the experiment.
      */
-    private ExperimentProtocol protocol = null;
+    private ExperimentProtocol protocol;
 
     /**
      * The Provider of the mzIdentML record in terms of the contact and software. The provider
      * is an instance with the the last final software that generate the file.
      */
-    private Provider provider = null;
+    private Provider provider;
 
     /**
      * The date when the experiment is made public
      */
-    private Date publicDate = null;
+    private Date publicDate;
 
     /**
      * List of publications of the experiment
      */
-    private List<Reference> references = null;
+    private List<Reference> references;
 
     /**
      * list and description of samples in the case of mzIdentML.
      */
-    private List<Sample> sampleList = null;
+    private List<Sample> sampleList;
 
     /*
      * Short Label used by Pride XML Object
      */
-    private String shortLabel = null;
+    private String shortLabel;
 
     /**
      * list and description of software used to acquire and/or process
      * the data in the file.
      */
-    private List<Software> softwareList = null;
+    private List<Software> softwareList;
 
     /**
      * List and descriptions of the source files
      */
-    private List<SourceFile> sourceFiles = null;
+    private List<SourceFile> sourceFiles;
 
     /**
      * List of SpectraData Objects used by MZIdentML to refereed the original mass spectra files.
@@ -91,12 +93,12 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      *
      * todo: can this be stored in MzGraphMetaData?
      */
-    private List<SpectraData> spectraDataList = null;
+    private List<SpectraData> spectraDataList;
 
     /**
      * version of this document used for PRIDE and MzIdentML
      */
-    private String version = null;
+    private String version;
 
 
     /**
@@ -123,19 +125,10 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
                               List<SourceFile> sourceFiles, Provider provider, List<Organization> organizationList,
                               List<Reference> references, Date creationDate, Date publicDate,
                               ExperimentProtocol protocol) {
-        super(params, id, name);
-        this.version          = version;
-        this.sampleList       = sampleList;
-        this.softwareList     = softwareList;
-        this.personList       = personList;
-        this.sourceFiles      = sourceFiles;
-        this.provider         = provider;
-        this.organizationList = organizationList;
-        this.references       = references;
-        this.creationDate     = creationDate;
-        this.publicDate       = publicDate;
-        this.protocol         = protocol;
-        this.shortLabel       = shortLabel;
+        this(params, id, name, version, shortLabel,
+             sampleList, softwareList, personList,
+             sourceFiles, provider, organizationList,
+             references, creationDate, publicDate, protocol, null);
     }
 
     /**
@@ -162,12 +155,34 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
                               List<SourceFile> sourceFiles, Provider provider, List<Organization> organizationList,
                               List<Reference> references, Date creationDate, Date publicDate,
                               ExperimentProtocol protocol,List<SpectraData> spectraDataList) {
-        this(params, id, name,version,shortLabel,sampleList,softwareList,personList,sourceFiles,provider,organizationList,references,creationDate,publicDate,protocol);
-        this.spectraDataList = spectraDataList;
+        super(params, id, name);
+
+        this.version = version;
+
+        this.sampleList = CollectionUtils.createListFromList(sampleList);
+
+        this.softwareList = CollectionUtils.createListFromList(softwareList);
+
+        this.personList = CollectionUtils.createListFromList(personList);
+
+        this.sourceFiles = CollectionUtils.createListFromList(sourceFiles);
+
+        this.provider = provider;
+
+        this.organizationList = CollectionUtils.createListFromList(organizationList);
+
+        this.references = CollectionUtils.createListFromList(references);
+
+        this.creationDate = creationDate;
+
+        this.publicDate = publicDate;
+
+        this.protocol = protocol;
+
+        this.shortLabel = shortLabel;
+
+        this.spectraDataList = CollectionUtils.createListFromList(spectraDataList);
     }
-
-
-
 
     /**
      * Get Provider. The last software that generate the final file.
@@ -202,7 +217,7 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      * @param organizationList Organization Contact List
      */
     public void setOrganizationList(List<Organization> organizationList) {
-        this.organizationList = organizationList;
+        CollectionUtils.replaceValuesInCollection(organizationList, this.organizationList);
     }
 
     /**
@@ -220,7 +235,7 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      * @param references References
      */
     public void setReferences(List<Reference> references) {
-        this.references = references;
+        CollectionUtils.replaceValuesInCollection(references, this.references);
     }
 
     /**
@@ -310,7 +325,7 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      * @param sampleList Sample List
      */
     public void setSampleList(List<Sample> sampleList) {
-        this.sampleList = sampleList;
+        CollectionUtils.replaceValuesInCollection(sampleList, this.sampleList);
     }
 
     /**
@@ -328,7 +343,7 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      * @param softwareList List of Software
      */
     public void setSoftwareList(List<Software> softwareList) {
-        this.softwareList = softwareList;
+        CollectionUtils.replaceValuesInCollection(softwareList, this.softwareList);
     }
 
     /**
@@ -346,7 +361,7 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      * @param personList List of Person Contacts
      */
     public void setPersonList(List<Person> personList) {
-        this.personList = personList;
+        CollectionUtils.replaceValuesInCollection(personList, this.personList);
     }
 
     /**
@@ -364,7 +379,7 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      * @param sourceFiles Source File List
      */
     public void setSourceFiles(List<SourceFile> sourceFiles) {
-        this.sourceFiles = sourceFiles;
+        CollectionUtils.replaceValuesInCollection(sourceFiles, this.sourceFiles);
     }
 
     /**
@@ -404,36 +419,49 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
     }
 
     public void setSpectraDataList(List<SpectraData> spectraDataList) {
-        this.spectraDataList = spectraDataList;
+        CollectionUtils.replaceValuesInCollection(spectraDataList, this.spectraDataList);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ExperimentMetaData)) return false;
         if (!super.equals(o)) return false;
 
         ExperimentMetaData that = (ExperimentMetaData) o;
 
-        return !(creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) && !(organizationList != null ? !organizationList.equals(that.organizationList) : that.organizationList != null) && !(personList != null ? !personList.equals(that.personList) : that.personList != null) && !(protocol != null ? !protocol.equals(that.protocol) : that.protocol != null) && !(provider != null ? !provider.equals(that.provider) : that.provider != null) && !(publicDate != null ? !publicDate.equals(that.publicDate) : that.publicDate != null) && !(references != null ? !references.equals(that.references) : that.references != null) && !(sampleList != null ? !sampleList.equals(that.sampleList) : that.sampleList != null) && !(shortLabel != null ? !shortLabel.equals(that.shortLabel) : that.shortLabel != null) && !(softwareList != null ? !softwareList.equals(that.softwareList) : that.softwareList != null) && !(sourceFiles != null ? !sourceFiles.equals(that.sourceFiles) : that.sourceFiles != null) && !(spectraDataList != null ? !spectraDataList.equals(that.spectraDataList) : that.spectraDataList != null) && !(version != null ? !version.equals(that.version) : that.version != null);
+        if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
+        if (!organizationList.equals(that.organizationList)) return false;
+        if (!personList.equals(that.personList)) return false;
+        if (protocol != null ? !protocol.equals(that.protocol) : that.protocol != null) return false;
+        if (provider != null ? !provider.equals(that.provider) : that.provider != null) return false;
+        if (publicDate != null ? !publicDate.equals(that.publicDate) : that.publicDate != null) return false;
+        if (!references.equals(that.references)) return false;
+        if (!sampleList.equals(that.sampleList)) return false;
+        if (shortLabel != null ? !shortLabel.equals(that.shortLabel) : that.shortLabel != null) return false;
+        if (!softwareList.equals(that.softwareList)) return false;
+        if (!sourceFiles.equals(that.sourceFiles)) return false;
+        if (!spectraDataList.equals(that.spectraDataList)) return false;
+        if (version != null ? !version.equals(that.version) : that.version != null) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
-        result = 31 * result + (organizationList != null ? organizationList.hashCode() : 0);
-        result = 31 * result + (personList != null ? personList.hashCode() : 0);
+        result = 31 * result + organizationList.hashCode();
+        result = 31 * result + personList.hashCode();
         result = 31 * result + (protocol != null ? protocol.hashCode() : 0);
         result = 31 * result + (provider != null ? provider.hashCode() : 0);
         result = 31 * result + (publicDate != null ? publicDate.hashCode() : 0);
-        result = 31 * result + (references != null ? references.hashCode() : 0);
-        result = 31 * result + (sampleList != null ? sampleList.hashCode() : 0);
+        result = 31 * result + references.hashCode();
+        result = 31 * result + sampleList.hashCode();
         result = 31 * result + (shortLabel != null ? shortLabel.hashCode() : 0);
-        result = 31 * result + (softwareList != null ? softwareList.hashCode() : 0);
-        result = 31 * result + (sourceFiles != null ? sourceFiles.hashCode() : 0);
-        result = 31 * result + (spectraDataList != null ? spectraDataList.hashCode() : 0);
+        result = 31 * result + softwareList.hashCode();
+        result = 31 * result + sourceFiles.hashCode();
+        result = 31 * result + spectraDataList.hashCode();
         result = 31 * result + (version != null ? version.hashCode() : 0);
         return result;
     }

@@ -17,57 +17,57 @@ public class Reference extends IdentifiableParamGroup {
     /**
      * The names of the authors of the reference.
      */
-    private String authors = null;
+    private String authors;
 
     /**
      * The DOI of the referenced publication.
      */
-    private String doi = null;
+    private String doi;
 
     /**
      * The editor(s) of the reference.
      */
-    private String editor = null;
+    private String editor;
 
     /**
      * the full reference line used by PRIDE XML Objects
      */
-    private String fullReference = null;
+    private String fullReference;
 
     /**
      * The issue name or number.
      */
-    private String issue = null;
+    private String issue;
 
     /**
      * The page numbers.
      */
-    private String pages = null;
+    private String pages;
 
     /**
      * The name of the journal, book etc.
      */
-    private String publication = null;
+    private String publication;
 
     /**
      * The publisher of the publication.
      */
-    private String publisher = null;
+    private String publisher;
 
     /**
      * The title of the BibliographicReference.
      */
-    private String title = null;
+    private String title;
 
     /**
      * The volume name or number.
      */
-    private String volume = null;
+    private String volume;
 
     /**
      * The year of publication.
      */
-    private String year = null;
+    private String year;
 
     /**
      * Constructors for PRIDE XML Reference Object

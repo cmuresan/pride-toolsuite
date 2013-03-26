@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  * Time: 18:57:52
  */
 public class ScanList extends ParamGroup {
-    private List<Scan> scans = null;
+    private List<Scan> scans;
 
     /**
      * Constructor
@@ -27,7 +27,7 @@ public class ScanList extends ParamGroup {
      */
     public ScanList(List<Scan> scans, ParamGroup params) {
         super(params);
-        this.scans = scans;
+        this.scans = CollectionUtils.createListFromList(scans);
     }
 
     public List<Scan> getScans() {
@@ -35,25 +35,26 @@ public class ScanList extends ParamGroup {
     }
 
     public void setScans(List<Scan> scans) {
-        this.scans = scans;
+        CollectionUtils.replaceValuesInCollection(scans, this.scans);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ScanList)) return false;
         if (!super.equals(o)) return false;
 
         ScanList scanList = (ScanList) o;
 
-        return !(scans != null ? !scans.equals(scanList.scans) : scanList.scans != null);
+        if (!scans.equals(scanList.scans)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (scans != null ? scans.hashCode() : 0);
+        result = 31 * result + scans.hashCode();
         return result;
     }
 }

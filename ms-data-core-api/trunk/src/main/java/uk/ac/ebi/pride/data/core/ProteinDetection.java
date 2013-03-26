@@ -11,49 +11,50 @@ public class ProteinDetection extends ProtocolApplication {
     /**
      * A reference to the ProteinDetectionList.
      */
-    private ProteinDetectionList proteinDetectionListRef = null;
+    private ProteinDetectionList proteinDetectionList;
 
     /**
      * A reference to the detection protocol used for this ProteinDetection.
      */
-    private Protocol proteinDetectionProtocolRef = null;
+    private Protocol proteinDetectionProtocol;
 
     /**
      * A reference to the list of spectrum identifications that were input to the process.
      */
-    private SpectrumIdentificationList spectrumIdentificationListRef = null;
+    private SpectrumIdentificationList spectrumIdentificationList;
 
-    public ProteinDetection(String id, String name, String activeDate, ProteinDetectionList proteinDetectionListRef,
-                            Protocol proteinDetectionProtocolRef,
-                            SpectrumIdentificationList spectrumIdentificationListRef) {
+    public ProteinDetection(String id, String name, String activeDate,
+                            ProteinDetectionList proteinDetectionList,
+                            Protocol proteinDetectionProtocol,
+                            SpectrumIdentificationList spectrumIdentificationList) {
         super(id, name, activeDate);
-        this.proteinDetectionListRef       = proteinDetectionListRef;
-        this.proteinDetectionProtocolRef   = proteinDetectionProtocolRef;
-        this.spectrumIdentificationListRef = spectrumIdentificationListRef;
+        this.proteinDetectionList = proteinDetectionList;
+        this.proteinDetectionProtocol = proteinDetectionProtocol;
+        this.spectrumIdentificationList = spectrumIdentificationList;
     }
 
-    public ProteinDetectionList getProteinDetectionListRef() {
-        return proteinDetectionListRef;
+    public ProteinDetectionList getProteinDetectionList() {
+        return proteinDetectionList;
     }
 
-    public void setProteinDetectionListRef(ProteinDetectionList proteinDetectionListRef) {
-        this.proteinDetectionListRef = proteinDetectionListRef;
+    public void setProteinDetectionList(ProteinDetectionList proteinDetectionList) {
+        this.proteinDetectionList = proteinDetectionList;
     }
 
-    public Protocol getProteinDetectionProtocolRef() {
-        return proteinDetectionProtocolRef;
+    public Protocol getProteinDetectionProtocol() {
+        return proteinDetectionProtocol;
     }
 
-    public void setProteinDetectionProtocolRef(Protocol proteinDetectionProtocolRef) {
-        this.proteinDetectionProtocolRef = proteinDetectionProtocolRef;
+    public void setProteinDetectionProtocol(Protocol proteinDetectionProtocol) {
+        this.proteinDetectionProtocol = proteinDetectionProtocol;
     }
 
-    public SpectrumIdentificationList getSpectrumIdentificationListRef() {
-        return spectrumIdentificationListRef;
+    public SpectrumIdentificationList getSpectrumIdentificationList() {
+        return spectrumIdentificationList;
     }
 
-    public void setSpectrumIdentificationListRef(SpectrumIdentificationList spectrumIdentificationListRef) {
-        this.spectrumIdentificationListRef = spectrumIdentificationListRef;
+    public void setSpectrumIdentificationList(SpectrumIdentificationList spectrumIdentificationList) {
+        this.spectrumIdentificationList = spectrumIdentificationList;
     }
 
     @Override
@@ -64,16 +65,16 @@ public class ProteinDetection extends ProtocolApplication {
 
         ProteinDetection that = (ProteinDetection) o;
 
-        return !(proteinDetectionListRef != null ? !proteinDetectionListRef.equals(that.proteinDetectionListRef) : that.proteinDetectionListRef != null) && !(proteinDetectionProtocolRef != null ? !proteinDetectionProtocolRef.equals(that.proteinDetectionProtocolRef) : that.proteinDetectionProtocolRef != null) && !(spectrumIdentificationListRef != null ? !spectrumIdentificationListRef.equals(that.spectrumIdentificationListRef) : that.spectrumIdentificationListRef != null);
+        return !(proteinDetectionList != null ? !proteinDetectionList.equals(that.proteinDetectionList) : that.proteinDetectionList != null) && !(proteinDetectionProtocol != null ? !proteinDetectionProtocol.equals(that.proteinDetectionProtocol) : that.proteinDetectionProtocol != null) && !(spectrumIdentificationList != null ? !spectrumIdentificationList.equals(that.spectrumIdentificationList) : that.spectrumIdentificationList != null);
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (proteinDetectionListRef != null ? proteinDetectionListRef.hashCode() : 0);
-        result = 31 * result + (proteinDetectionProtocolRef != null ? proteinDetectionProtocolRef.hashCode() : 0);
-        result = 31 * result + (spectrumIdentificationListRef != null ? spectrumIdentificationListRef.hashCode() : 0);
+        result = 31 * result + (proteinDetectionList != null ? proteinDetectionList.hashCode() : 0);
+        result = 31 * result + (proteinDetectionProtocol != null ? proteinDetectionProtocol.hashCode() : 0);
+        result = 31 * result + (spectrumIdentificationList != null ? spectrumIdentificationList.hashCode() : 0);
         return result;
     }
 }

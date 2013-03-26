@@ -12,32 +12,32 @@ public class DBSequence extends IdentifiableParamGroup {
     /**
      * The unique accession of this sequence.
      */
-    private String accessionId = null;
+    private String accessionId;
 
     /**
      * protein accession version
      */
-    private String accessionVersion = null;
+    private String accessionVersion;
 
     /**
      * The length of the sequence as a number of bases or residues.
      */
-    private int length = -1;
+    private int length;
 
     /**
      * The source database of this sequence.
      */
-    private SearchDataBase searchDataBase = null;
+    private SearchDataBase searchDataBase;
 
     /**
      * The actual sequence of amino acids or nucleic acid.
      */
-    private String sequence = null;
+    private String sequence;
 
     /**
      * optional splice isoform
      */
-    private String spliceIsoform = null;
+    private String spliceIsoform;
 
     /**
      * Constructor for PRIDE DBSequence Objects

@@ -13,7 +13,7 @@ public class UserParam extends Parameter {
     /**
      * the data type of the parameter
      */
-    private String type = null;
+    private String type;
 
     /**
      * Constructor

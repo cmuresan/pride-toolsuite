@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.data.core;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
+
 import java.util.List;
 
 /**
@@ -30,12 +32,12 @@ public class InstrumentConfiguration extends ParamGroup {
     /**
      * only one analyzer
      */
-    private List<InstrumentComponent> analyzer = null;
+    private List<InstrumentComponent> analyzer;
 
     /**
      * only one detector
      */
-    private List<InstrumentComponent> detector = null;
+    private List<InstrumentComponent> detector;
 
     /**
      * identifier of this instrument
@@ -55,7 +57,7 @@ public class InstrumentConfiguration extends ParamGroup {
     /**
      * only one source
      */
-    private List<InstrumentComponent> source = null;
+    private List<InstrumentComponent> source;
 
     /**
      * Constructor
@@ -72,12 +74,12 @@ public class InstrumentConfiguration extends ParamGroup {
                                    List<InstrumentComponent> source, List<InstrumentComponent> analyzer,
                                    List<InstrumentComponent> detector, ParamGroup params) {
         super(params);
-        setId(id);
-        setScanSetting(scanSetting);
-        setSoftware(software);
-        setSource(source);
-        setAnalyzer(analyzer);
-        setDetector(detector);
+        this.id = id;
+        this.scanSetting = scanSetting;
+        this.software = software;
+        this.source = CollectionUtils.createListFromList(source);
+        this.analyzer = CollectionUtils.createListFromList(analyzer);
+        this.detector = CollectionUtils.createListFromList(detector);
     }
 
     public String getId() {
@@ -109,7 +111,7 @@ public class InstrumentConfiguration extends ParamGroup {
     }
 
     public void setSource(List<InstrumentComponent> source) {
-        this.source = source;
+        CollectionUtils.replaceValuesInCollection(source, this.source);
     }
 
     public List<InstrumentComponent> getAnalyzer() {
@@ -117,7 +119,7 @@ public class InstrumentConfiguration extends ParamGroup {
     }
 
     public void setAnalyzer(List<InstrumentComponent> analyzer) {
-        this.analyzer = analyzer;
+        CollectionUtils.replaceValuesInCollection(analyzer, this.analyzer);
     }
 
     public List<InstrumentComponent> getDetector() {
@@ -125,30 +127,36 @@ public class InstrumentConfiguration extends ParamGroup {
     }
 
     public void setDetector(List<InstrumentComponent> detector) {
-        this.detector = detector;
+        CollectionUtils.replaceValuesInCollection(detector, this.detector);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof InstrumentConfiguration)) return false;
         if (!super.equals(o)) return false;
 
         InstrumentConfiguration that = (InstrumentConfiguration) o;
 
-        return !(analyzer != null ? !analyzer.equals(that.analyzer) : that.analyzer != null) && !(detector != null ? !detector.equals(that.detector) : that.detector != null) && !(id != null ? !id.equals(that.id) : that.id != null) && !(scanSetting != null ? !scanSetting.equals(that.scanSetting) : that.scanSetting != null) && !(software != null ? !software.equals(that.software) : that.software != null) && !(source != null ? !source.equals(that.source) : that.source != null);
+        if (!analyzer.equals(that.analyzer)) return false;
+        if (!detector.equals(that.detector)) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (scanSetting != null ? !scanSetting.equals(that.scanSetting) : that.scanSetting != null) return false;
+        if (software != null ? !software.equals(that.software) : that.software != null) return false;
+        if (!source.equals(that.source)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (analyzer != null ? analyzer.hashCode() : 0);
-        result = 31 * result + (detector != null ? detector.hashCode() : 0);
+        result = 31 * result + analyzer.hashCode();
+        result = 31 * result + detector.hashCode();
         result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (scanSetting != null ? scanSetting.hashCode() : 0);
         result = 31 * result + (software != null ? software.hashCode() : 0);
-        result = 31 * result + (source != null ? source.hashCode() : 0);
+        result = 31 * result + source.hashCode();
         return result;
     }
 }

@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
 
@@ -15,32 +15,32 @@ public class Precursor implements MassSpecObject {
     /**
      * the type and energy level used for activation
      */
-    private ParamGroup activation = null;
+    private ParamGroup activation;
 
     /**
      * For precursor spectra that are external to this document
      */
-    private String externalSpectrumID = null;
+    private String externalSpectrumID;
 
     /**
      * the isolation window configured to isolate one or more ions
      */
-    private ParamGroup isolationWindow = null;
+    private ParamGroup isolationWindow;
 
     /**
      * a list of ions selected
      */
-    private List<ParamGroup> selectedIons = null;
+    private List<ParamGroup> selectedIons;
 
     /**
      * source file
      */
-    private SourceFile sourceFile = null;
+    private SourceFile sourceFile;
 
     /**
      * precursor spectrum
      */
-    private Spectrum spectrum = null;
+    private Spectrum spectrum;
 
     /**
      * Constructor
@@ -52,14 +52,15 @@ public class Precursor implements MassSpecObject {
      * @param selectedIon        optional.
      * @param activation         required.
      */
-    public Precursor(Spectrum spectrum, SourceFile sourceFile, String externalSpectrumID, ParamGroup isolationWindow,
+    public Precursor(Spectrum spectrum, SourceFile sourceFile,
+                     String externalSpectrumID, ParamGroup isolationWindow,
                      List<ParamGroup> selectedIon, ParamGroup activation) {
-        this.spectrum           = spectrum;
-        this.sourceFile         = sourceFile;
+        this.spectrum = spectrum;
+        this.sourceFile = sourceFile;
         this.externalSpectrumID = externalSpectrumID;
-        this.isolationWindow    = isolationWindow;
-        this.selectedIons       = selectedIon;
-        this.activation         = activation;
+        this.isolationWindow = isolationWindow;
+        this.selectedIons = CollectionUtils.createListFromList(selectedIon);
+        this.activation = activation;
     }
 
     public ParamGroup getActivation() {
@@ -91,7 +92,7 @@ public class Precursor implements MassSpecObject {
     }
 
     public void setSelectedIons(List<ParamGroup> selectedIon) {
-        this.selectedIons = selectedIon;
+        CollectionUtils.replaceValuesInCollection(selectedIon, this.selectedIons);
     }
 
     public SourceFile getSourceFile() {
@@ -113,12 +114,20 @@ public class Precursor implements MassSpecObject {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Precursor)) return false;
 
         Precursor precursor = (Precursor) o;
 
-        return !(activation != null ? !activation.equals(precursor.activation) : precursor.activation != null) && !(externalSpectrumID != null ? !externalSpectrumID.equals(precursor.externalSpectrumID) : precursor.externalSpectrumID != null) && !(isolationWindow != null ? !isolationWindow.equals(precursor.isolationWindow) : precursor.isolationWindow != null) && !(selectedIons != null ? !selectedIons.equals(precursor.selectedIons) : precursor.selectedIons != null) && !(sourceFile != null ? !sourceFile.equals(precursor.sourceFile) : precursor.sourceFile != null) && !(spectrum != null ? !spectrum.equals(precursor.spectrum) : precursor.spectrum != null);
+        if (activation != null ? !activation.equals(precursor.activation) : precursor.activation != null) return false;
+        if (externalSpectrumID != null ? !externalSpectrumID.equals(precursor.externalSpectrumID) : precursor.externalSpectrumID != null)
+            return false;
+        if (isolationWindow != null ? !isolationWindow.equals(precursor.isolationWindow) : precursor.isolationWindow != null)
+            return false;
+        if (!selectedIons.equals(precursor.selectedIons)) return false;
+        if (sourceFile != null ? !sourceFile.equals(precursor.sourceFile) : precursor.sourceFile != null) return false;
+        if (spectrum != null ? !spectrum.equals(precursor.spectrum) : precursor.spectrum != null) return false;
 
+        return true;
     }
 
     @Override
@@ -126,7 +135,7 @@ public class Precursor implements MassSpecObject {
         int result = activation != null ? activation.hashCode() : 0;
         result = 31 * result + (externalSpectrumID != null ? externalSpectrumID.hashCode() : 0);
         result = 31 * result + (isolationWindow != null ? isolationWindow.hashCode() : 0);
-        result = 31 * result + (selectedIons != null ? selectedIons.hashCode() : 0);
+        result = 31 * result + selectedIons.hashCode();
         result = 31 * result + (sourceFile != null ? sourceFile.hashCode() : 0);
         result = 31 * result + (spectrum != null ? spectrum.hashCode() : 0);
         return result;

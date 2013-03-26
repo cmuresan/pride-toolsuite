@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.data.core;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
+
 import java.util.List;
 
 /**
@@ -19,15 +21,14 @@ public class DataProcessing extends Identifiable {
      * Description of the default peak processing method, this is a ordered List
      * processing Methods is the relation between a Software an a Group of Param.
      */
-    private List<ProcessingMethod> processingMethods = null;
+    private List<ProcessingMethod> processingMethods;
 
     /**
      * @param id  ID of the DataProcessing Object
      * @param processingMethods Processing Method List
      */
     public DataProcessing(Comparable id, List<ProcessingMethod> processingMethods) {
-        super(id, null);
-        this.processingMethods = processingMethods;
+        this(id, null, processingMethods);
     }
 
     /**
@@ -39,7 +40,7 @@ public class DataProcessing extends Identifiable {
      */
     public DataProcessing(Comparable id, String name, List<ProcessingMethod> processingMethods) {
         super(id, name);
-        this.processingMethods = processingMethods;
+        this.processingMethods = CollectionUtils.createListFromList(processingMethods);
     }
 
     /**
@@ -57,23 +58,27 @@ public class DataProcessing extends Identifiable {
      * @param processingMethods A list of Processing Methods
      */
     public void setProcessingMethods(List<ProcessingMethod> processingMethods) {
-        this.processingMethods = processingMethods;
+        CollectionUtils.replaceValuesInCollection(processingMethods, this.processingMethods);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof DataProcessing)) return false;
+        if (!super.equals(o)) return false;
 
         DataProcessing that = (DataProcessing) o;
 
-        return !(processingMethods != null ? !processingMethods.equals(that.processingMethods) : that.processingMethods != null);
+        if (!processingMethods.equals(that.processingMethods)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return processingMethods != null ? processingMethods.hashCode() : 0;
+        int result = super.hashCode();
+        result = 31 * result + processingMethods.hashCode();
+        return result;
     }
 }
 

@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.data.core;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,18 +23,18 @@ public class ParamGroup implements MassSpecObject {
     /**
      * List of cv paramemters
      */
-    private List<CvParam> cvParams = null;
+    private List<CvParam> cvParams;
 
     /**
      * List of user parameters
      */
-    private List<UserParam> userParams = null;
+    private List<UserParam> userParams;
 
     /**
      * Constructor creates an empty param group
      */
     public ParamGroup() {
-        this.cvParams   = new ArrayList<CvParam>();
+        this.cvParams = new ArrayList<CvParam>();
         this.userParams = new ArrayList<UserParam>();
     }
 
@@ -42,9 +44,12 @@ public class ParamGroup implements MassSpecObject {
      * @param params optional.
      */
     public ParamGroup(ParamGroup params) {
+        this.cvParams = new ArrayList<CvParam>();
+        this.userParams = new ArrayList<UserParam>();
+
         if (params != null) {
-            this.cvParams   = params.getCvParams();
-            this.userParams = params.getUserParams();
+            this.cvParams.addAll(params.getCvParams());
+            this.userParams.addAll(params.getUserParams());
         }
     }
 
@@ -55,18 +60,15 @@ public class ParamGroup implements MassSpecObject {
      * @param userParam
      */
     public ParamGroup(CvParam cvParam, UserParam userParam) {
-        if (cvParam != null) {
-            List<CvParam> cvParams = new ArrayList<CvParam>();
+        this.cvParams = new ArrayList<CvParam>();
+        this.userParams = new ArrayList<UserParam>();
 
+        if (cvParam != null) {
             cvParams.add(cvParam);
-            this.cvParams = cvParams;
         }
 
         if (userParam != null) {
-            List<UserParam> userParams = new ArrayList<UserParam>();
-
             userParams.add(userParam);
-            this.userParams = userParams;
         }
     }
 
@@ -77,8 +79,8 @@ public class ParamGroup implements MassSpecObject {
      * @param userParams optional.
      */
     public ParamGroup(List<CvParam> cvParams, List<UserParam> userParams) {
-        this.cvParams   = cvParams;
-        this.userParams = userParams;
+        this.cvParams = CollectionUtils.createListFromList(cvParams);
+        this.userParams = CollectionUtils.createListFromList(userParams);
     }
 
     /**
@@ -88,38 +90,27 @@ public class ParamGroup implements MassSpecObject {
      * @return List of CvParam
      */
     public List<CvParam> getCvParams() {
-        return (cvParams == null)
-               ? null
-               : new ArrayList<CvParam>(cvParams);
+        return this.cvParams;
     }
 
     public void setCvParams(List<CvParam> cvs) {
-        cvParams = cvs;
+        CollectionUtils.replaceValuesInCollection(cvs, this.cvParams);
     }
 
     public void addCvParam(CvParam cv) {
-        if (cvParams == null) {
-            cvParams = new ArrayList<CvParam>();
-        }
-
-        cvParams.add(cv);
+        this.cvParams.add(cv);
     }
 
     public void addCvParams(List<CvParam> cvs) {
-
-        // Note: didn't use addAll() from List, because List can
-        // contain NULL elements.
-        for (CvParam cv : cvs) {
-            addCvParam(cv);
-        }
+        this.cvParams.addAll(cvs);
     }
 
     public void removeCvParam(CvParam cv) {
-        cvParams.remove(cv);
+        this.cvParams.remove(cv);
     }
 
     public void removeCvParams(List<CvParam> cvs) {
-        cvParams.removeAll(cvs);
+        this.cvParams.removeAll(cvs);
     }
 
     /**
@@ -129,30 +120,19 @@ public class ParamGroup implements MassSpecObject {
      * @return
      */
     public List<UserParam> getUserParams() {
-        return (userParams == null)
-               ? null
-               : new ArrayList<UserParam>(userParams);
+        return this.userParams;
     }
 
     public void setUserParams(List<UserParam> ups) {
-        userParams = ups;
+        CollectionUtils.replaceValuesInCollection(ups, this.userParams);
     }
 
     public void addUserParam(UserParam up) {
-        if (userParams == null) {
-            userParams = new ArrayList<UserParam>();
-        }
-
-        userParams.add(up);
+        this.userParams.add(up);
     }
 
     public void addUserParams(List<UserParam> ups) {
-
-        // Note: didn't use addAll() from List, because List can
-        // contain NULL elements.
-        for (UserParam up : ups) {
-            addUserParam(up);
-        }
+        this.userParams.addAll(ups);
     }
 
     public void removeUserParam(UserParam up) {
@@ -170,16 +150,16 @@ public class ParamGroup implements MassSpecObject {
 
         ParamGroup that = (ParamGroup) o;
 
-        if (cvParams != null ? !cvParams.equals(that.cvParams) : that.cvParams != null) return false;
-        if (userParams != null ? !userParams.equals(that.userParams) : that.userParams != null) return false;
+        if (!cvParams.equals(that.cvParams)) return false;
+        if (!userParams.equals(that.userParams)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = cvParams != null ? cvParams.hashCode() : 0;
-        result = 31 * result + (userParams != null ? userParams.hashCode() : 0);
+        int result = cvParams.hashCode();
+        result = 31 * result + userParams.hashCode();
         return result;
     }
 }

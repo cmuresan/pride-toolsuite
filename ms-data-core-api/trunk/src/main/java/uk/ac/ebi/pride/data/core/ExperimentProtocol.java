@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.data.core;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
+
 import java.util.List;
 
 /**
@@ -33,7 +35,7 @@ public class ExperimentProtocol extends IdentifiableParamGroup {
     }
 
     /**
-     * Constructor of the Experiment Protcol
+     * Constructor of the Experiment Protocol
      *
      * @param params ParamGroup
      * @param id     ID
@@ -42,7 +44,7 @@ public class ExperimentProtocol extends IdentifiableParamGroup {
      */
     public ExperimentProtocol(ParamGroup params, String id, String name, List<ParamGroup> protocolSteps) {
         super(params, id, name);
-        this.protocolSteps = protocolSteps;
+        this.protocolSteps = CollectionUtils.createListFromList(protocolSteps);
     }
 
     /**
@@ -60,25 +62,26 @@ public class ExperimentProtocol extends IdentifiableParamGroup {
      * @param protocolSteps A list of ParamGroup that define the different steps in the Protocol
      */
     public void setProtocolSteps(List<ParamGroup> protocolSteps) {
-        this.protocolSteps = protocolSteps;
+        CollectionUtils.replaceValuesInCollection(protocolSteps, this.protocolSteps);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ExperimentProtocol)) return false;
         if (!super.equals(o)) return false;
 
         ExperimentProtocol that = (ExperimentProtocol) o;
 
-        return !(protocolSteps != null ? !protocolSteps.equals(that.protocolSteps) : that.protocolSteps != null);
+        if (!protocolSteps.equals(that.protocolSteps)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (protocolSteps != null ? protocolSteps.hashCode() : 0);
+        result = 31 * result + protocolSteps.hashCode();
         return result;
     }
 }

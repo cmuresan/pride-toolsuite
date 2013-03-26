@@ -8,8 +8,8 @@ package uk.ac.ebi.pride.data.core;
  * Time: 11:46
  */
 public class Organization extends AbstractContact {
-    private String       mail               = null;
-    private Organization parentOrganization = null;
+    private String       mail;
+    private Organization parentOrganization;
 
     /**
      * Create a PRIDE and MZML Organization Objects

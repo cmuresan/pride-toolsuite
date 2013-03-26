@@ -26,12 +26,12 @@ public class ProcessingMethod extends ParamGroup {
     /**
      * order of steps
      */
-    private int order = -1;
+    private int order;
 
     /**
      * software type
      */
-    private Software software = null;
+    private Software software;
 
     /**
      * Constructor

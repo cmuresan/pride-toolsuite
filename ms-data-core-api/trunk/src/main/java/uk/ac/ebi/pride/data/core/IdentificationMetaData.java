@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.data.core;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
+
 import java.util.List;
 
 /**
@@ -17,17 +19,17 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
     /**
      * The parameters and settings of a ProteinDetection process.
      */
-    private Protocol proteinDetectionProtocol = null;
+    private Protocol proteinDetectionProtocol;
 
     /**
      * List of database for searching mass spectra. Examples include a set of amino acid sequence entries, or annotated spectra libraries.
      */
-    private List<SearchDataBase> searchDataBaseList = null;
+    private List<SearchDataBase> searchDataBaseList;
 
     /**
      * List of the parameters and settings of a SpectrumIdentification analysis.
      */
-    private List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = null;
+    private List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList;
 
 
     /**
@@ -42,9 +44,9 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
                                   List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList,
                                   Protocol proteinDetectionProtocol, List<SearchDataBase> searchDataBaseList) {
         super(id, name);
-        this.spectrumIdentificationProtocolList = spectrumIdentificationProtocolList;
-        this.proteinDetectionProtocol           = proteinDetectionProtocol;
-        this.searchDataBaseList                 = searchDataBaseList;
+        this.spectrumIdentificationProtocolList = CollectionUtils.createListFromList(spectrumIdentificationProtocolList);
+        this.searchDataBaseList = CollectionUtils.createListFromList(searchDataBaseList);
+        this.proteinDetectionProtocol = proteinDetectionProtocol;
     }
 
     /**
@@ -60,9 +62,9 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
                                   List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList,
                                   Protocol proteinDetectionProtocol, List<SearchDataBase> searchDataBaseList) {
         super(params, id, name);
-        this.spectrumIdentificationProtocolList = spectrumIdentificationProtocolList;
-        this.proteinDetectionProtocol           = proteinDetectionProtocol;
-        this.searchDataBaseList                 = searchDataBaseList;
+        this.spectrumIdentificationProtocolList = CollectionUtils.createListFromList(spectrumIdentificationProtocolList);
+        this.searchDataBaseList = CollectionUtils.createListFromList(searchDataBaseList);
+        this.proteinDetectionProtocol = proteinDetectionProtocol;
     }
 
     /**
@@ -79,9 +81,8 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
      *
      * @param spectrumIdentificationProtocolList Spectrum Identification Protocol List
      */
-    public void setSpectrumIdentificationProtocolList(
-            List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList) {
-        this.spectrumIdentificationProtocolList = spectrumIdentificationProtocolList;
+    public void setSpectrumIdentificationProtocolList(List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList) {
+        CollectionUtils.replaceValuesInCollection(spectrumIdentificationProtocolList, this.spectrumIdentificationProtocolList);
     }
 
     /**
@@ -117,27 +118,31 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
      * @param searchDataBaseList Search Databases
      */
     public void setSearchDataBaseList(List<SearchDataBase> searchDataBaseList) {
-        this.searchDataBaseList = searchDataBaseList;
+        CollectionUtils.replaceValuesInCollection(searchDataBaseList, this.searchDataBaseList);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof IdentificationMetaData)) return false;
         if (!super.equals(o)) return false;
 
         IdentificationMetaData that = (IdentificationMetaData) o;
 
-        return !(proteinDetectionProtocol != null ? !proteinDetectionProtocol.equals(that.proteinDetectionProtocol) : that.proteinDetectionProtocol != null) && !(searchDataBaseList != null ? !searchDataBaseList.equals(that.searchDataBaseList) : that.searchDataBaseList != null) && !(spectrumIdentificationProtocolList != null ? !spectrumIdentificationProtocolList.equals(that.spectrumIdentificationProtocolList) : that.spectrumIdentificationProtocolList != null);
+        if (proteinDetectionProtocol != null ? !proteinDetectionProtocol.equals(that.proteinDetectionProtocol) : that.proteinDetectionProtocol != null)
+            return false;
+        if (!searchDataBaseList.equals(that.searchDataBaseList)) return false;
+        if (!spectrumIdentificationProtocolList.equals(that.spectrumIdentificationProtocolList)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (proteinDetectionProtocol != null ? proteinDetectionProtocol.hashCode() : 0);
-        result = 31 * result + (searchDataBaseList != null ? searchDataBaseList.hashCode() : 0);
-        result = 31 * result + (spectrumIdentificationProtocolList != null ? spectrumIdentificationProtocolList.hashCode() : 0);
+        result = 31 * result + searchDataBaseList.hashCode();
+        result = 31 * result + spectrumIdentificationProtocolList.hashCode();
         return result;
     }
 }

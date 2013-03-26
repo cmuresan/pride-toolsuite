@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.data.core;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
+
 import java.util.List;
 
 /**
@@ -16,23 +18,23 @@ import java.util.List;
  */
 public class SearchModification {
 
-    private List<CvParam> cvParamList         = null;
+    private List<CvParam> cvParamList;
 
-    private boolean       fixedMod            = false;
+    private boolean fixedMod;
 
-    private double        massDelta           = -1;
+    private double massDelta;
 
-    private List<String>  specificityList     = null;
+    private List<String> specificityList;
 
-    private List<CvParam> specificityRuleList = null;
+    private List<CvParam> specificityRuleList;
 
     public SearchModification(boolean fixedMod, double massDelta, List<String> specificityList,
                               List<CvParam> specificityRuleList, List<CvParam> cvParamList) {
         this.fixedMod            = fixedMod;
         this.massDelta           = massDelta;
-        this.specificityList     = specificityList;
-        this.specificityRuleList = specificityRuleList;
-        this.cvParamList         = cvParamList;
+        this.specificityList     = CollectionUtils.createListFromList(specificityList);
+        this.specificityRuleList = CollectionUtils.createListFromList(specificityRuleList);
+        this.cvParamList         = CollectionUtils.createListFromList(cvParamList);
     }
 
     public boolean isFixedMod() {
@@ -56,7 +58,7 @@ public class SearchModification {
     }
 
     public void setSpecificityList(List<String> specificityList) {
-        this.specificityList = specificityList;
+        CollectionUtils.replaceValuesInCollection(specificityList, this.specificityList);
     }
 
     public List<CvParam> getSpecificityRuleList() {
@@ -64,7 +66,7 @@ public class SearchModification {
     }
 
     public void setSpecificityRuleList(List<CvParam> specificityRuleList) {
-        this.specificityRuleList = specificityRuleList;
+        CollectionUtils.replaceValuesInCollection(specificityRuleList, this.specificityRuleList);
     }
 
     public List<CvParam> getCvParamList() {
@@ -72,30 +74,35 @@ public class SearchModification {
     }
 
     public void setCvParamList(List<CvParam> cvParamList) {
-        this.cvParamList = cvParamList;
+        CollectionUtils.replaceValuesInCollection(cvParamList, this.cvParamList);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof SearchModification)) return false;
 
         SearchModification that = (SearchModification) o;
 
-        return fixedMod == that.fixedMod && Double.compare(that.massDelta, massDelta) == 0 && !(cvParamList != null ? !cvParamList.equals(that.cvParamList) : that.cvParamList != null) && !(specificityList != null ? !specificityList.equals(that.specificityList) : that.specificityList != null) && !(specificityRuleList != null ? !specificityRuleList.equals(that.specificityRuleList) : that.specificityRuleList != null);
+        if (fixedMod != that.fixedMod) return false;
+        if (Double.compare(that.massDelta, massDelta) != 0) return false;
+        if (!cvParamList.equals(that.cvParamList)) return false;
+        if (!specificityList.equals(that.specificityList)) return false;
+        if (!specificityRuleList.equals(that.specificityRuleList)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result;
         long temp;
-        result = cvParamList != null ? cvParamList.hashCode() : 0;
+        result = cvParamList.hashCode();
         result = 31 * result + (fixedMod ? 1 : 0);
         temp = massDelta != +0.0d ? Double.doubleToLongBits(massDelta) : 0L;
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (specificityList != null ? specificityList.hashCode() : 0);
-        result = 31 * result + (specificityRuleList != null ? specificityRuleList.hashCode() : 0);
+        result = 31 * result + specificityList.hashCode();
+        result = 31 * result + specificityRuleList.hashCode();
         return result;
     }
 }

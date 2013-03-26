@@ -13,7 +13,7 @@ public class InstrumentComponent extends ParamGroup {
     /**
      * order of the component among all instruments
      */
-    private int order = -1;
+    private int order;
 
     /**
      * constructor
@@ -23,7 +23,7 @@ public class InstrumentComponent extends ParamGroup {
      */
     public InstrumentComponent(int order, ParamGroup params) {
         super(params);
-        setOrder(order);
+        this.order = order;
     }
 
     public int getOrder() {

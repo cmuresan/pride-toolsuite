@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.data.core;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import uk.ac.ebi.pride.data.utils.MapUtils;
 import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 
@@ -33,7 +34,7 @@ public class Score {
      * @param scores List of Scores
      */
     public Score(Map<SearchEngineType, Map<CvTermReference, Number>> scores) {
-        this.scores = scores;
+        this.scores = MapUtils.createMapFromMap(scores);
     }
 
     /**
@@ -43,7 +44,7 @@ public class Score {
      * @return   peptide score map
      */
     public Map<CvTermReference, Number> getPeptideScores(SearchEngineType se) {
-        return new LinkedHashMap<CvTermReference, Number>(scores.get(se));
+        return scores.get(se);
     }
 
     /**
@@ -177,17 +178,18 @@ public class Score {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Score)) return false;
 
         Score score = (Score) o;
 
-        return !(scores != null ? !scores.equals(score.scores) : score.scores != null);
+        if (!scores.equals(score.scores)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return scores != null ? scores.hashCode() : 0;
+        return scores.hashCode();
     }
 }
 

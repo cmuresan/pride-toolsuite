@@ -12,27 +12,27 @@ public class Gel extends ParamGroup {
     /**
      * link to the image of a gel
      */
-    private String gelLink = null;
+    private String gelLink;
 
     /**
      * molecular weight
      */
-    private double molecularWeight = -1;
+    private double molecularWeight;
 
     /**
      * pI value
      */
-    private double pI = -1;
+    private double pI;
 
     /**
      * x coordinate
      */
-    private double xCoordinate = -1;
+    private double xCoordinate;
 
     /**
      * y coordinate
      */
-    private double yCoordinate = -1;
+    private double yCoordinate;
 
     /**
      * Constructor
@@ -47,11 +47,11 @@ public class Gel extends ParamGroup {
     public Gel(ParamGroup params, String gelLink, double xCoordinate, double yCoordinate, double molecularWeight,
                double pI) {
         super(params);
-        setGelLink(gelLink);
-        setXCoordinate(xCoordinate);
-        setYCoordinate(yCoordinate);
-        setMolecularWeight(molecularWeight);
-        setPI(pI);
+        this.gelLink = gelLink;
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
+        this.molecularWeight = molecularWeight;
+        this.pI = pI;
     }
 
     public String getGelLink() {

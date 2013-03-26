@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
 
@@ -26,8 +26,8 @@ import java.util.List;
  * - Modification database where accession is from (used for PRIDE Objects)
  * - Modification database version is (used for PRIDE Objects)
  * </p>
- * Created by IntelliJ IDEA.
- * User: yperez, rwang
+ *
+ * User: yperez
  * Date: 04/08/11
  * Time: 14:11
  */
@@ -37,7 +37,7 @@ public class Modification extends IdentifiableParamGroup {
      * In the new validation approach for pride modification objects, just one Average Mass Delta could be associated
      * to a Modification. In the MzIdentMl Modification object only one Average Mass Delta is annotated.
      */
-    private List<Double> avgMassDelta = null;
+    private List<Double> avgMassDelta;
 
     /**
      * Location of the modification within the peptide - position in peptide sequence, counted from
@@ -45,30 +45,30 @@ public class Modification extends IdentifiableParamGroup {
      * given the location 0. Modification to the C-terminus should be given as peptide length + 1.
      * MzIdentMl and PrideXML
      */
-    private int location = -1;
+    private int location;
 
     /**
      * modification database where accession is from (used for PRIDE Objects)
      */
-    private String modDatabase = null;
+    private String modDatabase;
 
     /**
      * modification database version is (used for PRIDE Objects)
      */
-    private String modDatabaseVersion = null;
+    private String modDatabaseVersion;
 
     /**
      * In the new validation approach for pride modification objects, just one MonoIsotopic Mass Delta could be associated
      * to a Modification. In the MzIdentMl Modification object only one MonoIsotopic Mass Delta is annotated.
      */
-    private List<Double> monoisotopicMassDelta = null;
+    private List<Double> monoisotopicMassDelta;
 
     /**
      * Possible Residues for this modification. In the PRIDE Object this attribute do not exist but in the
      * pride modification validator One modification can be related with more than one specificity. In MzIdentML
      * Object the Modification is related with more than one specificity.
      */
-    private List<String> residues = null;
+    private List<String> residues;
 
     /**
      * Constructor for PRIDE Modification Object
@@ -82,15 +82,11 @@ public class Modification extends IdentifiableParamGroup {
      * @param modDatabase DataBase Name
      * @param modDatabaseVersion DataBase Version
      */
-    public Modification(String id, String name, int location, List<String> residues, List<Double> avgMassDelta,
-                        List<Double> monoisotopicMassDelta, String modDatabase, String modDatabaseVersion) {
-        super(id, name);
-        this.location              = location;
-        this.residues              = residues;
-        this.avgMassDelta          = avgMassDelta;
-        this.monoisotopicMassDelta = monoisotopicMassDelta;
-        this.modDatabase           = modDatabase;
-        this.modDatabaseVersion    = modDatabaseVersion;
+    public Modification(String id, String name, int location,
+                        List<String> residues, List<Double> avgMassDelta,
+                        List<Double> monoisotopicMassDelta, String modDatabase,
+                        String modDatabaseVersion) {
+        this(null, id, name, location, residues, avgMassDelta, monoisotopicMassDelta, modDatabase, modDatabaseVersion);
     }
 
     /**
@@ -111,9 +107,9 @@ public class Modification extends IdentifiableParamGroup {
                         String modDatabaseVersion) {
         super(params, id, name);
         this.location              = location;
-        this.residues              = residues;
-        this.avgMassDelta          = avgMassDelta;
-        this.monoisotopicMassDelta = monoisotopicMassDelta;
+        this.residues              = CollectionUtils.createListFromList(residues);
+        this.avgMassDelta          = CollectionUtils.createListFromList(avgMassDelta);
+        this.monoisotopicMassDelta = CollectionUtils.createListFromList(monoisotopicMassDelta);
         this.modDatabase           = modDatabase;
         this.modDatabaseVersion    = modDatabaseVersion;
     }
@@ -151,7 +147,7 @@ public class Modification extends IdentifiableParamGroup {
      * @param residues List of Residues (Amino Acids)
      */
     public void setResidues(List<String> residues) {
-        this.residues = residues;
+        CollectionUtils.replaceValuesInCollection(residues, this.residues);
     }
 
     /**
@@ -205,7 +201,7 @@ public class Modification extends IdentifiableParamGroup {
      * @param avgMassDelta Average Mass Delta List
      */
     public void setAvgMassDelta(List<Double> avgMassDelta) {
-        this.avgMassDelta = avgMassDelta;
+        CollectionUtils.replaceValuesInCollection(avgMassDelta, this.avgMassDelta);
     }
 
     /**
@@ -223,30 +219,37 @@ public class Modification extends IdentifiableParamGroup {
      * @param monoisotopicMassDelta monoisotopic mass delta List
      */
     public void setMonoisotopicMassDelta(List<Double> monoisotopicMassDelta) {
-        this.monoisotopicMassDelta = monoisotopicMassDelta;
+        CollectionUtils.replaceValuesInCollection(monoisotopicMassDelta, this.monoisotopicMassDelta);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Modification)) return false;
         if (!super.equals(o)) return false;
 
         Modification that = (Modification) o;
 
-        return location == that.location && !(avgMassDelta != null ? !avgMassDelta.equals(that.avgMassDelta) : that.avgMassDelta != null) && !(modDatabase != null ? !modDatabase.equals(that.modDatabase) : that.modDatabase != null) && !(modDatabaseVersion != null ? !modDatabaseVersion.equals(that.modDatabaseVersion) : that.modDatabaseVersion != null) && !(monoisotopicMassDelta != null ? !monoisotopicMassDelta.equals(that.monoisotopicMassDelta) : that.monoisotopicMassDelta != null) && !(residues != null ? !residues.equals(that.residues) : that.residues != null);
+        if (location != that.location) return false;
+        if (!avgMassDelta.equals(that.avgMassDelta)) return false;
+        if (modDatabase != null ? !modDatabase.equals(that.modDatabase) : that.modDatabase != null) return false;
+        if (modDatabaseVersion != null ? !modDatabaseVersion.equals(that.modDatabaseVersion) : that.modDatabaseVersion != null)
+            return false;
+        if (!monoisotopicMassDelta.equals(that.monoisotopicMassDelta)) return false;
+        if (!residues.equals(that.residues)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (avgMassDelta != null ? avgMassDelta.hashCode() : 0);
+        result = 31 * result + avgMassDelta.hashCode();
         result = 31 * result + location;
         result = 31 * result + (modDatabase != null ? modDatabase.hashCode() : 0);
         result = 31 * result + (modDatabaseVersion != null ? modDatabaseVersion.hashCode() : 0);
-        result = 31 * result + (monoisotopicMassDelta != null ? monoisotopicMassDelta.hashCode() : 0);
-        result = 31 * result + (residues != null ? residues.hashCode() : 0);
+        result = 31 * result + monoisotopicMassDelta.hashCode();
+        result = 31 * result + residues.hashCode();
         return result;
     }
 }

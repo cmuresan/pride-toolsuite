@@ -33,12 +33,12 @@ public class BinaryDataArray extends ParamGroup {
     /**
      * Binary double array
      */
-    private double[] binaryDoubleArray = null;
+    private double[] binaryDoubleArray;
 
     /**
      * DataProcessing Object
      */
-    private DataProcessing dataProcessing = null;
+    private DataProcessing dataProcessing;
 
     /**
      * Constructor

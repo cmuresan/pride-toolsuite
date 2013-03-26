@@ -29,17 +29,17 @@ public class SourceFile extends IdentifiableParamGroup {
      * of the ExternalData instance. For example, XML Schema or static libraries
      * (APIs) to access binary formats.
      */
-    private String externalFormatDocumentationURI = null;
+    private String externalFormatDocumentationURI;
 
     /**
      * The format of the ExternalData file, for example "tiff" for image files.
      */
-    private CvParam fileFormat = null;
+    private CvParam fileFormat;
 
     /**
      * location of the source file
      */
-    private String path = null;
+    private String path;
 
     /**
      * Constructor for special cases were you don't have and Id

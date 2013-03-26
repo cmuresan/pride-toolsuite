@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.data.core;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
+
 import java.util.List;
 
 /**
@@ -19,19 +21,19 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
      * following structure:
      * - id
      * - name
-     * - Map of Software and PraramGroup.
+     * - Map of Software and ParamGroup.
      */
-    private List<DataProcessing> dataProcessingList = null;
+    private List<DataProcessing> dataProcessingList;
 
     /**
      * list and descriptions of instruments settings
      */
-    private List<InstrumentConfiguration> instrumentConfigurations = null;
+    private List<InstrumentConfiguration> instrumentConfigurations;
 
     /**
      * list and descriptions of the acquisition settings applied prior to the start of data acquisition.
      */
-    private List<ScanSetting> scanSettings = null;
+    private List<ScanSetting> scanSettings;
 
     /**
      * Constructor for MzGraphMetaData
@@ -60,9 +62,9 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
                            List<InstrumentConfiguration> instrumentConfigurations,
                            List<DataProcessing> dataProcessingList) {
         super(params, id, name);
-        this.scanSettings             = scanSettings;
-        this.instrumentConfigurations = instrumentConfigurations;
-        this.dataProcessingList       = dataProcessingList;
+        this.scanSettings             = CollectionUtils.createListFromList(scanSettings);
+        this.instrumentConfigurations = CollectionUtils.createListFromList(instrumentConfigurations);
+        this.dataProcessingList       = CollectionUtils.createListFromList(dataProcessingList);
     }
 
     public ParamGroup getFileContent() {
@@ -79,7 +81,7 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
     }
 
     public void setScanSettings(List<ScanSetting> scanSettings) {
-        this.scanSettings = scanSettings;
+        CollectionUtils.replaceValuesInCollection(scanSettings, this.scanSettings);
     }
 
     public List<InstrumentConfiguration> getInstrumentConfigurations() {
@@ -87,7 +89,7 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
     }
 
     public void setInstrumentConfigurations(List<InstrumentConfiguration> instrumentConfigurations) {
-        this.instrumentConfigurations = instrumentConfigurations;
+        CollectionUtils.replaceValuesInCollection(instrumentConfigurations, this.instrumentConfigurations);
     }
 
     public List<DataProcessing> getDataProcessingList() {
@@ -95,27 +97,30 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
     }
 
     public void setDataProcessingList(List<DataProcessing> dataProcessingList) {
-        this.dataProcessingList = dataProcessingList;
+        CollectionUtils.replaceValuesInCollection(dataProcessingList, this.dataProcessingList);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof MzGraphMetaData)) return false;
         if (!super.equals(o)) return false;
 
         MzGraphMetaData that = (MzGraphMetaData) o;
 
-        return !(dataProcessingList != null ? !dataProcessingList.equals(that.dataProcessingList) : that.dataProcessingList != null) && !(instrumentConfigurations != null ? !instrumentConfigurations.equals(that.instrumentConfigurations) : that.instrumentConfigurations != null) && !(scanSettings != null ? !scanSettings.equals(that.scanSettings) : that.scanSettings != null);
+        if (!dataProcessingList.equals(that.dataProcessingList)) return false;
+        if (!instrumentConfigurations.equals(that.instrumentConfigurations)) return false;
+        if (!scanSettings.equals(that.scanSettings)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (dataProcessingList != null ? dataProcessingList.hashCode() : 0);
-        result = 31 * result + (instrumentConfigurations != null ? instrumentConfigurations.hashCode() : 0);
-        result = 31 * result + (scanSettings != null ? scanSettings.hashCode() : 0);
+        result = 31 * result + dataProcessingList.hashCode();
+        result = 31 * result + instrumentConfigurations.hashCode();
+        result = 31 * result + scanSettings.hashCode();
         return result;
     }
 }

@@ -18,23 +18,23 @@ public class Software extends IdentifiableParamGroup {
      * A reference to the Contact person that provide the mzIdentMl File.
      * (mzIndetMl description: When a ContactRole is used, it specifies which Contact the role is associated with.
      */
-    private AbstractContact contact = null;
+    private AbstractContact contact;
 
     /**
      * Any customizations to the software, such as alternative scoring mechanisms implemented,
      * should be documented here as free text. The is very important at the for MzIdentML
      */
-    private String customization = null;
+    private String customization;
 
     /**
      * URI of the analysis software e.g. manufacturer's website
      */
-    private String uri = null;
+    private String uri;
 
     /**
      * software version
      */
-    private String version = null;
+    private String version;
 
     /**
      * Constructor of Software Object without ParamGroup

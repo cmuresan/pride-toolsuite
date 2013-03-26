@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
-
 /**
  * ToDo: document this class
  * ToDo: finish implementing this class or remove it
@@ -10,8 +8,8 @@ package uk.ac.ebi.pride.data.core;
  * Time: 14:24
  */
 public class ProteinDetectionList extends ParamGroup {
-    String                      id                        = null;
-    String                      name                      = null;
+    String id;
+    String name;
     //List<ProteinAmbiguityGroup> proteinAmbiguityGroupList = null;
 
     @Override

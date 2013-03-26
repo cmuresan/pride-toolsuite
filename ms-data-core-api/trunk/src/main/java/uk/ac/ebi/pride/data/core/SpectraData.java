@@ -8,7 +8,7 @@ package uk.ac.ebi.pride.data.core;
  */
 public class SpectraData extends ExternalData {
 
-    private CvParam spectrumIdFormat = null;
+    private CvParam spectrumIdFormat;
 
     /**
      * @param id    Generic Id of Spectra Data File

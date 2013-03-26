@@ -6,7 +6,6 @@ package uk.ac.ebi.pride.data.core;
  * in order to organize the code we create a new abstract class named AbstractContact to separate the Contacts types
  * from the IdentifiableParamGroup.
  * <p/>
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 19/08/11
  * Time: 15:31

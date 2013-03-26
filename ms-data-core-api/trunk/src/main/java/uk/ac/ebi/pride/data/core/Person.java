@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
 
@@ -16,27 +16,27 @@ public class Person extends AbstractContact {
     /**
      * The organization a person belongs to.
      */
-    private List<Organization> affiliation = null;
+    private List<Organization> affiliation;
 
     /**
      * The Person's first name.
      */
-    private String firstname = null;
+    private String firstname;
 
     /**
      * The Person's last/family name.
      */
-    private String lastname = null;
+    private String lastname;
 
     /**
      * contactInfo
      */
-    private String contactInfo = null;
+    private String contactInfo;
 
     /**
      * The Person's middle initial.
      */
-    private String midInitials = null;
+    private String midInitials;
 
     /**
      * Constructor for MzMl and Pride Person Contact
@@ -79,7 +79,7 @@ public class Person extends AbstractContact {
         this.lastname    = lastname;
         this.firstname   = firstname;
         this.midInitials = midInitials;
-        this.affiliation = affiliation;
+        this.affiliation = CollectionUtils.createListFromList(affiliation);
         this.contactInfo = contactInfo;
     }
 
@@ -112,7 +112,7 @@ public class Person extends AbstractContact {
     }
 
     public void setAffiliation(List<Organization> affiliation) {
-        this.affiliation = affiliation;
+        CollectionUtils.replaceValuesInCollection(affiliation, this.affiliation);
     }
 
     public String getContactInfo() {
@@ -126,19 +126,24 @@ public class Person extends AbstractContact {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Person)) return false;
         if (!super.equals(o)) return false;
 
         Person person = (Person) o;
 
-        return !(affiliation != null ? !affiliation.equals(person.affiliation) : person.affiliation != null) && !(contactInfo != null ? !contactInfo.equals(person.contactInfo) : person.contactInfo != null) && !(firstname != null ? !firstname.equals(person.firstname) : person.firstname != null) && !(lastname != null ? !lastname.equals(person.lastname) : person.lastname != null) && !(midInitials != null ? !midInitials.equals(person.midInitials) : person.midInitials != null);
+        if (!affiliation.equals(person.affiliation)) return false;
+        if (contactInfo != null ? !contactInfo.equals(person.contactInfo) : person.contactInfo != null) return false;
+        if (firstname != null ? !firstname.equals(person.firstname) : person.firstname != null) return false;
+        if (lastname != null ? !lastname.equals(person.lastname) : person.lastname != null) return false;
+        if (midInitials != null ? !midInitials.equals(person.midInitials) : person.midInitials != null) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (affiliation != null ? affiliation.hashCode() : 0);
+        result = 31 * result + affiliation.hashCode();
         result = 31 * result + (firstname != null ? firstname.hashCode() : 0);
         result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
         result = 31 * result + (contactInfo != null ? contactInfo.hashCode() : 0);

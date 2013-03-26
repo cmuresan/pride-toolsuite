@@ -1,11 +1,9 @@
 package uk.ac.ebi.pride.data.core;
 
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.List;
-
-
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * A peak list including the underlying acquisitions.
@@ -32,32 +30,32 @@ public class Spectrum extends MzGraph {
     /**
      * peptide associate with this spectrum
      */
-    private Peptide peptide = null;
+    private Peptide peptide;
 
     /**
      * list and descriptions of precursor isolations to this spectrum
      */
-    private List<Precursor> precursors = null;
+    private List<Precursor> precursors;
 
     /**
      * list and descriptions of product isolations to this spectrum
      */
-    private List<ParamGroup> products = null;
+    private List<ParamGroup> products;
 
     /**
      * list and descriptions of scans
      */
-    private ScanList scanList = null;
+    private ScanList scanList;
 
     /**
      * source file
      */
-    private SourceFile sourceFile = null;
+    private SourceFile sourceFile;
 
     /**
      * the identifier for the spot on a MALDI or similar on
      */
-    private String spotID = null;
+    private String spotID;
 
 
     /**
@@ -126,8 +124,8 @@ public class Spectrum extends MzGraph {
         this.spotID     = spotID;
         this.sourceFile = sourceFile;
         this.scanList   = scanList;
-        this.precursors = precursors;
-        this.products   = products;
+        this.precursors = CollectionUtils.createListFromList(precursors);
+        this.products   = CollectionUtils.createListFromList(products);
         this.peptide    = peptide;
     }
 
@@ -160,7 +158,7 @@ public class Spectrum extends MzGraph {
     }
 
     public void setPrecursors(List<Precursor> precursors) {
-        this.precursors = precursors;
+        CollectionUtils.replaceValuesInCollection(precursors, this.precursors);
     }
 
     public List<ParamGroup> getProducts() {
@@ -168,7 +166,7 @@ public class Spectrum extends MzGraph {
     }
 
     public void setProducts(List<ParamGroup> products) {
-        this.products = products;
+        CollectionUtils.replaceValuesInCollection(products, this.products);
     }
 
     public BinaryDataArray getMzBinaryDataArray() {
@@ -190,21 +188,27 @@ public class Spectrum extends MzGraph {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Spectrum)) return false;
         if (!super.equals(o)) return false;
 
         Spectrum spectrum = (Spectrum) o;
 
-        return !(peptide != null ? !peptide.equals(spectrum.peptide) : spectrum.peptide != null) && !(precursors != null ? !precursors.equals(spectrum.precursors) : spectrum.precursors != null) && !(products != null ? !products.equals(spectrum.products) : spectrum.products != null) && !(scanList != null ? !scanList.equals(spectrum.scanList) : spectrum.scanList != null) && !(sourceFile != null ? !sourceFile.equals(spectrum.sourceFile) : spectrum.sourceFile != null) && !(spotID != null ? !spotID.equals(spectrum.spotID) : spectrum.spotID != null);
+        if (peptide != null ? !peptide.equals(spectrum.peptide) : spectrum.peptide != null) return false;
+        if (!precursors.equals(spectrum.precursors)) return false;
+        if (!products.equals(spectrum.products)) return false;
+        if (scanList != null ? !scanList.equals(spectrum.scanList) : spectrum.scanList != null) return false;
+        if (sourceFile != null ? !sourceFile.equals(spectrum.sourceFile) : spectrum.sourceFile != null) return false;
+        if (spotID != null ? !spotID.equals(spectrum.spotID) : spectrum.spotID != null) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (peptide != null ? peptide.hashCode() : 0);
-        result = 31 * result + (precursors != null ? precursors.hashCode() : 0);
-        result = 31 * result + (products != null ? products.hashCode() : 0);
+        result = 31 * result + precursors.hashCode();
+        result = 31 * result + products.hashCode();
         result = 31 * result + (scanList != null ? scanList.hashCode() : 0);
         result = 31 * result + (sourceFile != null ? sourceFile.hashCode() : 0);
         result = 31 * result + (spotID != null ? spotID.hashCode() : 0);

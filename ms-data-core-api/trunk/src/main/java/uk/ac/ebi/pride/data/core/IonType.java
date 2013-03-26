@@ -1,7 +1,10 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
+import uk.ac.ebi.pride.data.utils.MapUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +13,7 @@ import java.util.Map;
  * importing a CV term for the type of ion e.g. b ion. Example: if b3 b7 b8 and b10
  * have been identified, the index attribute will contain 3 7 8 10, and the
  * corresponding values will be reported in parallel arrays below.
- * Created by IntelliJ IDEA.
+ *
  * User: yperez
  * Date: 08/08/11
  * Time: 14:01
@@ -20,7 +23,7 @@ public class IonType extends CvParam {
     /**
      * The charge of the identified fragmentation ions.
      */
-    private int charge = -1;
+    private int charge;
 
     /**
      * The index of ions identified as integers, following standard notation for
@@ -31,14 +34,18 @@ public class IonType extends CvParam {
      * the peptide sequence - if the peptide contains the same amino acid in
      * multiple positions that cannot be distinguished, all positions should be
      * given.
+     *
+     * todo: review this list, why is not initialized by the constructor
      */
-    List<Integer> index = null;
+    private List<Integer> index;
 
     /**
      * An array of values for a given type of measure and for a particular ion
      * type, in parallel to the index of ions identified.
+     *
+     * todo: review this map, see reason above
      */
-    private Map<IdentifiableParamGroup, List<Integer>> measureListHashMap = null;
+    private Map<IdentifiableParamGroup, List<Integer>> measureListHashMap;
 
     /**
      * Constructor
@@ -51,9 +58,14 @@ public class IonType extends CvParam {
      * @param unitName       optional.
      * @param unitCVLookupID optional.
      */
-    public IonType(String accession, String name, String cvLookupID, String value, String unitAcc, String unitName,
+    public IonType(String accession, String name,
+                   String cvLookupID, String value,
+                   String unitAcc, String unitName,
                    String unitCVLookupID) {
         super(accession, name, cvLookupID, value, unitAcc, unitName, unitCVLookupID);
+        this.charge = -1;
+        this.index = new ArrayList<Integer>();
+        this.measureListHashMap = new HashMap<IdentifiableParamGroup, List<Integer>>();
     }
 
     public List<Integer> getIndex() {
@@ -61,7 +73,7 @@ public class IonType extends CvParam {
     }
 
     public void setIndex(List<Integer> index) {
-        this.index = index;
+        CollectionUtils.replaceValuesInCollection(index, this.index);
     }
 
     public int getCharge() {
@@ -77,27 +89,30 @@ public class IonType extends CvParam {
     }
 
     public void setMeasureListHashMap(Map<IdentifiableParamGroup, List<Integer>> measureListHashMap) {
-        this.measureListHashMap = measureListHashMap;
+        MapUtils.replaceValuesInMap(measureListHashMap, this.measureListHashMap);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof IonType)) return false;
         if (!super.equals(o)) return false;
 
         IonType ionType = (IonType) o;
 
-        return charge == ionType.charge && !(index != null ? !index.equals(ionType.index) : ionType.index != null) && !(measureListHashMap != null ? !measureListHashMap.equals(ionType.measureListHashMap) : ionType.measureListHashMap != null);
+        if (charge != ionType.charge) return false;
+        if (!index.equals(ionType.index)) return false;
+        if (!measureListHashMap.equals(ionType.measureListHashMap)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + charge;
-        result = 31 * result + (index != null ? index.hashCode() : 0);
-        result = 31 * result + (measureListHashMap != null ? measureListHashMap.hashCode() : 0);
+        result = 31 * result + index.hashCode();
+        result = 31 * result + measureListHashMap.hashCode();
         return result;
     }
 }

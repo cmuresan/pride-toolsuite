@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
+import uk.ac.ebi.pride.data.utils.MapUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -12,15 +13,17 @@ import java.util.Map;
  * Time: 16:40
  */
 public class MassTable extends ParamGroup {
-    private Map<String, ParamGroup> ambiguousResidues = null;
-    private List<Integer>           msLevel           = null;
-    private Map<String, Float>      residues          = null;
 
-    public MassTable(List<Integer> msLevel, Map<String, Float> residueList,
-                     Map<String, ParamGroup> ambiguousResidueList) {
-        this.msLevel           = msLevel;
-        this.residues          = residueList;
-        this.ambiguousResidues = ambiguousResidueList;
+    private List<Integer> msLevel;
+    private Map<String, Float> residues;
+    private Map<String, ParamGroup> ambiguousResidues;
+
+    public MassTable(List<Integer> msLevel,
+                     Map<String, Float> residues,
+                     Map<String, ParamGroup> ambiguousResidues) {
+        this.msLevel = CollectionUtils.createListFromList(msLevel);
+        this.residues = MapUtils.createMapFromMap(residues);
+        this.ambiguousResidues = MapUtils.createMapFromMap(ambiguousResidues);
     }
 
     public List<Integer> getMsLevel() {
@@ -28,7 +31,7 @@ public class MassTable extends ParamGroup {
     }
 
     public void setMsLevel(List<Integer> msLevel) {
-        this.msLevel = msLevel;
+        CollectionUtils.replaceValuesInCollection(msLevel, this.msLevel);
     }
 
     public Map<String, Float> getResidues() {
@@ -36,7 +39,7 @@ public class MassTable extends ParamGroup {
     }
 
     public void setResidues(Map<String, Float> residues) {
-        this.residues = residues;
+        MapUtils.replaceValuesInMap(residues, this.residues);
     }
 
     public Map<String, ParamGroup> getAmbiguousResidues() {
@@ -44,27 +47,30 @@ public class MassTable extends ParamGroup {
     }
 
     public void setAmbiguousResidues(Map<String, ParamGroup> ambiguousResidues) {
-        this.ambiguousResidues = ambiguousResidues;
+        MapUtils.replaceValuesInMap(ambiguousResidues, this.ambiguousResidues);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof MassTable)) return false;
         if (!super.equals(o)) return false;
 
         MassTable massTable = (MassTable) o;
 
-        return !(ambiguousResidues != null ? !ambiguousResidues.equals(massTable.ambiguousResidues) : massTable.ambiguousResidues != null) && !(msLevel != null ? !msLevel.equals(massTable.msLevel) : massTable.msLevel != null) && !(residues != null ? !residues.equals(massTable.residues) : massTable.residues != null);
+        if (!ambiguousResidues.equals(massTable.ambiguousResidues)) return false;
+        if (!msLevel.equals(massTable.msLevel)) return false;
+        if (!residues.equals(massTable.residues)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (ambiguousResidues != null ? ambiguousResidues.hashCode() : 0);
-        result = 31 * result + (msLevel != null ? msLevel.hashCode() : 0);
-        result = 31 * result + (residues != null ? residues.hashCode() : 0);
+        result = 31 * result + msLevel.hashCode();
+        result = 31 * result + residues.hashCode();
+        result = 31 * result + ambiguousResidues.hashCode();
         return result;
     }
 }

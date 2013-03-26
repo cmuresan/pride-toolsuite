@@ -7,9 +7,9 @@ package uk.ac.ebi.pride.data.core;
  * Time: 17:11
  */
 public class Filter {
-    private ParamGroup exclude    = null;
-    private ParamGroup filterType = null;
-    private ParamGroup include    = null;
+    private ParamGroup exclude;
+    private ParamGroup filterType;
+    private ParamGroup include;
 
     public Filter(ParamGroup filterType, ParamGroup include, ParamGroup exclude) {
         this.filterType = filterType;

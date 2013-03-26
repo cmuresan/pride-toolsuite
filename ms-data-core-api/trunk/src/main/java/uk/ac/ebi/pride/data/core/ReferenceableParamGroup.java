@@ -2,25 +2,20 @@ package uk.ac.ebi.pride.data.core;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import uk.ac.ebi.pride.data.utils.MapUtils;
+
 import java.util.Map;
 
 /**
  * Referenceable param group stores a map of reference string to param group.
- * <p/>
+ *
  * User: rwang
- * Date: 29-Apr-2010
- * Time: 09:24:33
  */
 public class ReferenceableParamGroup implements MassSpecObject {
-    private Map<String, ParamGroup> refMap = null;
+    private Map<String, ParamGroup> refMap;
 
-    /**
-     * Constructor
-     *
-     * @param refMap required.
-     */
     public ReferenceableParamGroup(Map<String, ParamGroup> refMap) {
-        this.refMap = refMap;
+        this.refMap = MapUtils.createMapFromMap(refMap);
     }
 
     public Map<String, ParamGroup> getRefMap() {
@@ -28,7 +23,7 @@ public class ReferenceableParamGroup implements MassSpecObject {
     }
 
     public void setRefMap(Map<String, ParamGroup> refMap) {
-        this.refMap = refMap;
+        MapUtils.replaceValuesInMap(refMap, this.refMap);
     }
 
     public void addRefParamGroup(String ref, ParamGroup params) {
@@ -46,17 +41,18 @@ public class ReferenceableParamGroup implements MassSpecObject {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ReferenceableParamGroup)) return false;
 
         ReferenceableParamGroup that = (ReferenceableParamGroup) o;
 
-        return !(refMap != null ? !refMap.equals(that.refMap) : that.refMap != null);
+        if (!refMap.equals(that.refMap)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return refMap != null ? refMap.hashCode() : 0;
+        return refMap.hashCode();
     }
 }
 

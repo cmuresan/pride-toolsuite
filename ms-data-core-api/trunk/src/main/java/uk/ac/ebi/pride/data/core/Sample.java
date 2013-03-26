@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
+import uk.ac.ebi.pride.data.utils.MapUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -20,12 +21,12 @@ public class Sample extends IdentifiableParamGroup {
     /**
      * Contact Role could be defined as a Person and a specific role (CVTerms)
      */
-    private Map<AbstractContact, CvParam> contactRoleList = null;
+    private Map<AbstractContact, CvParam> contactRoleList;
 
     /**
      * Each sample could have a parent Sample, this relation is defined in the MzIdentMl Files.
      */
-    private List<Sample> subSamples = null;
+    private List<Sample> subSamples;
 
 
     /**
@@ -51,8 +52,8 @@ public class Sample extends IdentifiableParamGroup {
     public Sample(ParamGroup params, String id, String name, List<Sample> subSamples,
                   Map<AbstractContact, CvParam> contactRoleList) {
         super(params, id, name);
-        this.subSamples      = subSamples;
-        this.contactRoleList = contactRoleList;
+        this.subSamples      = CollectionUtils.createListFromList(subSamples);
+        this.contactRoleList = MapUtils.createMapFromMap(contactRoleList);
     }
 
     public List<Sample> getParentSample() {
@@ -60,7 +61,7 @@ public class Sample extends IdentifiableParamGroup {
     }
 
     public void setParentSample(List<Sample> subSamples) {
-        this.subSamples = subSamples;
+        CollectionUtils.replaceValuesInCollection(subSamples, this.subSamples);
     }
 
     public Map<AbstractContact, CvParam> getContactRoleList() {
@@ -68,26 +69,28 @@ public class Sample extends IdentifiableParamGroup {
     }
 
     public void setContactRoleList(Map<AbstractContact, CvParam> contactRoleList) {
-        this.contactRoleList = contactRoleList;
+        MapUtils.replaceValuesInMap(contactRoleList, this.contactRoleList);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Sample)) return false;
         if (!super.equals(o)) return false;
 
         Sample sample = (Sample) o;
 
-        return !(contactRoleList != null ? !contactRoleList.equals(sample.contactRoleList) : sample.contactRoleList != null) && !(subSamples != null ? !subSamples.equals(sample.subSamples) : sample.subSamples != null);
+        if (!contactRoleList.equals(sample.contactRoleList)) return false;
+        if (!subSamples.equals(sample.subSamples)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (contactRoleList != null ? contactRoleList.hashCode() : 0);
-        result = 31 * result + (subSamples != null ? subSamples.hashCode() : 0);
+        result = 31 * result + contactRoleList.hashCode();
+        result = 31 * result + subSamples.hashCode();
         return result;
     }
 }

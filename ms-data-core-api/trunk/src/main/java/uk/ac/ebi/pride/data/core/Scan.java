@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
 
@@ -27,12 +27,12 @@ public class Scan extends ParamGroup {
     /**
      * external spectrum reference
      */
-    private String externalSpecRef = null;
+    private String externalSpecRef;
 
     /**
      * Instrument configuration
      */
-    private InstrumentConfiguration instrumentConfiguration = null;
+    private InstrumentConfiguration instrumentConfiguration;
 
     /**
      * collection of scan windows
@@ -48,17 +48,17 @@ public class Scan extends ParamGroup {
      * <p/>
      * 3. Must include only one "scan window lower limit".
      */
-    private List<ParamGroup> scanWindows = null;
+    private List<ParamGroup> scanWindows;
 
     /**
      * source file, it must refer to the file which contains externalSpecRef
      */
-    private SourceFile sourceFile = null;
+    private SourceFile sourceFile;
 
     /**
      * spectrum reference
      */
-    private String spectrumRef = null;
+    private String spectrumRef;
 
     /**
      * Constructor
@@ -73,11 +73,11 @@ public class Scan extends ParamGroup {
     public Scan(String spectrumRef, String externalSpecRef, SourceFile sourceFile,
                 InstrumentConfiguration instrumentConfiguration, List<ParamGroup> scanWindows, ParamGroup params) {
         super(params);
-        this.spectrumRef             = spectrumRef;
-        this.externalSpecRef         = externalSpecRef;
-        this.sourceFile              = sourceFile;
+        this.spectrumRef = spectrumRef;
+        this.externalSpecRef = externalSpecRef;
+        this.sourceFile = sourceFile;
         this.instrumentConfiguration = instrumentConfiguration;
-        this.scanWindows             = scanWindows;
+        this.scanWindows = CollectionUtils.createListFromList(scanWindows);
     }
 
     public String getExternalSpecRef() {
@@ -117,19 +117,26 @@ public class Scan extends ParamGroup {
     }
 
     public void setScanWindows(List<ParamGroup> scanWindows) {
-        this.scanWindows = scanWindows;
+        CollectionUtils.replaceValuesInCollection(scanWindows, this.scanWindows);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Scan)) return false;
         if (!super.equals(o)) return false;
 
         Scan scan = (Scan) o;
 
-        return !(externalSpecRef != null ? !externalSpecRef.equals(scan.externalSpecRef) : scan.externalSpecRef != null) && !(instrumentConfiguration != null ? !instrumentConfiguration.equals(scan.instrumentConfiguration) : scan.instrumentConfiguration != null) && !(scanWindows != null ? !scanWindows.equals(scan.scanWindows) : scan.scanWindows != null) && !(sourceFile != null ? !sourceFile.equals(scan.sourceFile) : scan.sourceFile != null) && !(spectrumRef != null ? !spectrumRef.equals(scan.spectrumRef) : scan.spectrumRef != null);
+        if (externalSpecRef != null ? !externalSpecRef.equals(scan.externalSpecRef) : scan.externalSpecRef != null)
+            return false;
+        if (instrumentConfiguration != null ? !instrumentConfiguration.equals(scan.instrumentConfiguration) : scan.instrumentConfiguration != null)
+            return false;
+        if (!scanWindows.equals(scan.scanWindows)) return false;
+        if (sourceFile != null ? !sourceFile.equals(scan.sourceFile) : scan.sourceFile != null) return false;
+        if (spectrumRef != null ? !spectrumRef.equals(scan.spectrumRef) : scan.spectrumRef != null) return false;
 
+        return true;
     }
 
     @Override
@@ -137,7 +144,7 @@ public class Scan extends ParamGroup {
         int result = super.hashCode();
         result = 31 * result + (externalSpecRef != null ? externalSpecRef.hashCode() : 0);
         result = 31 * result + (instrumentConfiguration != null ? instrumentConfiguration.hashCode() : 0);
-        result = 31 * result + (scanWindows != null ? scanWindows.hashCode() : 0);
+        result = 31 * result + scanWindows.hashCode();
         result = 31 * result + (sourceFile != null ? sourceFile.hashCode() : 0);
         result = 31 * result + (spectrumRef != null ? spectrumRef.hashCode() : 0);
         return result;

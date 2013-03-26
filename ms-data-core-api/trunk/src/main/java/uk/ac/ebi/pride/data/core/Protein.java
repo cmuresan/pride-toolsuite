@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,43 +17,43 @@ public class Protein extends IdentifiableParamGroup {
     /**
      * DEB Sequence
      */
-    private DBSequence dbSequence = null;
+    private DBSequence dbSequence;
 
     /**
      * Pass Threshold of the Search Engine
      */
-    private boolean passThreshold = false;
+    private boolean passThreshold;
 
     /**
      * Peptide Identifications
      */
-    private List<Peptide> peptides = null;
+    private List<Peptide> peptides;
 
     /**
      * The score is the score value in a SearchEngine Context
      */
 
-    private Score score = null;
+    private Score score;
 
     /**
      * percentage of sequence coverage obtained through all identified peptides/masses
      */
-    private double sequenceCoverage = -1;
+    private double sequenceCoverage;
 
     /**
      * optional search engine threshold
      */
-    private double threshold = -1;
+    private double threshold;
 
     /**
      * Gel related details
      */
-    private Gel gel = null;
+    private Gel gel;
 
     /**
      * The group in wich we can find the Protein Identification
      */
-    IdentifiableParamGroup proteinAmbiguityGroup = null;
+    private IdentifiableParamGroup proteinAmbiguityGroup;
 
     public Protein(Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
                    List<Peptide> peptides, Score score, double threshold, double sequenceCoverage, Gel gel) {
@@ -65,7 +65,7 @@ public class Protein extends IdentifiableParamGroup {
         super(params, id, name);
         this.dbSequence       = dbSequence;
         this.passThreshold    = passThreshold;
-        this.peptides         = peptides;
+        this.peptides         = CollectionUtils.createListFromList(peptides);
         this.score            = score;
         this.threshold        = threshold;
         this.sequenceCoverage = sequenceCoverage;
@@ -93,7 +93,7 @@ public class Protein extends IdentifiableParamGroup {
     }
 
     public void setPeptides(List<Peptide> peptides) {
-        this.peptides = peptides;
+        CollectionUtils.replaceValuesInCollection(peptides, this.peptides);
     }
 
     public Score getScore() {
@@ -149,13 +149,22 @@ public class Protein extends IdentifiableParamGroup {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Protein)) return false;
         if (!super.equals(o)) return false;
 
         Protein protein = (Protein) o;
 
-        return passThreshold == protein.passThreshold && Double.compare(protein.sequenceCoverage, sequenceCoverage) == 0 && Double.compare(protein.threshold, threshold) == 0 && !(dbSequence != null ? !dbSequence.equals(protein.dbSequence) : protein.dbSequence != null) && !(gel != null ? !gel.equals(protein.gel) : protein.gel != null) && !(peptides != null ? !peptides.equals(protein.peptides) : protein.peptides != null) && !(proteinAmbiguityGroup != null ? !proteinAmbiguityGroup.equals(protein.proteinAmbiguityGroup) : protein.proteinAmbiguityGroup != null) && !(score != null ? !score.equals(protein.score) : protein.score != null);
+        if (passThreshold != protein.passThreshold) return false;
+        if (Double.compare(protein.sequenceCoverage, sequenceCoverage) != 0) return false;
+        if (Double.compare(protein.threshold, threshold) != 0) return false;
+        if (dbSequence != null ? !dbSequence.equals(protein.dbSequence) : protein.dbSequence != null) return false;
+        if (gel != null ? !gel.equals(protein.gel) : protein.gel != null) return false;
+        if (!peptides.equals(protein.peptides)) return false;
+        if (proteinAmbiguityGroup != null ? !proteinAmbiguityGroup.equals(protein.proteinAmbiguityGroup) : protein.proteinAmbiguityGroup != null)
+            return false;
+        if (score != null ? !score.equals(protein.score) : protein.score != null) return false;
 
+        return true;
     }
 
     @Override
@@ -164,7 +173,7 @@ public class Protein extends IdentifiableParamGroup {
         long temp;
         result = 31 * result + (dbSequence != null ? dbSequence.hashCode() : 0);
         result = 31 * result + (passThreshold ? 1 : 0);
-        result = 31 * result + (peptides != null ? peptides.hashCode() : 0);
+        result = 31 * result + peptides.hashCode();
         result = 31 * result + (score != null ? score.hashCode() : 0);
         temp = sequenceCoverage != +0.0d ? Double.doubleToLongBits(sequenceCoverage) : 0L;
         result = 31 * result + (int) (temp ^ (temp >>> 32));

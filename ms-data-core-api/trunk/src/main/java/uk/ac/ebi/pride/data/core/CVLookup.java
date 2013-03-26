@@ -13,22 +13,22 @@ public class CVLookup implements MassSpecObject {
     /**
      * The URI for the controlled vocabulary
      */
-    private String address = null;
+    private String address;
 
     /**
      * Cv Label name, it is also the Id for this CVLookup
      */
-    private String cvLabel = null;
+    private String cvLabel;
 
     /**
      * The full name of the controlled vocabulary
      */
-    private String fullName = null;
+    private String fullName;
 
     /**
      * The version of the controlled vocabulary
      */
-    private String version = null;
+    private String version;
 
     /**
      * Constructor

@@ -2,7 +2,9 @@ package uk.ac.ebi.pride.data.utils;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A utility class to enhance Collections class in JDK
@@ -10,7 +12,7 @@ import java.util.Collection;
  * Date: 16-Apr-2010
  * Time: 11:05:42
  */
-public class CollectionUtils {
+public final class CollectionUtils {
 
     /**
      * Get the index of a element in a collection
@@ -57,6 +59,23 @@ public class CollectionUtils {
 
     public static <T> T getLastElement(Collection<T> collection) {
         return getElement(collection, collection.size() - 1);
+    }
+
+    public static <T> List<T> createListFromList(Collection<T> collection) {
+        List<T> newList = new ArrayList<T>();
+
+        if (collection != null) {
+            newList.addAll(collection);
+        }
+
+        return newList;
+    }
+
+    public static <T> void replaceValuesInCollection(Collection<T> from, Collection<T> to) {
+        to.clear();
+        if (from != null) {
+            to.addAll(from);
+        }
     }
 }
 

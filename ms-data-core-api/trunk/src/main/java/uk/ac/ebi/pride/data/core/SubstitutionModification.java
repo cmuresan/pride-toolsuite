@@ -12,15 +12,15 @@ package uk.ac.ebi.pride.data.core;
  */
 public class SubstitutionModification {
 
-    private double avgMassDelta          = -1;
+    private double avgMassDelta;
 
-    private int    location              = -1;
+    private int location;
 
-    private double monoisotopicMassDelta = -1;
+    private double monoisotopicMassDelta;
 
-    private String originalResidue       = null;
+    private String originalResidue;
 
-    private String replacementResidue    = null;
+    private String replacementResidue;
 
     public SubstitutionModification(String originalResidue, String replacementResidue, int location,
                                     double avgMassDelta, double monoisotopicMassDelta) {

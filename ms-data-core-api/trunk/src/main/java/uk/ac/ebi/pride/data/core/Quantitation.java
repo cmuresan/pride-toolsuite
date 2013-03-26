@@ -1,12 +1,8 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 
 import java.util.*;
-
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Quantitation object is a pseudo object which contains all the cv params related to quantitative data

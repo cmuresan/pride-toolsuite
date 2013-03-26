@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.data.core;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
+
 import java.util.List;
 
 /**
@@ -13,20 +15,20 @@ import java.util.List;
  * Time: 17:36
  */
 public class DataBaseTranslation {
-    List<Integer>                alowedFrames         = null;
-    List<IdentifiableParamGroup> translationTableList = null;
+    private List<Integer> allowedFrames;
+    private List<IdentifiableParamGroup> translationTableList;
 
-    public DataBaseTranslation(List<Integer> alowedFrames, List<IdentifiableParamGroup> translationTableList) {
-        this.alowedFrames         = alowedFrames;
-        this.translationTableList = translationTableList;
+    public DataBaseTranslation(List<Integer> allowedFrames, List<IdentifiableParamGroup> translationTableList) {
+        this.allowedFrames = CollectionUtils.createListFromList(allowedFrames);
+        this.translationTableList = CollectionUtils.createListFromList(translationTableList);
     }
 
-    public List<Integer> getAlowedFrames() {
-        return alowedFrames;
+    public List<Integer> getAllowedFrames() {
+        return allowedFrames;
     }
 
-    public void setAlowedFrames(List<Integer> alowedFrames) {
-        this.alowedFrames = alowedFrames;
+    public void setAllowedFrames(List<Integer> allowedFrames) {
+        CollectionUtils.replaceValuesInCollection(allowedFrames, this.allowedFrames);
     }
 
     public List<IdentifiableParamGroup> getTranslationTableList() {
@@ -34,24 +36,26 @@ public class DataBaseTranslation {
     }
 
     public void setTranslationTableList(List<IdentifiableParamGroup> translationTableList) {
-        this.translationTableList = translationTableList;
+        CollectionUtils.replaceValuesInCollection(translationTableList, this.translationTableList);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof DataBaseTranslation)) return false;
 
         DataBaseTranslation that = (DataBaseTranslation) o;
 
-        return !(alowedFrames != null ? !alowedFrames.equals(that.alowedFrames) : that.alowedFrames != null) && !(translationTableList != null ? !translationTableList.equals(that.translationTableList) : that.translationTableList != null);
+        if (!allowedFrames.equals(that.allowedFrames)) return false;
+        if (!translationTableList.equals(that.translationTableList)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = alowedFrames != null ? alowedFrames.hashCode() : 0;
-        result = 31 * result + (translationTableList != null ? translationTableList.hashCode() : 0);
+        int result = allowedFrames.hashCode();
+        result = 31 * result + translationTableList.hashCode();
         return result;
     }
 }

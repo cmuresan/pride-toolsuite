@@ -130,6 +130,15 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         setCacheBuilder(new MzIdentMLCacheBuilder(this));
         // populate cache
         populateCache();
+
+        populateGlobalObjects();
+    }
+
+    private void populateGlobalObjects() {
+
+        List<CVLookup> CvParamList = MzIdentMLTransformer.transformCVList(unmarshaller.getCvList());
+        MzIdentMLTransformer.setCvLookupMap(CvParamList);
+
     }
 
     /**

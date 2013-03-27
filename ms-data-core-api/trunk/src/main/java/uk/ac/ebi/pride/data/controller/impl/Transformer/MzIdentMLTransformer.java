@@ -40,7 +40,18 @@ import java.util.*;
  */
 public class MzIdentMLTransformer {
 
-    private static List<IdentifiableParamGroup> FragmentationTable = null;
+    private static Map<String, IdentifiableParamGroup> FragmentationTable = null;
+
+    private static Map<String, CVLookup> cvLookupMap = null;
+
+    public static void setCvLookupMap(List<CVLookup> cvLookupList) {
+        if(cvLookupList != null && cvLookupList.size()>0){
+            cvLookupMap = new HashMap<String, CVLookup>();
+            for(CVLookup cvLookup: cvLookupList){
+                cvLookupMap.put(cvLookup.getCvLabel(),cvLookup);
+            }
+        }
+    }
 
     public static List<SourceFile> transformToSourceFile(List<uk.ac.ebi.jmzidml.model.mzidml.SourceFile> oldSourceFiles) {
         List<SourceFile> sourceFiles = null;
@@ -210,11 +221,11 @@ public class MzIdentMLTransformer {
         CvParam newParam = null;
         if (oldCvParam != null) {
             String cvLookupID = null;
-            uk.ac.ebi.jmzidml.model.mzidml.Cv cv = oldCvParam.getCv();
-            if (cv != null) cvLookupID = cv.getId();
+            CVLookup cvLookup = cvLookupMap.get(oldCvParam.getCvRef());
+            if (cvLookup != null) cvLookupID = cvLookup.getCvLabel();
             String unitCVLookupID = null;
-            cv = oldCvParam.getUnitCv();
-            if (cv != null) unitCVLookupID = cv.getId();
+            CVLookup unitCVLookup = cvLookupMap.get(oldCvParam.getUnitCvRef());
+            if (unitCVLookup != null) unitCVLookupID = unitCVLookup.getCvLabel();
             newParam = new CvParam(oldCvParam.getAccession(),
                     oldCvParam.getName(),
                     cvLookupID,
@@ -330,17 +341,17 @@ public class MzIdentMLTransformer {
         return ident;
     }
 
-    public static List<IdentifiableParamGroup> transformToFragmentationTable(uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
-        List<IdentifiableParamGroup> fragmentationTable = null;
+    public static Map<String, IdentifiableParamGroup> transformToFragmentationTable(uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
+        Map<String, IdentifiableParamGroup> fragmentationTable = null;
         if (oldFragmentationTable != null) {
-            fragmentationTable = new ArrayList<IdentifiableParamGroup>();
+            fragmentationTable = new HashMap<String, IdentifiableParamGroup>();
             for (uk.ac.ebi.jmzidml.model.mzidml.Measure oldMeasure : oldFragmentationTable.getMeasure()) {
-                fragmentationTable.add(new IdentifiableParamGroup(new ParamGroup(transformToCvParam(oldMeasure.getCvParam()), null), oldMeasure.getId(), oldMeasure.getName()));
+                fragmentationTable.put(oldMeasure.getId(), new IdentifiableParamGroup(new ParamGroup(transformToCvParam(oldMeasure.getCvParam()), null), oldMeasure.getId(), oldMeasure.getName()));
             }
         }
         return fragmentationTable;
     }
-
+    /*
     public static List<Peptide> transformToPeptideIdentifications(List<uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis> peptideHypothesis, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
         List<Peptide> peptides = null;
         if (peptideHypothesis != null) {
@@ -355,7 +366,7 @@ public class MzIdentMLTransformer {
             }
         }
         return peptides;
-    }
+    }*/
 
     public static List<Peptide> transformToPeptideIdentificationsFromSpectrumItems(List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> peptideIdentificationList, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
         List<Peptide> peptides = null;
@@ -410,8 +421,7 @@ public class MzIdentMLTransformer {
                     transformToPeptide(peptideSeq), rank, passThrehold, transformToMassTable(massTable),
                     transformToSample(sample), transformToPeptideEvidence(peptideEvidence),
                     transformToFragmentationIon(fragmentation, oldFragmentationTable), score, null, null);
-            //Todo: Peptide SpectraData
-        }
+            }
         return peptide;
     }
 
@@ -466,29 +476,31 @@ public class MzIdentMLTransformer {
                     cvParams.add(new CvParam(ionType.getCvParam().getAccession(), ionType.getCvParam().getName(), ionType.getCvParam().getCvRef(), ionType.getCvParam().getValue(), null, null, null));
                     //mz
                     for (uk.ac.ebi.jmzidml.model.mzidml.FragmentArray fragArr : ionType.getFragmentArray()) {
-                        uk.ac.ebi.jmzidml.model.mzidml.Measure oldMeasure = fragArr.getMeasure();
+                        String measureRef = fragArr.getMeasureRef();
+                        //uk.ac.ebi.jmzidml.model.mzidml.Measure oldMeasure = fragArr.getMeasure();
+                        IdentifiableParamGroup oldMeasure = FragmentationTable.get(measureRef);
                         CvParam cvParam;
                         CvTermReference cvMz;
                         cvMz = CvTermReference.PRODUCT_ION_MZ;
-                        cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
+                        cvParam = getCvParamByID(oldMeasure.getCvParams(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
                         if (cvParam == null) {
                             cvMz = CvTermReference.MS_PRODUCT_ION_MZ;
-                            cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
+                            cvParam = getCvParamByID(oldMeasure.getCvParams(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
                             if (cvParam == null) {
                                 cvMz = CvTermReference.PRODUCT_ION_INTENSITY;
-                                cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
+                                cvParam = getCvParamByID(oldMeasure.getCvParams(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
                                 if (cvParam == null) {
                                     cvMz = CvTermReference.MS_PRODUCT_ION_INTENSITY;
-                                    cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
+                                    cvParam = getCvParamByID(oldMeasure.getCvParams(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
                                     if (cvParam == null) {
                                         cvMz = CvTermReference.PRODUCT_ION_MASS_ERROR;
-                                        cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
+                                        cvParam = getCvParamByID(oldMeasure.getCvParams(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
                                         if (cvParam == null) {
                                             cvMz = CvTermReference.MS_PRODUCT_ION_MASS_ERROR;
-                                            cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
+                                            cvParam = getCvParamByID(oldMeasure.getCvParams(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
                                             if (cvParam == null) {
                                                 cvMz = CvTermReference.PRODUCT_ION_RETENTION_TIME_ERROR;
-                                                cvParam = getCvParamByID(oldMeasure.getCvParam(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
+                                                cvParam = getCvParamByID(oldMeasure.getCvParams(), cvMz.getAccession(), fragArr.getValues().get(index).toString());
                                             }
                                         }
                                     }
@@ -506,12 +518,10 @@ public class MzIdentMLTransformer {
         return fragmentIons;
     }
 
-    private static CvParam getCvParamByID(List<uk.ac.ebi.jmzidml.model.mzidml.CvParam> oldCvParams, String accession, String newValue) {
-        for (uk.ac.ebi.jmzidml.model.mzidml.CvParam oldCvParam : oldCvParams) {
+    private static CvParam getCvParamByID(List<CvParam> oldCvParams, String accession, String newValue) {
+        for (CvParam oldCvParam : oldCvParams) {
             if (oldCvParam.getAccession().equalsIgnoreCase(accession)) {
-                CvParam cvParam = transformToCvParam(oldCvParam);
-                cvParam.setValue(newValue);
-                return cvParam;
+                return oldCvParam;
             }
         }
         return null;

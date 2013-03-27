@@ -168,7 +168,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/cvList</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>true</autoRefResolving>
+        <autoRefResolving>false</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.CvParam</clazz>
         <idMapped>false</idMapped>
@@ -259,7 +259,7 @@ Configurations for various properties of model classes.
         <xpath>/MzIdentML/AnalysisProtocolCollection/SpectrumIdentificationProtocol/DatabaseFilters/Filter</xpath>
     </configurations>
     <configurations>
-        <autoRefResolving>true</autoRefResolving>
+        <autoRefResolving>false</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.FragmentArray</clazz>
         <idMapped>false</idMapped>

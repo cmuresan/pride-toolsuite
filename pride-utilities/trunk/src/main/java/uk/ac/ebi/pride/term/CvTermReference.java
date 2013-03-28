@@ -130,26 +130,26 @@ public enum CvTermReference {
 
     MASCOT_SCORE("PRIDE", "PRIDE:0000069", "Mascot Score", "PRIDE:0000049"),
     MASCOT_EXPECT_VALUE("PRIDE","PRIDE:0000212","Mascot expect value","PRIDE:0000046"),
-    MS_MASCOT_SCORE("PSI-MS", "MS:1001171", "Mascot:score", "MS:1001143"),
-    MS_MASCOT_EXPECT_VALUE("PSI-MS","MS:1001172","Mascot:expectation value","MS:1001143"),
+    MS_MASCOT_SCORE("MS", "MS:1001171", "Mascot:score", "MS:1001143"),
+    MS_MASCOT_EXPECT_VALUE("MS","MS:1001172","Mascot:expectation value","MS:1001143"),
 
     XTANDEM_HYPER_SCORE("PRIDE", "PRIDE:0000176", "X!Tandem Hyperscore", "PRIDE:0000049"),
     XTANDEM_EXPECTANCY_SCORE("PRIDE", "PRIDE:0000183", "X|Tandem expectancy score", "PRIDE:0000047"),
     XTANDEM_ZSCORE("PRIDE","PRIDE:0000182","X|Tandem Z score","PRIDE:0000047"),
-    MS_XTANDEM_HYPERSCORE("PSI-MS", "MS:1001331", "X!Tandem:hyperscore", "MS:1001143"),
-    MS_XTANDEM_EXPECTANCY_SCORE("PSI-MS", "MS:1001330", "X!Tandem:expect", "MS:1001143"),
+    MS_XTANDEM_HYPERSCORE("MS", "MS:1001331", "X!Tandem:hyperscore", "MS:1001143"),
+    MS_XTANDEM_EXPECTANCY_SCORE("MS", "MS:1001330", "X!Tandem:expect", "MS:1001143"),
 
     SEQUEST_CN("PRIDE","PRIDE:0000052","Cn","PRIDE:0000049"),
     SEQUEST_SCORE("PRIDE", "PRIDE:0000053", "SEQUEST SCORE", "PRIDE:0000049"),
     SEQUEST_DELTA_CN("PRIDE", "PRIDE:0000012", "Delta Cn", "PRIDE:0000049"),
-    MS_SEQUEST_CONSENSUS_SCORE("PSI-MS", "MS:1001163", "Sequest:consensus score", "MS:1001153"),
-    MS_SEQUEST_DELTA_CN("PSI-MS","MS:1001156","Sequest:deltacn","MS:1001143"),
-    MS_SEQUEST_XCORR("PSI-MS","MS:1001155","Sequest:xcorr", "MS:1001143"),
+    MS_SEQUEST_CONSENSUS_SCORE("MS", "MS:1001163", "Sequest:consensus score", "MS:1001153"),
+    MS_SEQUEST_DELTA_CN("MS","MS:1001156","Sequest:deltacn","MS:1001143"),
+    MS_SEQUEST_XCORR("MS","MS:1001155","Sequest:xcorr", "MS:1001143"),
 
 
 
     SPECTRUM_MILL_PEPTIDE_SCORE("PRIDE", "PRIDE:0000177", "SpectrumMill Peptide Score", "PRIDE:0000049"),
-    MS_SPECTRUMMILL_SCORE("PSI-MS", "MS:1001572", "SpectrumMill:Score", "MS:1001143"),
+    MS_SPECTRUMMILL_SCORE("MS", "MS:1001572", "SpectrumMill:Score", "MS:1001143"),
 
     PEPTIDE_PROPHET_DISCRIMINANT_SCORE("PRIDE", "PRIDE:0000138", "Discriminant score","PRIDE:0000049"),
     PEPTIDE_PROPHET_PROBABILITY("PRIDE","PRIDE:0000099", "PeptideProphet probability score","PRIDE:0000049"),
@@ -163,25 +163,25 @@ public enum CvTermReference {
 
 
     // Paragon:score
-    MS_PARAGON_SCORE("PSI-MS","MS:1001166", "Paragon:score", "MS:1001153"),
+    MS_PARAGON_SCORE("MS","MS:1001166", "Paragon:score", "MS:1001153"),
 
     // Phenyx:Score
-    MS_PHENYX_SCORE("PSI-MS", "MS:1001390", "Phenyx:Score", "MS:1001153"),
+    MS_PHENYX_SCORE("MS", "MS:1001390", "Phenyx:Score", "MS:1001153"),
 
     // ProteinExtractor:Score
-    MS_PROTEIN_EXTRACTOR_SCORE("PSI-MS", "MS:1001507", "ProteinExtractor:Score","MS:1001153"),
+    MS_PROTEIN_EXTRACTOR_SCORE("MS", "MS:1001507", "ProteinExtractor:Score","MS:1001153"),
 
     // ProteinLync:Lputer Score
-    MS_PROTEIN_LYNC_SCORE("PSI-MS", "MS:1001571", "ProteinLynx:Ladder Score","MS:1001143"),
+    MS_PROTEIN_LYNC_SCORE("MS", "MS:1001571", "ProteinLynx:Ladder Score","MS:1001143"),
 
     // ProteinScape:SequestMetaScore
-    MS_PROTEINSCAPE_SEQUEST_METASCORE("PSI-MS", "MS:1001506", "ProteinScape:SequestMetaScore","MS:1001143"),
+    MS_PROTEINSCAPE_SEQUEST_METASCORE("MS", "MS:1001506", "ProteinScape:SequestMetaScore","MS:1001143"),
 
     // Sonar:Score
-    MS_SONAR_SCORE("PSI-MS", "MS:1001502", "Sonar:Score", "MS:1001143"),
+    MS_SONAR_SCORE("MS", "MS:1001502", "Sonar:Score", "MS:1001143"),
 
     // percolator:score
-    MS_PERCULATOR_SCORE("PSI-MS", "MS:1001492", "percolator:score", "MS:1001143"),
+    MS_PERCULATOR_SCORE("MS", "MS:1001492", "percolator:score", "MS:1001143"),
 
     PROJECT_NAME("PRIDE", "PRIDE:0000097", "Project", "PRIDE:0000006"),
     EXPERIMENT_DESCRIPTION("PRIDE", "PRIDE:0000040", "Experiment Description", "PRIDE:0000006"),

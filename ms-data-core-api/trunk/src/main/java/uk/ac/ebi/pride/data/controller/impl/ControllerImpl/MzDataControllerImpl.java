@@ -38,11 +38,10 @@ import java.util.regex.Pattern;
  * This controller is used to retrieve the information from mzData files. It uses the jmzReader
  * to retrieve the information from mzData files. The mzData files support Spectrum and Chromatogram
  * Information and also other important Metadata.
- *
+ * <p/>
  * User: yperez
  * Date: 3/15/12
  * Time: 8:17 AM
- *
  */
 public class MzDataControllerImpl extends CachedDataAccessController {
 
@@ -61,7 +60,8 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * Construct a data access controller using a given ,zData file
      *
      * @param file mzData file
-     * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception
+     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
+     *          data access exception
      */
     public MzDataControllerImpl(File file) throws DataAccessException {
         this(file, null);
@@ -98,10 +98,10 @@ public class MzDataControllerImpl extends CachedDataAccessController {
             this.setType(DataAccessController.Type.XML_FILE);
             // set the content categories
             this.setContentCategories(DataAccessController.ContentCategory.SPECTRUM,
-                DataAccessController.ContentCategory.SAMPLE,
-                DataAccessController.ContentCategory.INSTRUMENT,
-                DataAccessController.ContentCategory.SOFTWARE,
-                DataAccessController.ContentCategory.DATA_PROCESSING);
+                    DataAccessController.ContentCategory.SAMPLE,
+                    DataAccessController.ContentCategory.INSTRUMENT,
+                    DataAccessController.ContentCategory.SOFTWARE,
+                    DataAccessController.ContentCategory.DATA_PROCESSING);
             // create cache builder
             setCacheBuilder(new MzDataCacheBuilder(this));
             // populate cache
@@ -112,7 +112,6 @@ public class MzDataControllerImpl extends CachedDataAccessController {
             throw new DataAccessException(msg, e);
 
         }
-
 
 
     }
@@ -175,7 +174,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      */
     @Override
     public ReferenceableParamGroup getReferenceableParamGroup() throws DataAccessException {
-       throw new UnsupportedOperationException("This method is not supported");
+        throw new UnsupportedOperationException("This method is not supported");
     }
 
     /**
@@ -264,24 +263,25 @@ public class MzDataControllerImpl extends CachedDataAccessController {
         List<SourceFile> sourceFiles = getSourceFiles();
         Set<CvParam> cvParamSet = null;
 
-        if(sourceFiles != null){
+        if (sourceFiles != null && !sourceFiles.isEmpty()) {
             cvParamSet = new HashSet<CvParam>();
-            for(SourceFile sourceFile: sourceFiles){
-                if(sourceFile.getFileFormat() != null){
+            for (SourceFile sourceFile : sourceFiles) {
+                if (sourceFile.getFileFormat() != null) {
                     cvParamSet.add(sourceFile.getFileFormat());
                 }
             }
         }
-        if (cvParamSet != null){
+        if (cvParamSet != null) {
             List<CvParam> cvParams = new ArrayList<CvParam>();
             cvParams.addAll(cvParamSet);
-            paramGroup = new ParamGroup(cvParams,null);
+            paramGroup = new ParamGroup(cvParams, null);
         }
         return paramGroup;
     }
 
     /**
      * Get a List of Software
+     *
      * @return List<Software> List of Software
      * @throws DataAccessException
      */
@@ -425,7 +425,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public ExperimentMetaData getExperimentMetaData()throws DataAccessException{
+    public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
 
         ExperimentMetaData metaData = super.getExperimentMetaData();
 

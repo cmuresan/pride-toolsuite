@@ -54,7 +54,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
                     if (spectrum != null) {
                         List<Precursor> precursors = spectrum.getPrecursors();
 
-                        if (precursors != null) {
+                        if (!precursors.isEmpty()) {
                             for (Precursor precursor : precursors) {
                                 String specID = spectrumID.toString();
                                 SpectrumData spectrumData = getOrCreateSpectrum(specID);
@@ -213,7 +213,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
 
         try {
             Collection<Comparable> idenIDList = cdac.getProteinIds();
-            int idenIDInt= 0;
+            int idenIDInt = 0;
             for (Comparable idenID : idenIDList) {
                 Protein id = cdac.getProteinById(idenID, true);
                 //int identification_id = Integer.valueOf(id.getId().toString());
@@ -226,7 +226,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
                         try {
                             ptmMass += (modification.getMonoisotopicMassDelta() != null && modification.getMonoisotopicMassDelta().size() > 0)
                                     ? modification.getMonoisotopicMassDelta().get(0)
-                                    : (modification.getAvgMassDelta() !=null && modification.getAvgMassDelta().size()>0)?modification.getAvgMassDelta().get(0):0.0;
+                                    : (modification.getAvgMassDelta() != null && modification.getAvgMassDelta().size() > 0) ? modification.getAvgMassDelta().get(0) : 0.0;
                         } catch (IndexOutOfBoundsException e) { /* Nothing here */
                         }
                     }

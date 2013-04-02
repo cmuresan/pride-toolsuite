@@ -327,8 +327,8 @@ public abstract class AbstractDataAccessController implements DataAccessControll
      * @return int  number of identified spectra.
      * @throws DataAccessException throw a exception when there is an error accessing the data source.
      */
-    public int getNumberOfIdentifiedSpectra() throws DataAccessException{
-          return 0;
+    public int getNumberOfIdentifiedSpectra() throws DataAccessException {
+        return 0;
     }
 
     /**
@@ -441,7 +441,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
      * Note: sometimes, precursor charge at the peptide level is different from the precursor charge at the spectrum level
      * As the peptide-level precursor charge is often assigned by search engine rather than ms instrument
      *
-     * @param proteinId   protein identification id
+     * @param proteinId protein identification id
      * @param peptideId peptid eid, can be the index of the peptide as well.
      * @return precursor charge, 0 should be returned if not available
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
@@ -482,7 +482,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     /**
      * Get precursor m/z value at the peptide level
      *
-     * @param proteinId   identification id
+     * @param proteinId identification id
      * @param peptideId peptid eid, can be the index of the peptide as well.
      * @return precursor mass
      * @throws DataAccessException
@@ -829,14 +829,14 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     public SearchEngine getSearchEngine() throws DataAccessException {
         SearchEngine searchEngine = null;
         Collection<Comparable> proteinIds = this.getProteinIds();
-        if (proteinIds.size() > 0) {
+        if (!proteinIds.isEmpty()) {
             Protein protein = getProteinById(CollectionUtils.getElement(proteinIds, 0));
             if (protein != null) {
                 List<SearchEngineType> engines = (protein.getScore() == null) ? null : protein.getScore().getSearchEngineTypes();
                 searchEngine = new SearchEngine(null, null, engines);
                 // check the search engine types from the data source
                 List<Peptide> peptides = protein.getPeptides();
-                if (peptides != null && !peptides.isEmpty()) {
+                if (!peptides.isEmpty()) {
                     Peptide peptide = peptides.get(0);
                     List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide.getSpectrumIdentification());
                     searchEngine.setSearchEngineTypes(types);
@@ -850,30 +850,32 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     @Override
     public List<CvTermReference> getProteinCvTermReferenceScores() throws DataAccessException {
         Collection<Comparable> proteinIds = this.getProteinIds();
-        if (proteinIds.size() > 0) {
+        List<CvTermReference> cvTermReferences = Collections.emptyList();
+        if (!proteinIds.isEmpty()) {
             Protein protein = getProteinById(CollectionUtils.getElement(proteinIds, 0));
             if (protein != null) {
                 Score score = DataAccessUtilities.getScore(protein);
-                return score.getCvTermReferenceWithValues();
+                if (score != null) cvTermReferences = score.getCvTermReferenceWithValues();
             }
         }
-        return null;
+        return cvTermReferences;
 
     }
 
     @Override
     public List<CvTermReference> getPeptideCvTermReferenceScores() throws DataAccessException {
         Collection<Comparable> proteinIds = this.getProteinIds();
-        if (proteinIds.size() > 0) {
+        List<CvTermReference> cvTermReferences = Collections.emptyList();
+        if (!proteinIds.isEmpty()) {
             Protein protein = getProteinById(CollectionUtils.getElement(proteinIds, 0));
-            if (protein != null) {
+            if (protein != null && !protein.getPeptides().isEmpty()) {
                 List<Peptide> peptides = protein.getPeptides();
                 Peptide peptide = peptides.get(0);
                 Score score = DataAccessUtilities.getScore(peptide.getSpectrumIdentification());
-                return score.getCvTermReferenceWithValues();
+                cvTermReferences = (score != null) ? score.getCvTermReferenceWithValues() : cvTermReferences;
             }
         }
-        return null;
+        return cvTermReferences;
     }
 
     @Override
@@ -901,7 +903,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
             List<Peptide> peptides = protein.getPeptides();
-            if (peptides != null) {
+            if (!peptides.isEmpty()) {
                 for (int index = 0; index < peptides.size(); index++) {
                     ids.add(index);
                 }
@@ -914,7 +916,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
      * Get peptide using its index in a protein identification
      *
      * @param proteinId protein identification id
-     * @param index   peptide index
+     * @param index     peptide index
      * @return Peptide peptide identification
      * @throws DataAccessException data access exception
      */
@@ -944,7 +946,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
             List<Peptide> peptides = protein.getPeptides();
-            if (peptides != null) {
+            if (!peptides.isEmpty()) {
                 for (Peptide peptide : peptides) {
                     String seq = peptide.getPeptideSequence().getSequence();
                     sequences.add(seq);
@@ -1048,7 +1050,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
             List<Peptide> peptides = protein.getPeptides();
-            if (peptides != null) {
+            if (!peptides.isEmpty()) {
                 Peptide peptide = peptides.get(Integer.parseInt(peptideId.toString()));
                 if (peptide != null) {
                     cnt = DataAccessUtilities.getNumberOfPTMs(peptide);
@@ -1157,7 +1159,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     /**
      * Get ptms using identification id nad peptide id
      *
-     * @param proteinId   identification id
+     * @param proteinId identification id
      * @param peptideId peptide id, can be the index of the peptide
      * @return List<Modification>   a list of modifications.
      * @throws DataAccessException data access exception
@@ -1207,7 +1209,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
             List<Peptide> peptides = protein.getPeptides();
-            if (peptides != null) {
+            if (!peptides.isEmpty()) {
                 Peptide peptide = peptides.get(Integer.parseInt(peptideId.toString()));
                 if (peptide != null) {
                     cnt = DataAccessUtilities.getNumberOfSubstitutionPTMs(peptide);
@@ -1220,7 +1222,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     /**
      * Get the number of fragment ions of a given peptide
      *
-     * @param proteinId   identification id
+     * @param proteinId identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return int the number of fragment ions
      * @throws DataAccessException data access exception
@@ -1244,7 +1246,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     /**
      * Get all the fragment ions of a given peptide identification
      *
-     * @param proteinId   identification id
+     * @param proteinId identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return Collection<FragmentIon> a collection of fragment ions
      * @throws DataAccessException data access exception
@@ -1266,7 +1268,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     /**
      * Get the search score for a given peptide
      *
-     * @param proteinId   identification id
+     * @param proteinId identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return PeptideScore    search engine score
      * @throws DataAccessException data access exception
@@ -1277,7 +1279,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
-            if ((peptide != null) || (peptide.getSpectrumIdentification().getScore() == null)) {
+            if ((peptide != null) && (peptide.getSpectrumIdentification().getScore() == null)) {
                 score = DataAccessUtilities.getScore(peptide.getSpectrumIdentification());
                 peptide.getSpectrumIdentification().setScore(score);
             }
@@ -1395,7 +1397,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         if (additionals != null) {
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
-            if (cvParams != null) {
+            if (!cvParams.isEmpty()) {
                 for (CvParam cvParam : cvParams) {
                     if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
                         return true;
@@ -1423,7 +1425,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         if (additionals != null) {
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
-            if (cvParams != null) {
+            if (!cvParams.isEmpty()) {
                 for (CvParam cvParam : cvParams) {
                     if (QuantCvTermReference.isQuantitativeMethodParam(cvParam)) {
                         methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
@@ -1450,7 +1452,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         if (additionals != null) {
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
-            if (cvParams != null) {
+            if (!cvParams.isEmpty()) {
                 for (CvParam cvParam : cvParams) {
                     if (QuantCvTermReference.isLabelFreeMethod(cvParam)) {
                         methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
@@ -1519,7 +1521,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         if (additionals != null) {
             // iterate over each sample
             List<CvParam> cvParams = additionals.getCvParams();
-            if (cvParams != null) {
+            if (!cvParams.isEmpty()) {
                 for (CvParam cvParam : cvParams) {
                     if (QuantCvTermReference.isIsotopeLabellingMethodParam(cvParam)) {
                         methods.add(QuantCvTermReference.getQuantitativeMethodParam(cvParam));
@@ -1672,7 +1674,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
             Sample sample = CollectionUtils.getElement(samples, 0);
             List<CvParam> cvParams = sample.getCvParams();
             // scan for all the species
-            if (cvParams != null) {
+            if (!cvParams.isEmpty()) {
                 for (CvParam cvParam : cvParams) {
                     String cvLabel = cvParam.getCvLookupID().toLowerCase();
                     if ("newt".equals(cvLabel)) {
@@ -1774,7 +1776,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     /**
      * Get peptide level quantitative data using a given peptide identification id
      *
-     * @param proteinId   protein identification id
+     * @param proteinId protein identification id
      * @param peptideId peptide id
      * @return Quantitation    quantitative data
      * @throws DataAccessException data access exception

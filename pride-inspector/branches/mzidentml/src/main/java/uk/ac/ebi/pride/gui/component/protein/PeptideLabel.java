@@ -10,7 +10,7 @@ import java.text.AttributedString;
 
 /**
  * PeptideLabel visualize peptide sequence and ptms
- *
+ * <p/>
  * User: rwang
  * Date: 16-Aug-2010
  * Time: 12:28:56
@@ -42,7 +42,7 @@ public class PeptideLabel extends JPanel {
         java.util.List<Modification> mods = peptide.getModifications();
         AttributedString str = new AttributedString(sequence);
         str.addAttribute(TextAttribute.FONT, DEFAULT_FONT);
-        if (mods != null) {
+        if (!mods.isEmpty()) {
             int seqLength = sequence.length();
             for (Modification mod : mods) {
                 int location = mod.getLocation();

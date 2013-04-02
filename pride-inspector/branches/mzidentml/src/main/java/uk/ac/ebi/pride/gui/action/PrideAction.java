@@ -6,7 +6,6 @@ import javax.swing.event.MenuListener;
 import java.awt.event.ActionEvent;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 09-Feb-2010
  * Time: 15:57:47
@@ -35,13 +34,16 @@ public abstract class PrideAction extends AbstractAction implements MenuListener
     public abstract void actionPerformed(ActionEvent e);
 
     @Override
-    public void menuSelected(MenuEvent e) { }
+    public void menuSelected(MenuEvent e) {
+    }
 
     @Override
-    public void menuDeselected(MenuEvent e) { }
+    public void menuDeselected(MenuEvent e) {
+    }
 
     @Override
-    public void menuCanceled(MenuEvent e) { }
+    public void menuCanceled(MenuEvent e) {
+    }
 
     public void setAccelerator(int keyCode) {
         setAccelerator(keyCode, 0);
@@ -54,7 +56,7 @@ public abstract class PrideAction extends AbstractAction implements MenuListener
     }
 
     public boolean isAccelerated() {
-        return hasAccelerator;        
+        return hasAccelerator;
     }
 
     public int getKeyCode() {

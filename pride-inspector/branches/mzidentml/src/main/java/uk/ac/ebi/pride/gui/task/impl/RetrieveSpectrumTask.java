@@ -10,11 +10,9 @@ import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 10/06/11
  * Time: 15:34
- * To change this template use File | Settings | File Templates.
  */
 public class RetrieveSpectrumTask extends AbstractDataAccessTask<Spectrum, Void> {
     private static final Logger logger = LoggerFactory.getLogger(RetrievePeptideTask.class);
@@ -49,8 +47,8 @@ public class RetrieveSpectrumTask extends AbstractDataAccessTask<Spectrum, Void>
     /**
      * Get spectrum by spectrum id
      *
-     * @param spectrumId    spectrum id
-     * @return  Spectrum    spectrum
+     * @param spectrumId spectrum id
+     * @return Spectrum    spectrum
      */
     private Spectrum getSpectrum(Comparable spectrumId) {
         Spectrum result = null;
@@ -71,7 +69,7 @@ public class RetrieveSpectrumTask extends AbstractDataAccessTask<Spectrum, Void>
      *
      * @param identId   protein identification id
      * @param peptideId peptide id
-     * @return  Spectrum    spectrum
+     * @return Spectrum    spectrum
      */
     private Spectrum getSpectrum(Comparable identId, Comparable peptideId) {
         Peptide peptide = null;

@@ -16,7 +16,6 @@ import java.io.PrintWriter;
 import java.util.Collection;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 01-Sep-2010
  * Time: 16:19:56
@@ -64,13 +63,13 @@ public class ExportIdentificationPeptideTask extends AbstractDataAccessTask<Void
 
             // data source
             if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
-                writer.println("# Data source: " + ((File)controller.getSource()).getAbsolutePath());
+                writer.println("# Data source: " + ((File) controller.getSource()).getAbsolutePath());
             } else if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
                 writer.println("# Data source: pride public mysql instance");
             }
 
             // accession if exist
-            String acc = (exp.getId() !=null)?exp.getId().toString():null;
+            String acc = (exp.getId() != null) ? exp.getId().toString() : null;
             if (acc != null) {
                 writer.println("# PRIDE accession: " + acc);
             }

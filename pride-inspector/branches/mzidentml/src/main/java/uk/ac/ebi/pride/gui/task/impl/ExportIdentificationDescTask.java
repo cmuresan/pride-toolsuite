@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 01-Sep-2010
  * Time: 17:21:07
@@ -66,13 +65,13 @@ public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, V
 
             // data source
             if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
-                writer.println("# Data source: " + ((File)controller.getSource()).getAbsolutePath());
+                writer.println("# Data source: " + ((File) controller.getSource()).getAbsolutePath());
             } else if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
                 writer.println("# Data source: pride public mysql instance");
             }
 
             // accession if exist
-            String acc = (exp.getId() !=null)?exp.getId().toString():null;
+            String acc = (exp.getId() != null) ? exp.getId().toString() : null;
             if (acc != null) {
                 writer.println("# PRIDE accession: " + acc);
             }
@@ -93,8 +92,8 @@ public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, V
             }
 
             writer.println("Submitted Protein Accession" + Constants.TAB + "Mapped Protein Accession" + Constants.TAB + "Protein Name" + Constants.TAB +
-                            "Score" + Constants.TAB + "Threshold" + Constants.TAB + "Number of peptides" + Constants.TAB +
-                            "Number of distinct peptides" + Constants.TAB + "Number of PTMs");
+                    "Score" + Constants.TAB + "Threshold" + Constants.TAB + "Number of peptides" + Constants.TAB +
+                    "Number of distinct peptides" + Constants.TAB + "Number of PTMs");
             Collection<Comparable> identIds = controller.getProteinIds();
             for (Comparable identId : identIds) {
                 // a row of data

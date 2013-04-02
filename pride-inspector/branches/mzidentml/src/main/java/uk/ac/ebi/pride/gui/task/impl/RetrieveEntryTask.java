@@ -11,7 +11,6 @@ import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 16-Apr-2010
  * Time: 14:07:16

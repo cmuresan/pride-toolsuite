@@ -3,14 +3,14 @@ package uk.ac.ebi.pride.gui.task;
 import java.util.EventObject;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 22-Jan-2010
  * Time: 13:39:19
  */
 public class TaskEvent<V> extends EventObject {
-    
+
     private final V value;
+
     /**
      * Constructs a prototypical Event.
      *

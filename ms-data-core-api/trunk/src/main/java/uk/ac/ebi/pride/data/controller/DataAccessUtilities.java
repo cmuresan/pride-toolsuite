@@ -28,7 +28,7 @@ public class DataAccessUtilities {
     public static List<String> getTaxonomy(ExperimentMetaData metaData) {
         List<String> species = new ArrayList<String>();
         List<Sample> samples = metaData.getSampleList();
-        if (samples != null) {
+        if (!samples.isEmpty()) {
             for (Sample sample : samples) {
                 List<CvParam> cvParams = sample.getCvParams();
                 if (cvParams != null) {
@@ -151,8 +151,8 @@ public class DataAccessUtilities {
     /**
      * Get precursor m/z value
      *
-     * @param paramGroup    param group
-     * @return  precursor m/z
+     * @param paramGroup param group
+     * @return precursor m/z
      */
     public static double getPrecursorMz(ParamGroup paramGroup) {
         double mz = -1;
@@ -373,6 +373,7 @@ public class DataAccessUtilities {
 
     /**
      * Get the number of Substitution PTMs for an specific Protein Identification
+     *
      * @param ident ID of the Protein Identification
      * @return Total number of Substitution PTMs
      */
@@ -391,7 +392,7 @@ public class DataAccessUtilities {
     /**
      * Get the number of the modification of a peptide
      *
-     * @param peptide  Peptide Object
+     * @param peptide Peptide Object
      * @return Total number of PTMs
      */
     public static int getNumberOfPTMs(Peptide peptide) {
@@ -446,7 +447,7 @@ public class DataAccessUtilities {
                         score.addScore(type, scoreCvTerm, null);
                     }
                 } else {
-                  //  score.addScore(type, scoreCvTerm, null);
+                    //  score.addScore(type, scoreCvTerm, null);
                 }
             }
         }
@@ -479,17 +480,16 @@ public class DataAccessUtilities {
     }
 
 
-
-    public static Score getScore(ParamGroup params){
+    public static Score getScore(ParamGroup params) {
         Score score = null;
-        if(params!=null){
+        if (params != null) {
             List<SearchEngineType> searchEngineTypes = DataAccessUtilities.getSearchEngineTypes(params);
-            if(searchEngineTypes != null){
+            if (searchEngineTypes != null) {
                 score = new Score();
-                for (SearchEngineType searchEngineType: searchEngineTypes){
-                    for (CvParam term: params.getCvParams()){
+                for (SearchEngineType searchEngineType : searchEngineTypes) {
+                    for (CvParam term : params.getCvParams()) {
                         CvTermReference reference = CvTermReference.getCvRefByAccession(term.getAccession());
-                        if(reference != null){
+                        if (reference != null) {
                             score.addScore(searchEngineType, reference, new Double(term.getValue()));
                         }
                     }
@@ -500,14 +500,14 @@ public class DataAccessUtilities {
     }
 
 
-
     /**
      * Get cv param by accession number and cv label.
      * This method tries to find the CvParam for the given accession and cvLabel.
      * IMPORTANT NOTE: As the cvLabel may not always be present, the method will
-     *                 assume a valid match if the accession alone matches.
-     *
+     * assume a valid match if the accession alone matches.
+     * <p/>
      * ToDo: perhaps separate method without cvLabel would be better (then this one could fail if no cvLabel was found)
+     *
      * @param paramGroup parameter group
      * @param cvLabel    cv label.
      * @param accession  cv accession.
@@ -521,7 +521,7 @@ public class DataAccessUtilities {
         List<CvParam> cps = new ArrayList<CvParam>();
         if (cvParams != null) {
             for (CvParam param : cvParams) {
-                if ( param.getAccession().equalsIgnoreCase(accession) ) {
+                if (param.getAccession().equalsIgnoreCase(accession)) {
                     if (param.getCvLookupID() != null && !param.getCvLookupID().equalsIgnoreCase(cvLabel)) {
                         // this could be the wrong CV param!!
                         System.out.println("We may have got the wrong CV param!!");
@@ -537,10 +537,10 @@ public class DataAccessUtilities {
     /**
      * Create a List of Cv Params
      *
-     * @param value Value of the CvParam
-     * @param cvLabel Label of the CvParam
+     * @param value     Value of the CvParam
+     * @param cvLabel   Label of the CvParam
      * @param accession Accession of the CvParam
-     * @param name Name
+     * @param name      Name
      * @return List<CvParam>
      */
     public static List<CvParam> getCvParam(String name, String cvLabel, String accession, String value) {
@@ -554,7 +554,7 @@ public class DataAccessUtilities {
      * Get a list parameters using a given name.
      *
      * @param paramGroup parameter group
-     * @param name name string
+     * @param name       name string
      * @return List<Parameter> a list of parameters
      */
     public static List<Parameter> getParamByName(ParamGroup paramGroup, String name) {

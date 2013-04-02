@@ -6,20 +6,19 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 15-Feb-2010
  * Time: 11:09:51
  */
 public class DefaultGUIBlocker extends GUIBlocker<Task, Object> {
-    
+
     public DefaultGUIBlocker(Task src, Scope s, Object tar) {
         super(src, s, tar);
     }
 
     @Override
     public void block() {
-        switch(this.getScope()) {
+        switch (this.getScope()) {
             case ACTION:
                 setActionBlocked(true);
                 break;
@@ -34,7 +33,7 @@ public class DefaultGUIBlocker extends GUIBlocker<Task, Object> {
 
     @Override
     public void unblock() {
-        switch(this.getScope()) {
+        switch (this.getScope()) {
             case ACTION:
                 setActionBlocked(false);
                 break;

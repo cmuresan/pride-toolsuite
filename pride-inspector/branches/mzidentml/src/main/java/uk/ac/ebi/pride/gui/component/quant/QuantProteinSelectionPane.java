@@ -40,7 +40,6 @@ import java.awt.event.ActionListener;
 import java.util.Collection;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 15/08/2011
  * Time: 11:33
@@ -118,7 +117,7 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
     protected void addComponents() {
         // create identification table
         try {
-            proteinTable = TableFactory.createQuantProteinTable(controller,controller.getProteinCvTermReferenceScores());
+            proteinTable = TableFactory.createQuantProteinTable(controller, controller.getProteinCvTermReferenceScores());
         } catch (DataAccessException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

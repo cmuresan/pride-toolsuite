@@ -14,7 +14,6 @@ import java.util.EventObject;
 import java.util.HashSet;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 21-Jan-2010
  * Time: 11:25:25
@@ -29,7 +28,6 @@ public abstract class Desktop extends PropertyChangeHelper {
 
     /**
      * Constructs a <code>PropertyChangeSupport</code> object.
-     *
      */
     protected Desktop() {
         this.exitListeners = new HashSet<ExitListener>();
@@ -48,7 +46,7 @@ public abstract class Desktop extends PropertyChangeHelper {
                     desktop.ready();
                     desktop.show();
                     desktop.postShow();
-                }catch(Exception ex) {
+                } catch (Exception ex) {
                     String message = "Error occurred during building desktop instance";
                     logger.log(Level.FATAL, message, ex);
                     throw (new Error(message, ex));
@@ -65,7 +63,7 @@ public abstract class Desktop extends PropertyChangeHelper {
         return appContext;
     }
 
-    private static <T extends Desktop> T buildApp(final Class<T> appClass) throws Exception{
+    private static <T extends Desktop> T buildApp(final Class<T> appClass) throws Exception {
         // Get the declared constructor and create a new instance of the Desktop
         Constructor<T> cstruct = appClass.getDeclaredConstructor();
         return cstruct.newInstance();
@@ -87,13 +85,13 @@ public abstract class Desktop extends PropertyChangeHelper {
     }
 
     public abstract void init(String[] args);
-    
+
     public abstract void ready();
 
     public abstract void show();
 
     public abstract void postShow();
-    
+
     public abstract void finish();
 
     public final void shutdown(EventObject event) {
@@ -109,8 +107,7 @@ public abstract class Desktop extends PropertyChangeHelper {
                 }
                 // run shutdown sequence
                 int exitCode = 0;
-                try
-                {
+                try {
                     for (ExitListener exitListener : exitListeners) {
                         exitListener.performExit();
                     }
@@ -136,11 +133,11 @@ public abstract class Desktop extends PropertyChangeHelper {
     }
 
     public final void addExitListeners(ExitListener listener) {
-        exitListeners.add(listener);    
+        exitListeners.add(listener);
     }
 
-    public final void removeExitListener(ExitListener listener){
-        exitListeners.remove(listener);            
+    public final void removeExitListener(ExitListener listener) {
+        exitListeners.remove(listener);
     }
 
     public abstract JFrame getMainComponent();

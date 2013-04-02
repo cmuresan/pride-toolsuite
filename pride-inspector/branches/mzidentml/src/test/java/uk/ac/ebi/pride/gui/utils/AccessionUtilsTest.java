@@ -9,7 +9,6 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 03/03/11
  * Time: 10:42

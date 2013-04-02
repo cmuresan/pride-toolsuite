@@ -9,7 +9,6 @@ import javax.swing.table.AbstractTableModel;
 import java.util.Collection;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 25-May-2010
  * Time: 09:56:29
@@ -20,7 +19,7 @@ public class PropertyTable extends JTable {
         this.setModel(new PropertyTableModel(params));
         this.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
     }
-    
+
     private static class PropertyTableModel extends AbstractTableModel {
 
         public Collection<Parameter> params = null;

@@ -26,7 +26,7 @@ public class PeptideIdentificationMetadataPanel extends JPanel {
             ParamGroup searchType = peptideProtocol.getSearchType();
             ParamGroup analysisParam = peptideProtocol.getAnalysisParam();
             if (searchType != null) {
-                if (analysisParam != null) {
+                if (!analysisParam.isEmpty()) {
                     searchType.addCvParams(analysisParam.getCvParams());
                     searchType.addUserParams(analysisParam.getUserParams());
                 }

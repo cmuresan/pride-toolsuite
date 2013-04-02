@@ -42,7 +42,7 @@ public class GeneralMetadataPanel extends JPanel {
     private void populateComponents(GeneralMetaDataGroup metaData) {
 
         // get accession
-        String accession = (metaData.getId() != null)?metaData.getId().toString():null;
+        String accession = (metaData.getId() != null) ? metaData.getId().toString() : null;
         accessionField = new JTextField();
         if (accession != null) {
             accessionField.setText(accession);
@@ -54,14 +54,14 @@ public class GeneralMetadataPanel extends JPanel {
         // get experiment title
         String expTitle = metaData.getName();
         if (expTitle != null) {
-           expTitleField.setText(expTitle);
+            expTitleField.setText(expTitle);
         }
 
-       // get short label
-       String sl = metaData.getShortLabel();
-       if (sl != null) {
-           shortLabelField.setText(sl);
-       }
+        // get short label
+        String sl = metaData.getShortLabel();
+        if (sl != null) {
+            shortLabelField.setText(sl);
+        }
 
         expTitleField.setCaretPosition(0);
         shortLabelField.setCaretPosition(0);
@@ -69,10 +69,10 @@ public class GeneralMetadataPanel extends JPanel {
         projectField = new JTextField();
         expDescArea = new JTextPane();
         List<CvParam> cvs = metaData.getMetaData().getCvParams();
-        if (cvs != null) {
+        if (!cvs.isEmpty()) {
             for (CvParam cv : cvs) {
                 // get project name
-                if(cv != null){
+                if (cv != null) {
                     if (CvTermReference.PROJECT_NAME.getAccession().equals(cv.getAccession())) {
                         projectField.setText(cv.getValue());
                     } else if (CvTermReference.EXPERIMENT_DESCRIPTION.getAccession().equals(cv.getAccession())) {
@@ -94,7 +94,7 @@ public class GeneralMetadataPanel extends JPanel {
         Set<String> tissuesAcc = new HashSet<String>();
 
         List<Sample> samples = metaData.getMetaData().getSampleList();
-        if (samples != null) {
+        if (!samples.isEmpty()) {
             for (Sample sample : samples) {
                 for (CvParam cvParam : sample.getCvParams()) {
                     String cvAcc = cvParam.getAccession();
@@ -129,18 +129,19 @@ public class GeneralMetadataPanel extends JPanel {
         String instrumentStr = "";
 
         List<InstrumentConfiguration> instruments = metaData.getInstrumentConfigurations();
-        if(instruments != null){
-        for (InstrumentConfiguration instrument : instruments) {
-            instrumentStr += instrument.getId();
-        }                       }
+        if (instruments.size() > 0) {
+            for (InstrumentConfiguration instrument : instruments) {
+                instrumentStr += instrument.getId();
+            }
+        }
         instrumentField.setText(instrumentStr);
         instrumentField.setCaretPosition(0);
 
 
         // reference
-        if(metaData.getMetaData().getReferences() != null) {
+        if (metaData.getMetaData().getReferences().size() > 0) {
             List<Reference> references = metaData.getReferences();
-        referenceTable = TableFactory.createReferenceTable(references);
+            referenceTable = TableFactory.createReferenceTable(references);
         } else {
             referenceTable = TableFactory.createReferenceTable(new ArrayList<Reference>());
         }
@@ -153,21 +154,21 @@ public class GeneralMetadataPanel extends JPanel {
         // additional params
         ParamGroup paramGroup = new ParamGroup();
         List<CvParam> cvParams = metaData.getMetaData().getCvParams();
-        if (cvParams != null) {
+        if (!cvParams.isEmpty()) {
             for (CvParam cvParam : cvParams) {
-                if(cvParam != null){
+                if (cvParam != null) {
                     String acc = cvParam.getAccession();
                     // get project name
                     if (!CvTermReference.PROJECT_NAME.getAccession().equals(acc) &&
-                        !CvTermReference.EXPERIMENT_DESCRIPTION.getAccession().equals(acc)) {
-                    paramGroup.addCvParam(cvParam);
+                            !CvTermReference.EXPERIMENT_DESCRIPTION.getAccession().equals(acc)) {
+                        paramGroup.addCvParam(cvParam);
                     }
                 }
             }
         }
 
         List<UserParam> userParams = metaData.getMetaData().getUserParams();
-        if (userParams != null) {
+        if (userParams.size() > 0) {
             paramGroup.addUserParams(userParams);
         }
 

@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 25-May-2010
  * Time: 10:52:22
@@ -113,7 +112,7 @@ public class MetaDataHelper {
         addUserParam(params, Constants.ID, scanSetting.getId());
         // source file id
         List<SourceFile> sourceFiles = scanSetting.getSourceFile();
-        if (sourceFiles != null) {
+        if (!sourceFiles.isEmpty()) {
             for (SourceFile sourceFile : sourceFiles) {
                 addUserParam(params, Constants.SOURCE_FILE_ID, sourceFile.getId());
             }
@@ -121,7 +120,7 @@ public class MetaDataHelper {
 
         // targets
         List<ParamGroup> targets = scanSetting.getTargets();
-        if (targets != null) {
+        if (!targets.isEmpty()) {
             for (int i = 0; i < targets.size(); i++) {
                 String prefix = Constants.TARGET + " " + (i + 1) + " - ";
                 addParamGroup(params, targets.get(i), prefix);
@@ -186,7 +185,7 @@ public class MetaDataHelper {
 
         // processing methods
         List<ProcessingMethod> proMethods = dataProc.getProcessingMethods();
-        if (proMethods != null) {
+        if (proMethods.size() > 0) {
             for (int i = 0; i < proMethods.size(); i++) {
                 String prefix = Constants.PROCESSING_METHOD + " " + (i + 1) + " - ";
                 ProcessingMethod proMethod = proMethods.get(i);
@@ -296,7 +295,7 @@ public class MetaDataHelper {
     }
 
     private static void addParamGroup(Collection<Parameter> params, ParamGroup paramGroup, String prefix) {
-        if (paramGroup != null) {
+        if (paramGroup != null && !paramGroup.isEmpty()) {
             List<CvParam> cvParams = paramGroup.getCvParams();
             if (cvParams != null) {
                 for (CvParam cvParam : cvParams) {

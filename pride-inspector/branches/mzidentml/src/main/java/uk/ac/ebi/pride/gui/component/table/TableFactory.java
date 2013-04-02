@@ -109,8 +109,8 @@ public class TableFactory {
     /**
      * Build a table to display peptide related details.
      *
-     * @param listPeptideScores  List of Reference Scores
-     * @param controller data access controller
+     * @param listPeptideScores List of Reference Scores
+     * @param controller        data access controller
      * @return JTable   peptide table
      */
     public static JTable createPeptideTable(Collection<CvTermReference> listPeptideScores, DataAccessController controller) {
@@ -393,6 +393,7 @@ public class TableFactory {
      * @return JTable  contact table
      */
     public static JTable createContactTable(Collection<Person> contacts) {
+
         ContactTableModel tableModel = new ContactTableModel(contacts);
         DefaultTableColumnModelExt columnModel = new DefaultTableColumnModelExt();
         DefaultPrideTable contactTable = new DefaultPrideTable(tableModel, columnModel);
@@ -511,7 +512,7 @@ public class TableFactory {
      * @param controller data access controller
      * @return JTable   protein quantitative table
      */
-    public static JTable createQuantProteinTable(DataAccessController controller,Collection<CvTermReference> listProteinScores) {
+    public static JTable createQuantProteinTable(DataAccessController controller, Collection<CvTermReference> listProteinScores) {
         QuantProteinTableModel tableModel = new QuantProteinTableModel(listProteinScores);
         return createQuantProteinTable(controller, tableModel);
     }

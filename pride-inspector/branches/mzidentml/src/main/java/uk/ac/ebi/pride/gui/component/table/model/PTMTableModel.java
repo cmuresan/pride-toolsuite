@@ -59,7 +59,7 @@ public class PTMTableModel extends ProgressiveListTableModel<Void, Peptide> {
         String sequence = peptide.getSequence();
         int seqLength = sequence.length();
         List<Modification> mods = peptide.getModifications();
-        if (mods != null) {
+        if (!mods.isEmpty()) {
             for (Modification mod : mods) {
                 List<Object> content = new ArrayList<Object>();
                 // row number
@@ -88,14 +88,14 @@ public class PTMTableModel extends ProgressiveListTableModel<Void, Peptide> {
                 }
                 // mono mass
                 List<Double> monoMasses = mod.getMonoisotopicMassDelta();
-                if (monoMasses != null && !monoMasses.isEmpty()) {
+                if (!monoMasses.isEmpty()) {
                     content.add(monoMasses.get(0));
                 } else {
                     content.add(null);
                 }
                 // average mass
                 List<Double> avgMasses = mod.getAvgMassDelta();
-                if (avgMasses != null && !avgMasses.isEmpty()) {
+                if (!avgMasses.isEmpty()) {
                     content.add(avgMasses.get(0));
                 } else {
                     content.add(null);

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 04-Aug-2010
  * Time: 14:44:58

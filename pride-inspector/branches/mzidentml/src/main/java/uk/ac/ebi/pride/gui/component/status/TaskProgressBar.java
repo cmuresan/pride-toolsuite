@@ -9,7 +9,6 @@ import javax.swing.*;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 12-Feb-2010
  * Time: 16:06:30

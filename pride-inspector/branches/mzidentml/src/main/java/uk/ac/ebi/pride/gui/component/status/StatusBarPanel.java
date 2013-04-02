@@ -5,7 +5,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 17-Feb-2010
  * Time: 08:53:05

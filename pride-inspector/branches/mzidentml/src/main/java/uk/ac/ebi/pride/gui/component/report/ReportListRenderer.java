@@ -7,13 +7,12 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 03/06/11
  * Time: 15:03
  * To change this template use File | Settings | File Templates.
  */
-public class ReportListRenderer implements ListCellRenderer{
+public class ReportListRenderer implements ListCellRenderer {
     private static final int DEFAULT_HEIGHT = 30;
     private static final int START_ALPHA = 100;
     private static final int STOP_ALPHA = 150;
@@ -29,7 +28,7 @@ public class ReportListRenderer implements ListCellRenderer{
         SummaryReportMessage item = (SummaryReportMessage) value;
         SummaryReportMessage.Type type = item.getType();
 
-        RoundCornerLabel label= new RoundCornerLabel(getIcon(type), item.getMessage(), getBackgroundPaint(type), getBorderPaint(type));
+        RoundCornerLabel label = new RoundCornerLabel(getIcon(type), item.getMessage(), getBackgroundPaint(type), getBorderPaint(type));
         label.setPreferredSize(new Dimension(50, DEFAULT_HEIGHT));
 
         return label;
@@ -38,11 +37,11 @@ public class ReportListRenderer implements ListCellRenderer{
     /**
      * Get the icon of the message according to the type
      *
-     * @param type  message type
-     * @return  Icon    message icon
+     * @param type message type
+     * @return Icon    message icon
      */
     private Icon getIcon(SummaryReportMessage.Type type) {
-        switch(type) {
+        switch (type) {
             case SUCCESS:
                 return GUIUtilities.loadIcon(context.getProperty("report.item.success.icon.small"));
             case ERROR:
@@ -58,11 +57,12 @@ public class ReportListRenderer implements ListCellRenderer{
 
     /**
      * Get the paint for the message background
-     * @param type  message type
-     * @return  Paint   background
+     *
+     * @param type message type
+     * @return Paint   background
      */
     private Paint getBackgroundPaint(SummaryReportMessage.Type type) {
-        switch(type) {
+        switch (type) {
             case SUCCESS:
                 return new GradientPaint(0, 0, new Color(40, 175, 99, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(40, 175, 99, STOP_ALPHA), true);
             case ERROR:
@@ -79,11 +79,11 @@ public class ReportListRenderer implements ListCellRenderer{
     /**
      * Get the paint for the message border
      *
-     * @param type  message type
-     * @return  Paint   border color
+     * @param type message type
+     * @return Paint   border color
      */
     private Paint getBorderPaint(SummaryReportMessage.Type type) {
-        switch(type) {
+        switch (type) {
             case SUCCESS:
                 return new Color(40, 175, 99);
             case ERROR:

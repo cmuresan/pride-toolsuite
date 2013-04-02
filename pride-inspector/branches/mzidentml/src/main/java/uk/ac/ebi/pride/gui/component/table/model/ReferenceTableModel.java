@@ -70,7 +70,7 @@ public class ReferenceTableModel extends ListTableModel<Reference> {
         String doi = null;
 
         List<CvParam> cvs = newData.getCvParams();
-        if (cvs != null) {
+        if (!cvs.isEmpty()) {
             // pubmed
             for (CvParam cv : cvs) {
                 String name = cv.getName();

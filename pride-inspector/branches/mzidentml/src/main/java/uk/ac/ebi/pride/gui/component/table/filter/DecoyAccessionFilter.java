@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.gui.component.table.filter;
 import javax.swing.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 01/09/2011
  * Time: 12:19
@@ -26,17 +25,17 @@ public class DecoyAccessionFilter extends RowFilter {
     private int accessionColumnIndex;
 
     /**
-     *  whether to show only decoy accessions
+     * whether to show only decoy accessions
      */
     private boolean decoyOnly;
 
     /**
      * Constructor
      *
-     * @param type     type of the matching mechanism
-     * @param criteria matching criteria
+     * @param type                 type of the matching mechanism
+     * @param criteria             matching criteria
      * @param accessionColumnIndex index of the protein accession
-     * @param decoyOnly whether to show only decoy accessions
+     * @param decoyOnly            whether to show only decoy accessions
      */
     public DecoyAccessionFilter(Type type, String criteria, int accessionColumnIndex, boolean decoyOnly) {
         this.type = type;

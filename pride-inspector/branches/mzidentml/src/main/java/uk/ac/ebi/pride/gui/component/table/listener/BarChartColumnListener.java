@@ -11,7 +11,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 18/08/2011
  * Time: 16:58

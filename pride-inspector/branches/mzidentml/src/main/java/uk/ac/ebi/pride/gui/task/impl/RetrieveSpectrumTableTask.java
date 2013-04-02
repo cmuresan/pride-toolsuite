@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 30-Aug-2010
  * Time: 17:34:24

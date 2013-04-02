@@ -9,11 +9,9 @@ import uk.ac.ebi.pride.gui.event.ShowWelcomePaneEvent;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 01/06/11
  * Time: 11:38
- * To change this template use File | Settings | File Templates.
  */
 public class OpenWelcomePaneTask extends TaskAdapter<Void, Void> {
     private static final String DEFAULT_TASK_TITLE = "Open welcome panel";

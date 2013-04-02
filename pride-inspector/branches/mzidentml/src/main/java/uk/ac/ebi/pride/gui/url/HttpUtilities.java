@@ -6,7 +6,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 20-Aug-2010
  * Time: 12:53:03

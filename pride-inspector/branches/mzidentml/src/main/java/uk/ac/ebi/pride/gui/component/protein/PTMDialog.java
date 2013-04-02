@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 16-Aug-2010
  * Time: 11:10:51
@@ -41,8 +40,8 @@ public class PTMDialog extends JDialog implements ActionListener {
         this.setMinimumSize(new Dimension(600, 300));
         // set display location
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation((d.width - getWidth())/2, (d.height - getHeight())/2);
-        
+        setLocation((d.width - getWidth()) / 2, (d.height - getHeight()) / 2);
+
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         addComponents();
     }
@@ -109,8 +108,8 @@ public class PTMDialog extends JDialog implements ActionListener {
                     for (int i = 0; i < rowCnt; i++) {
                         for (int j = 0; j < colCnt; j++) {
                             Object val = tableModel.getValueAt(i, j);
-                            writer.print(val !=  null ? val.toString() : "");
-                            if (j < colCnt -1) {
+                            writer.print(val != null ? val.toString() : "");
+                            if (j < colCnt - 1) {
                                 writer.print(Constants.TAB);
                             }
                         }

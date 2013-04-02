@@ -4,6 +4,7 @@ package uk.ac.ebi.pride.data.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -76,6 +77,10 @@ public final class CollectionUtils {
         if (from != null) {
             to.addAll(from);
         }
+    }
+
+    public static <T> List<T> createEmptyList() {
+        return Collections.emptyList();
     }
 }
 

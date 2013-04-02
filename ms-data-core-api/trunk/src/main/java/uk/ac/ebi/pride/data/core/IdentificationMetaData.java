@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * This class is used to manage and store the information of the metadata for protein and spectrum
  * identifications.
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 19/08/11
  * Time: 11:56
@@ -34,11 +33,13 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
 
     /**
      * Constructor of Identification MetaData Objects
-     * @param id ID
-     * @param name Name
-     * @param spectrumIdentificationProtocolList Spectrum Identification Protocol
+     *
+     * @param id                       ID
+     * @param name                     Name
+     * @param spectrumIdentificationProtocolList
+     *                                 Spectrum Identification Protocol
      * @param proteinDetectionProtocol Protein Detection Protocol
-     * @param searchDataBaseList List of the DataBases used in the experiment.
+     * @param searchDataBaseList       List of the DataBases used in the experiment.
      */
     public IdentificationMetaData(Comparable id, String name,
                                   List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList,
@@ -51,12 +52,14 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
 
     /**
      * Constructor of Identification MetaData Objects
-     * @param params ParamGroup (CvTerms and User Params)
-     * @param id ID
-     * @param name Name
-     * @param spectrumIdentificationProtocolList Spectrum Identification Protocol
+     *
+     * @param params                   ParamGroup (CvTerms and User Params)
+     * @param id                       ID
+     * @param name                     Name
+     * @param spectrumIdentificationProtocolList
+     *                                 Spectrum Identification Protocol
      * @param proteinDetectionProtocol Protein Detection Protocol
-     * @param searchDataBaseList List of the DataBases used in the experiment.
+     * @param searchDataBaseList       List of the DataBases used in the experiment.
      */
     public IdentificationMetaData(ParamGroup params, Comparable id, String name,
                                   List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList,
@@ -79,7 +82,8 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
     /**
      * Set Spectrum Identification Protocol List
      *
-     * @param spectrumIdentificationProtocolList Spectrum Identification Protocol List
+     * @param spectrumIdentificationProtocolList
+     *         Spectrum Identification Protocol List
      */
     public void setSpectrumIdentificationProtocolList(List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList) {
         CollectionUtils.replaceValuesInCollection(spectrumIdentificationProtocolList, this.spectrumIdentificationProtocolList);

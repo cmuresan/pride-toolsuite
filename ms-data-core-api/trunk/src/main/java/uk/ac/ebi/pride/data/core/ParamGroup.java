@@ -162,6 +162,10 @@ public class ParamGroup implements MassSpecObject {
         result = 31 * result + userParams.hashCode();
         return result;
     }
+
+    public boolean isEmpty() {
+        return (cvParams.isEmpty() && userParams.isEmpty());
+    }
 }
 
 

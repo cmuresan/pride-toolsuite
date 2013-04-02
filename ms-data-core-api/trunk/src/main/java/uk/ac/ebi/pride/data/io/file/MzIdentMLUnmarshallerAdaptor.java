@@ -12,7 +12,6 @@ import javax.xml.bind.JAXBException;
 import java.util.*;
 
 
-
 /**
  * MzMLIdentMLUnmarshallerAdaptor provides a list of convenient
  * methods to access mzidentML files.
@@ -39,8 +38,8 @@ public class MzIdentMLUnmarshallerAdaptor {
 
     public List<Sample> getSampleList() {
         uk.ac.ebi.jmzidml.model.mzidml.AnalysisSampleCollection asc =
-            unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AnalysisSampleCollection.class);
-        return (asc!=null)?asc.getSample():null;
+                unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AnalysisSampleCollection.class);
+        return (asc != null) ? asc.getSample() : null;
     }
 
     public List<SourceFile> getSourceFiles() {
@@ -51,23 +50,23 @@ public class MzIdentMLUnmarshallerAdaptor {
 
     public List<AnalysisSoftware> getSoftwares() {
         uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftwareList asl =
-            unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftwareList.class);
+                unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftwareList.class);
 
-        return (asl != null)?asl.getAnalysisSoftware():null;
+        return (asl != null) ? asl.getAnalysisSoftware() : null;
     }
 
     public List<Person> getPersonContacts() {
         uk.ac.ebi.jmzidml.model.mzidml.AuditCollection ac =
-            unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AuditCollection.class);
+                unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AuditCollection.class);
 
-        return (ac != null)?ac.getPerson():null;
+        return (ac != null) ? ac.getPerson() : null;
     }
 
     public List<Organization> getOrganizationContacts() {
         uk.ac.ebi.jmzidml.model.mzidml.AuditCollection ac =
-            unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AuditCollection.class);
+                unmarshaller.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.AuditCollection.class);
 
-        return (ac != null)? ac.getOrganization():null;
+        return (ac != null) ? ac.getOrganization() : null;
     }
 
     public Iterator<BibliographicReference> getReferences() {
@@ -75,7 +74,7 @@ public class MzIdentMLUnmarshallerAdaptor {
     }
 
     public ProteinDetectionHypothesis getIdentificationById(Comparable IdentId) throws JAXBException {
-        return unmarshaller.unmarshal(ProteinDetectionHypothesis.class,(String) IdentId);
+        return unmarshaller.unmarshal(ProteinDetectionHypothesis.class, (String) IdentId);
     }
 
     public int getNumIdentifiedPeptides() throws ConfigurationException, JAXBException {
@@ -97,27 +96,27 @@ public class MzIdentMLUnmarshallerAdaptor {
 
     public String getMzIdentMLName() {
         Map<String, String> properties = unmarshaller.getElementAttributes(unmarshaller.getMzIdentMLId(),
-                                             uk.ac.ebi.jmzidml.model.mzidml.MzIdentML.class);
+                uk.ac.ebi.jmzidml.model.mzidml.MzIdentML.class);
 
         /*
          * This is the only way that we can use now to retrieve the name property
          * In the future we need to think in more elaborated way.
          */
-        return (properties.containsKey("name"))  ? properties.get("name") : "Unknown experiment (mzIdentML)";
+        return (properties.containsKey("name")) ? properties.get("name") : "Unknown experiment (mzIdentML)";
     }
 
-    public Date getCreationDate(){
+    public Date getCreationDate() {
         Map<String, String> properties = unmarshaller.getElementAttributes(unmarshaller.getMzIdentMLId(),
-                                             uk.ac.ebi.jmzidml.model.mzidml.MzIdentML.class);
+                uk.ac.ebi.jmzidml.model.mzidml.MzIdentML.class);
 
         /*
          * This is the only way that we can use now to retrieve the name property
          * In the future we need to think in more elaborated way.
          */
         Date dateCreation = null;
-        if(properties.containsKey("creationDate")){
+        if (properties.containsKey("creationDate")) {
             Calendar calendar = javax.xml.bind.DatatypeConverter.parseDateTime(properties.get("creationDate"));
-                dateCreation = calendar.getTime();
+            dateCreation = calendar.getTime();
         }
         return dateCreation;
 
@@ -129,7 +128,7 @@ public class MzIdentMLUnmarshallerAdaptor {
 
     public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtcol() {
         AnalysisProtocolCollection apc = unmarshaller.unmarshal(AnalysisProtocolCollection.class);
-        return (apc != null)?apc.getSpectrumIdentificationProtocol():null;
+        return (apc != null) ? apc.getSpectrumIdentificationProtocol() : null;
     }
 
     public ProteinDetectionProtocol getProteinDetectionProtocol() {
@@ -149,23 +148,23 @@ public class MzIdentMLUnmarshallerAdaptor {
 
     public Map<Comparable, SpectraData> getSpectraDataMap() {
         Inputs dc = unmarshaller.unmarshal(Inputs.class);
-        List<SpectraData> spectraDataList =  dc.getSpectraData();
-        Map<Comparable,SpectraData> spectraDataMap = null;
-        if(spectraDataList != null && spectraDataList.size()>0){
+        List<SpectraData> spectraDataList = dc.getSpectraData();
+        Map<Comparable, SpectraData> spectraDataMap = null;
+        if (spectraDataList != null && spectraDataList.size() > 0) {
             spectraDataMap = new HashMap<Comparable, SpectraData>();
-            for(SpectraData spectraData: spectraDataList){
-                spectraDataMap.put(spectraData.getId(),spectraData);
+            for (SpectraData spectraData : spectraDataList) {
+                spectraDataMap.put(spectraData.getId(), spectraData);
             }
         }
         return spectraDataMap;
     }
 
 
-    public Map<Comparable,SpectraData> getSpectraData(Set<Comparable> ids) throws JAXBException {
+    public Map<Comparable, SpectraData> getSpectraData(Set<Comparable> ids) throws JAXBException {
         Map<Comparable, SpectraData> spectraDataMap = new HashMap<Comparable, SpectraData>();
-        for(Comparable id: ids){
+        for (Comparable id : ids) {
             SpectraData spectraData = unmarshaller.unmarshal(SpectraData.class, (String) id);
-            spectraDataMap.put(id,spectraData);
+            spectraDataMap.put(id, spectraData);
         }
         return spectraDataMap;
     }
@@ -173,9 +172,9 @@ public class MzIdentMLUnmarshallerAdaptor {
     public List<PeptideHypothesis> getPeptideHypothesisbyID(Comparable id) throws JAXBException {
         ProteinDetectionHypothesis proteinDetectionHypothesis = getIdentificationById(id);
         List<PeptideHypothesis> peptideHypothesises = new ArrayList<PeptideHypothesis>();
-        for(PeptideHypothesis peptideHypothesis : proteinDetectionHypothesis.getPeptideHypothesis()){
-            PeptideEvidence peptideEvidence = unmarshaller.unmarshal(PeptideEvidence.class,peptideHypothesis.getPeptideEvidenceRef());
-            Peptide peptide = unmarshaller.unmarshal(Peptide.class,peptideEvidence.getPeptideRef());
+        for (PeptideHypothesis peptideHypothesis : proteinDetectionHypothesis.getPeptideHypothesis()) {
+            PeptideEvidence peptideEvidence = unmarshaller.unmarshal(PeptideEvidence.class, peptideHypothesis.getPeptideEvidenceRef());
+            Peptide peptide = unmarshaller.unmarshal(Peptide.class, peptideEvidence.getPeptideRef());
             peptideEvidence.setPeptide(peptide);
             peptideHypothesis.setPeptideEvidence(peptideEvidence);
             peptideHypothesises.add(peptideHypothesis);
@@ -184,13 +183,13 @@ public class MzIdentMLUnmarshallerAdaptor {
     }
 
     public PeptideEvidence getPeptideEvidence(Comparable id) throws JAXBException {
-          return unmarshaller.unmarshal(PeptideEvidence.class,(String) id);
+        return unmarshaller.unmarshal(PeptideEvidence.class, (String) id);
     }
 
-    public Map<Comparable,Comparable> getPeptideEvidencesBySpectrum(Comparable id) throws JAXBException {
-        List<PeptideEvidenceRef> peptideEvidenceRefs = unmarshaller.unmarshal(SpectrumIdentificationItem.class,(String) id).getPeptideEvidenceRef();
-        Map<Comparable,Comparable> peptideRefs = new HashMap<Comparable, Comparable>(peptideEvidenceRefs.size());
-        for(PeptideEvidenceRef peptideEvidenceRef: peptideEvidenceRefs){
+    public Map<Comparable, Comparable> getPeptideEvidencesBySpectrum(Comparable id) throws JAXBException {
+        List<PeptideEvidenceRef> peptideEvidenceRefs = unmarshaller.unmarshal(SpectrumIdentificationItem.class, (String) id).getPeptideEvidenceRef();
+        Map<Comparable, Comparable> peptideRefs = new HashMap<Comparable, Comparable>(peptideEvidenceRefs.size());
+        for (PeptideEvidenceRef peptideEvidenceRef : peptideEvidenceRefs) {
             peptideRefs.put(peptideEvidenceRef.getPeptideEvidenceRef(), peptideEvidenceRef.getPeptideEvidence().getDBSequenceRef());
         }
         return peptideRefs;
@@ -202,14 +201,14 @@ public class MzIdentMLUnmarshallerAdaptor {
     }
 
     public DBSequence getDBSequenceById(Comparable id) throws JAXBException {
-        return unmarshaller.unmarshal(DBSequence.class,(String) id);
+        return unmarshaller.unmarshal(DBSequence.class, (String) id);
     }
 
     public List<SpectrumIdentificationItem> getSpectrumIdentificationsbyIds(List<Comparable> spectrumIdentIds) throws JAXBException {
         List<SpectrumIdentificationItem> spectrumIdentifications = null;
-        if(spectrumIdentIds != null && spectrumIdentIds.size() > 0){
+        if (spectrumIdentIds != null && spectrumIdentIds.size() > 0) {
             spectrumIdentifications = new ArrayList<SpectrumIdentificationItem>();
-            for(Comparable id: spectrumIdentIds){
+            for (Comparable id : spectrumIdentIds) {
                 SpectrumIdentificationItem spectrumIdentification = unmarshaller.unmarshal(SpectrumIdentificationItem.class, (String) id);
                 spectrumIdentifications.add(spectrumIdentification);
             }
@@ -218,14 +217,14 @@ public class MzIdentMLUnmarshallerAdaptor {
         return spectrumIdentifications;
     }
 
-    public Map<Comparable,String[]> getSpectrumIdentificationsbySpectrumResult(Comparable id) throws JAXBException {
-        SpectrumIdentificationResult results  = unmarshaller.unmarshal(SpectrumIdentificationResult.class, (String) id);
+    public Map<Comparable, String[]> getSpectrumIdentificationsbySpectrumResult(Comparable id) throws JAXBException {
+        SpectrumIdentificationResult results = unmarshaller.unmarshal(SpectrumIdentificationResult.class, (String) id);
         Map<Comparable, String[]> spectrumIds = new HashMap<Comparable, String[]>(results.getSpectrumIdentificationItem().size());
-        for(SpectrumIdentificationItem idSpectrumItem: results.getSpectrumIdentificationItem()){
+        for (SpectrumIdentificationItem idSpectrumItem : results.getSpectrumIdentificationItem()) {
             String[] spectrumInfo = new String[2];
             spectrumInfo[0] = results.getSpectrumID();
             spectrumInfo[1] = results.getSpectraDataRef();
-            spectrumIds.put(idSpectrumItem.getId(),spectrumInfo);
+            spectrumIds.put(idSpectrumItem.getId(), spectrumInfo);
         }
         return spectrumIds;  //To change body of created methods use File | Settings | File Templates.
     }
@@ -256,7 +255,6 @@ public class MzIdentMLUnmarshallerAdaptor {
         Map<Comparable, SpectraData> spectraDataIds = getSpectraDataMap();
 
 
-
         /**
          * First Map is the Relation between an Spectrum file and all the Spectrums ids in the file
          * This information is useful to retrieve the for each spectrum File with spectrums are really
@@ -280,7 +278,7 @@ public class MzIdentMLUnmarshallerAdaptor {
         /**
          * List of PSMs, e.g. SpectrumIdentificationResult IDs
          */
-        ArrayList<String> spectrumMatchResultsIds  = new ArrayList<String>(unmarshaller.getIDsForElement(MzIdentMLElement.SpectrumIdentificationResult));
+        ArrayList<String> spectrumMatchResultsIds = new ArrayList<String>(unmarshaller.getIDsForElement(MzIdentMLElement.SpectrumIdentificationResult));
 
         /**
          * This Protein Map represents the Protein identification in the DBSequence Section that contains SpectrumIdentification Items
@@ -289,41 +287,41 @@ public class MzIdentMLUnmarshallerAdaptor {
          * the original id of the spectrum in the Spectrum file and the id of the spectrum file.
          *
          */
-        Map<Comparable,Map<Comparable,List<String[]>>> identProteinsMap = new HashMap<Comparable, Map<Comparable, List<String[]>>>();
+        Map<Comparable, Map<Comparable, List<String[]>>> identProteinsMap = new HashMap<Comparable, Map<Comparable, List<String[]>>>();
 
 
-        for(Comparable idSpectrumResult: spectrumMatchResultsIds){
+        for (Comparable idSpectrumResult : spectrumMatchResultsIds) {
 
-            SpectrumIdentificationResult spectrumResult = unmarshaller.unmarshal(SpectrumIdentificationResult.class,(String) idSpectrumResult);
+            SpectrumIdentificationResult spectrumResult = unmarshaller.unmarshal(SpectrumIdentificationResult.class, (String) idSpectrumResult);
 
             // fill the SpectraDataMap
             // for the currently referenced spectra file, retrieve the List (if it exists already) that is to store all the spectra IDs
             List<Comparable> spectrumIds = spectraDataMap.get(spectrumResult.getSpectraDataRef());
             // if there is no spectra ID list for the spectrum file yet, then create one and add it to the map
-            if(spectrumIds == null) {
+            if (spectrumIds == null) {
                 spectrumIds = new ArrayList<Comparable>();
-                spectraDataMap.put(spectrumResult.getSpectraDataRef(),spectrumIds);
+                spectraDataMap.put(spectrumResult.getSpectraDataRef(), spectrumIds);
             }
             // add the spectrum ID to the list of spectrum IDs for the current spectrum file
             spectrumIds.add(spectrumResult.getSpectrumID());
 
             // proceed to populate the identSpectrumMap
-            for(SpectrumIdentificationItem spectrumIdentItem: spectrumResult.getSpectrumIdentificationItem()){
+            for (SpectrumIdentificationItem spectrumIdentItem : spectrumResult.getSpectrumIdentificationItem()) {
 
                 // fill the SpectrumIdentification and the Spectrum information
                 String[] spectrumFeatures = new String[2];
                 SpectraData spectraData = spectraDataIds.get(spectrumResult.getSpectraDataRef());
 
                 // extract the spectrum ID from the provided identifier
-                String spectrumId   = MzIdentMLUtils.getSpectrumId(spectraData, spectrumResult.getSpectrumID());
+                String spectrumId = MzIdentMLUtils.getSpectrumId(spectraData, spectrumResult.getSpectrumID());
                 spectrumFeatures[0] = spectrumId;
                 spectrumFeatures[1] = spectrumResult.getSpectraDataRef();
 
-                identSpectrumMap.put(spectrumIdentItem.getId(),spectrumFeatures);
+                identSpectrumMap.put(spectrumIdentItem.getId(), spectrumFeatures);
 
                 List<String[]> evidences = new ArrayList<String[]>();
                 Set<Comparable> idProteins = new HashSet<Comparable>();
-                for (PeptideEvidenceRef evidenceRef: spectrumIdentItem.getPeptideEvidenceRef()){
+                for (PeptideEvidenceRef evidenceRef : spectrumIdentItem.getPeptideEvidenceRef()) {
                     String[] evidence = new String[2];
                     evidence[0] = evidenceRef.getPeptideEvidenceRef();
                     Map<String, String> attributes = unmarshaller.getElementAttributes(evidence[0], PeptideEvidence.class);
@@ -333,18 +331,19 @@ public class MzIdentMLUnmarshallerAdaptor {
                     evidences.add(evidence);
                     idProteins.add(evidence[1]);
                 }
-                for(Comparable idProtein: idProteins){
-                    Map<Comparable,List<String[]>> spectrumIdentifications = identProteinsMap.get(idProtein);
-                    if(spectrumIdentifications == null) spectrumIdentifications = new HashMap<Comparable, List<String[]>>();
-                    spectrumIdentifications.put(spectrumIdentItem.getId(),evidences);
-                    identProteinsMap.put(idProtein,spectrumIdentifications);
+                for (Comparable idProtein : idProteins) {
+                    Map<Comparable, List<String[]>> spectrumIdentifications = identProteinsMap.get(idProtein);
+                    if (spectrumIdentifications == null)
+                        spectrumIdentifications = new HashMap<Comparable, List<String[]>>();
+                    spectrumIdentifications.put(spectrumIdentItem.getId(), evidences);
+                    identProteinsMap.put(idProtein, spectrumIdentifications);
                 }
             }
         }
 
-        maps.put(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS,spectraDataMap);
-        maps.put(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES,identProteinsMap);
-        maps.put(CacheCategory.PEPTIDE_TO_SPECTRUM,identSpectrumMap);
+        maps.put(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS, spectraDataMap);
+        maps.put(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES, identProteinsMap);
+        maps.put(CacheCategory.PEPTIDE_TO_SPECTRUM, identSpectrumMap);
 
         return maps;
     }

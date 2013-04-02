@@ -5,7 +5,6 @@ package uk.ac.ebi.pride.data.core;
  * Especially the MZIdentMl Classes. Identifiable gives classes a unique identifier within the scope and
  * a name that need not be unique. Identifiable also provides a mechanism for annotating objects with
  * BibliographicReference(s) and DatabaseEntry(s).
- * Created by IntelliJ IDEA.
  * User: yperez, rwang
  * Date: 08/08/11
  * Time: 16:11
@@ -24,7 +23,7 @@ public class Identifiable implements MassSpecObject {
     String name;
 
     public Identifiable(Comparable id, String name) {
-        this.id   = id;
+        this.id = id;
         this.name = name;
     }
 

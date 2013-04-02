@@ -45,11 +45,10 @@ import java.util.regex.Pattern;
  * It retrieve the spectrum information, and also the most important metadata, the relevant and
  * portable to the ms-core-api information from the mzXML files. this controller use the MzXMLFile Api
  * to parse an retrieve the information from mzXML files.
- *
+ * <p/>
  * User: yperez, rwang
  * Date: 2/27/12
  * Time: 2:12 PM
- *
  */
 
 public class MzXmlControllerImpl extends CachedDataAccessController {
@@ -69,7 +68,8 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * Construct a data access controller using a given mzXML file
      *
      * @param file jmzReader file
-     * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception
+     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
+     *          data access exception
      */
     public MzXmlControllerImpl(File file) throws DataAccessException {
         this(file, null);
@@ -89,7 +89,6 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
 
     /**
      * Initialize the data access controller
-     *
      *
      * @throws DataAccessException data access exception
      */
@@ -176,6 +175,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
 
     /**
      * The mzXML files do not contain information about Organizations
+     *
      * @return
      * @throws DataAccessException
      */
@@ -217,18 +217,18 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
         ParamGroup paramGroup = null;
         Set<CvParam> cvParamSet = null;
         List<SourceFile> sourceFiles = getSourceFiles();
-        if(sourceFiles != null){
+        if (sourceFiles != null && !sourceFiles.isEmpty()) {
             cvParamSet = new HashSet<CvParam>();
-            for(SourceFile sourceFile: sourceFiles){
-                if(sourceFile.getFileFormat() != null){
+            for (SourceFile sourceFile : sourceFiles) {
+                if (sourceFile.getFileFormat() != null) {
                     cvParamSet.add(sourceFile.getFileFormat());
                 }
             }
         }
-        if (cvParamSet != null){
+        if (cvParamSet != null) {
             List<CvParam> cvParams = new ArrayList<CvParam>();
             cvParams.addAll(cvParamSet);
-            paramGroup = new ParamGroup(cvParams,null);
+            paramGroup = new ParamGroup(cvParams, null);
         }
         return paramGroup;
     }
@@ -336,7 +336,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
         try {
             startDate = unmarshaller.getStartDate();
             CvParam cvParamStartDate = MzXmlTransformer.transformDurationToCvParam(startDate, CvTermReference.MS_SCAN_DATE);
-            if(cvParamStartDate !=null && fileContent != null) fileContent.addCvParam(cvParamStartDate);
+            if (cvParamStartDate != null && fileContent != null) fileContent.addCvParam(cvParamStartDate);
         } catch (DatatypeConfigurationException e) {
             String msg = "Error while getting the started Time";
             logger.error(msg, e);
@@ -458,6 +458,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
 
     /**
      * The identification MetaData is not supported for mzXML files
+     *
      * @return
      * @throws DataAccessException
      */
@@ -466,7 +467,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
         throw new UnsupportedOperationException("This method is not supported");
     }
 
-   /**
+    /**
      * Check a file is mzML file
      *
      * @param file input file

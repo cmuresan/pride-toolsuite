@@ -45,10 +45,10 @@ public class MzIdentMLTransformer {
     private static Map<String, CVLookup> cvLookupMap = null;
 
     public static void setCvLookupMap(List<CVLookup> cvLookupList) {
-        if(cvLookupList != null && cvLookupList.size()>0){
+        if (cvLookupList != null && !cvLookupList.isEmpty()) {
             cvLookupMap = new HashMap<String, CVLookup>();
-            for(CVLookup cvLookup: cvLookupList){
-                cvLookupMap.put(cvLookup.getCvLabel(),cvLookup);
+            for (CVLookup cvLookup : cvLookupList) {
+                cvLookupMap.put(cvLookup.getCvLabel(), cvLookup);
             }
         }
     }
@@ -351,22 +351,7 @@ public class MzIdentMLTransformer {
         }
         return fragmentationTable;
     }
-    /*
-    public static List<Peptide> transformToPeptideIdentifications(List<uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis> peptideHypothesis, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
-        List<Peptide> peptides = null;
-        if (peptideHypothesis != null) {
-            peptides = new ArrayList<Peptide>();
 
-            for (uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis oldPeptideHypothesis : peptideHypothesis) {
-                PeptideEvidence peptideEvidence = transformToPeptideEvidence(oldPeptideHypothesis.getPeptideEvidence());
-                List<SpectrumIdentification> spectrumIdentifications = transformToPeptideIdentification(oldPeptideHypothesis.getSpectrumIdentificationItemRef(), oldFragmentationTable);
-                for (SpectrumIdentification spectrumIdentification : spectrumIdentifications) {
-                    peptides.add(new Peptide(peptideEvidence, spectrumIdentification));
-                }
-            }
-        }
-        return peptides;
-    }*/
 
     public static List<Peptide> transformToPeptideIdentificationsFromSpectrumItems(List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> peptideIdentificationList, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
         List<Peptide> peptides = null;
@@ -378,19 +363,6 @@ public class MzIdentMLTransformer {
                     PeptideEvidence peptideEvidence = transformToPeptideEvidence(evidence.getPeptideEvidence());
                     peptides.add(new Peptide(peptideEvidence, spectrumIdent));
                 }
-            }
-        }
-        return peptides;
-    }
-
-    public static List<SpectrumIdentification> transformToPeptideIdentification(List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItemRef> spectrumIdentificationItemRefs, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
-        List<SpectrumIdentification> peptides = null;
-        if (spectrumIdentificationItemRefs != null) {
-            peptides = new ArrayList<SpectrumIdentification>();
-            for (uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItemRef oldSpectrumIdentificationItemRef : spectrumIdentificationItemRefs) {
-                uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem oldPeptideIdentification = oldSpectrumIdentificationItemRef.getSpectrumIdentificationItem();
-                SpectrumIdentification peptide = transformToPeptideIdentification(oldPeptideIdentification, oldFragmentationTable);
-                peptides.add(peptide);
             }
         }
         return peptides;
@@ -421,7 +393,7 @@ public class MzIdentMLTransformer {
                     transformToPeptide(peptideSeq), rank, passThrehold, transformToMassTable(massTable),
                     transformToSample(sample), transformToPeptideEvidence(peptideEvidence),
                     transformToFragmentationIon(fragmentation, oldFragmentationTable), score, null, null);
-            }
+        }
         return peptide;
     }
 
@@ -521,6 +493,7 @@ public class MzIdentMLTransformer {
     private static CvParam getCvParamByID(List<CvParam> oldCvParams, String accession, String newValue) {
         for (CvParam oldCvParam : oldCvParams) {
             if (oldCvParam.getAccession().equalsIgnoreCase(accession)) {
+                oldCvParam.setValue(newValue);
                 return oldCvParam;
             }
         }
@@ -738,17 +711,17 @@ public class MzIdentMLTransformer {
             ParamGroup threshold = new ParamGroup(transformToCvParam(oldProtocol.getThreshold().getCvParam()), transformToUserParam(oldProtocol.getThreshold().getUserParam()));
             ParamGroup searchType = new ParamGroup(transformToCvParam(oldProtocol.getSearchType().getCvParam()), transformToUserParam(oldProtocol.getSearchType().getUserParam()));
             boolean enzymeIndependent = (oldProtocol.getEnzymes() == null || oldProtocol.getEnzymes().isIndependent() == null) ? false : oldProtocol.getEnzymes().isIndependent();
-            List<uk.ac.ebi.jmzidml.model.mzidml.Enzyme> enzymes = (oldProtocol.getEnzymes() != null)? oldProtocol.getEnzymes().getEnzyme(): null;
+            List<uk.ac.ebi.jmzidml.model.mzidml.Enzyme> enzymes = (oldProtocol.getEnzymes() != null) ? oldProtocol.getEnzymes().getEnzyme() : null;
             List<Enzyme> enzymeList = transformToEnzyme(enzymes);
             List<CvParam> fragmentTolerance = (oldProtocol.getFragmentTolerance() != null) ? transformToCvParam(oldProtocol.getFragmentTolerance().getCvParam()) : null;
             List<CvParam> parentTolerance = (oldProtocol.getParentTolerance() != null) ? transformToCvParam(oldProtocol.getParentTolerance().getCvParam()) : null;
             List<Filter> filterList = (oldProtocol.getDatabaseFilters() != null) ? transformToFilter(oldProtocol.getDatabaseFilters().getFilter()) : null;
             DataBaseTranslation dataBaseTranslation = transformToDataBaseTranslation(oldProtocol.getDatabaseTranslation());
-            List<uk.ac.ebi.jmzidml.model.mzidml.SearchModification> modifications = (oldProtocol.getModificationParams() != null)? oldProtocol.getModificationParams().getSearchModification():null;
+            List<uk.ac.ebi.jmzidml.model.mzidml.SearchModification> modifications = (oldProtocol.getModificationParams() != null) ? oldProtocol.getModificationParams().getSearchModification() : null;
             List<SearchModification> searchModificationList = transformToSearchModification(modifications);
             List<MassTable> massTableList = transformToMassTable(oldProtocol.getMassTable());
-            List<uk.ac.ebi.jmzidml.model.mzidml.CvParam> oldCvParam = (oldProtocol.getAdditionalSearchParams() != null) ? oldProtocol.getAdditionalSearchParams().getCvParam():null;
-            List<uk.ac.ebi.jmzidml.model.mzidml.UserParam> oldUserParam = (oldProtocol.getAdditionalSearchParams() != null) ? oldProtocol.getAdditionalSearchParams().getUserParam():null;
+            List<uk.ac.ebi.jmzidml.model.mzidml.CvParam> oldCvParam = (oldProtocol.getAdditionalSearchParams() != null) ? oldProtocol.getAdditionalSearchParams().getCvParam() : null;
+            List<uk.ac.ebi.jmzidml.model.mzidml.UserParam> oldUserParam = (oldProtocol.getAdditionalSearchParams() != null) ? oldProtocol.getAdditionalSearchParams().getUserParam() : null;
             spectrumIdentificationProtocol = new SpectrumIdentificationProtocol(new ParamGroup(transformToCvParam(oldCvParam), transformToUserParam(oldUserParam)), oldProtocol.getId(), oldProtocol.getName(), analysisSoftware, threshold, searchType, searchModificationList, enzymeIndependent, enzymeList, massTableList, fragmentTolerance, parentTolerance, filterList, dataBaseTranslation);
         }
         return spectrumIdentificationProtocol;
@@ -781,7 +754,6 @@ public class MzIdentMLTransformer {
         }
         return searchModifications;
     }
-
 
     private static DataBaseTranslation transformToDataBaseTranslation(uk.ac.ebi.jmzidml.model.mzidml.DatabaseTranslation oldDatabaseTranslation) {
         DataBaseTranslation dataBaseTranslation = null;

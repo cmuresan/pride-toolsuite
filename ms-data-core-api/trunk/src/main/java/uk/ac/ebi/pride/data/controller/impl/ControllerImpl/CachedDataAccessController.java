@@ -283,8 +283,8 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Get identification using a identification id, gives the option to choose whether to use cache.
      * This implementation provides a way of by passing the cache.
      *
-     * @param proteinId       protein identification id
-     * @param useCache true means to use cache
+     * @param proteinId protein identification id
+     * @param useCache  true means to use cache
      * @return Identification identification object
      * @throws DataAccessException data access exception
      */
@@ -353,7 +353,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * Note: sometimes, precursor charge at the peptide level is different from the precursor charge at the spectrum level
      * As the peptide-level precursor charge is often assigned by search engine rather than ms instrument
      *
-     * @param proteinId   identification id
+     * @param proteinId identification id
      * @param peptideId peptid eid, can be the index of the peptide as well.
      * @return precursor charge, 0 should be returned if not available
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
@@ -395,7 +395,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     /**
      * Get precursor m/z from the peptide level
      *
-     * @param proteinId   identification id
+     * @param proteinId identification id
      * @param peptideId peptid eid, can be the index of the peptide as well.
      * @return precursor mass
      * @throws DataAccessException
@@ -595,7 +595,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
             if (ident != null) {
                 int indexInt = Integer.parseInt(index.toString());
                 List<Peptide> peptides = ident.getPeptides();
-                if (indexInt >= 0 && indexInt < peptides.size()) {
+                if (!peptides.isEmpty() && indexInt >= 0 && indexInt < peptides.size()) {
                     pep = peptides.get(indexInt);
                 }
             } else {
@@ -803,7 +803,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     /**
      * Get ptms using identification id nad peptide id
      *
-     * @param proteinId   identification id
+     * @param proteinId identification id
      * @param peptideId peptide id, can be the index of the peptide
      * @return List<Modification>   a list of modifications.
      * @throws DataAccessException data access exception
@@ -812,9 +812,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @SuppressWarnings("unchecked")
     public List<Modification> getPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         List<Tuple<String, Integer>> ptms = (List<Tuple<String, Integer>>) cache.get(CacheCategory.PEPTIDE_TO_MODIFICATION, peptideId);
+
         List<Modification> mods = new ArrayList<Modification>();
 
-        if (ptms != null) {
+        if (ptms != null && !ptms.isEmpty()) {
             // create modification from cache
             for (Tuple<String, Integer> ptm : ptms) {
                 String modAcc = ptm.getKey();
@@ -833,7 +834,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     /**
      * Get the number of fragment ions in a given peptide
      *
-     * @param proteinId   identification id
+     * @param proteinId identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return int number of fragment ions
      * @throws DataAccessException data access controller
@@ -850,7 +851,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     /**
      * Get peptide score from search engine
      *
-     * @param proteinId   identification id
+     * @param proteinId identification id
      * @param peptideId peptide id, can be the index of the peptide as well.
      * @return PeptideScore    peptide score from search engine
      * @throws DataAccessException data access exception
@@ -955,6 +956,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
     /**
      * Get the Experiment Meta Data
+     *
      * @return ExperimentMetaData
      * @throws DataAccessException
      */
@@ -970,6 +972,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
     /**
      * Get Identification Meta Data
+     *
      * @return IdentificationMetaData
      * @throws DataAccessException
      */
@@ -984,6 +987,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
     /**
      * Get MzGraph Meta Data. The Meta Data at the Spectras Level
+     *
      * @return MzGraphMetaData
      * @throws DataAccessException
      */

@@ -107,8 +107,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         // set cache builder
         setCacheBuilder(new PrideDBCacheBuilder(this));
 
-        if(experimentAcc != null){
-           this.experimentAcc = experimentAcc;
+        if (experimentAcc != null) {
+            this.experimentAcc = experimentAcc;
         }
 
         // populate cache
@@ -695,7 +695,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     spectrumParams.addUserParams(getUserParams("mzdata_spectrum_instrument_param", idInt));
                     // add comments
                     spectrumParams.addUserParams(getSpectrumDesc(idInt));
-                    spectrum = new Spectrum(spectrumParams, (Long)result.get("spectrum_id"), null, index, null, defaultArrLength, binaryArray, null, null, scanList, precursors, null);
+                    spectrum = new Spectrum(spectrumParams, (Long) result.get("spectrum_id"), null, index, null, defaultArrLength, binaryArray, null, null, scanList, precursors, null);
 
 
                     if (useCache) {
@@ -797,9 +797,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             List<Modification> modifications = getModificationsPeptide((Integer) result.get("peptide_id"));
             List<FragmentIon> fragmentIons = getFragmentIons((Integer) result.get("peptide_id"));
             Spectrum spectrum = getSpectrumByPeptide(experiment_id, (Integer) result.get("spectrum_ref"));
-            PeptideSequence peptideSequence = new PeptideSequence(null, null, (String)result.get("sequence"), modifications);
+            PeptideSequence peptideSequence = new PeptideSequence(null, null, (String) result.get("sequence"), modifications);
             List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
-            PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, (Integer)result.get("pep_start"), (Integer)result.get("pep_end"), false, peptideSequence, null);
+            PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, (Integer) result.get("pep_start"), (Integer) result.get("pep_end"), false, peptideSequence, null);
             peptideEvidences.add(peptideEvidence);
 
             int charge = DataAccessUtilities.getPrecursorCharge(spectrum);
@@ -851,14 +851,14 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
                 List<Peptide> peptides = getPeptideIdentification((Integer) result.get("identification_id"), (Integer) result.get("pi.experiment_id"));
                 String className = (String) result.get("classname");
-                DBSequence dbSequence = new DBSequence(null, null, null, -1, accession, new SearchDataBase((String)result.get("search_database"), (String)result.get("database_version")), null, (String)result.get("accession_version"), (String)result.get("splice_isoform"));
+                DBSequence dbSequence = new DBSequence(null, null, null, -1, accession, new SearchDataBase((String) result.get("search_database"), (String) result.get("database_version")), null, (String) result.get("accession_version"), (String) result.get("splice_isoform"));
 
 
                 if ("uk.ac.ebi.pride.rdbms.ojb.model.core.TwoDimensionalIdentificationBean".equals(className)) {
-                    Gel gel = getPeptideGel((Integer)result.get("gel_id"), (Double)result.get("x_coordinate"), (Double)result.get("y_coordinate"), (Double)result.get("molecular_weight"), (Double)result.get("pi"));
-                    protein = new Protein(params, (Integer)result.get("identification_id"), null, dbSequence, false, peptides, null, (Double)result.get("threshold"), seqConverageVal, gel);
+                    Gel gel = getPeptideGel((Integer) result.get("gel_id"), (Double) result.get("x_coordinate"), (Double) result.get("y_coordinate"), (Double) result.get("molecular_weight"), (Double) result.get("pi"));
+                    protein = new Protein(params, (Integer) result.get("identification_id"), null, dbSequence, false, peptides, null, (Double) result.get("threshold"), seqConverageVal, gel);
                 } else if ("uk.ac.ebi.pride.rdbms.ojb.model.core.GelFreeIdentificationBean".equals(className)) {
-                    protein = new Protein(params, (Integer)result.get("identification_id"), null, dbSequence, false, peptides, null, (Double)result.get("threshold"), seqConverageVal,null);
+                    protein = new Protein(params, (Integer) result.get("identification_id"), null, dbSequence, false, peptides, null, (Double) result.get("threshold"), seqConverageVal, null);
                 }
 
                 if (useCache) {
@@ -900,7 +900,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, start, end, false, peptideSequence, null);
             peptideEvidences.add(peptideEvidence);
             SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, charge, mz, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, null, spectrum, null);
-            peptide = new Peptide(peptideEvidence,spectrumIdentification);
+            peptide = new Peptide(peptideEvidence, spectrumIdentification);
 
             if (useCache) {
                 getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(proteinId, peptideId), peptide);
@@ -996,7 +996,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 if (mzArrId != -1) {
                     try {
                         BinaryDataArray intentBinaryArray = getBinaryDataArray(mzArrId, CvTermReference.MZ_ARRAY);
-                        if (intentBinaryArray != null) {
+                        if (intentBinaryArray != null && !intentBinaryArray.isEmpty()) {
                             double[] originalIntentArr = intentBinaryArray.getDoubleArray();
                             for (double intent : originalIntentArr) {
                                 sum += intent;

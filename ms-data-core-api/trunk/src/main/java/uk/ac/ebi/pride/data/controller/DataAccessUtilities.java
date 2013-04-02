@@ -521,12 +521,8 @@ public class DataAccessUtilities {
         List<CvParam> cps = new ArrayList<CvParam>();
         if (cvParams != null) {
             for (CvParam param : cvParams) {
-                if (param.getAccession().equalsIgnoreCase(accession)) {
-                    if (param.getCvLookupID() != null && !param.getCvLookupID().equalsIgnoreCase(cvLabel)) {
-                        // this could be the wrong CV param!!
-                        System.out.println("We may have got the wrong CV param!!");
-                        // ToDo: proper logging (should perhaps fail, see comment above)
-                    }
+                if (param.getAccession().equalsIgnoreCase(accession.toLowerCase())
+                        && param.getCvLookupID().equalsIgnoreCase(cvLabel.toLowerCase())) {
                     cps.add(param);
                 }
             }

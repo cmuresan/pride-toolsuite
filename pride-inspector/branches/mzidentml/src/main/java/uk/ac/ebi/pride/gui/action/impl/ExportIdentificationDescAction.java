@@ -23,7 +23,6 @@ import static uk.ac.ebi.pride.gui.utils.Constants.DOT;
 import static uk.ac.ebi.pride.gui.utils.Constants.TAB_SEP_FILE;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 01-Sep-2010
  * Time: 17:18:40

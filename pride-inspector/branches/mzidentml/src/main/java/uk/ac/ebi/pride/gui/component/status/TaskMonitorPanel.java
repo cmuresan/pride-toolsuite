@@ -12,11 +12,10 @@ import java.beans.PropertyChangeEvent;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 16-Feb-2010
  * Time: 11:18:41
- *
+ * <p/>
  * todo: change mouse over effect
  */
 public class TaskMonitorPanel extends StatusBarPanel {

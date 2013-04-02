@@ -105,7 +105,7 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
                 }
                 tip.append("<br>");
                 java.util.List<Double> avgs = mod.getAvgMassDelta();
-                if (avgs != null) {
+                if (!avgs.isEmpty()) {
                     for (Double avg : avgs) {
                         tip.append("<b>Average Mass Delta</b>:");
                         tip.append(avg);
@@ -113,7 +113,7 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
                     }
                 }
                 java.util.List<Double> monos = mod.getMonoisotopicMassDelta();
-                if (monos != null) {
+                if (!monos.isEmpty()) {
                     for (Double mono : monos) {
                         tip.append("<b>Mono Mass Delta</b>:");
                         tip.append(mono);

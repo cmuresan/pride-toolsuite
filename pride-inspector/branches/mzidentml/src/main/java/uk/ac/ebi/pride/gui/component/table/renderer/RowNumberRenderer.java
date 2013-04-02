@@ -6,7 +6,6 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 17-Aug-2010
  * Time: 15:33:01

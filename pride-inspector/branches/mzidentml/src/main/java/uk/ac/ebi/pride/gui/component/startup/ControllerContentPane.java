@@ -185,7 +185,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
         if (!categories.isEmpty()) {
 
 
-            if(controller.hasMetaDataInformation()){
+            if (controller.hasMetaDataInformation()) {
                 metaDataTabPane = new MetaDataTabPane(controller, this);
                 metaDataTabIndex = indexCount++;
                 contentTabPane.insertTab(metaDataTabPane.getTitle(), metaDataTabPane.getIcon(), metaDataTabPane, metaDataTabPane.getTitle(), metaDataTabIndex);
@@ -225,12 +225,12 @@ public class ControllerContentPane extends DataAccessControllerPane {
             }
 
             // chart tab
-            if (categories.contains(DataAccessController.ContentCategory.SPECTRUM) || categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
+            /*if (categories.contains(DataAccessController.ContentCategory.SPECTRUM) || categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
                 chartTabPane = new ChartTabPane(controller, this);
                 chartTabIndex = indexCount++;
                 contentTabPane.insertTab(chartTabPane.getTitle(), chartTabPane.getIcon(), chartTabPane, chartTabPane.getTitle(), chartTabIndex);
                 chartTabPane.populate();
-            }
+            }*/
         }
     }
 
@@ -317,7 +317,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
      * Return mzdata tab pane
      *
      * @return MzDataTabPane    mzdata tab pane
-     **/
+     */
 
     public void setMzDataTab(MzDataTabPane mzDataTabPane) {
         mzDataTab = mzDataTabPane;
@@ -373,8 +373,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
      * Tab index of the spectrum tab
      *
      * @return int tab index
-     *
-     * */
+     */
     public void setMzDataTabIndex(int index) {
         mzDataTabIndex = index;
     }
@@ -418,7 +417,8 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
     /**
      * Whether meta data tab is enabled
-     * @return  boolean true means enabled
+     *
+     * @return boolean true means enabled
      */
     public boolean isMetaDataTabEnabled() {
         return metaDataTabEnabled;
@@ -426,7 +426,8 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
     /**
      * Whether mz data tab is enabled
-     * @return  boolean true means enabled
+     *
+     * @return boolean true means enabled
      */
     public boolean isMzDataTabEnabled() {
         return mzDataTabEnabled;
@@ -434,7 +435,8 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
     /**
      * Whether protein tab is enabled
-     * @return  boolean true means enabled
+     *
+     * @return boolean true means enabled
      */
     public boolean isProteinTabEnabled() {
         return proteinTabEnabled;
@@ -442,7 +444,8 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
     /**
      * Whether peptide tab is enabled
-     * @return  boolean true means enabled
+     *
+     * @return boolean true means enabled
      */
     public boolean isPeptideTabEnabled() {
         return peptideTabEnabled;
@@ -450,7 +453,8 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
     /**
      * Whether quantitative data tab is enabled
-     * @return  boolean true means enabled
+     *
+     * @return boolean true means enabled
      */
     public boolean isQuantTabEnabled() {
         return quantTabEnabled;
@@ -458,21 +462,22 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
     /**
      * Whether chart tab is enabled
-     * @return  boolean true means enabled
+     *
+     * @return boolean true means enabled
      */
     public boolean isChartTabEnabled() {
         return chartTabEnabled;
     }
 
-    public int indexOf(JComponent component){
+    public int indexOf(JComponent component) {
         return contentTabPane.indexOfComponent(component);
     }
 
     public void insertTab(String title, Icon icon, MzDataTabPane mzDataPane, String title1, int index) {
-        contentTabPane.insertTab(title,icon,mzDataPane,title1,index);
+        contentTabPane.insertTab(title, icon, mzDataPane, title1, index);
     }
 
-    public void removeTab(int index){
+    public void removeTab(int index) {
         contentTabPane.removeTabAt(index);
     }
 

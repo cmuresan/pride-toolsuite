@@ -47,6 +47,7 @@ public class ParamTableModel extends ListTableModel<Parameter> {
     private List<Parameter> parameters;
 
     public ParamTableModel(List<ParamGroup> paramGroups) {
+
         this.parameters = new ArrayList<Parameter>();
 
         for (ParamGroup paramGroup : paramGroups) {
@@ -74,12 +75,12 @@ public class ParamTableModel extends ListTableModel<Parameter> {
 
         // cv parameters
         List<CvParam> cvs = paramGroup.getCvParams();
-        if (cvs != null) {
+        if (!cvs.isEmpty()) {
             parameters.addAll(cvs);
         }
         // user parameters
         List<UserParam> up = paramGroup.getUserParams();
-        if (up != null) {
+        if (!up.isEmpty()) {
             parameters.addAll(up);
         }
         // add all the parameters

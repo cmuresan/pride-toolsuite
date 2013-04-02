@@ -5,7 +5,6 @@ import java.awt.*;
 import java.util.Arrays;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 17-Feb-2010
  * Time: 08:39:10

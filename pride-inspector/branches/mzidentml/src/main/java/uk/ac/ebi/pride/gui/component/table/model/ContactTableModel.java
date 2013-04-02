@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * Table model for contact details
- *
+ * <p/>
  * User: rwang
  * Date: 24/07/2011
  * Time: 11:50
@@ -53,7 +53,7 @@ public class ContactTableModel extends ListTableModel<ParamGroup> {
 
         // add contacts
         for (Person contact : contacts) {
-            addData(new ParamGroup(contact.getCvParams(),contact.getUserParams()));
+            addData(new ParamGroup(contact.getCvParams(), contact.getUserParams()));
         }
     }
 
@@ -79,20 +79,22 @@ public class ContactTableModel extends ListTableModel<ParamGroup> {
         // contact name
         // contact institute
         List<CvParam> cvs = newData.getCvParams();
-        for (CvParam cv : cvs) {
-            String acc = cv.getAccession();
-            if (CvTermReference.CONTACT_NAME.getAccession().equals(acc)) {
-                name = cv.getValue();
-            } else if (CvTermReference.CONTACT_ORG.getAccession().equals(acc)) {
-                institute = cv.getValue();
-            } else if (CvTermReference.CONTACT_EMAIL.getAccession().equals(acc)) {
-                info = cv.getValue();
+        if (!cvs.isEmpty()) {
+            for (CvParam cv : cvs) {
+                String acc = cv.getAccession();
+                if (CvTermReference.CONTACT_NAME.getAccession().equals(acc)) {
+                    name = cv.getValue();
+                } else if (CvTermReference.CONTACT_ORG.getAccession().equals(acc)) {
+                    institute = cv.getValue();
+                } else if (CvTermReference.CONTACT_EMAIL.getAccession().equals(acc)) {
+                    info = cv.getValue();
+                }
             }
         }
 
         // contact information
         List<UserParam> ups = newData.getUserParams();
-        if (ups != null) {
+        if (!ups.isEmpty()) {
             for (UserParam up : ups) {
                 if (CONTACT_INFORMATION.equals(up.getName())) {
                     info = up.getValue();

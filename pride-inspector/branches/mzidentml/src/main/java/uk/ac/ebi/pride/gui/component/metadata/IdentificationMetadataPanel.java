@@ -33,9 +33,9 @@ public class IdentificationMetadataPanel extends JPanel {
         dataBaseTabbedPane = new JTabbedPane();
         dataBaseTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
         List<SearchDataBase> searchDataBaseList = metaData.getSearchDatabases();
-        if(searchDataBaseList != null){
+        if (!searchDataBaseList.isEmpty()) {
             int cnt = 1;
-            for(SearchDataBase searchDataBase: searchDataBaseList){
+            for (SearchDataBase searchDataBase : searchDataBaseList) {
                 String name = searchDataBase.getName();
                 SearchDatabaseMetadataPanel databaseMetadataPanel = new SearchDatabaseMetadataPanel(searchDataBase);
                 dataBaseTabbedPane.add(name, databaseMetadataPanel);
@@ -47,10 +47,10 @@ public class IdentificationMetadataPanel extends JPanel {
 
         Protocol proteinProtocol = metaData.getProteinDetectionProtocol();
 
-        if ((proteinProtocol != null) && (proteinProtocol.getAnalysisParam() != null)) {
+        if ((proteinProtocol != null) && (!proteinProtocol.getAnalysisParam().isEmpty())) {
 
             String nameProtocol = proteinProtocol.getName();
-            if(nameProtocol == null) nameProtocol ="Dafault";
+            if (nameProtocol == null) nameProtocol = "Dafault";
             String softwareProtocol = proteinProtocol.getAnalysisSoftware().getName();
             proteinProtocolLabel.setText("Protein Identification Protocol: " + nameProtocol + ", Software " + softwareProtocol);
             proteinProtocolLabel.setToolTipText(nameProtocol);
@@ -61,21 +61,20 @@ public class IdentificationMetadataPanel extends JPanel {
         }
 
 
-
         // peptide Protocol
         peptideProtocolTabbedPane = new JTabbedPane();
         peptideProtocolTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
 
         List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList = metaData.getSpectrumIdentificationProtocol();
-        if (spectrumIdentificationProtocolList != null) {
+        if (!spectrumIdentificationProtocolList.isEmpty()) {
             for (SpectrumIdentificationProtocol spectrumIdentificationProtocol : spectrumIdentificationProtocolList) {
                 String name = spectrumIdentificationProtocol.getName();
-                if(name == null) name ="Default";
+                if (name == null) name = "Default";
                 String software = spectrumIdentificationProtocol.getAnalysisSoftware().getName();
                 PeptideIdentificationMetadataPanel peptideComp = new PeptideIdentificationMetadataPanel(spectrumIdentificationProtocol);
                 peptideProtocolTabbedPane.addTab("Protocol " + name + ", Software" + software, peptideComp);
             }
-        }else{
+        } else {
             PeptideIdentificationMetadataPanel peptideComp = new PeptideIdentificationMetadataPanel(null);
             peptideProtocolTabbedPane.addTab("Default Peptide Protocol", peptideComp);
         }
@@ -108,34 +107,34 @@ public class IdentificationMetadataPanel extends JPanel {
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup()
-                .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap()
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, peptideProtocolTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, dataBaseTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, databaseLabel)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, peptideProtocol)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, proteinProtocolLabel)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, scrollPane2))
-                    .addContainerGap())
+                layout.createParallelGroup()
+                        .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, peptideProtocolTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, dataBaseTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, databaseLabel)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, peptideProtocol)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, proteinProtocolLabel)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, scrollPane2))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup()
-                .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(databaseLabel)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(dataBaseTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                        .add(18, 18, 18)
-                        .add(peptideProtocol)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(peptideProtocolTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-                        .add(18, 18, 18)
-                        .add(proteinProtocolLabel)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(scrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                        .add(28, 28, 28))
+                layout.createParallelGroup()
+                        .add(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .add(databaseLabel)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(dataBaseTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                                .add(18, 18, 18)
+                                .add(peptideProtocol)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(peptideProtocolTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                                .add(18, 18, 18)
+                                .add(proteinProtocolLabel)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(scrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                                .add(28, 28, 28))
 
         );
         // JFormDesigner - End of component initialization  //GEN-END:initComponents

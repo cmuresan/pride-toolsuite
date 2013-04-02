@@ -25,25 +25,23 @@ public class InstrumentCompMetadataPanel extends JPanel {
 
     private void populateComponents(InstrumentConfiguration instrument) {
         // ion source
-        InstrumentComponent ionSource = instrument.getSource().get(0);
-        if (ionSource != null) {
-            ionSourceTable = TableFactory.createParamTable(ionSource);
+        if (!instrument.getSource().isEmpty() && instrument.getSource().get(0) != null) {
+            ionSourceTable = TableFactory.createParamTable(instrument.getSource().get(0));
         } else {
             ionSourceTable = TableFactory.createParamTable(new ArrayList<Parameter>());
         }
 
         // analyzers
-        InstrumentComponent analyzer = instrument.getAnalyzer().get(0);
-        if (analyzer != null) {
-            analyzerTable = TableFactory.createParamTable(analyzer);
+        if (!instrument.getAnalyzer().isEmpty() && instrument.getAnalyzer().get(0) != null) {
+            analyzerTable = TableFactory.createParamTable(instrument.getAnalyzer().get(0));
         } else {
             analyzerTable = TableFactory.createParamTable(new ArrayList<Parameter>());
         }
 
         // detector
-        InstrumentComponent detector = instrument.getDetector().get(0);
-        if (analyzer != null) {
-            detectorTable = TableFactory.createParamTable(detector);
+
+        if (!instrument.getDetector().isEmpty() && instrument.getDetector().get(0) != null) {
+            detectorTable = TableFactory.createParamTable(instrument.getDetector().get(0));
         } else {
             detectorTable = TableFactory.createParamTable(new ArrayList<Parameter>());
         }
@@ -88,34 +86,34 @@ public class InstrumentCompMetadataPanel extends JPanel {
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup()
-                .add(GroupLayout.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap()
-                    .add(layout.createParallelGroup(GroupLayout.TRAILING)
-                        .add(GroupLayout.LEADING, scrollPane2, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
-                        .add(GroupLayout.LEADING, scrollPane3, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
-                        .add(GroupLayout.LEADING, scrollPane1, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
-                        .add(GroupLayout.LEADING, ionSourceLabel, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
-                        .add(GroupLayout.LEADING, analyzerLabel, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
-                        .add(GroupLayout.LEADING, detectorLabel, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap())
+                layout.createParallelGroup()
+                        .add(GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .add(layout.createParallelGroup(GroupLayout.TRAILING)
+                                        .add(GroupLayout.LEADING, scrollPane2, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                                        .add(GroupLayout.LEADING, scrollPane3, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                                        .add(GroupLayout.LEADING, scrollPane1, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                                        .add(GroupLayout.LEADING, ionSourceLabel, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
+                                        .add(GroupLayout.LEADING, analyzerLabel, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
+                                        .add(GroupLayout.LEADING, detectorLabel, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup()
-                .add(layout.createSequentialGroup()
-                    .add(8, 8, 8)
-                    .add(ionSourceLabel)
-                    .addPreferredGap(LayoutStyle.RELATED)
-                    .add(scrollPane1, GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
-                    .addPreferredGap(LayoutStyle.RELATED)
-                    .add(analyzerLabel)
-                    .addPreferredGap(LayoutStyle.RELATED)
-                    .add(scrollPane3, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
-                    .addPreferredGap(LayoutStyle.RELATED)
-                    .add(detectorLabel)
-                    .addPreferredGap(LayoutStyle.RELATED)
-                    .add(scrollPane2, GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
-                    .addContainerGap())
+                layout.createParallelGroup()
+                        .add(layout.createSequentialGroup()
+                                .add(8, 8, 8)
+                                .add(ionSourceLabel)
+                                .addPreferredGap(LayoutStyle.RELATED)
+                                .add(scrollPane1, GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                                .addPreferredGap(LayoutStyle.RELATED)
+                                .add(analyzerLabel)
+                                .addPreferredGap(LayoutStyle.RELATED)
+                                .add(scrollPane3, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                                .addPreferredGap(LayoutStyle.RELATED)
+                                .add(detectorLabel)
+                                .addPreferredGap(LayoutStyle.RELATED)
+                                .add(scrollPane2, GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
+                                .addContainerGap())
         );
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }

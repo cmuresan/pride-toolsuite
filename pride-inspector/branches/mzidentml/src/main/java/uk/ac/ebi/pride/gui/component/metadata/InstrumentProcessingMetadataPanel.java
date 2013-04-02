@@ -31,7 +31,7 @@ public class InstrumentProcessingMetadataPanel extends JPanel {
         instrumentTabbedPane = new JTabbedPane();
         instrumentTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
         List<InstrumentConfiguration> instrumentConfigurationList = metaData.getInstrumentConfigurations();
-        if (instrumentConfigurationList != null) {
+        if (instrumentConfigurationList.size() > 0) {
             for (InstrumentConfiguration instrumentConfiguration : instrumentConfigurationList) {
                 String name = instrumentConfiguration.getId();
                 InstrumentCompMetadataPanel comps = new InstrumentCompMetadataPanel(instrumentConfiguration);
@@ -43,11 +43,11 @@ public class InstrumentProcessingMetadataPanel extends JPanel {
         dataProcTabbedPane = new JTabbedPane();
         dataProcTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
         List<DataProcessing> dataProcessingList = metaData.getDataProcessings();
-        if (dataProcessingList != null) {
+        if (!dataProcessingList.isEmpty()) {
             int cnt = 1;
             for (DataProcessing dataProcessing : dataProcessingList) {
                 List<ProcessingMethod> methods = dataProcessing.getProcessingMethods();
-                if (methods != null) {
+                if (methods.size() > 0) {
                     for (ProcessingMethod method : methods) {
                         DataProcessingMetadataPanel dataProc = new DataProcessingMetadataPanel(method);
                         dataProcTabbedPane.addTab("Method " + cnt, dataProc);
@@ -77,28 +77,28 @@ public class InstrumentProcessingMetadataPanel extends JPanel {
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup()
-                .add(GroupLayout.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap()
-                    .add(layout.createParallelGroup(GroupLayout.TRAILING)
-                        .add(GroupLayout.LEADING, dataProcTabbedPane, GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
-                        .add(GroupLayout.LEADING, instrumentTabbedPane, GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
-                        .add(GroupLayout.LEADING, instrumentLabel)
-                        .add(GroupLayout.LEADING, dataProcLabel))
-                    .addContainerGap())
+                layout.createParallelGroup()
+                        .add(GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .add(layout.createParallelGroup(GroupLayout.TRAILING)
+                                        .add(GroupLayout.LEADING, dataProcTabbedPane, GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
+                                        .add(GroupLayout.LEADING, instrumentTabbedPane, GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
+                                        .add(GroupLayout.LEADING, instrumentLabel)
+                                        .add(GroupLayout.LEADING, dataProcLabel))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup()
-                .add(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .add(instrumentLabel)
-                    .addPreferredGap(LayoutStyle.RELATED)
-                    .add(instrumentTabbedPane, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-                    .add(18, 18, 18)
-                    .add(dataProcLabel)
-                    .addPreferredGap(LayoutStyle.RELATED)
-                    .add(dataProcTabbedPane, GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                    .add(28, 28, 28))
+                layout.createParallelGroup()
+                        .add(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .add(instrumentLabel)
+                                .addPreferredGap(LayoutStyle.RELATED)
+                                .add(instrumentTabbedPane, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                                .add(18, 18, 18)
+                                .add(dataProcLabel)
+                                .addPreferredGap(LayoutStyle.RELATED)
+                                .add(dataProcTabbedPane, GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                                .add(28, 28, 28))
         );
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }

@@ -41,9 +41,9 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
 
     private static final Logger logger = LoggerFactory.getLogger(MetaDataTabPane.class);
 
-    private static final String GENERAL                 = "Experiment General";
-    private static final String SAMPLE_PROTOCOL         = "Sample & Protocol";
-    private static final String INSTRUMENT_SOFTWARE     = "Instrument & Processing";
+    private static final String GENERAL = "Experiment General";
+    private static final String SAMPLE_PROTOCOL = "Sample & Protocol";
+    private static final String INSTRUMENT_SOFTWARE = "Instrument & Processing";
     private static final String IDENTIFICATION_METADATA = "Identification Protocol";
 
     private static final String PANE_TITLE = "Overview";
@@ -141,7 +141,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
      */
     private void notifyKeyInfo(GeneralMetaDataGroup metaData) {
         java.util.List<CvParam> cvParams = metaData.getMetaData().getCvParams();
-        if (cvParams != null) {
+        if (!cvParams.isEmpty()) {
             for (CvParam cvParam : cvParams) {
                 String acc = cvParam.getAccession();
                 String value = cvParam.getValue();
@@ -164,7 +164,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
         }
 
         java.util.List<UserParam> userParams = metaData.getMetaData().getUserParams();
-        if (userParams != null) {
+        if (!userParams.isEmpty()) {
             for (UserParam userParam : userParams) {
                 String name = userParam.getName().toLowerCase();
                 String value = userParam.getValue();
@@ -219,7 +219,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
             metaDataContainer.add(sampleProtocolMetadataPanel, BorderLayout.CENTER);
         } else if (INSTRUMENT_SOFTWARE.equals(cmd)) {
             metaDataContainer.add(instrumentProcMetadataPanel, BorderLayout.CENTER);
-        } else if (IDENTIFICATION_METADATA.equals(cmd)){
+        } else if (IDENTIFICATION_METADATA.equals(cmd)) {
             metaDataContainer.add(identificationMetadataPanel, BorderLayout.CENTER);
         }
         metaDataContainer.revalidate();
@@ -273,21 +273,21 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
         JToggleButton proSamButton = new JToggleButton(SAMPLE_PROTOCOL);
         proSamButton.setActionCommand(SAMPLE_PROTOCOL);
         proSamButton.setPreferredSize(new Dimension(200, 25));
-        if(!metaDataGroup.hasSampleProtocolMetadata()){
+        if (!metaDataGroup.hasSampleProtocolMetadata()) {
             proSamButton.setEnabled(false);
         }
 
         JToggleButton insSofButton = new JToggleButton(INSTRUMENT_SOFTWARE);
         insSofButton.setActionCommand(INSTRUMENT_SOFTWARE);
         insSofButton.setPreferredSize(new Dimension(200, 25));
-        if(!metaDataGroup.hasMzGraphMetadata()){
+        if (!metaDataGroup.hasMzGraphMetadata()) {
             insSofButton.setEnabled(false);
         }
 
         JToggleButton identButton = new JToggleButton(IDENTIFICATION_METADATA);
         identButton.setActionCommand(IDENTIFICATION_METADATA);
         identButton.setPreferredSize(new Dimension(200, 25));
-        if(!metaDataGroup.hasIdentificationMetadata()){
+        if (!metaDataGroup.hasIdentificationMetadata()) {
             identButton.setEnabled(false);
         }
 
@@ -312,13 +312,13 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
 
     private void createMetaDataPanels(GeneralMetaDataGroup metaData) {
         generalMetadataPanel = new GeneralMetadataPanel(metaData);
-        if(metaData.getSampleList() != null || metaData.getProtocol() != null){
+        if (metaData.getSampleList() != null || metaData.getProtocol() != null) {
             sampleProtocolMetadataPanel = new SampleProtocolMetadataPanel(metaData);
         }
-        if(metaData.hasMzGraphMetadata()){
+        if (metaData.hasMzGraphMetadata()) {
             instrumentProcMetadataPanel = new InstrumentProcessingMetadataPanel(metaData);
         }
-        if(metaData.hasIdentificationMetadata()){
+        if (metaData.hasIdentificationMetadata()) {
             identificationMetadataPanel = new IdentificationMetadataPanel(metaData);
         }
         // set default panel

@@ -8,13 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 2/1/12
  * Time: 4:19 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PeptideIdentificationMetadataPanel extends JPanel{
+public class PeptideIdentificationMetadataPanel extends JPanel {
 
     public PeptideIdentificationMetadataPanel(SpectrumIdentificationProtocol peptideProtocol) {
         populateComponents(peptideProtocol);
@@ -23,18 +22,18 @@ public class PeptideIdentificationMetadataPanel extends JPanel{
 
     private void populateComponents(SpectrumIdentificationProtocol peptideProtocol) {
         // SearchType
-        if(peptideProtocol != null){
+        if (peptideProtocol != null) {
             ParamGroup searchType = peptideProtocol.getSearchType();
             ParamGroup analysisParam = peptideProtocol.getAnalysisParam();
-            if(searchType != null){
-                if(analysisParam != null){
+            if (searchType != null) {
+                if (analysisParam != null) {
                     searchType.addCvParams(analysisParam.getCvParams());
                     searchType.addUserParams(analysisParam.getUserParams());
                 }
-            }else if(analysisParam!=null){
+            } else if (!analysisParam.isEmpty()) {
                 searchType = analysisParam;
             }
-            if(searchType != null){
+            if (searchType != null) {
                 searchtypeTable = TableFactory.createParamTable(searchType);
             } else {
                 searchtypeTable = TableFactory.createParamTable(new ArrayList<Parameter>());
@@ -42,10 +41,12 @@ public class PeptideIdentificationMetadataPanel extends JPanel{
             // Enzyme
             List<Enzyme> enzymeList = peptideProtocol.getEnzymeList();
             ParamGroup enzymeParamGroup = new ParamGroup();
-            if(enzymeList != null){
-                for (Enzyme enzyme: enzymeList){
-                    if(enzyme.getEnzymeName().getCvParams() !=null) enzymeParamGroup.addCvParams(enzyme.getEnzymeName().getCvParams());
-                    if(enzyme.getEnzymeName().getUserParams() !=null) enzymeParamGroup.addUserParams(enzyme.getEnzymeName().getUserParams());
+            if (!enzymeList.isEmpty()) {
+                for (Enzyme enzyme : enzymeList) {
+                    if (!enzyme.getEnzymeName().isEmpty())
+                        enzymeParamGroup.addCvParams(enzyme.getEnzymeName().getCvParams());
+                    if (!enzyme.getEnzymeName().isEmpty())
+                        enzymeParamGroup.addUserParams(enzyme.getEnzymeName().getUserParams());
                 }
             }
 
@@ -57,28 +58,26 @@ public class PeptideIdentificationMetadataPanel extends JPanel{
 
             // detector
             List<CvParam> fragmentTolerance = peptideProtocol.getFragmentTolerance();
-            List<CvParam> parentTolerance   = peptideProtocol.getParentTolerance();
+            List<CvParam> parentTolerance = peptideProtocol.getParentTolerance();
             ParamGroup threshold = peptideProtocol.getThreshold();
 
             ParamGroup allThreshold = new ParamGroup();
 
-            if(threshold.getCvParams()!=null) allThreshold.addCvParams(threshold.getCvParams());
-            if(threshold.getUserParams()!=null) allThreshold.addUserParams(threshold.getUserParams());
-            if(fragmentTolerance != null) allThreshold.addCvParams(fragmentTolerance);
-            if(parentTolerance != null) allThreshold.addCvParams(parentTolerance);
+            if (!threshold.getCvParams().isEmpty()) allThreshold.addCvParams(threshold.getCvParams());
+            if (!threshold.getUserParams().isEmpty()) allThreshold.addUserParams(threshold.getUserParams());
+            if (!fragmentTolerance.isEmpty()) allThreshold.addCvParams(fragmentTolerance);
+            if (!parentTolerance.isEmpty()) allThreshold.addCvParams(parentTolerance);
 
             if (allThreshold != null) {
                 enzymesTable = TableFactory.createParamTable(allThreshold);
             } else {
                 enzymesTable = TableFactory.createParamTable(new ArrayList<Parameter>());
             }
-        }else{
+        } else {
             searchtypeTable = TableFactory.createParamTable(new ArrayList<Parameter>());
             thresholdTable = TableFactory.createParamTable(new ArrayList<Parameter>());
             enzymesTable = TableFactory.createParamTable(new ArrayList<Parameter>());
         }
-
-
 
 
     }
@@ -123,34 +122,34 @@ public class PeptideIdentificationMetadataPanel extends JPanel{
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup()
-                .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap()
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, scrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, scrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, scrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, searchtypeLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 210, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, enzymesLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, thresholdLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 310, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap())
+                layout.createParallelGroup()
+                        .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, scrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, scrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, scrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, searchtypeLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 210, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, enzymesLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, thresholdLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 310, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup()
-                .add(layout.createSequentialGroup()
-                    .add(8, 8, 8)
-                    .add(searchtypeLabel)
-                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                    .add(scrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
-                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                    .add(enzymesLabel)
-                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                    .add(scrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
-                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                    .add(thresholdLabel)
-                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                    .add(scrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
-                    .addContainerGap())
+                layout.createParallelGroup()
+                        .add(layout.createSequentialGroup()
+                                .add(8, 8, 8)
+                                .add(searchtypeLabel)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(scrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(enzymesLabel)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(scrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(thresholdLabel)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(scrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
+                                .addContainerGap())
         );
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }

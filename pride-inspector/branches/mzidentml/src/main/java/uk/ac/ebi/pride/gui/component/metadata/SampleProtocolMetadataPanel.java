@@ -32,7 +32,7 @@ public class SampleProtocolMetadataPanel extends JPanel {
         sampleTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
         // add each sample
         List<Sample> samples = metaData.getSampleList();
-        if (samples != null) {
+        if (!samples.isEmpty()) {
             for (Sample sample : samples) {
                 String sampleName = sample.getName();
                 JTable sampleTable = TableFactory.createParamTable(sample);
@@ -46,7 +46,7 @@ public class SampleProtocolMetadataPanel extends JPanel {
 
         // protocol
         protocolNameField = new JLabel();
-        if ((metaData.getProtocol() != null) && (metaData.getProtocol().getProtocolSteps() != null)) {
+        if ((metaData.getProtocol() != null) && (!metaData.getProtocol().getProtocolSteps().isEmpty())) {
             // get protocol
             ExperimentProtocol protocol = metaData.getProtocol();
             // protocol name

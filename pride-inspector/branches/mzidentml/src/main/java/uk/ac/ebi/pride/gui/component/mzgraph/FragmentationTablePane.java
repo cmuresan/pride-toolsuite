@@ -27,7 +27,6 @@ import uk.ac.ebi.pride.gui.utils.PeptideTranslate;
 import uk.ac.ebi.pride.iongen.model.PrecursorIon;
 import uk.ac.ebi.pride.iongen.model.impl.DefaultPrecursorIon;
 import uk.ac.ebi.pride.mol.MoleculeUtilities;
-import uk.ac.ebi.pride.mol.ProductIonPair;
 import uk.ac.ebi.pride.mzgraph.chart.data.annotation.IonAnnotation;
 import uk.ac.ebi.pride.mzgraph.chart.graph.MzTablePanel;
 import uk.ac.ebi.pride.mzgraph.gui.ExperimentalFragmentedIonsTable;
@@ -146,7 +145,7 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
         String value = null;
 
         for (CvParam param : cvParams) {
-            if (cvParams != null && !cvParams.isEmpty()) {
+            if (!cvParams.isEmpty()) {
                 for (CvTermReference ref : refs) {
                     if (param.getAccession().equals(ref.getAccession())) {
                         value = param.getValue();
@@ -187,7 +186,7 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
         BinaryDataArray mzBinary = peptide == null ? null : peptide.getSpectrum().getMzBinaryDataArray();
         BinaryDataArray intentBinary = peptide == null ? null : peptide.getSpectrum().getIntensityBinaryDataArray();
 
-        if (mzBinary != null && intentBinary != null) {
+        if (!mzBinary.isEmpty() && !intentBinary.isEmpty()) {
             int charge = getCharge(peptide);
 
             uk.ac.ebi.pride.mol.Peptide newPeptide = new PeptideTranslate(peptide).translate();
@@ -205,7 +204,7 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
             if (charge <= 0) {
                 mzTablePanel.setCalculate(false);
             } else {
-                mzTablePanel.setCalculate(! isOverflow(peptide));
+                mzTablePanel.setCalculate(!isOverflow(peptide));
 
                 java.util.List<IonAnnotation> ions = AnnotationUtils.convertToIonAnnotations(peptide.getFragmentation());
                 if (ions.size() > 0) {
@@ -227,8 +226,8 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
 
                 int tabPaneWidth = getParent().getWidth();
                 int tabPaneHeight = getParent().getHeight();
-                mzTablePanel.getTablePanel().setPreferredSize(new Dimension((int)(tabPaneWidth * 0.85), tabPaneHeight - 80));
-                mzTablePanel.getChartPanel().setPreferredSize(new Dimension((int)(tabPaneWidth * 0.15), tabPaneHeight - 80));
+                mzTablePanel.getTablePanel().setPreferredSize(new Dimension((int) (tabPaneWidth * 0.85), tabPaneHeight - 80));
+                mzTablePanel.getChartPanel().setPreferredSize(new Dimension((int) (tabPaneWidth * 0.15), tabPaneHeight - 80));
 
                 // Summary Report Message
                 EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile(".*Annotation.*"))));

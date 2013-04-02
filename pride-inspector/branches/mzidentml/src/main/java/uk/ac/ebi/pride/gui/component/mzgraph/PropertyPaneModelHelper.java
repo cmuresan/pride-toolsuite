@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 11-May-2010
  * Time: 14:56:02
@@ -30,18 +29,18 @@ public class PropertyPaneModelHelper {
         }
         // scan list
         ScanList scanList = spec.getScanList();
-        if (scanList !=  null) {
+        if (scanList != null) {
             addScanList(paneModel, scanList);
         }
 
         // precursor
         List<Precursor> precursors = spec.getPrecursors();
-        if (precursors != null){
+        if (!precursors.isEmpty()) {
             addPrecursors(paneModel, precursors);
         }
         // product
         List<ParamGroup> products = spec.getProducts();
-        if (products != null) {
+        if (!products.isEmpty()) {
             addProducts(paneModel, products);
         }
     }
@@ -56,13 +55,13 @@ public class PropertyPaneModelHelper {
     }
 
 
-    private static void addGeneralProperties(PropertyPaneModel paneModel, MzGraph mzGraph)  {
+    private static void addGeneralProperties(PropertyPaneModel paneModel, MzGraph mzGraph) {
         // id
         appendParamEntry(paneModel, Constants.ID, mzGraph.getId().toString(), Constants.GENERAL, Constants.GENERAL);
         // index
-        appendParamEntry(paneModel, Constants.INDEX, mzGraph.getIndex()+"", Constants.GENERAL, Constants.GENERAL);
+        appendParamEntry(paneModel, Constants.INDEX, mzGraph.getIndex() + "", Constants.GENERAL, Constants.GENERAL);
         // defaultArrayLength
-        appendParamEntry(paneModel, Constants.DEFAULT_ARR_LEN, mzGraph.getDefaultArrayLength()+"", Constants.GENERAL, Constants.GENERAL);
+        appendParamEntry(paneModel, Constants.DEFAULT_ARR_LEN, mzGraph.getDefaultArrayLength() + "", Constants.GENERAL, Constants.GENERAL);
         // additional parameters
         appendParamGroup(paneModel, mzGraph, Constants.GENERAL, Constants.GENERAL);
     }
@@ -71,13 +70,14 @@ public class PropertyPaneModelHelper {
                                            String category, String subCategory) {
         // data processing - processing method
         List<ProcessingMethod> proMethods = dataProc.getProcessingMethods();
+
         for (int i = 0; i < proMethods.size(); i++) {
             ProcessingMethod proMethod = proMethods.get(i);
             String subCategoryTitle = subCategory + " " + i;
 
             // order
-            appendParamEntry(paneModel, Constants.ORDER, proMethod.getOrder()+"", category, subCategoryTitle);
-            
+            appendParamEntry(paneModel, Constants.ORDER, proMethod.getOrder() + "", category, subCategoryTitle);
+
             // software
             Software software = proMethod.getSoftware();
             if (software != null) {
@@ -109,9 +109,10 @@ public class PropertyPaneModelHelper {
     private static void addScanList(PropertyPaneModel paneModel, ScanList scanList) {
         // scans
         List<Scan> scans = scanList.getScans();
+
         for (int i = 0; i < scans.size(); i++) {
             Scan scan = scans.get(i);
-            String category = Constants.SCAN + " [" + (i+1) + "]";
+            String category = Constants.SCAN + " [" + (i + 1) + "]";
             // general
             appendParamGroup(paneModel, scanList, category, Constants.GENERAL);
             // external spectrum reference
@@ -128,9 +129,9 @@ public class PropertyPaneModelHelper {
             // ToDo: not instrument details yet
             // scan windows
             List<ParamGroup> scanWins = scan.getScanWindows();
-            if (scanWins != null) {
-                for(int j = 0; j < scanWins.size(); j++) {
-                    String subCategory = Constants.SCAN_WINDOW + " [" + (j+1) +"]";
+            if (!scanWins.isEmpty()) {
+                for (int j = 0; j < scanWins.size(); j++) {
+                    String subCategory = Constants.SCAN_WINDOW + " [" + (j + 1) + "]";
                     appendParamGroup(paneModel, scanWins.get(j), category, subCategory);
                 }
             }
@@ -138,9 +139,10 @@ public class PropertyPaneModelHelper {
     }
 
     private static void addPrecursors(PropertyPaneModel paneModel, List<Precursor> precursors) {
-        for(int i = 0; i < precursors.size(); i++) {
+
+        for (int i = 0; i < precursors.size(); i++) {
             Precursor precursor = precursors.get(i);
-            String category = Constants.PRECURSOR + " [" + (i+1) + "]";
+            String category = Constants.PRECURSOR + " [" + (i + 1) + "]";
             // general info
             Spectrum spectrum = precursor.getSpectrum();
             if (spectrum != null) {
@@ -160,16 +162,16 @@ public class PropertyPaneModelHelper {
             }
             // selected ions
             List<ParamGroup> selectedIons = precursor.getSelectedIons();
-            if (selectedIons != null) {
+            if (!selectedIons.isEmpty()) {
                 for (int j = 0; j < selectedIons.size(); j++) {
-                    String subCategory = Constants.SELECTED_ION + " [" + (j+1) + "]";
+                    String subCategory = Constants.SELECTED_ION + " [" + (j + 1) + "]";
                     appendParamGroup(paneModel, selectedIons.get(j), category, subCategory);
                 }
             }
 
             // activation
             ParamGroup act = precursor.getActivation();
-            if (act !=  null) {
+            if (act != null) {
                 appendParamGroup(paneModel, act, category, Constants.ACTIVATION);
             }
         }
@@ -182,7 +184,7 @@ public class PropertyPaneModelHelper {
     }
 
     private static void appendParamEntry(PropertyPaneModel paneModel, String name, String value,
-                                      String category, String subCategory) {
+                                         String category, String subCategory) {
         if (name != null && value != null) {
             Parameter userParam = new UserParam(name, null, value, null, null, null);
             paneModel.appendData(category, subCategory, userParam);
@@ -190,14 +192,14 @@ public class PropertyPaneModelHelper {
     }
 
     private static void appendParamGroup(PropertyPaneModel paneModel, ParamGroup params,
-                                      String category, String subCategory) {
+                                         String category, String subCategory) {
         List<CvParam> cvParams = params.getCvParams();
-        if (cvParams != null) {
-            paneModel.appendData(category, subCategory, (Collection)cvParams);
+        if (!cvParams.isEmpty()) {
+            paneModel.appendData(category, subCategory, (Collection) cvParams);
         }
         List<UserParam> userParams = params.getUserParams();
-        if (userParams !=  null) {
-            paneModel.appendData(category, subCategory, (Collection)userParams);
+        if (!userParams.isEmpty()) {
+            paneModel.appendData(category, subCategory, (Collection) userParams);
         }
     }
 }

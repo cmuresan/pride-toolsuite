@@ -70,7 +70,7 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
     private boolean spectrumAvailable;
     /**
      * message to show when there is no spectra
-      */
+     */
     private String spectrumUnavailableMessage;
     /**
      * Subscribe to peptide event
@@ -226,13 +226,13 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
 
         BinaryDataArray mzBinary = spectrum == null ? null : spectrum.getMzBinaryDataArray();
         BinaryDataArray intentBinary = spectrum == null ? null : spectrum.getIntensityBinaryDataArray();
-        if (mzBinary != null && intentBinary != null) {
+        if (!mzBinary.isEmpty() && !intentBinary.isEmpty()) {
             spectrumBrowser.setPeaks(mzBinary.getDoubleArray(), intentBinary.getDoubleArray());
             // set source name
             if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
                 spectrumBrowser.setSource(((File) controller.getSource()).getName());
             } else if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
-                spectrumBrowser.setSource("Pride Experiment " + ((PrideDBAccessControllerImpl)controller).getExperimentAcc());
+                spectrumBrowser.setSource("Pride Experiment " + ((PrideDBAccessControllerImpl) controller).getExperimentAcc());
             }
             // set id
             spectrumBrowser.setId(spectrum.getId());
@@ -245,7 +245,7 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
                 spectrumBrowser.setAminoAcidAnnotationParameters(peptide.getSequenceLength(), modifications);
                 java.util.List<IonAnnotation> ions = AnnotationUtils.convertToIonAnnotations(peptide.getFragmentation());
 
-                if (ions.size() > 0) {
+                if (!ions.isEmpty()) {
                     // manual annotations
                     spectrumBrowser.addFragmentIons(ions);
                 } else if (spectrumBrowser.getSpectrumPanel().getModel().getIonDataset().getSeriesCount() == 0) {
@@ -255,7 +255,7 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
                     if (isOverflow(peptide)) {
                         // delta m/z too high, not generate auto annotations.
                         spectrumBrowser.getSpectrumPanel().addDeltaOverflowAnnotation();
-                    }  else {
+                    } else {
                         spectrumBrowser.getSpectrumPanel().removeDeltaOverflowAnnotation();
 
                         uk.ac.ebi.pride.mol.Peptide myPeptide = new PeptideTranslate(peptide).translate();
@@ -301,9 +301,9 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
             spectrumBrowser.getSpectrumPanel().removeIonAnnotations();
             spectrumBrowser.getSpectrumPanel().removeDeltaOverflowAnnotation();
 
-            if (! tableModel.isShowAuto()) {
+            if (!tableModel.isShowAuto()) {
                 spectrumBrowser.addFragmentIons(tableModel.getAllManualAnnotations());
-            } else if (tableModel.isCalculate()){
+            } else if (tableModel.isCalculate()) {
                 java.util.List<IonAnnotation> ionAnnotations = tableModel.getAutoAnnotations();
                 spectrumBrowser.addFragmentIons(ionAnnotations);
             } else {

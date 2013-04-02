@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
 
-
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
@@ -64,36 +63,36 @@ public class SpectrumIdentificationProtocol extends Protocol {
     /**
      * SpectrumIdentificationProtocol Constructor
      *
-     * @param id                 Generic Id for Spectrum Identification Protocol
-     * @param name               Generic Name for Spectrum Identification Protocol
-     * @param analysisSoftware   Analysis Software
-     * @param analysisParam      Analysis CvPram Group
-     * @param threshold          Threshold
-     * @param searchType         Search Type
-     * @param searchModificationList   Modification List
-     * @param enzymeIndependent        Enzyme Independent
-     * @param enzymeList               List of Enzymes used in the Experiment
-     * @param massTableList            Mass Table used in the Experiment
-     * @param fragmentTolerance        Fragment Tolerance
-     * @param parentTolerance          Precursor or Parent Tolerance
-     * @param filterList               List of Filters used during the identification
-     * @param dataBaseTranslation      Translation Database
+     * @param id                     Generic Id for Spectrum Identification Protocol
+     * @param name                   Generic Name for Spectrum Identification Protocol
+     * @param analysisSoftware       Analysis Software
+     * @param analysisParam          Analysis CvPram Group
+     * @param threshold              Threshold
+     * @param searchType             Search Type
+     * @param searchModificationList Modification List
+     * @param enzymeIndependent      Enzyme Independent
+     * @param enzymeList             List of Enzymes used in the Experiment
+     * @param massTableList          Mass Table used in the Experiment
+     * @param fragmentTolerance      Fragment Tolerance
+     * @param parentTolerance        Precursor or Parent Tolerance
+     * @param filterList             List of Filters used during the identification
+     * @param dataBaseTranslation    Translation Database
      */
     public SpectrumIdentificationProtocol(Comparable id, String name, Software analysisSoftware,
-            ParamGroup analysisParam, ParamGroup threshold, ParamGroup searchType,
-            List<SearchModification> searchModificationList, boolean enzymeIndependent, List<Enzyme> enzymeList,
-            List<MassTable> massTableList, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
-            List<Filter> filterList, DataBaseTranslation dataBaseTranslation) {
+                                          ParamGroup analysisParam, ParamGroup threshold, ParamGroup searchType,
+                                          List<SearchModification> searchModificationList, boolean enzymeIndependent, List<Enzyme> enzymeList,
+                                          List<MassTable> massTableList, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
+                                          List<Filter> filterList, DataBaseTranslation dataBaseTranslation) {
         this(analysisParam, id, name, analysisSoftware, threshold, searchType, searchModificationList, enzymeIndependent,
-             enzymeList, massTableList, fragmentTolerance, parentTolerance, filterList, dataBaseTranslation);
+                enzymeList, massTableList, fragmentTolerance, parentTolerance, filterList, dataBaseTranslation);
     }
 
 
     public SpectrumIdentificationProtocol(ParamGroup analysisParam, Comparable id, String name,
-            Software analysisSoftware, ParamGroup threshold, ParamGroup searchType,
-            List<SearchModification> searchModificationList, boolean enzymeIndependent, List<Enzyme> enzymeList,
-            List<MassTable> massTableList, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
-            List<Filter> filterList, DataBaseTranslation dataBaseTranslation) {
+                                          Software analysisSoftware, ParamGroup threshold, ParamGroup searchType,
+                                          List<SearchModification> searchModificationList, boolean enzymeIndependent, List<Enzyme> enzymeList,
+                                          List<MassTable> massTableList, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
+                                          List<Filter> filterList, DataBaseTranslation dataBaseTranslation) {
         super(analysisParam, id, name, analysisSoftware, threshold);
         this.searchType = searchType;
         this.searchModificationList = CollectionUtils.createListFromList(searchModificationList);
@@ -195,9 +194,8 @@ public class SpectrumIdentificationProtocol extends Protocol {
         if (!massTableList.equals(that.massTableList)) return false;
         if (!parentTolerance.equals(that.parentTolerance)) return false;
         if (!searchModificationList.equals(that.searchModificationList)) return false;
-        if (searchType != null ? !searchType.equals(that.searchType) : that.searchType != null) return false;
+        return !(searchType != null ? !searchType.equals(that.searchType) : that.searchType != null);
 
-        return true;
     }
 
     @Override

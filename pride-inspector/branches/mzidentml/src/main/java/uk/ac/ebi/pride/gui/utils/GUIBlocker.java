@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 25-Jan-2010
  * Time: 12:36:24
@@ -39,19 +38,19 @@ public abstract class GUIBlocker<S, T> {
             throw new IllegalArgumentException("Null source during GUIBlocker construction");
         }
         // check whether the s and the type of the object is matching
-        switch(s) {
+        switch (s) {
             case ACTION:
-                if (! (tar instanceof Action)) {
+                if (!(tar instanceof Action)) {
                     throw new IllegalArgumentException("GUIBlocker target is not an Action");
                 }
                 break;
             case COMPONENT:
-                if (! (tar instanceof Component)) {
+                if (!(tar instanceof Component)) {
                     throw new IllegalArgumentException("GUIBlocker target is not an Component");
                 }
                 break;
             case DESKTOP:
-                if (! (tar instanceof Desktop)) {
+                if (!(tar instanceof Desktop)) {
                     throw new IllegalArgumentException("GUIBlocker target is not an Desktop");
                 }
         }

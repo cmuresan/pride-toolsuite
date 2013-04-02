@@ -12,7 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: rwang
  * Date: 15/08/2011
  * Time: 11:36

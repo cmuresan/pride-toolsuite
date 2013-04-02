@@ -1,15 +1,14 @@
 package uk.ac.ebi.pride.gui.access;
 
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 2/1/12
  * Time: 5:15 AM
- * To change this template use File | Settings | File Templates.
  */
 public class GeneralMetaDataGroup {
 
@@ -50,99 +49,101 @@ public class GeneralMetaDataGroup {
     }
 
     public Object getId() {
-        if(getMetaData() == null){
+        if (getMetaData() == null) {
             return null;
         }
         return this.getMetaData().getId();
     }
 
     public String getName() {
-        if(getMetaData() == null){
+        if (getMetaData() == null) {
             return null;
         }
         return this.getMetaData().getName();
     }
 
     public String getShortLabel() {
-        if(getMetaData() == null){
+        if (getMetaData() == null) {
             return null;
         }
         return getMetaData().getShortLabel();
     }
 
     public List<InstrumentConfiguration> getInstrumentConfigurations() {
-        if(hasMzGraphMetadata()){
-            return getMzGraphMetaData().getInstrumentConfigurations();
+        List<InstrumentConfiguration> instrumentConfigurations = null;
+        instrumentConfigurations = CollectionUtils.createListFromList(instrumentConfigurations);
+        if (hasMzGraphMetadata()) {
+            instrumentConfigurations = getMzGraphMetaData().getInstrumentConfigurations();
         }
-        return null;
+        return instrumentConfigurations;
     }
 
     public List<Reference> getReferences() {
-        if(getMetaData() == null){
+        if (getMetaData() == null) {
             return null;
         }
         return getMetaData().getReferences();
     }
 
     public List<Person> getPersonList() {
-        if(getMetaData() == null){
+        if (getMetaData() == null) {
             return null;
         }
         return getMetaData().getPersonList();
     }
 
     public List<Sample> getSampleList() {
-        if(getMetaData() == null){
+        if (getMetaData() == null) {
             return null;
         }
         return getMetaData().getSampleList();
     }
 
     public ExperimentProtocol getProtocol() {
-        if(getMetaData() == null){
+        if (getMetaData() == null) {
             return null;
         }
         return getMetaData().getProtocol();
     }
 
     public List<DataProcessing> getDataProcessings() {
-        if(getMzGraphMetaData() == null){
-            return null;
+        if (getMzGraphMetaData() == null) {
+            return CollectionUtils.createEmptyList();
         }
         return getMzGraphMetaData().getDataProcessingList();
     }
 
     public List<SearchDataBase> getSearchDatabases() {
-        if(getIdentificationMetaData() == null){
+        if (getIdentificationMetaData() == null) {
             return null;
         }
         return getIdentificationMetaData().getSearchDataBaseList();
     }
 
     public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() {
-        if(getIdentificationMetaData() == null){
-            return null;
+        if (getIdentificationMetaData() == null) {
+            return CollectionUtils.createEmptyList();
         }
         return getIdentificationMetaData().getSpectrumIdentificationProtocolList();
     }
 
     public Protocol getProteinDetectionProtocol() {
-        if(getIdentificationMetaData() == null){
+        if (getIdentificationMetaData() == null) {
             return null;
         }
         return this.getIdentificationMetaData().getProteinDetectionProtocol();
     }
 
-    public boolean hasIdentificationMetadata(){
+    public boolean hasIdentificationMetadata() {
         return getIdentificationMetaData() != null;
     }
 
-    public boolean hasMzGraphMetadata(){
+    public boolean hasMzGraphMetadata() {
         return getMzGraphMetaData() != null;
 
     }
 
     public boolean hasSampleProtocolMetadata() {
-        return metaData.getSampleList() != null || metaData.getProtocol() != null;
+        return metaData.getSampleList().size() > 0 || metaData.getProtocol() != null;
     }
 }

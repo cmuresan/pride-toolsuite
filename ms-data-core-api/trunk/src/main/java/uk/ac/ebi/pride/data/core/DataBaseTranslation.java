@@ -7,14 +7,14 @@ import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import java.util.List;
 
 /**
- * todo: add documentation
- *
- * Created by IntelliJ IDEA.
+ * DataBaseTranslation control and storage the information of Nucleotide Databases.
+ * <p/>
  * User: yperez
  * Date: 05/08/11
  * Time: 17:36
  */
 public class DataBaseTranslation {
+
     private List<Integer> allowedFrames;
     private List<IdentifiableParamGroup> translationTableList;
 

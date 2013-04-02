@@ -6,7 +6,6 @@ package uk.ac.ebi.pride.data.core;
  * Other classes in the model can be specified as sub-classes, inheriting from IdentifiablePraramGroup.
  * IdentifiableParamGroup gives classes a unique identifier within the scope and a name that need not be unique and also the information of ParamGroup.
  * Identifiable also provides a mechanism for annotating objects with CV Parameters.
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 04/08/11
  * Time: 11:32

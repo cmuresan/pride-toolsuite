@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.data.core;
 
 /**
- * todo: add documentation
- * Created by IntelliJ IDEA.
+ * Enzyme used during the search in Databases.
+ * <p/>
  * User: yperez
  * Date: 05/08/11
  * Time: 16:16
@@ -14,19 +14,19 @@ public class Enzyme {
     private int minDistance;
     private int missedCleavages;
     private String nTermGain;
-    private String name ;
+    private String name;
     private boolean semiSpecific;
     private String siteRegExp;
 
     public Enzyme(String id, String name, boolean semiSpecific, int missedCleavages, int minDistance,
                   ParamGroup enzymeName, String siteRegExp) {
-        this.id              = id;
-        this.name            = name;
-        this.semiSpecific    = semiSpecific;
+        this.id = id;
+        this.name = name;
+        this.semiSpecific = semiSpecific;
         this.missedCleavages = missedCleavages;
-        this.minDistance     = minDistance;
-        this.enzymeName      = enzymeName;
-        this.siteRegExp      = siteRegExp;
+        this.minDistance = minDistance;
+        this.enzymeName = enzymeName;
+        this.siteRegExp = siteRegExp;
     }
 
     public String getSiteRegExp() {

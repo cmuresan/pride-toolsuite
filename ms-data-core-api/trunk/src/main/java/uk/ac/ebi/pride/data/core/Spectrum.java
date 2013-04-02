@@ -59,74 +59,74 @@ public class Spectrum extends MzGraph {
 
 
     /**
-     * @param id       Generic Id
-     * @param name     Generic Name
-     * @param index    Spectrum Index
-     * @param defaultDataProcessing  Default Data Processing
-     * @param defaultArrayLength     Default Array Length
-     * @param binaryDataArrays       List of BinaryDataArrays
-     * @param spotID                 Spot Id
-     * @param sourceFile             Source File
-     * @param scanList               Scan List
-     * @param precursors             List of Precursors
-     * @param products               Products
-     * @param peptide                Peptide Assigned to Spectrum
+     * @param id                    Generic Id
+     * @param name                  Generic Name
+     * @param index                 Spectrum Index
+     * @param defaultDataProcessing Default Data Processing
+     * @param defaultArrayLength    Default Array Length
+     * @param binaryDataArrays      List of BinaryDataArrays
+     * @param spotID                Spot Id
+     * @param sourceFile            Source File
+     * @param scanList              Scan List
+     * @param precursors            List of Precursors
+     * @param products              Products
+     * @param peptide               Peptide Assigned to Spectrum
      */
     public Spectrum(Comparable id, String name, int index, DataProcessing defaultDataProcessing,
                     int defaultArrayLength, List<BinaryDataArray> binaryDataArrays, String spotID,
                     SourceFile sourceFile, ScanList scanList, List<Precursor> precursors, List<ParamGroup> products,
                     Peptide peptide) {
         this(null, id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays, spotID, sourceFile,
-             scanList, precursors, products, peptide);
+                scanList, precursors, products, peptide);
     }
 
     /**
-     * @param params   ParamGroup related with the Spectrum
-     * @param id       Generic Id
-     * @param name     Generic Name
-     * @param index    Spectrum Index
-     * @param defaultDataProcessing  Default Data Processing
-     * @param defaultArrayLength     Default Array Length
-     * @param binaryDataArrays       List of BinaryDataArrays
-     * @param spotID                 Spot Id
-     * @param sourceFile             Source File
-     * @param scanList               Scan List
-     * @param precursors             List of Precursors
-     * @param products               Products
+     * @param params                ParamGroup related with the Spectrum
+     * @param id                    Generic Id
+     * @param name                  Generic Name
+     * @param index                 Spectrum Index
+     * @param defaultDataProcessing Default Data Processing
+     * @param defaultArrayLength    Default Array Length
+     * @param binaryDataArrays      List of BinaryDataArrays
+     * @param spotID                Spot Id
+     * @param sourceFile            Source File
+     * @param scanList              Scan List
+     * @param precursors            List of Precursors
+     * @param products              Products
      */
     public Spectrum(ParamGroup params, Comparable id, String name, int index, DataProcessing defaultDataProcessing,
                     int defaultArrayLength, List<BinaryDataArray> binaryDataArrays, String spotID,
                     SourceFile sourceFile, ScanList scanList, List<Precursor> precursors, List<ParamGroup> products) {
         this(params, id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays, spotID, sourceFile,
-             scanList, precursors, products, null);
+                scanList, precursors, products, null);
     }
 
     /**
-     * @param params   ParamGroup related with the Spectrum
-     * @param id       Generic Id
-     * @param name     Generic Name
-     * @param index    Spectrum Index
-     * @param defaultDataProcessing  Default Data Processing
-     * @param defaultArrayLength     Default Array Length
-     * @param binaryDataArrays       List of BinaryDataArrays
-     * @param spotID                 Spot Id
-     * @param sourceFile             Source File
-     * @param scanList               Scan List
-     * @param precursors             List of Precursors
-     * @param products               Products
-     * @param peptide                Peptide Assigned to Spectrum
+     * @param params                ParamGroup related with the Spectrum
+     * @param id                    Generic Id
+     * @param name                  Generic Name
+     * @param index                 Spectrum Index
+     * @param defaultDataProcessing Default Data Processing
+     * @param defaultArrayLength    Default Array Length
+     * @param binaryDataArrays      List of BinaryDataArrays
+     * @param spotID                Spot Id
+     * @param sourceFile            Source File
+     * @param scanList              Scan List
+     * @param precursors            List of Precursors
+     * @param products              Products
+     * @param peptide               Peptide Assigned to Spectrum
      */
     public Spectrum(ParamGroup params, Comparable id, String name, int index, DataProcessing defaultDataProcessing,
                     int defaultArrayLength, List<BinaryDataArray> binaryDataArrays, String spotID,
                     SourceFile sourceFile, ScanList scanList, List<Precursor> precursors, List<ParamGroup> products,
                     Peptide peptide) {
         super(params, id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays);
-        this.spotID     = spotID;
+        this.spotID = spotID;
         this.sourceFile = sourceFile;
-        this.scanList   = scanList;
+        this.scanList = scanList;
         this.precursors = CollectionUtils.createListFromList(precursors);
-        this.products   = CollectionUtils.createListFromList(products);
-        this.peptide    = peptide;
+        this.products = CollectionUtils.createListFromList(products);
+        this.peptide = peptide;
     }
 
     public String getSpotID() {
@@ -198,9 +198,8 @@ public class Spectrum extends MzGraph {
         if (!products.equals(spectrum.products)) return false;
         if (scanList != null ? !scanList.equals(spectrum.scanList) : spectrum.scanList != null) return false;
         if (sourceFile != null ? !sourceFile.equals(spectrum.sourceFile) : spectrum.sourceFile != null) return false;
-        if (spotID != null ? !spotID.equals(spectrum.spotID) : spectrum.spotID != null) return false;
+        return !(spotID != null ? !spotID.equals(spectrum.spotID) : spectrum.spotID != null);
 
-        return true;
     }
 
     @Override

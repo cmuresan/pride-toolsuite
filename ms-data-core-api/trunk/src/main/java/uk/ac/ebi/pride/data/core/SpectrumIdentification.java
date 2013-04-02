@@ -9,7 +9,7 @@ import java.util.List;
  * Date: 05/08/11
  * Time: 15:49
  */
-public class SpectrumIdentification extends IdentifiableParamGroup{
+public class SpectrumIdentification extends IdentifiableParamGroup {
 
     /**
      * The theoretical mass-to-charge value calculated for the peptide in Daltons / charge.
@@ -115,20 +115,20 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
      * @param spectraData
      */
     public SpectrumIdentification(Comparable id, String name, int chargeState, double experimentalMassToCharge,
-                   double calculatedMassToCharge, double calculatedPI, PeptideSequence peptideSequence, int rank,
-                   boolean passThreshold, MassTable massTable, Sample sample,
-                   List<PeptideEvidence> peptideEvidenceList, List<FragmentIon> fragmentation,
-                   Score score, Spectrum spectrum, SpectraData spectraData) {
+                                  double calculatedMassToCharge, double calculatedPI, PeptideSequence peptideSequence, int rank,
+                                  boolean passThreshold, MassTable massTable, Sample sample,
+                                  List<PeptideEvidence> peptideEvidenceList, List<FragmentIon> fragmentation,
+                                  Score score, Spectrum spectrum, SpectraData spectraData) {
         this(null, id, name, chargeState, experimentalMassToCharge, calculatedMassToCharge, calculatedPI,
-             peptideSequence, rank, passThreshold, massTable, sample, peptideEvidenceList, fragmentation,
+                peptideSequence, rank, passThreshold, massTable, sample, peptideEvidenceList, fragmentation,
                 score, spectrum, spectraData);
     }
 
     public SpectrumIdentification(ParamGroup params, Comparable id, String name, int chargeState, double experimentalMassToCharge,
-                   double calculatedMassToCharge, double calculatedPI, PeptideSequence peptideSequence, int rank,
-                   boolean passThreshold, MassTable massTable, Sample sample,
-                   List<PeptideEvidence> peptideEvidenceList, List<FragmentIon> fragmentation,
-                   Score score, Spectrum spectrum, SpectraData spectraData) {
+                                  double calculatedMassToCharge, double calculatedPI, PeptideSequence peptideSequence, int rank,
+                                  boolean passThreshold, MassTable massTable, Sample sample,
+                                  List<PeptideEvidence> peptideEvidenceList, List<FragmentIon> fragmentation,
+                                  Score score, Spectrum spectrum, SpectraData spectraData) {
         super(params, id, name);
         this.chargeState = chargeState;
         this.experimentalMassToCharge = experimentalMassToCharge;
@@ -296,9 +296,8 @@ public class SpectrumIdentification extends IdentifiableParamGroup{
         if (sample != null ? !sample.equals(that.sample) : that.sample != null) return false;
         if (score != null ? !score.equals(that.score) : that.score != null) return false;
         if (spectraData != null ? !spectraData.equals(that.spectraData) : that.spectraData != null) return false;
-        if (spectrum != null ? !spectrum.equals(that.spectrum) : that.spectrum != null) return false;
+        return !(spectrum != null ? !spectrum.equals(that.spectrum) : that.spectrum != null);
 
-        return true;
     }
 
     @Override

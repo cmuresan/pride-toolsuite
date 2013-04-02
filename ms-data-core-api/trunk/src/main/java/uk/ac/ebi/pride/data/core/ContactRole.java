@@ -7,7 +7,6 @@ package uk.ac.ebi.pride.data.core;
  * A Contact may have several Roles within scope, and as such, associations to ContactRole allow
  * the use of a Contact in a certain manner. Examples might include a provider, or a data analyst.
  * <p/>
- * Created by IntelliJ IDEA.
  * User: yperez
  * Date: 19/08/11
  * Time: 15:40
@@ -27,16 +26,18 @@ public class ContactRole {
 
     /**
      * Constructor for a Contact Role
+     *
      * @param contact An AbstractContact (Person or Organization)
-     * @param role The role of the AbstractContact (CvTerms)
+     * @param role    The role of the AbstractContact (CvTerms)
      */
     public ContactRole(AbstractContact contact, CvParam role) {
         this.contact = contact;
-        this.role    = role;
+        this.role = role;
     }
 
     /**
      * Get an AbstractContact
+     *
      * @return AbstractContact
      */
     public AbstractContact getContact() {
@@ -45,6 +46,7 @@ public class ContactRole {
 
     /**
      * Set and AbstractContact
+     *
      * @param contact AbstractContact
      */
     public void setContact(AbstractContact contact) {
@@ -53,6 +55,7 @@ public class ContactRole {
 
     /**
      * Get the role of the AbstractContact
+     *
      * @return CvParam
      */
     public CvParam getRole() {
@@ -61,6 +64,7 @@ public class ContactRole {
 
     /**
      * Set a role for an AbstractContact
+     *
      * @param role CvParam
      */
     public void setRole(CvParam role) {

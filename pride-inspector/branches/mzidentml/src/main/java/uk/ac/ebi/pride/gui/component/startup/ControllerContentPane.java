@@ -225,12 +225,12 @@ public class ControllerContentPane extends DataAccessControllerPane {
             }
 
             // chart tab
-            /*if (categories.contains(DataAccessController.ContentCategory.SPECTRUM) || categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
+            if (categories.contains(DataAccessController.ContentCategory.SPECTRUM) || categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
                 chartTabPane = new ChartTabPane(controller, this);
                 chartTabIndex = indexCount++;
                 contentTabPane.insertTab(chartTabPane.getTitle(), chartTabPane.getIcon(), chartTabPane, chartTabPane.getTitle(), chartTabIndex);
                 chartTabPane.populate();
-            }*/
+            }
         }
     }
 

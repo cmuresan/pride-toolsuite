@@ -15,7 +15,7 @@ import java.util.List;
 public class Protein extends IdentifiableParamGroup {
 
     /**
-     * DEB Sequence
+     * DB Sequence
      */
     private DBSequence dbSequence;
 
@@ -51,7 +51,7 @@ public class Protein extends IdentifiableParamGroup {
     private Gel gel;
 
     /**
-     * The group in wich we can find the Protein Identification
+     * The group in which we can find the Protein Identification
      */
     private IdentifiableParamGroup proteinAmbiguityGroup;
 

@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.controller.cache;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.util.Collection;
 import java.util.Map;
 

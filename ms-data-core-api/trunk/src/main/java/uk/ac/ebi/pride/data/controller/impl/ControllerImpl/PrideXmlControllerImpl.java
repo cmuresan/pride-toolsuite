@@ -40,7 +40,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
     /**
      * Reader to get information from pride xml file
      */
-    private PrideXmlReader reader = null;
+    private PrideXmlReader reader;
 
     /**
      * Construct a data access controller to read a pride xml
@@ -86,7 +86,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 ContentCategory.INSTRUMENT,
                 ContentCategory.SOFTWARE,
                 ContentCategory.DATA_PROCESSING,
-                ContentCategory.QUANTITATION);
+                ContentCategory.QUANTIFICATION);
         // set cache builder
         setCacheBuilder(new PrideXmlCacheBuilder(this));
         // populate cache
@@ -129,7 +129,6 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @return List<CVLookup>   a list of cvlookup objects.
      * @throws DataAccessException data access exception
      */
-    @Override
     public List<CVLookup> getCvLookups() throws DataAccessException {
         logger.debug("Get cv lookups");
         List<CVLookup> cvLookups = new ArrayList<CVLookup>();
@@ -151,7 +150,6 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *
      */
-    @Override
     public List<SourceFile> getSourceFiles() throws DataAccessException {
         List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
 
@@ -169,7 +167,6 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         return sourceFiles;
     }
 
-    @Override
     public List<Organization> getOrganizationContacts() throws DataAccessException {
         logger.debug("Get organizational contact");
         List<Organization> organizationList = new ArrayList<Organization>();
@@ -183,7 +180,6 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         return organizationList;
     }
 
-    @Override
     public List<Person> getPersonContacts() throws DataAccessException {
         logger.debug("Get person contacts");
         List<Person> personList = new ArrayList<Person>();
@@ -222,7 +218,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException(msg, ex);
             }
         } else {
-            return metaData.getSampleList();
+            return metaData.getSamples();
         }
     }
 
@@ -232,7 +228,6 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @return List<Software>   a list of software objects.
      * @throws DataAccessException
      */
-    @Override
     public List<Software> getSoftwares() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
@@ -261,7 +256,6 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @return List<Instrument> a list of instruments.
      * @throws DataAccessException
      */
-    @Override
     public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
@@ -287,7 +281,6 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * @return List<DataProcessing> a list of data processing objects
      * @throws DataAccessException
      */
-    @Override
     public List<DataProcessing> getDataProcessings() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
@@ -306,7 +299,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException(msg, ex);
             }
         } else {
-            return metaData.getDataProcessingList();
+            return metaData.getDataProcessings();
         }
     }
 

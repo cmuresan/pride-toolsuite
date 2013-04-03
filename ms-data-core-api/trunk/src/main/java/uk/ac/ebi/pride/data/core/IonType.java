@@ -14,6 +14,8 @@ import java.util.Map;
  * have been identified, the index attribute will contain 3 7 8 10, and the
  * corresponding values will be reported in parallel arrays below.
  *
+ * todo: this class needs to be reviewed
+ *
  * User: yperez
  * Date: 08/08/11
  * Time: 14:01
@@ -45,7 +47,7 @@ public class IonType extends CvParam {
      *
      * todo: review this map, see reason above
      */
-    private Map<IdentifiableParamGroup, List<Integer>> measureListHashMap;
+    private Map<IdentifiableParamGroup, List<Integer>> measures;
 
     /**
      * Constructor
@@ -65,7 +67,7 @@ public class IonType extends CvParam {
         super(accession, name, cvLookupID, value, unitAcc, unitName, unitCVLookupID);
         this.charge = -1;
         this.index = new ArrayList<Integer>();
-        this.measureListHashMap = new HashMap<IdentifiableParamGroup, List<Integer>>();
+        this.measures = new HashMap<IdentifiableParamGroup, List<Integer>>();
     }
 
     public List<Integer> getIndex() {
@@ -84,12 +86,12 @@ public class IonType extends CvParam {
         this.charge = charge;
     }
 
-    public Map<IdentifiableParamGroup, List<Integer>> getMeasureListHashMap() {
-        return measureListHashMap;
+    public Map<IdentifiableParamGroup, List<Integer>> getMeasures() {
+        return measures;
     }
 
-    public void setMeasureListHashMap(Map<IdentifiableParamGroup, List<Integer>> measureListHashMap) {
-        MapUtils.replaceValuesInMap(measureListHashMap, this.measureListHashMap);
+    public void setMeasures(Map<IdentifiableParamGroup, List<Integer>> measures) {
+        MapUtils.replaceValuesInMap(measures, this.measures);
     }
 
     @Override
@@ -102,7 +104,7 @@ public class IonType extends CvParam {
 
         if (charge != ionType.charge) return false;
         if (!index.equals(ionType.index)) return false;
-        if (!measureListHashMap.equals(ionType.measureListHashMap)) return false;
+        if (!measures.equals(ionType.measures)) return false;
 
         return true;
     }
@@ -112,7 +114,7 @@ public class IonType extends CvParam {
         int result = super.hashCode();
         result = 31 * result + charge;
         result = 31 * result + index.hashCode();
-        result = 31 * result + measureListHashMap.hashCode();
+        result = 31 * result + measures.hashCode();
         return result;
     }
 }

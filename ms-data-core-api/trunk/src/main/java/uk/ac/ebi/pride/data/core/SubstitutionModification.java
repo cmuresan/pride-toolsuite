@@ -24,10 +24,10 @@ public class SubstitutionModification {
 
     public SubstitutionModification(String originalResidue, String replacementResidue, int location,
                                     double avgMassDelta, double monoisotopicMassDelta) {
-        this.originalResidue       = originalResidue;
-        this.replacementResidue    = replacementResidue;
-        this.location              = location;
-        this.avgMassDelta          = avgMassDelta;
+        this.originalResidue = originalResidue;
+        this.replacementResidue = replacementResidue;
+        this.location = location;
+        this.avgMassDelta = avgMassDelta;
         this.monoisotopicMassDelta = monoisotopicMassDelta;
     }
 

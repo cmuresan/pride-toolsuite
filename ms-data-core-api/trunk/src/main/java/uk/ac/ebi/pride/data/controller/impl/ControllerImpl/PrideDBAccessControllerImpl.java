@@ -58,14 +58,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     private Comparable experimentAcc;
 
-    public PrideDBAccessControllerImpl() throws DataAccessException {
-        this(DEFAULT_ACCESS_MODE, null);
-    }
-
-    public PrideDBAccessControllerImpl(DataAccessMode mode) throws DataAccessException {
-        this(mode, null);
-    }
-
     /**
      * Open a pride database connection with a specified experiment accession.
      *
@@ -102,7 +94,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 ContentCategory.INSTRUMENT,
                 ContentCategory.SOFTWARE,
                 ContentCategory.DATA_PROCESSING,
-                ContentCategory.QUANTITATION);
+                ContentCategory.QUANTIFICATION);
 
         // set cache builder
         setCacheBuilder(new PrideDBCacheBuilder(this));
@@ -167,7 +159,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return jdbcTemplate.query(query, new ContactRowMapper(), experimentAcc);
     }
 
-    @Override
     public List<Person> getPersonContacts() throws DataAccessException {
         ExperimentMetaData metadata = super.getExperimentMetaData();
         if (metadata == null) {
@@ -176,10 +167,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
             return jdbcTemplate.query(query, new PersonRowMapper(), experimentAcc);
         }
-        return metadata.getPersonList();
+        return metadata.getPersons();
     }
 
-    @Override
     public List<Organization> getOrganizationContacts() throws DataAccessException {
         ExperimentMetaData metadata = super.getExperimentMetaData();
         if (metadata == null) {
@@ -188,7 +178,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
             return jdbcTemplate.query(query, new OrganizationRowMapper(), experimentAcc);
         }
-        return metadata.getOrganizationList();
+        return metadata.getOrganizations();
     }
 
     @Override
@@ -215,10 +205,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             return samples;
         }
 
-        return metaData.getSampleList();
+        return metaData.getSamples();
     }
 
-    @Override
     public List<Software> getSoftwares() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
@@ -230,11 +219,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             return jdbcTemplate.query(query, new SoftwareRowMapper(), experimentAcc);
         }
         return metaData.getSoftwares();
-    }
-
-    @Override
-    public List<ScanSetting> getScanSettings() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is unsupported");
     }
 
     private List<ParamGroup> getAnalyzerList(int mz_data_id) throws DataAccessException {
@@ -255,7 +239,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return analyzerList;
     }
 
-    @Override
     public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
@@ -310,7 +293,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         }
     }
 
-    @Override
     public List<DataProcessing> getDataProcessings() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
@@ -340,7 +322,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
             return dataProcessings;
         }
-        return metaData.getDataProcessingList();
+        return metaData.getDataProcessings();
     }
 
     /**
@@ -463,7 +445,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return metaData;
     }
 
-    @Override
     public List<CVLookup> getCvLookups() throws DataAccessException {
         logger.debug("Getting cv lookups");
 
@@ -1024,22 +1005,22 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public Quantitation getProteinQuantData(Comparable proteinId) throws DataAccessException {
+    public Quantification getProteinQuantData(Comparable proteinId) throws DataAccessException {
         ParamGroup paramGroup = (ParamGroup) getCache().get(CacheCategory.PROTEIN_TO_PARAM, proteinId);
 
         if (paramGroup != null) {
-            return new Quantitation(Quantitation.Type.PROTEIN, paramGroup.getCvParams());
+            return new Quantification(Quantification.Type.PROTEIN, paramGroup.getCvParams());
         }
 
         return null;
     }
 
     @Override
-    public Quantitation getPeptideQuantData(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public Quantification getPeptideQuantData(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         ParamGroup paramGroup = (ParamGroup) getCache().get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
 
         if (paramGroup != null) {
-            return new Quantitation(Quantitation.Type.PEPTIDE, paramGroup.getCvParams());
+            return new Quantification(Quantification.Type.PEPTIDE, paramGroup.getCvParams());
         }
 
         return null;

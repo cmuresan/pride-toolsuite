@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
 import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.Quantitation;
+import uk.ac.ebi.pride.data.core.Quantification;
 import uk.ac.ebi.pride.data.core.QuantitativeSample;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
@@ -203,8 +203,8 @@ public class PrideXmlQuantTest {
     public void testIdentQuantData() throws Exception {
         Collection<Comparable> identIds = prideController.getProteinIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
-        assertEquals(Quantitation.Type.PROTEIN, quant.getType());
+        Quantification quant = prideController.getProteinQuantData(identId);
+        assertEquals(Quantification.Type.PROTEIN, quant.getType());
     }
 
     @Test
@@ -213,15 +213,15 @@ public class PrideXmlQuantTest {
         Comparable identId = CollectionUtils.getElement(identIds, 0);
         Collection<Comparable> peptideIds = prideController.getPeptideIds(identId);
         Comparable peptideId = CollectionUtils.getElement(peptideIds, 0);
-        Quantitation quant = prideController.getPeptideQuantData(identId, peptideId);
-        assertEquals(Quantitation.Type.PEPTIDE, quant.getType());
+        Quantification quant = prideController.getPeptideQuantData(identId, peptideId);
+        assertEquals(Quantification.Type.PEPTIDE, quant.getType());
     }
 
     @Test
     public void testQuantHasLabelFree() throws Exception {
         Collection<Comparable> identIds = prideController.getProteinIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
+        Quantification quant = prideController.getProteinQuantData(identId);
         assertFalse(quant.hasLabelFreeMethod());
     }
 
@@ -229,7 +229,7 @@ public class PrideXmlQuantTest {
     public void testQuantGetLabelFreeMethods() throws Exception {
         Collection<Comparable> identIds = prideController.getProteinIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
+        Quantification quant = prideController.getProteinQuantData(identId);
         assertEquals(0, quant.getLabelFreeMethods().size());
     }
 
@@ -237,7 +237,7 @@ public class PrideXmlQuantTest {
     public void testQuantHasIsotopeLabelliing() throws Exception {
         Collection<Comparable> identIds = prideController.getProteinIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
+        Quantification quant = prideController.getProteinQuantData(identId);
         assertTrue(quant.hasIsotopeLabellingMethod());
     }
 
@@ -245,7 +245,7 @@ public class PrideXmlQuantTest {
     public void testQuantHasIsotopeLabellingMethod() throws Exception {
         Collection<Comparable> identIds = prideController.getProteinIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
+        Quantification quant = prideController.getProteinQuantData(identId);
         assertTrue(quant.hasIsotopeLabellingMethod());
     }
 
@@ -253,7 +253,7 @@ public class PrideXmlQuantTest {
     public void testQuantGetIsotopeLabellingMethod() throws Exception {
         Collection<Comparable> identIds = prideController.getProteinIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
+        Quantification quant = prideController.getProteinQuantData(identId);
         QuantCvTermReference cvTermReference = quant.getIsotopeLabellingMethod();
         assertEquals("PRIDE:0000313", cvTermReference.getAccession());
     }
@@ -262,7 +262,7 @@ public class PrideXmlQuantTest {
     public void testQuantGetIsotopeLabellingResults() throws Exception {
         Collection<Comparable> identIds = prideController.getProteinIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
+        Quantification quant = prideController.getProteinQuantData(identId);
         List<Double> results = quant.getIsotopeLabellingResults();
         assertEquals(1.0, results.get(0));
         assertNull(results.get(4));
@@ -272,7 +272,7 @@ public class PrideXmlQuantTest {
     public void testQuantGetIsotopeLabellingResult() throws Exception {
         Collection<Comparable> identIds = prideController.getProteinIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
+        Quantification quant = prideController.getProteinQuantData(identId);
         assertEquals(1.004, quant.getIsotopeLabellingResult(3));
     }
 
@@ -280,7 +280,7 @@ public class PrideXmlQuantTest {
     public void testQuantHasTotalIntensities() throws Exception {
         Collection<Comparable> identIds = prideController.getProteinIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
+        Quantification quant = prideController.getProteinQuantData(identId);
         assertFalse(quant.hasTotalIntensities());
     }
 
@@ -288,7 +288,7 @@ public class PrideXmlQuantTest {
     public void testQuantGetUnit() throws Exception {
         Collection<Comparable> identIds = prideController.getProteinIds();
         Comparable identId = CollectionUtils.getElement(identIds, 0);
-        Quantitation quant = prideController.getProteinQuantData(identId);
+        Quantification quant = prideController.getProteinQuantData(identId);
         assertEquals("Ratio", quant.getUnit().getName());
     }
 }

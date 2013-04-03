@@ -51,55 +51,16 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         super.populate();
 
         Comparable experimentAcc = ((PrideDBAccessControllerImpl) controller).getExperimentAcc();
-        if (experimentAcc == null) {
-            // populate experiment accession only once
-            populateExperimentAccs();
-        } else {
-            // populate the rest every time the foreground experiment accession has changed.
-            populateSpectrumInfo(experimentAcc);
-            populateIdentificationInfo(experimentAcc);
-            populatePrecursorInfo(experimentAcc);
-            populatePeptideInfo(experimentAcc);
-            populatePTMInfo(experimentAcc);
-            populateFragmentIonInfo(experimentAcc);
-            populateIdentificationParamInfo(experimentAcc);
-            populatePeptideParamInfo(experimentAcc);
-            populateTheRest();
-        }
-    }
-
-    /**
-     * Populate expeirment accessions
-     *
-     * @throws java.sql.SQLException an error while querying database.
-     */
-    private void populateExperimentAccs() throws SQLException {
-
-        logger.info("Initializing experiment accessions");
-        // clear previous experiment accessions
-        cache.clear(CacheCategory.EXPERIMENT_ACC);
-        List<Comparable> array = new ArrayList<Comparable>();
-
-        Connection connection = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-
-        try {
-            connection = PooledConnectionFactory.getConnection();
-            st = connection.prepareStatement("SELECT accession FROM pride_experiment ORDER BY ABS(accession)");
-            rs = st.executeQuery();
-            while (rs.next()) {
-                array.add(rs.getString("accession"));
-            }
-            rs.close();
-        } catch (SQLException e) {
-            logger.error("Querying experiment accessions", e);
-            throw e;
-        } finally {
-            DBUtilities.releaseResources(connection, st, rs);
-        }
-        // cache experiment accessions
-        cache.storeInBatch(CacheCategory.EXPERIMENT_ACC, array);
+        // populate the rest every time the foreground experiment accession has changed.
+        populateSpectrumInfo(experimentAcc);
+        populateIdentificationInfo(experimentAcc);
+        populatePrecursorInfo(experimentAcc);
+        populatePeptideInfo(experimentAcc);
+        populatePTMInfo(experimentAcc);
+        populateFragmentIonInfo(experimentAcc);
+        populateIdentificationParamInfo(experimentAcc);
+        populatePeptideParamInfo(experimentAcc);
+        populateTheRest();
     }
 
     /**
@@ -173,7 +134,7 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
         // protein accession map
         Map<Comparable, String> protAccs = new HashMap<Comparable, String>();
         // protein accession version map
-       Map<Comparable, String> protAccVersions = new HashMap<Comparable, String>();
+        Map<Comparable, String> protAccVersions = new HashMap<Comparable, String>();
         // database map
         Map<Comparable, SearchDataBase> databases = new HashMap<Comparable, SearchDataBase>();
         // database version map
@@ -208,12 +169,12 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
                 protAccs.put(id, acc);
                 protAccVersions.put(id, accVersion);
                 SearchEngineType searchEngineType = SearchEngineType.getByName(searchEngine);
-                databases.put(id, new SearchDataBase(database,databaseV));
+                databases.put(id, new SearchDataBase(database, databaseV));
                 versions.put(id, databaseVersion);
                 Score score = null;
-                if(sc != 0 && searchEngineType != null){
-                    Map<SearchEngineType,Map<CvTermReference,Number>> mapScores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
-                    Map<CvTermReference,Number> scoreValues = new HashMap<CvTermReference, Number>();
+                if (sc != 0 && searchEngineType != null) {
+                    Map<SearchEngineType, Map<CvTermReference, Number>> mapScores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
+                    Map<CvTermReference, Number> scoreValues = new HashMap<CvTermReference, Number>();
                     scoreValues.put(SearchEngineType.getDefaultCvTerm(searchEngine), sc);
                     mapScores.put(searchEngineType, scoreValues);
                     score = new Score(mapScores);
@@ -438,50 +399,50 @@ public class PrideDBCacheBuilder extends AbstractAccessCacheBuilder {
             rs.close();
             for (Map.Entry<String, Comparable> entry : accToModId.entrySet()) {
 
-            String modAcc = entry.getKey();
-            Comparable modId = entry.getValue();
-            String modDB = null;
-            String modDBVersion = null;
-            List<Double> monoMasses = new ArrayList<Double>();
-            List<Double> avgMasses = new ArrayList<Double>();
-            logger.debug("Getting mass delta value");
+                String modAcc = entry.getKey();
+                Comparable modId = entry.getValue();
+                String modDB = null;
+                String modDBVersion = null;
+                List<Double> monoMasses = new ArrayList<Double>();
+                List<Double> avgMasses = new ArrayList<Double>();
+                logger.debug("Getting mass delta value");
 
-            //todo: why split the original query into two? Is it faster?
-            st = connection.prepareStatement("SELECT mass_delta_value FROM pride_mass_delta WHERE modification_id = ? AND classname = ?");
-            st.setInt(1, Integer.parseInt(modId.toString()));
-            st.setString(2, "uk.ac.ebi.pride.rdbms.ojb.model.core.MonoMassDeltaBean");
-            rs = st.executeQuery();
-            while (rs.next()) {
-                monoMasses.add(rs.getDouble("mass_delta_value"));
-            }
-            st = connection.prepareStatement("SELECT mass_delta_value FROM pride_mass_delta WHERE modification_id = ? AND classname = ?");
-            st.setInt(1, Integer.parseInt(modId.toString()));
-            st.setString(2, "uk.ac.ebi.pride.rdbms.ojb.model.core.AverageMassDeltaBean");
-            rs = st.executeQuery();
-            while (rs.next()) {
-               avgMasses.add(rs.getDouble("mass_delta_value"));
-            }
+                //todo: why split the original query into two? Is it faster?
+                st = connection.prepareStatement("SELECT mass_delta_value FROM pride_mass_delta WHERE modification_id = ? AND classname = ?");
+                st.setInt(1, Integer.parseInt(modId.toString()));
+                st.setString(2, "uk.ac.ebi.pride.rdbms.ojb.model.core.MonoMassDeltaBean");
+                rs = st.executeQuery();
+                while (rs.next()) {
+                    monoMasses.add(rs.getDouble("mass_delta_value"));
+                }
+                st = connection.prepareStatement("SELECT mass_delta_value FROM pride_mass_delta WHERE modification_id = ? AND classname = ?");
+                st.setInt(1, Integer.parseInt(modId.toString()));
+                st.setString(2, "uk.ac.ebi.pride.rdbms.ojb.model.core.AverageMassDeltaBean");
+                rs = st.executeQuery();
+                while (rs.next()) {
+                    avgMasses.add(rs.getDouble("mass_delta_value"));
+                }
 
-            //todo: the following two queries can be merged into one
-            List<CvParam> cvParams = new ArrayList<CvParam>();
-            st = connection.prepareStatement("SELECT accession, name, value, cv_label FROM pride_modification_param " + " WHERE parent_element_fk = ? AND cv_label is not null");
-            st.setInt(1, Integer.parseInt(modId.toString()));
-            rs = st.executeQuery();
-            while (rs.next()) {
-              cvParams.add(new CvParam(rs.getString("accession"), rs.getString("name"), rs.getString("cv_label"), rs.getString("value"), "", "", ""));
+                //todo: the following two queries can be merged into one
+                List<CvParam> cvParams = new ArrayList<CvParam>();
+                st = connection.prepareStatement("SELECT accession, name, value, cv_label FROM pride_modification_param " + " WHERE parent_element_fk = ? AND cv_label is not null");
+                st.setInt(1, Integer.parseInt(modId.toString()));
+                rs = st.executeQuery();
+                while (rs.next()) {
+                    cvParams.add(new CvParam(rs.getString("accession"), rs.getString("name"), rs.getString("cv_label"), rs.getString("value"), "", "", ""));
+                }
+                List<UserParam> userParams = new ArrayList<UserParam>();
+                st = connection.prepareStatement("SELECT name, value FROM pride_modification_param " + " WHERE parent_element_fk = ? AND cv_label is null");
+                st.setInt(1, Integer.parseInt(modId.toString()));
+                rs = st.executeQuery();
+                while (rs.next()) {
+                    userParams.add(new UserParam(rs.getString("name"), "", rs.getString("value"), "", "", ""));
+                }
+                ParamGroup paramGroup = new ParamGroup(cvParams, userParams);
+                Modification mod = new Modification(paramGroup, modAcc, null, 0, null, avgMasses, monoMasses, modDB, modDBVersion);
+                modifications.put(modAcc, mod);
+                rs.close();
             }
-            List<UserParam> userParams = new ArrayList<UserParam>();
-            st = connection.prepareStatement("SELECT name, value FROM pride_modification_param " + " WHERE parent_element_fk = ? AND cv_label is null");
-            st.setInt(1, Integer.parseInt(modId.toString()));
-            rs = st.executeQuery();
-            while (rs.next()) {
-              userParams.add(new UserParam(rs.getString("name"), "", rs.getString("value"), "", "", ""));
-            }
-            ParamGroup paramGroup = new ParamGroup(cvParams,userParams);
-            Modification mod = new Modification(paramGroup, modAcc, null, 0, null, avgMasses, monoMasses, modDB, modDBVersion);
-            modifications.put(modAcc, mod);
-            rs.close();
-         }
 
         } catch (SQLException e) {
             logger.error("Querying PTM locations", e);

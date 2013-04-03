@@ -10,69 +10,30 @@ import java.util.List;
  * User: yperez
  * Date: 08/08/11
  * Time: 16:35
+ *
+ * todo: review contactInfo
  */
-public class Person extends AbstractContact {
+public class Person extends Contact {
 
-    /**
-     * The organization a person belongs to.
-     */
     private List<Organization> affiliation;
 
-    /**
-     * The Person's first name.
-     */
     private String firstname;
 
-    /**
-     * The Person's last/family name.
-     */
     private String lastname;
 
-    /**
-     * contactInfo
-     */
     private String contactInfo;
 
-    /**
-     * The Person's middle initial.
-     */
     private String midInitials;
 
-    /**
-     * Constructor for MzMl and Pride Person Contact
-     *
-     * @param params ParamGroup of Person
-     * @param firstname First Name of the Person
-     * @param contactInfo Contact Info
-     */
     public Person(ParamGroup params, String firstname, String contactInfo) {
         this(params, null, null, null, firstname, null, null, contactInfo);
     }
 
-    /**
-     * @param id         Generic Id
-     * @param name       Generic Name
-     * @param lastname   LastName
-     * @param firstname  FirstName
-     * @param midInitials Middle Initials
-     * @param affiliation Affiliation
-     * @param contactInfo Contact Info
-     */
     public Person(Comparable id, String name, String lastname, String firstname, String midInitials,
                   List<Organization> affiliation, String contactInfo) {
         this(null, id, name, lastname, firstname, midInitials, affiliation, contactInfo);
     }
 
-    /**
-     * @param params     ParamGroup of Person
-     * @param id         Generic Id
-     * @param name       Generic Name
-     * @param lastname   LastName
-     * @param firstname  FirstName
-     * @param midInitials Middle Initials
-     * @param affiliation Affiliation
-     * @param contactInfo Contact Info
-     */
     public Person(ParamGroup params, Comparable id, String name, String lastname, String firstname, String midInitials,
                   List<Organization> affiliation, String contactInfo) {
         super(params, id, name);

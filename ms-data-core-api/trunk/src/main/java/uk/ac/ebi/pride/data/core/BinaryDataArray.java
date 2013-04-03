@@ -30,14 +30,8 @@ import java.util.Arrays;
  */
 public class BinaryDataArray extends ParamGroup {
 
-    /**
-     * Binary double array
-     */
     private double[] binaryDoubleArray;
 
-    /**
-     * DataProcessing Object
-     */
     private DataProcessing dataProcessing;
 
     /**

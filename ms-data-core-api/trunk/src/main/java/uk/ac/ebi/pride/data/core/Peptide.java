@@ -60,7 +60,7 @@ public class Peptide {
     }
 
     public List<Modification> getModifications() {
-        return this.getPeptideEvidence().getPeptideSequence().getModificationList();
+        return this.getPeptideEvidence().getPeptideSequence().getModifications();
     }
 
     public String getSequence() {
@@ -68,7 +68,7 @@ public class Peptide {
     }
 
     public boolean hasModification() {
-        return this.getPeptideSequence().getModificationList().size() != 0;
+        return this.getPeptideSequence().getModifications().size() != 0;
     }
 
     public int getPrecursorCharge() {

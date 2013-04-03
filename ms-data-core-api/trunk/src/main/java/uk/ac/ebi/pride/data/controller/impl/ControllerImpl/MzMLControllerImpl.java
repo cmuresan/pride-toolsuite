@@ -160,7 +160,6 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * @return ReferenceableParamGroup param group
      * @throws DataAccessException data access exception
      */
-    @Override
     public ReferenceableParamGroup getReferenceableParamGroup() throws DataAccessException {
 
         try {
@@ -193,7 +192,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException(msg, e);
             }
         } else {
-            return metaData.getSampleList();
+            return metaData.getSamples();
         }
     }
 
@@ -203,7 +202,6 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * @return List<Person>    list of persons
      * @throws DataAccessException data access exception
      */
-    @Override
     public List<Person> getPersonContacts() throws DataAccessException {
         try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
@@ -222,7 +220,6 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * @return List<Organization>    list of persons
      * @throws DataAccessException
      */
-    @Override
     public List<Organization> getOrganizationContacts() throws DataAccessException {
         try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
@@ -241,7 +238,6 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * @return List<SourceFile> List of SourceFile
      * @throws DataAccessException
      */
-    @Override
     public List<SourceFile> getSourceFiles() throws DataAccessException {
         try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
@@ -264,7 +260,6 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * @return ParamGroup A list of CvTerms Related with the File Content
      * @throws DataAccessException
      */
-    @Override
     public ParamGroup getFileContent() throws DataAccessException {
         try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
@@ -283,7 +278,6 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * @return List<Software> List of Softwares
      * @throws DataAccessException
      */
-    @Override
     public List<Software> getSoftwares() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
@@ -307,7 +301,6 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * @return List<ScanSetting>   a list of scan settings
      * @throws DataAccessException data access exception
      */
-    @Override
     public List<ScanSetting> getScanSettings() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
@@ -331,7 +324,6 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * @return List<Instrumentconfiguration>   a list of instrument configurations
      * @throws DataAccessException data access exception
      */
-    @Override
     public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
@@ -355,7 +347,6 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * @return List<DataProcessing>    a list of data processings
      * @throws DataAccessException data access exception
      */
-    @Override
     public List<DataProcessing> getDataProcessings() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
@@ -369,7 +360,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException(msg, e);
             }
         } else {
-            return metaData.getDataProcessingList();
+            return metaData.getDataProcessings();
         }
 
     }

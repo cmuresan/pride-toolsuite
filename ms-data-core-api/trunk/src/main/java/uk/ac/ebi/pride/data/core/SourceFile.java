@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
-
 /**
  * <p/>
  * Description of source file, including identification file, location and type.
@@ -41,42 +39,19 @@ public class SourceFile extends IdentifiableParamGroup {
      */
     private String path;
 
-    /**
-     * Constructor for special cases were you don't have and Id
-     *
-     * @param name Name
-     * @param path location
-     */
     public SourceFile(String name, String path) {
-
         // there should be a single source file per spectrum
+
+        // todo: why empty strings
         super("", name);
         this.path = path;
     }
 
-    /**
-     * Constructor to the MzMl File Source
-     *
-     * @param params ParamGroup (CvTerms and User Params)
-     * @param id  ID
-     * @param name Name
-     * @param path location of the source File
-     */
     public SourceFile(ParamGroup params, String id, String name, String path) {
         super(params, id, name);
         this.path = path;
     }
 
-    /**
-     * Constructor of MzIdentMl source File
-     *
-     * @param params ParamGroup (CvTerms and User Params)
-     * @param id  ID
-     * @param name Name
-     * @param path location of the source File
-     * @param fileFormat CvTerm to define the FileFormat
-     * @param externalFormatDocumentationURI the external uri of the Format Documentation
-     */
     public SourceFile(ParamGroup params, String id, String name, String path, CvParam fileFormat,
                       String externalFormatDocumentationURI) {
         super(params, id, name);
@@ -85,56 +60,26 @@ public class SourceFile extends IdentifiableParamGroup {
         this.externalFormatDocumentationURI = externalFormatDocumentationURI;
     }
 
-    /**
-     * Get the location of the File
-     *
-     * @return location
-     */
     public String getPath() {
         return path;
     }
 
-    /**
-     * Set the location
-     *
-     * @param path location of the file
-     */
     public void setPath(String path) {
         this.path = path;
     }
 
-    /**
-     * Get CvParam to define the File Format
-     *
-     * @return CvParam
-     */
     public CvParam getFileFormat() {
         return fileFormat;
     }
 
-    /**
-     * Set CvParam to define the File Format
-     *
-     * @param fileFormat CvParam
-     */
     public void setFileFormat(CvParam fileFormat) {
         this.fileFormat = fileFormat;
     }
 
-    /**
-     * Get the external uri of the File Format Documentation
-     *
-     * @return uri of the File Format Documentation
-     */
     public String getExternalFormatDocumentationURI() {
         return externalFormatDocumentationURI;
     }
 
-    /**
-     * Get the external uri of the File Format Documentation
-     *
-     * @param externalFormatDocumentationURI uri of the File Format Documentation
-     */
     public void setExternalFormatDocumentationURI(String externalFormatDocumentationURI) {
         this.externalFormatDocumentationURI = externalFormatDocumentationURI;
     }

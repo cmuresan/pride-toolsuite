@@ -14,8 +14,6 @@ import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.*;
 
-//~--- JDK imports ------------------------------------------------------------
-
 /**
  * <p>Container for the Spectral chartData of a PRIDE experiment.</p>
  *
@@ -222,7 +220,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
                 for (Peptide pep : id.getPeptides()) {
                     double ptmMass = 0;
 
-                    for (Modification modification : pep.getPeptideSequence().getModificationList()) {
+                    for (Modification modification : pep.getPeptideSequence().getModifications()) {
                         try {
                             ptmMass += (modification.getMonoisotopicMassDelta() != null && modification.getMonoisotopicMassDelta().size() > 0)
                                     ? modification.getMonoisotopicMassDelta().get(0)

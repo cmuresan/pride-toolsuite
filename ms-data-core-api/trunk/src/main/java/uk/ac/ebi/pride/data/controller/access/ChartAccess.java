@@ -1,13 +1,9 @@
 package uk.ac.ebi.pride.data.controller.access;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideChartManager;
 
 import java.util.List;
-
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Created by IntelliJ IDEA.

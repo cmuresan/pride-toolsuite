@@ -6,41 +6,21 @@ package uk.ac.ebi.pride.data.core;
  * User: yperez
  * Date: 04/08/11
  * Time: 11:46
+ *
+ * todo: review this class together with Person
  */
-public class Organization extends AbstractContact {
-    private String       mail;
+public class Organization extends Contact {
+    private String mail;
     private Organization parentOrganization;
 
-    /**
-     * Create a PRIDE and MZML Organization Objects
-     *
-     * @param params
-     * @param name
-     * @param mail
-     */
     public Organization(ParamGroup params, String name, String mail) {
         this(params, null, name, null, mail);
     }
 
-    /**
-     * Organization Constructor
-     *
-     * @param id                 Identifier for Organization Object
-     * @param name               Name of the Organization
-     * @param parentOrganization Parent Organization
-     */
     public Organization(Comparable id, String name, String mail, Organization parentOrganization) {
         this(null, id, name, parentOrganization, mail);
     }
 
-    /**
-     * Organization Constructor
-     *
-     * @param params
-     * @param id
-     * @param name
-     * @param parentOrganization
-     */
     public Organization(ParamGroup params, Comparable id, String name, Organization parentOrganization, String mail) {
         super(params, id, name);
         this.parentOrganization = parentOrganization;

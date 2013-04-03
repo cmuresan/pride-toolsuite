@@ -9,10 +9,8 @@ import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.engine.SearchEngineType;
-import uk.ac.ebi.pride.gui.prop.PropertyChangeHelper;
 import uk.ac.ebi.pride.term.CvTermReference;
 
-import java.beans.PropertyChangeEvent;
 import java.util.*;
 
 /**
@@ -33,180 +31,83 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     /**
      * Unique id to identify the data access controller
      */
-    private String uid = null;
+    private String uid;
     /**
      * The name of the data source for displaying purpose
      */
-    private String name = null;
-    /**
-     * The description of the data source for displaying purpose
-     */
-    private String description = null;
+    private String name;
     /**
      * The I/O type of the data source
      */
-    private Type type = null;
+    private Type type;
     /**
      * The type of contents can be present in the data source
      */
-    private Set<ContentCategory> categories = null;
+    private Set<ContentCategory> categories;
     /**
      * Data source, such as: File
      */
-    private Object source = null;
+    private Object source;
 
-    /**
-     * Create a data access controller without source
-     */
+
     protected AbstractDataAccessController() {
         this(null);
     }
 
-    /**
-     * Create a data access controller with source
-     *
-     * @param source data source
-     */
     protected AbstractDataAccessController(Object source) {
         setSource(source);
-        // initialize content categories
         categories = new HashSet<ContentCategory>();
     }
 
-    /**
-     * Get the unique id of the data access controller
-     *
-     * @return String  unique id
-     */
     @Override
     public String getUid() {
         return uid;
     }
 
-    /**
-     * Set the unique id of the data access controller
-     *
-     * @param uid unique id
-     */
-    @Override
     public void setUid(String uid) {
         this.uid = uid;
     }
 
-    /**
-     * Get the name of the data access controller
-     *
-     * @return String  name of the data access controller
-     */
     @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * Set the name of the data access controller
-     *
-     * @param name the new name for this DataAccessController
-     */
-    @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * Get the I/O type of the data access controller
-     *
-     * @return Type    I/O type
-     */
     @Override
     public Type getType() {
         return type;
     }
 
-    /**
-     * Set the I/O type of the data access controller
-     *
-     * @param type controller type.
-     */
-    @Override
     public void setType(Type type) {
         this.type = type;
     }
 
-    /**
-     * Get the content could be present in the data access controller
-     *
-     * @return Collection<ContentCateogry> a list of content types
-     */
     @Override
     public Collection<ContentCategory> getContentCategories() {
-        return new ArrayList<ContentCategory>(categories);
+        return categories;
     }
 
-    /**
-     * Set the content categories
-     *
-     * @param categories a array of categories.
-     */
-    @Override
     public void setContentCategories(ContentCategory... categories) {
-        this.categories.clear();
-        this.categories.addAll(Arrays.asList(categories));
+        CollectionUtils.replaceValuesInCollection(Arrays.asList(categories), this.categories);
     }
 
-    /**
-     * Get the description of the data access controller
-     *
-     * @return String  description
-     */
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Set the description of the data access controller
-     *
-     * @param desc the new description for the controller
-     */
-    @Override
-    public void setDescription(String desc) {
-        this.description = desc;
-    }
-
-    /**
-     * Get the source of the data access controller
-     *
-     * @return Object  the source of the data access controller
-     */
     @Override
     public Object getSource() {
         return source;
     }
 
-    /**
-     * Set the source of the data access controller
-     *
-     * @param src data source object
-     */
-    @Override
     public void setSource(Object src) {
         this.source = src;
     }
 
-    /**
-     * Close the data access controller
-     */
     @Override
     public void close() {
     }
 
-    /**
-     * Check spectrum availability
-     *
-     * @return boolean true means there is spectra
-     * @throws DataAccessException data access exception
-     */
     @Override
     public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
         return null;
@@ -222,122 +123,29 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return null;
     }
 
-    @Override
-    public Collection<CVLookup> getCvLookups() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public ParamGroup getFileContent() throws DataAccessException {
-        return null;
-    }
-
-    @Override
-    public ReferenceableParamGroup getReferenceableParamGroup() throws DataAccessException {
-        return null;
-    }
-
-    @Override
     public Collection<Sample> getSamples() throws DataAccessException {
         return Collections.emptyList();
     }
 
-    @Override
-    public Collection<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() throws DataAccessException {
-        return Collections.emptyList();
-    }
 
-    @Override
-    public Protocol getProteinDetectionProtocol() throws DataAccessException {
+    public ParamGroup getAdditional() throws DataAccessException {
         return null;
     }
 
-    @Override
-    public Collection<SpectraData> getSpectraDataFiles() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Provider getProvider() throws DataAccessException {
-        return null;
-    }
-
-    @Override
-    public Collection<Software> getSoftwares() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<ScanSetting> getScanSettings() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<Person> getPersonContacts() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<Organization> getOrganizationContacts() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<SourceFile> getSourceFiles() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<DataProcessing> getDataProcessings() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    /**
-     * Check spectrum availability
-     *
-     * @return boolean true means there is spectra
-     * @throws DataAccessException data access exception
-     */
     @Override
     public boolean hasSpectrum() throws DataAccessException {
         return getNumberOfSpectra() > 0;
     }
 
-    /**
-     * Get the number of spectra
-     *
-     * @return int the number of spectra
-     * @throws DataAccessException data access exception
-     */
     @Override
     public int getNumberOfSpectra() throws DataAccessException {
         return getSpectrumIds().size();
     }
 
-    /**
-     * This function in the abstract class return 0 number of identified spectrum by default.
-     * each identification file should implement this method to retrieve the real number of
-     * identified peptides.
-     *
-     * @return int  number of identified spectra.
-     * @throws DataAccessException throw a exception when there is an error accessing the data source.
-     */
-    public int getNumberOfIdentifiedSpectra() throws DataAccessException {
-        return 0;
+    public int getNumberOfIdentifiedSpectra() throws DataAccessException{
+          return 0;
     }
 
-    /**
-     * Get the index of the spectrum
-     *
-     * @param id spectrum id
-     * @return int the index of the spectrum
-     * @throws DataAccessException data access exception
-     */
     @Override
     public int getSpectrumIndex(Comparable id) throws DataAccessException {
         int index = -1;
@@ -348,14 +156,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return index;
     }
 
-    /**
-     * Get a collection spectrum starting from a given index
-     *
-     * @param index  the start index of the spectrum.
-     * @param offset the max number of spectra to get.
-     * @return Collection<Spectrum>    a collection of spectrum
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Collection<Spectrum> getSpectraByIndex(int index, int offset) throws DataAccessException {
         List<Spectrum> spectra = new ArrayList<Spectrum>();
@@ -373,25 +173,11 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return spectra;
     }
 
-    /**
-     * Return false by default
-     *
-     * @param specId spectrum id
-     * @return boolean  true means a peptide has been identified
-     * @throws DataAccessException data access exception
-     */
     @Override
     public boolean isIdentifiedSpectrum(Comparable specId) throws DataAccessException {
         return false;
     }
 
-    /**
-     * Get number of peaks using spectrum id.
-     *
-     * @param specId spectrum id.
-     * @return int number of peaks
-     * @throws DataAccessException data access exception
-     */
     @Override
     public int getNumberOfPeaks(Comparable specId) throws DataAccessException {
         int numOfPeaks = 0;
@@ -402,13 +188,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return numOfPeaks;
     }
 
-    /**
-     * Get ms level using spectrum id.
-     *
-     * @param specId spectrum id.
-     * @return int ms level
-     * @throws DataAccessException data access exception
-     */
     @Override
     public int getMsLevel(Comparable specId) throws DataAccessException {
         int msLevel = -1;
@@ -419,13 +198,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return msLevel;
     }
 
-    /**
-     * Get precursor charge of a spectrum.
-     *
-     * @param specId spectrum id.
-     * @return int precursor charge
-     * @throws DataAccessException data access exception
-     */
     @Override
     public int getPrecursorCharge(Comparable specId) throws DataAccessException {
         int charge = -1;
@@ -441,7 +213,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
      * Note: sometimes, precursor charge at the peptide level is different from the precursor charge at the spectrum level
      * As the peptide-level precursor charge is often assigned by search engine rather than ms instrument
      *
-     * @param proteinId protein identification id
+     * @param proteinId   protein identification id
      * @param peptideId peptid eid, can be the index of the peptide as well.
      * @return precursor charge, 0 should be returned if not available
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
@@ -462,13 +234,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return charge;
     }
 
-    /**
-     * Get precursor m/z value using spectrum id.
-     *
-     * @param specId spectrum id.
-     * @return double m/z
-     * @throws DataAccessException data access exception
-     */
     @Override
     public double getPrecursorMz(Comparable specId) throws DataAccessException {
         double mz = -1;
@@ -479,14 +244,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return mz;
     }
 
-    /**
-     * Get precursor m/z value at the peptide level
-     *
-     * @param proteinId identification id
-     * @param peptideId peptid eid, can be the index of the peptide as well.
-     * @return precursor mass
-     * @throws DataAccessException
-     */
     @Override
     public double getPrecursorMz(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         double mz = -1;
@@ -502,13 +259,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return mz;
     }
 
-    /**
-     * Get precursor intensity value using spectrum id.
-     *
-     * @param specId spectrum id.
-     * @return double intensity
-     * @throws DataAccessException data access exception
-     */
     @Override
     public double getPrecursorIntensity(Comparable specId) throws DataAccessException {
         double intent = -1;
@@ -519,13 +269,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return intent;
     }
 
-    /**
-     * Get sum of intensity value using spectrum id.
-     *
-     * @param specId spectrum id.
-     * @return double sum of intensity
-     * @throws DataAccessException data access exception
-     */
     @Override
     public double getSumOfIntensity(Comparable specId) throws DataAccessException {
         double sum = 0;
@@ -536,35 +279,16 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return sum;
     }
 
-    /**
-     * Check the availability of the chromatogram
-     *
-     * @return boolean true means chromatogram available
-     * @throws DataAccessException data access exception
-     */
     @Override
     public boolean hasChromatogram() throws DataAccessException {
         return getNumberOfChromatograms() > 0;
     }
 
-    /**
-     * Get the number of chromatograms
-     *
-     * @return int the number of chromatograms
-     * @throws DataAccessException data access exception
-     */
     @Override
     public int getNumberOfChromatograms() throws DataAccessException {
         return getChromatogramIds().size();
     }
 
-    /**
-     * Get the index of a chromatogram by id
-     *
-     * @param chromaId chromatogram id
-     * @return int the index of the the chromatogram
-     * @throws DataAccessException data access exception
-     */
     @Override
     public int getChromatogramIndex(Comparable chromaId) throws DataAccessException {
         int index = -1;
@@ -575,14 +299,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return index;
     }
 
-    /**
-     * Get a collection of chromatograms starting from a given index
-     *
-     * @param index  index of the starting chromatogram.
-     * @param offset the number of chromatogram to get.
-     * @return Collection<Chromatogram>    a collection of chromatograms
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Collection<Chromatogram> getChromatogramByIndex(int index, int offset) throws DataAccessException {
         List<Chromatogram> chromas = new ArrayList<Chromatogram>();
@@ -600,60 +316,26 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return chromas;
     }
 
-    /**
-     * Check the availability of protein identifications
-     *
-     * @return boolean true means there is protein identifications
-     * @throws DataAccessException data access exception
-     */
     @Override
     public boolean hasProtein() throws DataAccessException {
         return getNumberOfProteins() > 0;
     }
-
-    /**
-     * Check the availability of protein group identifications
-     *
-     * @return boolean true means there is protein identifications
-     * @throws DataAccessException data access exception
-     */
 
     @Override
     public boolean hasProteinGroup() throws DataAccessException {
         return getNumberOfProteins() > 0;
     }
 
-
-    /**
-     * Check the availability of peptide identifications
-     *
-     * @return boolean true means there is peptide identificaitons
-     * @throws DataAccessException data access exception
-     */
     @Override
     public boolean hasPeptide() throws DataAccessException {
         return getNumberOfProteins() > 0;
     }
 
-    /**
-     * Get the number of protein identifications
-     *
-     * @return int the number of protein identifications
-     * @throws DataAccessException data access exception
-     */
     @Override
     public int getNumberOfProteins() throws DataAccessException {
         return getProteinIds().size();
     }
 
-
-    /**
-     * Get the index of a identification using its id
-     *
-     * @param proteinId identification id
-     * @return int index of the identification
-     * @throws DataAccessException
-     */
     @Override
     public int indexOfProtein(Comparable proteinId) throws DataAccessException {
         int index = -1;
@@ -664,15 +346,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return index;
     }
 
-
-    /**
-     * Get a collection of protein identification starting from a given index
-     *
-     * @param index  starting index of the protein identification
-     * @param offset number of identification to get.
-     * @return Collection<Identification>  a collection of protein identifications
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Collection<Protein> getProteinByIndex(int index, int offset) throws DataAccessException {
         List<Protein> proteins = new ArrayList<Protein>();
@@ -690,30 +363,16 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return proteins;
     }
 
-    /**
-     * Get protein accession value using identification id.
-     *
-     * @param proteinId identification id.
-     * @return String protein accession
-     * @throws DataAccessException data access exception
-     */
     @Override
     public String getProteinAccession(Comparable proteinId) throws DataAccessException {
         String acc = null;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
-            acc = protein.getDbSequence().getAccessionId();
+            acc = protein.getDbSequence().getAccession();
         }
         return acc;
     }
 
-    /**
-     * Get protein accession version using identification id.
-     *
-     * @param proteinId identification id.
-     * @return String
-     * @throws DataAccessException
-     */
     @Override
     public String getProteinAccessionVersion(Comparable proteinId) throws DataAccessException {
         String accVersion = null;
@@ -724,13 +383,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return accVersion;
     }
 
-    /**
-     * Get the type of the protein identification
-     *
-     * @param proteinId identification id.
-     * @return String  the type of the protein identification
-     * @throws DataAccessException data access exception
-     */
     @Override
     public String getProteinType(Comparable proteinId) throws DataAccessException {
         String type = null;
@@ -741,13 +393,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return type;
     }
 
-    /**
-     * Get identification score using identification id.
-     *
-     * @param proteinId identification id.
-     * @return double identification score
-     * @throws DataAccessException data access exception
-     */
     @Override
     public double getProteinScore(Comparable proteinId) throws DataAccessException {
         double score = -1;
@@ -768,13 +413,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return dbSequence;
     }
 
-    /**
-     * Get identification threshold using identification id.
-     *
-     * @param proteinId identification id.
-     * @return double sum of intensity
-     * @throws DataAccessException data access exception
-     */
     @Override
     public double getProteinThreshold(Comparable proteinId) throws DataAccessException {
         double threshold = -1;
@@ -785,13 +423,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return threshold;
     }
 
-    /**
-     * Get search database using identification id
-     *
-     * @param proteinId identification id.
-     * @return String search database
-     * @throws DataAccessException data accession exception
-     */
     @Override
     public SearchDataBase getSearchDatabase(Comparable proteinId) throws DataAccessException {
         SearchDataBase database = null;
@@ -802,13 +433,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return database;
     }
 
-    /**
-     * Get search database version for a given protein identification
-     *
-     * @param proteinId identification id
-     * @return String  search database version
-     * @throws DataAccessException data access exception
-     */
     @Override
     public String getSearchDatabaseVersion(Comparable proteinId) throws DataAccessException {
         String version = null;
@@ -819,12 +443,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return version;
     }
 
-    /**
-     * Get search engine has been used.
-     *
-     * @return SearchEngine    search engine
-     * @throws DataAccessException data access exception
-     */
     @Override
     public SearchEngine getSearchEngine() throws DataAccessException {
         SearchEngine searchEngine = null;
@@ -889,13 +507,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return score;
     }
 
-    /**
-     * Get peptide ids using identification id.
-     *
-     * @param proteinId identification id.
-     * @return Collection<Comparable>   peptide ids collection
-     * @throws DataAccessException data access exception
-     */
     @Override
     @SuppressWarnings("unchecked")
     public Collection<Comparable> getPeptideIds(Comparable proteinId) throws DataAccessException {
@@ -912,14 +523,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return ids;
     }
 
-    /**
-     * Get peptide using its index in a protein identification
-     *
-     * @param proteinId protein identification id
-     * @param index     peptide index
-     * @return Peptide peptide identification
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Peptide getPeptideByIndex(Comparable proteinId, Comparable index) throws DataAccessException {
         Peptide peptide = null;
@@ -930,14 +533,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return peptide;
     }
 
-
-    /**
-     * Get peptide sequences using identification id.
-     *
-     * @param proteinId identification id.
-     * @return Collection<Comparable>   peptide ids collection
-     * @throws DataAccessException data access exception
-     */
     @Override
     @SuppressWarnings("unchecked")
     public List<String> getPeptideSequences(Comparable proteinId) throws DataAccessException {
@@ -963,13 +558,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return peptide.getPeptideEvidenceList();
     }
 
-    /**
-     * Get number of peptides using identification id.
-     *
-     * @param proteinId identification id.
-     * @return int   number of peptides
-     * @throws DataAccessException data access exception
-     */
     @Override
     @SuppressWarnings("unchecked")
     public int getNumberOfPeptides(Comparable proteinId) throws DataAccessException {
@@ -981,12 +569,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return cnt;
     }
 
-    /**
-     * Get the total number of peptides
-     *
-     * @return int  the total number of peptides.
-     * @throws DataAccessException data access exception.
-     */
+    @Override
     public int getNumberOfPeptides() throws DataAccessException {
         int cnt = 0;
 
@@ -1000,13 +583,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return cnt;
     }
 
-    /**
-     * Get number of unique peptides using identification id.
-     *
-     * @param proteinId identification id.
-     * @return int   number of unique peptides
-     * @throws DataAccessException data access exception
-     */
     @Override
     @SuppressWarnings("unchecked")
     public int getNumberOfUniquePeptides(Comparable proteinId) throws DataAccessException {
@@ -1018,13 +594,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return cnt;
     }
 
-    /**
-     * Get number of ptms using identification id.
-     *
-     * @param proteinId identification id.
-     * @return int   number of ptms
-     * @throws DataAccessException data access exception
-     */
     @Override
     @SuppressWarnings("unchecked")
     public int getNumberOfPTMs(Comparable proteinId) throws DataAccessException {
@@ -1036,13 +605,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return cnt;
     }
 
-    /**
-     * Get number of ptms using peptide id.
-     *
-     * @param proteinId identification id.
-     * @return int   number of ptms
-     * @throws DataAccessException data access exception
-     */
     @Override
     @SuppressWarnings("unchecked")
     public int getNumberOfPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException {
@@ -1061,25 +623,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<Modification> getModification() throws DataAccessException {
-        return Collections.emptyList();
-        //Todo: Think About how we can report all of the modifications reported in the file.
-    }
-
-    @Override
-    public Collection<SearchDataBase> getSearchDataBases() throws DataAccessException {
-        return Collections.emptyList();
-        //Todo: Think About how we can report all the search databases reported in the file.
-    }
-
-    /**
-     * Get peptide sequence using identification id and peptide id.
-     *
-     * @param proteinId identification id.
-     * @return int   number of unique peptides
-     * @throws DataAccessException data access exception
-     */
-    @Override
     public String getPeptideSequence(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         String seq = null;
         Protein protein = getProteinById(proteinId);
@@ -1092,13 +635,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return seq;
     }
 
-    /**
-     * Get peptide sequence start using identification id and peptide id.
-     *
-     * @param proteinId identification id.
-     * @return int   peptide sequence start
-     * @throws DataAccessException data access exception
-     */
     @Override
     public int getPeptideSequenceStart(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         int start = -1;
@@ -1113,13 +649,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return start;
     }
 
-    /**
-     * Get peptide sequence stop using identification id and peptide id.
-     *
-     * @param proteinId identification id.
-     * @return int   peptide sequence stop
-     * @throws DataAccessException data access exception
-     */
     @Override
     public int getPeptideSequenceEnd(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         int stop = -1;
@@ -1133,13 +662,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return stop;
     }
 
-    /**
-     * Get peptide spectrum id using identification id and peptide id.
-     *
-     * @param proteinId identification id.
-     * @return int   peptide sequence stop
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Comparable getPeptideSpectrumId(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         Comparable specId = null;
@@ -1156,14 +678,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return specId;
     }
 
-    /**
-     * Get ptms using identification id nad peptide id
-     *
-     * @param proteinId identification id
-     * @param peptideId peptide id, can be the index of the peptide
-     * @return List<Modification>   a list of modifications.
-     * @throws DataAccessException data access exception
-     */
     @Override
     @SuppressWarnings("unchecked")
     public List<Modification> getPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException {
@@ -1172,7 +686,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         if (protein != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
-                List<Modification> rawMods = peptide.getPeptideSequence().getModificationList();
+                List<Modification> rawMods = peptide.getPeptideSequence().getModifications();
                 mods.addAll(rawMods);
             }
         }
@@ -1186,7 +700,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         if (protein != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
-                List<SubstitutionModification> rawMods = peptide.getPeptideSequence().getSubstitutionModificationList();
+                List<SubstitutionModification> rawMods = peptide.getPeptideSequence().getSubstitutionModifications();
                 mods.addAll(rawMods);
             }
         }
@@ -1219,14 +733,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return cnt;
     }
 
-    /**
-     * Get the number of fragment ions of a given peptide
-     *
-     * @param proteinId identification id
-     * @param peptideId peptide id, can be the index of the peptide as well.
-     * @return int the number of fragment ions
-     * @throws DataAccessException data access exception
-     */
     @Override
     public int getNumberOfFragmentIons(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         int num = 0;
@@ -1243,14 +749,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return num;
     }
 
-    /**
-     * Get all the fragment ions of a given peptide identification
-     *
-     * @param proteinId identification id
-     * @param peptideId peptide id, can be the index of the peptide as well.
-     * @return Collection<FragmentIon> a collection of fragment ions
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Collection<FragmentIon> getFragmentIons(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         List<FragmentIon> frags = new ArrayList<FragmentIon>();
@@ -1265,14 +763,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return frags;
     }
 
-    /**
-     * Get the search score for a given peptide
-     *
-     * @param proteinId identification id
-     * @param peptideId peptide id, can be the index of the peptide as well.
-     * @return PeptideScore    search engine score
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Score getPeptideScore(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         Score score = null;
@@ -1287,24 +777,12 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return score;
     }
 
-    /**
-     * Check the availability of quantitative data
-     *
-     * @return boolean true mean there is quantitative data
-     * @throws DataAccessException data access exception
-     */
     @Override
     public boolean hasQuantData() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getQuantMethods();
         return methods.size() > 0;
     }
 
-    /**
-     * Check the availability of quantitative data at the protein identification level
-     *
-     * @return boolean true means there is protein quantitative data
-     * @throws DataAccessException data access exception
-     */
     @Override
     public boolean hasProteinQuantData() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getQuantMethods();
@@ -1318,12 +796,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return false;
     }
 
-    /**
-     * Check the availability of quantitative data at the peptide identification level
-     *
-     * @return boolean true means there is peptide quantitative data
-     * @throws DataAccessException data access exception
-     */
     @Override
     public boolean hasPeptideQuantData() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getQuantMethods();
@@ -1337,34 +809,16 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return false;
     }
 
-    /**
-     * Check the availability of total intensities at the protein identification level
-     *
-     * @return boolean true means there is total intensities
-     * @throws DataAccessException data access exception
-     */
     @Override
     public boolean hasProteinTotalIntensities() throws DataAccessException {
         return getProteinQuantUnit() == null;
     }
 
-    /**
-     * Check the availability of total intensities at the peptide identification level
-     *
-     * @return boolean true means there is total intensities
-     * @throws DataAccessException data access exception
-     */
     @Override
     public boolean hasPeptideTotalIntensities() throws DataAccessException {
         return getPeptideQuantUnit() == null;
     }
 
-    /**
-     * Check whether label free methods have been used
-     *
-     * @return boolean true means there are label free methods
-     * @throws DataAccessException data access exception
-     */
     @Override
     public boolean hasLabelFreeQuantMethods() throws DataAccessException {
         // get the samples
@@ -1383,12 +837,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return false;
     }
 
-    /**
-     * Check whether isotope labelling methods have been used
-     *
-     * @return boolean true means isotope labelling methods present
-     * @throws DataAccessException data access exception
-     */
     @Override
     public boolean hasIsotopeLabellingQuantMethods() throws DataAccessException {
         // get the samples
@@ -1409,12 +857,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return false;
     }
 
-    /**
-     * get all the quantitative methods used
-     *
-     * @return Collection<QuantCvTermReference>    a collection of quantitative methods
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Collection<QuantCvTermReference> getQuantMethods() throws DataAccessException {
         Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
@@ -1436,12 +878,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return methods;
     }
 
-    /**
-     * Get a collection of all the label free methods used
-     *
-     * @return Collection<QuantCvTermReference>    a collection of label free methods
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Collection<QuantCvTermReference> getLabelFreeQuantMethods() throws DataAccessException {
         Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
@@ -1465,12 +901,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return methods;
     }
 
-    /**
-     * Get all the label free methods used at the protein identification level
-     *
-     * @return Collection<QuantCvTermReference>    a collection of label free methods
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Collection<QuantCvTermReference> getProteinLabelFreeQuantMethods() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getLabelFreeQuantMethods();
@@ -1485,12 +915,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return protMethods;
     }
 
-    /**
-     * Get all the label free methods used at the peptide identification level
-     *
-     * @return Collection<QuantCvTermReference>    a collection of label free methods
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Collection<QuantCvTermReference> getPeptideLabelFreeQuantMethods() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getLabelFreeQuantMethods();
@@ -1505,12 +929,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return peptideMethods;
     }
 
-    /**
-     * Get all the isotope labelling methods used
-     *
-     * @return Collection<QuantCvTermReference>    a collection of isotope labelling methods
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Collection<QuantCvTermReference> getIsotopeLabellingQuantMethods() throws DataAccessException {
         Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
@@ -1533,12 +951,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return methods;
     }
 
-    /**
-     * Get protein identification level isotope labelling methods
-     *
-     * @return Collection<QuantCvTermReference>    a collection of isotope labelling methods
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Collection<QuantCvTermReference> getProteinIsotopeLabellingQuantMethods() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getIsotopeLabellingQuantMethods();
@@ -1553,12 +965,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return protMethods;
     }
 
-    /**
-     * Get peptide identification level isotope labelling methods
-     *
-     * @return Collection<QuantCvTermReference>    a collection of isotope labelling methods
-     * @throws DataAccessException data access exception
-     */
     @Override
     public Collection<QuantCvTermReference> getPeptideIsotopeLabellingQuantMethods() throws DataAccessException {
         Collection<QuantCvTermReference> methods = getIsotopeLabellingQuantMethods();
@@ -1573,12 +979,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return peptideMethods;
     }
 
-    /**
-     * Get the number of reagents
-     *
-     * @return int the number of reagents
-     * @throws DataAccessException data access exception
-     */
     @Override
     public int getNumberOfReagents() throws DataAccessException {
         int num = 0;
@@ -1602,12 +1002,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return num;
     }
 
-    /**
-     * Check the first ten identification/peptide to get the reference sub sample's index
-     *
-     * @return index   reference sub sample index
-     * @throws DataAccessException
-     */
     @Override
     public int getReferenceSubSampleIndex() throws DataAccessException {
         int index = -1;
@@ -1618,7 +1012,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
                 Collection<Comparable> proteinIds = getProteinIds();
 
                 for (Comparable proteinId : proteinIds) {
-                    Quantitation quant = getProteinQuantData(proteinId);
+                    Quantification quant = getProteinQuantData(proteinId);
                     if (quant.hasTotalIntensities()) {
                         return index;
                     } else {
@@ -1638,7 +1032,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
                 for (Comparable proteinId : proteinIds) {
                     Collection<Comparable> peptideIds = getPeptideIds(proteinId);
                     for (Comparable peptideId : peptideIds) {
-                        Quantitation quant = getPeptideQuantData(proteinId, peptideId);
+                        Quantification quant = getPeptideQuantData(proteinId, peptideId);
                         if (quant.hasTotalIntensities()) {
                             return index;
                         } else {
@@ -1659,12 +1053,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return index;
     }
 
-    /**
-     * Get quantitative sample details
-     *
-     * @return QuantitativeSample  quantitative sample
-     * @throws DataAccessException data access exception
-     */
     @Override
     public QuantitativeSample getQuantSample() throws DataAccessException {
         QuantitativeSample sampleDesc = new QuantitativeSample();
@@ -1699,14 +1087,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return sampleDesc;
     }
 
-    /**
-     * Get quantitative unit used at the protein identification level
-     * <p/>
-     * Note: this method will scan through first 10 identifications
-     *
-     * @return Quantitation Cv Terms
-     * @throws DataAccessException Exception related with the retrieve of the data
-     */
     @Override
     public QuantCvTermReference getProteinQuantUnit() throws DataAccessException {
         Collection<Comparable> proteinIds = getProteinIds();
@@ -1714,7 +1094,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         int cnt = NUMBER_OF_PROTEIN_TO_CHECK;
 
         for (Comparable proteinId : proteinIds) {
-            Quantitation quant = getProteinQuantData(proteinId);
+            Quantification quant = getProteinQuantData(proteinId);
             QuantCvTermReference unit = quant.getUnit();
             cnt--;
             if (unit != null) {
@@ -1728,14 +1108,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return null;
     }
 
-    /**
-     * Get quantitative unit used at the peptide identification level
-     * <p/>
-     * Note: this method will scan all the peptides
-     *
-     * @return QuantCvTermReference    unit cv term
-     * @throws DataAccessException data access exception
-     */
     @Override
     public QuantCvTermReference getPeptideQuantUnit() throws DataAccessException {
         Collection<Comparable> proteinIds = getProteinIds();
@@ -1745,7 +1117,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         for (Comparable proteinId : proteinIds) {
             Collection<Comparable> peptideIds = getPeptideIds(proteinId);
             for (Comparable peptideId : peptideIds) {
-                Quantitation quant = getPeptideQuantData(proteinId, peptideId);
+                Quantification quant = getPeptideQuantData(proteinId, peptideId);
                 QuantCvTermReference unit = quant.getUnit();
                 if (unit != null) {
                     return unit;
@@ -1760,38 +1132,18 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return null;
     }
 
-    /**
-     * Get protein level quantitative data using a given protein identification id
-     *
-     * @param proteinId protein identification id
-     * @return Quantitation    quantitative data
-     * @throws DataAccessException data access exception
-     */
     @Override
-    public Quantitation getProteinQuantData(Comparable proteinId) throws DataAccessException {
+    public Quantification getProteinQuantData(Comparable proteinId) throws DataAccessException {
         Protein protein = getProteinById(proteinId);
-        return new Quantitation(Quantitation.Type.PROTEIN, protein.getCvParams());
+        return new Quantification(Quantification.Type.PROTEIN, protein.getCvParams());
     }
 
-    /**
-     * Get peptide level quantitative data using a given peptide identification id
-     *
-     * @param proteinId protein identification id
-     * @param peptideId peptide id
-     * @return Quantitation    quantitative data
-     * @throws DataAccessException data access exception
-     */
     @Override
-    public Quantitation getPeptideQuantData(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public Quantification getPeptideQuantData(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         Peptide peptide = getPeptideByIndex(proteinId, peptideId);
-        return new Quantitation(Quantitation.Type.PEPTIDE, peptide.getSpectrumIdentification().getCvParams());
+        return new Quantification(Quantification.Type.PEPTIDE, peptide.getSpectrumIdentification().getCvParams());
     }
 
-    /**
-     * By default all the supported files contains Metadata. Only the Peak Files do not contain any Metadata.
-     *
-     * @return boolean
-     */
     @Override
     public boolean hasMetaDataInformation() {
         return true;

@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
@@ -24,43 +22,19 @@ public class ExperimentProtocol extends IdentifiableParamGroup {
      */
     private List<ParamGroup> protocolSteps;
 
-    /**
-     * Pride Protocol Constructor
-     *
-     * @param id  ID Experiment Protocol
-     * @param name Name of the Experiment Protocol
-     */
     public ExperimentProtocol(Comparable id, String name) {
         super(id, name);
     }
 
-    /**
-     * Constructor of the Experiment Protocol
-     *
-     * @param params ParamGroup
-     * @param id     ID
-     * @param name   Name
-     * @param protocolSteps A list of ParamGroup that define the current Experiment Protocol
-     */
     public ExperimentProtocol(ParamGroup params, String id, String name, List<ParamGroup> protocolSteps) {
         super(params, id, name);
         this.protocolSteps = CollectionUtils.createListFromList(protocolSteps);
     }
 
-    /**
-     * Get Experiment Protocol Steps. A list of ParamGroup
-     *
-     * @return List of ParamGroup
-     */
     public List<ParamGroup> getProtocolSteps() {
         return protocolSteps;
     }
 
-    /**
-     * Set the CvTerms for Each Step of the Pride Experiment
-     *
-     * @param protocolSteps A list of ParamGroup that define the different steps in the Protocol
-     */
     public void setProtocolSteps(List<ParamGroup> protocolSteps) {
         CollectionUtils.replaceValuesInCollection(protocolSteps, this.protocolSteps);
     }

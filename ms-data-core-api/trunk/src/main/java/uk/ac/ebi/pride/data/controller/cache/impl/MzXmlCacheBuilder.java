@@ -1,14 +1,10 @@
 package uk.ac.ebi.pride.data.controller.cache.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzXmlControllerImpl;
 import uk.ac.ebi.pride.data.io.file.MzXmlUnmarshallerAdaptor;
 
 import java.util.ArrayList;
-
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * MzMlAccessCacheBuilder initialize the cache for mzML reading.

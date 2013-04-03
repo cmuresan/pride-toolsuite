@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.data.controller.cache.impl;
 
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
-import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzXmlControllerImpl;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PeakControllerImpl;
 import uk.ac.ebi.pride.data.io.file.PeakUnmarshallerAdaptor;
 

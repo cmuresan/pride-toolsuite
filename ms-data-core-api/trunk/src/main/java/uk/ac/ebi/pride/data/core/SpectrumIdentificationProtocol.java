@@ -21,12 +21,12 @@ public class SpectrumIdentificationProtocol extends Protocol {
     /**
      * The list of enzymes used in experiment
      */
-    private List<Enzyme> enzymeList;
+    private List<Enzyme> enzymes;
 
     /**
      * The specification of filters applied to the database searched.
      */
-    private List<Filter> filterList;
+    private List<Filter> filters;
 
     /**
      * The tolerance of the search given as a plus and minus value with units.
@@ -36,7 +36,7 @@ public class SpectrumIdentificationProtocol extends Protocol {
     /**
      * The masses of residues used in the search.
      */
-    private List<MassTable> massTableList;
+    private List<MassTable> massTables;
 
     /**
      * The tolerance of the search given as a plus and minus value with units.
@@ -47,7 +47,7 @@ public class SpectrumIdentificationProtocol extends Protocol {
      * The specification of static/variable modifications
      * (e.g. Oxidation of Methionine) that are to be considered in the spectra search.
      */
-    private List<SearchModification> searchModificationList;
+    private List<SearchModification> searchModifications;
 
     /**
      * The type of search performed e.g. PMF, Tag searches, MS-MS
@@ -60,48 +60,30 @@ public class SpectrumIdentificationProtocol extends Protocol {
      */
     private boolean enzymeIndependent;
 
-    /**
-     * SpectrumIdentificationProtocol Constructor
-     *
-     * @param id                     Generic Id for Spectrum Identification Protocol
-     * @param name                   Generic Name for Spectrum Identification Protocol
-     * @param analysisSoftware       Analysis Software
-     * @param analysisParam          Analysis CvPram Group
-     * @param threshold              Threshold
-     * @param searchType             Search Type
-     * @param searchModificationList Modification List
-     * @param enzymeIndependent      Enzyme Independent
-     * @param enzymeList             List of Enzymes used in the Experiment
-     * @param massTableList          Mass Table used in the Experiment
-     * @param fragmentTolerance      Fragment Tolerance
-     * @param parentTolerance        Precursor or Parent Tolerance
-     * @param filterList             List of Filters used during the identification
-     * @param dataBaseTranslation    Translation Database
-     */
     public SpectrumIdentificationProtocol(Comparable id, String name, Software analysisSoftware,
-                                          ParamGroup analysisParam, ParamGroup threshold, ParamGroup searchType,
-                                          List<SearchModification> searchModificationList, boolean enzymeIndependent, List<Enzyme> enzymeList,
-                                          List<MassTable> massTableList, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
-                                          List<Filter> filterList, DataBaseTranslation dataBaseTranslation) {
-        this(analysisParam, id, name, analysisSoftware, threshold, searchType, searchModificationList, enzymeIndependent,
-                enzymeList, massTableList, fragmentTolerance, parentTolerance, filterList, dataBaseTranslation);
+            ParamGroup analysisParam, ParamGroup threshold, ParamGroup searchType,
+            List<SearchModification> searchModifications, boolean enzymeIndependent, List<Enzyme> enzymes,
+            List<MassTable> massTables, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
+            List<Filter> filters, DataBaseTranslation dataBaseTranslation) {
+        this(analysisParam, id, name, analysisSoftware, threshold, searchType, searchModifications, enzymeIndependent,
+                enzymes, massTables, fragmentTolerance, parentTolerance, filters, dataBaseTranslation);
     }
 
 
     public SpectrumIdentificationProtocol(ParamGroup analysisParam, Comparable id, String name,
-                                          Software analysisSoftware, ParamGroup threshold, ParamGroup searchType,
-                                          List<SearchModification> searchModificationList, boolean enzymeIndependent, List<Enzyme> enzymeList,
-                                          List<MassTable> massTableList, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
-                                          List<Filter> filterList, DataBaseTranslation dataBaseTranslation) {
+            Software analysisSoftware, ParamGroup threshold, ParamGroup searchType,
+            List<SearchModification> searchModifications, boolean enzymeIndependent, List<Enzyme> enzymes,
+            List<MassTable> massTables, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
+            List<Filter> filters, DataBaseTranslation dataBaseTranslation) {
         super(analysisParam, id, name, analysisSoftware, threshold);
         this.searchType = searchType;
-        this.searchModificationList = CollectionUtils.createListFromList(searchModificationList);
+        this.searchModifications = CollectionUtils.createListFromList(searchModifications);
         this.enzymeIndependent = enzymeIndependent;
-        this.enzymeList = CollectionUtils.createListFromList(enzymeList);
-        this.massTableList = CollectionUtils.createListFromList(massTableList);
+        this.enzymes = CollectionUtils.createListFromList(enzymes);
+        this.massTables = CollectionUtils.createListFromList(massTables);
         this.fragmentTolerance = CollectionUtils.createListFromList(fragmentTolerance);
         this.parentTolerance = CollectionUtils.createListFromList(parentTolerance);
-        this.filterList = CollectionUtils.createListFromList(filterList);
+        this.filters = CollectionUtils.createListFromList(filters);
         this.dataBaseTranslation = dataBaseTranslation;
     }
 
@@ -113,12 +95,12 @@ public class SpectrumIdentificationProtocol extends Protocol {
         this.searchType = searchType;
     }
 
-    public List<SearchModification> getSearchModificationList() {
-        return searchModificationList;
+    public List<SearchModification> getSearchModifications() {
+        return searchModifications;
     }
 
-    public void setSearchModificationList(List<SearchModification> searchModificationList) {
-        CollectionUtils.replaceValuesInCollection(searchModificationList, this.searchModificationList);
+    public void setSearchModifications(List<SearchModification> searchModifications) {
+        CollectionUtils.replaceValuesInCollection(searchModifications, this.searchModifications);
     }
 
     public boolean isEnzymeIndependent() {
@@ -129,20 +111,20 @@ public class SpectrumIdentificationProtocol extends Protocol {
         this.enzymeIndependent = enzymeIndependent;
     }
 
-    public List<Enzyme> getEnzymeList() {
-        return enzymeList;
+    public List<Enzyme> getEnzymes() {
+        return enzymes;
     }
 
-    public void setEnzymeList(List<Enzyme> enzymeList) {
-        CollectionUtils.replaceValuesInCollection(enzymeList, this.enzymeList);
+    public void setEnzymes(List<Enzyme> enzymes) {
+        CollectionUtils.replaceValuesInCollection(enzymes, this.enzymes);
     }
 
-    public List<MassTable> getMassTableList() {
-        return massTableList;
+    public List<MassTable> getMassTables() {
+        return massTables;
     }
 
-    public void setMassTableList(List<MassTable> massTableList) {
-        CollectionUtils.replaceValuesInCollection(massTableList, this.massTableList);
+    public void setMassTables(List<MassTable> massTables) {
+        CollectionUtils.replaceValuesInCollection(massTables, this.massTables);
     }
 
     public List<CvParam> getFragmentTolerance() {
@@ -161,12 +143,12 @@ public class SpectrumIdentificationProtocol extends Protocol {
         CollectionUtils.replaceValuesInCollection(parentTolerance, this.parentTolerance);
     }
 
-    public List<Filter> getFilterList() {
-        return filterList;
+    public List<Filter> getFilters() {
+        return filters;
     }
 
-    public void setFilterList(List<Filter> filterList) {
-        CollectionUtils.replaceValuesInCollection(filterList, this.filterList);
+    public void setFilters(List<Filter> filters) {
+        CollectionUtils.replaceValuesInCollection(filters, this.filters);
     }
 
     public DataBaseTranslation getDataBaseTranslation() {
@@ -188,26 +170,27 @@ public class SpectrumIdentificationProtocol extends Protocol {
         if (enzymeIndependent != that.enzymeIndependent) return false;
         if (dataBaseTranslation != null ? !dataBaseTranslation.equals(that.dataBaseTranslation) : that.dataBaseTranslation != null)
             return false;
-        if (!enzymeList.equals(that.enzymeList)) return false;
-        if (!filterList.equals(that.filterList)) return false;
+        if (!enzymes.equals(that.enzymes)) return false;
+        if (!filters.equals(that.filters)) return false;
         if (!fragmentTolerance.equals(that.fragmentTolerance)) return false;
-        if (!massTableList.equals(that.massTableList)) return false;
+        if (!massTables.equals(that.massTables)) return false;
         if (!parentTolerance.equals(that.parentTolerance)) return false;
-        if (!searchModificationList.equals(that.searchModificationList)) return false;
-        return !(searchType != null ? !searchType.equals(that.searchType) : that.searchType != null);
+        if (!searchModifications.equals(that.searchModifications)) return false;
+        if (searchType != null ? !searchType.equals(that.searchType) : that.searchType != null) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (dataBaseTranslation != null ? dataBaseTranslation.hashCode() : 0);
-        result = 31 * result + enzymeList.hashCode();
-        result = 31 * result + filterList.hashCode();
+        result = 31 * result + enzymes.hashCode();
+        result = 31 * result + filters.hashCode();
         result = 31 * result + fragmentTolerance.hashCode();
-        result = 31 * result + massTableList.hashCode();
+        result = 31 * result + massTables.hashCode();
         result = 31 * result + parentTolerance.hashCode();
-        result = 31 * result + searchModificationList.hashCode();
+        result = 31 * result + searchModifications.hashCode();
         result = 31 * result + (searchType != null ? searchType.hashCode() : 0);
         result = 31 * result + (enzymeIndependent ? 1 : 0);
         return result;

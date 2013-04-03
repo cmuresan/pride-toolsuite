@@ -1,20 +1,12 @@
 package uk.ac.ebi.pride.data.controller.impl.Transformer;
 
-import sun.nio.cs.ext.DoubleByteEncoder;
-import uk.ac.ebi.jmzml.model.mzml.ComponentList;
-import uk.ac.ebi.jmzml.model.mzml.SoftwareRef;
-import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.term.CvTermReference;
 
-
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * MZXml transformer provides the methods to convert MzXml objects to

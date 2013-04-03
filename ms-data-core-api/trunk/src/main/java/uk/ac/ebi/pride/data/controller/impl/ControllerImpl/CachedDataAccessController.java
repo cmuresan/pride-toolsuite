@@ -147,7 +147,6 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      *
      * @return mode    runtime mode
      */
-    @Override
     public DataAccessMode getMode() {
         return mode;
     }
@@ -157,22 +156,8 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      *
      * @param mode DataAccessMode
      */
-    @Override
     public void setMode(DataAccessMode mode) {
         this.mode = mode;
-    }
-
-
-    /**
-     * Get experiment accessions from cache
-     *
-     * @return Collection<Comparable>   a collection of experiment accessions.
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public Collection<Comparable> getExperimentAccs() throws DataAccessException {
-        return (Collection<Comparable>) cache.get(CacheCategory.EXPERIMENT_ACC);
     }
 
     /**

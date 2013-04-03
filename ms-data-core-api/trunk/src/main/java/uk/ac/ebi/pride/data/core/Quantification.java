@@ -14,7 +14,7 @@ import java.util.*;
  * Date: 28/07/2011
  * Time: 09:21
  */
-public class Quantitation {
+public class Quantification {
 
     /**
      * Isotope labelling method standard deviations
@@ -56,7 +56,7 @@ public class Quantitation {
      */
     public enum Type { PROTEIN, PEPTIDE }
 
-    public Quantitation(Type type, List<CvParam> cvParamList) {
+    public Quantification(Type type, List<CvParam> cvParamList) {
         this.type                       = type;
         this.isotopeLabellingResults    = new Double[QuantitativeSample.MAX_SUB_SAMPLE_SIZE];
         this.isotopeLabellingDeviations = new Double[QuantitativeSample.MAX_SUB_SAMPLE_SIZE];
@@ -112,20 +112,10 @@ public class Quantitation {
         }
     }
 
-    /**
-     * Get type of the quantification, either at protein level or at peptide level
-     *
-     * @return Type    quantification type
-     */
     public Type getType() {
         return type;
     }
 
-    /**
-     * Set quantification type
-     *
-     * @param type quantification type
-     */
     public void setType(Type type) {
         this.type = type;
     }
@@ -319,7 +309,7 @@ public class Quantitation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Quantitation that = (Quantitation) o;
+        Quantification that = (Quantification) o;
 
         return Arrays.equals(isotopeLabellingDeviations, that.isotopeLabellingDeviations) && Arrays.equals(isotopeLabellingErrors, that.isotopeLabellingErrors) && isotopeLabellingMethod == that.isotopeLabellingMethod && Arrays.equals(isotopeLabellingResults, that.isotopeLabellingResults) && !(labelFreeResults != null ? !labelFreeResults.equals(that.labelFreeResults) : that.labelFreeResults != null) && type == that.type && unit == that.unit;
 

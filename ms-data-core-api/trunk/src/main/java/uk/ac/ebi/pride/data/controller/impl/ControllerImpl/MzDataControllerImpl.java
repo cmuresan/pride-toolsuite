@@ -9,18 +9,13 @@ import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.cache.impl.MzDataCacheBuilder;
 import uk.ac.ebi.pride.data.controller.impl.Transformer.MzDataTransformer;
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.DataProcessing;
-import uk.ac.ebi.pride.data.core.Person;
-import uk.ac.ebi.pride.data.core.Software;
-import uk.ac.ebi.pride.data.core.SourceFile;
-import uk.ac.ebi.pride.data.core.Spectrum;
 import uk.ac.ebi.pride.data.io.file.MzDataUnmarshallerAdaptor;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
 import uk.ac.ebi.pride.tools.jmzreader.JMzReaderException;
 import uk.ac.ebi.pride.tools.mzdata_parser.MzDataFile;
-import uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.*;
-
+import uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.Admin;
+import uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.CvLookup;
+import uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.InstrumentDescription;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -38,10 +33,11 @@ import java.util.regex.Pattern;
  * This controller is used to retrieve the information from mzData files. It uses the jmzReader
  * to retrieve the information from mzData files. The mzData files support Spectrum and Chromatogram
  * Information and also other important Metadata.
- * <p/>
+ *
  * User: yperez
  * Date: 3/15/12
  * Time: 8:17 AM
+ *
  */
 public class MzDataControllerImpl extends CachedDataAccessController {
 
@@ -57,11 +53,10 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     private MzDataUnmarshallerAdaptor unmarshaller;
 
     /**
-     * Construct a data access controller using a given ,zData file
+     * Construct a data access controller using a given mzData file
      *
      * @param file mzData file
-     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
-     *          data access exception
+     * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception
      */
     public MzDataControllerImpl(File file) throws DataAccessException {
         this(file, null);
@@ -98,10 +93,10 @@ public class MzDataControllerImpl extends CachedDataAccessController {
             this.setType(DataAccessController.Type.XML_FILE);
             // set the content categories
             this.setContentCategories(DataAccessController.ContentCategory.SPECTRUM,
-                    DataAccessController.ContentCategory.SAMPLE,
-                    DataAccessController.ContentCategory.INSTRUMENT,
-                    DataAccessController.ContentCategory.SOFTWARE,
-                    DataAccessController.ContentCategory.DATA_PROCESSING);
+                DataAccessController.ContentCategory.SAMPLE,
+                DataAccessController.ContentCategory.INSTRUMENT,
+                DataAccessController.ContentCategory.SOFTWARE,
+                DataAccessController.ContentCategory.DATA_PROCESSING);
             // create cache builder
             setCacheBuilder(new MzDataCacheBuilder(this));
             // populate cache
@@ -166,18 +161,6 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * Get referenceable paramgroup, this concept is only available in mzML not in mzData
-     * It is a paramgroup with id.
-     *
-     * @return ReferenceableParamGroup param group
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    public ReferenceableParamGroup getReferenceableParamGroup() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
-    }
-
-    /**
      * Get a list of samples by checking the cache first
      *
      * @return List<Sample>    a list of samples
@@ -197,7 +180,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException(msg, e);
             }
         } else {
-            return metaData.getSampleList();
+            return metaData.getSamples();
         }
     }
 
@@ -207,7 +190,6 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * @return List<Person>    list of persons
      * @throws DataAccessException data access exception
      */
-    @Override
     public List<Person> getPersonContacts() throws DataAccessException {
         try {
             List<uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.Person> rawFileDesc = unmarshaller.getPersonContacts();
@@ -221,23 +203,11 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * Get the information of Organizations. The organizations is not supported in mzData
-     *
-     * @return Organization List (for mzData files this method is not supported)
-     * @throws DataAccessException
-     */
-    @Override
-    public List<Organization> getOrganizationContacts() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
-    }
-
-    /**
      * Get the information of SourceFiles.
      *
      * @return List of Source Files
      * @throws DataAccessException
      */
-    @Override
     public List<SourceFile> getSourceFiles() throws DataAccessException {
         try {
             uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.SourceFile rawFileDesc = unmarshaller.getSourceFiles();
@@ -256,36 +226,32 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * @return ParamGroup
      * @throws DataAccessException
      */
-
-    @Override
     public ParamGroup getFileContent() throws DataAccessException {
         ParamGroup paramGroup = null;
         List<SourceFile> sourceFiles = getSourceFiles();
         Set<CvParam> cvParamSet = null;
 
-        if (sourceFiles != null && !sourceFiles.isEmpty()) {
+        if(sourceFiles != null){
             cvParamSet = new HashSet<CvParam>();
-            for (SourceFile sourceFile : sourceFiles) {
-                if (sourceFile.getFileFormat() != null) {
+            for(SourceFile sourceFile: sourceFiles){
+                if(sourceFile.getFileFormat() != null){
                     cvParamSet.add(sourceFile.getFileFormat());
                 }
             }
         }
-        if (cvParamSet != null) {
+        if (cvParamSet != null){
             List<CvParam> cvParams = new ArrayList<CvParam>();
             cvParams.addAll(cvParamSet);
-            paramGroup = new ParamGroup(cvParams, null);
+            paramGroup = new ParamGroup(cvParams,null);
         }
         return paramGroup;
     }
 
     /**
      * Get a List of Software
-     *
      * @return List<Software> List of Software
      * @throws DataAccessException
      */
-    @Override
     public List<Software> getSoftwares() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
@@ -304,23 +270,11 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * Scan Setting is not Supported by mzData.
-     *
-     * @return List<ScanSetting>   a list of scan settings
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    public List<ScanSetting> getScanSettings() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
-    }
-
-    /**
      * Get a list of instrument configurations by checking the cache first
      *
      * @return List<Instrumentconfiguration>   a list of instrument configurations
      * @throws DataAccessException data access exception
      */
-    @Override
     public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
@@ -344,7 +298,6 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * @return List<DataProcessing>    a list of data processings
      * @throws DataAccessException data access exception
      */
-    @Override
     public List<DataProcessing> getDataProcessings() throws DataAccessException {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
@@ -358,20 +311,9 @@ public class MzDataControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException(msg, e);
             }
         } else {
-            return metaData.getDataProcessingList();
+            return metaData.getDataProcessings();
         }
 
-    }
-
-    /**
-     * Get additional details, mzML don't have this kind of information
-     *
-     * @return ParamGroup  param group
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    public ParamGroup getAdditional() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
     }
 
     /**
@@ -425,7 +367,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
+    public ExperimentMetaData getExperimentMetaData()throws DataAccessException{
 
         ExperimentMetaData metaData = super.getExperimentMetaData();
 

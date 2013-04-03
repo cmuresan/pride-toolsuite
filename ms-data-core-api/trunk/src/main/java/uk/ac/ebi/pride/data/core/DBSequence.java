@@ -12,7 +12,7 @@ public class DBSequence extends IdentifiableParamGroup {
     /**
      * The unique accession of this sequence.
      */
-    private String accessionId;
+    private String accession;
 
     /**
      * protein accession version
@@ -39,146 +39,66 @@ public class DBSequence extends IdentifiableParamGroup {
      */
     private String spliceIsoform;
 
-    /**
-     * Constructor for PRIDE DBSequence Objects
-     *
-     * @param accessionId The accession in the DataBase of the Sequence
-     * @param searchDataBase The Search DataBase that contains the current Sequence
-     * @param accessionVersion  The version of the accession
-     * @param spliceIsoform  Splice Isoform
-     */
-    public DBSequence(String accessionId, SearchDataBase searchDataBase, String accessionVersion,
+    public DBSequence(String accession, SearchDataBase searchDataBase, String accessionVersion,
                       String spliceIsoform) {
-        this(null, null, null, -1, accessionId, searchDataBase, null, accessionVersion, spliceIsoform);
+        this(null, null, null, -1, accession, searchDataBase, null, accessionVersion, spliceIsoform);
     }
 
-    /**
-     * Constructor with ParamGroup Information
-     *
-     * @param params  ParamGroup (List of CvTerms and User Params)
-     * @param id      ID of the DBSequence Object
-     * @param name    Name
-     * @param length  The Length of the sequence
-     * @param accessionId The accession in the DataBase of the Sequence
-     * @param searchDataBase The Search DataBase that contains the current Sequence
-     * @param sequence       Sequence
-     * @param accessionVersion  The version of the accession
-     * @param spliceIsoform  Splice Isoform
-     */
-    public DBSequence(ParamGroup params, Comparable id, String name, int length, String accessionId,
+    public DBSequence(ParamGroup params, Comparable id, String name, int length, String accession,
                       SearchDataBase searchDataBase, String sequence, String accessionVersion, String spliceIsoform) {
         super(params, id, name);
         this.length           = length;
-        this.accessionId      = accessionId;
+        this.accession = accession;
         this.searchDataBase   = searchDataBase;
         this.sequence         = sequence;
         this.accessionVersion = accessionVersion;
         this.spliceIsoform    = spliceIsoform;
     }
 
-    /**
-     * Get the length of the Sequence
-     *
-     * @return Length of the Sequence
-     */
     public int getLength() {
         return length;
     }
 
-    /**
-     * Set the length of the Sequence
-     *
-     * @param length Length of the Sequence
-     */
     public void setLength(int length) {
         this.length = length;
     }
 
-    /**
-     *  Get the Accession ID of the Sequence in the DataBase
-     *
-     * @return Accession ID of the Sequence in the DataBase
-     */
-    public String getAccessionId() {
-        return accessionId;
+    public String getAccession() {
+        return accession;
     }
 
-    /**
-     * Set the Accession ID of the Sequence in the DataBase
-     *
-     * @param accessionId Accession ID of the Sequence in the DataBase
-     */
-    public void setAccessionId(String accessionId) {
-        this.accessionId = accessionId;
+    public void setAccession(String accession) {
+        this.accession = accession;
     }
 
-    /**
-     * Get the Search DataBase that contains the Sequence
-     *
-     * @return Search DataBase that contains the Sequence
-     */
     public SearchDataBase getSearchDataBase() {
         return searchDataBase;
     }
 
-    /**
-     * Set the Search DataBase that contains the Sequence
-     *
-     * @param searchDataBase Search DataBase that contains the Sequence
-     */
     public void setSearchDataBase(SearchDataBase searchDataBase) {
         this.searchDataBase = searchDataBase;
     }
 
-    /**
-     * Get the Sequence of the Protein in the Database
-     *
-     * @return Sequence
-     */
     public String getSequence() {
         return sequence;
     }
 
-    /**
-     * Set the Sequence of the Protein in the Database
-     *
-     * @param sequence Sequence
-     */
     public void setSequence(String sequence) {
         this.sequence = sequence;
     }
 
-    /**
-     * Get the Accession Version of the Sequence in the DataBase
-     *
-     * @return Accession Version of the Sequence in the DataBase
-     */
     public String getAccessionVersion() {
         return accessionVersion;
     }
 
-    /**
-     * Set the Accession Version of the Sequence in the DataBase
-     *
-     * @param accessionVersion Accession Version of the Sequence in the DataBase
-     */
     public void setAccessionVersion(String accessionVersion) {
         this.accessionVersion = accessionVersion;
     }
 
-    /**
-     * Get the Splice Isoform
-     * @return spliceIsoform (String)
-     */
     public String getSpliceIsoform() {
         return spliceIsoform;
     }
 
-    /**
-     *  Set the Splice Isoform
-     *
-     * @param spliceIsoform Splice Isoform
-     */
     public void setSpliceIsoform(String spliceIsoform) {
         this.spliceIsoform = spliceIsoform;
     }
@@ -195,14 +115,14 @@ public class DBSequence extends IdentifiableParamGroup {
 
         DBSequence that = (DBSequence) o;
 
-        return length == that.length && accessionId.equals(that.accessionId) && accessionVersion.equals(that.accessionVersion) && searchDataBase.equals(that.searchDataBase) && sequence.equals(that.sequence) && spliceIsoform.equals(that.spliceIsoform);
+        return length == that.length && accession.equals(that.accession) && accessionVersion.equals(that.accessionVersion) && searchDataBase.equals(that.searchDataBase) && sequence.equals(that.sequence) && spliceIsoform.equals(that.spliceIsoform);
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (accessionId != null ? accessionId.hashCode() : 0);
+        result = 31 * result + (accession != null ? accession.hashCode() : 0);
         result = 31 * result + (accessionVersion != null ? accessionVersion.hashCode() : 0);
         result = 31 * result + length;
         result = 31 * result + (searchDataBase != null ? searchDataBase.hashCode() : 0);

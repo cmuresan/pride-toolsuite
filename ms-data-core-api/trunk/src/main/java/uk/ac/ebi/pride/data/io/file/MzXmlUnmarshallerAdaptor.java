@@ -1,19 +1,16 @@
 package uk.ac.ebi.pride.data.io.file;
 
 
-import uk.ac.ebi.pride.data.core.CvParam;
 import uk.ac.ebi.pride.tools.jmzreader.JMzReaderException;
 import uk.ac.ebi.pride.tools.jmzreader.model.Spectrum;
 import uk.ac.ebi.pride.tools.mzxml_parser.MzXMLFile;
 import uk.ac.ebi.pride.tools.mzxml_parser.MzXMLParsingException;
 import uk.ac.ebi.pride.tools.mzxml_parser.mzxml.model.*;
 
-
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * The MzXML Unmarshaller Adaptor provides the methods to retrieve the information form

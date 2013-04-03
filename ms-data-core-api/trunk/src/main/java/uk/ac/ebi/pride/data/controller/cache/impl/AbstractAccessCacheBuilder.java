@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.controller.cache.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.cache.Cache;
 import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;

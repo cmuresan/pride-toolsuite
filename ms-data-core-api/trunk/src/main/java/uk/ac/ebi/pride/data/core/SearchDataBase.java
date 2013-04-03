@@ -53,29 +53,10 @@ public class SearchDataBase extends ExternalData {
      */
     private String version;
 
-    /**
-     * Constructor for Pride SearchDatabase Object
-     *
-     * @param name Name of the Database
-     * @param databaseVersion Version of the Database
-     */
     public SearchDataBase(String name, String databaseVersion) {
         this(null, name, null, null, null, databaseVersion, null, -1, -1, null, null);
     }
 
-    /**
-     * @param id           Generic Id of SearchDatabase
-     * @param name         Generic Name of SearchDatabase
-     * @param location     Location
-     * @param fileFormat   File format of the SearchDatabase in CvTerm
-     * @param externalFormatDocumentationURI External Format Documentation in CvTerm
-     * @param version                        Database Version
-     * @param releaseDate                    Date Release
-     * @param numDatabaseSequence            Number of Database Sequences
-     * @param numDatabaseResidue             Number of Database Residues
-     * @param nameDatabase                   Database Name
-     * @param description                    Database Description
-     */
     public SearchDataBase(String id, String name, String location, CvParam fileFormat,
                           String externalFormatDocumentationURI, String version, String releaseDate,
                           int numDatabaseSequence, long numDatabaseResidue, ParamGroup nameDatabase,

@@ -1,19 +1,8 @@
 package uk.ac.ebi.pride.data.controller.impl.Transformer;
 
-import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.DataProcessing;
-import uk.ac.ebi.pride.data.core.Person;
-import uk.ac.ebi.pride.data.core.Precursor;
-import uk.ac.ebi.pride.data.core.Software;
-import uk.ac.ebi.pride.data.core.SourceFile;
-import uk.ac.ebi.pride.data.core.Spectrum;
-import uk.ac.ebi.pride.data.core.UserParam;
 import uk.ac.ebi.pride.term.CvTermReference;
-import uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.*;
 
-import javax.xml.transform.Source;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

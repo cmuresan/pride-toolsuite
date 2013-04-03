@@ -13,21 +13,10 @@ import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.cache.impl.MzIdentMLCacheBuilder;
 import uk.ac.ebi.pride.data.controller.impl.Transformer.MzIdentMLTransformer;
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.Organization;
-import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.data.core.Person;
-import uk.ac.ebi.pride.data.core.Provider;
-import uk.ac.ebi.pride.data.core.Sample;
-import uk.ac.ebi.pride.data.core.SourceFile;
-import uk.ac.ebi.pride.data.core.SpectraData;
-import uk.ac.ebi.pride.data.core.Spectrum;
-import uk.ac.ebi.pride.data.core.SpectrumIdentificationProtocol;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
 import uk.ac.ebi.pride.data.utils.Constants;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
 import uk.ac.ebi.pride.data.utils.MzIdentMLUtils;
-
 
 import javax.xml.bind.JAXBException;
 import java.io.BufferedReader;
@@ -56,7 +45,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     private static final Logger logger = LoggerFactory.getLogger(MzIdentMLControllerImpl.class);
 
     //The unmarshller class that retrieve the information from the mzidentml files
-    private MzIdentMLUnmarshallerAdaptor unmarshaller = null;
+    private MzIdentMLUnmarshallerAdaptor unmarshaller;
 
     // The Match pattern for a valid mzidentml file, its support now the version 1.1.
     private static Pattern mzIdentMLHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<(MzIdentML)|(indexedmzIdentML) xmlns=.*", Pattern.MULTILINE);
@@ -68,13 +57,13 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
        * related with the file.
 
      */
-    private Map<Comparable, DataAccessController> msDataAccessControllers = null;
+    private Map<Comparable, DataAccessController> msDataAccessControllers;
 
     /**
      * A map of the SpectraData associated with this mzidentml
      */
 
-    private Map<Comparable, SpectraData> spectraDataMap = null;
+    private Map<Comparable, SpectraData> spectraDataMap;
 
 
     /**
@@ -113,10 +102,19 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         File file = (File) getSource();
         MzIdentMLUnmarshaller um = new MzIdentMLUnmarshaller(file);
         unmarshaller = new MzIdentMLUnmarshallerAdaptor(um);
+
+        // init ms data accession controller map
+        this.msDataAccessControllers = new HashMap<Comparable, DataAccessController>();
+
+        // init spectra data map
+        this.spectraDataMap = new HashMap<Comparable, SpectraData>();
+
         // set data source description
         this.setName(file.getName());
+
         // set the type
         this.setType(Type.MZIDENTML);
+
         // set the content categories
         this.setContentCategories(
                 ContentCategory.PROTEIN,
@@ -126,8 +124,10 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 ContentCategory.PROTEIN_GROUPS,
                 ContentCategory.SPECTRUM
         );
+
         // set cache builder
         setCacheBuilder(new MzIdentMLCacheBuilder(this));
+
         // populate cache
         populateCache();
 
@@ -135,7 +135,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     }
 
     private void populateGlobalObjects() {
-
         List<CVLookup> CvParamList = MzIdentMLTransformer.transformCVList(unmarshaller.getCvList());
         MzIdentMLTransformer.setCvLookupMap(CvParamList);
 
@@ -178,7 +177,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @return List<CVLookup>   a list of cvlookup objects.
      * @throws DataAccessException
      */
-    @Override
     public List<CVLookup> getCvLookups() throws DataAccessException {
         return MzIdentMLTransformer.transformCVList(unmarshaller.getCvList());
     }
@@ -190,7 +188,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *
      */
-    @Override
     public List<SourceFile> getSourceFiles() throws DataAccessException {
         List<SourceFile> sourceFiles;
         try {
@@ -207,7 +204,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @return List<Organization> A List of Organizations
      * @throws DataAccessException
      */
-    @Override
     public List<Organization> getOrganizationContacts() throws DataAccessException {
         List<Organization> organizationList;
         try {
@@ -224,7 +220,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @return List<Person> A list of Persons
      * @throws DataAccessException
      */
-    @Override
     public List<Person> getPersonContacts() throws DataAccessException {
         List<Person> personList;
         try {
@@ -252,7 +247,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException("Failed to retrieve samples", ex);
             }
         } else {
-            return metaData.getSampleList();
+            return metaData.getSamples();
         }
     }
 
@@ -262,7 +257,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @return Provider    data provider
      * @throws DataAccessException data access exception
      */
-    @Override
     public Provider getProvider() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
         if (metaData == null) {
@@ -277,7 +271,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @return List<Software>   a list of software objects.
      * @throws DataAccessException data access exception
      */
-    @Override
     public List<Software> getSoftwares() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
@@ -307,18 +300,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         }
 
         return refs;
-    }
-
-    /**
-     * Protocol is not supported by mzidentml files. In this case ExperimentProtocol is
-     * related with Sample Experimental Protocol, this concept comes from PRIDE XML Files
-     * and it is not included in any field on mzidentml.
-     *
-     * @return ExperimentProtocol protocol object.
-     * @throws DataAccessException data access exception
-     */
-    public ExperimentProtocol getProtocol() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
     }
 
     /**
@@ -436,14 +417,13 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @return List<SpectrumIdentificationProtocol> A List of Spectrum Identification Protocols
      * @throws DataAccessException
      */
-    @Override
     public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() throws DataAccessException {
         IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
 
         if (identificationMetaData == null) {
             return MzIdentMLTransformer.transformToSpectrumIdentificationProtocol(unmarshaller.getSpectrumIdentificationProtcol());
         }
-        return identificationMetaData.getSpectrumIdentificationProtocolList();
+        return identificationMetaData.getSpectrumIdentificationProtocols();
     }
 
     /**
@@ -453,7 +433,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @return Protocol Protein Protocol
      * @throws DataAccessException
      */
-    @Override
     public Protocol getProteinDetectionProtocol() throws DataAccessException {
         IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
         if (identificationMetaData == null) {
@@ -468,13 +447,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @return List<SearchDataBase> List of SearchDatabases
      * @throws DataAccessException
      */
-    @Override
     public List<SearchDataBase> getSearchDataBases() throws DataAccessException {
         IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
         if (identificationMetaData == null) {
             return MzIdentMLTransformer.transformToSearchDataBase(unmarshaller.getSearchDatabases());
         }
-        return identificationMetaData.getSearchDataBaseList();
+        return identificationMetaData.getSearchDataBases();
     }
 
     /**
@@ -502,13 +480,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @return
      * @throws DataAccessException
      */
-    @Override
     public List<SpectraData> getSpectraDataFiles() throws DataAccessException {
         ExperimentMetaData metaData = super.getExperimentMetaData();
         if (metaData == null) {
             return MzIdentMLTransformer.transformToSpectraData(unmarshaller.getSpectraData());
         }
-        return metaData.getSpectraDataList();
+        return metaData.getSpectraDatas();
     }
 
     /**
@@ -557,7 +534,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         if (ident == null && useCache) {
 
             logger.debug("Get new identification from file: {}", proteinId);
-            System.out.println(proteinId);
 
             Comparable proteinHypothesisId = null;
             List<Comparable> spectrumIdentIds = null;
@@ -566,16 +542,17 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             if (getCache().hasCacheCategory(CacheCategory.PROTEIN_TO_PROTEIN_GROUP_ID)) {
                 proteinHypothesisId = ((Map<Comparable, Comparable>) getCache().get(CacheCategory.PROTEIN_TO_PROTEIN_GROUP_ID)).get(proteinId);
             }
+
             if (getCache().hasCacheCategory(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES)) {
                 Map<Comparable, Map<Comparable, Comparable>> mapPeptides = ((Map<Comparable, Map<Comparable, Map<Comparable, Comparable>>>) getCache().get(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES)).get(proteinId);
                 spectrumIdentIds = new ArrayList<Comparable>(mapPeptides.keySet());
             }
 
-
             try {
                 uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis proteinHyphotesis = (proteinHypothesisId != null) ? unmarshaller.getIdentificationById(proteinHypothesisId) : null;
                 uk.ac.ebi.jmzidml.model.mzidml.DBSequence dbSequence = unmarshaller.getDBSequenceById(proteinId);
                 List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> spectrumIdentificationItemList = unmarshaller.getSpectrumIdentificationsbyIds(spectrumIdentIds);
+                // todo: fragmentation table retrieving can be optimzied
                 ident = MzIdentMLTransformer.transformToIdentification(proteinHyphotesis, dbSequence, spectrumIdentificationItemList, unmarshaller.getFragmentationTable());
                 // List<Peptide> peptides = MzIdentMLTransformer.transformToPeptideIdentifications(unmarshaller.getPeptideHypothesisbyID(proteinId), unmarshaller.getFragmentationTable());
                 //ident.setPeptides(peptides);
@@ -736,9 +713,11 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             logger.debug("Get new spectrum from file: {}", id);
             try {
                 DataAccessController spectrumController = msDataAccessControllers.get(spectrumIdArray[1]);
-                spectrum = spectrumController.getSpectrumById(spectrumIdArray[0]);
-                if (useCache && spectrum != null) {
-                    getCache().store(CacheCategory.SPECTRUM, id, spectrum);
+                if (spectrumController != null) {
+                    spectrum = spectrumController.getSpectrumById(spectrumIdArray[0]);
+                    if (useCache && spectrum != null) {
+                        getCache().store(CacheCategory.SPECTRUM, id, spectrum);
+                    }
                 }
             } catch (Exception ex) {
                 String msg = "Error while getting spectrum: " + id;
@@ -752,7 +731,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     @Override
     public Collection<Comparable> getSpectrumIds() throws DataAccessException {
         Collection<Comparable> spectrumIds = super.getSpectrumIds();
-        if (spectrumIds.size() == 0 && hasSpectrum() && msDataAccessControllers != null) {
+        if (spectrumIds.size() == 0 && hasSpectrum()) {
             spectrumIds = new ArrayList<Comparable>();
             for (Comparable id : msDataAccessControllers.keySet()) {
                 if (msDataAccessControllers.get(id) != null)
@@ -766,21 +745,11 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
     public void addMSController(List<File> dataAccessControllerFiles) throws DataAccessException {
         Map<SpectraData, File> spectraDataFileMap = checkMScontrollers(dataAccessControllerFiles);
-        if (msDataAccessControllers == null) msDataAccessControllers = new HashMap<Comparable, DataAccessController>();
-        if (spectraDataFileMap != null) {
+        if (!spectraDataFileMap.isEmpty()) {
             for (SpectraData spectraData : spectraDataFileMap.keySet()) {
                 msDataAccessControllers.put(spectraData.getId(), new PeakControllerImpl(spectraDataFileMap.get(spectraData)));
             }
-            this.setContentCategories(
-                    ContentCategory.PROTEIN,
-                    ContentCategory.PEPTIDE,
-                    ContentCategory.SAMPLE,
-                    ContentCategory.SOFTWARE,
-                    ContentCategory.PROTEIN_GROUPS,
-                    ContentCategory.SPECTRUM
-            );
             //Todo: Other controller more than mgf
-
         }
     }
 
@@ -788,7 +757,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
         Map<SpectraData, File> spectraDataControllerMap = getSpectraDataMSFiles();
 
-        if (msDataAccessControllers == null) msDataAccessControllers = new HashMap<Comparable, DataAccessController>();
         for (SpectraData spectraData : spectraDataControllerMap.keySet()) {
             for (SpectraData spectraDataFile : spectraDataFileMap.keySet()) {
                 if (spectraDataControllerMap.get(spectraData) == null &&
@@ -809,17 +777,16 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
     public Map<SpectraData, File> checkMScontrollers(List<File> dataAccessControllerFiles) throws DataAccessException {
 
-        if (spectraDataMap == null) {
+        if (spectraDataMap.isEmpty()) {
             spectraDataMap = getSpectraDataMap();
         }
 
-        Map<SpectraData, File> spectraFileMap = null;
+        Map<SpectraData, File> spectraFileMap = new HashMap<SpectraData, File>();
 
         for (File file : dataAccessControllerFiles) {
             for (Comparable id : spectraDataMap.keySet()) {
                 SpectraData spectraData = spectraDataMap.get(id);
                 if (spectraData.getLocation().indexOf(file.getName()) > 0) {
-                    spectraFileMap = (spectraFileMap == null) ? new HashMap<SpectraData, File>() : spectraFileMap;
                     spectraFileMap.put(spectraData, file);
                 }
             }
@@ -830,13 +797,15 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     private Map<Comparable, SpectraData> getSpectraDataMap() throws DataAccessException {
         Map<Comparable, List<Comparable>> spectraDataIdMap = (Map<Comparable, List<Comparable>>) getCache().get(CacheCategory.SPECTRADATA_TO_SPECTRUMIDS);
 
-        Set<Comparable> spectraIds = spectraDataIdMap.keySet();
-        Map<Comparable, SpectraData> spectraDataMapResult = new HashMap<Comparable, SpectraData>(spectraDataIdMap.size());
+        Set<Comparable> spectraDataIds = spectraDataIdMap.keySet();
+        Map<Comparable, SpectraData> spectraDataMapResult = new HashMap<Comparable, SpectraData>();
         try {
-            Map<Comparable, uk.ac.ebi.jmzidml.model.mzidml.SpectraData> oldSpectraDataMap = unmarshaller.getSpectraData(spectraIds);
+            Map<Comparable, uk.ac.ebi.jmzidml.model.mzidml.SpectraData> oldSpectraDataMap = unmarshaller.getSpectraData(spectraDataIds);
             for (Comparable id : oldSpectraDataMap.keySet()) {
                 SpectraData spectraData = MzIdentMLTransformer.transformToSpectraData(oldSpectraDataMap.get(id));
-                if (isSpectraDataSupported(spectraData)) spectraDataMapResult.put(id, spectraData);
+                if (isSpectraDataSupported(spectraData)) {
+                    spectraDataMapResult.put(id, spectraData);
+                }
             }
         } catch (JAXBException ex) {
             String msg = "Error while getting the spectrum File information";
@@ -852,11 +821,14 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     }
 
     public Map<SpectraData, DataAccessController> getSpectraDataMSControllers() throws DataAccessException {
-        spectraDataMap = getSpectraDataMap();
-        Map<SpectraData, DataAccessController> mapResult = new HashMap<SpectraData, DataAccessController>(spectraDataMap.size());
+        if (spectraDataMap.isEmpty()) {
+            spectraDataMap = getSpectraDataMap();
+        }
+
+        Map<SpectraData, DataAccessController> mapResult = new HashMap<SpectraData, DataAccessController>();
 
         for (Comparable id : spectraDataMap.keySet()) {
-            if (msDataAccessControllers != null && msDataAccessControllers.containsKey(id)) {
+            if (msDataAccessControllers.containsKey(id)) {
                 mapResult.put(spectraDataMap.get(id), msDataAccessControllers.get(id));
             } else {
                 mapResult.put(spectraDataMap.get(id), null);
@@ -867,7 +839,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
     public Map<SpectraData, File> getSpectraDataMSFiles() throws DataAccessException {
         Map<SpectraData, DataAccessController> spectraDataControllerMAp = getSpectraDataMSControllers();
-        Map<SpectraData, File> spectraDataFileMap = new HashMap<SpectraData, File>(spectraDataControllerMAp.size());
+        Map<SpectraData, File> spectraDataFileMap = new HashMap<SpectraData, File>();
         for (SpectraData spectraData : spectraDataControllerMAp.keySet()) {
             DataAccessController controller = spectraDataControllerMAp.get(spectraData);
             spectraDataFileMap.put(spectraData, (controller == null) ? null : (File) controller.getSource());
@@ -890,7 +862,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     @Override
     public int getNumberOfSpectra() throws DataAccessException {
         int numberOfSpectra = 0;
-        if (msDataAccessControllers != null && !msDataAccessControllers.isEmpty()) {
+        if (!msDataAccessControllers.isEmpty()) {
             for (Comparable idMsFile : msDataAccessControllers.keySet()) {
                 if (msDataAccessControllers.get(idMsFile) != null) {
                     numberOfSpectra += msDataAccessControllers.get(idMsFile).getNumberOfSpectra();
@@ -910,8 +882,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return countSpectra;
     }
 
-    public List<DataAccessController> getDataAccessControllers() {
-        return (msDataAccessControllers != null) ? new ArrayList<DataAccessController>(msDataAccessControllers.values()) : null;
+    public List<DataAccessController> getSpectrumDataAccessControllers() {
+        return new ArrayList<DataAccessController>(msDataAccessControllers.values());
     }
 
 

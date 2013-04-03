@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
@@ -30,6 +28,11 @@ import java.util.List;
 public class InstrumentConfiguration extends ParamGroup {
 
     /**
+     * identifier of this instrument
+     */
+    private String id;
+
+    /**
      * only one analyzer
      */
     private List<InstrumentComponent> analyzer;
@@ -40,24 +43,19 @@ public class InstrumentConfiguration extends ParamGroup {
     private List<InstrumentComponent> detector;
 
     /**
-     * identifier of this instrument
+     * only one source
      */
-    private String id = null;
+    private List<InstrumentComponent> source;
 
     /**
      * scan settings
      */
-    private ScanSetting scanSetting = null;
+    private ScanSetting scanSetting;
 
     /**
      * software used
      */
-    private Software software = null;
-
-    /**
-     * only one source
-     */
-    private List<InstrumentComponent> source;
+    private Software software;
 
     /**
      * Constructor

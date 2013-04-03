@@ -1,14 +1,10 @@
 package uk.ac.ebi.pride.data.controller.cache.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
 import uk.ac.ebi.pride.jaxb.xml.PrideXmlReader;
 
 import java.util.ArrayList;
-
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * PrideXmlAccessCacheBuilder initialize the cache for pride xml reading.

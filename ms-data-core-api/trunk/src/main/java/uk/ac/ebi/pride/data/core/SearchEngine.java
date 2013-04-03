@@ -22,7 +22,7 @@ public class SearchEngine extends Identifiable {
 
     public SearchEngine(SearchEngine searchengine) {
         super(searchengine.getId(), searchengine.getName());
-        this.searchEngineTypes = searchengine.getSearchEngineTypes();
+        this.searchEngineTypes = CollectionUtils.createListFromList(searchengine.getSearchEngineTypes());
     }
 
     public SearchEngine(Comparable id, String name) {
@@ -33,8 +33,8 @@ public class SearchEngine extends Identifiable {
     public SearchEngine(Comparable id, String name, List<SearchEngineType> searchEngineTypes) {
         super(id, name);
 
+        this.searchEngineTypes = new ArrayList<SearchEngineType>();
         if (searchEngineTypes != null) {
-            this.searchEngineTypes = new ArrayList<SearchEngineType>();
             this.searchEngineTypes.addAll(searchEngineTypes);
         }
     }

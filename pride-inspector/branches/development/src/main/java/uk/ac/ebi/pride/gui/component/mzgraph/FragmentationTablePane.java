@@ -145,7 +145,7 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
         for (CvParam param : cvParams) {
             if (cvParams != null && !cvParams.isEmpty()) {
                 for (CvTermReference ref : refs) {
-                    if (param.getAccession().equals(ref.getAccession())) {
+                    if (param.getAccession().equals(ref.getAccession()) && param.getCvLookupID().equalsIgnoreCase(ref.getCvLabel())) {
                         value = param.getValue();
                         break;
                     }

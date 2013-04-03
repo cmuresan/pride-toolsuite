@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.core;
 
-import uk.ac.ebi.pride.data.utils.CollectionUtils;
-
 /**
  * The collection of protocols which include the parameters and settings of the performed analyses.
  * <p>
@@ -27,29 +25,15 @@ public class Protocol extends IdentifiableParamGroup {
      */
     private ParamGroup threshold;
 
-    /**
-     * @param id            Generic Id
-     * @param name          Generic Name
-     * @param analysisParam Analysis ParamGroup
-     */
     public Protocol(Comparable id, String name, ParamGroup analysisParam) {
         super(analysisParam, id, name);
     }
 
-    /**
-     * Detection Protocol for MzIdentMl Experiments at the Protein and Spectrum Level.
-     *
-     * @param id               Generic Id
-     * @param name             Generic Name
-     * @param analysisSoftware Analysis Software
-     * @param analysisParam    Analysis ParamGroup
-     * @param threshold        Threshold
-     */
     public Protocol(ParamGroup analysisParam, Comparable id, String name, Software analysisSoftware,
                     ParamGroup threshold) {
         super(analysisParam, id, name);
         this.analysisSoftware = analysisSoftware;
-        this.threshold = threshold;
+        this.threshold        = threshold;
     }
 
     public Software getAnalysisSoftware() {
@@ -63,7 +47,7 @@ public class Protocol extends IdentifiableParamGroup {
     public ParamGroup getAnalysisParam() {
         if (!this.getCvParams().isEmpty() || !this.getUserParams().isEmpty()) {
             return new ParamGroup(this.getCvParams(), this.getUserParams());
-        } else {
+        }else{
             return new ParamGroup();
         }
 

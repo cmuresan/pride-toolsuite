@@ -1,14 +1,10 @@
 package uk.ac.ebi.pride.data.controller.access;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Chromatogram;
 import uk.ac.ebi.pride.data.core.Spectrum;
 
 import java.util.Collection;
-
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * MzGraphDataAccess defines the interface for accessing mzgraph data.

@@ -111,6 +111,17 @@ public abstract class Parameter implements MassSpecObject {
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Parameter{" +
+                "name='" + name + '\'' +
+                ", unitAcc='" + unitAcc + '\'' +
+                ", unitCVLookupID='" + unitCVLookupID + '\'' +
+                ", unitName='" + unitName + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
 }
 
 

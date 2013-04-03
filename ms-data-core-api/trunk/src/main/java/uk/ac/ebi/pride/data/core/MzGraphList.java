@@ -13,29 +13,29 @@ import java.util.List;
  */
 public class MzGraphList {
 
-    private DataProcessing defaultDataProcessingRef;
+    private DataProcessing defaultDataProcessing;
 
-    private List<MzGraph>  mzGraphList;
+    private List<MzGraph> mzGraphs;
 
-    public MzGraphList(DataProcessing defaultDataProcessingRef, List<MzGraph> mzGraphList) {
-        this.defaultDataProcessingRef = defaultDataProcessingRef;
-        this.mzGraphList = CollectionUtils.createListFromList(mzGraphList);
+    public MzGraphList(DataProcessing defaultDataProcessing, List<MzGraph> mzGraphs) {
+        this.defaultDataProcessing = defaultDataProcessing;
+        this.mzGraphs = CollectionUtils.createListFromList(mzGraphs);
     }
 
-    public DataProcessing getDefaultDataProcessingRef() {
-        return defaultDataProcessingRef;
+    public DataProcessing getDefaultDataProcessing() {
+        return defaultDataProcessing;
     }
 
-    public void setDefaultDataProcessingRef(DataProcessing defaultDataProcessingRef) {
-        this.defaultDataProcessingRef = defaultDataProcessingRef;
+    public void setDefaultDataProcessing(DataProcessing defaultDataProcessing) {
+        this.defaultDataProcessing = defaultDataProcessing;
     }
 
-    public List<MzGraph> getMzGraphList() {
-        return mzGraphList;
+    public List<MzGraph> getMzGraphs() {
+        return mzGraphs;
     }
 
-    public void setMzGraphList(List<MzGraph> mzGraphList) {
-        CollectionUtils.replaceValuesInCollection(mzGraphList, this.mzGraphList);
+    public void setMzGraphs(List<MzGraph> mzGraphs) {
+        CollectionUtils.replaceValuesInCollection(mzGraphs, this.mzGraphs);
     }
 
     @Override
@@ -45,17 +45,17 @@ public class MzGraphList {
 
         MzGraphList that = (MzGraphList) o;
 
-        if (defaultDataProcessingRef != null ? !defaultDataProcessingRef.equals(that.defaultDataProcessingRef) : that.defaultDataProcessingRef != null)
+        if (defaultDataProcessing != null ? !defaultDataProcessing.equals(that.defaultDataProcessing) : that.defaultDataProcessing != null)
             return false;
-        if (!mzGraphList.equals(that.mzGraphList)) return false;
+        if (!mzGraphs.equals(that.mzGraphs)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = defaultDataProcessingRef != null ? defaultDataProcessingRef.hashCode() : 0;
-        result = 31 * result + mzGraphList.hashCode();
+        int result = defaultDataProcessing != null ? defaultDataProcessing.hashCode() : 0;
+        result = 31 * result + mzGraphs.hashCode();
         return result;
     }
 }

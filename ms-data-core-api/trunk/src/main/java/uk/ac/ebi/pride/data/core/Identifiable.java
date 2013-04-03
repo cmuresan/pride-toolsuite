@@ -20,7 +20,7 @@ public class Identifiable implements MassSpecObject {
     /**
      * The potentially ambiguous common identifier, such as a human-readable name for the instance.
      */
-    String name;
+    private String name;
 
     public Identifiable(Comparable id, String name) {
         this.id = id;

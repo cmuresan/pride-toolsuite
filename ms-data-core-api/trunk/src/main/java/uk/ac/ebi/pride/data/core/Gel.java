@@ -44,8 +44,9 @@ public class Gel extends ParamGroup {
      * @param molecularWeight optional.
      * @param pI              optional.
      */
-    public Gel(ParamGroup params, String gelLink, double xCoordinate, double yCoordinate, double molecularWeight,
-               double pI) {
+    public Gel(ParamGroup params, String gelLink,
+               double xCoordinate, double yCoordinate,
+               double molecularWeight, double pI) {
         super(params);
         this.gelLink = gelLink;
         this.xCoordinate = xCoordinate;

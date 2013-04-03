@@ -1,14 +1,11 @@
 package uk.ac.ebi.pride.data.controller.access;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.Collection;
 
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * IdentificationDataAccess defines the interface for accessing identification data.

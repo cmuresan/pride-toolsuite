@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
@@ -23,7 +21,7 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
      * - name
      * - Map of Software and ParamGroup.
      */
-    private List<DataProcessing> dataProcessingList;
+    private List<DataProcessing> dataProcessings;
 
     /**
      * list and descriptions of instruments settings
@@ -35,19 +33,10 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
      */
     private List<ScanSetting> scanSettings;
 
-    /**
-     * Constructor for MzGraphMetaData
-     *
-     * @param id           Generic Id of MzGraphMetaData
-     * @param name         Generic Name
-     * @param scanSettings Scan Settings
-     * @param instrumentConfigurations  Instrument Configurations
-     * @param dataProcessingList        Data Processing List
-     */
     public MzGraphMetaData(Comparable id, String name, List<ScanSetting> scanSettings,
                            List<InstrumentConfiguration> instrumentConfigurations,
-                           List<DataProcessing> dataProcessingList) {
-        this(null, id, name, scanSettings, instrumentConfigurations, dataProcessingList);
+                           List<DataProcessing> dataProcessings) {
+        this(null, id, name, scanSettings, instrumentConfigurations, dataProcessings);
     }
 
     /**
@@ -56,15 +45,15 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
      * @param name         Generic Name
      * @param scanSettings Scan Settings
      * @param instrumentConfigurations  Instrument Configurations
-     * @param dataProcessingList        Data Processing List
+     * @param dataProcessings        Data Processing List
      */
     public MzGraphMetaData(ParamGroup params, Comparable id, String name, List<ScanSetting> scanSettings,
                            List<InstrumentConfiguration> instrumentConfigurations,
-                           List<DataProcessing> dataProcessingList) {
+                           List<DataProcessing> dataProcessings) {
         super(params, id, name);
         this.scanSettings             = CollectionUtils.createListFromList(scanSettings);
         this.instrumentConfigurations = CollectionUtils.createListFromList(instrumentConfigurations);
-        this.dataProcessingList       = CollectionUtils.createListFromList(dataProcessingList);
+        this.dataProcessings = CollectionUtils.createListFromList(dataProcessings);
     }
 
     public ParamGroup getFileContent() {
@@ -92,12 +81,12 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
         CollectionUtils.replaceValuesInCollection(instrumentConfigurations, this.instrumentConfigurations);
     }
 
-    public List<DataProcessing> getDataProcessingList() {
-        return dataProcessingList;
+    public List<DataProcessing> getDataProcessings() {
+        return dataProcessings;
     }
 
-    public void setDataProcessingList(List<DataProcessing> dataProcessingList) {
-        CollectionUtils.replaceValuesInCollection(dataProcessingList, this.dataProcessingList);
+    public void setDataProcessings(List<DataProcessing> dataProcessings) {
+        CollectionUtils.replaceValuesInCollection(dataProcessings, this.dataProcessings);
     }
 
     @Override
@@ -108,7 +97,7 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
 
         MzGraphMetaData that = (MzGraphMetaData) o;
 
-        if (!dataProcessingList.equals(that.dataProcessingList)) return false;
+        if (!dataProcessings.equals(that.dataProcessings)) return false;
         if (!instrumentConfigurations.equals(that.instrumentConfigurations)) return false;
         if (!scanSettings.equals(that.scanSettings)) return false;
 
@@ -118,7 +107,7 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + dataProcessingList.hashCode();
+        result = 31 * result + dataProcessings.hashCode();
         result = 31 * result + instrumentConfigurations.hashCode();
         result = 31 * result + scanSettings.hashCode();
         return result;

@@ -1,15 +1,14 @@
 package uk.ac.ebi.pride.data.controller.cache.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import uk.ac.ebi.jmzidml.MzIdentMLElement;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
 
-import java.util.*;
-
-//~--- JDK imports ------------------------------------------------------------
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The MzIdentMLCacheBuilder initialize the cache for mzidentml file  reading.

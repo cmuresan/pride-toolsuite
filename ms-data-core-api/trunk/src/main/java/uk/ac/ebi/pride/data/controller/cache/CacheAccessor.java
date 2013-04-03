@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
-//~--- JDK imports ------------------------------------------------------------
-
 /**
  * CacheAccessor is the implementation of cache.
  * <p/>

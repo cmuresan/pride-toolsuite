@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
@@ -9,6 +7,7 @@ import java.util.List;
 /**
  * This class is used to manage and store the information of the metadata for protein and spectrum
  * identifications.
+ *
  * User: yperez
  * Date: 19/08/11
  * Time: 11:56
@@ -23,106 +22,55 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
     /**
      * List of database for searching mass spectra. Examples include a set of amino acid sequence entries, or annotated spectra libraries.
      */
-    private List<SearchDataBase> searchDataBaseList;
+    private List<SearchDataBase> searchDataBases;
 
     /**
      * List of the parameters and settings of a SpectrumIdentification analysis.
      */
-    private List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList;
+    private List<SpectrumIdentificationProtocol> spectrumIdentificationProtocols;
 
-
-    /**
-     * Constructor of Identification MetaData Objects
-     *
-     * @param id                       ID
-     * @param name                     Name
-     * @param spectrumIdentificationProtocolList
-     *                                 Spectrum Identification Protocol
-     * @param proteinDetectionProtocol Protein Detection Protocol
-     * @param searchDataBaseList       List of the DataBases used in the experiment.
-     */
     public IdentificationMetaData(Comparable id, String name,
-                                  List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList,
-                                  Protocol proteinDetectionProtocol, List<SearchDataBase> searchDataBaseList) {
+                                  List<SpectrumIdentificationProtocol> spectrumIdentificationProtocols,
+                                  Protocol proteinDetectionProtocol,
+                                  List<SearchDataBase> searchDataBases) {
         super(id, name);
-        this.spectrumIdentificationProtocolList = CollectionUtils.createListFromList(spectrumIdentificationProtocolList);
-        this.searchDataBaseList = CollectionUtils.createListFromList(searchDataBaseList);
+        this.spectrumIdentificationProtocols = CollectionUtils.createListFromList(spectrumIdentificationProtocols);
+        this.searchDataBases = CollectionUtils.createListFromList(searchDataBases);
         this.proteinDetectionProtocol = proteinDetectionProtocol;
     }
 
-    /**
-     * Constructor of Identification MetaData Objects
-     *
-     * @param params                   ParamGroup (CvTerms and User Params)
-     * @param id                       ID
-     * @param name                     Name
-     * @param spectrumIdentificationProtocolList
-     *                                 Spectrum Identification Protocol
-     * @param proteinDetectionProtocol Protein Detection Protocol
-     * @param searchDataBaseList       List of the DataBases used in the experiment.
-     */
     public IdentificationMetaData(ParamGroup params, Comparable id, String name,
-                                  List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList,
-                                  Protocol proteinDetectionProtocol, List<SearchDataBase> searchDataBaseList) {
+                                  List<SpectrumIdentificationProtocol> spectrumIdentificationProtocols,
+                                  Protocol proteinDetectionProtocol,
+                                  List<SearchDataBase> searchDataBases) {
         super(params, id, name);
-        this.spectrumIdentificationProtocolList = CollectionUtils.createListFromList(spectrumIdentificationProtocolList);
-        this.searchDataBaseList = CollectionUtils.createListFromList(searchDataBaseList);
+        this.spectrumIdentificationProtocols = CollectionUtils.createListFromList(spectrumIdentificationProtocols);
+        this.searchDataBases = CollectionUtils.createListFromList(searchDataBases);
         this.proteinDetectionProtocol = proteinDetectionProtocol;
     }
 
-    /**
-     * Get Spectrum Identification Protocol List
-     *
-     * @return Spectrum Identification Protocol List
-     */
-    public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocolList() {
-        return spectrumIdentificationProtocolList;
+    public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocols() {
+        return spectrumIdentificationProtocols;
     }
 
-    /**
-     * Set Spectrum Identification Protocol List
-     *
-     * @param spectrumIdentificationProtocolList
-     *         Spectrum Identification Protocol List
-     */
-    public void setSpectrumIdentificationProtocolList(List<SpectrumIdentificationProtocol> spectrumIdentificationProtocolList) {
-        CollectionUtils.replaceValuesInCollection(spectrumIdentificationProtocolList, this.spectrumIdentificationProtocolList);
+    public void setSpectrumIdentificationProtocols(List<SpectrumIdentificationProtocol> spectrumIdentificationProtocols) {
+        CollectionUtils.replaceValuesInCollection(spectrumIdentificationProtocols, this.spectrumIdentificationProtocols);
     }
 
-    /**
-     * Get Protein Detection Protocol
-     *
-     * @return Protein Detection Protocol
-     */
     public Protocol getProteinDetectionProtocol() {
         return proteinDetectionProtocol;
     }
 
-    /**
-     * Set Protein Detection Protocol
-     *
-     * @param proteinDetectionProtocol Protein Detection Protocol
-     */
     public void setProteinDetectionProtocol(Protocol proteinDetectionProtocol) {
         this.proteinDetectionProtocol = proteinDetectionProtocol;
     }
 
-    /**
-     * Get List of Search DataBases
-     *
-     * @return Search Databases List
-     */
-    public List<SearchDataBase> getSearchDataBaseList() {
-        return searchDataBaseList;
+    public List<SearchDataBase> getSearchDataBases() {
+        return searchDataBases;
     }
 
-    /**
-     * Set List of Search DataBases
-     *
-     * @param searchDataBaseList Search Databases
-     */
-    public void setSearchDataBaseList(List<SearchDataBase> searchDataBaseList) {
-        CollectionUtils.replaceValuesInCollection(searchDataBaseList, this.searchDataBaseList);
+    public void setSearchDataBases(List<SearchDataBase> searchDataBases) {
+        CollectionUtils.replaceValuesInCollection(searchDataBases, this.searchDataBases);
     }
 
     @Override
@@ -135,8 +83,8 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
 
         if (proteinDetectionProtocol != null ? !proteinDetectionProtocol.equals(that.proteinDetectionProtocol) : that.proteinDetectionProtocol != null)
             return false;
-        if (!searchDataBaseList.equals(that.searchDataBaseList)) return false;
-        if (!spectrumIdentificationProtocolList.equals(that.spectrumIdentificationProtocolList)) return false;
+        if (!searchDataBases.equals(that.searchDataBases)) return false;
+        if (!spectrumIdentificationProtocols.equals(that.spectrumIdentificationProtocols)) return false;
 
         return true;
     }
@@ -145,8 +93,8 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (proteinDetectionProtocol != null ? proteinDetectionProtocol.hashCode() : 0);
-        result = 31 * result + searchDataBaseList.hashCode();
-        result = 31 * result + spectrumIdentificationProtocolList.hashCode();
+        result = 31 * result + searchDataBases.hashCode();
+        result = 31 * result + spectrumIdentificationProtocols.hashCode();
         return result;
     }
 }

@@ -1,23 +1,10 @@
 package uk.ac.ebi.pride.data.controller.impl.Transformer;
 
-import uk.ac.ebi.jmzml.model.mzml.*;
+import uk.ac.ebi.jmzml.model.mzml.ComponentList;
+import uk.ac.ebi.jmzml.model.mzml.FileDescription;
+import uk.ac.ebi.jmzml.model.mzml.SoftwareRef;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.data.core.BinaryDataArray;
-import uk.ac.ebi.pride.data.core.Chromatogram;
-import uk.ac.ebi.pride.data.core.DataProcessing;
-import uk.ac.ebi.pride.data.core.InstrumentConfiguration;
-import uk.ac.ebi.pride.data.core.ParamGroup;
-import uk.ac.ebi.pride.data.core.Precursor;
-import uk.ac.ebi.pride.data.core.ProcessingMethod;
-import uk.ac.ebi.pride.data.core.ReferenceableParamGroup;
-import uk.ac.ebi.pride.data.core.Sample;
-import uk.ac.ebi.pride.data.core.Scan;
-import uk.ac.ebi.pride.data.core.ScanList;
-import uk.ac.ebi.pride.data.core.Software;
-import uk.ac.ebi.pride.data.core.SourceFile;
-import uk.ac.ebi.pride.data.core.Spectrum;
-import uk.ac.ebi.pride.data.core.UserParam;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
 import uk.ac.ebi.pride.term.CvTermReference;
 

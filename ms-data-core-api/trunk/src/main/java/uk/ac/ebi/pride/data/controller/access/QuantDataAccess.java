@@ -1,15 +1,11 @@
 package uk.ac.ebi.pride.data.controller.access;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.Quantitation;
+import uk.ac.ebi.pride.data.core.Quantification;
 import uk.ac.ebi.pride.data.core.QuantitativeSample;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 
 import java.util.Collection;
-
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * QuantDataAccess defines methods for accessing quantitative proteomics data
@@ -186,7 +182,7 @@ public interface QuantDataAccess {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *          error while getting the data from source
      */
-    public Quantitation getProteinQuantData(Comparable proteinId) throws DataAccessException;
+    public Quantification getProteinQuantData(Comparable proteinId) throws DataAccessException;
 
     /**
      * Get quantitative data related to a given peptide
@@ -197,7 +193,7 @@ public interface QuantDataAccess {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *          error while getting the data from source
      */
-    public Quantitation getPeptideQuantData(Comparable proteinId, Comparable peptideId) throws DataAccessException;
+    public Quantification getPeptideQuantData(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 }
 
 

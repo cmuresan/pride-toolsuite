@@ -69,25 +69,10 @@ public class Reference extends IdentifiableParamGroup {
      */
     private String year;
 
-    /**
-     * Constructors for PRIDE XML Reference Object
-     *
-     * @param params
-     * @param fullReference
-     */
     public Reference(ParamGroup params, String fullReference) {
         this(params, null, null, null, null, null, null, null, null, null, null, null, null, fullReference);
     }
 
-    /**
-     * Constructors for PRIDE XML Reference Object
-     *
-     * @param cvParams
-     * @param userParams
-     * @param id
-     * @param name
-     * @param fullReference
-     */
     public Reference(List<CvParam> cvParams, List<UserParam> userParams, String id, String name, String fullReference) {
         this(new ParamGroup(cvParams, userParams), id, name, null, null, null, null, null, null, null, null, null,
              null, fullReference);

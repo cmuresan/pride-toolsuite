@@ -17,56 +17,30 @@ public class ContactRole {
     /**
      * Could be an Organization or a Person
      */
-    AbstractContact contact;
+    private Contact contact;
 
     /**
      * Role of an specific Contact
      */
-    CvParam role;
+    private CvParam role;
 
-    /**
-     * Constructor for a Contact Role
-     *
-     * @param contact An AbstractContact (Person or Organization)
-     * @param role    The role of the AbstractContact (CvTerms)
-     */
-    public ContactRole(AbstractContact contact, CvParam role) {
+    public ContactRole(Contact contact, CvParam role) {
         this.contact = contact;
-        this.role = role;
+        this.role    = role;
     }
 
-    /**
-     * Get an AbstractContact
-     *
-     * @return AbstractContact
-     */
-    public AbstractContact getContact() {
+    public Contact getContact() {
         return contact;
     }
 
-    /**
-     * Set and AbstractContact
-     *
-     * @param contact AbstractContact
-     */
-    public void setContact(AbstractContact contact) {
+    public void setContact(Contact contact) {
         this.contact = contact;
     }
 
-    /**
-     * Get the role of the AbstractContact
-     *
-     * @return CvParam
-     */
     public CvParam getRole() {
         return role;
     }
 
-    /**
-     * Set a role for an AbstractContact
-     *
-     * @param role CvParam
-     */
     public void setRole(CvParam role) {
         this.role = role;
     }
@@ -87,6 +61,14 @@ public class ContactRole {
         int result = contact.hashCode();
         result = 31 * result + (role != null ? role.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ContactRole{" +
+                "contact=" + contact +
+                ", role=" + role +
+                '}';
     }
 }
 

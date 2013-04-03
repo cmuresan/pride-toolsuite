@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.utils;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.term.CvTermReference;
@@ -13,8 +11,6 @@ import java.nio.ByteOrder;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
-
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * This class need to be deleted in the future.
@@ -33,16 +29,16 @@ public class BinaryDataUtils {
     /**
      * Convert a byte array to a number array
      *
-     * @param arr      byte array
+     * @param byteArray      byte array
      * @param dataType data type
      * @param order    endianess
      * @return Number[]    number array
      */
-    public static Number[] toNumberArray(byte[] arr, CvTermReference dataType, ByteOrder order) {
+    public static Number[] toNumberArray(byte[] byteArray, CvTermReference dataType, ByteOrder order) {
         int        numOfByte = getNumOfByte(dataType);
-        int        arrLength = arr.length;
+        int        arrLength = byteArray.length;
         Number[]   results   = new Number[arrLength / numOfByte];
-        ByteBuffer buffer    = ByteBuffer.wrap(arr);
+        ByteBuffer buffer    = ByteBuffer.wrap(byteArray);
 
         buffer.order(order);
 

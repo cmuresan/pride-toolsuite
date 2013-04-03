@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.List;
@@ -16,11 +14,12 @@ import java.util.List;
 public class DataBaseTranslation {
 
     private List<Integer> allowedFrames;
-    private List<IdentifiableParamGroup> translationTableList;
 
-    public DataBaseTranslation(List<Integer> allowedFrames, List<IdentifiableParamGroup> translationTableList) {
+    private List<IdentifiableParamGroup> translationTables;
+
+    public DataBaseTranslation(List<Integer> allowedFrames, List<IdentifiableParamGroup> translationTables) {
         this.allowedFrames = CollectionUtils.createListFromList(allowedFrames);
-        this.translationTableList = CollectionUtils.createListFromList(translationTableList);
+        this.translationTables = CollectionUtils.createListFromList(translationTables);
     }
 
     public List<Integer> getAllowedFrames() {
@@ -31,12 +30,12 @@ public class DataBaseTranslation {
         CollectionUtils.replaceValuesInCollection(allowedFrames, this.allowedFrames);
     }
 
-    public List<IdentifiableParamGroup> getTranslationTableList() {
-        return translationTableList;
+    public List<IdentifiableParamGroup> getTranslationTables() {
+        return translationTables;
     }
 
-    public void setTranslationTableList(List<IdentifiableParamGroup> translationTableList) {
-        CollectionUtils.replaceValuesInCollection(translationTableList, this.translationTableList);
+    public void setTranslationTables(List<IdentifiableParamGroup> translationTables) {
+        CollectionUtils.replaceValuesInCollection(translationTables, this.translationTables);
     }
 
     @Override
@@ -47,7 +46,7 @@ public class DataBaseTranslation {
         DataBaseTranslation that = (DataBaseTranslation) o;
 
         if (!allowedFrames.equals(that.allowedFrames)) return false;
-        if (!translationTableList.equals(that.translationTableList)) return false;
+        if (!translationTables.equals(that.translationTables)) return false;
 
         return true;
     }
@@ -55,7 +54,7 @@ public class DataBaseTranslation {
     @Override
     public int hashCode() {
         int result = allowedFrames.hashCode();
-        result = 31 * result + translationTableList.hashCode();
+        result = 31 * result + translationTables.hashCode();
         return result;
     }
 }

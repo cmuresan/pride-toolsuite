@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 
 import java.util.ArrayList;
@@ -23,46 +21,27 @@ public class ParamGroup implements MassSpecObject {
     /**
      * List of cv paramemters
      */
-    private List<CvParam> cvParams;
+    private List<CvParam> cvParams = new ArrayList<CvParam>();
 
     /**
      * List of user parameters
      */
-    private List<UserParam> userParams;
+    private List<UserParam> userParams = new ArrayList<UserParam>();
 
     /**
      * Constructor creates an empty param group
      */
     public ParamGroup() {
-        this.cvParams = new ArrayList<CvParam>();
-        this.userParams = new ArrayList<UserParam>();
     }
 
-    /**
-     * Constructor
-     *
-     * @param params optional.
-     */
     public ParamGroup(ParamGroup params) {
-        this.cvParams = new ArrayList<CvParam>();
-        this.userParams = new ArrayList<UserParam>();
-
         if (params != null) {
             this.cvParams.addAll(params.getCvParams());
             this.userParams.addAll(params.getUserParams());
         }
     }
 
-    /**
-     * Constructor Using Single Entries
-     *
-     * @param cvParam
-     * @param userParam
-     */
     public ParamGroup(CvParam cvParam, UserParam userParam) {
-        this.cvParams = new ArrayList<CvParam>();
-        this.userParams = new ArrayList<UserParam>();
-
         if (cvParam != null) {
             cvParams.add(cvParam);
         }
@@ -113,12 +92,6 @@ public class ParamGroup implements MassSpecObject {
         this.cvParams.removeAll(cvs);
     }
 
-    /**
-     * This method return a List of CvParam, the result List in a new Instance
-     * of the current List of CvParam
-     *
-     * @return
-     */
     public List<UserParam> getUserParams() {
         return this.userParams;
     }
@@ -143,6 +116,10 @@ public class ParamGroup implements MassSpecObject {
         userParams.removeAll(ups);
     }
 
+    public boolean isEmpty() {
+        return (cvParams.isEmpty() && userParams.isEmpty());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -161,10 +138,6 @@ public class ParamGroup implements MassSpecObject {
         int result = cvParams.hashCode();
         result = 31 * result + userParams.hashCode();
         return result;
-    }
-
-    public boolean isEmpty() {
-        return (cvParams.isEmpty() && userParams.isEmpty());
     }
 }
 

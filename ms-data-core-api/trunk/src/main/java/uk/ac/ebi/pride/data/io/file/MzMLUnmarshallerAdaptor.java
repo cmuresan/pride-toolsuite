@@ -5,13 +5,8 @@ package uk.ac.ebi.pride.data.io.file;
 import uk.ac.ebi.jmzml.model.mzml.*;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshaller;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
-import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.term.CvTermReference;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 
 //~--- JDK imports ------------------------------------------------------------

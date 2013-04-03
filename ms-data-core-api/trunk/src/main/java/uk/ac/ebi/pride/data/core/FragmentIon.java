@@ -1,13 +1,9 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
 import java.util.List;
-
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * FragmentIon stores details about peptide fragment ion information.

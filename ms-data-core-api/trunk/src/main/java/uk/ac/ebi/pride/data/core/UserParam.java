@@ -53,6 +53,13 @@ public class UserParam extends Parameter {
     public int hashCode() {
         return type != null ? type.hashCode() : 0;
     }
+
+    @Override
+    public String toString() {
+        return "UserParam{" +
+                "type='" + type + '\'' +
+                '}';
+    }
 }
 
 

@@ -20,7 +20,6 @@ import uk.ac.ebi.pride.tools.ms2_parser.Ms2File;
 import uk.ac.ebi.pride.tools.pkl_parser.PklFile;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
@@ -143,83 +142,6 @@ public class PeakControllerImpl extends CachedDataAccessController {
             }
         }
         return uid;
-    }
-
-
-    /**
-     * Get a list of person contacts
-     *
-     * @return List<Person>    list of persons
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    public List<Person> getPersonContacts() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
-    }
-
-    @Override
-    public List<Organization> getOrganizationContacts() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
-    }
-
-    @Override
-    public List<SourceFile> getSourceFiles() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
-    }
-
-
-    @Override
-    public ParamGroup getFileContent() throws DataAccessException {
-       throw new UnsupportedOperationException("This method is not supported");
-    }
-
-    @Override
-    public List<Software> getSoftwares() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
-    }
-
-    /**
-     * Get a list of scan settings by checking the cache first
-     *
-     * @return List<ScanSetting>   a list of scan settings
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    public List<ScanSetting> getScanSettings() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
-    }
-
-    /**
-     * Get a list of instrument configurations by checking the cache first
-     *
-     * @return List<Instrumentconfiguration>   a list of instrument configurations
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
-    }
-
-    /**
-     * Get a list of data processings by checking the cache first
-     *
-     * @return List<DataProcessing>    a list of data processings
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    public List<DataProcessing> getDataProcessings() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
-    }
-
-    /**
-     * Get additional details, mzML don't have this kind of information
-     *
-     * @return ParamGroup  param group
-     * @throws DataAccessException data access exception
-     */
-    @Override
-    public ParamGroup getAdditional() throws DataAccessException {
-        throw new UnsupportedOperationException("This method is not supported");
     }
 
     /**

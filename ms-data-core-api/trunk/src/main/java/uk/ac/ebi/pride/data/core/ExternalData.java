@@ -44,56 +44,26 @@ public class ExternalData extends Identifiable {
         this.externalFormatDocumentationURI = externalFormatDocumentationURI;
     }
 
-    /**
-     * Get the location of the External Resource
-     *
-     * @return location of the External Resource
-     */
     public String getLocation() {
         return location;
     }
 
-    /**
-     * Set the location of the External Resource
-     *
-     * @param location location of the External Resource
-     */
     public void setLocation(String location) {
         this.location = location;
     }
 
-    /**
-     * Get CvParam that define the FileFormat
-     *
-     * @return CvParam
-     */
     public CvParam getFileFormat() {
         return FileFormat;
     }
 
-    /**
-     * Set CvParam that define the FileFormat
-     *
-     * @param fileFormat CvParam that define the FileFormat
-     */
     public void setFileFormat(CvParam fileFormat) {
         FileFormat = fileFormat;
     }
 
-    /**
-     * Get the uri of the FileFormat Documentation
-     *
-     * @return uri of the FileFormat Documentation
-     */
     public String getExternalFormatDocumentationURI() {
         return externalFormatDocumentationURI;
     }
 
-    /**
-     * Set the uri of the FileFormat Documentation
-     *
-     * @param externalFormatDocumentationURI uri of the FileFormat Documentation
-     */
     public void setExternalFormatDocumentationURI(String externalFormatDocumentationURI) {
         this.externalFormatDocumentationURI = externalFormatDocumentationURI;
     }

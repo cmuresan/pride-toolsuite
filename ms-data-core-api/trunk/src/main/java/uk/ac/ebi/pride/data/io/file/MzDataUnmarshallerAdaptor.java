@@ -5,7 +5,6 @@ import uk.ac.ebi.pride.tools.jmzreader.model.Spectrum;
 import uk.ac.ebi.pride.tools.mzdata_parser.MzDataFile;
 import uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -1,14 +1,10 @@
 package uk.ac.ebi.pride.data.core;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import uk.ac.ebi.pride.data.utils.MapUtils;
 import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.*;
-
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Score stores a number of peptide scores for a list of search engines.
@@ -22,17 +18,10 @@ public class Score {
 
     private Map<SearchEngineType, Map<CvTermReference, Number>> scores;
 
-    /**
-     * Constructor
-     */
     public Score() {
         scores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
     }
 
-    /**
-     * Constructor for Scores
-     * @param scores List of Scores
-     */
     public Score(Map<SearchEngineType, Map<CvTermReference, Number>> scores) {
         this.scores = MapUtils.createMapFromMap(scores);
     }

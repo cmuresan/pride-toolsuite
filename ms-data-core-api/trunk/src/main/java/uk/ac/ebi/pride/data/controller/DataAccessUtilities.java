@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
@@ -19,6 +21,8 @@ import java.util.Map;
  */
 public class DataAccessUtilities {
 
+    public static final Logger logger = LoggerFactory.getLogger(DataAccessUtilities.class);
+
     /**
      * Get a list of taxonomy accessions based on a given metadata
      *
@@ -27,16 +31,12 @@ public class DataAccessUtilities {
      */
     public static List<String> getTaxonomy(ExperimentMetaData metaData) {
         List<String> species = new ArrayList<String>();
-        List<Sample> samples = metaData.getSampleList();
-        if (!samples.isEmpty()) {
-            for (Sample sample : samples) {
-                List<CvParam> cvParams = sample.getCvParams();
-                if (cvParams != null) {
-                    for (CvParam cvParam : cvParams) {
-                        if (cvParam.getCvLookupID().toLowerCase().equals("newt")) {
-                            species.add(cvParam.getAccession());
-                        }
-                    }
+        List<Sample> samples = metaData.getSamples();
+        for (Sample sample : samples) {
+            List<CvParam> cvParams = sample.getCvParams();
+            for (CvParam cvParam : cvParams) {
+                if (cvParam.getCvLookupID().equalsIgnoreCase("newt")) {
+                    species.add(cvParam.getAccession());
                 }
             }
         }
@@ -102,7 +102,7 @@ public class DataAccessUtilities {
     public static int getPrecursorCharge(Spectrum spectrum) {
         int charge = -1;
         List<Precursor> precursors = spectrum.getPrecursors();
-        if (precursors != null && !precursors.isEmpty()) {
+        if (!precursors.isEmpty()) {
             Double c = getSelectedIonCharge(precursors.get(0), 0);
             if (c != null) {
                 charge = c.intValue();
@@ -139,7 +139,7 @@ public class DataAccessUtilities {
     public static double getPrecursorMz(Spectrum spectrum) {
         double mz = -1;
         List<Precursor> precursors = spectrum.getPrecursors();
-        if (precursors != null && !precursors.isEmpty()) {
+        if (!precursors.isEmpty()) {
             Double m = getSelectedIonMz(precursors.get(0), 0);
             if (m != null) {
                 mz = m;
@@ -176,7 +176,7 @@ public class DataAccessUtilities {
     public static double getPrecursorIntensity(Spectrum spectrum) {
         double intent = -1;
         List<Precursor> precursors = spectrum.getPrecursors();
-        if (precursors != null && !precursors.isEmpty()) {
+        if (!precursors.isEmpty()) {
             Double it = getSelectedIonIntensity(precursors.get(0), 0);
             if (it != null) {
                 intent = it;
@@ -251,7 +251,7 @@ public class DataAccessUtilities {
     private static Double getSelectedIonCvParamValue(Precursor precursor, int index, CvTermReference... refs) {
         Double value = null;
         List<ParamGroup> selectedIons = precursor.getSelectedIons();
-        if (index >= 0 && selectedIons != null && index < selectedIons.size()) {
+        if (index >= 0 && index < selectedIons.size()) {
             ParamGroup selectedIon = selectedIons.get(index);
             // search PRIDE xml based charge
             value = getSelectedCvParamValue(selectedIon, refs);
@@ -272,7 +272,7 @@ public class DataAccessUtilities {
         // search PRIDE xml based charge
         for (CvTermReference ref : refs) {
             List<CvParam> cvParams = getCvParam(paramGroup, ref.getCvLabel(), ref.getAccession());
-            if (cvParams != null && !cvParams.isEmpty()) {
+            if (!cvParams.isEmpty()) {
                 value = new Double(cvParams.get(0).getValue());
             }
         }
@@ -315,19 +315,15 @@ public class DataAccessUtilities {
     public static int getNumberOfUniquePeptides(Protein ident) {
         List<PeptideSequence> peptides = ident.getPeptidesSequence();
         int cnt = 0;
-        if (peptides == null) {
-            return cnt;
-        } else {
-            List<String> seqs = new ArrayList<String>();
-            for (PeptideSequence peptide : peptides) {
-                String seq = peptide.getSequence();
-                if (!seqs.contains(seq)) {
-                    seqs.add(seq);
-                    cnt++;
-                }
+        List<String> seqs = new ArrayList<String>();
+        for (PeptideSequence peptide : peptides) {
+            String seq = peptide.getSequence();
+            if (!seqs.contains(seq)) {
+                seqs.add(seq);
+                cnt++;
             }
-            return cnt;
         }
+        return cnt;
     }
 
     /**
@@ -363,7 +359,7 @@ public class DataAccessUtilities {
         int cnt = 0;
         List<Peptide> peptides = ident.getPeptides();
         for (Peptide peptide : peptides) {
-            List<Modification> mods = peptide.getPeptideSequence().getModificationList();
+            List<Modification> mods = peptide.getPeptideSequence().getModifications();
             if (mods != null) {
                 cnt += mods.size();
             }
@@ -381,8 +377,9 @@ public class DataAccessUtilities {
         int cnt = 0;
         List<Peptide> peptides = ident.getPeptides();
         for (Peptide peptide : peptides) {
-            List<SubstitutionModification> mods = peptide.getPeptideSequence().getSubstitutionModificationList();
-            if (mods != null) {
+            PeptideSequence peptideSequence = peptide.getPeptideSequence();
+            if (peptideSequence != null) {
+                List<SubstitutionModification> mods = peptideSequence.getSubstitutionModifications();
                 cnt += mods.size();
             }
         }
@@ -397,8 +394,9 @@ public class DataAccessUtilities {
      */
     public static int getNumberOfPTMs(Peptide peptide) {
         int cnt = 0;
-        List<Modification> mods = peptide.getPeptideSequence().getModificationList();
-        if (mods != null) {
+        PeptideSequence peptideSequence = peptide.getPeptideSequence();
+        if (peptideSequence != null) {
+            List<Modification> mods = peptideSequence.getModifications();
             cnt = mods.size();
         }
         return cnt;
@@ -412,8 +410,9 @@ public class DataAccessUtilities {
      */
     public static int getNumberOfSubstitutionPTMs(Peptide peptide) {
         int cnt = 0;
-        List<SubstitutionModification> mods = peptide.getPeptideSequence().getSubstitutionModificationList();
-        if (mods != null) {
+        PeptideSequence peptideSequence = peptide.getPeptideSequence();
+        if (peptideSequence != null) {
+            List<SubstitutionModification> mods = peptideSequence.getSubstitutionModifications();
             cnt = mods.size();
         }
         return cnt;
@@ -484,14 +483,12 @@ public class DataAccessUtilities {
         Score score = null;
         if (params != null) {
             List<SearchEngineType> searchEngineTypes = DataAccessUtilities.getSearchEngineTypes(params);
-            if (searchEngineTypes != null) {
-                score = new Score();
-                for (SearchEngineType searchEngineType : searchEngineTypes) {
-                    for (CvParam term : params.getCvParams()) {
-                        CvTermReference reference = CvTermReference.getCvRefByAccession(term.getAccession());
-                        if (reference != null) {
-                            score.addScore(searchEngineType, reference, new Double(term.getValue()));
-                        }
+            score = new Score();
+            for (SearchEngineType searchEngineType : searchEngineTypes) {
+                for (CvParam term : params.getCvParams()) {
+                    CvTermReference reference = CvTermReference.getCvRefByAccession(term.getAccession());
+                    if (reference != null) {
+                        score.addScore(searchEngineType, reference, new Double(term.getValue()));
                     }
                 }
             }
@@ -519,12 +516,14 @@ public class DataAccessUtilities {
         }
         List<CvParam> cvParams = paramGroup.getCvParams();
         List<CvParam> cps = new ArrayList<CvParam>();
-        if (cvParams != null) {
-            for (CvParam param : cvParams) {
-                if (param.getAccession().equalsIgnoreCase(accession.toLowerCase())
-                        && param.getCvLookupID().equalsIgnoreCase(cvLabel.toLowerCase())) {
-                    cps.add(param);
+        for (CvParam param : cvParams) {
+            if (param.getAccession().equalsIgnoreCase(accession)) {
+                if (param.getCvLookupID() != null && !param.getCvLookupID().equalsIgnoreCase(cvLabel)) {
+                    // this could be the wrong CV param!!
+                    logger.warn("We may have got the wrong CV param: " + param.toString() + " compare to cvLabel: [" + cvLabel + "] accession: [" + accession + "]");
+                    // ToDo: proper logging (should perhaps fail, see comment above)
                 }
+                cps.add(param);
             }
         }
         return cps;
@@ -560,20 +559,16 @@ public class DataAccessUtilities {
         List<Parameter> params = new ArrayList<Parameter>();
 
         List<CvParam> cvParams = paramGroup.getCvParams();
-        if (cvParams != null) {
-            for (CvParam cvParam : cvParams) {
-                if (cvParam.getName().toLowerCase().equals(name.toLowerCase())) {
-                    params.add(cvParam);
-                }
+        for (CvParam cvParam : cvParams) {
+            if (cvParam.getName().equalsIgnoreCase(name)) {
+                params.add(cvParam);
             }
         }
 
         List<UserParam> userParams = paramGroup.getUserParams();
-        if (userParams != null) {
-            for (UserParam userParam : userParams) {
-                if (userParam.getName().toLowerCase().equals(name.toLowerCase())) {
-                    params.add(userParam);
-                }
+        for (UserParam userParam : userParams) {
+            if (userParam.getName().equalsIgnoreCase(name)) {
+                params.add(userParam);
             }
         }
 

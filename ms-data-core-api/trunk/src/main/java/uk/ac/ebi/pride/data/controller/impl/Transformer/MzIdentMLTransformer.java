@@ -1,36 +1,15 @@
 package uk.ac.ebi.pride.data.controller.impl.Transformer;
 
 
-import uk.ac.ebi.jmzidml.model.mzidml.*;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.data.core.AbstractContact;
-import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.DBSequence;
-import uk.ac.ebi.pride.data.core.Enzyme;
-import uk.ac.ebi.pride.data.core.Filter;
-import uk.ac.ebi.pride.data.core.MassTable;
-import uk.ac.ebi.pride.data.core.Modification;
-import uk.ac.ebi.pride.data.core.Organization;
-import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.data.core.PeptideEvidence;
-import uk.ac.ebi.pride.data.core.Person;
-import uk.ac.ebi.pride.data.core.Provider;
-import uk.ac.ebi.pride.data.core.Sample;
-import uk.ac.ebi.pride.data.core.SearchModification;
-import uk.ac.ebi.pride.data.core.SourceFile;
-import uk.ac.ebi.pride.data.core.SpectraData;
-import uk.ac.ebi.pride.data.core.SpectrumIdentification;
-import uk.ac.ebi.pride.data.core.SpectrumIdentificationProtocol;
-import uk.ac.ebi.pride.data.core.SubstitutionModification;
-import uk.ac.ebi.pride.data.core.UserParam;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.*;
 
 /**
  * This class is the Transformer class from a jmzidml object to a core object.
- * It is used by MzIdentMLTransformer to convert jmzidml native objetcs to the ms-core-api
+ * It is used by MzIdentMLTransformer to convert jmzidml native objects to the ms-core-api
  * Objects.
  * <p/>
  * <p/>
@@ -40,7 +19,7 @@ import java.util.*;
  */
 public class MzIdentMLTransformer {
 
-    private static Map<String, IdentifiableParamGroup> FragmentationTable = null;
+    private static Map<String, IdentifiableParamGroup> fragmentationTable = null ;
 
     private static Map<String, CVLookup> cvLookupMap = null;
 
@@ -189,7 +168,7 @@ public class MzIdentMLTransformer {
     public static Sample transformToSample(uk.ac.ebi.jmzidml.model.mzidml.Sample oldSample) {
         Sample sample = null;
         if (oldSample != null) {
-            Map<AbstractContact, CvParam> role = transformToRoleList(oldSample.getContactRole());
+            Map<Contact, CvParam> role = transformToRoleList(oldSample.getContactRole());
             List<Sample> subSamples = null;
             if ((oldSample.getSubSample() != null) && (!oldSample.getSubSample().isEmpty())) {
                 subSamples = transformSubSampleToSample(oldSample.getSubSample());
@@ -199,12 +178,12 @@ public class MzIdentMLTransformer {
         return sample;
     }
 
-    private static Map<AbstractContact, CvParam> transformToRoleList(List<uk.ac.ebi.jmzidml.model.mzidml.ContactRole> contactRoles) {
-        Map<AbstractContact, CvParam> contacts = null;
+    private static Map<Contact, CvParam> transformToRoleList(List<uk.ac.ebi.jmzidml.model.mzidml.ContactRole> contactRoles) {
+        Map<Contact, CvParam> contacts = null;
         if (contactRoles != null) {
-            contacts = new HashMap<AbstractContact, CvParam>();
+            contacts = new HashMap<Contact, CvParam>();
             for (uk.ac.ebi.jmzidml.model.mzidml.ContactRole oldRole : contactRoles) {
-                AbstractContact contact = null;
+                Contact contact = null;
                 if (oldRole.getOrganization() != null) {
                     contact = transformToOrganization(oldRole.getOrganization());
                 } else if (oldRole.getPerson() != null) {
@@ -265,7 +244,7 @@ public class MzIdentMLTransformer {
 
     public static Software transformToSoftware(uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftware oldSoftware) {
         if (oldSoftware != null) {
-            AbstractContact contact = null;
+            Contact contact = null;
             if (oldSoftware.getContactRole() != null && oldSoftware.getContactRole().getOrganization() != null) {
                 contact = transformToOrganization(oldSoftware.getContactRole().getOrganization());
             } else if (oldSoftware.getContactRole() != null && oldSoftware.getContactRole().getPerson() != null) {
@@ -316,8 +295,8 @@ public class MzIdentMLTransformer {
                                                     uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
         Protein ident;
 
-        if (FragmentationTable == null) {
-            FragmentationTable = transformToFragmentationTable(oldFragmentationTable);
+        if (fragmentationTable == null) {
+            fragmentationTable = transformToFragmentationTable(oldFragmentationTable);
         }
 
         DBSequence dbSequence = transformToDBSequence(oldDbSequence);
@@ -399,8 +378,8 @@ public class MzIdentMLTransformer {
 
     private static List<FragmentIon> transformToFragmentationIon(uk.ac.ebi.jmzidml.model.mzidml.Fragmentation fragmentation, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
         List<FragmentIon> fragmentIons = null;
-        if (FragmentationTable == null) {
-            FragmentationTable = transformToFragmentationTable(oldFragmentationTable);
+        if (fragmentationTable == null) {
+            fragmentationTable = transformToFragmentationTable(oldFragmentationTable);
         }
         if (fragmentation != null) {
             fragmentIons = new ArrayList<FragmentIon>();
@@ -450,7 +429,7 @@ public class MzIdentMLTransformer {
                     for (uk.ac.ebi.jmzidml.model.mzidml.FragmentArray fragArr : ionType.getFragmentArray()) {
                         String measureRef = fragArr.getMeasureRef();
                         //uk.ac.ebi.jmzidml.model.mzidml.Measure oldMeasure = fragArr.getMeasure();
-                        IdentifiableParamGroup oldMeasure = FragmentationTable.get(measureRef);
+                        IdentifiableParamGroup oldMeasure = fragmentationTable.get(measureRef);
                         CvParam cvParam;
                         CvTermReference cvMz;
                         cvMz = CvTermReference.PRODUCT_ION_MZ;
@@ -679,15 +658,15 @@ public class MzIdentMLTransformer {
     public static Provider transformToProvider(uk.ac.ebi.jmzidml.model.mzidml.Provider oldProvider) {
         Provider provider = null;
         if (oldProvider != null) {
-            AbstractContact abstractContact = null;
+            Contact contact = null;
             if (oldProvider.getContactRole().getOrganization() != null) {
-                abstractContact = transformToOrganization(oldProvider.getContactRole().getOrganization());
+                contact = transformToOrganization(oldProvider.getContactRole().getOrganization());
             } else if (oldProvider.getContactRole().getPerson() != null) {
-                abstractContact = transformToPerson(oldProvider.getContactRole().getPerson());
+                contact = transformToPerson(oldProvider.getContactRole().getPerson());
             }
             CvParam role = transformToCvParam(oldProvider.getContactRole().getRole().getCvParam());
             Software software = transformToSoftware(oldProvider.getSoftware());
-            provider = new Provider(oldProvider.getId(), oldProvider.getName(), software, abstractContact, role);
+            provider = new Provider(oldProvider.getId(), oldProvider.getName(), software, contact, role);
         }
         return provider;
     }

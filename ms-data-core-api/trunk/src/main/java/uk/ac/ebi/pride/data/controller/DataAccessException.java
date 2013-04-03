@@ -7,7 +7,7 @@ package uk.ac.ebi.pride.data.controller;
  * Date: 03-Feb-2010
  * Time: 08:45:27
  */
-public class DataAccessException extends Exception {
+public class DataAccessException extends RuntimeException {
 
     public DataAccessException(String message) {
         super(message);

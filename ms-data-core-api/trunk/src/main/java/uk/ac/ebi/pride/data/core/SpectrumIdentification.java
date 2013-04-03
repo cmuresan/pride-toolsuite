@@ -96,24 +96,6 @@ public class SpectrumIdentification extends IdentifiableParamGroup {
      */
     private Spectrum spectrum;
 
-    /**
-     * @param id
-     * @param name
-     * @param chargeState
-     * @param experimentalMassToCharge
-     * @param calculatedMassToCharge
-     * @param calculatedPI
-     * @param peptideSequence
-     * @param rank
-     * @param passThreshold
-     * @param massTable
-     * @param sample
-     * @param peptideEvidenceList
-     * @param fragmentation
-     * @param score
-     * @param spectrum
-     * @param spectraData
-     */
     public SpectrumIdentification(Comparable id, String name, int chargeState, double experimentalMassToCharge,
                                   double calculatedMassToCharge, double calculatedPI, PeptideSequence peptideSequence, int rank,
                                   boolean passThreshold, MassTable massTable, Sample sample,
@@ -259,7 +241,7 @@ public class SpectrumIdentification extends IdentifiableParamGroup {
     }
 
     public boolean hasModification() {
-        return (!(getPeptideSequence().getModificationList().isEmpty()));
+        return (!(getPeptideSequence().getModifications().isEmpty()));
     }
 
     public int getSequenceLength() {
@@ -267,7 +249,7 @@ public class SpectrumIdentification extends IdentifiableParamGroup {
     }
 
     public List<Modification> getModifications() {
-        return getPeptideSequence().getModificationList();
+        return getPeptideSequence().getModifications();
     }
 
     public String getSequence() {

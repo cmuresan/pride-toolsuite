@@ -70,6 +70,14 @@ public class CvParam extends Parameter {
         result = 31 * result + (cvLookupID != null ? cvLookupID.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "CvParam{" +
+                "accession='" + accession + '\'' +
+                ", cvLookupID='" + cvLookupID + '\'' +
+                '}';
+    }
 }
 
 

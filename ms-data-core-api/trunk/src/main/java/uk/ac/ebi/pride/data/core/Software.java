@@ -18,7 +18,7 @@ public class Software extends IdentifiableParamGroup {
      * A reference to the Contact person that provide the mzIdentMl File.
      * (mzIndetMl description: When a ContactRole is used, it specifies which Contact the role is associated with.
      */
-    private AbstractContact contact;
+    private Contact contact;
 
     /**
      * Any customizations to the software, such as alternative scoring mechanisms implemented,
@@ -36,19 +36,9 @@ public class Software extends IdentifiableParamGroup {
      */
     private String version;
 
-    /**
-     * Constructor of Software Object without ParamGroup
-     *
-     * @param id ID
-     * @param name Name
-     * @param contact Contact (Person or Organization)
-     * @param customization Customization Description
-     * @param uri UrI of the Software
-     * @param version Version
-     */
     public Software(Comparable id,
                     String name,
-                    AbstractContact contact,
+                    Contact contact,
                     String customization,
                     String uri,
                     String version) {
@@ -59,21 +49,10 @@ public class Software extends IdentifiableParamGroup {
         this.version = version;
     }
 
-    /**
-     * Constructor with (CvParam List and User Param List) Information
-     *
-     * @param params ParamGroup (CvParam List and User Param List)
-     * @param id ID
-     * @param name Name
-     * @param contact Contact (Person or Organization)
-     * @param customization Customization Description
-     * @param uri UrI of the Software
-     * @param version Version
-     */
     public Software(ParamGroup params,
                     Comparable id,
                     String name,
-                    AbstractContact contact,
+                    Contact contact,
                     String customization,
                     String uri, String version) {
         super(params, id, name);
@@ -91,11 +70,11 @@ public class Software extends IdentifiableParamGroup {
         this.uri = uri;
     }
 
-    public AbstractContact getContact() {
+    public Contact getContact() {
         return contact;
     }
 
-    public void setContact(AbstractContact contact) {
+    public void setContact(Contact contact) {
         this.contact = contact;
     }
 

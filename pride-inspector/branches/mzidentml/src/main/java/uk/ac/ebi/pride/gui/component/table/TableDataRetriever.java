@@ -481,7 +481,7 @@ public class TableDataRetriever {
     public static List<Object> getProteinQuantTableRow(DataAccessController controller,
                                                        Comparable identId,
                                                        int referenceSubSampleIndex) throws DataAccessException {
-        Quantitation quant = controller.getProteinQuantData(identId);
+        Quantification quant = controller.getProteinQuantData(identId);
         return getQuantTableRow(controller, quant, referenceSubSampleIndex, true);
     }
 
@@ -500,7 +500,7 @@ public class TableDataRetriever {
                                                        Comparable identId,
                                                        Comparable peptideId,
                                                        int referenceSubSampleIndex) throws DataAccessException {
-        Quantitation quant = controller.getPeptideQuantData(identId, peptideId);
+        Quantification quant = controller.getPeptideQuantData(identId, peptideId);
         return getQuantTableRow(controller, quant, referenceSubSampleIndex, false);
     }
 
@@ -514,7 +514,7 @@ public class TableDataRetriever {
      * @return List<String>    a list of quantitative table headers
      * @throws DataAccessException data access exception
      */
-    private static List<Object> getQuantTableRow(DataAccessController controller, Quantitation quant, int refSampleIndex, boolean isProteinIdent) throws DataAccessException {
+    private static List<Object> getQuantTableRow(DataAccessController controller, Quantification quant, int refSampleIndex, boolean isProteinIdent) throws DataAccessException {
         List<Object> contents = new ArrayList<Object>();
 
         // label free methods
@@ -539,7 +539,7 @@ public class TableDataRetriever {
      * @param quant   quantitative object
      * @return List<Double>    a list of label free results
      */
-    private static List<Double> getLabelFreeQuantData(Collection<QuantCvTermReference> methods, Quantitation quant) {
+    private static List<Double> getLabelFreeQuantData(Collection<QuantCvTermReference> methods, Quantification quant) {
         return quant.getLabelFreeResults(methods);
     }
 
@@ -555,7 +555,7 @@ public class TableDataRetriever {
      * @throws DataAccessException data access exception
      */
     private static List<Object> getIsotopeLabellingQuantData(Collection<QuantCvTermReference> methods, DataAccessController controller,
-                                                             Quantitation quant, int refSampleIndex, boolean isProteinIdent) throws DataAccessException {
+                                                             Quantification quant, int refSampleIndex, boolean isProteinIdent) throws DataAccessException {
 
         List<Object> contents = new ArrayList<Object>();
 
@@ -592,7 +592,7 @@ public class TableDataRetriever {
      * @param quant  quantitative data
      * @return List<Object>    a list of total intensities
      */
-    private static List<Object> getTotalIntensityQuantData(QuantitativeSample sample, Quantitation quant) {
+    private static List<Object> getTotalIntensityQuantData(QuantitativeSample sample, Quantification quant) {
         List<Object> contents = new ArrayList<Object>();
 
         for (int i = 1; i <= QuantitativeSample.MAX_SUB_SAMPLE_SIZE; i++) {
@@ -615,7 +615,7 @@ public class TableDataRetriever {
      * @return List<Object>    a list of reagent ratio data
      */
     private static List<Object> getReagentRatioQuantData(QuantitativeSample sample,
-                                                         Quantitation quant,
+                                                         Quantification quant,
                                                          int refSampleIndex) {
         List<Object> contents = new ArrayList<Object>();
 

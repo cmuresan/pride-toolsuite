@@ -39,7 +39,7 @@ public class PeptideIdentificationMetadataPanel extends JPanel {
                 searchtypeTable = TableFactory.createParamTable(new ArrayList<Parameter>());
             }
             // Enzyme
-            List<Enzyme> enzymeList = peptideProtocol.getEnzymeList();
+            List<Enzyme> enzymeList = peptideProtocol.getEnzymes();
             ParamGroup enzymeParamGroup = new ParamGroup();
             if (!enzymeList.isEmpty()) {
                 for (Enzyme enzyme : enzymeList) {

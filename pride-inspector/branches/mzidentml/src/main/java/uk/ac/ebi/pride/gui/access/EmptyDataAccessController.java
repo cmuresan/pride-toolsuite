@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.gui.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.AbstractDataAccessController;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideChartManager;
 import uk.ac.ebi.pride.data.core.*;
@@ -27,56 +26,12 @@ public class EmptyDataAccessController extends AbstractDataAccessController {
     }
 
     @Override
-    public DataAccessMode getMode() {
-        return null;
-    }
-
-    @Override
-    public void setMode(DataAccessMode mode) {
-    }
-
-    @Override
-    public Collection<Comparable> getExperimentAccs() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
     public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
         return null;
     }
 
     @Override
-    public Collection<CVLookup> getCvLookups() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public ReferenceableParamGroup getReferenceableParamGroup() throws DataAccessException {
-        return null;
-    }
-
-    @Override
     public Collection<Sample> getSamples() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<Software> getSoftwares() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<ScanSetting> getScanSettings() throws DataAccessException {
-        return null;
-    }
-
-    @Override
-    public Collection<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<DataProcessing> getDataProcessings() throws DataAccessException {
         return Collections.emptyList();
     }
 

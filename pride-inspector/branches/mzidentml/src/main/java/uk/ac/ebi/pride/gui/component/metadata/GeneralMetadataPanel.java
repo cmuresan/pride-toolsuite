@@ -93,7 +93,7 @@ public class GeneralMetadataPanel extends JPanel {
         String tissues = "";
         Set<String> tissuesAcc = new HashSet<String>();
 
-        List<Sample> samples = metaData.getMetaData().getSampleList();
+        List<Sample> samples = metaData.getMetaData().getSamples();
         if (!samples.isEmpty()) {
             for (Sample sample : samples) {
                 for (CvParam cvParam : sample.getCvParams()) {

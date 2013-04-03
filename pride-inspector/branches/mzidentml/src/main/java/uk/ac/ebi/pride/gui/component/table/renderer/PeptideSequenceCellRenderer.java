@@ -32,7 +32,7 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
             PeptideSequence peptide = (PeptideSequence) value;
             ptmString = getPTMString(peptide);
             // get the modifications
-            java.util.List<Modification> mods = peptide.getModificationList();
+            java.util.List<Modification> mods = peptide.getModifications();
             // set the ptm string
             // set tooltips
             if (mods != null) {
@@ -67,7 +67,7 @@ public class PeptideSequenceCellRenderer extends JLabel implements TableCellRend
 
     private AttributedString getPTMString(PeptideSequence peptide) {
         String sequence = peptide.getSequence();
-        java.util.List<Modification> mods = peptide.getModificationList();
+        java.util.List<Modification> mods = peptide.getModifications();
         AttributedString str = new AttributedString(sequence);
         if (mods != null) {
             int seqLength = sequence.length();

@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.Quantitation;
+import uk.ac.ebi.pride.data.core.Quantification;
 import uk.ac.ebi.pride.data.core.QuantitativeSample;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
@@ -365,7 +365,7 @@ public class QuantProteinComparisonChart extends DataAccessControllerPane implem
             // get protein accession
             String proteinAcc = controller.getProteinAccession(id);
             // get quantitation data
-            Quantitation quantitation = controller.getProteinQuantData(id);
+            Quantification quantitation = controller.getProteinQuantData(id);
             QuantitativeSample sample = controller.getQuantSample();
             if (referenceSampleIndex < 1) {
                 referenceSampleIndex = controller.getReferenceSubSampleIndex();

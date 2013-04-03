@@ -152,7 +152,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
                     }
                 }
 
-                if (categories.contains(DataAccessController.ContentCategory.QUANTITATION)) {
+                if (categories.contains(DataAccessController.ContentCategory.QUANTIFICATION)) {
                     quantTabEnabled = controller.hasQuantData();
                     contentTabPane.setEnabledAt(quantTabIndex, quantTabEnabled);
                     if (quantTabEnabled) {
@@ -217,7 +217,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
             }
 
             // quant data tab
-            if (categories.contains(DataAccessController.ContentCategory.QUANTITATION)) {
+            if (categories.contains(DataAccessController.ContentCategory.QUANTIFICATION)) {
                 quantTabPane = new QuantTabPane(controller, this);
                 quantTabIndex = indexCount++;
                 contentTabPane.insertTab(quantTabPane.getTitle(), quantTabPane.getIcon(), quantTabPane, quantTabPane.getTitle(), quantTabIndex);

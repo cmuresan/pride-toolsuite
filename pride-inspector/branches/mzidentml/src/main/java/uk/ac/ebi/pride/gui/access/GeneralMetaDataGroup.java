@@ -89,14 +89,14 @@ public class GeneralMetaDataGroup {
         if (getMetaData() == null) {
             return null;
         }
-        return getMetaData().getPersonList();
+        return getMetaData().getPersons();
     }
 
     public List<Sample> getSampleList() {
         if (getMetaData() == null) {
             return null;
         }
-        return getMetaData().getSampleList();
+        return getMetaData().getSamples();
     }
 
     public ExperimentProtocol getProtocol() {
@@ -110,21 +110,21 @@ public class GeneralMetaDataGroup {
         if (getMzGraphMetaData() == null) {
             return CollectionUtils.createEmptyList();
         }
-        return getMzGraphMetaData().getDataProcessingList();
+        return getMzGraphMetaData().getDataProcessings();
     }
 
     public List<SearchDataBase> getSearchDatabases() {
         if (getIdentificationMetaData() == null) {
             return null;
         }
-        return getIdentificationMetaData().getSearchDataBaseList();
+        return getIdentificationMetaData().getSearchDataBases();
     }
 
     public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() {
         if (getIdentificationMetaData() == null) {
             return CollectionUtils.createEmptyList();
         }
-        return getIdentificationMetaData().getSpectrumIdentificationProtocolList();
+        return getIdentificationMetaData().getSpectrumIdentificationProtocols();
     }
 
     public Protocol getProteinDetectionProtocol() {
@@ -144,6 +144,6 @@ public class GeneralMetaDataGroup {
     }
 
     public boolean hasSampleProtocolMetadata() {
-        return metaData.getSampleList().size() > 0 || metaData.getProtocol() != null;
+        return metaData.getSamples().size() > 0 || metaData.getProtocol() != null;
     }
 }

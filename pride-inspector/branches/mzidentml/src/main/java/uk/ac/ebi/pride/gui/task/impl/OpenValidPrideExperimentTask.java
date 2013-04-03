@@ -104,20 +104,16 @@ public class OpenValidPrideExperimentTask extends TaskAdapter<Void, Void> implem
         // it is possible for experimentAccessions be null
         // this is means download all the private experiment for the given user
         if (experimentAccessions != null) {
-            // get a list of available public experiments from pride public instance
-            PrideDBAccessControllerImpl controller = new PrideDBAccessControllerImpl();
-            Collection<Comparable> fullExpAccs = controller.getExperimentAccs();
+            results.addAll(experimentAccessions);
 
             // get a list of experiments which are too big to open
             List<Comparable> tooLargeToOpen = getLargeExperimentAccs();
 
             // retain only the available public experiments
-            fullExpAccs.retainAll(experimentAccessions);
-            fullExpAccs.removeAll(tooLargeToOpen);
+            results.removeAll(tooLargeToOpen);
 
             // remove all valid public experiments from the original list
-            experimentAccessions.removeAll(fullExpAccs);
-            results.addAll(fullExpAccs);
+            experimentAccessions.removeAll(results);
         }
 
         return results;

@@ -92,9 +92,9 @@ public class PrideXmlExtractor {
         // init spectrum id map
         spectrumIdMap = initCacheMap(PrideXmlXpath.MZDATA_SPECTRUM.getXpath(), ID_PATTERN);
         // init gel free accession map
-        gelFreeAccMap = initCacheMap(PrideXmlXpath.GELFREE.getXpath());
+        gelFreeAccMap = initIdentificationCacheMap(PrideXmlXpath.GELFREE.getXpath());
         // init two dimensional accession map
-        twoDimAccMap = initCacheMap(PrideXmlXpath.TWOD.getXpath());
+        twoDimAccMap = initIdentificationCacheMap(PrideXmlXpath.TWOD.getXpath());
         // init peptide map
         identToPeptideMap = initPeptideCacheMap();
         // init identified spectrum list
@@ -111,7 +111,7 @@ public class PrideXmlExtractor {
             // get id from index element using pattern
             String id = getIDByPattern(indexElement, idPattern, true);
             if (idMap.containsKey(id)) {
-                throw new IllegalStateException("Ambiguous ID Exception: " + xpath + " \nID: " + id);
+                logger.error("Ambiguous ID Exception: " + xpath + " \nID: " + id);
             } else {
                 idMap.put(id, indexElement);
             }
@@ -119,7 +119,7 @@ public class PrideXmlExtractor {
         return idMap;
     }
 
-    private Map<String, IndexElement> initCacheMap(String xpath) {
+    private Map<String, IndexElement> initIdentificationCacheMap(String xpath) {
         // 1. create a empty id map
         Map<String, IndexElement> idMap = new LinkedHashMap<String, IndexElement>();
         // 2. get index elements from xpath
@@ -129,7 +129,7 @@ public class PrideXmlExtractor {
         for (IndexElement indexElement : indexElements) {
             // get id from index element using pattern
             if (idMap.containsKey(identificationId + "")) {
-                throw new IllegalStateException("Ambiguous ID Exception: " + xpath + " \nID: " + identificationId);
+                logger.error("Ambiguous ID Exception: " + xpath + " \nID: " + identificationId);
             } else {
                 idMap.put(identificationId + "", indexElement);
             }

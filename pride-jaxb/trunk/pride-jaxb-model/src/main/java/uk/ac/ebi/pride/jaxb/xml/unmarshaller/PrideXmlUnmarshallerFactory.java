@@ -5,6 +5,7 @@ import org.xml.sax.InputSource;
 import uk.ac.ebi.pride.jaxb.model.ModelConstants;
 import uk.ac.ebi.pride.jaxb.model.PrideXmlObject;
 import uk.ac.ebi.pride.jaxb.xml.adapter.SpectrumAdapter;
+import uk.ac.ebi.pride.jaxb.xml.util.EscapingXMLUtilities;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -74,7 +75,9 @@ public class PrideXmlUnmarshallerFactory {
                 return null;
             }
 
-            JAXBElement<T> holder = unmarshaller.unmarshal(new SAXSource(new InputSource(new StringReader(xmlSnippet))), cls);
+            //need to clean up XML to ensure that there are no weird control characters
+            String cleanXML = EscapingXMLUtilities.escapeCharacters(xmlSnippet);
+            JAXBElement<T> holder = unmarshaller.unmarshal(new SAXSource(new InputSource(new StringReader(cleanXML))), cls);
             return holder.getValue();
         }
 

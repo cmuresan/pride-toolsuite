@@ -103,7 +103,7 @@ public class QuantPeptideSelectionPane extends DataAccessControllerPane implemen
 
         // create identification table
         try {
-            pepTable = TableFactory.createQuantPeptideTable(controller, controller.getPeptideCvTermReferenceScores());
+            pepTable = TableFactory.createQuantPeptideTable(controller, controller.getAvailablePeptideLevelScores());
 
 
             // add row selection listener

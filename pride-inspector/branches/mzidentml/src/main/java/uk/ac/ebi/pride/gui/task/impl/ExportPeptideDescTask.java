@@ -64,8 +64,6 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
             writer = new PrintWriter(new FileWriter(new File(outputFilePath)));
             ExperimentMetaData exp = controller.getExperimentMetaData();
 
-            //------- Comment section -------
-
             // data source
             if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
                 writer.println("# Data source: " + ((File)controller.getSource()).getAbsolutePath());
@@ -96,7 +94,7 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
 
             // in order to get a list of headers for export
             // first, we need to create an instance of PeptideTableModel
-            PeptideTableModel pepTableModel = new PeptideTableModel(controller.getPeptideCvTermReferenceScores());
+            PeptideTableModel pepTableModel = new PeptideTableModel(controller.getAvailablePeptideLevelScores());
             // a list of columns to be skipped
             List<Integer> skipIndexes = new ArrayList<Integer>();
             // skip identification id

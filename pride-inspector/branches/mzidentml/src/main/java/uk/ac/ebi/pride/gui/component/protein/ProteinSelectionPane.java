@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
+import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.action.impl.DecoyFilterAction;
@@ -69,7 +70,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
     protected void addComponents() {
         // create identification table
         try {
-            identTable = TableFactory.createIdentificationTable(controller.getProteinCvTermReferenceScores(), controller);
+            identTable = TableFactory.createIdentificationTable(controller.getAvailableProteinLevelScores(), controller);
         } catch (DataAccessException e) {
             String msg = "Failed to retrieve search engine details";
             logger.error(msg, e);
@@ -134,7 +135,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
             metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
             // search engine
-            Object engine = identId == null ? "Unknown" : controller.getSearchEngine().getName();
+            Object engine = identId == null ? "Unknown" : getSearchEngineName(controller.getSearchEngineTypes());
             engine = engine == null ? "Unknown" : engine;
             JLabel dbLabel = new JLabel("<html><b>Search Engine</b>: " + engine + "</htlm>");
             dbLabel.setToolTipText(engine.toString());
@@ -156,6 +157,21 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
             appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, e));
         }
         return metaDataPanel;
+    }
+
+    private String getSearchEngineName(Collection<SearchEngineType> searchEngineTypes) {
+        StringBuilder builder = new StringBuilder();
+
+        for (SearchEngineType searchEngineType  : searchEngineTypes) {
+            builder.append(searchEngineType.toString() + ",");
+        }
+
+        String searchEngineName = builder.toString();
+        if (searchEngineName.length() > 1) {
+            searchEngineName.substring(0, searchEngineName.length()-1);
+        }
+
+        return searchEngineName;
     }
 
     /**

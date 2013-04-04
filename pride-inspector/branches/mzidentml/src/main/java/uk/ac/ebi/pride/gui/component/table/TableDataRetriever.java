@@ -10,6 +10,7 @@ import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
 import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.mol.IsoelectricPointUtils;
 import uk.ac.ebi.pride.mol.MoleculeUtilities;
+import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 import uk.ac.ebi.pride.tools.utils.AccessionResolver;
 import uk.ac.ebi.pride.util.NumberUtilities;
@@ -198,15 +199,7 @@ public class TableDataRetriever {
         content.add(controller.getNumberOfFragmentIons(identId, peptideId));
 
         // peptide scores
-        Score score = controller.getPeptideScore(identId, peptideId);
-        if (score != null) {
-            List<Number> nums = score.getAllScoreValues();
-            if (nums != null && !nums.isEmpty()) {
-                for (Number num : nums) {
-                    content.add(num == null ? num : num.doubleValue());
-                }
-            }
-        }
+        addPeptideScores(content, controller, identId, peptideId);
 
         // Sequence length
         content.add(sequence.length());
@@ -234,6 +227,27 @@ public class TableDataRetriever {
         content.add(identId + Constants.COMMA + peptideId);
 
         return content;
+    }
+
+    private static void addPeptideScores(List<Object> content, DataAccessController controller,
+                                         Comparable identId, Comparable peptideId) {
+        Score score = controller.getPeptideScore(identId, peptideId);
+        Collection<CvTermReference> availablePeptideLevelScores = controller.getAvailablePeptideLevelScores();
+        if (score != null) {
+            for (CvTermReference availablePeptideLevelScore : availablePeptideLevelScores) {
+                List<Number> values = score.getScores(availablePeptideLevelScore);
+                if (!values.isEmpty()) {
+                    // take the first by default
+                    content.add(values.get(0));
+                } else {
+                    content.add(null);
+                }
+            }
+        } else {
+            for (CvTermReference availablePeptideLevelScore : availablePeptideLevelScores) {
+                content.add(null);
+            }
+        }
     }
 
     /**
@@ -304,20 +318,32 @@ public class TableDataRetriever {
         content.add(identId);
 
         // protein scores
-        Score scores = controller.getProteinScores(identId);
-        if (scores != null) {
-            List<Number> nums = scores.getAllScoreValues();
-            if (nums != null && !nums.isEmpty()) {
-                for (Number num : nums) {
-                    content.add(num == null ? num : num.doubleValue());
-                }
-            }
-        }
+        addProteinScores(content, controller, identId);
 
         // additional details is always null
         content.add(identId);
 
         return content;
+    }
+
+    private static void addProteinScores(List<Object> content, DataAccessController controller, Comparable identId) {
+        Score score = controller.getProteinScores(identId);
+        Collection<CvTermReference> availablePeptideLevelScores = controller.getAvailablePeptideLevelScores();
+        if (score != null) {
+            for (CvTermReference availablePeptideLevelScore : availablePeptideLevelScores) {
+                List<Number> values = score.getScores(availablePeptideLevelScore);
+                if (!values.isEmpty()) {
+                    // take the first by default
+                    content.add(values.get(0));
+                } else {
+                    content.add(null);
+                }
+            }
+        } else {
+            for (CvTermReference availablePeptideLevelScore : availablePeptideLevelScores) {
+                content.add(null);
+            }
+        }
     }
 
     /**

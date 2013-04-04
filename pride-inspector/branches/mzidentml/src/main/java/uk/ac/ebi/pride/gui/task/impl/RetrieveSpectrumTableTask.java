@@ -98,23 +98,23 @@ public class RetrieveSpectrumTableTask extends AbstractDataAccessTask<Void, Tupl
                     Comparable specId = CollectionUtils.getElement(specIds, i);
                     content.add(specId);
                     //ms level
-                    int msLevel = controller.getMsLevel(specId);
+                    int msLevel = controller.getSpectrumMsLevel(specId);
                     content.add(msLevel == -1 ? null : msLevel);
                     //identified spectra
                     content.add(controller.isIdentifiedSpectrum(specId));
                     // precursor charge
-                    int pCharge = controller.getPrecursorCharge(specId);
+                    int pCharge = controller.getSpectrumPrecursorCharge(specId);
                     content.add(pCharge == 0 ? null : pCharge);
                     // precursor m/z
-                    double pMz = controller.getPrecursorMz(specId);
+                    double pMz = controller.getSpectrumPrecursorMz(specId);
                     content.add(pMz == -1 ? null : NumberUtilities.scaleDouble(pMz, 4));
                     // precursor intensity
-                    double pIntent = controller.getPrecursorIntensity(specId);
+                    double pIntent = controller.getSpectrumPrecursorIntensity(specId);
                     content.add(pIntent == -1 ? null : NumberUtilities.scaleDouble(pIntent, 1));
                     // sum of intensity
                     content.add(NumberUtilities.scaleDouble(controller.getSumOfIntensity(specId), 1));
                     // Number of peaks
-                    content.add(controller.getNumberOfPeaks(specId));
+                    content.add(controller.getNumberOfSpectrumPeaks(specId));
                     publish(new Tuple<TableContentType, List<Object>>(TableContentType.SPECTRUM, content));
 
                     // this is important for cancelling

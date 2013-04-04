@@ -118,7 +118,7 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
                 return true;
             }
 
-            double mz = controller.getPrecursorMz(specId);
+            double mz = controller.getSpectrumPrecursorMz(specId);
 
             java.util.List<Modification> mods = peptide.getModifications();
 

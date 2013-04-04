@@ -197,7 +197,7 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
                 return true;
             }
 
-            double mz = controller.getPrecursorMz(specId);
+            double mz = controller.getSpectrumPrecursorMz(specId);
 
             java.util.List<Modification> mods = peptide.getModifications();
 

@@ -32,16 +32,16 @@ public class UpdateChecker {
      */
     public static boolean hasUpdate() {
         boolean toUpdate = false;
+        BufferedReader reader = null;
 
-        if (InternetChecker.check()) {
-            // get the url for checking the update
-            DesktopContext context = Desktop.getInstance().getDesktopContext();
-            String website = context.getProperty("pride.inspector.website");
-            String name = context.getProperty("pride.inspector.name");
-            String version = context.getProperty("pride.inspector.version");
-            BufferedReader reader = null;
+        try {
+            if (InternetChecker.check()) {
+                // get the url for checking the update
+                DesktopContext context = Desktop.getInstance().getDesktopContext();
+                String website = context.getProperty("pride.inspector.website");
+                String name = context.getProperty("pride.inspector.name");
+                String version = context.getProperty("pride.inspector.version");
 
-            try {
                 URL url = new URL(website + "/downloads/detail?name=" + name + "-" + version + ".zip");
                 // connect to the url
                 int response = ((HttpURLConnection) url.openConnection()).getResponseCode();
@@ -58,15 +58,15 @@ public class UpdateChecker {
                         }
                     }
                 }
-            } catch (Exception e) {
-                logger.warn("Failed to check for updates", e);
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                        logger.warn("Failed to check for updates");
-                    }
+            }
+        } catch (Exception e) {
+            logger.warn("Failed to check for updates", e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    logger.warn("Failed to check for updates");
                 }
             }
         }
@@ -77,6 +77,7 @@ public class UpdateChecker {
     /**
      * Show update dialog
      */
+
     public static void showUpdateDialog() {
         int option = JOptionPane.showConfirmDialog(null, "<html><b>A new version of PRIDE Inspector is available</b>.<br><br> " +
                 "Would you like to update?</html>", "Update Info", JOptionPane.YES_NO_OPTION);

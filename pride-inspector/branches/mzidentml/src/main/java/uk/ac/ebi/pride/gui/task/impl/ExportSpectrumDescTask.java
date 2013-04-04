@@ -97,20 +97,20 @@ public class ExportSpectrumDescTask extends AbstractDataAccessTask<Void, Void> {
             for (Comparable specId : spectrumIds) {
                 writer.print(specId);
                 writer.print(TAB);
-                writer.print(controller.getMsLevel(specId));
+                writer.print(controller.getSpectrumMsLevel(specId));
                 writer.print(TAB);
-                Integer charge = controller.getPrecursorCharge(specId);
+                Integer charge = controller.getSpectrumPrecursorCharge(specId);
                 if (charge != null) {
-                    writer.print(controller.getPrecursorCharge(specId));
+                    writer.print(controller.getSpectrumPrecursorCharge(specId));
                 }
                 writer.print(TAB);
-                writer.print(controller.getPrecursorMz(specId));
+                writer.print(controller.getSpectrumPrecursorMz(specId));
                 writer.print(TAB);
-                writer.print(controller.getPrecursorIntensity(specId));
+                writer.print(controller.getSpectrumPrecursorIntensity(specId));
                 writer.print(TAB);
                 writer.print(controller.getSumOfIntensity(specId));
                 writer.print(TAB);
-                writer.print(controller.getNumberOfPeaks(specId));
+                writer.print(controller.getNumberOfSpectrumPeaks(specId));
                 writer.print(LINE_SEPARATOR);
 
                 // this is important for cancelling

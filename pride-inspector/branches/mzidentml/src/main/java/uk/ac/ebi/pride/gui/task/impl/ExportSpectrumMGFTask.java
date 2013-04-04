@@ -97,13 +97,13 @@ public class ExportSpectrumMGFTask extends AbstractDataAccessTask<Void, Void> {
             //------- MGF content section -------
             for (Comparable spectrumId : controller.getSpectrumIds()) {
                 Spectrum spectrum = controller.getSpectrumById(spectrumId);
-                int msLevel = controller.getMsLevel(spectrumId);
+                int msLevel = controller.getSpectrumMsLevel(spectrumId);
                 if (msLevel == 2) {
                     writer.println("BEGIN IONS");
                     writer.println("TITLE=" + spectrumId);
-                    writer.println("PEPMASS=" + controller.getPrecursorMz(spectrumId));
+                    writer.println("PEPMASS=" + controller.getSpectrumPrecursorMz(spectrumId));
                     // precursor charge
-                    Integer charge = controller.getPrecursorCharge(spectrumId);
+                    Integer charge = controller.getSpectrumPrecursorCharge(spectrumId);
                     if (charge != null) {
                         writer.println("CHARGE=" + charge + (charge >= 0 ? "+" : "-"));
                     }

@@ -59,7 +59,7 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
             Map<String, String> ptmMap = new HashMap<String, String>();
             // get headers
             if (hasQuantData) {
-                logger.debug("*** Scan quantification table header");
+                logger.debug("Scan quantification table header");
                 // protein quantitative table header
                 List<Object> proteinQuantHeaders = TableDataRetriever.getProteinQuantTableHeaders(controller, -1);
                 publish(new Tuple<TableContentType, List<Object>>(TableContentType.PROTEIN_QUANTITATION_HEADER, proteinQuantHeaders));
@@ -68,14 +68,14 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
             for (Comparable identId : identIds) {
 
                 // get and publish protein related details
-                logger.debug("*** Scan protein details: {}", identId);
+                logger.debug("Scan protein details: {}", identId);
                 List<Object> identContent = TableDataRetriever.getProteinTableRow(controller, identId);
                 publish(new Tuple<TableContentType, List<Object>>(TableContentType.PROTEIN, identContent));
 
 
                 if (hasQuantData) {
                     // get and publish quantitative data
-                    logger.debug("*** Scan quantification details: {}", identId);
+                    logger.debug("Scan quantification details: {}", identId);
                     List<Object> allQuantContent = new ArrayList<Object>();
                     allQuantContent.addAll(identContent);
                     List<Object> identQuantContent = TableDataRetriever.getProteinQuantTableRow(controller, identId, -1);
@@ -87,7 +87,7 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
                 Collection<Comparable> ids = controller.getPeptideIds(identId);
                 if (ids != null) {
                     for (Comparable peptideId : ids) {
-                        logger.debug("*** Scan peptide details: {}-{}", identId, peptideId);
+                        logger.debug("Scan peptide details: {}-{}", identId, peptideId);
                         List<Object> peptideContent = TableDataRetriever.getPeptideTableRow(controller, identId, peptideId);
                         publish(new Tuple<TableContentType, List<Object>>(TableContentType.PEPTIDE, peptideContent));
 

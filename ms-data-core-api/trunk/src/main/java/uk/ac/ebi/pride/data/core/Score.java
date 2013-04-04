@@ -7,8 +7,7 @@ import uk.ac.ebi.pride.term.CvTermReference;
 import java.util.*;
 
 /**
- * Score stores a number of peptide scores for a list of search engines.
- * Please Note that peptide scores are null if they are not provided.
+ * Score stores a number of scores from a list of search engines.
  * <p/>
  * User: rwang, yperez
  * Date: Dec 2, 2010
@@ -27,13 +26,31 @@ public class Score {
     }
 
     /**
-     * Get peptide scores for search engine
+     * Get scores for search engine
      *
      * @param se search engine
      * @return   peptide score map
      */
-    public Map<CvTermReference, Number> getPeptideScores(SearchEngineType se) {
+    public Map<CvTermReference, Number> getScores(SearchEngineType se) {
         return scores.get(se);
+    }
+
+
+    /**
+     * Scan for scores using a given score cv term
+     * @param scoreCvTerm   score cv term
+     * @return  a collection of values
+     */
+    public List<Number> getScores(CvTermReference scoreCvTerm) {
+        List<Number> values = new ArrayList<Number>();
+
+        for (Map<CvTermReference, Number> cvTermReferenceNumberMap : scores.values()) {
+            if (cvTermReferenceNumberMap.containsKey(scoreCvTerm)) {
+                values.add(cvTermReferenceNumberMap.get(scoreCvTerm));
+            }
+        }
+
+        return values;
     }
 
     /**
@@ -43,7 +60,7 @@ public class Score {
      * @param ref cv term reference
      * @return Number  peptide score
      */
-    public Number getPeptideScore(SearchEngineType se, CvTermReference ref) {
+    public Number getScore(SearchEngineType se, CvTermReference ref) {
         Map<CvTermReference, Number> scoreMap = scores.get(se);
 
         return (scoreMap == null) ? null  : scoreMap.get(ref);

@@ -247,7 +247,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
 
                     for (SearchEngineType searchEngineType : searchEngines) {
                         for (CvTermReference cvTermReference : searchEngineType.getSearchEngineScores()) {
-                            Number pepScore = DataAccessUtilities.getPeptideScore(pep.getSpectrumIdentification(), searchEngines).getPeptideScore(searchEngineType, cvTermReference);
+                            Number pepScore = DataAccessUtilities.getPeptideScore(pep.getSpectrumIdentification(), searchEngines).getScore(searchEngineType, cvTermReference);
 
                             if (pepScore != null) {
                                 pp.addPeptideScore(searchEngineType, cvTermReference, pepScore);

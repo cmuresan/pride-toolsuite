@@ -26,7 +26,9 @@ public enum CacheCategory {
     EXPERIMENT_METADATA(ArrayList.class, null),                     // List<Experiment Metadata>
     PROTEIN_METADATA(ArrayList.class, null),                  // ToDo: document
     MZGRAPH_METADATA(ArrayList.class, null),                       // ToDo: document
-    SEARCH_ENGINE_TYPE(ArrayList.class, null),                       // List<SearchEngine>
+    SEARCH_ENGINE_TYPE(ArrayList.class, null),                       // List<SearchEngineTypes>
+    PROTEIN_LEVEL_SCORES(ArrayList.class, null),                       // List<CvTermReference>
+    PEPTIDE_LEVEL_SCORES(ArrayList.class, null),                       // List<CvTermReference>
     SPECTRUM_ID(ArrayList.class, null),                               // List<Spectrum id>
     CHROMATOGRAM_ID(ArrayList.class, null),                         // List<Chromatogram id>
     PROTEIN_ID(ArrayList.class, null),                           // List<Identification id>

@@ -189,6 +189,8 @@ public interface ProteinDataAccess {
      *
      * @return List of Protein Scores in CvTerm
      * @throws DataAccessException
+     *
+     * todo: this name needs to be changed
      */
     public Collection<CvTermReference> getProteinCvTermReferenceScores() throws  DataAccessException;
 
@@ -200,6 +202,7 @@ public interface ProteinDataAccess {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      */
     public DBSequence getProteinSequence(Comparable proteinId) throws DataAccessException;
+
 }
 
 

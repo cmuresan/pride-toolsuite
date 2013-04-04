@@ -94,40 +94,41 @@ public class DataAccessUtilities {
     }
 
     /**
-     * Get precursor charge
-     *
-     * @param spectrum spectrum
-     * @return int precursor charge
-     */
-    public static int getPrecursorCharge(Spectrum spectrum) {
-        int charge = -1;
-        List<Precursor> precursors = spectrum.getPrecursors();
-        if (!precursors.isEmpty()) {
-            Double c = getSelectedIonCharge(precursors.get(0), 0);
-            if (c != null) {
-                charge = c.intValue();
-            }
-        }
-        return charge;
-    }
-
-    /**
      * Get precursor charge from param group
      *
      * @param paramGroup param group
      * @return precursor charge
      */
-    public static int getPrecursorCharge(ParamGroup paramGroup) {
-        int charge = -1;
+    public static Integer getPrecursorCharge(ParamGroup paramGroup) {
+        Integer charge = null;
 
         if (paramGroup != null) {
-            Double c = getSelectedCvParamValue(paramGroup, CvTermReference.PSI_ION_SELECTION_CHARGE_STATE, CvTermReference.ION_SELECTION_CHARGE_STATE);
+            Double c = getSelectedIonCvParamValue(paramGroup, CvTermReference.PSI_ION_SELECTION_CHARGE_STATE, CvTermReference.ION_SELECTION_CHARGE_STATE);
             if (c != null) {
                 charge = c.intValue();
             }
         }
 
         return charge;
+    }
+
+    /**
+     * Get value of selected ion cv param
+     *
+     * @param paramGroup param group
+     * @param refs       a list of possible cv terms to search for
+     * @return Double  value of the cv paramter
+     */
+    private static Double getSelectedIonCvParamValue(ParamGroup paramGroup, CvTermReference... refs) {
+        Double value = null;
+        // search PRIDE xml based charge
+        for (CvTermReference ref : refs) {
+            List<CvParam> cvParams = getCvParam(paramGroup, ref.getCvLabel(), ref.getAccession());
+            if (cvParams != null && !cvParams.isEmpty()) {
+                value = new Double(cvParams.get(0).getValue());
+            }
+        }
+        return value;
     }
 
     /**

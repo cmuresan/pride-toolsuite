@@ -123,7 +123,7 @@ public interface MzGraphDataAccess {
      * @return int  number of peaks.
      * @throws DataAccessException data access exception.
      */
-    public int getNumberOfPeaks(Comparable specId) throws DataAccessException;
+    public int getSpectrumNumberOfPeaks(Comparable specId) throws DataAccessException;
 
     /**
      * Get the ms level of a spectrum.
@@ -132,7 +132,7 @@ public interface MzGraphDataAccess {
      * @return int  ms level.
      * @throws DataAccessException data access exception.
      */
-    public int getMsLevel(Comparable specId) throws DataAccessException;
+    public int getSpectrumMsLevel(Comparable specId) throws DataAccessException;
 
     /**
      * Get the precursor charge of a spectrum.
@@ -141,7 +141,7 @@ public interface MzGraphDataAccess {
      * @return Integer  precursor charge, -1 means no charge.
      * @throws DataAccessException data access exception.
      */
-    public int getPrecursorCharge(Comparable specId) throws DataAccessException;
+    public Integer getSpectrumPrecursorCharge(Comparable specId) throws DataAccessException;
 
     /**
      * Get the precursor's m/z value of a spectrum.
@@ -149,8 +149,10 @@ public interface MzGraphDataAccess {
      * @param specId spectrum id.
      * @return double  precursor m/z value
      * @throws DataAccessException data access exception.
+     *
+     * todo: change double to Double
      */
-    public double getPrecursorMz(Comparable specId) throws DataAccessException;
+    public double getSpectrumPrecursorMz(Comparable specId) throws DataAccessException;
 
     /**
      * Get the precursor's intensity of a spectrum.
@@ -158,8 +160,10 @@ public interface MzGraphDataAccess {
      * @param specId spectrum id.
      * @return double   precursor intensity.
      * @throws DataAccessException data access exception.
+     *
+     * todo: change double to Double
      */
-    public double getPrecursorIntensity(Comparable specId) throws DataAccessException;
+    public double getSpectrumPrecursorIntensity(Comparable specId) throws DataAccessException;
 
     /**
      * Get the sum of intensity of a spectrum.

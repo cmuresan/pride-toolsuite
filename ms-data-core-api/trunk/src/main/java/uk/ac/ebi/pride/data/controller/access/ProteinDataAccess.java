@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.data.controller.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.Collection;
@@ -171,10 +172,10 @@ public interface ProteinDataAccess {
     /**
      * Get the search engine of a identification
      *
-     * @return String   search engine.
+     * @return a collection of search engine types
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception.
      */
-    public SearchEngine getSearchEngine() throws DataAccessException;
+    public Collection<SearchEngineType> getSearchEngineTypes() throws DataAccessException;
 
     /**
      * Get the search database version of a identification
@@ -189,10 +190,8 @@ public interface ProteinDataAccess {
      *
      * @return List of Protein Scores in CvTerm
      * @throws DataAccessException
-     *
-     * todo: this name needs to be changed
      */
-    public Collection<CvTermReference> getProteinCvTermReferenceScores() throws  DataAccessException;
+    public Collection<CvTermReference> getAvailableProteinLevelScores() throws  DataAccessException;
 
     /**
      * Get the sequence of the Identified Protein

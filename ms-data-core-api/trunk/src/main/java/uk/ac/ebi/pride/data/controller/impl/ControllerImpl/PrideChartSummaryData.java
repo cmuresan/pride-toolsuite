@@ -243,7 +243,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
                         pp = new ProteinPeptide(identification_id, seq, ptmMass);
                     }
 
-                    List<SearchEngineType> searchEngines = cdac.getSearchEngine().getSearchEngineTypes();
+                    List<SearchEngineType> searchEngines = cdac.getSearchEngineTypes();
 
                     for (SearchEngineType searchEngineType : searchEngines) {
                         for (CvTermReference cvTermReference : searchEngineType.getSearchEngineScores()) {

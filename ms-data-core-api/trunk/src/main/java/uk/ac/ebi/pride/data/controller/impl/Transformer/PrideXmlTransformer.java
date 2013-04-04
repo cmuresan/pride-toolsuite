@@ -425,24 +425,10 @@ public class PrideXmlTransformer {
             double seqConverageVal = seqConverage == null ? -1 : seqConverage;
             Double threshold = rawIdent.getThreshold();
             double thresholdVal = threshold == null ? -1 : threshold;
-            //SearchEngineType searchEngine = SearchEngineType.getByName(rawIdent.getSearchEngine());
-            Score score = null;
+            Score score = DataAccessUtilities.getScore(params);
 
-            /*if(searchEngine != null && rawIdent.getScore()!=null){
-                CvTermReference cvTerm = SearchEngineType.getDefaultCvTerm(rawIdent.getSearchEngine());
-                if(cvTerm != null){
-                    CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),rawIdent.getScore().toString(),null,null,null);
-                    params.addCvParam(cvParam);
-                }
-                Map<SearchEngineType,Map<CvTermReference,Number>> scores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
-                Map<CvTermReference,Number> scoreValues = new HashMap<CvTermReference, Number>();
-                scoreValues.put(SearchEngineType.getDefaultCvTerm(rawIdent.getSearchEngine()), rawIdent.getScore());
-                scores.put(searchEngine,scoreValues);
-                score = new Score(scores);
-            } */
             SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
             DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
-            //SearchEngine searchEngine = new SearchEngine(null, rawIdent.getSearchEngine(),null);
             return new Protein(params, rawIdent.getId(), null, dbSequence, false, peptides, score, thresholdVal, seqConverageVal, null);
 
         }

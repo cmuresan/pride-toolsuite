@@ -452,36 +452,41 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public SearchEngine getSearchEngine() throws DataAccessException {
-        SearchEngine searchEngine = null;
+    public List<SearchEngineType> getSearchEngineTypes() throws DataAccessException {
+        List<SearchEngineType> searchEngineTypes = Collections.emptyList();
         Collection<Comparable> proteinIds = this.getProteinIds();
         if (!proteinIds.isEmpty()) {
             Protein protein = getProteinById(CollectionUtils.getElement(proteinIds, 0));
             if (protein != null) {
-                List<SearchEngineType> engines = (protein.getScore() == null) ? null : protein.getScore().getSearchEngineTypes();
-                searchEngine = new SearchEngine(null, null, engines);
+                if (protein.getScore() != null)  {
+                    searchEngineTypes.addAll(protein.getScore().getSearchEngineTypes());
+                }
+
                 // check the search engine types from the data source
                 List<Peptide> peptides = protein.getPeptides();
                 if (!peptides.isEmpty()) {
                     Peptide peptide = peptides.get(0);
-                    List<SearchEngineType> types = DataAccessUtilities.getSearchEngineTypes(peptide.getSpectrumIdentification());
-                    searchEngine.setSearchEngineTypes(types);
+                    if (peptide.getScore() != null) {
+                        searchEngineTypes.addAll(peptide.getScore().getSearchEngineTypes());
+                    }
                 }
             }
         }
 
-        return searchEngine;
+        return searchEngineTypes;
     }
 
     @Override
-    public List<CvTermReference> getProteinCvTermReferenceScores() throws DataAccessException {
+    public List<CvTermReference> getAvailableProteinLevelScores() throws DataAccessException {
         Collection<Comparable> proteinIds = this.getProteinIds();
         List<CvTermReference> cvTermReferences = Collections.emptyList();
         if (!proteinIds.isEmpty()) {
             Protein protein = getProteinById(CollectionUtils.getElement(proteinIds, 0));
             if (protein != null) {
-                Score score = DataAccessUtilities.getScore(protein);
-                if (score != null) cvTermReferences = score.getCvTermReferenceWithValues();
+                Score score = protein.getScore();
+                if (score != null) {
+                    cvTermReferences = score.getCvTermReferenceWithValues();
+                }
             }
         }
         return cvTermReferences;
@@ -489,7 +494,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public List<CvTermReference> getPeptideCvTermReferenceScores() throws DataAccessException {
+    public List<CvTermReference> getAvailablePeptideLevelScores() throws DataAccessException {
         Collection<Comparable> proteinIds = this.getProteinIds();
         List<CvTermReference> cvTermReferences = Collections.emptyList();
         if (!proteinIds.isEmpty()) {
@@ -497,8 +502,10 @@ public abstract class AbstractDataAccessController implements DataAccessControll
             if (protein != null && !protein.getPeptides().isEmpty()) {
                 List<Peptide> peptides = protein.getPeptides();
                 Peptide peptide = peptides.get(0);
-                Score score = DataAccessUtilities.getScore(peptide.getSpectrumIdentification());
-                cvTermReferences = (score != null) ? score.getCvTermReferenceWithValues() : cvTermReferences;
+                Score score = peptide.getScore();
+                if (score != null) {
+                    cvTermReferences = score.getCvTermReferenceWithValues();
+                }
             }
         }
         return cvTermReferences;

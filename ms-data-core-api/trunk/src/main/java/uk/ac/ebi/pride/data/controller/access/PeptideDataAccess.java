@@ -230,10 +230,8 @@ public interface PeptideDataAccess {
      * @return a collection of cv term references
      * @throws DataAccessException
      *
-     * todo: this name needs to be changed
      */
-    public Collection<CvTermReference> getPeptideCvTermReferenceScores() throws  DataAccessException;
-
+    public Collection<CvTermReference> getAvailablePeptideLevelScores() throws  DataAccessException;
 
     /**
      * Get precursor charge on peptide level

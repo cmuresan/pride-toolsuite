@@ -229,21 +229,23 @@ public interface PeptideDataAccess {
      *
      * @return a collection of cv term references
      * @throws DataAccessException
+     *
+     * todo: this name needs to be changed
      */
     public Collection<CvTermReference> getPeptideCvTermReferenceScores() throws  DataAccessException;
+
 
     /**
      * Get precursor charge on peptide level
      * Note: sometimes, precursor charge at the peptide level is different from the precursor charge at the spectrum level
      * As the peptide-level precursor charge is often assigned by search engine rather than ms instrument
      *
-     * @param proteinId   identification id
+     * @param identId   identification id
      * @param peptideId peptid eid, can be the index of the peptide as well.
      * @return  precursor charge, null should be returned if not available
      * @throws DataAccessException  data access exception
      */
-    public int getPrecursorCharge(Comparable proteinId, Comparable peptideId) throws DataAccessException;
-
+    public Integer getPeptidePrecursorCharge(Comparable identId, Comparable peptideId) throws DataAccessException;
 
     /**
      * Get precursor m/z on peptide level
@@ -254,8 +256,11 @@ public interface PeptideDataAccess {
      * @param peptideId peptid eid, can be the index of the peptide as well.
      * @return  precursor charge, null should be returned if not available
      * @throws DataAccessException  data access exception
+     *
+     * todo: change double to Double
+     *
      */
-    public double getPrecursorMz(Comparable proteinId, Comparable peptideId) throws DataAccessException;
+    public double getPeptidePrecursorMz(Comparable proteinId, Comparable peptideId) throws DataAccessException;
 }
 
 

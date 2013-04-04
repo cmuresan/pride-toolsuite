@@ -874,8 +874,10 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             if (specId != null) {
                 spectrum = getSpectrumById(specId);
             }
-            int charge = this.getPrecursorCharge(specId);
-            double mz = this.getPrecursorMz(specId);
+
+            //todo: change this to take into account peptide level charges
+            int charge = this.getSpectrumPrecursorCharge(specId);
+            double mz = this.getSpectrumPrecursorMz(specId);
             PeptideSequence peptideSequence = new PeptideSequence(null, null, sequence, modifications);
             List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
             PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, start, end, false, peptideSequence, null);
@@ -923,7 +925,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public int getNumberOfPeaks(Comparable specId) throws DataAccessException {
+    public int getSpectrumNumberOfPeaks(Comparable specId) throws DataAccessException {
         // check with cache if exists then use the in-memory spectrum object
         int cnt = 0;
         Integer num = (Integer) getCache().get(CacheCategory.NUMBER_OF_PEAKS, specId);

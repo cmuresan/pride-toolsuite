@@ -179,7 +179,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public int getNumberOfPeaks(Comparable specId) throws DataAccessException {
+    public int getSpectrumNumberOfPeaks(Comparable specId) throws DataAccessException {
         int numOfPeaks = 0;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
@@ -189,7 +189,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public int getMsLevel(Comparable specId) throws DataAccessException {
+    public int getSpectrumMsLevel(Comparable specId) throws DataAccessException {
         int msLevel = -1;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
@@ -198,9 +198,17 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return msLevel;
     }
 
+    /**
+     * Get precursor charge of a spectrum.
+     * This implementation will check cache first.
+     *
+     * @param specId spectrum id.
+     * @return int precursor charge
+     * @throws DataAccessException data access exception
+     */
     @Override
-    public int getPrecursorCharge(Comparable specId) throws DataAccessException {
-        int charge = -1;
+    public Integer getSpectrumPrecursorCharge(Comparable specId) throws DataAccessException {
+        Integer charge = null;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
             charge = DataAccessUtilities.getPrecursorCharge(spectrum);
@@ -208,24 +216,34 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return charge;
     }
 
+    @Override
+    public double getSpectrumPrecursorMz(Comparable specId) throws DataAccessException {
+        double mz = -1;
+        Spectrum spectrum = getSpectrumById(specId);
+        if (spectrum != null) {
+            mz = DataAccessUtilities.getPrecursorMz(spectrum);
+        }
+        return mz;
+    }
+
     /**
      * Get precursor charge on peptide level
      * Note: sometimes, precursor charge at the peptide level is different from the precursor charge at the spectrum level
      * As the peptide-level precursor charge is often assigned by search engine rather than ms instrument
      *
-     * @param proteinId   protein identification id
+     * @param identId   identification id
      * @param peptideId peptid eid, can be the index of the peptide as well.
      * @return precursor charge, 0 should be returned if not available
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *          data access exception
      */
     @Override
-    public int getPrecursorCharge(Comparable proteinId, Comparable peptideId) throws DataAccessException {
-        int charge = -1;
+    public Integer getPeptidePrecursorCharge(Comparable identId, Comparable peptideId) throws DataAccessException {
+        Integer charge = null;
 
-        Protein protein = getProteinById(proteinId);
-        if (protein != null) {
-            Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
+        Protein ident = getProteinById(identId);
+        if (ident != null) {
+            Peptide peptide = DataAccessUtilities.getPeptide(ident, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
                 charge = peptide.getPrecursorCharge();
             }
@@ -235,17 +253,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public double getPrecursorMz(Comparable specId) throws DataAccessException {
-        double mz = -1;
-        Spectrum spectrum = getSpectrumById(specId);
-        if (spectrum != null) {
-            mz = DataAccessUtilities.getPrecursorMz(spectrum);
-        }
-        return mz;
-    }
-
-    @Override
-    public double getPrecursorMz(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public double getPeptidePrecursorMz(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         double mz = -1;
 
         Protein protein = getProteinById(proteinId);
@@ -260,7 +268,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public double getPrecursorIntensity(Comparable specId) throws DataAccessException {
+    public double getSpectrumPrecursorIntensity(Comparable specId) throws DataAccessException {
         double intent = -1;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {

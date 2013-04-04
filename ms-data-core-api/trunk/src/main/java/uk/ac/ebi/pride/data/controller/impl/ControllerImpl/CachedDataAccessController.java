@@ -287,10 +287,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @throws DataAccessException data access exception
      */
     @Override
-    public int getNumberOfPeaks(Comparable specId) throws DataAccessException {
+    public int getSpectrumNumberOfPeaks(Comparable specId) throws DataAccessException {
         Integer numOfPeaks = (Integer) cache.get(CacheCategory.NUMBER_OF_PEAKS, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && numOfPeaks == null) {
-            numOfPeaks = super.getNumberOfPeaks(specId);
+            numOfPeaks = super.getSpectrumNumberOfPeaks(specId);
             cache.store(CacheCategory.NUMBER_OF_PEAKS, specId, numOfPeaks);
         }
         return numOfPeaks == null ? 0 : numOfPeaks;
@@ -306,10 +306,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @throws DataAccessException data access exception
      */
     @Override
-    public int getMsLevel(Comparable specId) throws DataAccessException {
+    public int getSpectrumMsLevel(Comparable specId) throws DataAccessException {
         Integer msLevel = (Integer) cache.get(CacheCategory.MS_LEVEL, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && msLevel == null) {
-            msLevel = super.getMsLevel(specId);
+            msLevel = super.getSpectrumMsLevel(specId);
             cache.store(CacheCategory.MS_LEVEL, specId, msLevel);
         }
         return msLevel == null ? -1 : msLevel;
@@ -324,13 +324,13 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @throws DataAccessException data access exception
      */
     @Override
-    public int getPrecursorCharge(Comparable specId) throws DataAccessException {
+    public Integer getSpectrumPrecursorCharge(Comparable specId) throws DataAccessException {
         Integer charge = (Integer) cache.get(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && charge == null) {
-            charge = super.getPrecursorCharge(specId);
+            charge = super.getSpectrumPrecursorCharge(specId);
             cache.store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, specId, charge);
         }
-        return charge == null ? -1 : charge;
+        return charge;
     }
 
     /**
@@ -345,15 +345,15 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      *          data access exception
      */
     @Override
-    public int getPrecursorCharge(Comparable proteinId, Comparable peptideId) throws DataAccessException {
-        int charge = -1;
+    public Integer getPeptidePrecursorCharge(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+        Integer charge = null;
         // get peptide additional parameters
         ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
         if (paramGroup != null) {
             // get peptide precursor charge
             charge = DataAccessUtilities.getPrecursorCharge(paramGroup);
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
-            charge = super.getPrecursorCharge(proteinId, peptideId);
+            charge = super.getPeptidePrecursorCharge(proteinId, peptideId);
         }
 
         return charge;
@@ -368,10 +368,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @throws DataAccessException data access exception
      */
     @Override
-    public double getPrecursorMz(Comparable specId) throws DataAccessException {
+    public double getSpectrumPrecursorMz(Comparable specId) throws DataAccessException {
         Double mz = (Double) cache.get(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && mz == null) {
-            mz = super.getPrecursorMz(specId);
+            mz = super.getSpectrumPrecursorMz(specId);
             cache.store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, specId, mz);
         }
         return mz == null ? -1 : mz;
@@ -386,7 +386,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @throws DataAccessException
      */
     @Override
-    public double getPrecursorMz(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public double getPeptidePrecursorMz(Comparable proteinId, Comparable peptideId) throws DataAccessException {
         double mz = -1;
         // get peptide additional parameters
         ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
@@ -394,7 +394,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
             // get peptide precursor charge
             mz = DataAccessUtilities.getPrecursorMz(paramGroup);
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
-            mz = super.getPrecursorMz(proteinId, peptideId);
+            mz = super.getPeptidePrecursorMz(proteinId, peptideId);
         }
 
         return mz;
@@ -409,10 +409,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @throws DataAccessException data access exception
      */
     @Override
-    public double getPrecursorIntensity(Comparable specId) throws DataAccessException {
+    public double getSpectrumPrecursorIntensity(Comparable specId) throws DataAccessException {
         Double intent = (Double) cache.get(CacheCategory.PRECURSOR_INTENSITY, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && intent == null) {
-            intent = super.getPrecursorIntensity(specId);
+            intent = super.getSpectrumPrecursorIntensity(specId);
             cache.store(CacheCategory.PRECURSOR_INTENSITY, specId, intent);
         }
         return intent == null ? -1 : intent;

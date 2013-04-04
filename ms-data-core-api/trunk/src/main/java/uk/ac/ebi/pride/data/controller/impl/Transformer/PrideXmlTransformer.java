@@ -374,21 +374,8 @@ public class PrideXmlTransformer {
             Double threshold = rawIdent.getThreshold();
             double thresholdVal = threshold == null ? -1 : threshold;
 
-            //SearchEngineType searchEngine = SearchEngineType.getByName(rawIdent.getSearchEngine());
-            Score score = null;
-            /*if(searchEngine != null && rawIdent.getScore()!=null){
-                CvTermReference cvTerm = SearchEngineType.getDefaultCvTerm(rawIdent.getSearchEngine());
-                if(cvTerm != null){
-                    CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),rawIdent.getScore().toString(),null,null,null);
-                    params.addCvParam(cvParam);
-                }
 
-                Map<SearchEngineType,Map<CvTermReference,Number>> scores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();
-                Map<CvTermReference,Number> scoreValues = new HashMap<CvTermReference, Number>();
-                scoreValues.put(SearchEngineType.getDefaultCvTerm(rawIdent.getSearchEngine()),rawIdent.getScore());
-                scores.put(searchEngine,scoreValues);
-                score = new Score(scores);
-            } */
+            Score score = DataAccessUtilities.getScore(params);
             SearchDataBase searchDataBase = new SearchDataBase(rawIdent.getDatabase(), rawIdent.getDatabaseVersion());
             DBSequence dbSequence = new DBSequence(rawIdent.getAccession(), searchDataBase, rawIdent.getAccessionVersion(), rawIdent.getSpliceIsoform());
             ident = new Protein(params, rawIdent.getId(), null, dbSequence, false, peptides, score, thresholdVal, seqConverageVal, gel);
@@ -419,7 +406,6 @@ public class PrideXmlTransformer {
 
             // params
             ParamGroup params = transformParamGroup(rawIdent.getAdditional());
-
 
             Double seqConverage = rawIdent.getSequenceCoverage();
             double seqConverageVal = seqConverage == null ? -1 : seqConverage;
@@ -519,7 +505,8 @@ public class PrideXmlTransformer {
         peptideEvidences.add(peptideEvidence);
 
         //Retrieve Experimental Mass and Charge.
-        int charge = DataAccessUtilities.getPrecursorCharge(params);
+        // todo: need to review this bit of code to set charge
+        Integer charge = DataAccessUtilities.getPrecursorCharge(params);
         double mz = DataAccessUtilities.getPrecursorMz(params);
         if (charge == -1 && spectrum != null) {
             charge = DataAccessUtilities.getPrecursorCharge(spectrum);
@@ -532,7 +519,7 @@ public class PrideXmlTransformer {
         // Retrieve Score
         Score score = DataAccessUtilities.getScore(params);
 
-        SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, charge, mz, -1, -1, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, score, spectrum, null);
+        SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, (charge == null ? -1 : charge), mz, -1, -1, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, score, spectrum, null);
         return new Peptide(peptideEvidence, spectrumIdentification);
         //Todo : We need to capture the theoretical Mass Value
 

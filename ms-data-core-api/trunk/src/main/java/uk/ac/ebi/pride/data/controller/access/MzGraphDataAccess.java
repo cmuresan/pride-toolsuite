@@ -123,7 +123,7 @@ public interface MzGraphDataAccess {
      * @return int  number of peaks.
      * @throws DataAccessException data access exception.
      */
-    public int getSpectrumNumberOfPeaks(Comparable specId) throws DataAccessException;
+    public int getNumberOfSpectrumPeaks(Comparable specId) throws DataAccessException;
 
     /**
      * Get the ms level of a spectrum.

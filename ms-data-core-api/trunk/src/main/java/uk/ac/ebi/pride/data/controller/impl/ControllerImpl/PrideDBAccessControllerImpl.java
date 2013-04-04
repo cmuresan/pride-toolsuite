@@ -925,7 +925,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public int getSpectrumNumberOfPeaks(Comparable specId) throws DataAccessException {
+    public int getNumberOfSpectrumPeaks(Comparable specId) throws DataAccessException {
         // check with cache if exists then use the in-memory spectrum object
         int cnt = 0;
         Integer num = (Integer) getCache().get(CacheCategory.NUMBER_OF_PEAKS, specId);

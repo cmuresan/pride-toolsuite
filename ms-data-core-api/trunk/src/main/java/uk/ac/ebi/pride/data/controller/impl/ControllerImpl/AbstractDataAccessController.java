@@ -179,7 +179,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public int getSpectrumNumberOfPeaks(Comparable specId) throws DataAccessException {
+    public int getNumberOfSpectrumPeaks(Comparable specId) throws DataAccessException {
         int numOfPeaks = 0;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {

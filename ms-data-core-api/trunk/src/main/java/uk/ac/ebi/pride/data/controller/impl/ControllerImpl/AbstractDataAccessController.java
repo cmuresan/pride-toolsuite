@@ -453,7 +453,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
 
     @Override
     public List<SearchEngineType> getSearchEngineTypes() throws DataAccessException {
-        List<SearchEngineType> searchEngineTypes = Collections.emptyList();
+        List<SearchEngineType> searchEngineTypes = new ArrayList<SearchEngineType>();
         Collection<Comparable> proteinIds = this.getProteinIds();
         if (!proteinIds.isEmpty()) {
             Protein protein = getProteinById(CollectionUtils.getElement(proteinIds, 0));

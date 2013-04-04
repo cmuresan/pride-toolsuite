@@ -67,7 +67,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
     protected void addComponents() {
         // create identification table
         try {
-            pepTable = TableFactory.createPeptideTable(controller.getPeptideCvTermReferenceScores(), controller);
+            pepTable = TableFactory.createPeptideTable(controller.getAvailablePeptideLevelScores(), controller);
         } catch (DataAccessException e) {
             String msg = "Failed to retrieve search engine details";
             logger.error(msg, e);

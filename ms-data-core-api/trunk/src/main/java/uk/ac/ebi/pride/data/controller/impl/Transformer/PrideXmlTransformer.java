@@ -508,7 +508,7 @@ public class PrideXmlTransformer {
         // todo: need to review this bit of code to set charge
         Integer charge = DataAccessUtilities.getPrecursorCharge(params);
         double mz = DataAccessUtilities.getPrecursorMz(params);
-        if (charge == -1 && spectrum != null) {
+        if (charge == null && spectrum != null) {
             charge = DataAccessUtilities.getPrecursorCharge(spectrum);
         }
 

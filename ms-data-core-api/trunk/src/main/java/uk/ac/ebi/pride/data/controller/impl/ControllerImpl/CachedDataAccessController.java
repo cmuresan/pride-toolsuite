@@ -19,6 +19,7 @@ import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.engine.SearchEngineType;
+import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.*;
 
@@ -877,6 +878,43 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     }
 
     /**
+     * todo: need to see wether to cache this properly
+     * @return
+     * @throws DataAccessException
+     */
+    @Override
+    public List<CvTermReference> getAvailableProteinLevelScores() throws DataAccessException {
+        Collection<CvTermReference> proteinLevelScores = (Collection<CvTermReference>) cache.get(CacheCategory.PROTEIN_LEVEL_SCORES);
+
+        if (proteinLevelScores != null && !proteinLevelScores.isEmpty()) {
+            return new ArrayList<CvTermReference>(proteinLevelScores);
+        } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
+            return super.getAvailableProteinLevelScores();
+        }
+
+        return null;
+
+    }
+
+    /**
+     * todo: need to see wether to cache this properly
+     * @return
+     * @throws DataAccessException
+     */
+    @Override
+    public List<CvTermReference> getAvailablePeptideLevelScores() throws DataAccessException {
+        Collection<CvTermReference> peptideLevelScores = (Collection<CvTermReference>) cache.get(CacheCategory.PEPTIDE_LEVEL_SCORES);
+
+        if (peptideLevelScores != null && !peptideLevelScores.isEmpty()) {
+            return new ArrayList<CvTermReference>(peptideLevelScores);
+        } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
+            return super.getAvailablePeptideLevelScores();
+        }
+
+        return null;
+    }
+
+    /**
      * Get chart data for generating chart component
      *
      * @return List<PrideChartManager> a list of chart data
@@ -890,7 +928,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         } catch (SpectralDataPerExperimentException e) {
             String msg = "PrideChartSummaryData object could not be created";
             logger.error(msg, e);
-            return new ArrayList<PrideChartManager>(); //An empty list
+            return Collections.emptyList();
         }
 
         List<PrideChartManager> list = new ArrayList<PrideChartManager>();

@@ -287,10 +287,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @throws DataAccessException data access exception
      */
     @Override
-    public int getSpectrumNumberOfPeaks(Comparable specId) throws DataAccessException {
+    public int getNumberOfSpectrumPeaks(Comparable specId) throws DataAccessException {
         Integer numOfPeaks = (Integer) cache.get(CacheCategory.NUMBER_OF_PEAKS, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && numOfPeaks == null) {
-            numOfPeaks = super.getSpectrumNumberOfPeaks(specId);
+            numOfPeaks = super.getNumberOfSpectrumPeaks(specId);
             cache.store(CacheCategory.NUMBER_OF_PEAKS, specId, numOfPeaks);
         }
         return numOfPeaks == null ? 0 : numOfPeaks;

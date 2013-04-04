@@ -18,6 +18,7 @@ import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
+import uk.ac.ebi.pride.engine.SearchEngineType;
 
 import java.util.*;
 
@@ -863,13 +864,13 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @throws DataAccessException data access exception
      */
     @Override
-    public SearchEngine getSearchEngine() throws DataAccessException {
-        Collection<SearchEngine> searchEngines = (Collection<SearchEngine>) cache.get(CacheCategory.SEARCH_ENGINE_TYPE);
+    public List<SearchEngineType> getSearchEngineTypes() throws DataAccessException {
+        Collection<SearchEngineType> searchEngineTypes = (Collection<SearchEngineType>) cache.get(CacheCategory.SEARCH_ENGINE_TYPE);
 
-        if (searchEngines != null && !searchEngines.isEmpty()) {
-            return CollectionUtils.getElement(searchEngines, 0);
+        if (searchEngineTypes != null && !searchEngineTypes.isEmpty()) {
+            return new ArrayList<SearchEngineType>(searchEngineTypes);
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
-            return super.getSearchEngine();
+            return super.getSearchEngineTypes();
         }
 
         return null;

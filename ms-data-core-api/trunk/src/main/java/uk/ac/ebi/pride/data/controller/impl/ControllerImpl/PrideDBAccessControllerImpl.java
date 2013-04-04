@@ -19,6 +19,7 @@ import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.Constants;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
+import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.io.UnsupportedEncodingException;
@@ -894,26 +895,21 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public SearchEngine getSearchEngine() throws DataAccessException {
+    public List<SearchEngineType> getSearchEngineTypes() throws DataAccessException {
         // check with cache if exists then use the in-memory ident object
-        SearchEngine searchEngine = super.getSearchEngine();
-        if (searchEngine == null && hasProtein()) {
-            String query = "select search_engine from pride_identification where identification_id=?";
-            Comparable identId = CollectionUtils.getElement(getProteinIds(), 0);
-            String seStr = jdbcTemplate.queryForObject(query, String.class, identId);
-            searchEngine = new SearchEngine(null, seStr);
-
+        List<SearchEngineType> searchEngineTypes = super.getSearchEngineTypes();
+        if (searchEngineTypes.isEmpty() && hasProtein()) {
             // get search engine types
             Map<Comparable, ParamGroup> params = (Map<Comparable, ParamGroup>) getCache().get(CacheCategory.PEPTIDE_TO_PARAM);
             if (params != null && !params.isEmpty()) {
                 Collection<ParamGroup> paramGroups = params.values();
                 ParamGroup paramGroup = CollectionUtils.getElement(paramGroups, 0);
-                searchEngine.setSearchEngineTypes(DataAccessUtilities.getSearchEngineTypes(paramGroup));
+                searchEngineTypes = DataAccessUtilities.getSearchEngineTypes(paramGroup);
             }
-            getCache().store(CacheCategory.SEARCH_ENGINE_TYPE, searchEngine);
+            getCache().store(CacheCategory.SEARCH_ENGINE_TYPE, searchEngineTypes);
         }
 
-        return searchEngine;
+        return searchEngineTypes == null ? Collections.<SearchEngineType>emptyList() : searchEngineTypes;
     }
 
     @Override

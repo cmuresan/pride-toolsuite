@@ -79,6 +79,10 @@ public class Peptide {
         return this.getSpectrumIdentification().getExperimentalMassToCharge();
     }
 
+    public Score getScore() {
+        return this.getSpectrumIdentification().getScore();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

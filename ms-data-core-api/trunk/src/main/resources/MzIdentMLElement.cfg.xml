@@ -455,8 +455,8 @@ Configurations for various properties of model classes.
         <autoRefResolving>true</autoRefResolving>
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidenceRef</clazz>
-        <idMapped>true</idMapped>
-        <indexed>false</indexed>
+        <idMapped>false</idMapped>
+        <indexed>true</indexed>
         <refResolverClass>uk.ac.ebi.jmzidml.xml.jaxb.resolver.PeptideEvidenceRefResolver</refResolverClass>
         <tagName>PeptideEvidenceRef</tagName>
         <xpath>/MzIdentML/DataCollection/AnalysisData/SpectrumIdentificationList/SpectrumIdentificationResult/SpectrumIdentificationItem/PeptideEvidenceRef</xpath>

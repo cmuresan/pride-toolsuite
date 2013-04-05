@@ -226,7 +226,7 @@ public class MzIdentMLUnmarshallerAdaptor {
             spectrumInfo[1] = results.getSpectraDataRef();
             spectrumIds.put(idSpectrumItem.getId(), spectrumInfo);
         }
-        return spectrumIds;  //To change body of created methods use File | Settings | File Templates.
+        return spectrumIds;
     }
 
     /**

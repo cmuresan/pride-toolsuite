@@ -21,33 +21,33 @@ public class SpectrumIdentificationProtocol extends Protocol {
     /**
      * The list of enzymes used in experiment
      */
-    private List<Enzyme> enzymes;
+    private final List<Enzyme> enzymes;
 
     /**
      * The specification of filters applied to the database searched.
      */
-    private List<Filter> filters;
+    private final List<Filter> filters;
 
     /**
      * The tolerance of the search given as a plus and minus value with units.
      */
-    private List<CvParam> fragmentTolerance;
+    private final List<CvParam> fragmentTolerance;
 
     /**
      * The masses of residues used in the search.
      */
-    private List<MassTable> massTables;
+    private final List<MassTable> massTables;
 
     /**
      * The tolerance of the search given as a plus and minus value with units.
      */
-    private List<CvParam> parentTolerance;
+    private final List<CvParam> parentTolerance;
 
     /**
      * The specification of static/variable modifications
      * (e.g. Oxidation of Methionine) that are to be considered in the spectra search.
      */
-    private List<SearchModification> searchModifications;
+    private final List<SearchModification> searchModifications;
 
     /**
      * The type of search performed e.g. PMF, Tag searches, MS-MS

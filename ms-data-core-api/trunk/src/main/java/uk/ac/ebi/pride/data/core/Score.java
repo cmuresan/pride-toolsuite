@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class Score {
 
-    private Map<SearchEngineType, Map<CvTermReference, Number>> scores;
+    private final Map<SearchEngineType, Map<CvTermReference, Number>> scores;
 
     public Score() {
         scores = new HashMap<SearchEngineType, Map<CvTermReference, Number>>();

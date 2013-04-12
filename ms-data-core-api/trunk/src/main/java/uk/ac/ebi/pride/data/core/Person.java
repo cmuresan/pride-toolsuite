@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class Person extends Contact {
 
-    private List<Organization> affiliation;
+    private final List<Organization> affiliation;
 
     private String firstname;
 

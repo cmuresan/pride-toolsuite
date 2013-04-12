@@ -17,7 +17,7 @@ public class SpectrumIdentificationList extends IdentifiableParamGroup {
      * each SpectrumIdentificationItem e.g. product ion m/z, product ion
      * intensity, product ion m/z error. Fragmentation Table is used as
      */
-    private List<IdentifiableParamGroup> fragmentationTable;
+    private final List<IdentifiableParamGroup> fragmentationTable;
 
     /**
      * The number of database sequences searched against. This value should
@@ -32,7 +32,7 @@ public class SpectrumIdentificationList extends IdentifiableParamGroup {
      * SpectrumIdentificationItems corresponding to possible different
      * peptide IDs.
      */
-    private List<Peptide> spectrumIdentificationList;
+    private final List<Peptide> spectrumIdentificationList;
 
     public SpectrumIdentificationList(Comparable id, String name, int numSequenceSearched,
                                       List<IdentifiableParamGroup> fragmentationTable,

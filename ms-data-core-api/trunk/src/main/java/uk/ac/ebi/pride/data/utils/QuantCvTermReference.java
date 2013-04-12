@@ -106,10 +106,10 @@ public enum QuantCvTermReference {
     UNIT_RATIO("PRIDE", "PRIDE:0000395", "Ratio", ""),
     UNIT_COPIES_PER_CELL("PRIDE", "PRIDE:0000396", "Copies per cell", "");
 
-    private String cvLabel;
-    private String accession;
-    private String name;
-    private String parentAccession;
+    private final String cvLabel;
+    private final String accession;
+    private final String name;
+    private final String parentAccession;
 
     private QuantCvTermReference(String cvLabel,
                                  String accession,

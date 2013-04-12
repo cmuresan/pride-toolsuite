@@ -18,7 +18,7 @@ public abstract class MzGraph extends IdentifiableParamGroup {
     /**
      * list of binary data arrays
      */
-    private List<BinaryDataArray> binaryDataArrays;
+    private final List<BinaryDataArray> binaryDataArrays;
 
     /**
      * default length of binary data arrays

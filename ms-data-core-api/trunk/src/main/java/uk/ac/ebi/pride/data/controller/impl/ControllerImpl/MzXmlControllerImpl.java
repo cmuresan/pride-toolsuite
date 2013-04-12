@@ -51,7 +51,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
     /**
      * Pattern for validating mzXML format
      */
-    private static Pattern mzXmlHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<(mzXML) xmlns=.*", Pattern.MULTILINE);
+    private static final Pattern mzXmlHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<(mzXML) xmlns=.*", Pattern.MULTILINE);
 
     /**
      * Reader for getting information from mzXML file
@@ -64,7 +64,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * @param file jmzReader file
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception
      */
-    public MzXmlControllerImpl(File file) throws DataAccessException {
+    public MzXmlControllerImpl(File file)  {
         this(file, null);
     }
 
@@ -73,9 +73,9 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      *
      * @param file mzXML file
      * @param mode data access mode
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
-    public MzXmlControllerImpl(File file, DataAccessMode mode) throws DataAccessException {
+    public MzXmlControllerImpl(File file, DataAccessMode mode)  {
         super(file, mode);
         initialize();
     }
@@ -84,9 +84,9 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * Initialize the data access controller
      *
      *
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
-    private void initialize() throws DataAccessException {
+    private void initialize()  {
 
         File file = (File) this.getSource();
         // create unmarshaller
@@ -152,9 +152,9 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * Get a list of person contacts
      *
      * @return List<Person>    list of persons
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
-    public List<Person> getPersonContacts() throws DataAccessException {
+    public List<Person> getPersonContacts()  {
         try {
             List<Operator> operators = unmarshaller.getPersonContacts();
             // List of Persons
@@ -171,9 +171,9 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * using the MS ontology.
      *
      * @return List<SourceFile> list of SourceFile
-     * @throws DataAccessException
+     * @
      */
-    public List<SourceFile> getSourceFiles() throws DataAccessException {
+    public List<SourceFile> getSourceFiles()  {
         try {
             List<ParentFile> rawParentFiles = unmarshaller.getParentFiles();
             // List of SourceFiles
@@ -190,9 +190,9 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * of the mzXML parent file.
      *
      * @return
-     * @throws DataAccessException
+     * @
      */
-    public ParamGroup getFileContent() throws DataAccessException {
+    public ParamGroup getFileContent()  {
         ParamGroup paramGroup = null;
         Set<CvParam> cvParamSet = null;
         List<SourceFile> sourceFiles = getSourceFiles();
@@ -218,9 +218,9 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * of the Software (Data Processing or Data Acquisition).
      *
      * @return
-     * @throws DataAccessException
+     * @
      */
-    public List<Software> getSoftwares() throws DataAccessException {
+    public List<Software> getSoftwares()  {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
@@ -243,9 +243,9 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * of the Instrument.
      *
      * @return List<Instrumentconfiguration>   a list of instrument configurations
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
-    public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
+    public List<InstrumentConfiguration> getInstrumentConfigurations()  {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
@@ -266,9 +266,9 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * Get a list of data processings by checking the cache first
      *
      * @return List<DataProcessing>    a list of data processings
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
-    public List<DataProcessing> getDataProcessings() throws DataAccessException {
+    public List<DataProcessing> getDataProcessings()  {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
@@ -290,10 +290,10 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * and StartTime.
      *
      * @return ParamGroup  param group
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
     @Override
-    public ParamGroup getAdditional() throws DataAccessException {
+    public ParamGroup getAdditional()  {
         ParamGroup fileContent = getFileContent();
         Duration startDate;
 
@@ -316,10 +316,10 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * @param id       spectrum id
      * @param useCache true means to use cache
      * @return Spectrum spectrum object
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
     @Override
-    Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
+    Spectrum getSpectrumById(Comparable id, boolean useCache)  {
         Spectrum spectrum = super.getSpectrumById(id, useCache);
         if (spectrum == null) {
             uk.ac.ebi.pride.tools.jmzreader.model.Spectrum rawSpec;
@@ -345,10 +345,10 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * @param id       chromatogram id
      * @param useCache true means to use cache
      * @return Chromatogram chromatogram object
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
     @Override
-    public Chromatogram getChromatogramById(Comparable id, boolean useCache) throws DataAccessException {
+    public Chromatogram getChromatogramById(Comparable id, boolean useCache)  {
         throw new UnsupportedOperationException("This method is not supported");
     }
 
@@ -366,11 +366,11 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * the type of the file, the instrument, the person contacts.
      *
      * @return
-     * @throws DataAccessException
+     * @
      */
 
     @Override
-    public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
+    public ExperimentMetaData getExperimentMetaData()  {
 
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
@@ -403,10 +403,10 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
      * and do not contains scanSetting information for mzXML files.
      *
      * @return MzGraphMetaData    MetaData of related Spectrum Information.
-     * @throws DataAccessException
+     * @
      */
     @Override
-    public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
+    public MzGraphMetaData getMzGraphMetaData()  {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
         if (metaData == null) {
             //Scan settings is not support for mzXml files
@@ -423,10 +423,10 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
     /**
      * The identification MetaData is not supported for mzXML files
      * @return
-     * @throws DataAccessException
+     * @
      */
     @Override
-    public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
+    public IdentificationMetaData getIdentificationMetaData()  {
         throw new UnsupportedOperationException("This method is not supported");
     }
 

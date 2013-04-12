@@ -27,7 +27,7 @@ public class Protein extends IdentifiableParamGroup {
     /**
      * Peptide Identifications
      */
-    private List<Peptide> peptides;
+    private final List<Peptide> peptides;
 
     /**
      * The score is the score value in a SearchEngine Context

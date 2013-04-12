@@ -26,7 +26,7 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      */
     private Provider provider;
 
-    private List<Organization> organizations;
+    private final List<Organization> organizations;
 
     /**
      * The complete set of Contacts People for this file.
@@ -37,7 +37,7 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      * May include one or more child terms of "contact person attribute"
      * (contact name, contact address, contact email and et al)
      */
-    private List<Person> persons;
+    private final List<Person> persons;
 
     /**
      * The Experiment Protocols is an small view of the protocols used in the Experiment
@@ -50,9 +50,9 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
 
     private Date publicDate;
 
-    private List<Reference> references;
+    private final List<Reference> references;
 
-    private List<Sample> samples;
+    private final List<Sample> samples;
 
     /*
      * Short Label used by Pride XML Object
@@ -63,9 +63,9 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      * list and description of software used to acquire and/or process
      * the data in the file.
      */
-    private List<Software> softwares;
+    private final List<Software> softwares;
 
-    private List<SourceFile> sourceFiles;
+    private final List<SourceFile> sourceFiles;
 
     /**
      * List of SpectraData Objects used by MZIdentML to refereed the original mass spectra files.
@@ -73,7 +73,7 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      *
      * todo: can this be stored in MzGraphMetaData?
      */
-    private List<SpectraData> spectraDatas;
+    private final List<SpectraData> spectraDatas;
 
     /**
      * version of this document used for PRIDE and MzIdentML

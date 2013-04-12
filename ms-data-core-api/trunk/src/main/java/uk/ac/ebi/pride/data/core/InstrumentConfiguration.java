@@ -35,17 +35,17 @@ public class InstrumentConfiguration extends ParamGroup {
     /**
      * only one analyzer
      */
-    private List<InstrumentComponent> analyzer;
+    private final List<InstrumentComponent> analyzer;
 
     /**
      * only one detector
      */
-    private List<InstrumentComponent> detector;
+    private final List<InstrumentComponent> detector;
 
     /**
      * only one source
      */
-    private List<InstrumentComponent> source;
+    private final List<InstrumentComponent> source;
 
     /**
      * scan settings

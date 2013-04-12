@@ -13,9 +13,9 @@ import java.util.Map;
  */
 public class MassTable extends ParamGroup {
 
-    private List<Integer> msLevel;
-    private Map<String, Float> residues;
-    private Map<String, ParamGroup> ambiguousResidues;
+    private final List<Integer> msLevel;
+    private final Map<String, Float> residues;
+    private final Map<String, ParamGroup> ambiguousResidues;
 
     public MassTable(List<Integer> msLevel,
                      Map<String, Float> residues,

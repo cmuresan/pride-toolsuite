@@ -21,12 +21,12 @@ public class Sample extends IdentifiableParamGroup {
     /**
      * Contact Role could be defined as a Person and a specific role (CVTerms)
      */
-    private Map<Contact, CvParam> contactRoles;
+    private final Map<Contact, CvParam> contactRoles;
 
     /**
      * Each sample could have a parent Sample, this relation is defined in the MzIdentMl Files.
      */
-    private List<Sample> subSamples;
+    private final List<Sample> subSamples;
 
     public Sample(ParamGroup params, String id, String name) {
         this(params, id, name, null, null);

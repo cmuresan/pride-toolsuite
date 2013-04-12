@@ -21,17 +21,17 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
      * - name
      * - Map of Software and ParamGroup.
      */
-    private List<DataProcessing> dataProcessings;
+    private final List<DataProcessing> dataProcessings;
 
     /**
      * list and descriptions of instruments settings
      */
-    private List<InstrumentConfiguration> instrumentConfigurations;
+    private final List<InstrumentConfiguration> instrumentConfigurations;
 
     /**
      * list and descriptions of the acquisition settings applied prior to the start of data acquisition.
      */
-    private List<ScanSetting> scanSettings;
+    private final List<ScanSetting> scanSettings;
 
     public MzGraphMetaData(Comparable id, String name, List<ScanSetting> scanSettings,
                            List<InstrumentConfiguration> instrumentConfigurations,

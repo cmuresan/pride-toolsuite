@@ -19,12 +19,12 @@ public class Quantification {
     /**
      * Isotope labelling method standard deviations
      */
-    private Double[] isotopeLabellingDeviations;
+    private final Double[] isotopeLabellingDeviations;
 
     /**
      * Isotope labelling method standard error
      */
-    private Double[] isotopeLabellingErrors;
+    private final Double[] isotopeLabellingErrors;
 
     /**
      * Isotope labelling method
@@ -34,12 +34,12 @@ public class Quantification {
     /**
      * Isotope labelling method results
      */
-    private Double[] isotopeLabellingResults;
+    private final Double[] isotopeLabellingResults;
 
     /**
      * Label free method results
      */
-    private Map<QuantCvTermReference, Double> labelFreeResults;
+    private final Map<QuantCvTermReference, Double> labelFreeResults;
 
     /**
      * The type of the identification

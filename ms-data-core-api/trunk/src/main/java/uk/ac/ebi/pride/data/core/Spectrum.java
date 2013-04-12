@@ -35,12 +35,12 @@ public class Spectrum extends MzGraph {
     /**
      * list and descriptions of precursor isolations to this spectrum
      */
-    private List<Precursor> precursors;
+    private final List<Precursor> precursors;
 
     /**
      * list and descriptions of product isolations to this spectrum
      */
-    private List<ParamGroup> products;
+    private final List<ParamGroup> products;
 
     /**
      * list and descriptions of scans

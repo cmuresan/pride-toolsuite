@@ -17,7 +17,7 @@ import java.util.List;
  * Time: 18:57:52
  */
 public class ScanList extends ParamGroup {
-    private List<Scan> scans;
+    private final List<Scan> scans;
 
     /**
      * Constructor

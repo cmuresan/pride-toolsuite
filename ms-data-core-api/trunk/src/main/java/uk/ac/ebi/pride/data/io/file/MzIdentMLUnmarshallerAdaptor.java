@@ -132,7 +132,7 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
         return this.unmarshal(ProteinDetectionHypothesis.class, (String) IdentId);
     }
 
-    public int getNumIdentifiedPeptides() throws ConfigurationException, JAXBException {
+    public int getNumIdentifiedPeptides() throws ConfigurationException {
         Set<String> listIDs = this.getIDsForElement(MzIdentMLElement.SpectrumIdentificationItem);
         return listIDs.size();
     }
@@ -246,7 +246,7 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
         return peptideRefs;
     }
 
-    public Comparable getDBSequencebyProteinHypothesis(Comparable id) throws JAXBException {
+    public Comparable getDBSequencebyProteinHypothesis(Comparable id) {
         Map<String, String> attributes = this.getElementAttributes((String) id, ProteinDetectionHypothesis.class);
         return attributes.get("dBSequence_ref");
     }

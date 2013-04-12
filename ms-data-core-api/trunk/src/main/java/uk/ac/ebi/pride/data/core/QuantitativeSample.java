@@ -20,7 +20,7 @@ public class QuantitativeSample {
     /**
      * Array of sub samples
      */
-    private SubSample[] samples;
+    private final SubSample[] samples;
 
     public QuantitativeSample() {
         this.samples = new SubSample[MAX_SUB_SAMPLE_SIZE];

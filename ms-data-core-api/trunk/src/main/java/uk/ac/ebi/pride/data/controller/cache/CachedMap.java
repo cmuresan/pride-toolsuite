@@ -17,7 +17,8 @@ import java.util.Map;
  */
 public class CachedMap<K, V> extends LinkedHashMap<K, V> {
     public static final int DEFAULT_CAPACITY = 10;
-    private int             maxCapacity;
+
+    private final int maxCapacity;
 
     public CachedMap() {
         this(DEFAULT_CAPACITY);

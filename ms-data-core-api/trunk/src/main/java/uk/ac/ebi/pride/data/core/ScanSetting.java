@@ -22,12 +22,12 @@ public class ScanSetting extends ParamGroup {
     /**
      * source file
      */
-    private List<SourceFile> sourceFile;
+    private final List<SourceFile> sourceFile;
 
     /**
      * target list
      */
-    private List<ParamGroup> targets;
+    private final List<ParamGroup> targets;
 
     /**
      * Constructor

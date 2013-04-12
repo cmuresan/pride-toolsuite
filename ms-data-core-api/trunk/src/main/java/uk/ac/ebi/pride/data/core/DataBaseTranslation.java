@@ -13,9 +13,9 @@ import java.util.List;
  */
 public class DataBaseTranslation {
 
-    private List<Integer> allowedFrames;
+    private final List<Integer> allowedFrames;
 
-    private List<IdentifiableParamGroup> translationTables;
+    private final List<IdentifiableParamGroup> translationTables;
 
     public DataBaseTranslation(List<Integer> allowedFrames, List<IdentifiableParamGroup> translationTables) {
         this.allowedFrames = CollectionUtils.createListFromList(allowedFrames);

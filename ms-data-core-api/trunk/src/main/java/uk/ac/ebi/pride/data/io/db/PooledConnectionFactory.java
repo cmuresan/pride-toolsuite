@@ -28,7 +28,7 @@ public class PooledConnectionFactory {
     /**
      * Singleton instance
      */
-    private static PooledConnectionFactory instance = new PooledConnectionFactory();
+    private static final PooledConnectionFactory instance = new PooledConnectionFactory();
 
     /**
      * Database connection pool
@@ -38,7 +38,7 @@ public class PooledConnectionFactory {
     /**
      * Database properties
      */
-    private Properties dbProperties;
+    private final Properties dbProperties;
 
     /**
      * Build a connection factory

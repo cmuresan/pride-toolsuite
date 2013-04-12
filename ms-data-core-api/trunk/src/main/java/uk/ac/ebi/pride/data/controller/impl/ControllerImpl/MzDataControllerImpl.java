@@ -45,7 +45,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     /**
      * Pattern for validating mzData format
      */
-    private static Pattern mzDataHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<(mzData) version=.*", Pattern.MULTILINE);
+    private static final Pattern mzDataHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<(mzData) version=.*", Pattern.MULTILINE);
 
     /**
      * Reader for getting information from mzData file
@@ -58,7 +58,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * @param file mzData file
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception
      */
-    public MzDataControllerImpl(File file) throws DataAccessException {
+    public MzDataControllerImpl(File file) {
         this(file, null);
     }
 
@@ -67,9 +67,9 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      *
      * @param file jmzReader file
      * @param mode data access mode
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
-    public MzDataControllerImpl(File file, DataAccessMode mode) throws DataAccessException {
+    public MzDataControllerImpl(File file, DataAccessMode mode) {
         super(file, mode);
         initialize();
     }
@@ -77,9 +77,9 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     /**
      * Initialize the data access controller
      *
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
-    private void initialize() throws DataAccessException {
+    private void initialize() {
         File file = (File) this.getSource();
         // create unmarshaller
         MzDataFile um;
@@ -147,9 +147,9 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * Get a list of cvlookups, these are not cached
      *
      * @return List<CvLookup>  a list of cvlookups
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
-    public List<CVLookup> getCvLookups() throws DataAccessException {
+    public List<CVLookup> getCvLookups() {
         try {
             List<CvLookup> rawCvList = unmarshaller.getCvLookups();
             return MzDataTransformer.transformCVList(rawCvList);
@@ -164,10 +164,10 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * Get a list of samples by checking the cache first
      *
      * @return List<Sample>    a list of samples
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
     @Override
-    public List<Sample> getSamples() throws DataAccessException {
+    public List<Sample> getSamples() {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
@@ -188,9 +188,9 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * Get a list of person contacts
      *
      * @return List<Person>    list of persons
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
-    public List<Person> getPersonContacts() throws DataAccessException {
+    public List<Person> getPersonContacts() {
         try {
             List<uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.Person> rawFileDesc = unmarshaller.getPersonContacts();
             // List of Persons
@@ -206,9 +206,9 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * Get the information of SourceFiles.
      *
      * @return List of Source Files
-     * @throws DataAccessException
+     * @
      */
-    public List<SourceFile> getSourceFiles() throws DataAccessException {
+    public List<SourceFile> getSourceFiles() {
         try {
             uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.SourceFile rawFileDesc = unmarshaller.getSourceFiles();
             // List of Persons
@@ -224,9 +224,9 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * File Content is extra parameters related with Source Files in case of mzData.
      *
      * @return ParamGroup
-     * @throws DataAccessException
+     * @
      */
-    public ParamGroup getFileContent() throws DataAccessException {
+    public ParamGroup getFileContent() {
         ParamGroup paramGroup = null;
         List<SourceFile> sourceFiles = getSourceFiles();
         Set<CvParam> cvParamSet = null;
@@ -250,9 +250,9 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     /**
      * Get a List of Software
      * @return List<Software> List of Software
-     * @throws DataAccessException
+     * @
      */
-    public List<Software> getSoftwares() throws DataAccessException {
+    public List<Software> getSoftwares() {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
@@ -273,9 +273,9 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * Get a list of instrument configurations by checking the cache first
      *
      * @return List<Instrumentconfiguration>   a list of instrument configurations
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
-    public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
+    public List<InstrumentConfiguration> getInstrumentConfigurations() {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
@@ -296,9 +296,9 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * Get a list of data processings by checking the cache first
      *
      * @return List<DataProcessing>    a list of data processings
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
-    public List<DataProcessing> getDataProcessings() throws DataAccessException {
+    public List<DataProcessing> getDataProcessings() {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
@@ -323,10 +323,10 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * @param id       spectrum id
      * @param useCache true means to use cache
      * @return Spectrum spectrum object
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
     @Override
-    Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
+    Spectrum getSpectrumById(Comparable id, boolean useCache) {
         Spectrum spectrum = super.getSpectrumById(id, useCache);
         if (spectrum == null) {
             try {
@@ -350,10 +350,10 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      * @param id       chromatogram id
      * @param useCache true means to use cache
      * @return Chromatogram chromatogram object
-     * @throws DataAccessException data access exception
+     * @ data access exception
      */
     @Override
-    public Chromatogram getChromatogramById(Comparable id, boolean useCache) throws DataAccessException {
+    public Chromatogram getChromatogramById(Comparable id, boolean useCache) {
         throw new UnsupportedOperationException("This method is not supported");
     }
 
@@ -367,7 +367,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public ExperimentMetaData getExperimentMetaData()throws DataAccessException{
+    public ExperimentMetaData getExperimentMetaData(){
 
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
@@ -402,7 +402,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
+    public MzGraphMetaData getMzGraphMetaData() {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
         if (metaData == null) {
             List<ScanSetting> scanSettings = null;
@@ -414,7 +414,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
+    public IdentificationMetaData getIdentificationMetaData() {
         return null;
     }
 

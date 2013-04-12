@@ -47,7 +47,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     /**
      * Pattern for validating mzML format
      */
-    private static Pattern mzMLHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*){0,1}<(mzML)|(indexedmzML) xmlns=.*", Pattern.MULTILINE);
+    private static final Pattern mzMLHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<(mzML)|(indexedmzML) xmlns=.*", Pattern.MULTILINE);
 
     /**
      * Reader for getting information from mzML file
@@ -58,9 +58,8 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * Construct a data access controller using a given mzML file
      *
      * @param file mzML file
-     * @throws DataAccessException data access exception
      */
-    public MzMLControllerImpl(File file) throws DataAccessException {
+    public MzMLControllerImpl(File file) {
         this(file, null);
     }
 
@@ -69,9 +68,8 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      *
      * @param file mzML file
      * @param mode data access mode
-     * @throws DataAccessException data access exception
      */
-    public MzMLControllerImpl(File file, DataAccessMode mode) throws DataAccessException {
+    public MzMLControllerImpl(File file, DataAccessMode mode) {
         super(file, mode);
         initialize();
     }
@@ -79,9 +77,8 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     /**
      * Initialize the data access controller
      *
-     * @throws DataAccessException data access exception
      */
-    private void initialize() throws DataAccessException {
+    private void initialize() {
         File file = (File) this.getSource();
         // create unmarshaller
         MzMLUnmarshaller um = new MzMLUnmarshaller(file);
@@ -140,13 +137,12 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * Get a list of cvlookups, these are not cached
      *
      * @return List<CvLookup>  a list of cvlookups
-     * @throws DataAccessException data access exception
      */
-    public List<CVLookup> getCvLookups() throws DataAccessException {
+    public List<CVLookup> getCvLookups() {
         try {
             CVList rawCvList = unmarshaller.getCVList();
             return MzMLTransformer.transformCVList(rawCvList);
-        } catch (MzMLUnmarshallerException e) {
+        } catch (Exception e) {
             String msg = "Exception while trying to read a list of cv lookups";
             logger.error(msg, e);
             throw new DataAccessException(msg, e);
@@ -158,14 +154,13 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * It is a paramgroup with id and this is not cached
      *
      * @return ReferenceableParamGroup param group
-     * @throws DataAccessException data access exception
      */
-    public ReferenceableParamGroup getReferenceableParamGroup() throws DataAccessException {
+    public ReferenceableParamGroup getReferenceableParamGroup() {
 
         try {
             ReferenceableParamGroupList rawRefParamGroup = unmarshaller.getReferenceableParamGroupList();
             return MzMLTransformer.transformReferenceableParamGroupList(rawRefParamGroup);
-        } catch (MzMLUnmarshallerException e) {
+        } catch (Exception e) {
             String msg = "Exception while trying to read referenceable param group";
             logger.error(msg, e);
             throw new DataAccessException(msg, e);
@@ -176,17 +171,16 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * Get a list of samples by checking the cache first
      *
      * @return List<Sample>    a list of samples
-     * @throws DataAccessException data access exception
      */
     @Override
-    public List<Sample> getSamples() throws DataAccessException {
+    public List<Sample> getSamples() {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
             try {
                 SampleList rawSample = unmarshaller.getSampleList();
                 return MzMLTransformer.transformSampleList(rawSample);
-            } catch (MzMLUnmarshallerException e) {
+            } catch (Exception e) {
                 String msg = "Exception while trying to read samples";
                 logger.error(msg, e);
                 throw new DataAccessException(msg, e);
@@ -200,14 +194,13 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * Get a list of person contacts
      *
      * @return List<Person>    list of persons
-     * @throws DataAccessException data access exception
      */
-    public List<Person> getPersonContacts() throws DataAccessException {
+    public List<Person> getPersonContacts() {
         try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
             // List of Persons
             return MzMLTransformer.transformFileDescriptionToPerson(rawFileDesc);
-        } catch (MzMLUnmarshallerException e) {
+        } catch (Exception e) {
             String msg = "Error while getting a list of person contacts";
             logger.error(msg, e);
             throw new DataAccessException(msg, e);
@@ -218,14 +211,13 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * Get a list of Organization contacts
      *
      * @return List<Organization>    list of persons
-     * @throws DataAccessException
      */
-    public List<Organization> getOrganizationContacts() throws DataAccessException {
+    public List<Organization> getOrganizationContacts() {
         try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
             // List of Organization
             return MzMLTransformer.transformFileDescriptionOrganization(rawFileDesc);
-        } catch (MzMLUnmarshallerException e) {
+        } catch (Exception e) {
             String msg = "Error while getting a list of organizational contacts";
             logger.error(msg, e);
             throw new DataAccessException(msg, e);
@@ -236,14 +228,13 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * Get a List of SourceFiles
      *
      * @return List<SourceFile> List of SourceFile
-     * @throws DataAccessException
      */
-    public List<SourceFile> getSourceFiles() throws DataAccessException {
+    public List<SourceFile> getSourceFiles() {
         try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
             // List of Persons
             return MzMLTransformer.transformFileDescriptionToFileSource(rawFileDesc);
-        } catch (MzMLUnmarshallerException e) {
+        } catch (Exception e) {
             String msg = "Error while getting a list of source files";
             logger.error(msg, e);
             throw new DataAccessException(msg, e);
@@ -258,14 +249,12 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      *  appropriate CV term.
      *
      * @return ParamGroup A list of CvTerms Related with the File Content
-     * @throws DataAccessException
      */
-    public ParamGroup getFileContent() throws DataAccessException {
+    public ParamGroup getFileContent() {
         try {
             FileDescription rawFileDesc = unmarshaller.getFileDescription();
             return MzMLTransformer.transformFileDescriptionToFileContent(rawFileDesc);
-
-        } catch (MzMLUnmarshallerException e) {
+        } catch (Exception e) {
             String msg = "Error while getting a list of file content";
             logger.error(msg, e);
             throw new DataAccessException(msg, e);
@@ -276,16 +265,15 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * Get a List of Softwares
      *
      * @return List<Software> List of Softwares
-     * @throws DataAccessException
      */
-    public List<Software> getSoftwares() throws DataAccessException {
+    public List<Software> getSoftwares() {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
             try {
                 SoftwareList rawSoftware = unmarshaller.getSoftwares();
                 return MzMLTransformer.transformSoftwareList(rawSoftware);
-            } catch (MzMLUnmarshallerException e) {
+            } catch (Exception e) {
                 String msg = "Error while getting a list of software";
                 logger.error(msg, e);
                 throw new DataAccessException(msg, e);
@@ -299,16 +287,15 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * Get a list of scan settings by checking the cache first
      *
      * @return List<ScanSetting>   a list of scan settings
-     * @throws DataAccessException data access exception
      */
-    public List<ScanSetting> getScanSettings() throws DataAccessException {
+    public List<ScanSetting> getScanSettings() {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
             try {
                 ScanSettingsList rawScanSettingList = unmarshaller.getScanSettingsList();
                 return MzMLTransformer.transformScanSettingList(rawScanSettingList);
-            } catch (MzMLUnmarshallerException e) {
+            } catch (Exception e) {
                 String msg = "Error while getting a list of scan settings";
                 logger.error(msg, e);
                 throw new DataAccessException(msg, e);
@@ -322,16 +309,15 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * Get a list of instrument configurations by checking the cache first
      *
      * @return List<Instrumentconfiguration>   a list of instrument configurations
-     * @throws DataAccessException data access exception
      */
-    public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
+    public List<InstrumentConfiguration> getInstrumentConfigurations() {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
             try {
                 InstrumentConfigurationList rawInstrumentList = unmarshaller.getInstrumentConfigurationList();
                 return MzMLTransformer.transformInstrumentConfigurationList(rawInstrumentList);
-            } catch (MzMLUnmarshallerException e) {
+            } catch (Exception e) {
                 String msg = "Error while getting a list of instrument configurations";
                 logger.error(msg, e);
                 throw new DataAccessException(msg, e);
@@ -345,16 +331,15 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * Get a list of data processings by checking the cache first
      *
      * @return List<DataProcessing>    a list of data processings
-     * @throws DataAccessException data access exception
      */
-    public List<DataProcessing> getDataProcessings() throws DataAccessException {
+    public List<DataProcessing> getDataProcessings() {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
             try {
                 uk.ac.ebi.jmzml.model.mzml.DataProcessingList rawDataProcList = unmarshaller.getDataProcessingList();
                 return MzMLTransformer.transformDataProcessingList(rawDataProcList);
-            } catch (MzMLUnmarshallerException e) {
+            } catch (Exception e) {
                 String msg = "Error while getting a list of data processings";
                 logger.error(msg, e);
                 throw new DataAccessException(msg, e);
@@ -372,10 +357,9 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * generated.
      *
      * @return ParamGroup  param group
-     * @throws DataAccessException data access exception
      */
     @Override
-    public ParamGroup getAdditional() throws DataAccessException {
+    public ParamGroup getAdditional() {
         ParamGroup paramGroup = null;
         ParamGroup fileContent = getFileContent();
         if(fileContent !=null){
@@ -396,10 +380,9 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * @param id       spectrum id
      * @param useCache true means to use cache
      * @return Spectrum spectrum object
-     * @throws DataAccessException data access exception
      */
     @Override
-    Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
+    Spectrum getSpectrumById(Comparable id, boolean useCache) {
         Spectrum spectrum = super.getSpectrumById(id, useCache);
         if (spectrum == null) {
             try {
@@ -424,10 +407,9 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * @param id       chromatogram id
      * @param useCache true means to use cache
      * @return Chromatogram chromatogram object
-     * @throws DataAccessException data access exception
      */
     @Override
-    public Chromatogram getChromatogramById(Comparable id, boolean useCache) throws DataAccessException {
+    public Chromatogram getChromatogramById(Comparable id, boolean useCache) {
         Chromatogram chroma = super.getChromatogramById(id, useCache);
         if (chroma == null) {
             try {
@@ -455,7 +437,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
+    public ExperimentMetaData getExperimentMetaData() {
 
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
@@ -493,10 +475,9 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * Configurations.
      *
      * @return MzGraphMetaData is the Metadata related with Spectrum Information
-     * @throws DataAccessException
      */
     @Override
-    public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
+    public MzGraphMetaData getMzGraphMetaData() {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
         if (metaData == null) {
             List<ScanSetting> scanSettings = getScanSettings();
@@ -510,10 +491,9 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     /**
      * The mzML do not contains Identification Metadata, just Spectrum Information
      * @return
-     * @throws DataAccessException
      */
     @Override
-    public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
+    public IdentificationMetaData getIdentificationMetaData() {
         throw new UnsupportedOperationException("This method is not supported");
     }
 
@@ -522,10 +502,9 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * Identification Data and IdentificationMetadata.
      *
      * @return
-     * @throws DataAccessException
      */
     @Override
-    public boolean hasProtein() throws DataAccessException {
+    public boolean hasProtein() {
        return false;
     }
 

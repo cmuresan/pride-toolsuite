@@ -36,65 +36,52 @@ public interface MzGraphDataAccess {
      * Whether this controller contains spectra
      *
      * @return boolean return true if spectra exist
-     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
-     *          throw a exception when there is an error
-     *          accessing the data source
      */
-    public boolean hasSpectrum() throws DataAccessException;
+    public boolean hasSpectrum();
 
     /**
      * Whether this controller contains chromatogram.
      *
      * @return boolean return true if chromatogram exist.
-     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
-     *          throw a exception when there is an error
-     *          accessing the data source
      */
-    public boolean hasChromatogram() throws DataAccessException;
+    public boolean hasChromatogram();
 
     /**
      * Get the number of spectra.
      *
      * @return int  number of spectra.
-     * @throws DataAccessException throw a exception when there is an error accessing the data source.
      */
-    public int getNumberOfSpectra() throws DataAccessException;
+    public int getNumberOfSpectra();
 
     /**
      * Get the number of identified spectra.
      *
      * @return int  number of identified spectra.
-     * @throws DataAccessException throw a exception when there is an error accessing the data source.
      */
-    public int getNumberOfIdentifiedSpectra() throws DataAccessException;
+    public int getNumberOfIdentifiedSpectra();
 
     /**
      * Get a collection of spectrum ids
      *
      * @return Collection   a string collection of spectrum ids
-     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
-     *          throw a exception when there is an error
-     *          accessing the data source
      */
-    public Collection<Comparable> getSpectrumIds() throws DataAccessException;
+    public Collection<Comparable> getSpectrumIds();
 
     /**
      * Get the index of a spectrum using its id
      *
      * @param id spectrum id
      * @return int  spectrum index
-     * @throws DataAccessException data access exception
      */
-    public int getSpectrumIndex(Comparable id) throws DataAccessException;
+    public int getSpectrumIndex(Comparable id);
 
     /**
      * Get a Spectrum object via an spectrum id
      *
      * @param id Spectrum id
      * @return Spectrum an Spectrum object
-     * @throws DataAccessException throw a exception when there is an error accessing the data source
      */
-    public Spectrum getSpectrumById(Comparable id) throws DataAccessException;
+    public Spectrum getSpectrumById(Comparable id);
 
     /**
      * Get a collection of spectra by its index and offset.
@@ -103,56 +90,50 @@ public interface MzGraphDataAccess {
      * @param index  the start index of the spectrum.
      * @param offset the max number of spectra to get.
      * @return Collection<Spectrum> a collection of spectra.
-     * @throws DataAccessException throw a exception when there is an error accessing the data source.
      */
-    public Collection<Spectrum> getSpectraByIndex(int index, int offset) throws DataAccessException;
+    public Collection<Spectrum> getSpectraByIndex(int index, int offset);
 
     /**
      * Check whether the given spectrum is identified.
      *
      * @param specId spectrum id
      * @return boolean true is identified
-     * @throws DataAccessException throw a exception when there is an error accessing the data source.
      */
-    public boolean isIdentifiedSpectrum(Comparable specId) throws DataAccessException;
+    public boolean isIdentifiedSpectrum(Comparable specId);
 
     /**
      * Get the number peaks of a spectrum
      *
      * @param specId spectrum id.
      * @return int  number of peaks.
-     * @throws DataAccessException data access exception.
      */
-    public int getNumberOfSpectrumPeaks(Comparable specId) throws DataAccessException;
+    public int getNumberOfSpectrumPeaks(Comparable specId);
 
     /**
      * Get the ms level of a spectrum.
      *
      * @param specId spectrum id.
      * @return int  ms level.
-     * @throws DataAccessException data access exception.
      */
-    public int getSpectrumMsLevel(Comparable specId) throws DataAccessException;
+    public int getSpectrumMsLevel(Comparable specId);
 
     /**
      * Get the precursor charge of a spectrum.
      *
      * @param specId spectrum id.
      * @return Integer  precursor charge, -1 means no charge.
-     * @throws DataAccessException data access exception.
      */
-    public Integer getSpectrumPrecursorCharge(Comparable specId) throws DataAccessException;
+    public Integer getSpectrumPrecursorCharge(Comparable specId);
 
     /**
      * Get the precursor's m/z value of a spectrum.
      *
      * @param specId spectrum id.
      * @return double  precursor m/z value
-     * @throws DataAccessException data access exception.
      *
      * todo: change double to Double
      */
-    public double getSpectrumPrecursorMz(Comparable specId) throws DataAccessException;
+    public double getSpectrumPrecursorMz(Comparable specId);
 
     /**
      * Get the precursor's intensity of a spectrum.

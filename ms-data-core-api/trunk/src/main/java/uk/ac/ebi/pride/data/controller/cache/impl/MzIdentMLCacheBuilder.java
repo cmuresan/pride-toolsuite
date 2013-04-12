@@ -1,7 +1,9 @@
 package uk.ac.ebi.pride.data.controller.cache.impl;
 
 import uk.ac.ebi.jmzidml.MzIdentMLElement;
-import uk.ac.ebi.jmzidml.model.mzidml.*;
+import uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidence;
+import uk.ac.ebi.jmzidml.model.mzidml.SpectraData;
+import uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationResult;
 import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;

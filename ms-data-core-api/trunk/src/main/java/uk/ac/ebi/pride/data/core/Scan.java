@@ -48,7 +48,7 @@ public class Scan extends ParamGroup {
      * <p/>
      * 3. Must include only one "scan window lower limit".
      */
-    private List<ParamGroup> scanWindows;
+    private final List<ParamGroup> scanWindows;
 
     /**
      * source file, it must refer to the file which contains externalSpecRef

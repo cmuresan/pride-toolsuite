@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.data.controller.impl.ControllerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
@@ -43,7 +42,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     /**
      * The type of contents can be present in the data source
      */
-    private Set<ContentCategory> categories;
+    private final Set<ContentCategory> categories;
     /**
      * Data source, such as: File
      */
@@ -109,45 +108,45 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
+    public ExperimentMetaData getExperimentMetaData(){
         return null;
     }
 
     @Override
-    public IdentificationMetaData getIdentificationMetaData() throws DataAccessException {
+    public IdentificationMetaData getIdentificationMetaData(){
         return null;
     }
 
     @Override
-    public MzGraphMetaData getMzGraphMetaData() throws DataAccessException {
+    public MzGraphMetaData getMzGraphMetaData(){
         return null;
     }
 
-    public Collection<Sample> getSamples() throws DataAccessException {
+    public Collection<Sample> getSamples(){
         return Collections.emptyList();
     }
 
 
-    public ParamGroup getAdditional() throws DataAccessException {
+    public ParamGroup getAdditional() {
         return null;
     }
 
     @Override
-    public boolean hasSpectrum() throws DataAccessException {
+    public boolean hasSpectrum() {
         return getNumberOfSpectra() > 0;
     }
 
     @Override
-    public int getNumberOfSpectra() throws DataAccessException {
+    public int getNumberOfSpectra() {
         return getSpectrumIds().size();
     }
 
-    public int getNumberOfIdentifiedSpectra() throws DataAccessException{
+    public int getNumberOfIdentifiedSpectra(){
           return 0;
     }
 
     @Override
-    public int getSpectrumIndex(Comparable id) throws DataAccessException {
+    public int getSpectrumIndex(Comparable id) {
         int index = -1;
         Collection<Comparable> ids = getSpectrumIds();
         if (ids != null) {
@@ -157,7 +156,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<Spectrum> getSpectraByIndex(int index, int offset) throws DataAccessException {
+    public Collection<Spectrum> getSpectraByIndex(int index, int offset) {
         List<Spectrum> spectra = new ArrayList<Spectrum>();
         Collection<Comparable> specIds = getSpectrumIds();
         if (specIds != null && index < specIds.size()) {
@@ -174,12 +173,12 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public boolean isIdentifiedSpectrum(Comparable specId) throws DataAccessException {
+    public boolean isIdentifiedSpectrum(Comparable specId) {
         return false;
     }
 
     @Override
-    public int getNumberOfSpectrumPeaks(Comparable specId) throws DataAccessException {
+    public int getNumberOfSpectrumPeaks(Comparable specId) {
         int numOfPeaks = 0;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
@@ -189,7 +188,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public int getSpectrumMsLevel(Comparable specId) throws DataAccessException {
+    public int getSpectrumMsLevel(Comparable specId) {
         int msLevel = -1;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
@@ -204,10 +203,9 @@ public abstract class AbstractDataAccessController implements DataAccessControll
      *
      * @param specId spectrum id.
      * @return int precursor charge
-     * @throws DataAccessException data access exception
      */
     @Override
-    public Integer getSpectrumPrecursorCharge(Comparable specId) throws DataAccessException {
+    public Integer getSpectrumPrecursorCharge(Comparable specId) {
         Integer charge = null;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
@@ -217,7 +215,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public double getSpectrumPrecursorMz(Comparable specId) throws DataAccessException {
+    public double getSpectrumPrecursorMz(Comparable specId) {
         double mz = -1;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
@@ -238,7 +236,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
      *          data access exception
      */
     @Override
-    public Integer getPeptidePrecursorCharge(Comparable identId, Comparable peptideId) throws DataAccessException {
+    public Integer getPeptidePrecursorCharge(Comparable identId, Comparable peptideId) {
         Integer charge = null;
 
         Protein ident = getProteinById(identId);
@@ -253,7 +251,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public double getPeptidePrecursorMz(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public double getPeptidePrecursorMz(Comparable proteinId, Comparable peptideId) {
         double mz = -1;
 
         Protein protein = getProteinById(proteinId);
@@ -268,7 +266,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public double getSpectrumPrecursorIntensity(Comparable specId) throws DataAccessException {
+    public double getSpectrumPrecursorIntensity(Comparable specId) {
         double intent = -1;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
@@ -278,7 +276,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public double getSumOfIntensity(Comparable specId) throws DataAccessException {
+    public double getSumOfIntensity(Comparable specId) {
         double sum = 0;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
@@ -288,17 +286,17 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public boolean hasChromatogram() throws DataAccessException {
+    public boolean hasChromatogram() {
         return getNumberOfChromatograms() > 0;
     }
 
     @Override
-    public int getNumberOfChromatograms() throws DataAccessException {
+    public int getNumberOfChromatograms() {
         return getChromatogramIds().size();
     }
 
     @Override
-    public int getChromatogramIndex(Comparable chromaId) throws DataAccessException {
+    public int getChromatogramIndex(Comparable chromaId) {
         int index = -1;
         Collection<Comparable> ids = getChromatogramIds();
         if (ids != null) {
@@ -308,7 +306,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<Chromatogram> getChromatogramByIndex(int index, int offset) throws DataAccessException {
+    public Collection<Chromatogram> getChromatogramByIndex(int index, int offset) {
         List<Chromatogram> chromas = new ArrayList<Chromatogram>();
         Collection<Comparable> chromatogramIds = getChromatogramIds();
         if (chromatogramIds != null && index < chromatogramIds.size()) {
@@ -325,27 +323,27 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public boolean hasProtein() throws DataAccessException {
+    public boolean hasProtein() {
         return getNumberOfProteins() > 0;
     }
 
     @Override
-    public boolean hasProteinGroup() throws DataAccessException {
+    public boolean hasProteinGroup() {
         return getNumberOfProteins() > 0;
     }
 
     @Override
-    public boolean hasPeptide() throws DataAccessException {
+    public boolean hasPeptide() {
         return getNumberOfProteins() > 0;
     }
 
     @Override
-    public int getNumberOfProteins() throws DataAccessException {
+    public int getNumberOfProteins() {
         return getProteinIds().size();
     }
 
     @Override
-    public int indexOfProtein(Comparable proteinId) throws DataAccessException {
+    public int indexOfProtein(Comparable proteinId) {
         int index = -1;
         Collection<Comparable> ids = getProteinIds();
         if (ids != null) {
@@ -355,7 +353,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<Protein> getProteinByIndex(int index, int offset) throws DataAccessException {
+    public Collection<Protein> getProteinByIndex(int index, int offset) {
         List<Protein> proteins = new ArrayList<Protein>();
         Collection<Comparable> proteinIds = getProteinIds();
         if (proteinIds != null && index < proteinIds.size()) {
@@ -372,7 +370,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public String getProteinAccession(Comparable proteinId) throws DataAccessException {
+    public String getProteinAccession(Comparable proteinId) {
         String acc = null;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -382,7 +380,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public String getProteinAccessionVersion(Comparable proteinId) throws DataAccessException {
+    public String getProteinAccessionVersion(Comparable proteinId) {
         String accVersion = null;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -392,7 +390,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public String getProteinType(Comparable proteinId) throws DataAccessException {
+    public String getProteinType(Comparable proteinId) {
         String type = null;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -402,7 +400,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public double getProteinScore(Comparable proteinId) throws DataAccessException {
+    public double getProteinScore(Comparable proteinId) {
         double score = -1;
         Protein protein = getProteinById(proteinId);
         if ((protein != null) && (protein.getScore() != null)) {
@@ -412,7 +410,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public DBSequence getProteinSequence(Comparable proteinId) throws DataAccessException {
+    public DBSequence getProteinSequence(Comparable proteinId) {
         DBSequence dbSequence = null;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -422,7 +420,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public double getProteinThreshold(Comparable proteinId) throws DataAccessException {
+    public double getProteinThreshold(Comparable proteinId) {
         double threshold = -1;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -432,7 +430,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public SearchDataBase getSearchDatabase(Comparable proteinId) throws DataAccessException {
+    public SearchDataBase getSearchDatabase(Comparable proteinId) {
         SearchDataBase database = null;
         Protein protein = getProteinById(proteinId);
         if (protein != null && (protein.getDbSequence() != null)) {
@@ -442,7 +440,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public String getSearchDatabaseVersion(Comparable proteinId) throws DataAccessException {
+    public String getSearchDatabaseVersion(Comparable proteinId) {
         String version = null;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -452,7 +450,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public List<SearchEngineType> getSearchEngineTypes() throws DataAccessException {
+    public List<SearchEngineType> getSearchEngineTypes() {
         List<SearchEngineType> searchEngineTypes = new ArrayList<SearchEngineType>();
         Collection<Comparable> proteinIds = this.getProteinIds();
         if (!proteinIds.isEmpty()) {
@@ -477,7 +475,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public List<CvTermReference> getAvailableProteinLevelScores() throws DataAccessException {
+    public List<CvTermReference> getAvailableProteinLevelScores() {
         Collection<Comparable> proteinIds = this.getProteinIds();
         List<CvTermReference> cvTermReferences = Collections.emptyList();
         if (!proteinIds.isEmpty()) {
@@ -494,7 +492,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public List<CvTermReference> getAvailablePeptideLevelScores() throws DataAccessException {
+    public List<CvTermReference> getAvailablePeptideLevelScores() {
         Collection<Comparable> proteinIds = this.getProteinIds();
         List<CvTermReference> cvTermReferences = Collections.emptyList();
         if (!proteinIds.isEmpty()) {
@@ -512,7 +510,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Score getProteinScores(Comparable proteinId) throws DataAccessException {
+    public Score getProteinScores(Comparable proteinId) {
         Protein protein = getProteinById(proteinId);
         Score score = null;
         if (protein != null) {
@@ -524,7 +522,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<Comparable> getPeptideIds(Comparable proteinId) throws DataAccessException {
+    public Collection<Comparable> getPeptideIds(Comparable proteinId) {
         Collection<Comparable> ids = new ArrayList<Comparable>();
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -539,7 +537,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Peptide getPeptideByIndex(Comparable proteinId, Comparable index) throws DataAccessException {
+    public Peptide getPeptideByIndex(Comparable proteinId, Comparable index) {
         Peptide peptide = null;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -550,7 +548,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<String> getPeptideSequences(Comparable proteinId) throws DataAccessException {
+    public List<String> getPeptideSequences(Comparable proteinId) {
         List<String> sequences = new ArrayList<String>();
         // read from data source
         Protein protein = getProteinById(proteinId);
@@ -568,14 +566,14 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<PeptideEvidence> getPeptideEvidences(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public Collection<PeptideEvidence> getPeptideEvidences(Comparable proteinId, Comparable peptideId) {
         Peptide peptide = getPeptideByIndex(proteinId, peptideId);
         return peptide.getPeptideEvidenceList();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public int getNumberOfPeptides(Comparable proteinId) throws DataAccessException {
+    public int getNumberOfPeptides(Comparable proteinId) {
         int cnt = 0;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -585,7 +583,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public int getNumberOfPeptides() throws DataAccessException {
+    public int getNumberOfPeptides() {
         int cnt = 0;
 
         Collection<Comparable> ids = getProteinIds();
@@ -600,7 +598,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
 
     @Override
     @SuppressWarnings("unchecked")
-    public int getNumberOfUniquePeptides(Comparable proteinId) throws DataAccessException {
+    public int getNumberOfUniquePeptides(Comparable proteinId) {
         int cnt = 0;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -611,7 +609,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
 
     @Override
     @SuppressWarnings("unchecked")
-    public int getNumberOfPTMs(Comparable proteinId) throws DataAccessException {
+    public int getNumberOfPTMs(Comparable proteinId) {
         int cnt = 0;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -622,7 +620,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
 
     @Override
     @SuppressWarnings("unchecked")
-    public int getNumberOfPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public int getNumberOfPTMs(Comparable proteinId, Comparable peptideId) {
         int cnt = 0;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -638,7 +636,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public String getPeptideSequence(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public String getPeptideSequence(Comparable proteinId, Comparable peptideId) {
         String seq = null;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -651,7 +649,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public int getPeptideSequenceStart(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public int getPeptideSequenceStart(Comparable proteinId, Comparable peptideId) {
         int start = -1;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -665,7 +663,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public int getPeptideSequenceEnd(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public int getPeptideSequenceEnd(Comparable proteinId, Comparable peptideId) {
         int stop = -1;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -678,7 +676,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Comparable getPeptideSpectrumId(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public Comparable getPeptideSpectrumId(Comparable proteinId, Comparable peptideId) {
         Comparable specId = null;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -695,7 +693,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Modification> getPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public List<Modification> getPTMs(Comparable proteinId, Comparable peptideId) {
         List<Modification> mods = new ArrayList<Modification>();
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -709,7 +707,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<SubstitutionModification> getSubstitutionPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public Collection<SubstitutionModification> getSubstitutionPTMs(Comparable proteinId, Comparable peptideId) {
         List<SubstitutionModification> mods = new ArrayList<SubstitutionModification>();
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -723,7 +721,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public int getNumberOfSubstitutionPTMs(Comparable proteinId) throws DataAccessException {
+    public int getNumberOfSubstitutionPTMs(Comparable proteinId) {
         int cnt = 0;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -733,7 +731,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public int getNumberOfSubstitutionPTMs(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public int getNumberOfSubstitutionPTMs(Comparable proteinId, Comparable peptideId) {
         int cnt = 0;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -749,7 +747,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public int getNumberOfFragmentIons(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public int getNumberOfFragmentIons(Comparable proteinId, Comparable peptideId) {
         int num = 0;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -765,7 +763,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<FragmentIon> getFragmentIons(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public Collection<FragmentIon> getFragmentIons(Comparable proteinId, Comparable peptideId) {
         List<FragmentIon> frags = new ArrayList<FragmentIon>();
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -779,7 +777,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Score getPeptideScore(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public Score getPeptideScore(Comparable proteinId, Comparable peptideId) {
         Score score = null;
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
@@ -793,13 +791,13 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public boolean hasQuantData() throws DataAccessException {
+    public boolean hasQuantData() {
         Collection<QuantCvTermReference> methods = getQuantMethods();
         return methods.size() > 0;
     }
 
     @Override
-    public boolean hasProteinQuantData() throws DataAccessException {
+    public boolean hasProteinQuantData() {
         Collection<QuantCvTermReference> methods = getQuantMethods();
 
         for (QuantCvTermReference method : methods) {
@@ -812,7 +810,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public boolean hasPeptideQuantData() throws DataAccessException {
+    public boolean hasPeptideQuantData() {
         Collection<QuantCvTermReference> methods = getQuantMethods();
 
         for (QuantCvTermReference method : methods) {
@@ -825,17 +823,17 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public boolean hasProteinTotalIntensities() throws DataAccessException {
+    public boolean hasProteinTotalIntensities() {
         return getProteinQuantUnit() == null;
     }
 
     @Override
-    public boolean hasPeptideTotalIntensities() throws DataAccessException {
+    public boolean hasPeptideTotalIntensities() {
         return getPeptideQuantUnit() == null;
     }
 
     @Override
-    public boolean hasLabelFreeQuantMethods() throws DataAccessException {
+    public boolean hasLabelFreeQuantMethods() {
         // get the samples
         ParamGroup additionals = getAdditional();
 
@@ -853,7 +851,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public boolean hasIsotopeLabellingQuantMethods() throws DataAccessException {
+    public boolean hasIsotopeLabellingQuantMethods() {
         // get the samples
         ParamGroup additionals = getAdditional();
 
@@ -873,7 +871,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<QuantCvTermReference> getQuantMethods() throws DataAccessException {
+    public Collection<QuantCvTermReference> getQuantMethods() {
         Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
 
         // get the samples
@@ -894,7 +892,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<QuantCvTermReference> getLabelFreeQuantMethods() throws DataAccessException {
+    public Collection<QuantCvTermReference> getLabelFreeQuantMethods() {
         Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
 
         // get the samples
@@ -917,7 +915,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<QuantCvTermReference> getProteinLabelFreeQuantMethods() throws DataAccessException {
+    public Collection<QuantCvTermReference> getProteinLabelFreeQuantMethods() {
         Collection<QuantCvTermReference> methods = getLabelFreeQuantMethods();
         Collection<QuantCvTermReference> protMethods = new ArrayList<QuantCvTermReference>();
 
@@ -931,7 +929,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<QuantCvTermReference> getPeptideLabelFreeQuantMethods() throws DataAccessException {
+    public Collection<QuantCvTermReference> getPeptideLabelFreeQuantMethods() {
         Collection<QuantCvTermReference> methods = getLabelFreeQuantMethods();
         Collection<QuantCvTermReference> peptideMethods = new ArrayList<QuantCvTermReference>();
 
@@ -945,7 +943,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<QuantCvTermReference> getIsotopeLabellingQuantMethods() throws DataAccessException {
+    public Collection<QuantCvTermReference> getIsotopeLabellingQuantMethods() {
         Set<QuantCvTermReference> methods = new LinkedHashSet<QuantCvTermReference>();
 
         // get the samples
@@ -967,7 +965,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<QuantCvTermReference> getProteinIsotopeLabellingQuantMethods() throws DataAccessException {
+    public Collection<QuantCvTermReference> getProteinIsotopeLabellingQuantMethods() {
         Collection<QuantCvTermReference> methods = getIsotopeLabellingQuantMethods();
         Collection<QuantCvTermReference> protMethods = new ArrayList<QuantCvTermReference>();
 
@@ -981,7 +979,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Collection<QuantCvTermReference> getPeptideIsotopeLabellingQuantMethods() throws DataAccessException {
+    public Collection<QuantCvTermReference> getPeptideIsotopeLabellingQuantMethods() {
         Collection<QuantCvTermReference> methods = getIsotopeLabellingQuantMethods();
         Collection<QuantCvTermReference> peptideMethods = new ArrayList<QuantCvTermReference>();
 
@@ -995,7 +993,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public int getNumberOfReagents() throws DataAccessException {
+    public int getNumberOfReagents() {
         int num = 0;
 
         if (hasIsotopeLabellingQuantMethods()) {
@@ -1018,7 +1016,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public int getReferenceSubSampleIndex() throws DataAccessException {
+    public int getReferenceSubSampleIndex() {
         int index = -1;
 
         if (hasIsotopeLabellingQuantMethods()) {
@@ -1069,7 +1067,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public QuantitativeSample getQuantSample() throws DataAccessException {
+    public QuantitativeSample getQuantSample() {
         QuantitativeSample sampleDesc = new QuantitativeSample();
 
         Collection<Sample> samples = getSamples();
@@ -1103,7 +1101,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public QuantCvTermReference getProteinQuantUnit() throws DataAccessException {
+    public QuantCvTermReference getProteinQuantUnit() {
         Collection<Comparable> proteinIds = getProteinIds();
 
         int cnt = NUMBER_OF_PROTEIN_TO_CHECK;
@@ -1124,7 +1122,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public QuantCvTermReference getPeptideQuantUnit() throws DataAccessException {
+    public QuantCvTermReference getPeptideQuantUnit() {
         Collection<Comparable> proteinIds = getProteinIds();
 
         int cnt = NUMBER_OF_PEPTIDE_TO_CHECK;
@@ -1148,13 +1146,13 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public Quantification getProteinQuantData(Comparable proteinId) throws DataAccessException {
+    public Quantification getProteinQuantData(Comparable proteinId) {
         Protein protein = getProteinById(proteinId);
         return new Quantification(Quantification.Type.PROTEIN, protein.getCvParams());
     }
 
     @Override
-    public Quantification getPeptideQuantData(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public Quantification getPeptideQuantData(Comparable proteinId, Comparable peptideId) {
         Peptide peptide = getPeptideByIndex(proteinId, peptideId);
         return new Quantification(Quantification.Type.PEPTIDE, peptide.getSpectrumIdentification().getCvParams());
     }

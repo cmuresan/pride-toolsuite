@@ -37,7 +37,7 @@ public class Modification extends IdentifiableParamGroup {
      * In the new validation approach for pride modification objects, just one Average Mass Delta could be associated
      * to a Modification. In the MzIdentMl Modification object only one Average Mass Delta is annotated.
      */
-    private List<Double> avgMassDelta;
+    private final List<Double> avgMassDelta;
 
     /**
      * Location of the modification within the peptide - position in peptide sequence, counted from
@@ -61,14 +61,14 @@ public class Modification extends IdentifiableParamGroup {
      * In the new validation approach for pride modification objects, just one MonoIsotopic Mass Delta could be associated
      * to a Modification. In the MzIdentMl Modification object only one MonoIsotopic Mass Delta is annotated.
      */
-    private List<Double> monoisotopicMassDelta;
+    private final List<Double> monoisotopicMassDelta;
 
     /**
      * Possible Residues for this modification. In the PRIDE Object this attribute do not exist but in the
      * pride modification validator One modification can be related with more than one specificity. In MzIdentML
      * Object the Modification is related with more than one specificity.
      */
-    private List<String> residues;
+    private final List<String> residues;
 
     /**
      * Constructor for PRIDE Modification Object

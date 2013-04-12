@@ -39,7 +39,7 @@ public class IonType extends CvParam {
      *
      * todo: review this list, why is not initialized by the constructor
      */
-    private List<Integer> index;
+    private final List<Integer> index;
 
     /**
      * An array of values for a given type of measure and for a particular ion
@@ -47,7 +47,7 @@ public class IonType extends CvParam {
      *
      * todo: review this map, see reason above
      */
-    private Map<IdentifiableParamGroup, List<Integer>> measures;
+    private final Map<IdentifiableParamGroup, List<Integer>> measures;
 
     /**
      * Constructor

@@ -20,7 +20,7 @@ import java.util.*;
  */
 public class MzIdentMLCacheBuilder extends AbstractAccessCacheBuilder {
 
-    private MzIdentMLUnmarshallerAdaptor unmarshaller;
+    private final MzIdentMLUnmarshallerAdaptor unmarshaller;
 
     public MzIdentMLCacheBuilder(MzIdentMLControllerImpl c) {
         super(c);
@@ -71,9 +71,8 @@ public class MzIdentMLCacheBuilder extends AbstractAccessCacheBuilder {
      * @return
      * @throws javax.naming.ConfigurationException
      *
-     * @throws javax.xml.bind.JAXBException
      */
-    public void getPreScanIdMaps() throws ConfigurationException, JAXBException {
+    public void getPreScanIdMaps() throws ConfigurationException {
 
         /**
          * Map of IDs to SpectraData, e.g. IDs to spectra files

@@ -22,12 +22,12 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
     /**
      * List of database for searching mass spectra. Examples include a set of amino acid sequence entries, or annotated spectra libraries.
      */
-    private List<SearchDataBase> searchDataBases;
+    private final List<SearchDataBase> searchDataBases;
 
     /**
      * List of the parameters and settings of a SpectrumIdentification analysis.
      */
-    private List<SpectrumIdentificationProtocol> spectrumIdentificationProtocols;
+    private final List<SpectrumIdentificationProtocol> spectrumIdentificationProtocols;
 
     public IdentificationMetaData(Comparable id, String name,
                                   List<SpectrumIdentificationProtocol> spectrumIdentificationProtocols,

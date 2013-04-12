@@ -10,7 +10,7 @@ import java.util.Map;
  * User: rwang
  */
 public class ReferenceableParamGroup implements MassSpecObject {
-    private Map<String, ParamGroup> refMap;
+    private final Map<String, ParamGroup> refMap;
 
     public ReferenceableParamGroup(Map<String, ParamGroup> refMap) {
         this.refMap = MapUtils.createMapFromMap(refMap);

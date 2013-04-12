@@ -63,9 +63,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
      * Open a pride database connection with a specified experiment accession.
      *
      * @param experimentAcc experiment accession
-     * @throws DataAccessException data access exception
      */
-    public PrideDBAccessControllerImpl(Comparable experimentAcc) throws DataAccessException {
+    public PrideDBAccessControllerImpl(Comparable experimentAcc) {
         this(DEFAULT_ACCESS_MODE, experimentAcc);
     }
 
@@ -74,15 +73,14 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
      *
      * @param mode          data access mode
      * @param experimentAcc experiment accession
-     * @throws DataAccessException data access exception
      */
-    public PrideDBAccessControllerImpl(DataAccessMode mode, Comparable experimentAcc) throws DataAccessException {
+    public PrideDBAccessControllerImpl(DataAccessMode mode, Comparable experimentAcc) {
         super(mode);
         this.jdbcTemplate = new JdbcTemplate(PooledConnectionFactory.getInstance().getConnectionPool());
         initialize(experimentAcc);
     }
 
-    private void initialize(Comparable experimentAcc) throws DataAccessException {
+    private void initialize(Comparable experimentAcc) {
         // set type
         this.setType(Type.DATABASE);
 
@@ -124,7 +122,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return uid;
     }
 
-    private List<CvParam> getCvParams(String table_name, int parent_element_id) throws DataAccessException {
+    private List<CvParam> getCvParams(String table_name, int parent_element_id) {
         String query = "SELECT accession, name, value, cv_label FROM " + table_name
                 + " WHERE parent_element_fk = ? AND cv_label is not null";
 
@@ -160,7 +158,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return jdbcTemplate.query(query, new ContactRowMapper(), experimentAcc);
     }
 
-    public List<Person> getPersonContacts() throws DataAccessException {
+    public List<Person> getPersonContacts() {
         ExperimentMetaData metadata = super.getExperimentMetaData();
         if (metadata == null) {
             String query = "SELECT contact_name, institution, contact_info FROM mzdata_contact sf, mzdata_mz_data mz " +
@@ -171,7 +169,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return metadata.getPersons();
     }
 
-    public List<Organization> getOrganizationContacts() throws DataAccessException {
+    public List<Organization> getOrganizationContacts() {
         ExperimentMetaData metadata = super.getExperimentMetaData();
         if (metadata == null) {
             String query = "SELECT contact_name, institution, contact_info FROM mzdata_contact sf, mzdata_mz_data mz " +
@@ -183,7 +181,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public List<Sample> getSamples() throws DataAccessException {
+    public List<Sample> getSamples() {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
@@ -209,7 +207,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return metaData.getSamples();
     }
 
-    public List<Software> getSoftwares() throws DataAccessException {
+    public List<Software> getSoftwares() {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
@@ -222,7 +220,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return metaData.getSoftwares();
     }
 
-    private List<ParamGroup> getAnalyzerList(int mz_data_id) throws DataAccessException {
+    private List<ParamGroup> getAnalyzerList(int mz_data_id) {
         logger.debug("Get analyzer list");
 
         List<ParamGroup> analyzerList = new ArrayList<ParamGroup>();
@@ -240,7 +238,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return analyzerList;
     }
 
-    public List<InstrumentConfiguration> getInstrumentConfigurations() throws DataAccessException {
+    public List<InstrumentConfiguration> getInstrumentConfigurations() {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
@@ -294,7 +292,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         }
     }
 
-    public List<DataProcessing> getDataProcessings() throws DataAccessException {
+    public List<DataProcessing> getDataProcessings() {
         MzGraphMetaData metaData = super.getMzGraphMetaData();
 
         if (metaData == null) {
@@ -338,7 +336,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return jdbcTemplate.queryForList(query, Integer.class, experimentId);
     }
 
-    private ExperimentProtocol getProtocol() throws DataAccessException {
+    private ExperimentProtocol getProtocol() {
         logger.debug("Get experiment protocol");
 
         // protocol name
@@ -363,7 +361,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
      *
      * @return List<Reference> a list of references
      */
-    public List<Reference> getReferences() throws DataAccessException {
+    public List<Reference> getReferences() {
         logger.debug("Get references");
 
         List<Reference> references = new ArrayList<Reference>();
@@ -386,10 +384,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
      * Get experiment additional params
      *
      * @return ParamGroup  experiment additional params
-     * @throws DataAccessException data access exception
      */
     @Override
-    public ParamGroup getAdditional() throws DataAccessException {
+    public ParamGroup getAdditional() {
         ExperimentMetaData metaData = super.getExperimentMetaData();
 
         if (metaData == null) {
@@ -418,7 +415,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
+    public ExperimentMetaData getExperimentMetaData() {
         ExperimentMetaData metaData = super.getExperimentMetaData();
         if (metaData == null) {
 
@@ -446,7 +443,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return metaData;
     }
 
-    public List<CVLookup> getCvLookups() throws DataAccessException {
+    public List<CVLookup> getCvLookups() {
         logger.debug("Getting cv lookups");
 
         String query = "SELECT sf.cv_label, sf.version, sf.address, sf.full_name FROM mzdata_cv_lookup sf, mzdata_mz_data mz, mzdata_cv_lookup_mzdata_lnk ln WHERE mz.accession_number= ? and mz.mz_data_id=ln.mz_data_id and sf.cv_lookup_id=ln.cv_lookup_id";
@@ -507,7 +504,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return scanWindows;
     }
 
-    public List<Scan> getScanList(int acq_specification_id, List<ParamGroup> scanWindows) throws DataAccessException {
+    public List<Scan> getScanList(int acq_specification_id, List<ParamGroup> scanWindows) {
         List<Scan> scanList = new ArrayList<Scan>();
 
         String query = "SELECT acquisition_id FROM mzdata_acquisition WHERE acq_specification_id = ?";
@@ -523,7 +520,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return scanList;
     }
 
-    private List<Precursor> getPrecursorsBySpectrum_id(int spectrum_id) throws DataAccessException {
+    private List<Precursor> getPrecursorsBySpectrum_id(int spectrum_id) {
         logger.debug("Get precursors");
 
         List<Precursor> precursors = new ArrayList<Precursor>();
@@ -606,7 +603,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public Spectrum getSpectrumById(Comparable spectrumId, boolean useCache) throws DataAccessException {
+    public Spectrum getSpectrumById(Comparable spectrumId, boolean useCache) {
         logger.debug("Getting a spectrum: {}", spectrumId);
         Spectrum spectrum = super.getSpectrumById(spectrumId, useCache);
 
@@ -698,7 +695,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return jdbcTemplate.queryForList(query, Double.class, modification_id, deltaType);
     }
 
-    private List<Modification> getModificationsPeptide(int peptide_id) throws DataAccessException {
+    private List<Modification> getModificationsPeptide(int peptide_id) {
         logger.debug("Get a list of modifications, peptide {}", peptide_id);
 
         List<Modification> modifications = new ArrayList<Modification>();
@@ -717,7 +714,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return modifications;
     }
 
-    private List<FragmentIon> getFragmentIons(int peptide_id) throws DataAccessException {
+    private List<FragmentIon> getFragmentIons(int peptide_id) {
         logger.debug("Get list of fragment ions for peptide {}", peptide_id);
 
         List<FragmentIon> fragmentIons = new ArrayList<FragmentIon>();
@@ -754,7 +751,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return fragmentIons;
     }
 
-    private Spectrum getSpectrumByPeptide(int experiment_id, int spectrum_ref) throws DataAccessException {
+    private Spectrum getSpectrumByPeptide(int experiment_id, int spectrum_ref) {
         logger.debug("Get spectrum by spectrum reference {}", spectrum_ref);
 
         String query = "SELECT spectrum_id FROM pride_experiment pe, mzdata_spectrum ms WHERE pe.experiment_id = ? AND " +
@@ -765,7 +762,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return getSpectrumById(spectrumId);
     }
 
-    private List<Peptide> getPeptideIdentification(int identification_id, int experiment_id) throws DataAccessException {
+    private List<Peptide> getPeptideIdentification(int identification_id, int experiment_id) {
         logger.debug("Get a list of peptides for identification {}", identification_id);
         List<Peptide> peptides = new ArrayList<Peptide>();
 
@@ -798,7 +795,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
 
-    private Gel getPeptideGel(int gel_id, double x_coordinate, double y_coordinate, double molecular_weight, double pi) throws DataAccessException {
+    private Gel getPeptideGel(int gel_id, double x_coordinate, double y_coordinate, double molecular_weight, double pi) {
         logger.debug("Get peptide gel {}", gel_id);
 
 
@@ -812,7 +809,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public Protein getProteinById(Comparable proteinId, boolean useCache) throws DataAccessException {
+    public Protein getProteinById(Comparable proteinId, boolean useCache) {
         Protein protein = super.getProteinById(proteinId, useCache);
         if (protein == null) {
             logger.debug("Get protein identification {}", proteinId);
@@ -852,13 +849,13 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public boolean isIdentifiedSpectrum(Comparable specId) throws DataAccessException {
+    public boolean isIdentifiedSpectrum(Comparable specId) {
         Map<Comparable, Comparable> peptideToSpectrum = (Map<Comparable, Comparable>) getCache().get(CacheCategory.PEPTIDE_TO_SPECTRUM);
         return peptideToSpectrum != null && peptideToSpectrum.containsValue(specId);
     }
 
     @Override
-    public Peptide getPeptideByIndex(Comparable proteinId, Comparable peptideId, boolean useCache) throws DataAccessException {
+    public Peptide getPeptideByIndex(Comparable proteinId, Comparable peptideId, boolean useCache) {
         Peptide peptide = super.getPeptideByIndex(proteinId, peptideId, useCache);
         if (peptide == null) {
             //todo: check whether to use cache
@@ -895,7 +892,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public List<SearchEngineType> getSearchEngineTypes() throws DataAccessException {
+    public List<SearchEngineType> getSearchEngineTypes() {
         // check with cache if exists then use the in-memory ident object
         List<SearchEngineType> searchEngineTypes = super.getSearchEngineTypes();
         if (searchEngineTypes.isEmpty() && hasProtein()) {
@@ -913,7 +910,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public String getProteinType(Comparable proteinId) throws DataAccessException {
+    public String getProteinType(Comparable proteinId) {
         String query = "select classname from pride_identification where identification_id=?";
         String className = jdbcTemplate.queryForObject(query, String.class, proteinId);
 
@@ -921,7 +918,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public int getNumberOfSpectrumPeaks(Comparable specId) throws DataAccessException {
+    public int getNumberOfSpectrumPeaks(Comparable specId) {
         // check with cache if exists then use the in-memory spectrum object
         int cnt = 0;
         Integer num = (Integer) getCache().get(CacheCategory.NUMBER_OF_PEAKS, specId);
@@ -958,7 +955,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public double getSumOfIntensity(Comparable specId) throws DataAccessException {
+    public double getSumOfIntensity(Comparable specId) {
         double sum = 0;
         Double sumOfIntent = (Double) getCache().get(CacheCategory.SUM_OF_INTENSITY, specId);
         if (sumOfIntent == null) {
@@ -975,7 +972,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 if (mzArrId != -1) {
                     try {
                         BinaryDataArray intentBinaryArray = getBinaryDataArray(mzArrId, CvTermReference.MZ_ARRAY);
-                        if (intentBinaryArray != null && !intentBinaryArray.isEmpty()) {
+                        if (intentBinaryArray != null && intentBinaryArray.isEmpty()) {
                             double[] originalIntentArr = intentBinaryArray.getDoubleArray();
                             for (double intent : originalIntentArr) {
                                 sum += intent;
@@ -1003,7 +1000,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public Quantification getProteinQuantData(Comparable proteinId) throws DataAccessException {
+    public Quantification getProteinQuantData(Comparable proteinId) {
         ParamGroup paramGroup = (ParamGroup) getCache().get(CacheCategory.PROTEIN_TO_PARAM, proteinId);
 
         if (paramGroup != null) {
@@ -1014,7 +1011,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public Quantification getPeptideQuantData(Comparable proteinId, Comparable peptideId) throws DataAccessException {
+    public Quantification getPeptideQuantData(Comparable proteinId, Comparable peptideId) {
         ParamGroup paramGroup = (ParamGroup) getCache().get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
 
         if (paramGroup != null) {
@@ -1025,7 +1022,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public List<PrideChartManager> getChartData() throws DataAccessException {
+    public List<PrideChartManager> getChartData() {
         List<PrideChartManager> list = new ArrayList<PrideChartManager>();
 
         String query = "select c.chart_type, c.intermediate_data " +

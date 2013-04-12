@@ -47,7 +47,7 @@ public class PeakControllerImpl extends CachedDataAccessController {
      * @param file jmzReader file
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception
      */
-    public PeakControllerImpl(File file) throws DataAccessException {
+    public PeakControllerImpl(File file) {
         this(file, null);
     }
 
@@ -56,9 +56,8 @@ public class PeakControllerImpl extends CachedDataAccessController {
      *
      * @param file jmzReader file
      * @param mode data access mode
-     * @throws DataAccessException data access exception
      */
-    public PeakControllerImpl(File file, DataAccessMode mode) throws DataAccessException {
+    public PeakControllerImpl(File file, DataAccessMode mode) {
         super(file, mode);
         initialize();
     }
@@ -66,9 +65,8 @@ public class PeakControllerImpl extends CachedDataAccessController {
     /**
      * Initialize the data access controller
      *
-     * @throws DataAccessException data access exception
      */
-    private void initialize() throws DataAccessException {
+    private void initialize() {
 
         File file = (File) this.getSource();
         JMzReader um = null;
@@ -151,10 +149,9 @@ public class PeakControllerImpl extends CachedDataAccessController {
      * @param id       spectrum id
      * @param useCache true means to use cache
      * @return Spectrum spectrum object
-     * @throws DataAccessException data access exception
      */
     @Override
-    public Spectrum getSpectrumById(Comparable id, boolean useCache) throws DataAccessException {
+    public Spectrum getSpectrumById(Comparable id, boolean useCache) {
         Spectrum spectrum = super.getSpectrumById(id, useCache);
         if (spectrum == null) {
             uk.ac.ebi.pride.tools.jmzreader.model.Spectrum rawSpec;
@@ -180,10 +177,9 @@ public class PeakControllerImpl extends CachedDataAccessController {
      * @param id       chromatogram id
      * @param useCache true means to use cache
      * @return Chromatogram chromatogram object
-     * @throws DataAccessException data access exception
      */
     @Override
-    public Chromatogram getChromatogramById(Comparable id, boolean useCache) throws DataAccessException {
+    public Chromatogram getChromatogramById(Comparable id, boolean useCache) {
         throw new UnsupportedOperationException("This method is not supported");
     }
 
@@ -197,7 +193,7 @@ public class PeakControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public ExperimentMetaData getExperimentMetaData() throws DataAccessException {
+    public ExperimentMetaData getExperimentMetaData() {
 
         ExperimentMetaData metaData = super.getExperimentMetaData();
 

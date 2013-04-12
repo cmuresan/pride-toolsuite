@@ -36,7 +36,7 @@ public class SpectrumIdentification extends IdentifiableParamGroup {
     /**
      * The product ions identified in this result.
      */
-    private List<FragmentIon> fragmentation;
+    private final List<FragmentIon> fragmentation;
 
     /**
      * A reference should be given to the MassTable used to calculate the
@@ -49,7 +49,7 @@ public class SpectrumIdentification extends IdentifiableParamGroup {
      * sequence can be assigned to multiple proteins and or positions in a
      * protein all possible PeptideEvidence elements should be referenced here.
      */
-    private List<PeptideEvidence> peptideEvidenceList;
+    private final List<PeptideEvidence> peptideEvidenceList;
 
     /**
      * Score stores a number of peptide scores for a list of search engines.

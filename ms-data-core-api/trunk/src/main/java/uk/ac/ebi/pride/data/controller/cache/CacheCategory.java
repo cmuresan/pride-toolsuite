@@ -60,8 +60,8 @@ public enum CacheCategory {
     PROTEIN_QUANT_UNIT(ArrayList.class, null), //List<QuantCvTermReference>
     PEPTIDE_QUANT_UNIT(ArrayList.class, null); // List<QuantCvTermReference>
 
-    private Class   dataStructType;
-    private Integer size;
+    private final Class   dataStructType;
+    private final Integer size;
 
     private CacheCategory(Class dataStructType, Integer size) {
         this.dataStructType = dataStructType;

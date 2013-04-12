@@ -38,35 +38,35 @@ public class MzMLUnmarshallerAdaptor {
         return unmarshaller.getMzMLVersion();
     }
 
-    public CVList getCVList() throws MzMLUnmarshallerException {
+    public CVList getCVList() {
         return unmarshaller.unmarshalFromXpath("/mzML/cvList", CVList.class);
     }
 
-    public FileDescription getFileDescription() throws MzMLUnmarshallerException {
+    public FileDescription getFileDescription() {
         return unmarshaller.unmarshalFromXpath("/mzML/fileDescription", FileDescription.class);
     }
 
-    public ReferenceableParamGroupList getReferenceableParamGroupList() throws MzMLUnmarshallerException {
+    public ReferenceableParamGroupList getReferenceableParamGroupList() {
         return unmarshaller.unmarshalFromXpath("/mzML/referenceableParamGroupList", ReferenceableParamGroupList.class);
     }
 
-    public SampleList getSampleList() throws MzMLUnmarshallerException {
+    public SampleList getSampleList() {
         return unmarshaller.unmarshalFromXpath("/mzML/sampleList", SampleList.class);
     }
 
-    public SoftwareList getSoftwares() throws MzMLUnmarshallerException {
+    public SoftwareList getSoftwares() {
         return unmarshaller.unmarshalFromXpath("/mzML/softwareList", SoftwareList.class);
     }
 
-    public ScanSettingsList getScanSettingsList() throws MzMLUnmarshallerException {
+    public ScanSettingsList getScanSettingsList() {
         return unmarshaller.unmarshalFromXpath("/mzML/scanSettingsList", ScanSettingsList.class);
     }
 
-    public InstrumentConfigurationList getInstrumentConfigurationList() throws MzMLUnmarshallerException {
+    public InstrumentConfigurationList getInstrumentConfigurationList() {
         return unmarshaller.unmarshalFromXpath("/mzML/instrumentConfigurationList", InstrumentConfigurationList.class);
     }
 
-    public DataProcessingList getDataProcessingList() throws MzMLUnmarshallerException {
+    public DataProcessingList getDataProcessingList() {
         return unmarshaller.unmarshalFromXpath("/mzML/dataProcessingList", DataProcessingList.class);
     }
 

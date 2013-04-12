@@ -19,7 +19,7 @@ public class DataProcessing extends Identifiable {
      * Description of the default peak processing method, this is a ordered List
      * processing Methods is the relation between a Software an a Group of Param.
      */
-    private List<ProcessingMethod> processingMethods;
+    private final List<ProcessingMethod> processingMethods;
 
     public DataProcessing(Comparable id, List<ProcessingMethod> processingMethods) {
         this(id, null, processingMethods);

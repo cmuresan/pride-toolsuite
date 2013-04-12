@@ -19,7 +19,7 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
      * A molecule modification specification. If n modifications have been found on a peptide,
      * there should be n instances of Modification.
      */
-    private List<Modification> modifications;
+    private final List<Modification> modifications;
 
     /**
      * The amino acid sequence of the (poly)peptide. If a substitution modification has been found,
@@ -31,7 +31,7 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
      * A modification where one residue is substituted by another (amino acid change).
      * This attribute is used by the MzIdentMl Peptide Object.
      */
-    private List<SubstitutionModification> substitutionModifications;
+    private final List<SubstitutionModification> substitutionModifications;
 
     public PeptideSequence(String id, String name, String sequence, List<Modification> modifications) {
         this(null, id, name, sequence, modifications, null);

@@ -15,7 +15,7 @@ public class MzGraphList {
 
     private DataProcessing defaultDataProcessing;
 
-    private List<MzGraph> mzGraphs;
+    private final List<MzGraph> mzGraphs;
 
     public MzGraphList(DataProcessing defaultDataProcessing, List<MzGraph> mzGraphs) {
         this.defaultDataProcessing = defaultDataProcessing;

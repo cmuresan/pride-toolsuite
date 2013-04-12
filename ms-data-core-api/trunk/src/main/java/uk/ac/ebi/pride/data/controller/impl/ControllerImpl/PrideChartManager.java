@@ -12,7 +12,7 @@ import uk.ac.ebi.pride.chart.graphics.implementation.PrideChart;
  */
 public class PrideChartManager {
 
-    private PrideChart chart;
+    private final PrideChart chart;
 
     private boolean legendVisible = false;
 

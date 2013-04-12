@@ -30,7 +30,7 @@ public class Precursor implements MassSpecObject {
     /**
      * a list of ions selected
      */
-    private List<ParamGroup> selectedIons;
+    private final List<ParamGroup> selectedIons;
 
     /**
      * source file

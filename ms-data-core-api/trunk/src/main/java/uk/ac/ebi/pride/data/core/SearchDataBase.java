@@ -22,7 +22,7 @@ public class SearchDataBase extends ExternalData {
     /**
      * Description of the database with CVTerms
      */
-    private List<CvParam> description;
+    private final List<CvParam> description;
 
     /**
      * The database name may be given as a cvParam if it maps exactly to one

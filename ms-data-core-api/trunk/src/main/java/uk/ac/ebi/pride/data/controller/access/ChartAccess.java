@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.data.controller.access;
 
-import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideChartManager;
 
 import java.util.List;
@@ -12,7 +11,8 @@ import java.util.List;
  * Time: 10:58:58
  */
 public interface ChartAccess {
-    public List<PrideChartManager> getChartData() throws DataAccessException;
+
+    public List<PrideChartManager> getChartData();
 }
 
 

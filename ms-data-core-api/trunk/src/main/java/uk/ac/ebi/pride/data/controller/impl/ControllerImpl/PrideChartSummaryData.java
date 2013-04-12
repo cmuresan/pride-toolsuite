@@ -83,7 +83,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
      * @throws SpectralDataPerExperimentException
      *          the experiment chartData is not consistent
      */
-    private void dataControl() throws SpectralDataPerExperimentException {
+    private void dataControl() {
         boolean precursorChargeFound = false;
         boolean precursorMassFound = false;
         Iterator iter = spectra.values().iterator();

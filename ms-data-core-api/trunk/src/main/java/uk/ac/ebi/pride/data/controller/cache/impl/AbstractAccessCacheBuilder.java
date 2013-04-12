@@ -19,12 +19,12 @@ public abstract class AbstractAccessCacheBuilder implements CacheBuilder {
     /**
      * Cache
      */
-    Cache cache;
+    final Cache cache;
 
     /**
      * DataAccessController
      */
-    DataAccessController controller;
+    final DataAccessController controller;
 
     /**
      * Constructor

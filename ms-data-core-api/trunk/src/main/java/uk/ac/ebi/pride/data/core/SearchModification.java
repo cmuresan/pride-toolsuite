@@ -18,15 +18,15 @@ import java.util.List;
  */
 public class SearchModification {
 
-    private List<CvParam> cvParams;
+    private final List<CvParam> cvParams;
 
     private boolean fixedMod;
 
     private double massDelta;
 
-    private List<String> specificities;
+    private final List<String> specificities;
 
-    private List<CvParam> specificityRules;
+    private final List<CvParam> specificityRules;
 
     public SearchModification(boolean fixedMod, double massDelta, List<String> specificities,
                               List<CvParam> specificityRules, List<CvParam> cvParams) {

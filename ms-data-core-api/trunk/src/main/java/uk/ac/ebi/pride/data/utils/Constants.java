@@ -24,14 +24,20 @@ public class Constants {
         MULTI_PEAK_LIST_NATIVE_ID,
         SINGLE_PEAK_LIST_NATIVE_ID,
         SCAN_NUMBER_NATIVE_ID,
-        MZML_ID, NONE
+        MZML_ID,
+        NONE
     }
     /**
      * An enum of the supported spectra file types
      *
      **/
     public static enum SpecFileFormat {
-        MZML, PKL, DTA, MGF, MZXML,NONE
+        MZML,
+        PKL,
+        DTA,
+        MGF,
+        MZXML,
+        NONE
     }
 
 

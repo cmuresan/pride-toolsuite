@@ -91,7 +91,7 @@
         <dependency>
             <groupId>uk.ac.ebi.jmzidml</groupId>
             <artifactId>jmzidentml</artifactId>
-            <version>1.1.4-SNAPSHOT</version>
+            <version>1.1.4</version>
         </dependency>
         <!-- Begin of the jmzReader Dependencies. MzML and Pride XML files will be parse
           with jaxb and jmzml directly in order to keep more matadata -->

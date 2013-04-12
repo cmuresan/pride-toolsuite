@@ -3,7 +3,7 @@ package uk.ac.ebi.pride.data.controller.impl.ControllerImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.jmzidml.xml.io.MzIdentMLUnmarshaller;
+import uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
@@ -100,8 +100,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     protected void initialize() throws DataAccessException {
         // create pride access utils
         File file = (File) getSource();
-        MzIdentMLUnmarshaller um = new MzIdentMLUnmarshaller(file);
-        unmarshaller = new MzIdentMLUnmarshallerAdaptor(um);
+        unmarshaller = new MzIdentMLUnmarshallerAdaptor(file);
 
         // init ms data accession controller map
         this.msDataAccessControllers = new HashMap<Comparable, DataAccessController>();
@@ -398,7 +397,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 //Get Creation Date
                 Date creationDate = unmarshaller.getCreationDate();
                 //Create the ExperimentMetaData Object
-                metaData = new ExperimentMetaData(additional, accession, title, version, shortLabel, samples, softwares, persons, sources, provider, organizations, references, creationDate, null, protocol);
+                metaData = new ExperimentMetaData(additional, accession, title, version, shortLabel, samples, softwares,
+                        persons, sources, provider, organizations, references, creationDate, null, protocol);
                 // store it in the cache
                 getCache().store(CacheCategory.EXPERIMENT_METADATA, metaData);
             } catch (Exception ex) {
@@ -535,44 +535,22 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
             logger.debug("Get new identification from file: {}", proteinId);
 
-            Comparable proteinHypothesisId = null;
-            List<Comparable> spectrumIdentIds = null;
-
-
-            if (getCache().hasCacheCategory(CacheCategory.PROTEIN_TO_PROTEIN_GROUP_ID)) {
-                proteinHypothesisId = ((Map<Comparable, Comparable>) getCache().get(CacheCategory.PROTEIN_TO_PROTEIN_GROUP_ID)).get(proteinId);
-            }
-
-            if (getCache().hasCacheCategory(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES)) {
-                Map<Comparable, Map<Comparable, Comparable>> mapPeptides = ((Map<Comparable, Map<Comparable, Map<Comparable, Comparable>>>) getCache().get(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES)).get(proteinId);
-                spectrumIdentIds = new ArrayList<Comparable>(mapPeptides.keySet());
-            }
-
             try {
-                uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis proteinHyphotesis = (proteinHypothesisId != null) ? unmarshaller.getIdentificationById(proteinHypothesisId) : null;
+                // get protein hypothesis
+                uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis proteinHypothesis = getProteinDetectionHypothesis(proteinId);
                 uk.ac.ebi.jmzidml.model.mzidml.DBSequence dbSequence = unmarshaller.getDBSequenceById(proteinId);
-                List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> spectrumIdentificationItemList = unmarshaller.getSpectrumIdentificationsbyIds(spectrumIdentIds);
-                // todo: fragmentation table retrieving can be optimzied
-                ident = MzIdentMLTransformer.transformToIdentification(proteinHyphotesis, dbSequence, spectrumIdentificationItemList, unmarshaller.getFragmentationTable());
-                // List<Peptide> peptides = MzIdentMLTransformer.transformToPeptideIdentifications(unmarshaller.getPeptideHypothesisbyID(proteinId), unmarshaller.getFragmentationTable());
-                //ident.setPeptides(peptides);
+                uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable fragmentationTable = unmarshaller.getFragmentationTable();
+
+                if (proteinHypothesis == null) {
+                    List<SpectrumIdentificationItem> spectrumIdentificationItems = getScannedSpectrumIdentificationItems(proteinId);
+                    // todo: fragmentation table retrieving can be optimzied
+                    ident = MzIdentMLTransformer.transformSpectrumIdentificationItemToIdentification(dbSequence, spectrumIdentificationItems, fragmentationTable);
+                } else {
+                    ident = MzIdentMLTransformer.transformProteinHypothesisToIdentification(proteinHypothesis, dbSequence, fragmentationTable);
+                }
+
                 if (ident != null) {
-                    // store identification into cache
-                    getCache().store(CacheCategory.PROTEIN, proteinId, ident);
-                    // store precursor charge and m/z
-                    for (Peptide peptide : ident.getPeptides()) {
-                        getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(proteinId, peptide.getSpectrumIdentification().getId()), peptide);
-                        Spectrum spectrum = null;
-                        if (hasSpectrum()) {
-                            spectrum = getSpectrumById(peptide.getSpectrumIdentification().getId());
-                            spectrum.setPeptide(peptide);
-                            peptide.setSpectrum(spectrum);
-                        }
-                        if (spectrum != null) {
-                            getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
-                            getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
-                        }
-                    }
+                    storeProteinToCache(ident);
                 }
             } catch (Exception ex) {
                 throw new DataAccessException("Failed to retrieve identification: " + proteinId, ex);
@@ -580,6 +558,49 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         }
 
         return ident;
+    }
+
+    private List<SpectrumIdentificationItem> getScannedSpectrumIdentificationItems(Comparable proteinId) throws JAXBException {
+        List<Comparable> spectrumIdentIds = null;
+
+        if (getCache().hasCacheCategory(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES)) {
+            Map<Comparable, Map<Comparable, Comparable>> mapPeptides = ((Map<Comparable, Map<Comparable, Map<Comparable, Comparable>>>) getCache().get(CacheCategory.PROTEIN_TO_PEPTIDE_EVIDENCES)).get(proteinId);
+            spectrumIdentIds = new ArrayList<Comparable>(mapPeptides.keySet());
+        }
+
+        return unmarshaller.getSpectrumIdentificationsbyIds(spectrumIdentIds);
+    }
+
+    private uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis getProteinDetectionHypothesis(Comparable proteinId) throws JAXBException {
+        uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis proteinDetectionHypothesis = null;
+
+        if (getCache().hasCacheCategory(CacheCategory.PROTEIN_TO_PROTEIN_GROUP_ID)) {
+            Comparable proteinHypothesisId = ((Map<Comparable, Comparable>) getCache().get(CacheCategory.PROTEIN_TO_PROTEIN_GROUP_ID)).get(proteinId);
+            if (proteinHypothesisId != null) {
+                proteinDetectionHypothesis = unmarshaller.getIdentificationById(proteinHypothesisId);
+            }
+        }
+
+        return proteinDetectionHypothesis;
+    }
+
+    private void storeProteinToCache(Protein ident) {
+        // store identification into cache
+        getCache().store(CacheCategory.PROTEIN, ident.getId(), ident);
+        // store precursor charge and m/z
+        for (Peptide peptide : ident.getPeptides()) {
+            getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(ident.getId(), peptide.getSpectrumIdentification().getId()), peptide);
+            if (hasSpectrum()) {
+                Spectrum spectrum = getSpectrumById(peptide.getSpectrumIdentification().getId());
+                spectrum.setPeptide(peptide);
+                peptide.setSpectrum(spectrum);
+
+                if (spectrum != null) {
+                    getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
+                    getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+                }
+            }
+        }
     }
 
 
@@ -596,10 +617,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         Peptide peptide = super.getPeptideByIndex(proteinId, index, useCache);
         if (peptide == null || (peptide.getSpectrum() == null && hasSpectrum())) {
             logger.debug("Get new peptide from file: {}", index);
-            Protein ident;
-            ident = getProteinById(proteinId);
-            //List<Peptide> peptides = MzIdentMLTransformer.transformToPeptideIdentifications(unmarshaller.getPeptideHypothesisbyID(identId), unmarshaller.getFragmentationTable());
-            //ident.setPeptides(peptides);
+            Protein ident = getProteinById(proteinId);
+
             peptide = ident.getPeptides().get(Integer.parseInt(index.toString()));
             if (useCache && peptide != null) {
                 getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(proteinId, index), peptide);

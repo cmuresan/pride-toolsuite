@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.data.controller.impl.Transformer;
 
 import uk.ac.ebi.jmzml.model.mzml.ComponentList;
 import uk.ac.ebi.jmzml.model.mzml.FileDescription;
-import uk.ac.ebi.jmzml.model.mzml.SoftwareRef;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
@@ -128,11 +127,11 @@ public class MzMLTransformer {
         if (oldCvParams != null) {
             for (uk.ac.ebi.jmzml.model.mzml.CVParam oldParam : oldCvParams) {
                 String cvLookupID = null;
-                uk.ac.ebi.jmzml.model.mzml.CV cv = oldParam.getCV();
+                uk.ac.ebi.jmzml.model.mzml.CV cv = oldParam.getCv();
                 if (cv != null)
                     cvLookupID = cv.getId();
                 String unitCVLookupID = null;
-                cv = oldParam.getCV();
+                cv = oldParam.getCv();
                 if (cv != null)
                     unitCVLookupID = cv.getId();
                 CvParam newParam = new CvParam(oldParam.getAccession(), oldParam.getName(), cvLookupID,
@@ -156,7 +155,7 @@ public class MzMLTransformer {
         if (oldUserParams != null) {
             for (uk.ac.ebi.jmzml.model.mzml.UserParam oldParam : oldUserParams) {
                 String unitCVLookupID = null;
-                uk.ac.ebi.jmzml.model.mzml.CV cv = oldParam.getUnitCV();
+                uk.ac.ebi.jmzml.model.mzml.CV cv = oldParam.getUnitCv();
                 if (cv != null)
                     unitCVLookupID = cv.getId();
                 UserParam newParam = new UserParam(oldParam.getName(), oldParam.getType(),
@@ -658,10 +657,10 @@ public class MzMLTransformer {
             ScanSetting scanSetting = transformScanSetting(oldInstrument.getScanSettings());
 
             // convert software
-            SoftwareRef oldSoftware = oldInstrument.getSoftwareRef();
+            uk.ac.ebi.jmzml.model.mzml.Software oldSoftware = oldInstrument.getSoftware();
             Software software = null;
             if (oldSoftware != null) {
-                software = transformSoftware(oldInstrument.getSoftwareRef().getSoftware());
+                software = transformSoftware(oldSoftware);
             }
             // convert component list
             ComponentList componentList = oldInstrument.getComponentList();

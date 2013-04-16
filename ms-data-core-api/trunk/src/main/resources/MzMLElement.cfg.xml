@@ -26,7 +26,7 @@
         <indexed>false</indexed>
         <idMapped>false</idMapped>
         <clazz>uk.ac.ebi.jmzml.model.mzml.BinaryDataArray</clazz>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <refResolverClass>uk.ac.ebi.jmzml.xml.jaxb.resolver.BinaryDataArrayRefResolver</refResolverClass>
     </configurations>
     <configurations>
@@ -42,7 +42,7 @@
         <xpath>/mzML/run/chromatogramList/chromatogram</xpath>
         <idMapped>true</idMapped>
         <clazz>uk.ac.ebi.jmzml.model.mzml.Chromatogram</clazz>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <refResolverClass>uk.ac.ebi.jmzml.xml.jaxb.resolver.ChromatogramRefResolver</refResolverClass>
     </configurations>
     <configurations>
@@ -155,7 +155,7 @@
         <xpath>/mzML/instrumentConfigurationList/instrumentConfiguration</xpath>
         <idMapped>true</idMapped>
         <clazz>uk.ac.ebi.jmzml.model.mzml.InstrumentConfiguration</clazz>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <refResolverClass>uk.ac.ebi.jmzml.xml.jaxb.resolver.InstrumentConfigurationRefResolver</refResolverClass>
     </configurations>
     <configurations>
@@ -195,7 +195,7 @@
         <xpath>/mzML/run/spectrumList/spectrum/precursorList/precursor</xpath>
         <idMapped>false</idMapped>
         <clazz>uk.ac.ebi.jmzml.model.mzml.Precursor</clazz>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <refResolverClass>uk.ac.ebi.jmzml.xml.jaxb.resolver.PrecursorRefResolver</refResolverClass>
     </configurations>
     <configurations>
@@ -212,7 +212,7 @@
         <xpath>/mzML/dataProcessingList/dataProcessing/processingMethod</xpath>
         <idMapped>false</idMapped>
         <clazz>uk.ac.ebi.jmzml.model.mzml.ProcessingMethod</clazz>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <refResolverClass>uk.ac.ebi.jmzml.xml.jaxb.resolver.ProcessingMethodRefResolver</refResolverClass>
     </configurations>
     <configurations>
@@ -261,7 +261,7 @@
         <xpath>/mzML/run</xpath>
         <idMapped>true</idMapped>
         <clazz>uk.ac.ebi.jmzml.model.mzml.Run</clazz>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <refResolverClass>uk.ac.ebi.jmzml.xml.jaxb.resolver.RunRefResolver</refResolverClass>
     </configurations>
     <configurations>
@@ -398,7 +398,7 @@
         <xpath>/mzML/run/spectrumList/spectrum</xpath>
         <idMapped>true</idMapped>
         <clazz>uk.ac.ebi.jmzml.model.mzml.Spectrum</clazz>
-        <autoRefResolving>false</autoRefResolving>
+        <autoRefResolving>true</autoRefResolving>
         <refResolverClass>uk.ac.ebi.jmzml.xml.jaxb.resolver.SpectrumRefResolver</refResolverClass>
     </configurations>
     <configurations>

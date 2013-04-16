@@ -117,7 +117,7 @@ public class ParamGroup implements MassSpecObject {
     }
 
     public boolean isEmpty() {
-        return !cvParams.isEmpty() || !userParams.isEmpty();
+        return !cvParams.isEmpty() && !userParams.isEmpty();
     }
 
     @Override

@@ -39,35 +39,43 @@ public class MzMLUnmarshallerAdaptor {
     }
 
     public CVList getCVList() {
-        return unmarshaller.unmarshalFromXpath("/mzML/cvList", CVList.class);
+        CVList cvList = unmarshaller.unmarshalFromXpath("/mzML/cvList", CVList.class);
+        return cvList;
     }
 
     public FileDescription getFileDescription() {
-        return unmarshaller.unmarshalFromXpath("/mzML/fileDescription", FileDescription.class);
+        FileDescription fileDescription = unmarshaller.unmarshalFromXpath("/mzML/fileDescription", FileDescription.class);
+        return fileDescription;
     }
 
     public ReferenceableParamGroupList getReferenceableParamGroupList() {
-        return unmarshaller.unmarshalFromXpath("/mzML/referenceableParamGroupList", ReferenceableParamGroupList.class);
+        ReferenceableParamGroupList referenceableParamGroupList = unmarshaller.unmarshalFromXpath("/mzML/referenceableParamGroupList", ReferenceableParamGroupList.class);
+        return referenceableParamGroupList;
     }
 
     public SampleList getSampleList() {
-        return unmarshaller.unmarshalFromXpath("/mzML/sampleList", SampleList.class);
+        SampleList sampleList = unmarshaller.unmarshalFromXpath("/mzML/sampleList", SampleList.class);
+        return sampleList;
     }
 
     public SoftwareList getSoftwares() {
-        return unmarshaller.unmarshalFromXpath("/mzML/softwareList", SoftwareList.class);
+        SoftwareList softwareList = unmarshaller.unmarshalFromXpath("/mzML/softwareList", SoftwareList.class);
+        return softwareList;
     }
 
     public ScanSettingsList getScanSettingsList() {
-        return unmarshaller.unmarshalFromXpath("/mzML/scanSettingsList", ScanSettingsList.class);
+        ScanSettingsList scanSettingsList = unmarshaller.unmarshalFromXpath("/mzML/scanSettingsList", ScanSettingsList.class);
+        return scanSettingsList;
     }
 
     public InstrumentConfigurationList getInstrumentConfigurationList() {
-        return unmarshaller.unmarshalFromXpath("/mzML/instrumentConfigurationList", InstrumentConfigurationList.class);
+        InstrumentConfigurationList instrumentConfigurationList = unmarshaller.unmarshalFromXpath("/mzML/instrumentConfigurationList", InstrumentConfigurationList.class);
+        return instrumentConfigurationList;
     }
 
     public DataProcessingList getDataProcessingList() {
-        return unmarshaller.unmarshalFromXpath("/mzML/dataProcessingList", DataProcessingList.class);
+        DataProcessingList dataProcessingList = unmarshaller.unmarshalFromXpath("/mzML/dataProcessingList", DataProcessingList.class);
+        return dataProcessingList;
     }
 
     public Set<String> getSpectrumIds() {
@@ -87,7 +95,7 @@ public class MzMLUnmarshallerAdaptor {
     }
 
     public Date getCreationDate() {
-        Run run = unmarshaller.unmarshalFromXpath("/mzML/run",Run.class);
+        Run run = unmarshaller.unmarshalFromXpath("/mzML/run", Run.class);
 
         /*
          * This is the only way that we can use now to retrieve the name property
@@ -95,7 +103,7 @@ public class MzMLUnmarshallerAdaptor {
          */
         Date dateCreation = null;
         run.getStartTimeStamp();
-        if(run.getStartTimeStamp() != null){
+        if (run.getStartTimeStamp() != null) {
             dateCreation = run.getStartTimeStamp().getTime();
         }
         return dateCreation;

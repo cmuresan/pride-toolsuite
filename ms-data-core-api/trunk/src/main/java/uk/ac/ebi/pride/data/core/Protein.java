@@ -63,11 +63,11 @@ public class Protein extends IdentifiableParamGroup {
     public Protein(ParamGroup params, Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
                    List<Peptide> peptides, Score score, double threshold, double sequenceCoverage, Gel gel) {
         super(params, id, name);
-        this.dbSequence       = dbSequence;
-        this.passThreshold    = passThreshold;
-        this.peptides         = CollectionUtils.createListFromList(peptides);
-        this.score            = score;
-        this.threshold        = threshold;
+        this.dbSequence = dbSequence;
+        this.passThreshold = passThreshold;
+        this.peptides = CollectionUtils.createListFromList(peptides);
+        this.score = score;
+        this.threshold = threshold;
         this.sequenceCoverage = sequenceCoverage;
         this.gel = gel;
     }
@@ -162,9 +162,8 @@ public class Protein extends IdentifiableParamGroup {
         if (!peptides.equals(protein.peptides)) return false;
         if (proteinAmbiguityGroup != null ? !proteinAmbiguityGroup.equals(protein.proteinAmbiguityGroup) : protein.proteinAmbiguityGroup != null)
             return false;
-        if (score != null ? !score.equals(protein.score) : protein.score != null) return false;
+        return !(score != null ? !score.equals(protein.score) : protein.score != null);
 
-        return true;
     }
 
     @Override

@@ -13,9 +13,9 @@ import java.util.Map;
  * importing a CV term for the type of ion e.g. b ion. Example: if b3 b7 b8 and b10
  * have been identified, the index attribute will contain 3 7 8 10, and the
  * corresponding values will be reported in parallel arrays below.
- *
+ * <p/>
  * todo: this class needs to be reviewed
- *
+ * <p/>
  * User: yperez
  * Date: 08/08/11
  * Time: 14:01
@@ -36,7 +36,7 @@ public class IonType extends CvParam {
      * the peptide sequence - if the peptide contains the same amino acid in
      * multiple positions that cannot be distinguished, all positions should be
      * given.
-     *
+     * <p/>
      * todo: review this list, why is not initialized by the constructor
      */
     private final List<Integer> index;
@@ -44,7 +44,7 @@ public class IonType extends CvParam {
     /**
      * An array of values for a given type of measure and for a particular ion
      * type, in parallel to the index of ions identified.
-     *
+     * <p/>
      * todo: review this map, see reason above
      */
     private final Map<IdentifiableParamGroup, List<Integer>> measures;
@@ -104,9 +104,8 @@ public class IonType extends CvParam {
 
         if (charge != ionType.charge) return false;
         if (!index.equals(ionType.index)) return false;
-        if (!measures.equals(ionType.measures)) return false;
+        return measures.equals(ionType.measures);
 
-        return true;
     }
 
     @Override

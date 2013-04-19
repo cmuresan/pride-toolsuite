@@ -61,20 +61,20 @@ public class SpectrumIdentificationProtocol extends Protocol {
     private boolean enzymeIndependent;
 
     public SpectrumIdentificationProtocol(Comparable id, String name, Software analysisSoftware,
-            ParamGroup analysisParam, ParamGroup threshold, ParamGroup searchType,
-            List<SearchModification> searchModifications, boolean enzymeIndependent, List<Enzyme> enzymes,
-            List<MassTable> massTables, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
-            List<Filter> filters, DataBaseTranslation dataBaseTranslation) {
+                                          ParamGroup analysisParam, ParamGroup threshold, ParamGroup searchType,
+                                          List<SearchModification> searchModifications, boolean enzymeIndependent, List<Enzyme> enzymes,
+                                          List<MassTable> massTables, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
+                                          List<Filter> filters, DataBaseTranslation dataBaseTranslation) {
         this(analysisParam, id, name, analysisSoftware, threshold, searchType, searchModifications, enzymeIndependent,
                 enzymes, massTables, fragmentTolerance, parentTolerance, filters, dataBaseTranslation);
     }
 
 
     public SpectrumIdentificationProtocol(ParamGroup analysisParam, Comparable id, String name,
-            Software analysisSoftware, ParamGroup threshold, ParamGroup searchType,
-            List<SearchModification> searchModifications, boolean enzymeIndependent, List<Enzyme> enzymes,
-            List<MassTable> massTables, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
-            List<Filter> filters, DataBaseTranslation dataBaseTranslation) {
+                                          Software analysisSoftware, ParamGroup threshold, ParamGroup searchType,
+                                          List<SearchModification> searchModifications, boolean enzymeIndependent, List<Enzyme> enzymes,
+                                          List<MassTable> massTables, List<CvParam> fragmentTolerance, List<CvParam> parentTolerance,
+                                          List<Filter> filters, DataBaseTranslation dataBaseTranslation) {
         super(analysisParam, id, name, analysisSoftware, threshold);
         this.searchType = searchType;
         this.searchModifications = CollectionUtils.createListFromList(searchModifications);
@@ -176,9 +176,8 @@ public class SpectrumIdentificationProtocol extends Protocol {
         if (!massTables.equals(that.massTables)) return false;
         if (!parentTolerance.equals(that.parentTolerance)) return false;
         if (!searchModifications.equals(that.searchModifications)) return false;
-        if (searchType != null ? !searchType.equals(that.searchType) : that.searchType != null) return false;
+        return !(searchType != null ? !searchType.equals(that.searchType) : that.searchType != null);
 
-        return true;
     }
 
     @Override

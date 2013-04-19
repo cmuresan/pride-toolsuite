@@ -10,7 +10,7 @@ import java.util.List;
  * User: yperez
  * Date: 08/08/11
  * Time: 16:35
- *
+ * <p/>
  * todo: review contactInfo
  */
 public class Person extends Contact {
@@ -37,8 +37,8 @@ public class Person extends Contact {
     public Person(ParamGroup params, Comparable id, String name, String lastname, String firstname, String midInitials,
                   List<Organization> affiliation, String contactInfo) {
         super(params, id, name);
-        this.lastname    = lastname;
-        this.firstname   = firstname;
+        this.lastname = lastname;
+        this.firstname = firstname;
         this.midInitials = midInitials;
         this.affiliation = CollectionUtils.createListFromList(affiliation);
         this.contactInfo = contactInfo;
@@ -96,9 +96,8 @@ public class Person extends Contact {
         if (contactInfo != null ? !contactInfo.equals(person.contactInfo) : person.contactInfo != null) return false;
         if (firstname != null ? !firstname.equals(person.firstname) : person.firstname != null) return false;
         if (lastname != null ? !lastname.equals(person.lastname) : person.lastname != null) return false;
-        if (midInitials != null ? !midInitials.equals(person.midInitials) : person.midInitials != null) return false;
+        return !(midInitials != null ? !midInitials.equals(person.midInitials) : person.midInitials != null);
 
-        return true;
     }
 
     @Override

@@ -134,9 +134,8 @@ public class Scan extends ParamGroup {
             return false;
         if (!scanWindows.equals(scan.scanWindows)) return false;
         if (sourceFile != null ? !sourceFile.equals(scan.sourceFile) : scan.sourceFile != null) return false;
-        if (spectrumRef != null ? !spectrumRef.equals(scan.spectrumRef) : scan.spectrumRef != null) return false;
+        return !(spectrumRef != null ? !spectrumRef.equals(scan.spectrumRef) : scan.spectrumRef != null);
 
-        return true;
     }
 
     @Override

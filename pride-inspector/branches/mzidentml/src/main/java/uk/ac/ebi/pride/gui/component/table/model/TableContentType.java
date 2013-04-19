@@ -49,19 +49,19 @@ public enum TableContentType {
      */
     PEPTIDE_FIT,
     /**
-     * Quantitation for protein
+     * Quantification for protein
      */
     PROTEIN_QUANTITATION_HEADER,
     /**
-     * Quantitation for protein
+     * Quantification for protein
      */
     PROTEIN_QUANTITATION,
     /**
-     * Quantitation for peptide
+     * Quantification for peptide
      */
     PEPTIDE_QUANTITATION_HEADER,
     /**
-     * Quantitation for peptide
+     * Quantification for peptide
      */
     PEPTIDE_QUANTITATION
 }

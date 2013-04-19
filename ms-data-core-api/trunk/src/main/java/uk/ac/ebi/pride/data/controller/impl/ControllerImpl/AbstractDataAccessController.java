@@ -108,21 +108,21 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public ExperimentMetaData getExperimentMetaData(){
+    public ExperimentMetaData getExperimentMetaData() {
         return null;
     }
 
     @Override
-    public IdentificationMetaData getIdentificationMetaData(){
+    public IdentificationMetaData getIdentificationMetaData() {
         return null;
     }
 
     @Override
-    public MzGraphMetaData getMzGraphMetaData(){
+    public MzGraphMetaData getMzGraphMetaData() {
         return null;
     }
 
-    public Collection<Sample> getSamples(){
+    public Collection<Sample> getSamples() {
         return Collections.emptyList();
     }
 
@@ -141,8 +141,8 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return getSpectrumIds().size();
     }
 
-    public int getNumberOfIdentifiedSpectra(){
-          return 0;
+    public int getNumberOfIdentifiedSpectra() {
+        return 0;
     }
 
     @Override
@@ -456,7 +456,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         if (!proteinIds.isEmpty()) {
             Protein protein = getProteinById(CollectionUtils.getElement(proteinIds, 0));
             if (protein != null) {
-                if (protein.getScore() != null)  {
+                if (protein.getScore() != null) {
                     searchEngineTypes.addAll(protein.getScore().getSearchEngineTypes());
                 }
 
@@ -782,9 +782,11 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
-            if ((peptide != null) && (peptide.getSpectrumIdentification().getScore() == null)) {
-                score = DataAccessUtilities.getScore(peptide.getSpectrumIdentification());
-                peptide.getSpectrumIdentification().setScore(score);
+            if (peptide != null) {
+                if (peptide.getSpectrumIdentification().getScore() == null) {
+                    score = DataAccessUtilities.getScore(peptide.getSpectrumIdentification());
+                    peptide.getSpectrumIdentification().setScore(score);
+                } else score = peptide.getSpectrumIdentification().getScore();
             }
         }
         return score;

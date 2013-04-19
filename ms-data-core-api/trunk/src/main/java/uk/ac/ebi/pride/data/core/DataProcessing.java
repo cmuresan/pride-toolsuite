@@ -46,9 +46,8 @@ public class DataProcessing extends Identifiable {
 
         DataProcessing that = (DataProcessing) o;
 
-        if (!processingMethods.equals(that.processingMethods)) return false;
+        return processingMethods.equals(that.processingMethods);
 
-        return true;
     }
 
     @Override

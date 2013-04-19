@@ -59,9 +59,8 @@ public class MassTable extends ParamGroup {
 
         if (!ambiguousResidues.equals(massTable.ambiguousResidues)) return false;
         if (!msLevel.equals(massTable.msLevel)) return false;
-        if (!residues.equals(massTable.residues)) return false;
+        return residues.equals(massTable.residues);
 
-        return true;
     }
 
     @Override

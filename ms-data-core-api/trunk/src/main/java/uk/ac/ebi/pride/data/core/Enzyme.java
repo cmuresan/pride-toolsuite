@@ -7,7 +7,7 @@ package uk.ac.ebi.pride.data.core;
  * Date: 05/08/11
  * Time: 16:16
  */
-public class Enzyme extends Identifiable{
+public class Enzyme extends Identifiable {
     private String cTermGain;
     private ParamGroup enzymeName;
     private int minDistance;
@@ -20,11 +20,11 @@ public class Enzyme extends Identifiable{
                   boolean semiSpecific, int missedCleavages, int minDistance,
                   ParamGroup enzymeName, String siteRegExp) {
         super(id, name);
-        this.semiSpecific    = semiSpecific;
+        this.semiSpecific = semiSpecific;
         this.missedCleavages = missedCleavages;
-        this.minDistance     = minDistance;
-        this.enzymeName      = enzymeName;
-        this.siteRegExp      = siteRegExp;
+        this.minDistance = minDistance;
+        this.enzymeName = enzymeName;
+        this.siteRegExp = siteRegExp;
     }
 
     public String getSiteRegExp() {
@@ -97,9 +97,8 @@ public class Enzyme extends Identifiable{
         if (cTermGain != null ? !cTermGain.equals(enzyme.cTermGain) : enzyme.cTermGain != null) return false;
         if (enzymeName != null ? !enzymeName.equals(enzyme.enzymeName) : enzyme.enzymeName != null) return false;
         if (nTermGain != null ? !nTermGain.equals(enzyme.nTermGain) : enzyme.nTermGain != null) return false;
-        if (siteRegExp != null ? !siteRegExp.equals(enzyme.siteRegExp) : enzyme.siteRegExp != null) return false;
+        return !(siteRegExp != null ? !siteRegExp.equals(enzyme.siteRegExp) : enzyme.siteRegExp != null);
 
-        return true;
     }
 
     @Override

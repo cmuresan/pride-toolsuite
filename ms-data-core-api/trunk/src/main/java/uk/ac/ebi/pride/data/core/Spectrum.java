@@ -62,14 +62,14 @@ public class Spectrum extends MzGraph {
                     SourceFile sourceFile, ScanList scanList, List<Precursor> precursors, List<ParamGroup> products,
                     Peptide peptide) {
         this(null, id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays, spotID, sourceFile,
-             scanList, precursors, products, peptide);
+                scanList, precursors, products, peptide);
     }
 
     public Spectrum(ParamGroup params, Comparable id, String name, int index, DataProcessing defaultDataProcessing,
                     int defaultArrayLength, List<BinaryDataArray> binaryDataArrays, String spotID,
                     SourceFile sourceFile, ScanList scanList, List<Precursor> precursors, List<ParamGroup> products) {
         this(params, id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays, spotID, sourceFile,
-             scanList, precursors, products, null);
+                scanList, precursors, products, null);
     }
 
     public Spectrum(ParamGroup params, Comparable id, String name, int index, DataProcessing defaultDataProcessing,
@@ -77,12 +77,12 @@ public class Spectrum extends MzGraph {
                     SourceFile sourceFile, ScanList scanList, List<Precursor> precursors, List<ParamGroup> products,
                     Peptide peptide) {
         super(params, id, name, index, defaultDataProcessing, defaultArrayLength, binaryDataArrays);
-        this.spotID     = spotID;
+        this.spotID = spotID;
         this.sourceFile = sourceFile;
-        this.scanList   = scanList;
+        this.scanList = scanList;
         this.precursors = CollectionUtils.createListFromList(precursors);
-        this.products   = CollectionUtils.createListFromList(products);
-        this.peptide    = peptide;
+        this.products = CollectionUtils.createListFromList(products);
+        this.peptide = peptide;
     }
 
     public String getSpotID() {
@@ -154,9 +154,8 @@ public class Spectrum extends MzGraph {
         if (!products.equals(spectrum.products)) return false;
         if (scanList != null ? !scanList.equals(spectrum.scanList) : spectrum.scanList != null) return false;
         if (sourceFile != null ? !sourceFile.equals(spectrum.sourceFile) : spectrum.sourceFile != null) return false;
-        if (spotID != null ? !spotID.equals(spectrum.spotID) : spectrum.spotID != null) return false;
+        return !(spotID != null ? !spotID.equals(spectrum.spotID) : spectrum.spotID != null);
 
-        return true;
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.List;
  * Search Modification is the variable or fixed modification defined in the Identification Search
  * by the user. This modification is close related with the parameters of the Spectrum protocol
  * Identification.
- *
+ * <p/>
  * <p/>
  * User: yperez
  * Date: 05/08/11
@@ -30,8 +30,8 @@ public class SearchModification {
 
     public SearchModification(boolean fixedMod, double massDelta, List<String> specificities,
                               List<CvParam> specificityRules, List<CvParam> cvParams) {
-        this.fixedMod            = fixedMod;
-        this.massDelta           = massDelta;
+        this.fixedMod = fixedMod;
+        this.massDelta = massDelta;
         this.specificities = CollectionUtils.createListFromList(specificities);
         this.specificityRules = CollectionUtils.createListFromList(specificityRules);
         this.cvParams = CollectionUtils.createListFromList(cvParams);
@@ -88,9 +88,8 @@ public class SearchModification {
         if (Double.compare(that.massDelta, massDelta) != 0) return false;
         if (!cvParams.equals(that.cvParams)) return false;
         if (!specificities.equals(that.specificities)) return false;
-        if (!specificityRules.equals(that.specificityRules)) return false;
+        return specificityRules.equals(that.specificityRules);
 
-        return true;
     }
 
     @Override

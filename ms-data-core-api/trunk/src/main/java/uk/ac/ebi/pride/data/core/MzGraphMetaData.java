@@ -40,18 +40,18 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
     }
 
     /**
-     * @param params       ParamGroup of MzGraphMetaData
-     * @param id           Generic Id of MzGraphMetaData
-     * @param name         Generic Name
-     * @param scanSettings Scan Settings
-     * @param instrumentConfigurations  Instrument Configurations
-     * @param dataProcessings        Data Processing List
+     * @param params                   ParamGroup of MzGraphMetaData
+     * @param id                       Generic Id of MzGraphMetaData
+     * @param name                     Generic Name
+     * @param scanSettings             Scan Settings
+     * @param instrumentConfigurations Instrument Configurations
+     * @param dataProcessings          Data Processing List
      */
     public MzGraphMetaData(ParamGroup params, Comparable id, String name, List<ScanSetting> scanSettings,
                            List<InstrumentConfiguration> instrumentConfigurations,
                            List<DataProcessing> dataProcessings) {
         super(params, id, name);
-        this.scanSettings             = CollectionUtils.createListFromList(scanSettings);
+        this.scanSettings = CollectionUtils.createListFromList(scanSettings);
         this.instrumentConfigurations = CollectionUtils.createListFromList(instrumentConfigurations);
         this.dataProcessings = CollectionUtils.createListFromList(dataProcessings);
     }
@@ -99,9 +99,8 @@ public class MzGraphMetaData extends IdentifiableParamGroup {
 
         if (!dataProcessings.equals(that.dataProcessings)) return false;
         if (!instrumentConfigurations.equals(that.instrumentConfigurations)) return false;
-        if (!scanSettings.equals(that.scanSettings)) return false;
+        return scanSettings.equals(that.scanSettings);
 
-        return true;
     }
 
     @Override

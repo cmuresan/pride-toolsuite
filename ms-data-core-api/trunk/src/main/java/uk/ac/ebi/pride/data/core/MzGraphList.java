@@ -47,9 +47,8 @@ public class MzGraphList {
 
         if (defaultDataProcessing != null ? !defaultDataProcessing.equals(that.defaultDataProcessing) : that.defaultDataProcessing != null)
             return false;
-        if (!mzGraphs.equals(that.mzGraphs)) return false;
+        return mzGraphs.equals(that.mzGraphs);
 
-        return true;
     }
 
     @Override

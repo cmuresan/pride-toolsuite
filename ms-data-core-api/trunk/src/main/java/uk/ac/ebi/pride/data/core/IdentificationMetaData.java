@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * This class is used to manage and store the information of the metadata for protein and spectrum
  * identifications.
- *
+ * <p/>
  * User: yperez
  * Date: 19/08/11
  * Time: 11:56
@@ -84,9 +84,8 @@ public class IdentificationMetaData extends IdentifiableParamGroup {
         if (proteinDetectionProtocol != null ? !proteinDetectionProtocol.equals(that.proteinDetectionProtocol) : that.proteinDetectionProtocol != null)
             return false;
         if (!searchDataBases.equals(that.searchDataBases)) return false;
-        if (!spectrumIdentificationProtocols.equals(that.spectrumIdentificationProtocols)) return false;
+        return spectrumIdentificationProtocols.equals(that.spectrumIdentificationProtocols);
 
-        return true;
     }
 
     @Override

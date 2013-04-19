@@ -29,7 +29,7 @@ public class Score {
      * Get scores for search engine
      *
      * @param se search engine
-     * @return   peptide score map
+     * @return peptide score map
      */
     public Map<CvTermReference, Number> getScores(SearchEngineType se) {
         return scores.get(se);
@@ -38,8 +38,9 @@ public class Score {
 
     /**
      * Scan for scores using a given score cv term
-     * @param scoreCvTerm   score cv term
-     * @return  a collection of values
+     *
+     * @param scoreCvTerm score cv term
+     * @return a collection of values
      */
     public List<Number> getScores(CvTermReference scoreCvTerm) {
         List<Number> values = new ArrayList<Number>();
@@ -63,7 +64,7 @@ public class Score {
     public Number getScore(SearchEngineType se, CvTermReference ref) {
         Map<CvTermReference, Number> scoreMap = scores.get(se);
 
-        return (scoreMap == null) ? null  : scoreMap.get(ref);
+        return (scoreMap == null) ? null : scoreMap.get(ref);
     }
 
     /**
@@ -143,10 +144,10 @@ public class Score {
 
     /**
      * Get the Default score for Search Engine
-     *
+     * <p/>
      * * @return score
      */
-    public double getDefaultScore(){
+    public double getDefaultScore() {
         Object[] scoresArray = scores.values().toArray();
         Object[] scoresArrayValue = ((Map<CvTermReference, Number>) scoresArray[0]).values().toArray();
         double scoreValue = -1;
@@ -164,16 +165,16 @@ public class Score {
      *
      * @return Default Search Engine for the Scores
      */
-    public SearchEngineType getDefaultSearchEngine(){
+    public SearchEngineType getDefaultSearchEngine() {
         Object[] searchengines = scores.keySet().toArray();
         return (SearchEngineType) searchengines[0];
     }
 
-    public List<CvTermReference> getCvTermReferenceWithValues(){
+    public List<CvTermReference> getCvTermReferenceWithValues() {
         List<CvTermReference> listReference = new ArrayList<CvTermReference>();
         for (Map<CvTermReference, Number> numberMap : scores.values()) {
-            for (CvTermReference cvTermReference: numberMap.keySet()){
-                if(numberMap.get(cvTermReference) !=null){
+            for (CvTermReference cvTermReference : numberMap.keySet()) {
+                if (numberMap.get(cvTermReference) != null) {
                     listReference.add(cvTermReference);
                 }
             }
@@ -188,9 +189,8 @@ public class Score {
 
         Score score = (Score) o;
 
-        if (!scores.equals(score.scores)) return false;
+        return scores.equals(score.scores);
 
-        return true;
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * Referenceable param group stores a map of reference string to param group.
- *
+ * <p/>
  * User: rwang
  */
 public class ReferenceableParamGroup implements MassSpecObject {
@@ -43,9 +43,8 @@ public class ReferenceableParamGroup implements MassSpecObject {
 
         ReferenceableParamGroup that = (ReferenceableParamGroup) o;
 
-        if (!refMap.equals(that.refMap)) return false;
+        return refMap.equals(that.refMap);
 
-        return true;
     }
 
     @Override

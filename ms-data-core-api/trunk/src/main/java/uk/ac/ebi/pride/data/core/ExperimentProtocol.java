@@ -47,9 +47,8 @@ public class ExperimentProtocol extends IdentifiableParamGroup {
 
         ExperimentProtocol that = (ExperimentProtocol) o;
 
-        if (!protocolSteps.equals(that.protocolSteps)) return false;
+        return protocolSteps.equals(that.protocolSteps);
 
-        return true;
     }
 
     @Override

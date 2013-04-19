@@ -35,7 +35,7 @@ public class Sample extends IdentifiableParamGroup {
     public Sample(ParamGroup params, String id, String name, List<Sample> subSamples,
                   Map<Contact, CvParam> contactRoles) {
         super(params, id, name);
-        this.subSamples      = CollectionUtils.createListFromList(subSamples);
+        this.subSamples = CollectionUtils.createListFromList(subSamples);
         this.contactRoles = MapUtils.createMapFromMap(contactRoles);
     }
 
@@ -64,9 +64,8 @@ public class Sample extends IdentifiableParamGroup {
         Sample sample = (Sample) o;
 
         if (!contactRoles.equals(sample.contactRoles)) return false;
-        if (!subSamples.equals(sample.subSamples)) return false;
+        return subSamples.equals(sample.subSamples);
 
-        return true;
     }
 
     @Override

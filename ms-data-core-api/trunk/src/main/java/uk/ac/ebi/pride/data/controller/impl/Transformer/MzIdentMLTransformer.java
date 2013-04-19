@@ -21,7 +21,7 @@ import java.util.*;
  */
 public class MzIdentMLTransformer {
 
-    // todo: this caching of fragmention table need to be refactored, there can be multiple spectrimIdentificationList
+    // todo: this caching of fragmentation table need to be refactored, there can be multiple spectrimIdentificationList
     private static Map<String, IdentifiableParamGroup> fragmentationTable = null;
 
     private static Map<String, CVLookup> cvLookupMap = null;

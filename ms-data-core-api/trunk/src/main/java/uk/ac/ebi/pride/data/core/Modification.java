@@ -26,7 +26,7 @@ import java.util.List;
  * - Modification database where accession is from (used for PRIDE Objects)
  * - Modification database version is (used for PRIDE Objects)
  * </p>
- *
+ * <p/>
  * User: yperez
  * Date: 04/08/11
  * Time: 14:11
@@ -73,14 +73,14 @@ public class Modification extends IdentifiableParamGroup {
     /**
      * Constructor for PRIDE Modification Object
      *
-     * @param id ID
-     * @param name Name
-     * @param location Location
-     * @param residues List of the possible residues where the modification is present
-     * @param avgMassDelta List of Possible Average Mass Delta
+     * @param id                    ID
+     * @param name                  Name
+     * @param location              Location
+     * @param residues              List of the possible residues where the modification is present
+     * @param avgMassDelta          List of Possible Average Mass Delta
      * @param monoisotopicMassDelta List of Possible MonoIsotopic Mass Delta
-     * @param modDatabase DataBase Name
-     * @param modDatabaseVersion DataBase Version
+     * @param modDatabase           DataBase Name
+     * @param modDatabaseVersion    DataBase Version
      */
     public Modification(String id, String name, int location,
                         List<String> residues, List<Double> avgMassDelta,
@@ -92,26 +92,26 @@ public class Modification extends IdentifiableParamGroup {
     /**
      * Constructor for Modification Objects
      *
-     * @param params ParamGroup (CvTerms and User Params)
-     * @param id ID
-     * @param name Name
-     * @param location Location
-     * @param residues List of the possible residues where the modification is present
-     * @param avgMassDelta List of Possible Average Mass Delta
+     * @param params                ParamGroup (CvTerms and User Params)
+     * @param id                    ID
+     * @param name                  Name
+     * @param location              Location
+     * @param residues              List of the possible residues where the modification is present
+     * @param avgMassDelta          List of Possible Average Mass Delta
      * @param monoisotopicMassDelta List of Possible MonoIsotopic Mass Delta
-     * @param modDatabase DataBase Name
-     * @param modDatabaseVersion DataBase Version
+     * @param modDatabase           DataBase Name
+     * @param modDatabaseVersion    DataBase Version
      */
     public Modification(ParamGroup params, String id, String name, int location, List<String> residues,
                         List<Double> avgMassDelta, List<Double> monoisotopicMassDelta, String modDatabase,
                         String modDatabaseVersion) {
         super(params, id, name);
-        this.location              = location;
-        this.residues              = CollectionUtils.createListFromList(residues);
-        this.avgMassDelta          = CollectionUtils.createListFromList(avgMassDelta);
+        this.location = location;
+        this.residues = CollectionUtils.createListFromList(residues);
+        this.avgMassDelta = CollectionUtils.createListFromList(avgMassDelta);
         this.monoisotopicMassDelta = CollectionUtils.createListFromList(monoisotopicMassDelta);
-        this.modDatabase           = modDatabase;
-        this.modDatabaseVersion    = modDatabaseVersion;
+        this.modDatabase = modDatabase;
+        this.modDatabaseVersion = modDatabaseVersion;
     }
 
     /**
@@ -236,9 +236,8 @@ public class Modification extends IdentifiableParamGroup {
         if (modDatabaseVersion != null ? !modDatabaseVersion.equals(that.modDatabaseVersion) : that.modDatabaseVersion != null)
             return false;
         if (!monoisotopicMassDelta.equals(that.monoisotopicMassDelta)) return false;
-        if (!residues.equals(that.residues)) return false;
+        return residues.equals(that.residues);
 
-        return true;
     }
 
     @Override

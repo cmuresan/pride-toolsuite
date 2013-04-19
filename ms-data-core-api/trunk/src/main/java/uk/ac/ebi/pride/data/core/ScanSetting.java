@@ -39,9 +39,9 @@ public class ScanSetting extends ParamGroup {
      */
     public ScanSetting(String id, List<SourceFile> sourceFile, List<ParamGroup> targets, ParamGroup params) {
         super(params);
-        this.id         = id;
+        this.id = id;
         this.sourceFile = CollectionUtils.createListFromList(sourceFile);
-        this.targets    = CollectionUtils.createListFromList(targets);
+        this.targets = CollectionUtils.createListFromList(targets);
     }
 
     public String getId() {
@@ -78,9 +78,8 @@ public class ScanSetting extends ParamGroup {
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (!sourceFile.equals(that.sourceFile)) return false;
-        if (!targets.equals(that.targets)) return false;
+        return targets.equals(that.targets);
 
-        return true;
     }
 
     @Override

@@ -10,10 +10,10 @@ import java.util.List;
  * User: yperez
  * Date: 04/08/11
  * Time: 10:29
- *
+ * <p/>
  * todo: compareTo method is implemented using bad practice, need to be refactored
  */
-public class PeptideSequence extends IdentifiableParamGroup implements Comparable{
+public class PeptideSequence extends IdentifiableParamGroup implements Comparable {
 
     /**
      * A molecule modification specification. If n modifications have been found on a peptide,
@@ -62,7 +62,7 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
                            List<Modification> modifications,
                            List<SubstitutionModification> substitutionModifications) {
         super(params, id, name);
-        this.sequence                     = sequence;
+        this.sequence = sequence;
         this.modifications = CollectionUtils.createListFromList(modifications);
         this.substitutionModifications = CollectionUtils.createListFromList(substitutionModifications);
     }
@@ -101,9 +101,8 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
 
         if (!modifications.equals(that.modifications)) return false;
         if (sequence != null ? !sequence.equals(that.sequence) : that.sequence != null) return false;
-        if (!substitutionModifications.equals(that.substitutionModifications)) return false;
+        return substitutionModifications.equals(that.substitutionModifications);
 
-        return true;
     }
 
     @Override
@@ -117,7 +116,7 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
 
     @Override
     public int compareTo(Object o) {
-        return (((PeptideSequence)o).getSequence().compareToIgnoreCase(this.getSequence()));
+        return (((PeptideSequence) o).getSequence().compareToIgnoreCase(this.getSequence()));
     }
 
     @Override

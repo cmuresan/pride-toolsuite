@@ -125,9 +125,8 @@ public class Precursor implements MassSpecObject {
             return false;
         if (!selectedIons.equals(precursor.selectedIons)) return false;
         if (sourceFile != null ? !sourceFile.equals(precursor.sourceFile) : precursor.sourceFile != null) return false;
-        if (spectrum != null ? !spectrum.equals(precursor.spectrum) : precursor.spectrum != null) return false;
+        return !(spectrum != null ? !spectrum.equals(precursor.spectrum) : precursor.spectrum != null);
 
-        return true;
     }
 
     @Override

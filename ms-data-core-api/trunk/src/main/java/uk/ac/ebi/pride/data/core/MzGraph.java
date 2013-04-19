@@ -36,12 +36,12 @@ public abstract class MzGraph extends IdentifiableParamGroup {
     private int index;
 
     /**
-     * @param id      Generic Id for MzGraph
-     * @param name    Generic Name for MzGraph
-     * @param index   Consecutive Index zero-based
-     * @param defaultDataProcessing  Appropriate data processing method
-     * @param defaultArrayLength  Default length of binary data arrays
-     * @param binaryDataArrays    List of binary data arrays
+     * @param id                    Generic Id for MzGraph
+     * @param name                  Generic Name for MzGraph
+     * @param index                 Consecutive Index zero-based
+     * @param defaultDataProcessing Appropriate data processing method
+     * @param defaultArrayLength    Default length of binary data arrays
+     * @param binaryDataArrays      List of binary data arrays
      */
     protected MzGraph(Comparable id, String name, int index, DataProcessing defaultDataProcessing,
                       int defaultArrayLength, List<BinaryDataArray> binaryDataArrays) {
@@ -49,21 +49,21 @@ public abstract class MzGraph extends IdentifiableParamGroup {
     }
 
     /**
-     * @param params  CvParams of MzGraph
-     * @param id      Generic Id for MzGraph
-     * @param name    Generic Name for MzGraph
-     * @param index   Consecutive Index zero-based
-     * @param defaultDataProcessing  Appropriate data processing method
-     * @param defaultArrayLength  Default length of binary data arrays
-     * @param binaryDataArrays    List of binary data arrays
+     * @param params                CvParams of MzGraph
+     * @param id                    Generic Id for MzGraph
+     * @param name                  Generic Name for MzGraph
+     * @param index                 Consecutive Index zero-based
+     * @param defaultDataProcessing Appropriate data processing method
+     * @param defaultArrayLength    Default length of binary data arrays
+     * @param binaryDataArrays      List of binary data arrays
      */
     protected MzGraph(ParamGroup params, Comparable id, String name, int index, DataProcessing defaultDataProcessing,
                       int defaultArrayLength, List<BinaryDataArray> binaryDataArrays) {
         super(params, id, name);
-        this.index                 = index;
+        this.index = index;
         this.defaultDataProcessing = defaultDataProcessing;
-        this.defaultArrayLength    = defaultArrayLength;
-        this.binaryDataArrays      = CollectionUtils.createListFromList(binaryDataArrays);
+        this.defaultArrayLength = defaultArrayLength;
+        this.binaryDataArrays = CollectionUtils.createListFromList(binaryDataArrays);
     }
 
     public List<BinaryDataArray> getBinaryDataArrays() {
@@ -81,7 +81,7 @@ public abstract class MzGraph extends IdentifiableParamGroup {
      * @return BinaryDataArray  data array.
      */
     public BinaryDataArray getBinaryDataArray(String cvAcc) {
-        BinaryDataArray arr      = null;
+        BinaryDataArray arr = null;
         List<BinaryDataArray> binaries = getBinaryDataArrays();
 
         if (binaries != null) {
@@ -136,10 +136,8 @@ public abstract class MzGraph extends IdentifiableParamGroup {
         if (defaultArrayLength != mzGraph.defaultArrayLength) return false;
         if (index != mzGraph.index) return false;
         if (!binaryDataArrays.equals(mzGraph.binaryDataArrays)) return false;
-        if (defaultDataProcessing != null ? !defaultDataProcessing.equals(mzGraph.defaultDataProcessing) : mzGraph.defaultDataProcessing != null)
-            return false;
+        return !(defaultDataProcessing != null ? !defaultDataProcessing.equals(mzGraph.defaultDataProcessing) : mzGraph.defaultDataProcessing != null);
 
-        return true;
     }
 
     @Override

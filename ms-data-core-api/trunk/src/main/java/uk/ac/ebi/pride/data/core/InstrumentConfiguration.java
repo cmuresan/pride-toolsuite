@@ -141,9 +141,8 @@ public class InstrumentConfiguration extends ParamGroup {
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (scanSetting != null ? !scanSetting.equals(that.scanSetting) : that.scanSetting != null) return false;
         if (software != null ? !software.equals(that.software) : that.software != null) return false;
-        if (!source.equals(that.source)) return false;
+        return source.equals(that.source);
 
-        return true;
     }
 
     @Override

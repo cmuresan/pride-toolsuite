@@ -41,9 +41,7 @@ public class SourceFile extends IdentifiableParamGroup {
 
     public SourceFile(String name, String path) {
         // there should be a single source file per spectrum
-
-        // todo: why empty strings
-        super("", name);
+        super(null, name);
         this.path = path;
     }
 
@@ -55,8 +53,8 @@ public class SourceFile extends IdentifiableParamGroup {
     public SourceFile(ParamGroup params, String id, String name, String path, CvParam fileFormat,
                       String externalFormatDocumentationURI) {
         super(params, id, name);
-        this.path                           = path;
-        this.fileFormat                     = fileFormat;
+        this.path = path;
+        this.fileFormat = fileFormat;
         this.externalFormatDocumentationURI = externalFormatDocumentationURI;
     }
 

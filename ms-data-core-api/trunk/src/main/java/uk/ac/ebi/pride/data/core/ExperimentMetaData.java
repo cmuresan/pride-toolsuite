@@ -70,7 +70,7 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
     /**
      * List of SpectraData Objects used by MZIdentML to refereed the original mass spectra files.
      * A data set containing spectra data (consisting of one or more spectra).
-     *
+     * <p/>
      * todo: can this be stored in MzGraphMetaData?
      */
     private final List<SpectraData> spectraDatas;
@@ -87,34 +87,33 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
                               ExperimentProtocol protocol) {
         this(params, id, name, version, shortLabel,
                 samples, softwares, persons,
-             sourceFiles, provider, organizations,
-             references, creationDate, publicDate, protocol, null);
+                sourceFiles, provider, organizations,
+                references, creationDate, publicDate, protocol, null);
     }
 
     /**
-     *
-     * @param params       Params Group of Experiment Meta Data
-     * @param id           Generic Id of the Experiment
-     * @param name         Generic Name of the Experiment
-     * @param version      File version
-     * @param shortLabel   Short Label of the Experiment (PRIDE XML and PRIDE Database)
-     * @param samples   Sample List
-     * @param softwares Software List used in the Experiment
-     * @param persons   Contact List
-     * @param sourceFiles  Source Files related with the Experiment
-     * @param provider     Last Software and Contact that Provide the File or Experiment Results (mzidentML)
+     * @param params        Params Group of Experiment Meta Data
+     * @param id            Generic Id of the Experiment
+     * @param name          Generic Name of the Experiment
+     * @param version       File version
+     * @param shortLabel    Short Label of the Experiment (PRIDE XML and PRIDE Database)
+     * @param samples       Sample List
+     * @param softwares     Software List used in the Experiment
+     * @param persons       Contact List
+     * @param sourceFiles   Source Files related with the Experiment
+     * @param provider      Last Software and Contact that Provide the File or Experiment Results (mzidentML)
      * @param organizations Organization List involve in the Experiment
-     * @param references       References related with the Experiments
-     * @param creationDate     Creation Date
-     * @param publicDate       Publication Date (PRIDE XML)
-     * @param protocol         Experiment General Protocol (PRIDE XML)
+     * @param references    References related with the Experiments
+     * @param creationDate  Creation Date
+     * @param publicDate    Publication Date (PRIDE XML)
+     * @param protocol      Experiment General Protocol (PRIDE XML)
      * @param spectraDatas  Spectra Data Files related with the Experiment (mzIdentML)
      */
     public ExperimentMetaData(ParamGroup params, Comparable id, String name, String version, String shortLabel,
                               List<Sample> samples, List<Software> softwares, List<Person> persons,
                               List<SourceFile> sourceFiles, Provider provider, List<Organization> organizations,
                               List<Reference> references, Date creationDate, Date publicDate,
-                              ExperimentProtocol protocol,List<SpectraData> spectraDatas) {
+                              ExperimentProtocol protocol, List<SpectraData> spectraDatas) {
         super(params, id, name);
 
         this.version = version;
@@ -276,9 +275,8 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
         if (!softwares.equals(that.softwares)) return false;
         if (!sourceFiles.equals(that.sourceFiles)) return false;
         if (!spectraDatas.equals(that.spectraDatas)) return false;
-        if (version != null ? !version.equals(that.version) : that.version != null) return false;
+        return !(version != null ? !version.equals(that.version) : that.version != null);
 
-        return true;
     }
 
     @Override

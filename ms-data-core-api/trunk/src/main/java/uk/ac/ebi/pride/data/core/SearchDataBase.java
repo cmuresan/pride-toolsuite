@@ -62,12 +62,12 @@ public class SearchDataBase extends ExternalData {
                           int numDatabaseSequence, long numDatabaseResidue, ParamGroup nameDatabase,
                           List<CvParam> description) {
         super(id, name, location, fileFormat, externalFormatDocumentationURI);
-        this.version             = version;
-        this.releaseDate         = releaseDate;
+        this.version = version;
+        this.releaseDate = releaseDate;
         this.numDatabaseSequence = numDatabaseSequence;
-        this.numDatabaseResidue  = numDatabaseResidue;
-        this.nameDatabase        = nameDatabase;
-        this.description         = CollectionUtils.createListFromList(description);
+        this.numDatabaseResidue = numDatabaseResidue;
+        this.nameDatabase = nameDatabase;
+        this.description = CollectionUtils.createListFromList(description);
     }
 
     public String getVersion() {
@@ -131,9 +131,8 @@ public class SearchDataBase extends ExternalData {
         if (!description.equals(that.description)) return false;
         if (nameDatabase != null ? !nameDatabase.equals(that.nameDatabase) : that.nameDatabase != null) return false;
         if (releaseDate != null ? !releaseDate.equals(that.releaseDate) : that.releaseDate != null) return false;
-        if (version != null ? !version.equals(that.version) : that.version != null) return false;
+        return !(version != null ? !version.equals(that.version) : that.version != null);
 
-        return true;
     }
 
     @Override

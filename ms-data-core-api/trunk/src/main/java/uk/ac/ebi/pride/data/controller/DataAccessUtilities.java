@@ -99,7 +99,7 @@ public class DataAccessUtilities {
      * @param paramGroup param group
      * @return precursor charge
      */
-    public static Integer getPrecursorCharge(ParamGroup paramGroup) {
+    public static Integer getPrecursorChargeParamGroup(ParamGroup paramGroup) {
         Integer charge = null;
 
         if (paramGroup != null) {
@@ -598,5 +598,17 @@ public class DataAccessUtilities {
             }
         }
         return peptideEvidences;
+    }
+
+    public static Integer getPrecursorCharge(Spectrum spectrum) {
+
+        for (Precursor precursor : spectrum.getPrecursors()) {
+            for (ParamGroup paramGroup : precursor.getSelectedIons()) {
+                Integer charge = getPrecursorChargeParamGroup(paramGroup);
+                if (charge != null) return charge;
+            }
+        }
+
+        return null;
     }
 }

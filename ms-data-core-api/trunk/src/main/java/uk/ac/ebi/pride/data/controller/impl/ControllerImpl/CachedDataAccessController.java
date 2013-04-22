@@ -129,7 +129,6 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
     /**
      * Populate the cache with values.
-     *
      */
     public void populateCache() {
         if (cacheBuilder != null) {
@@ -340,7 +339,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
         if (paramGroup != null) {
             // get peptide precursor charge
-            charge = DataAccessUtilities.getPrecursorCharge(paramGroup);
+            charge = DataAccessUtilities.getPrecursorChargeParamGroup(paramGroup);
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
             charge = super.getPeptidePrecursorCharge(proteinId, peptideId);
         }
@@ -842,6 +841,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
     /**
      * todo: need to see wether to cache this properly
+     *
      * @return
      */
     @Override
@@ -860,6 +860,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
     /**
      * todo: need to see wether to cache this properly
+     *
      * @return
      */
     @Override

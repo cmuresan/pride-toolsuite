@@ -298,7 +298,6 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * Get a list of references
      *
      * @return List<Reference>  a list of reference objects
-     *
      */
     public List<Reference> getReferences() {
         logger.debug("Get references");
@@ -319,7 +318,6 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * Get the protocol object
      *
      * @return Protocol protocol object.
-     *
      */
     public ExperimentProtocol getProtocol() {
         logger.debug("Get protocol");
@@ -336,7 +334,6 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * Get additional parameters
      *
      * @return ParamGroup   a group of cv parameters and user parameters.
-     *
      */
     @Override
     public ParamGroup getAdditional() {
@@ -477,8 +474,8 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
      * Get identification using a identification id, gives the option to choose whether to use cache.
      * This implementation provides a way of by passing the cache.
      *
-     * @param proteinId       identification id
-     * @param useCache true means to use cache
+     * @param proteinId identification id
+     * @param useCache  true means to use cache
      * @return Identification identification object
      */
     @Override
@@ -495,7 +492,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                     for (Peptide peptide : ident.getPeptides()) {
                         Spectrum spectrum = peptide.getSpectrum();
                         if (spectrum != null) {
-                            getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
+                            getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorChargeParamGroup(spectrum));
                             getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
                         }
                     }
@@ -513,9 +510,9 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
     /**
      * Get peptide using a given identification id and a given peptide index
      *
-     * @param proteinId  identification id
-     * @param index    peptide index
-     * @param useCache whether to use cache
+     * @param proteinId identification id
+     * @param index     peptide index
+     * @param useCache  whether to use cache
      * @return Peptide  peptide
      */
     @Override
@@ -530,7 +527,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 // store precursor charge and m/z
                 Spectrum spectrum = peptide.getSpectrum();
                 if (spectrum != null) {
-                    getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorCharge(spectrum));
+                    getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorChargeParamGroup(spectrum));
                     getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
                 }
             }

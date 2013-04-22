@@ -781,7 +781,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, (Integer) result.get("pep_start"), (Integer) result.get("pep_end"), false, peptideSequence, null);
             peptideEvidences.add(peptideEvidence);
 
-            int charge = DataAccessUtilities.getPrecursorCharge(spectrum);
+            int charge = DataAccessUtilities.getPrecursorChargeParamGroup(spectrum);
             double mz = DataAccessUtilities.getPrecursorMz(spectrum);
 
             //get Scores

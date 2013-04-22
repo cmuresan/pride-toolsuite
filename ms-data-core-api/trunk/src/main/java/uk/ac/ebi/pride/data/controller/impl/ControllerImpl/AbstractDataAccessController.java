@@ -209,7 +209,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         Integer charge = null;
         Spectrum spectrum = getSpectrumById(specId);
         if (spectrum != null) {
-            charge = DataAccessUtilities.getPrecursorCharge(spectrum);
+            charge = DataAccessUtilities.getPrecursorChargeParamGroup(spectrum);
         }
         return charge;
     }

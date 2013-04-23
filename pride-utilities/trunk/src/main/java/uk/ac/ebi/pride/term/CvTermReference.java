@@ -53,7 +53,7 @@ public enum CvTermReference {
 
     PRODUCT_ION_MZ("PRIDE", "PRIDE:0000188", "product ion m/z", "PRIDE:0000187"),
     PRODUCT_ION_MZ_PLGS("Water", "PLGS:00024", "product ion m/z", null),
-    MS_PRODUCT_ION_MZ("MS","MS:1001225","product ion m/z","MS:1001221"),
+    MS_PRODUCT_ION_MZ("MS", "MS:1001225", "product ion m/z", "MS:1001221"),
 
     PRODUCT_ION_INTENSITY("PRIDE", "PRIDE:0000189", "product ion intensity", "PRIDE:0000187"),
     PRODUCT_ION_INTENSITY_PLGS("Water", "PLGS:00025", "product ion intensity", null),
@@ -125,57 +125,66 @@ public enum CvTermReference {
 
     OMSSA_E_VALUE("PRIDE", "PRIDE:0000185", "OMSSA E-value", "PRIDE:0000049"),
     OMSSA_P_VALUE("PRIDE", "PRIDE:0000186", "OMSSA P-value", "PRIDE:0000049"),
-    MS_OMSSA_E("MS","MS:1001328", "OMSSA:evalue", "MS:1001143"),
-    MS_OMSSA_P("MS","MS:1001329", "OMSSA:pvalue", "MS:1001143"),
+    MS_OMSSA_E("MS", "MS:1001328", "OMSSA:evalue", "MS:1001143"),
+    MS_OMSSA_P("MS", "MS:1001329", "OMSSA:pvalue", "MS:1001143"),
 
     MASCOT_SCORE("PRIDE", "PRIDE:0000069", "Mascot Score", "PRIDE:0000049"),
-    MASCOT_EXPECT_VALUE("PRIDE","PRIDE:0000212","Mascot expect value","PRIDE:0000046"),
+    MASCOT_EXPECT_VALUE("PRIDE", "PRIDE:0000212", "Mascot expect value", "PRIDE:0000046"),
     MS_MASCOT_SCORE("MS", "MS:1001171", "Mascot:score", "MS:1001143"),
-    MS_MASCOT_EXPECT_VALUE("MS","MS:1001172","Mascot:expectation value","MS:1001143"),
+    MS_MASCOT_EXPECT_VALUE("MS", "MS:1001172", "Mascot:expectation value", "MS:1001143"),
+
 
     XTANDEM_HYPER_SCORE("PRIDE", "PRIDE:0000176", "X!Tandem Hyperscore", "PRIDE:0000049"),
     XTANDEM_EXPECTANCY_SCORE("PRIDE", "PRIDE:0000183", "X|Tandem expectancy score", "PRIDE:0000047"),
-    XTANDEM_ZSCORE("PRIDE","PRIDE:0000182","X|Tandem Z score","PRIDE:0000047"),
+    XTANDEM_ZSCORE("PRIDE", "PRIDE:0000182", "X|Tandem Z score", "PRIDE:0000047"),
     MS_XTANDEM_HYPERSCORE("MS", "MS:1001331", "X!Tandem:hyperscore", "MS:1001143"),
     MS_XTANDEM_EXPECTANCY_SCORE("MS", "MS:1001330", "X!Tandem:expect", "MS:1001143"),
 
-    SEQUEST_CN("PRIDE","PRIDE:0000052","Cn","PRIDE:0000049"),
+    SEQUEST_CN("PRIDE", "PRIDE:0000052", "Cn", "PRIDE:0000049"),
     SEQUEST_SCORE("PRIDE", "PRIDE:0000053", "SEQUEST SCORE", "PRIDE:0000049"),
     SEQUEST_DELTA_CN("PRIDE", "PRIDE:0000012", "Delta Cn", "PRIDE:0000049"),
     MS_SEQUEST_CONSENSUS_SCORE("MS", "MS:1001163", "Sequest:consensus score", "MS:1001153"),
-    MS_SEQUEST_DELTA_CN("MS","MS:1001156","Sequest:deltacn","MS:1001143"),
-    MS_SEQUEST_XCORR("MS","MS:1001155","Sequest:xcorr", "MS:1001143"),
-
+    MS_SEQUEST_DELTA_CN("MS", "MS:1001156", "Sequest:deltacn", "MS:1001143"),
+    MS_SEQUEST_XCORR("MS", "MS:1001155", "Sequest:xcorr", "MS:1001143"),
 
 
     SPECTRUM_MILL_PEPTIDE_SCORE("PRIDE", "PRIDE:0000177", "SpectrumMill Peptide Score", "PRIDE:0000049"),
     MS_SPECTRUMMILL_SCORE("MS", "MS:1001572", "SpectrumMill:Score", "MS:1001143"),
 
-    PEPTIDE_PROPHET_DISCRIMINANT_SCORE("PRIDE", "PRIDE:0000138", "Discriminant score","PRIDE:0000049"),
-    PEPTIDE_PROPHET_PROBABILITY("PRIDE","PRIDE:0000099", "PeptideProphet probability score","PRIDE:0000049"),
+    PEPTIDE_PROPHET_DISCRIMINANT_SCORE("PRIDE", "PRIDE:0000138", "Discriminant score", "PRIDE:0000049"),
+    PEPTIDE_PROPHET_PROBABILITY("PRIDE", "PRIDE:0000099", "PeptideProphet probability score", "PRIDE:0000049"),
 
 
     // MyriMatch:MVH
-    MS_MYRIMATCH_MVH("MS","MS:1001589", "MyriMatch:MVH","MS:1001143"),
-    MS_MYRIMATCH_NMATCHS("MS","MS:1001121", "number of matched peaks","MS:1001143"),
-    MS_MYRIMATCH_NOMATCHS("MS","MS:1001362","number of unmatched peaks","MS:1001143"),
-    MS_MYRIMATCH_MZFIDELITY("MS","MS:1001590","MyriMatch:mzFidelity","MS:1001143"),
+    MS_MYRIMATCH_MVH("MS", "MS:1001589", "MyriMatch:MVH", "MS:1001143"),
+    MS_MYRIMATCH_NMATCHS("MS", "MS:1001121", "number of matched peaks", "MS:1001143"),
+    MS_MYRIMATCH_NOMATCHS("MS", "MS:1001362", "number of unmatched peaks", "MS:1001143"),
+    MS_MYRIMATCH_MZFIDELITY("MS", "MS:1001590", "MyriMatch:mzFidelity", "MS:1001143"),
+
+    //MS-GF
+
+    MS_MSGF_RAWSCORE("MS", "MS:1002049", "MS-GF raw score", "MS:1001143"),
+    MS_MSGF_DENOVOSCORE("MS", "MS:1002050", "MS-GF de novo score", "MS:1001143"),
+    MS_MSGF_SPECEVALUE("MS", "MS:1002052", "MS-GF spectral E-value", "MS:1001143"),
+    MS_MSGF_EVALUE("MS", "MS:1002053", "MS-GF E-value", "MS:1001143"),
+    MS_MSGF_QVALUE("MS", "MS:1002054", "MS-GF Q-value", "MS:1001143"),
+    MS_MSGF_PEPQVALUE("MS", "MS:1002055", "MS-GF peptide-level Q-value", "MS:1001143"),
 
 
     // Paragon:score
-    MS_PARAGON_SCORE("MS","MS:1001166", "Paragon:score", "MS:1001153"),
+    MS_PARAGON_SCORE("MS", "MS:1001166", "Paragon:score", "MS:1001153"),
 
     // Phenyx:Score
     MS_PHENYX_SCORE("MS", "MS:1001390", "Phenyx:Score", "MS:1001153"),
 
     // ProteinExtractor:Score
-    MS_PROTEIN_EXTRACTOR_SCORE("MS", "MS:1001507", "ProteinExtractor:Score","MS:1001153"),
+    MS_PROTEIN_EXTRACTOR_SCORE("MS", "MS:1001507", "ProteinExtractor:Score", "MS:1001153"),
 
     // ProteinLync:Lputer Score
-    MS_PROTEIN_LYNC_SCORE("MS", "MS:1001571", "ProteinLynx:Ladder Score","MS:1001143"),
+    MS_PROTEIN_LYNC_SCORE("MS", "MS:1001571", "ProteinLynx:Ladder Score", "MS:1001143"),
 
     // ProteinScape:SequestMetaScore
-    MS_PROTEINSCAPE_SEQUEST_METASCORE("MS", "MS:1001506", "ProteinScape:SequestMetaScore","MS:1001143"),
+    MS_PROTEINSCAPE_SEQUEST_METASCORE("MS", "MS:1001506", "ProteinScape:SequestMetaScore", "MS:1001143"),
 
     // Sonar:Score
     MS_SONAR_SCORE("MS", "MS:1001502", "Sonar:Score", "MS:1001143"),
@@ -187,10 +196,10 @@ public enum CvTermReference {
     EXPERIMENT_DESCRIPTION("PRIDE", "PRIDE:0000040", "Experiment Description", "PRIDE:0000006"),
     PEPTIDE_GLOBAL_FDR("MS", "MS:1001364", "pep:global FDR", "MS:1001405"),
     PROTEIN_GLOBAL_FDR("MS", "MS:1001214", "prot:global FDR", "MS:1001405"),
-    EXPERIMENT_GLOBAL_CREATIONDATE ("PRIDE", "PRIDE:0000219", "Date of search", "PRIDE:0000006"),
+    EXPERIMENT_GLOBAL_CREATIONDATE("PRIDE", "PRIDE:0000219", "Date of search", "PRIDE:0000006"),
     MS_SCAN_DATE("MS", "MS:1000016", "scan start time", "MS:1001458"),
-    MS_SOFTWARE_PROCESSING("MS","MS:1001457","data processing software","MS:1000531"),
-    MS_SOFTWARE_ACQUISITION("MS","MS:1001455","acquisition software","MS:1000531"),
+    MS_SOFTWARE_PROCESSING("MS", "MS:1001457", "data processing software", "MS:1000531"),
+    MS_SOFTWARE_ACQUISITION("MS", "MS:1001455", "acquisition software", "MS:1000531"),
     MS_FILE_SPECTRUM("MS", "MS:1000560", "mass spectrometer file format", "MS:1001459"),
 
     MS_DATAPROCESSING_DEISOTOPING("MS", "MS:1000033", "deisotoping", "MS:1000543"),
@@ -199,13 +208,10 @@ public enum CvTermReference {
     MS_DATAPROCESSING_CENTROID("MS", "MS:1000035", "peak picking", "MS:1000543"),
 
 
-
     MS_INSTRUMENT_MODEL("MS", "MS:1000031", "instrument model", "MS:1000463"),
-    MS_INSTRUMENT_DETECTOR("MS", "MS:1000453","detector","MS:1000463"),
-    MS_INSTRUMENT_ANALYZER("MS", "MS:1000451","mass analyzer","MS:1000463"),
-    MS_INSTRUMENT_SOURCE("MS", "MS:1000458", "source","MS:1000463");
-
-
+    MS_INSTRUMENT_DETECTOR("MS", "MS:1000453", "detector", "MS:1000463"),
+    MS_INSTRUMENT_ANALYZER("MS", "MS:1000451", "mass analyzer", "MS:1000463"),
+    MS_INSTRUMENT_SOURCE("MS", "MS:1000458", "source", "MS:1000463");
 
 
     private final String cvLabel;

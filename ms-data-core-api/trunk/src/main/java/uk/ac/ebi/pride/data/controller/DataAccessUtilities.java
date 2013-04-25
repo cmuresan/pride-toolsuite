@@ -600,9 +600,9 @@ public class DataAccessUtilities {
         return peptideEvidences;
     }
 
-    public static Integer getPrecursorCharge(Spectrum spectrum) {
+    public static Integer getPrecursorCharge(List<Precursor> precursors) {
 
-        for (Precursor precursor : spectrum.getPrecursors()) {
+        for (Precursor precursor : precursors) {
             for (ParamGroup paramGroup : precursor.getSelectedIons()) {
                 Integer charge = getPrecursorChargeParamGroup(paramGroup);
                 if (charge != null) return charge;

@@ -81,7 +81,6 @@ public class SimpleMsDialog extends JDialog {
 
     /**
      * This method initialize the custom components in the MsDialog
-     *
      */
     private void customInitComponents() {
 
@@ -125,14 +124,14 @@ public class SimpleMsDialog extends JDialog {
         });
     }
 
-    private void msFileTableMouseReleased(MouseEvent e){
+    private void msFileTableMouseReleased(MouseEvent e) {
         int row = msFileTable.rowAtPoint(e.getPoint());
         int col = msFileTable.columnAtPoint(e.getPoint());
         String colName = msFileTable.getColumnName(col);
-        if(colName.equals(COLUMN_HEADER_REMOVE) && row >= 0){
-            DefaultTableModel model = (DefaultTableModel)msFileTable.getModel();
-            String fileName = (String) model.getValueAt(row,2);
-            removeMStoSpectraDataSet(row,fileName);
+        if (colName.equals(COLUMN_HEADER_REMOVE) && row >= 0) {
+            DefaultTableModel model = (DefaultTableModel) msFileTable.getModel();
+            String fileName = (String) model.getValueAt(row, 2);
+            removeMStoSpectraDataSet(row, fileName);
         }
 
     }
@@ -140,10 +139,11 @@ public class SimpleMsDialog extends JDialog {
     private void addNewMsFile(ActionEvent e) {
 
         SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzData/Peak Files ",
-                                                    null, true,
-                                                    Constants.MGF_FILE,
-                                                    Constants.MZXML_FILE,
-                                                    Constants.MZML_FILE);
+                null, true,
+                Constants.MGF_FILE,
+                Constants.MZXML_FILE,
+                Constants.MZML_FILE,
+                Constants.DTA_FILE);
 
         int result = ofd.showDialog(this, null);
 
@@ -170,26 +170,26 @@ public class SimpleMsDialog extends JDialog {
         updateMSFileList(msFileMap);
     }
 
-    private void removeMStoSpectraDataSet(int row, String fileName){
+    private void removeMStoSpectraDataSet(int row, String fileName) {
         try {
             msFileMap = ((MzIdentMLControllerImpl) controller).getSpectraDataMSFiles();
             int totalSpectras = 0;
             int noMissSpectrums = 0;
-            for(SpectraData spectraData: msFileMap.keySet()){
-                String msFileName = (msFileMap.get(spectraData) == null)? "" : msFileMap.get(spectraData).getAbsolutePath();
-                int msSpectrums =  ((MzIdentMLControllerImpl)controller).getNumberOfSpectrabySpectraData(spectraData);
-                totalSpectras  +=  msSpectrums;
-                if(msFileName.equalsIgnoreCase(fileName)){
+            for (SpectraData spectraData : msFileMap.keySet()) {
+                String msFileName = (msFileMap.get(spectraData) == null) ? "" : msFileMap.get(spectraData).getAbsolutePath();
+                int msSpectrums = ((MzIdentMLControllerImpl) controller).getNumberOfSpectrabySpectraData(spectraData);
+                totalSpectras += msSpectrums;
+                if (msFileName.equalsIgnoreCase(fileName)) {
                     msFileMap.remove(spectraData);
-                    msFileMap.put(spectraData,null);
+                    msFileMap.put(spectraData, null);
                     msFileName = "";
                 }
                 updateTableRow(row, spectraData, msFileName);
-                noMissSpectrums =+ ((msFileMap.get(spectraData) == null)?0:msSpectrums);
+                noMissSpectrums = +((msFileMap.get(spectraData) == null) ? 0 : msSpectrums);
             }
             message = getMessage(msFileMap, totalSpectras - noMissSpectrums);
-            type = getMessageType(msFileMap,totalSpectras-noMissSpectrums);
-            updateMessage(type,message);
+            type = getMessageType(msFileMap, totalSpectras - noMissSpectrums);
+            updateMessage(type, message);
             updateStatusSet(noMissSpectrums);
             updateButtonStatus(type);
         } catch (DataAccessException e) {
@@ -199,26 +199,26 @@ public class SimpleMsDialog extends JDialog {
     }
 
     private void updateTableRow(int row, SpectraData spectraData, String msFileName) {
-        msFileTable.getModel().setValueAt(spectraData.getId() + " " + ((spectraData.getName() == null)? "" : ": " + spectraData.getName()),row,0);
-        msFileTable.getModel().setValueAt(((MzIdentMLControllerImpl)controller).getNumberOfSpectrabySpectraData(spectraData),row,1);
-        msFileTable.getModel().setValueAt(msFileName,row,2);
-        msFileTable.getModel().setValueAt((msFileName.length()  == 0 )?GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small.disable")): GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small")),row,3);
+        msFileTable.getModel().setValueAt(spectraData.getId() + " " + ((spectraData.getName() == null) ? "" : ": " + spectraData.getName()), row, 0);
+        msFileTable.getModel().setValueAt(((MzIdentMLControllerImpl) controller).getNumberOfSpectrabySpectraData(spectraData), row, 1);
+        msFileTable.getModel().setValueAt(msFileName, row, 2);
+        msFileTable.getModel().setValueAt((msFileName.length() == 0) ? GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small.disable")) : GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small")), row, 3);
     }
 
     private void updateMSFileList(Map<SpectraData, File> spectraDataFileMap) {
-        if(spectraDataFileMap != null){
+        if (spectraDataFileMap != null) {
             clearTalbeMsFiles();
-            int totalSpectras   = 0;
+            int totalSpectras = 0;
             int noMissSpectrums = 0;
-            for(SpectraData spectraData: spectraDataFileMap.keySet()){
-                String msFileName = (spectraDataFileMap.get(spectraData) == null)? "" : spectraDataFileMap.get(spectraData).getAbsolutePath();
-                int countFile = fillTableRow(spectraData,msFileName);
-                totalSpectras =+ countFile;
-                noMissSpectrums =+ ((spectraDataFileMap.get(spectraData) == null)?0:countFile);
+            for (SpectraData spectraData : spectraDataFileMap.keySet()) {
+                String msFileName = (spectraDataFileMap.get(spectraData) == null) ? "" : spectraDataFileMap.get(spectraData).getAbsolutePath();
+                int countFile = fillTableRow(spectraData, msFileName);
+                totalSpectras = +countFile;
+                noMissSpectrums = +((spectraDataFileMap.get(spectraData) == null) ? 0 : countFile);
             }
             message = getMessage(spectraDataFileMap, totalSpectras - noMissSpectrums);
-            type = getMessageType(spectraDataFileMap,totalSpectras-noMissSpectrums);
-            updateMessage(type,message);
+            type = getMessageType(spectraDataFileMap, totalSpectras - noMissSpectrums);
+            updateMessage(type, message);
             updateButtonStatus(type);
             updateStatusSet(noMissSpectrums);
         }
@@ -226,46 +226,46 @@ public class SimpleMsDialog extends JDialog {
 
     private void clearTalbeMsFiles() {
         DefaultTableModel model = (DefaultTableModel) msFileTable.getModel();
-        for( int i = model.getRowCount() - 1; i >= 0; i-- ) {
+        for (int i = model.getRowCount() - 1; i >= 0; i--) {
             model.removeRow(i);
         }
     }
 
-    private int fillTableRow(SpectraData spectraData, String msFileName){
+    private int fillTableRow(SpectraData spectraData, String msFileName) {
         Object[] data = new Object[4];
-        data[0] = spectraData.getId() + " " + ((spectraData.getName() == null)? "" : ": " + spectraData.getName());
-        data[1] = ((MzIdentMLControllerImpl)controller).getNumberOfSpectrabySpectraData(spectraData);
+        data[0] = spectraData.getId() + " " + ((spectraData.getName() == null) ? "" : ": " + spectraData.getName());
+        data[1] = ((MzIdentMLControllerImpl) controller).getNumberOfSpectrabySpectraData(spectraData);
         data[2] = msFileName;
-        data[3] = (msFileName.length()  == 0 )?GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small.disable")): GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small"));
+        data[3] = (msFileName.length() == 0) ? GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small.disable")) : GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small"));
         ((DefaultTableModel) msFileTable.getModel()).addRow(data);
-        return (Integer)data[1];
+        return (Integer) data[1];
     }
 
-    private void updateStatusSet(int numberOfSpectrums){
-        if(numberOfSpectrums > 0){
+    private void updateStatusSet(int numberOfSpectrums) {
+        if (numberOfSpectrums > 0) {
             setButton.setEnabled(true);
-        }else{
+        } else {
             setButton.setEnabled(false);
         }
 
     }
 
-    private void updateMessage(SummaryReportMessage.Type type, String message){
-        if(panelMessage.getComponentCount() > 0) panelMessage.removeAll();
+    private void updateMessage(SummaryReportMessage.Type type, String message) {
+        if (panelMessage.getComponentCount() > 0) panelMessage.removeAll();
         RoundCornerLabel label = new RoundCornerLabel(getIcon(type), message, getBackgroundPaint(type), getBorderPaint(type));
         label.setPreferredSize(new Dimension(50, DEFAULT_HEIGHT));
         panelMessage.add(label);
         panelMessage.revalidate();
     }
 
-    private void updateButtonStatus(SummaryReportMessage.Type type){
-        if(type == SummaryReportMessage.Type.ERROR){
+    private void updateButtonStatus(SummaryReportMessage.Type type) {
+        if (type == SummaryReportMessage.Type.ERROR) {
             addButton.setEnabled(false);
             setButton.setEnabled(false);
-        }else if(type == SummaryReportMessage.Type.SUCCESS){
+        } else if (type == SummaryReportMessage.Type.SUCCESS) {
             addButton.setEnabled(false);
             setButton.setEnabled(true);
-        }else if(type == SummaryReportMessage.Type.WARNING){
+        } else if (type == SummaryReportMessage.Type.WARNING) {
             addButton.setEnabled(true);
         }
 
@@ -276,7 +276,7 @@ public class SimpleMsDialog extends JDialog {
     }
 
     private void setMSFilesActionPerformed(ActionEvent e) {
-        AddMsDataAccessControllersTask task = new AddMsDataAccessControllersTask(controller,msFileMap);
+        AddMsDataAccessControllersTask task = new AddMsDataAccessControllersTask(controller, msFileMap);
         uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(task);
         //context.replaceDataAccessController(controller,controller,true);
         EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile("Spectra not found.*"))));
@@ -360,39 +360,39 @@ public class SimpleMsDialog extends JDialog {
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(contentPaneLayout.createParallelGroup()
-                        .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
+                contentPaneLayout.createParallelGroup()
                         .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addComponent(addButton)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(panelMessage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                            .addGap(0, 354, Short.MAX_VALUE)
-                            .addComponent(cancelButton)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(setButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
-                        .addComponent(separator1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE))
-                    .addContainerGap())
+                                .addContainerGap()
+                                .addGroup(contentPaneLayout.createParallelGroup()
+                                        .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
+                                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                                .addComponent(addButton)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(panelMessage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                                                .addGap(0, 354, Short.MAX_VALUE)
+                                                .addComponent(cancelButton)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(setButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(separator1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE))
+                                .addContainerGap())
         );
         contentPaneLayout.setVerticalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(contentPaneLayout.createParallelGroup()
-                        .addComponent(addButton)
-                        .addComponent(panelMessage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(separator1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(setButton)
-                        .addComponent(cancelButton))
-                    .addGap(13, 13, 13))
+                contentPaneLayout.createParallelGroup()
+                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(contentPaneLayout.createParallelGroup()
+                                        .addComponent(addButton)
+                                        .addComponent(panelMessage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(separator1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(setButton)
+                                        .addComponent(cancelButton))
+                                .addGap(13, 13, 13))
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -402,92 +402,91 @@ public class SimpleMsDialog extends JDialog {
     /**
      * Get the icon of the message according to the type
      *
-     * @param type  message type
-     * @return  Icon    message icon
-     *
-     **/
-
-     private Icon getIcon(SummaryReportMessage.Type type) {
-         switch(type) {
-             case SUCCESS:
-                 return GUIUtilities.loadIcon(context.getProperty("report.item.success.icon.small"));
-             case ERROR:
-                 return GUIUtilities.loadIcon(context.getProperty("report.item.error.icon.small"));
-             case WARNING:
-                 return GUIUtilities.loadIcon(context.getProperty("report.item.warning.icon.small"));
-             case INFO:
-                 return GUIUtilities.loadIcon(context.getProperty("report.item.plain.icon.small"));
-             default:
-                 return GUIUtilities.loadIcon(context.getProperty("report.item.plain.icon.small"));
-         }
-     }
-
-     /**
-      * Get the paint for the message background
-      * @param type  message type
-      * @return  Paint   background
-      **/
-
-     private Paint getBackgroundPaint(SummaryReportMessage.Type type) {
-         switch(type) {
-             case SUCCESS:
-                 return new GradientPaint(0, 0, new Color(40, 175, 99, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(40, 175, 99, STOP_ALPHA), true);
-             case ERROR:
-                 return new GradientPaint(0, 0, new Color(215, 39, 41, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(215, 39, 41, STOP_ALPHA), true);
-             case WARNING:
-                 return new GradientPaint(0, 0, new Color(251, 182, 1, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(251, 182, 1, STOP_ALPHA), true);
-             case INFO:
-                 return new GradientPaint(0, 0, new Color(27, 106, 165, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(27, 106, 165, STOP_ALPHA), true);
-             default:
-                 return new GradientPaint(0, 0, new Color(27, 106, 165, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(27, 106, 165, STOP_ALPHA), true);
-         }
-     }
-
-     /**
-      * Get the paint for the message border
-      *
-      * @param type  message type
-      * @return  Paint   border color
+     * @param type message type
+     * @return Icon    message icon
      */
 
-     private Paint getBorderPaint(SummaryReportMessage.Type type) {
-         switch(type) {
-             case SUCCESS:
-                 return new Color(40, 175, 99);
-             case ERROR:
-                 return new Color(215, 39, 41);
-             case WARNING:
-                 return new Color(251, 182, 1);
-             case INFO:
-                 return new Color(27, 106, 165);
-             default:
-                 return new Color(27, 106, 165);
-         }
-     }
+    private Icon getIcon(SummaryReportMessage.Type type) {
+        switch (type) {
+            case SUCCESS:
+                return GUIUtilities.loadIcon(context.getProperty("report.item.success.icon.small"));
+            case ERROR:
+                return GUIUtilities.loadIcon(context.getProperty("report.item.error.icon.small"));
+            case WARNING:
+                return GUIUtilities.loadIcon(context.getProperty("report.item.warning.icon.small"));
+            case INFO:
+                return GUIUtilities.loadIcon(context.getProperty("report.item.plain.icon.small"));
+            default:
+                return GUIUtilities.loadIcon(context.getProperty("report.item.plain.icon.small"));
+        }
+    }
 
-     private SummaryReportMessage.Type getMessageType(Map<SpectraData, File> spectraDataMap, int total){
-         if(spectraDataMap == null || spectraDataMap.size() < 1){
-             return SummaryReportMessage.Type.ERROR;
-         }else if(total > 0){
-             return SummaryReportMessage.Type.WARNING;
-         }else if(total == 0){
-             return SummaryReportMessage.Type.SUCCESS;
-         }
-         return SummaryReportMessage.Type.INFO;
-     }
+    /**
+     * Get the paint for the message background
+     *
+     * @param type message type
+     * @return Paint   background
+     */
 
-     private String getMessage(Map<SpectraData, File> spectraDataMap, Integer spectrumCount){
-        if(spectraDataMap == null || spectraDataMap.size() < 1){
+    private Paint getBackgroundPaint(SummaryReportMessage.Type type) {
+        switch (type) {
+            case SUCCESS:
+                return new GradientPaint(0, 0, new Color(40, 175, 99, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(40, 175, 99, STOP_ALPHA), true);
+            case ERROR:
+                return new GradientPaint(0, 0, new Color(215, 39, 41, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(215, 39, 41, STOP_ALPHA), true);
+            case WARNING:
+                return new GradientPaint(0, 0, new Color(251, 182, 1, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(251, 182, 1, STOP_ALPHA), true);
+            case INFO:
+                return new GradientPaint(0, 0, new Color(27, 106, 165, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(27, 106, 165, STOP_ALPHA), true);
+            default:
+                return new GradientPaint(0, 0, new Color(27, 106, 165, START_ALPHA), 0, DEFAULT_HEIGHT, new Color(27, 106, 165, STOP_ALPHA), true);
+        }
+    }
+
+    /**
+     * Get the paint for the message border
+     *
+     * @param type message type
+     * @return Paint   border color
+     */
+
+    private Paint getBorderPaint(SummaryReportMessage.Type type) {
+        switch (type) {
+            case SUCCESS:
+                return new Color(40, 175, 99);
+            case ERROR:
+                return new Color(215, 39, 41);
+            case WARNING:
+                return new Color(251, 182, 1);
+            case INFO:
+                return new Color(27, 106, 165);
+            default:
+                return new Color(27, 106, 165);
+        }
+    }
+
+    private SummaryReportMessage.Type getMessageType(Map<SpectraData, File> spectraDataMap, int total) {
+        if (spectraDataMap == null || spectraDataMap.size() < 1) {
+            return SummaryReportMessage.Type.ERROR;
+        } else if (total > 0) {
+            return SummaryReportMessage.Type.WARNING;
+        } else if (total == 0) {
+            return SummaryReportMessage.Type.SUCCESS;
+        }
+        return SummaryReportMessage.Type.INFO;
+    }
+
+    private String getMessage(Map<SpectraData, File> spectraDataMap, Integer spectrumCount) {
+        if (spectraDataMap == null || spectraDataMap.size() < 1) {
             return SimpleMsDialog.ERROR_MESSAGE;
-        }else if(spectrumCount == 0){
+        } else if (spectrumCount == 0) {
             return SimpleMsDialog.TOTAL_SPECTRUMS;
-        }else if(spectrumCount > 0){
-            return "[" + spectrumCount +"] " + SimpleMsDialog.WARNING;
+        } else if (spectrumCount > 0) {
+            return "[" + spectrumCount + "] " + SimpleMsDialog.WARNING;
         }
         return SimpleMsDialog.ERROR_MESSAGE;
 
     }
-
 
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables

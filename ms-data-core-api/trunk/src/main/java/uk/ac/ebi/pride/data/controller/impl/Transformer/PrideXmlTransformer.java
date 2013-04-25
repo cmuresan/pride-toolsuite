@@ -65,6 +65,15 @@ public class PrideXmlTransformer {
 
                 precursors = transformPrecursorList(rawSpec.getSpectrumDesc().getPrecursorList());
 
+                Integer charge = DataAccessUtilities.getPrecursorChargeParamGroup(params);
+
+                if (charge == null) {
+                    charge = DataAccessUtilities.getPrecursorCharge(precursors);
+                    CvTermReference cvTerm = CvTermReference.ION_SELECTION_CHARGE_STATE;
+                    CvParam cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), charge.toString(), null, null, null);
+                    params.addCvParam(cvParam);
+                }
+
                 BinaryDataArray mz = transformBinaryDataArray(rawSpec.getMzArrayBinary(), CvTermReference.MZ_ARRAY);
                 BinaryDataArray inten = transformBinaryDataArray(rawSpec.getIntenArrayBinary(), CvTermReference.INTENSITY_ARRAY);
                 dataArr = new ArrayList<BinaryDataArray>();
@@ -511,7 +520,7 @@ public class PrideXmlTransformer {
         if (charge == null && spectrum != null) {
             charge = DataAccessUtilities.getPrecursorChargeParamGroup(spectrum);
             if (charge == null) {
-                charge = DataAccessUtilities.getPrecursorCharge(spectrum);
+                charge = DataAccessUtilities.getPrecursorCharge(spectrum.getPrecursors());
             }
         }
 

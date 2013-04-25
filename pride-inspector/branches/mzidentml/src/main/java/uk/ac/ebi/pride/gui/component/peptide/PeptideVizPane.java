@@ -107,7 +107,7 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
         proteinSequencePane.subscribeToEventBus(null);
     }
 
-    public void addSpectrumViewPane(int tabIndex){
+    public void addSpectrumViewPane(int tabIndex) {
         // Spectrum view pane
         spectrumViewPane = new SpectrumViewPane(controller, true);
         tabbedPane.insertTab(appContext.getProperty("spectrum.tab.title"), null,
@@ -115,7 +115,7 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
 
     }
 
-    public void addSpectrumViewPane(){
+    public void addSpectrumViewPane() {
         // Spectrum view pane
 
         spectrumViewPane = new SpectrumViewPane(controller, true);
@@ -135,6 +135,29 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
         proteinSequencePaneIndex = tabbedPaneIndex;
 
         spectrumViewPane.subscribeToEventBus(null);
+    }
+
+    public void addFragmentationViewPane() {
+
+        fragmentationTablePane = new FragmentationTablePane(controller);
+
+        int tabbedPaneIndex = 1;
+        tabbedPane.removeTabAt(proteinSequencePaneIndex);
+
+        tabbedPane.insertTab(appContext.getProperty("fragment.tab.title"), null,
+                fragmentationTablePane, appContext.getProperty("fragment.tab.tooltip"), tabbedPaneIndex);
+        tabbedPaneIndex++;
+
+        JScrollPane scrollPane = new JScrollPane(proteinSequencePane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setBackground(BACKGROUND_COLOUR);
+        tabbedPane.insertTab(appContext.getProperty("protein.sequence.tab.title"), null,
+                scrollPane, appContext.getProperty("protein.sequence.tab.tooltip"), tabbedPaneIndex);
+        proteinSequencePaneIndex = tabbedPaneIndex;
+
+        fragmentationTablePane.subscribeToEventBus(null);
+
+
     }
 
 }

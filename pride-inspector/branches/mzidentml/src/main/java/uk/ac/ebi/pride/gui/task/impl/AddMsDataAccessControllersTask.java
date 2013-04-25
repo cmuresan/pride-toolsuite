@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  * Date: 3/4/13
  * Time: 2:48 PM
  */
-public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<SpectraData, File>>{
+public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<SpectraData, File>> {
 
     DataAccessController controller;
     Map<SpectraData, File> spectraDataFileMap;
@@ -45,7 +45,7 @@ public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<Spectr
     @Override
     protected Void doInBackground() throws Exception {
         try {
-            ((MzIdentMLControllerImpl)controller).addMSController(spectraDataFileMap);
+            ((MzIdentMLControllerImpl) controller).addMSController(spectraDataFileMap);
             //((MzIdentMLControllerImpl) controller).addMSController(msFileMap);
             ControllerContentPane contentPane = (ControllerContentPane) context.getDataContentPane(controller);
 
@@ -62,9 +62,16 @@ public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<Spectr
             //Update the Peptide and Protein Tabs
             PeptideTabPane peptideContentPane = contentPane.getPeptideTabPane();
 
+            //Add Spectrum View
             peptideContentPane.getVizTabPane().addSpectrumViewPane();
+            //Add Spectrum View
+            peptideContentPane.getVizTabPane().addFragmentationViewPane();
+
             peptideContentPane.peptideChange();
             contentPane.populate();
+
+            //Update the Fragmentation Tab
+
 
         } catch (DataAccessException e) {
             e.printStackTrace();

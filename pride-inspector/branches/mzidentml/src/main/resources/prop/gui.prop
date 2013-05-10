@@ -22,16 +22,26 @@ delete.mzidentml.ms.icon.small=icon/16x16/delete_enable.gif
 delete.mzidentml.ms.icon.small.disable=icon/16x16/delete_disable.gif
 
 
-reviewer.download.title=Private Download
-reviewer.download.tooltip=Private download
-reviewer.download.pride.title = PRIDE
-reviewer.download.px.title = ProteomeXchange
+reviewer.download.title=Download Projects
+reviewer.download.tooltip=Download Projects
+pride.login.dialog.title = Login to PRIDE
+pride.login.button.title = Login
+pride.login.username.error.message = User name cannot be empty
+pride.login.password.error.message = Password cannot be empty
+pride.cancel.button.small.icon = icon/16x16/cancel.png
+pride.login.button.lock.small.icon = icon/16x16/login_lock.png
+pride.login.button.loading.small.icon = icon/16x16/loading.gif
+pride.login.button.unlock.small.icon = icon/16x16/login_unlock.png
+pride.my.project.summary.dialog.title = My projects
+total.file.title = Total file count
+result.file.title = Result files
+raw.file.title = Raw files
+peak.file.title = Peak files
+search.file.title = Search files
+other.file.title = Other files
 reviewer.download.icon.small=icon/16x16/reviewer_download.png
 reviewer.download.icon.medium=icon/32x32/reviewer_download.png
 reviewer.download.icon.large=icon/48x48/reviewer_download.png
-reviewer.login.in.progress.icon.small=icon/16x16/loading.gif
-reviewer.login.error.icon.small=icon/16x16/exception_notify.png
-reviewer.login.success.icon.small=icon/16x16/tick.png
 
 help.title=Help
 help.tooltip=Open PRIDE Inspector Help Document

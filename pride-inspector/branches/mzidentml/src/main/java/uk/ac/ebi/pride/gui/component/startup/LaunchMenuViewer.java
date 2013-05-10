@@ -5,7 +5,7 @@ import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.impl.OpenDatabaseAction;
 import uk.ac.ebi.pride.gui.action.impl.OpenFileAction;
 import uk.ac.ebi.pride.gui.action.impl.OpenHelpAction;
-import uk.ac.ebi.pride.gui.action.impl.OpenReviewAction;
+import uk.ac.ebi.pride.gui.action.impl.OpenMyProjectAction;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
 import javax.swing.*;
@@ -61,7 +61,7 @@ public class LaunchMenuViewer extends JPanel {
         ImageIcon reviewerIcon = GUIUtilities.loadImageIcon(context.getProperty("reviewer.download.icon.medium"));
         String reviewerText = context.getProperty("reviewer.download.title");
         String reviewerTooltip = context.getProperty("reviewer.download.tooltip");
-        Action reviewerAction = new OpenReviewAction(reviewerText, reviewerIcon);
+        Action reviewerAction = new OpenMyProjectAction(reviewerText, reviewerIcon);
         JButton reviewerButton = GUIUtilities.createLabelLikeButton(reviewerAction);
         reviewerButton.setToolTipText(reviewerTooltip);
         reviewerButton.setHorizontalAlignment(SwingConstants.LEFT);

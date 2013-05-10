@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.gui.access.DataAccessMonitor;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.db.DatabaseSearchPane;
 import uk.ac.ebi.pride.gui.component.report.ReportListModel;
+import uk.ac.ebi.pride.gui.component.reviewer.LoginRecord;
 import uk.ac.ebi.pride.gui.component.startup.WelcomePane;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.task.TaskManager;
@@ -86,6 +87,11 @@ public class PrideInspectorContext extends DesktopContext {
      * The path to open file
      */
     private String openFilePath;
+
+    /**
+     * List of project details after login to PRIDE-R
+     */
+    private LoginRecord loginRecord;
 
     /**
      * welcome pane
@@ -495,6 +501,14 @@ public class PrideInspectorContext extends DesktopContext {
      */
     public void setOpenFilePath(String openFilePath) {
         this.openFilePath = openFilePath;
+    }
+
+    public LoginRecord getLoginRecord() {
+        return loginRecord;
+    }
+
+    public void setLoginRecord(LoginRecord loginRecord) {
+        this.loginRecord = loginRecord;
     }
 
     /**

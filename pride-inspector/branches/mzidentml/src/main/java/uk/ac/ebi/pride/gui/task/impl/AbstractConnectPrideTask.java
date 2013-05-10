@@ -10,10 +10,11 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.utils.Constants;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.*;
-import java.util.zip.GZIPInputStream;
 
 /**
  * Abstract class to provide methods to connect pride web services
@@ -23,7 +24,7 @@ import java.util.zip.GZIPInputStream;
  * Time: 13:46
  */
 public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<String, String>>, String> {
-    private static final Logger logger = LoggerFactory.getLogger(DownloadPrideExperimentTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractConnectPrideTask.class);
     private static final int BUFFER_SIZE = 1024;
 
     /**
@@ -92,38 +93,6 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
     }
 
     /**
-     * login to proteomexchange to download
-     *
-     * @param baseUrl   base url for http request.
-     * @param accession pride experiment accession
-     * @param user      user name
-     * @param password  password
-     */
-    String buildPxFileDownloadURL(String baseUrl,
-                                  Comparable accession,
-                                  String fileId,
-                                  String user,
-                                  String password) {
-        StringBuilder cmd = new StringBuilder();
-        try {
-            cmd.append(baseUrl);
-            cmd.append("?");
-            cmd.append("username=");
-            cmd.append(URLEncoder.encode(String.valueOf(user), "UTF-8"));
-            cmd.append("&password=");
-            cmd.append(URLEncoder.encode(String.valueOf(password), "UTF-8"));
-            cmd.append("&pxaccession=");
-            cmd.append(accession);
-            cmd.append("&fileid=");
-            cmd.append(fileId);
-        } catch (IOException ex) {
-            logger.warn("Fail to construct url for downloading proteomexchange file: {}", ex.getMessage());
-        }
-        return cmd.toString();
-    }
-
-
-    /**
      * log in for meta data information.
      *
      * @param baseUrl    base url to request for metadata information
@@ -158,89 +127,6 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
         }
 
         return cmd.toString();
-    }
-
-    /**
-     * Download pride experiment
-     *
-     * @param url  url for downloading file
-     * @param file output file path
-     * @param size size of the file
-     */
-    @SuppressWarnings("unchecked")
-    void downloadFile(String url, File file, Double size) {
-        BufferedOutputStream boutStream = null;
-        InputStream in = null;
-        try {
-            publish("Downloading " + file);
-            HttpResponse httpResponse = doHttpGet(url);
-            int statusCode = httpResponse.getStatusLine().getStatusCode();
-            HttpEntity httpEntity = httpResponse.getEntity();
-            if (statusCode == 200 && httpEntity != null) {
-                in = httpEntity.getContent();
-                if ("application/x-gzip".equals(httpEntity.getContentType().getValue())) {
-                    in = new GZIPInputStream(in);
-                }
-
-                FileOutputStream outStream = new FileOutputStream(file);
-                boutStream = new BufferedOutputStream(outStream, BUFFER_SIZE);
-                byte data[] = new byte[BUFFER_SIZE];
-                int count;
-                long readCount = 0;
-                if (size != null) {
-                    setProgress(1);
-                }
-                while ((count = in.read(data, 0, BUFFER_SIZE)) != -1) {
-                    readCount += count;
-                    boutStream.write(data, 0, count);
-                    if (size != null) {
-                        int progress = (int) Math.round((readCount / size) * 100);
-                        setProgress(progress >= 100 ? 99 : progress);
-                    }
-                }
-                if (size != null) {
-                    setProgress(100);
-                }
-                boutStream.flush();
-                publish("Download has finished");
-            } else {
-                if (statusCode == 404) {
-                    logger.warn("No file found: {}", httpResponse.getStatusLine().getReasonPhrase());
-                    publish("Warning:No file found");
-                } else {
-                    logger.warn("Failed to login: {}", httpResponse.getStatusLine().getReasonPhrase());
-                    publish("Warning:Failed to login");
-                }
-            }
-        } catch (IOException ex) {
-            String msg = ex.getMessage();
-            if (msg.contains("403")) {
-                logger.warn("Wrong login credentials: {}", msg);
-                publish("Warning:Wrong login credentials");
-            } else if (msg.contains("400")) {
-                logger.warn("Fail to connect to the remote server: {}", msg);
-                publish("Warning:Fail to connect to the remote server");
-            } else {
-                logger.warn("Unexpected error: " + ex.getMessage());
-                publish("Unexpected error: " + ex.getMessage());
-            }
-        } finally {
-            if (boutStream != null) {
-                try {
-                    boutStream.close();
-                } catch (IOException e) {
-                    logger.error("Failed to close output stream", e);
-                }
-            }
-
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    logger.error("Failed to close Gzip input stream", e);
-                }
-            }
-        }
     }
 
     /**
@@ -303,6 +189,7 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
 
         return result;
     }
+
 
     /**
      * Perform a http get request using a given url

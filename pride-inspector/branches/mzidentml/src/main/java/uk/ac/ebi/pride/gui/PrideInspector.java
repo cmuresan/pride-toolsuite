@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.gui;
 
-import com.jtattoo.plaf.mint.MintLookAndFeel;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +15,7 @@ import uk.ac.ebi.pride.gui.component.status.TaskMonitorPanel;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.menu.MenuFactory;
-import uk.ac.ebi.pride.gui.task.impl.OpenPxSubmissionTask;
-import uk.ac.ebi.pride.gui.task.impl.OpenValidPrideExperimentTask;
-import uk.ac.ebi.pride.gui.utils.AccessionUtils;
+import uk.ac.ebi.pride.gui.task.impl.OpenMyProjectTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.util.IOUtilities;
@@ -35,7 +32,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Properties;
 
 /**
  * This is the main class to call to run PRIDE GUI
@@ -43,10 +39,8 @@ import java.util.Properties;
 public class PrideInspector extends Desktop {
     private static final Logger logger = LoggerFactory.getLogger(PrideInspector.class);
 
-    // command line option for experiment accessions
-    private static final String ACCESSION_CMD = "accession";
-    // command line option for proteomexchange accessions
-    private static final String PX_ACCESSION_CMD = "pxaccesssion";
+    // command line option for project accession
+    private static final String PROJECT_ACCESSION_CMD = "accession";
     // command line option for user name
     private static final String USER_NAME_CMD = "username";
     // command line option for password
@@ -113,9 +107,8 @@ public class PrideInspector extends Desktop {
         cmdOptions = new Options();
 
         // add pride accession option
-        cmdOptions.addOption(ACCESSION_CMD, true, "a list of PRIDE experiment accessions, separated by comma");
         // add proteomexchange accession option
-        cmdOptions.addOption(PX_ACCESSION_CMD, true, "a list of ProteomeXchange accessions, separated by comma");
+        cmdOptions.addOption(PROJECT_ACCESSION_CMD, true, "project accession");
         // add a user name option
         cmdOptions.addOption(USER_NAME_CMD, true, "pride user name");
         // add a password option
@@ -143,18 +136,10 @@ public class PrideInspector extends Desktop {
             // parse command line input
             CommandLine cmd = cmdParser.parse(cmdOptions, args);
 
-            // get pride accessions
-            java.util.List<Comparable> prideAccessions = null;
-            if (cmd.hasOption(ACCESSION_CMD)) {
-                String accStr = cmd.getOptionValue(ACCESSION_CMD);
-                prideAccessions = new ArrayList<Comparable>(AccessionUtils.expand(accStr));
-            }
-
-            // get proteomexchange accessions
-            java.util.List<Comparable> pxAccessions = null;
-            if (cmd.hasOption(PX_ACCESSION_CMD)) {
-                String accStr = cmd.getOptionValue(PX_ACCESSION_CMD);
-                pxAccessions = new ArrayList<Comparable>(AccessionUtils.expand(accStr));
+            // get project accession
+            String projectAccession = null;
+            if (cmd.hasOption(PROJECT_ACCESSION_CMD)) {
+                projectAccession = cmd.getOptionValue(PROJECT_ACCESSION_CMD);
             }
 
             // get user name
@@ -169,17 +154,13 @@ public class PrideInspector extends Desktop {
                 password = cmd.getOptionValue(PASSWORD_CMD);
             }
 
-            if (prideAccessions != null) {
-                OpenValidPrideExperimentTask task = new OpenValidPrideExperimentTask(prideAccessions, username, password);
-                task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-                getDesktopContext().addTask(task);
-            } else if (pxAccessions != null) {
-                OpenPxSubmissionTask task = new OpenPxSubmissionTask(pxAccessions, username, password);
+            if (projectAccession != null) {
+                OpenMyProjectTask task = new OpenMyProjectTask(projectAccession, username, password== null ? null : password.toCharArray());
                 task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
                 getDesktopContext().addTask(task);
             }
         } catch (ParseException e) {
-            System.err.println("Parsing command line option failed. Reason: " + e.getMessage());
+            logger.error("Parsing command line option failed", e);
         }
     }
 
@@ -237,18 +218,18 @@ public class PrideInspector extends Desktop {
         mainFrame = new JFrame(PRIDE_GUI + " " + context.getProperty("pride.inspector.version"));
         ImageIcon icon = GUIUtilities.loadImageIcon(context.getProperty("pride.inspector.logo.medium.icon"));
         mainFrame.setIconImage(icon.getImage());
+
         try {
-//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            Properties props = new Properties();
-
-            props.put("logoString", "PRIDE");
-
-            MintLookAndFeel.setTheme(props);
-            UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
-
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
         } catch (Exception e) {
-            logger.error("Failed to set the look and feel", e);
+            logger.error("Failed to load nimbus look and feel for the application", e);
         }
+
         // ToDo: proper exit hooke
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -284,7 +265,7 @@ public class PrideInspector extends Desktop {
         // open reviewer
         Icon openReviewerIcon = GUIUtilities.loadIcon(context.getProperty("reviewer.download.icon.small"));
         String openReviewerDesc = context.getProperty("reviewer.download.title");
-        PrideAction openReviewerAction = new OpenReviewAction(openReviewerDesc, openReviewerIcon);
+        PrideAction openReviewerAction = new OpenMyProjectAction(openReviewerDesc, openReviewerIcon);
 
         // close
         String closeDesc = context.getProperty("close.source.title");
@@ -343,10 +324,6 @@ public class PrideInspector extends Desktop {
         String exportDesc = context.getProperty("export.title");
         PrideAction exportAction = new ExportSpectrumAction(exportDesc, null);
 
-        // export pride xml
-        String exportPrideXml = context.getProperty("export.pride.xml.title");
-        PrideAction exportPrideXmlAction = new ExportPrideXmlAction(exportPrideXml, null);
-
         // export identification
         String exportIdentDesc = context.getProperty("export.identification.title");
         PrideAction exportIdentAction = new ExportIdentificationPeptideAction(exportIdentDesc, null);
@@ -393,7 +370,7 @@ public class PrideInspector extends Desktop {
 
         // export menu
         JMenu exportMenu = MenuFactory.createMenu("Export",
-                exportPrideXmlAction, exportAction,
+                exportAction,
                 exportSpectrumDescAction, exportIdentAction,
                 exportIdentDescAction, exportPeptideAction);
         exportMenu.setMnemonic(java.awt.event.KeyEvent.VK_E);
@@ -431,7 +408,9 @@ public class PrideInspector extends Desktop {
 
     @Override
     public void finish() {
-        sis.removeSingleInstanceListener(sisL);
+        if (sis != null && sisL != null) {
+            sis.removeSingleInstanceListener(sisL);
+        }
     }
 
     public JFrame getMainComponent() {

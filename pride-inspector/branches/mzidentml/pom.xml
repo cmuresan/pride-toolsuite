@@ -4,7 +4,7 @@
     <groupId>uk.ac.ebi.pride.gui</groupId>
     <artifactId>pride-inspector</artifactId>
     <packaging>jar</packaging>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.5.1-SNAPSHOT</version>
     <name>pride-inspector</name>
     <url>http://code.google.com/p/pride-toolsuite/wiki/PRIDEInspector</url>
 
@@ -130,20 +130,11 @@
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>2.7.0</version>
-            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>net.java.balloontip</groupId>
             <artifactId>balloontip</artifactId>
             <version>1.2.1</version>
-        </dependency>
-        <!-- This is the lookandfeel for the pride inspector-->
-        <!--you can download the lookandfeel jar from http://www.jtattoo.net/Download.html-->
-        <!--Then install this library to maven using the following command: mvn install:install-file -Dfile=JTattoo.jar -DgroupId=jtattoo -DartifactId=jtattoo -Dversion=1.3 -Dpackaging=jar-->
-        <dependency>
-            <groupId>jtattoo</groupId>
-            <artifactId>jtattoo</artifactId>
-            <version>1.3</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.pride.tools</groupId>
@@ -162,6 +153,14 @@
             <artifactId>px-submission-core</artifactId>
             <version>1.9</version>
         </dependency>
+
+        <!-- PRIDE-R web service-->
+        <dependency>
+            <groupId>uk.ac.ebi.pride.prider</groupId>
+            <artifactId>prider-ws</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- apache commons httpcomponents-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

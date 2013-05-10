@@ -251,7 +251,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         c.gridx = 0;
         c.gridy = 1;
         Icon openReviewerIcon = GUIUtilities.loadIcon(context.getProperty("reviewer.download.icon.large"));
-        Action reviewerAction = new OpenReviewAction(REVIEWER_DOWNLOAD, openReviewerIcon);
+        Action reviewerAction = new OpenMyProjectAction(REVIEWER_DOWNLOAD, openReviewerIcon);
         JButton reviewerButton = createLabelLikeButton(reviewerAction);
         buttonPanel.add(reviewerButton, c);
 

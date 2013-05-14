@@ -40,11 +40,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     private static final Logger logger = LoggerFactory.getLogger(PrideDBAccessControllerImpl.class);
 
-    /**
-     * default data access mode
-     */
-    private static final DataAccessMode DEFAULT_ACCESS_MODE = DataAccessMode.CACHE_ONLY;
-
     private final static String SAMPLE_ID = "sample1";
 
     private final static String COMMENTS = "comments";
@@ -65,17 +60,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
      * @param experimentAcc experiment accession
      */
     public PrideDBAccessControllerImpl(Comparable experimentAcc) {
-        this(DEFAULT_ACCESS_MODE, experimentAcc);
-    }
-
-    /**
-     * Open a pride database connection with a specified access mode and experiment accession.
-     *
-     * @param mode          data access mode
-     * @param experimentAcc experiment accession
-     */
-    public PrideDBAccessControllerImpl(DataAccessMode mode, Comparable experimentAcc) {
-        super(mode);
+        super(DataAccessMode.CACHE_ONLY);
         this.jdbcTemplate = new JdbcTemplate(PooledConnectionFactory.getInstance().getConnectionPool());
         initialize(experimentAcc);
     }
@@ -95,12 +80,12 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 ContentCategory.DATA_PROCESSING,
                 ContentCategory.QUANTIFICATION);
 
-        // set cache builder
-        setCacheBuilder(new PrideDBCacheBuilder(this));
-
         if (experimentAcc != null) {
             this.experimentAcc = experimentAcc;
         }
+
+        // set cache builder
+        setCacheBuilder(new PrideDBCacheBuilder(this));
 
         // populate cache
         populateCache();

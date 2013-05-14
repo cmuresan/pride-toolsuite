@@ -48,17 +48,7 @@ public class PeakControllerImpl extends CachedDataAccessController {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception
      */
     public PeakControllerImpl(File file) {
-        this(file, null);
-    }
-
-    /**
-     * Construct a data access controller using a given mzML file and data access mode
-     *
-     * @param file jmzReader file
-     * @param mode data access mode
-     */
-    public PeakControllerImpl(File file, DataAccessMode mode) {
-        super(file, mode);
+        super(file, DataAccessMode.CACHE_AND_SOURCE);
         initialize();
     }
 

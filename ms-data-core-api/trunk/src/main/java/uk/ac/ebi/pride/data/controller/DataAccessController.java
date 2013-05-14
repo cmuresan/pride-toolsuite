@@ -16,7 +16,8 @@ import java.util.Collection;
  * Time: 14:25:49
  */
 public interface DataAccessController
-        extends MetaDataAccess, MzGraphDataAccess, ProteinDataAccess,
+        extends MetaDataAccess, MzGraphDataAccess,
+                ProteinDataAccess, ProteinGroupDataAccess,
                 PeptideDataAccess, QuantDataAccess, ChartAccess {
 
     /**

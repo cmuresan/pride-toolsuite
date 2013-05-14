@@ -32,7 +32,6 @@ public class Protein extends IdentifiableParamGroup {
     /**
      * The score is the score value in a SearchEngine Context
      */
-
     private Score score;
 
     /**
@@ -49,11 +48,6 @@ public class Protein extends IdentifiableParamGroup {
      * Gel related details
      */
     private Gel gel;
-
-    /**
-     * The group in which we can find the Protein Identification
-     */
-    private IdentifiableParamGroup proteinAmbiguityGroup;
 
     public Protein(Comparable id, String name, DBSequence dbSequence, boolean passThreshold,
                    List<Peptide> peptides, Score score, double threshold, double sequenceCoverage, Gel gel) {
@@ -121,7 +115,7 @@ public class Protein extends IdentifiableParamGroup {
     }
 
     public List<PeptideSequence> getPeptidesSequence() {
-        ArrayList<PeptideSequence> result = new ArrayList<PeptideSequence>();
+        List<PeptideSequence> result = new ArrayList<PeptideSequence>();
         List<Peptide> identifiedPeptideList = this.getPeptides();
 
         for (Peptide peptide : identifiedPeptideList) {
@@ -138,14 +132,6 @@ public class Protein extends IdentifiableParamGroup {
         this.gel = gel;
     }
 
-    public IdentifiableParamGroup getProteinAmbiguityGroup() {
-        return proteinAmbiguityGroup;
-    }
-
-    public void setProteinAmbiguityGroup(IdentifiableParamGroup proteinAmbiguityGroup) {
-        this.proteinAmbiguityGroup = proteinAmbiguityGroup;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -160,10 +146,9 @@ public class Protein extends IdentifiableParamGroup {
         if (dbSequence != null ? !dbSequence.equals(protein.dbSequence) : protein.dbSequence != null) return false;
         if (gel != null ? !gel.equals(protein.gel) : protein.gel != null) return false;
         if (!peptides.equals(protein.peptides)) return false;
-        if (proteinAmbiguityGroup != null ? !proteinAmbiguityGroup.equals(protein.proteinAmbiguityGroup) : protein.proteinAmbiguityGroup != null)
-            return false;
-        return !(score != null ? !score.equals(protein.score) : protein.score != null);
+        if (score != null ? !score.equals(protein.score) : protein.score != null) return false;
 
+        return true;
     }
 
     @Override
@@ -174,12 +159,11 @@ public class Protein extends IdentifiableParamGroup {
         result = 31 * result + (passThreshold ? 1 : 0);
         result = 31 * result + peptides.hashCode();
         result = 31 * result + (score != null ? score.hashCode() : 0);
-        temp = sequenceCoverage != +0.0d ? Double.doubleToLongBits(sequenceCoverage) : 0L;
+        temp = Double.doubleToLongBits(sequenceCoverage);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = threshold != +0.0d ? Double.doubleToLongBits(threshold) : 0L;
+        temp = Double.doubleToLongBits(threshold);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (gel != null ? gel.hashCode() : 0);
-        result = 31 * result + (proteinAmbiguityGroup != null ? proteinAmbiguityGroup.hashCode() : 0);
         return result;
     }
 }

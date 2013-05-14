@@ -52,33 +52,11 @@ public class MzDataControllerImpl extends CachedDataAccessController {
      */
     private MzDataUnmarshallerAdaptor unmarshaller;
 
-    /**
-     * Construct a data access controller using a given mzData file
-     *
-     * @param file mzData file
-     * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception
-     */
     public MzDataControllerImpl(File file) {
-        this(file, null);
-    }
-
-    /**
-     * Construct a data access controller using a given mzML file and data access mode
-     *
-     * @param file jmzReader file
-     * @param mode data access mode
-     * @ data access exception
-     */
-    public MzDataControllerImpl(File file, DataAccessMode mode) {
-        super(file, mode);
+        super(file, DataAccessMode.CACHE_AND_SOURCE);
         initialize();
     }
 
-    /**
-     * Initialize the data access controller
-     *
-     * @ data access exception
-     */
     private void initialize() {
         File file = (File) this.getSource();
         // create unmarshaller

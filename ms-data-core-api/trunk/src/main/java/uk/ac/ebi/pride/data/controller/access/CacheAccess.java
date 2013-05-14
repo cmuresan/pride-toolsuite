@@ -1,8 +1,6 @@
 package uk.ac.ebi.pride.data.controller.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.controller.cache.Cache;
-import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;
 
 /**
  * Interface for accessing the cache.
@@ -14,32 +12,11 @@ import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;
 public interface CacheAccess {
 
     /**
-     * Get the cache.
+     * Whether the cache has be populated
      *
-     * @return a reference to cache.
+     * @return  true means cached
      */
-    public Cache getCache();
-
-    /**
-     * Set a cache
-     *
-     * @param cache DataAccessCache
-     */
-    public void setCache(Cache cache);
-
-    /**
-     * Get a cache builder
-     *
-     * @return DataAccessCacheBuilder   cache builder
-     */
-    public CacheBuilder getCacheBuilder();
-
-    /**
-     * Set a cache builder
-     *
-     * @param builder Data access cache builder
-     */
-    public void setCacheBuilder(CacheBuilder builder);
+    public boolean isCached();
 
     /**
      * Clear all the content in existing cache.

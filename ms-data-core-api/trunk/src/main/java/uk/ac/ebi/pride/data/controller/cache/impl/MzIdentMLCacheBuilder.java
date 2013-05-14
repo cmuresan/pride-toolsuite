@@ -54,7 +54,7 @@ public class MzIdentMLCacheBuilder extends AbstractAccessCacheBuilder {
         cache.storeInBatch(CacheCategory.PROTEIN_GROUP_ID, new ArrayList<Comparable>(proteinAmbiguityGroupIds));
 
         List<Comparable> proteinHIds = new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.ProteinDetectionHypothesis));
-        Map<Comparable, Comparable> proteinHypothesisMap = new HashMap<Comparable, Comparable>(proteinHIds.size());
+        Map<Comparable, Comparable> proteinHypothesisMap = new HashMap<Comparable, Comparable>();
         for (Comparable id : proteinHIds) {
             proteinHypothesisMap.put(unmarshaller.getDBSequencebyProteinHypothesis(id), id);
         }

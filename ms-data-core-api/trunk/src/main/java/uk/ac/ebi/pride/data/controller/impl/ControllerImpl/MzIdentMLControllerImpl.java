@@ -65,27 +65,13 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
     private Map<Comparable, SpectraData> spectraDataMap;
 
-
-    /**
-     * The constructor used by Default the CACHE_AND_SOURCE mode, it
-     * means retrieve information from cache first,
-     * if didn't find anything,then read from data source directly.
-     *
-     * @param file
-     */
     public MzIdentMLControllerImpl(File file) {
-        this(file, null);
+        this(file, true);
     }
 
-    /**
-     * Default Constructor extends the CacheDataAccessController
-     *
-     * @param file mzidentml file
-     * @param mode if the the mode is using Cache or retrieving from Source
-     */
-    public MzIdentMLControllerImpl(File file, DataAccessMode mode) {
-        super(file, mode);
-        initialize();
+    public MzIdentMLControllerImpl(File file, boolean populateCache) {
+        super(file, DataAccessMode.CACHE_AND_SOURCE);
+        initialize(populateCache);
     }
 
     /**
@@ -93,7 +79,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * used the Cache System. In this case it wil be use cache for PROTEIN,
      * PEPTIDE, SAMPLE and SOFTWARE.
      */
-    protected void initialize() {
+    protected void initialize(boolean populateCache) {
         // create pride access utils
         File file = (File) getSource();
         unmarshaller = new MzIdentMLUnmarshallerAdaptor(file);
@@ -120,15 +106,22 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 ContentCategory.SPECTRUM
         );
 
-        // set cache builder
-        setCacheBuilder(new MzIdentMLCacheBuilder(this));
-
-        // populate cache
-        populateCache();
+        initCache(populateCache);
 
         populateGlobalObjects();
     }
 
+    private void initCache(boolean populateCache) {
+        // set cache builder
+        setCacheBuilder(new MzIdentMLCacheBuilder(this));
+
+        if (populateCache) {
+            // populate cache
+            populateCache();
+        }
+    }
+
+    //todo: bad method name, rename
     private void populateGlobalObjects() {
         List<CVLookup> CvParamList = MzIdentMLTransformer.transformCVList(unmarshaller.getCvList());
         MzIdentMLTransformer.setCvLookupMap(CvParamList);
@@ -677,8 +670,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
 
     @Override
-    public boolean hasProteinGroup() {
-        return super.getProteinGroupIds().size() > 0;
+    public boolean hasProteinAmbiguityGroup() {
+        return super.getProteinAmbiguityGroupIds().size() > 0;
     }
 
     /**

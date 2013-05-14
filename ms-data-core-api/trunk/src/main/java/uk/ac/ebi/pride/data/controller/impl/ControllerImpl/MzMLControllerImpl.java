@@ -60,24 +60,10 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      * @param file mzML file
      */
     public MzMLControllerImpl(File file) {
-        this(file, null);
-    }
-
-    /**
-     * Construct a data access controller using a given mzML file and data access mode
-     *
-     * @param file mzML file
-     * @param mode data access mode
-     */
-    public MzMLControllerImpl(File file, DataAccessMode mode) {
-        super(file, mode);
+        super(file, DataAccessMode.CACHE_AND_SOURCE);
         initialize();
     }
 
-    /**
-     * Initialize the data access controller
-     *
-     */
     private void initialize() {
         File file = (File) this.getSource();
         // create unmarshaller

@@ -11,12 +11,14 @@ import java.util.Collection;
 
 
 /**
- * IdentificationDataAccess defines the interface for accessing identification data.
- * It also defines identification related property changing event.
+ * ProteinDataAccess defines the interface for accessing identification data.
  * <p/>
  * User: rwang
  * Date: 29-Aug-2010
  * Time: 17:59:20
+ *
+ * todo: remove protein type constants
+ * todo: remove indexOfProtein method
  */
 public interface ProteinDataAccess {
 
@@ -37,14 +39,6 @@ public interface ProteinDataAccess {
      */
     public boolean hasProtein();
 
-
-    /**
-        * Whether this controller contains protein groups information
-        *
-        * @return boolean  return true if identifications exist
-        */
-   public boolean hasProteinGroup();
-
   /**
      * Get a collection of identification ids
      *
@@ -52,12 +46,6 @@ public interface ProteinDataAccess {
      */
    public Collection<Comparable> getProteinIds();
 
-    /**
-     * Get a collection of identification group ids
-     *
-     * @return Collection   a string collection of identification ids
-     */
-    public Collection<Comparable> getProteinGroupIds();
 
     /**
      * Get the index of identification by its id
@@ -76,21 +64,11 @@ public interface ProteinDataAccess {
     public Protein getProteinById(Comparable proteinId);
 
     /**
-     * Get the total number of identifications.
+     * Get the total number of protein identifications.
      *
-     * @return int  the number of identifications.
+     * @return int  the number of protein identifications.
      */
     public int getNumberOfProteins();
-
-    /**
-     * Get identifications by index, this combines both two dimensional and gel free identifications.
-     * Note: this method can be used for paging.
-     *
-     * @param start  start index.
-     * @param offset number of identification to get.
-     * @return Collection<Identification> list of identifications.
-     */
-    public Collection<Protein> getProteinByIndex(int start, int offset);
 
     /**
      * Get the protein accession of a identification

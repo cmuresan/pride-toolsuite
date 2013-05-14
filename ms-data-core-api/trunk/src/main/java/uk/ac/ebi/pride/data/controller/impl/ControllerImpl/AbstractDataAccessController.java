@@ -328,8 +328,8 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public boolean hasProteinGroup() {
-        return getNumberOfProteins() > 0;
+    public boolean hasProteinAmbiguityGroup() {
+        return getNumberOfProteinAmbiguityGroups() > 0;
     }
 
     @Override
@@ -343,6 +343,21 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
+    public int getNumberOfProteinAmbiguityGroups() {
+        return getProteinAmbiguityGroupIds().size();
+    }
+
+    @Override
+    public Collection<Comparable> getProteinAmbiguityGroupIds() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public ProteinGroup getProteinAmbiguityGroupById(Comparable proteinGroupId) {
+        return null;
+    }
+
+    @Override
     public int indexOfProtein(Comparable proteinId) {
         int index = -1;
         Collection<Comparable> ids = getProteinIds();
@@ -352,7 +367,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return index;
     }
 
-    @Override
     public Collection<Protein> getProteinByIndex(int index, int offset) {
         List<Protein> proteins = new ArrayList<Protein>();
         Collection<Comparable> proteinIds = getProteinIds();

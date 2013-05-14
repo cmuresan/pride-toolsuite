@@ -19,7 +19,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,38 +32,22 @@ import java.util.regex.Pattern;
  */
 public class PrideXmlControllerImpl extends CachedDataAccessController {
     private static final Logger logger = LoggerFactory.getLogger(PrideXmlControllerImpl.class);
+
     /**
      * Pattern for match pride xml format
      */
     private static final Pattern prideXmlHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<ExperimentCollection [^>]*>", Pattern.MULTILINE);
+
     /**
      * Reader to get information from pride xml file
      */
     private PrideXmlReader reader;
 
-    /**
-     * Construct a data access controller to read a pride xml
-     *
-     * @param file pride xml
-     */
     public PrideXmlControllerImpl(File file) {
-        this(file, null);
-    }
-
-    /**
-     * Construct a data access controller with a pride xml and a given data access mode
-     *
-     * @param file pride xml file
-     * @param mode data access mode
-     */
-    public PrideXmlControllerImpl(File file, DataAccessMode mode) {
-        super(file, mode);
+        super(file, DataAccessMode.CACHE_AND_SOURCE);
         initialize();
     }
 
-    /**
-     * Initialize data access controller
-     */
     protected void initialize() {
         // create pride access utils
         File file = (File) getSource();
@@ -590,10 +573,5 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         }
 
         return valid;
-    }
-
-    @Override
-    public Collection<Comparable> getProteinGroupIds() {
-        return null;
     }
 }

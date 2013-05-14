@@ -40,100 +40,68 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
     private static final Logger logger = LoggerFactory.getLogger(CachedDataAccessController.class);
     /**
-     * the default data access mode is to use both cache and data source
-     */
-    private static final DataAccessMode DEFAULT_ACCESS_MODE = DataAccessMode.CACHE_AND_SOURCE;
-    /**
      * data access mode
      */
     private DataAccessMode mode;
     /**
      * Note: this cache is related to each experiment, must be reset when switching experiment.
      */
-    private Cache cache;
+    private final Cache cache;
     /**
      * builder is responsible for initializing the Cache
      */
     private CacheBuilder cacheBuilder;
 
     /**
-     * Construct a data access controller to use both the cache and the source
+     * Whether cache has been populated
      */
+    private boolean cached;
+
     public CachedDataAccessController() {
-        this(null, DEFAULT_ACCESS_MODE);
+        this(null, DataAccessMode.CACHE_AND_SOURCE);
     }
 
-    /**
-     * Construct a data access controller using a given access mode
-     *
-     * @param mode DataAccessMode (CACHE_ONLY or CACHE_AND_SOURCE)
-     */
     public CachedDataAccessController(DataAccessMode mode) {
         this(null, mode);
     }
 
-    /**
-     * Constructor a data access controller using a given data source and access mode.
-     *
-     * @param source data source
-     * @param mode   DataAccessMode
-     */
     public CachedDataAccessController(Object source, DataAccessMode mode) {
         super(source);
         this.mode = mode;
         this.cache = new CacheAccessor();
+        this.cached = false;
     }
 
-    /**
-     * Get the existing cache
-     *
-     * @return Cache cache, note: this returns the actual cache object.
-     */
     public Cache getCache() {
         return cache;
     }
 
-    /**
-     * Set a new cache
-     *
-     * @param cache new cache
-     */
-    public void setCache(Cache cache) {
-        this.cache = cache;
-    }
 
-    /**
-     * Get the current cache builder.
-     *
-     * @return CacheBuilder cache builder
-     */
     public CacheBuilder getCacheBuilder() {
         return cacheBuilder;
     }
 
-    /**
-     * Set cache builder.
-     *
-     * @param builder cache builder
-     */
     public void setCacheBuilder(CacheBuilder builder) {
         this.cacheBuilder = builder;
     }
 
-    /**
-     * Clear the current cache
-     */
-    public void clearCache() {
-        cache.clear();
+    @Override
+    public boolean isCached() {
+        return cached;
     }
 
-    /**
-     * Populate the cache with values.
-     */
+    public void clearCache() {
+        cache.clear();
+        cached = false;
+    }
+
     public void populateCache() {
+        clearCache();
+
         if (cacheBuilder != null) {
             try {
                 cacheBuilder.populate();
+                cached = true;
             } catch (Exception e) {
                 String msg = "Exception while trying to populate cache";
                 logger.error(msg, e);
@@ -982,7 +950,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     }
 
     @Override
-    public Collection<Comparable> getProteinGroupIds() {
+    public Collection<Comparable> getProteinAmbiguityGroupIds() {
         Collection<Comparable> groupIds = (Collection<Comparable>) cache.get(CacheCategory.PROTEIN_GROUP_ID);
 
         if (groupIds == null || groupIds.isEmpty()) {

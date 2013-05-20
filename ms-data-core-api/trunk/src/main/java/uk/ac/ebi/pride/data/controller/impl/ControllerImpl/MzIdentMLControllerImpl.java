@@ -495,14 +495,13 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
             try {
                 // get protein hypothesis
-                uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis proteinHypothesis = unmarshaller.getIdentificationById(proteinId);
-
-                if (proteinHypothesis == null) {
+                if (!hasProteinAmbiguityGroup()) {
                     // when protein groups are not present
                     uk.ac.ebi.jmzidml.model.mzidml.DBSequence dbSequence = unmarshaller.getDBSequenceById(proteinId);
                     List<SpectrumIdentificationItem> spectrumIdentificationItems = getScannedSpectrumIdentificationItems(proteinId);
                     ident = MzIdentMLTransformer.transformSpectrumIdentificationItemToIdentification(dbSequence, spectrumIdentificationItems);
                 } else {
+                    uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis proteinHypothesis = unmarshaller.getIdentificationById(proteinId);
                     // when protein groups are present
                     uk.ac.ebi.jmzidml.model.mzidml.DBSequence dbSequence = unmarshaller.getDBSequenceById(proteinHypothesis.getDBSequenceRef());
                     ident = MzIdentMLTransformer.transformProteinHypothesisToIdentification(proteinHypothesis, dbSequence);

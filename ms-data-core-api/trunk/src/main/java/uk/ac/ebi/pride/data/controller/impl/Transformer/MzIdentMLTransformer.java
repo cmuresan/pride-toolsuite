@@ -5,6 +5,7 @@ import uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis;
 import uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItemRef;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.utils.MapUtils;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.*;
@@ -21,16 +22,16 @@ import java.util.*;
  */
 public class MzIdentMLTransformer {
 
-    private static Map<String, IdentifiableParamGroup> fragmentationTable = null;
+    private final static Map<String, IdentifiableParamGroup> fragmentationTable = new HashMap<String, IdentifiableParamGroup>();
 
-    private static Map<String, CVLookup> cvLookupMap = null;
+    private final static Map<String, CVLookup> cvLookupMap = new HashMap<String, CVLookup>();
 
     public static void setCvLookupMap(Map<String, CVLookup> cvLookupList) {
-        cvLookupMap = cvLookupList;
+        MapUtils.replaceValuesInMap(cvLookupList, cvLookupMap);
     }
 
     public static void setFragmentationTable(Map<String, IdentifiableParamGroup> fragTable) {
-        fragmentationTable = fragTable;
+        MapUtils.replaceValuesInMap(fragTable, fragmentationTable);
     }
 
     public static List<SourceFile> transformToSourceFile(List<uk.ac.ebi.jmzidml.model.mzidml.SourceFile> oldSourceFiles) {
@@ -202,10 +203,14 @@ public class MzIdentMLTransformer {
         if (oldCvParam != null) {
             String cvLookupID = null;
             CVLookup cvLookup = cvLookupMap.get(oldCvParam.getCvRef());
-            if (cvLookup != null) cvLookupID = cvLookup.getCvLabel();
+            if (cvLookup != null) {
+                cvLookupID = cvLookup.getCvLabel();
+            }
             String unitCVLookupID = null;
             CVLookup unitCVLookup = cvLookupMap.get(oldCvParam.getUnitCvRef());
-            if (unitCVLookup != null) unitCVLookupID = unitCVLookup.getCvLabel();
+            if (unitCVLookup != null) {
+                unitCVLookupID = unitCVLookup.getCvLabel();
+            }
             newParam = new CvParam(oldCvParam.getAccession(),
                     oldCvParam.getName(),
                     cvLookupID,

@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
-import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
-import uk.ac.ebi.pride.data.controller.cache.impl.MzDataCacheBuilder;
+import uk.ac.ebi.pride.data.controller.cache.CacheEntry;
+import uk.ac.ebi.pride.data.controller.cache.strategy.MzDataCachingStrategy;
 import uk.ac.ebi.pride.data.controller.impl.Transformer.MzDataTransformer;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.file.MzDataUnmarshallerAdaptor;
@@ -76,7 +76,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
                 DataAccessController.ContentCategory.SOFTWARE,
                 DataAccessController.ContentCategory.DATA_PROCESSING);
             // create cache builder
-            setCacheBuilder(new MzDataCacheBuilder(this));
+            setCachingStrategy(new MzDataCachingStrategy());
             // populate cache
             populateCache();
         } catch (JMzReaderException e) {
@@ -311,7 +311,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
                 uk.ac.ebi.pride.tools.jmzreader.model.Spectrum rawSpec = unmarshaller.getSpectrumById(id.toString());
                 spectrum = MzDataTransformer.transformSpectrum(rawSpec);
                 if (useCache) {
-                    getCache().store(CacheCategory.SPECTRUM, id, spectrum);
+                    getCache().store(CacheEntry.SPECTRUM, id, spectrum);
                 }
             } catch (JMzReaderException ex) {
                 logger.error("Get spectrum by id", ex);

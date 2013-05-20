@@ -8,8 +8,8 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
-import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
-import uk.ac.ebi.pride.data.controller.cache.impl.MzMlCacheBuilder;
+import uk.ac.ebi.pride.data.controller.cache.CacheEntry;
+import uk.ac.ebi.pride.data.controller.cache.strategy.MzMlCachingStrategy;
 import uk.ac.ebi.pride.data.controller.impl.Transformer.MzMLTransformer;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.core.Chromatogram;
@@ -82,7 +82,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
                 DataAccessController.ContentCategory.SOFTWARE,
                 DataAccessController.ContentCategory.DATA_PROCESSING);
         // create cache builder
-        setCacheBuilder(new MzMlCacheBuilder(this));
+        setCachingStrategy(new MzMlCachingStrategy());
         // populate cache
         populateCache();
     }
@@ -376,7 +376,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
                         rawSpec = unmarshaller.getSpectrumById(id.toString());
                 spectrum = MzMLTransformer.transformSpectrum(rawSpec);
                 if (useCache) {
-                    getCache().store(CacheCategory.SPECTRUM, id, spectrum);
+                    getCache().store(CacheEntry.SPECTRUM, id, spectrum);
                 }
             } catch (MzMLUnmarshallerException ex) {
                 logger.error("Get spectrum by id", ex);
@@ -403,7 +403,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
                         rawChroma = unmarshaller.getChromatogramById(id.toString());
                 chroma = MzMLTransformer.transformChromatogram(rawChroma);
                 if (useCache) {
-                    getCache().store(CacheCategory.CHROMATOGRAM, id, chroma);
+                    getCache().store(CacheEntry.CHROMATOGRAM, id, chroma);
                 }
             } catch (MzMLUnmarshallerException ex) {
                 logger.error("Get chromatogram by id", ex);

@@ -334,7 +334,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
 
     @Override
     public boolean hasPeptide() {
-        return getNumberOfProteins() > 0;
+        return getNumberOfPeptides() > 0;
     }
 
     @Override

@@ -20,7 +20,7 @@ public interface Cache {
      * @param key   key
      * @param value value
      */
-    public void store(CacheCategory type, Object key, Object value);
+    void store(CacheEntry type, Object key, Object value);
 
     /**
      * Store a map of data into the cache
@@ -28,7 +28,7 @@ public interface Cache {
      * @param type   cache type
      * @param values a map of values
      */
-    public void storeInBatch(CacheCategory type, Map values);
+    void storeInBatch(CacheEntry type, Map values);
 
     /**
      * Store data into cache by key only
@@ -36,7 +36,7 @@ public interface Cache {
      * @param type cache type
      * @param key  key
      */
-    public void store(CacheCategory type, Object key);
+    void store(CacheEntry type, Object key);
 
     /**
      * Store a collection into the cache
@@ -44,7 +44,7 @@ public interface Cache {
      * @param type   cache category
      * @param values a collection of data
      */
-    public void storeInBatch(CacheCategory type, Collection values);
+    void storeInBatch(CacheEntry type, Collection values);
 
     /**
      * Get data from cache using CacheCategory and key
@@ -53,7 +53,7 @@ public interface Cache {
      * @param key  key
      * @return Object value
      */
-    public Object get(CacheCategory type, Object key);
+    Object get(CacheEntry type, Object key);
 
     /**
      * Get data from cache using CacheCategory and a collections of keys
@@ -62,7 +62,7 @@ public interface Cache {
      * @param keys keys
      * @return Object value
      */
-    public Collection getInBatch(CacheCategory type, Collection keys);
+    Collection getInBatch(CacheEntry type, Collection keys);
 
     /**
      * Check whether the cache already has the cache category
@@ -70,7 +70,7 @@ public interface Cache {
      * @param type CacheCategory
      * @return boolean  true if the category exists
      */
-    public boolean hasCacheCategory(CacheCategory type);
+    boolean hasCacheEntry(CacheEntry type);
 
     /**
      * Get data from cache using CacheCategory
@@ -78,19 +78,19 @@ public interface Cache {
      * @param type cache category
      * @return Object   key
      */
-    public Object get(CacheCategory type);
+    Object get(CacheEntry type);
 
     /**
      * Clear all data assigned to CacheCategory
      *
      * @param type cache category
      */
-    public void clear(CacheCategory type);
+    void clear(CacheEntry type);
 
     /**
      * Clear all data
      */
-    public void clear();
+    void clear();
 }
 
 

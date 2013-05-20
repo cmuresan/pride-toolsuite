@@ -13,7 +13,7 @@ import java.util.HashMap;
  * Date: 07-Sep-2010
  * Time: 10:52:54
  */
-public enum CacheCategory {
+public enum CacheEntry {
     SPECTRUM(CachedMap.class, 10),                                   // Map<Spectrum id, Spectrum>
     SPECTRADATA_TO_SPECTRUMIDS(HashMap.class,null),               // Map<Comparable, List<Comparable>>
     PROTEIN_TO_PEPTIDE_EVIDENCES(HashMap.class, null),       //Map<Comparable,Map<Comparable, List<String[]>>>
@@ -47,7 +47,6 @@ public enum CacheCategory {
     PEPTIDE_SEQUENCE(HashMap.class, null),                            // Map<Peptide Id, peptide sequence>
     PEPTIDE_START(HashMap.class, null),                               // Map<Peptide Id, peptide start location>
     PEPTIDE_END(HashMap.class, null),                                  // Map<Peptide Id, peptide end location>
-
     PEPTIDE_TO_SPECTRUM(HashMap.class, null),                         // Map<Peptide Id, spectrum id>  in mzidentml the spectrum have two
                                                                           // components the spectrum id and the file id, then is Ma<Peptide Id, String[]>
     PEPTIDE_TO_PARAM(HashMap.class, null),                            // Map<Peptide Id, ParamGroup>
@@ -58,12 +57,15 @@ public enum CacheCategory {
     NUMBER_OF_PEAKS(HashMap.class, null),                             // Map<Spectrum id, number of peaks>
 
     PROTEIN_QUANT_UNIT(ArrayList.class, null), //List<QuantCvTermReference>
-    PEPTIDE_QUANT_UNIT(ArrayList.class, null); // List<QuantCvTermReference>
+    PEPTIDE_QUANT_UNIT(ArrayList.class, null), // List<QuantCvTermReference>
+    FRAGMENTATION_TABLE (HashMap.class, null),  // Map<Fragmentation id, IdentifiableParamGroup>
+    CV_LOOKUP (HashMap.class, null),  // Map<cv label, CVLookup>
+    SPECTRA_DATA (HashMap.class, null); // Map<Spectra data id, SpectraData>
 
     private final Class   dataStructType;
     private final Integer size;
 
-    private CacheCategory(Class dataStructType, Integer size) {
+    private CacheEntry(Class dataStructType, Integer size) {
         this.dataStructType = dataStructType;
         this.size           = size;
     }

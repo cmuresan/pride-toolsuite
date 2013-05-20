@@ -6,8 +6,8 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
-import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
-import uk.ac.ebi.pride.data.controller.cache.impl.PrideXmlCacheBuilder;
+import uk.ac.ebi.pride.data.controller.cache.CacheEntry;
+import uk.ac.ebi.pride.data.controller.cache.strategy.PrideXmlCachingStrategy;
 import uk.ac.ebi.pride.data.controller.impl.Transformer.PrideXmlTransformer;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
@@ -67,7 +67,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 ContentCategory.DATA_PROCESSING,
                 ContentCategory.QUANTIFICATION);
         // set cache builder
-        setCacheBuilder(new PrideXmlCacheBuilder(this));
+        setCachingStrategy(new PrideXmlCachingStrategy());
         // populate cache
         populateCache();
     }
@@ -374,7 +374,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
 
                 metaData = new ExperimentMetaData(additional, accession, title, version, shortLabel, samples, softwares, persons, sources, null, organizations, references, null, null, protocol);
                 // store it in the cache
-                getCache().store(CacheCategory.EXPERIMENT_METADATA, metaData);
+                getCache().store(CacheEntry.EXPERIMENT_METADATA, metaData);
             } catch (Exception ex) {
                 String msg = "Error while getting experiment meta data";
                 logger.error(msg, ex);
@@ -431,7 +431,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
             try {
                 spectrum = PrideXmlTransformer.transformSpectrum(reader.getSpectrumById(id.toString()));
                 if (useCache && spectrum != null) {
-                    getCache().store(CacheCategory.SPECTRUM, id, spectrum);
+                    getCache().store(CacheEntry.SPECTRUM, id, spectrum);
                 }
             } catch (Exception ex) {
                 String msg = "Error while getting spectrum: " + id;
@@ -470,13 +470,13 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
                 ident = PrideXmlTransformer.transformIdentification(reader.getIdentById(proteinId.toString()));
                 if (useCache && ident != null) {
                     // store identification into cache
-                    getCache().store(CacheCategory.PROTEIN, proteinId, ident);
+                    getCache().store(CacheEntry.PROTEIN, proteinId, ident);
                     // store precursor charge and m/z
                     for (Peptide peptide : ident.getPeptides()) {
                         Spectrum spectrum = peptide.getSpectrum();
                         if (spectrum != null) {
-                            getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorChargeParamGroup(spectrum));
-                            getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+                            getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorChargeParamGroup(spectrum));
+                            getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
                         }
                     }
                 }
@@ -506,12 +506,12 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
             peptide = PrideXmlTransformer.transformPeptide(reader.getPeptide(proteinId.toString(), Integer.parseInt(index.toString())));
             if (useCache && peptide != null) {
                 // store peptide
-                getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(proteinId, index), peptide);
+                getCache().store(CacheEntry.PEPTIDE, new Tuple<Comparable, Comparable>(proteinId, index), peptide);
                 // store precursor charge and m/z
                 Spectrum spectrum = peptide.getSpectrum();
                 if (spectrum != null) {
-                    getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorChargeParamGroup(spectrum));
-                    getCache().store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+                    getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorChargeParamGroup(spectrum));
+                    getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
                 }
             }
         }

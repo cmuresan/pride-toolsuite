@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
-import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
-import uk.ac.ebi.pride.data.controller.cache.impl.PeakCacheBuilder;
+import uk.ac.ebi.pride.data.controller.cache.CacheEntry;
+import uk.ac.ebi.pride.data.controller.cache.strategy.PeakCachingStrategy;
 import uk.ac.ebi.pride.data.controller.impl.Transformer.PeakTransformer;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.file.PeakUnmarshallerAdaptor;
@@ -85,8 +85,10 @@ public class PeakControllerImpl extends CachedDataAccessController {
 
         // set data source name
         this.setName(file.getName());
+
         // set the type
         this.setType(DataAccessController.Type.XML_FILE);
+
         // set the content categories
         this.setContentCategories(DataAccessController.ContentCategory.SPECTRUM,
                 DataAccessController.ContentCategory.CHROMATOGRAM,
@@ -94,8 +96,10 @@ public class PeakControllerImpl extends CachedDataAccessController {
                 DataAccessController.ContentCategory.INSTRUMENT,
                 DataAccessController.ContentCategory.SOFTWARE,
                 DataAccessController.ContentCategory.DATA_PROCESSING);
+
         // create cache builder
-        setCacheBuilder(new PeakCacheBuilder(this));
+        setCachingStrategy(new PeakCachingStrategy());
+
         // populate cache
         populateCache();
     }
@@ -149,7 +153,7 @@ public class PeakControllerImpl extends CachedDataAccessController {
                 rawSpec = unmarshaller.getSpectrumById(id.toString());
                 spectrum = PeakTransformer.transformSpectrum(rawSpec);
                 if (useCache) {
-                    getCache().store(CacheCategory.SPECTRUM, id, spectrum);
+                    getCache().store(CacheEntry.SPECTRUM, id, spectrum);
                 }
             } catch (JMzReaderException ex) {
                 logger.error("Get spectrum by id", ex);

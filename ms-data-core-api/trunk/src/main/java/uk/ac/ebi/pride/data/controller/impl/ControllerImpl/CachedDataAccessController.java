@@ -10,11 +10,10 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
-import uk.ac.ebi.pride.data.controller.access.CacheAccess;
 import uk.ac.ebi.pride.data.controller.cache.Cache;
 import uk.ac.ebi.pride.data.controller.cache.CacheAccessor;
-import uk.ac.ebi.pride.data.controller.cache.CacheBuilder;
-import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
+import uk.ac.ebi.pride.data.controller.cache.CacheEntry;
+import uk.ac.ebi.pride.data.controller.cache.CachingStrategy;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
@@ -36,7 +35,7 @@ import java.util.*;
  * Date: 13-Sep-2010
  * Time: 14:26:03
  */
-public abstract class CachedDataAccessController extends AbstractDataAccessController implements CacheAccess {
+public abstract class CachedDataAccessController extends AbstractDataAccessController {
 
     private static final Logger logger = LoggerFactory.getLogger(CachedDataAccessController.class);
     /**
@@ -50,12 +49,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     /**
      * builder is responsible for initializing the Cache
      */
-    private CacheBuilder cacheBuilder;
-
-    /**
-     * Whether cache has been populated
-     */
-    private boolean cached;
+    private CachingStrategy cachingStrategy;
 
     public CachedDataAccessController() {
         this(null, DataAccessMode.CACHE_AND_SOURCE);
@@ -69,39 +63,28 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         super(source);
         this.mode = mode;
         this.cache = new CacheAccessor();
-        this.cached = false;
     }
 
     public Cache getCache() {
         return cache;
     }
 
-
-    public CacheBuilder getCacheBuilder() {
-        return cacheBuilder;
+    public CachingStrategy getCachingStrategy() {
+        return cachingStrategy;
     }
 
-    public void setCacheBuilder(CacheBuilder builder) {
-        this.cacheBuilder = builder;
-    }
-
-    @Override
-    public boolean isCached() {
-        return cached;
-    }
-
-    public void clearCache() {
-        cache.clear();
-        cached = false;
+    public void setCachingStrategy(CachingStrategy builder) {
+        this.cachingStrategy = builder;
+        this.cachingStrategy.setDataAccessController(this);
+        this.cachingStrategy.setCache(cache);
     }
 
     public void populateCache() {
-        clearCache();
+        cache.clear();
 
-        if (cacheBuilder != null) {
+        if (cachingStrategy != null) {
             try {
-                cacheBuilder.populate();
-                cached = true;
+                cachingStrategy.cache();
             } catch (Exception e) {
                 String msg = "Exception while trying to populate cache";
                 logger.error(msg, e);
@@ -136,7 +119,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @Override
     @SuppressWarnings("unchecked")
     public Collection<Comparable> getSpectrumIds() {
-        Collection<Comparable> ids = (Collection<Comparable>) cache.get(CacheCategory.SPECTRUM_ID);
+        Collection<Comparable> ids = (Collection<Comparable>) cache.get(CacheEntry.SPECTRUM_ID);
         return ids == null ? Collections.<Comparable>emptyList() : ids;
     }
 
@@ -148,7 +131,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @Override
     @SuppressWarnings("unchecked")
     public Collection<Comparable> getChromatogramIds() {
-        Collection<Comparable> ids = (Collection<Comparable>) cache.get(CacheCategory.CHROMATOGRAM_ID);
+        Collection<Comparable> ids = (Collection<Comparable>) cache.get(CacheEntry.CHROMATOGRAM_ID);
         return ids == null ? Collections.<Comparable>emptyList() : ids;
     }
 
@@ -160,7 +143,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @Override
     @SuppressWarnings("unchecked")
     public Collection<Comparable> getProteinIds() {
-        Collection<Comparable> ids = (Collection<Comparable>) cache.get(CacheCategory.PROTEIN_ID);
+        Collection<Comparable> ids = (Collection<Comparable>) cache.get(CacheEntry.PROTEIN_ID);
         return ids == null ? Collections.<Comparable>emptyList() : ids;
     }
 
@@ -185,7 +168,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @return Spectrum spectrum object
      */
     Spectrum getSpectrumById(Comparable id, boolean useCache) {
-        return useCache ? (Spectrum) cache.get(CacheCategory.SPECTRUM, id) : null;
+        return useCache ? (Spectrum) cache.get(CacheEntry.SPECTRUM, id) : null;
     }
 
     /**
@@ -209,7 +192,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @return Chromatogram chromatogram object
      */
     public Chromatogram getChromatogramById(Comparable id, boolean useCache) {
-        return useCache ? (Chromatogram) cache.get(CacheCategory.CHROMATOGRAM, id) : null;
+        return useCache ? (Chromatogram) cache.get(CacheEntry.CHROMATOGRAM, id) : null;
     }
 
     /**
@@ -233,7 +216,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      * @return Identification identification object
      */
     Protein getProteinById(Comparable proteinId, boolean useCache) {
-        return useCache ? (Protein) cache.get(CacheCategory.PROTEIN, proteinId) : null;
+        return useCache ? (Protein) cache.get(CacheEntry.PROTEIN, proteinId) : null;
     }
 
 
@@ -246,10 +229,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public int getNumberOfSpectrumPeaks(Comparable specId) {
-        Integer numOfPeaks = (Integer) cache.get(CacheCategory.NUMBER_OF_PEAKS, specId);
+        Integer numOfPeaks = (Integer) cache.get(CacheEntry.NUMBER_OF_PEAKS, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && numOfPeaks == null) {
             numOfPeaks = super.getNumberOfSpectrumPeaks(specId);
-            cache.store(CacheCategory.NUMBER_OF_PEAKS, specId, numOfPeaks);
+            cache.store(CacheEntry.NUMBER_OF_PEAKS, specId, numOfPeaks);
         }
         return numOfPeaks == null ? 0 : numOfPeaks;
     }
@@ -264,10 +247,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public int getSpectrumMsLevel(Comparable specId) {
-        Integer msLevel = (Integer) cache.get(CacheCategory.MS_LEVEL, specId);
+        Integer msLevel = (Integer) cache.get(CacheEntry.MS_LEVEL, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && msLevel == null) {
             msLevel = super.getSpectrumMsLevel(specId);
-            cache.store(CacheCategory.MS_LEVEL, specId, msLevel);
+            cache.store(CacheEntry.MS_LEVEL, specId, msLevel);
         }
         return msLevel == null ? -1 : msLevel;
     }
@@ -281,10 +264,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public Integer getSpectrumPrecursorCharge(Comparable specId) {
-        Integer charge = (Integer) cache.get(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, specId);
+        Integer charge = (Integer) cache.get(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_CHARGE, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && charge == null) {
             charge = super.getSpectrumPrecursorCharge(specId);
-            cache.store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_CHARGE, specId, charge);
+            cache.store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_CHARGE, specId, charge);
         }
         return charge;
     }
@@ -304,7 +287,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     public Integer getPeptidePrecursorCharge(Comparable proteinId, Comparable peptideId) {
         Integer charge = null;
         // get peptide additional parameters
-        ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
+        ParamGroup paramGroup = (ParamGroup) cache.get(CacheEntry.PEPTIDE_TO_PARAM, peptideId);
         if (paramGroup != null) {
             // get peptide precursor charge
             charge = DataAccessUtilities.getPrecursorChargeParamGroup(paramGroup);
@@ -324,10 +307,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public double getSpectrumPrecursorMz(Comparable specId) {
-        Double mz = (Double) cache.get(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, specId);
+        Double mz = (Double) cache.get(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_MZ, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && mz == null) {
             mz = super.getSpectrumPrecursorMz(specId);
-            cache.store(CacheCategory.SPECTRUM_LEVEL_PRECURSOR_MZ, specId, mz);
+            cache.store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_MZ, specId, mz);
         }
         return mz == null ? -1 : mz;
     }
@@ -343,7 +326,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     public double getPeptidePrecursorMz(Comparable proteinId, Comparable peptideId) {
         double mz = -1;
         // get peptide additional parameters
-        ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
+        ParamGroup paramGroup = (ParamGroup) cache.get(CacheEntry.PEPTIDE_TO_PARAM, peptideId);
         if (paramGroup != null) {
             // get peptide precursor charge
             mz = DataAccessUtilities.getPrecursorMz(paramGroup);
@@ -363,10 +346,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public double getSpectrumPrecursorIntensity(Comparable specId) {
-        Double intent = (Double) cache.get(CacheCategory.PRECURSOR_INTENSITY, specId);
+        Double intent = (Double) cache.get(CacheEntry.PRECURSOR_INTENSITY, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && intent == null) {
             intent = super.getSpectrumPrecursorIntensity(specId);
-            cache.store(CacheCategory.PRECURSOR_INTENSITY, specId, intent);
+            cache.store(CacheEntry.PRECURSOR_INTENSITY, specId, intent);
         }
         return intent == null ? -1 : intent;
     }
@@ -380,10 +363,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public double getSumOfIntensity(Comparable specId) {
-        Double sum = (Double) cache.get(CacheCategory.SUM_OF_INTENSITY, specId);
+        Double sum = (Double) cache.get(CacheEntry.SUM_OF_INTENSITY, specId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && sum == null) {
             sum = super.getSumOfIntensity(specId);
-            cache.store(CacheCategory.SUM_OF_INTENSITY, specId, sum);
+            cache.store(CacheEntry.SUM_OF_INTENSITY, specId, sum);
         }
         return sum;
     }
@@ -397,10 +380,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public String getProteinAccession(Comparable proteinId) {
-        String acc = (String) cache.get(CacheCategory.PROTEIN_ACCESSION, proteinId);
+        String acc = (String) cache.get(CacheEntry.PROTEIN_ACCESSION, proteinId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && acc == null) {
             acc = super.getProteinAccession(proteinId);
-            cache.store(CacheCategory.PROTEIN_ACCESSION, proteinId, acc);
+            cache.store(CacheEntry.PROTEIN_ACCESSION, proteinId, acc);
         }
         return acc;
     }
@@ -413,11 +396,11 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public String getProteinAccessionVersion(Comparable proteinId) {
-        String accVersion = (String) cache.get(CacheCategory.PROTEIN_ACCESSION_VERSION, proteinId);
+        String accVersion = (String) cache.get(CacheEntry.PROTEIN_ACCESSION_VERSION, proteinId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && accVersion == null) {
             accVersion = super.getProteinAccessionVersion(proteinId);
             if (accVersion != null) {
-                cache.store(CacheCategory.PROTEIN_ACCESSION_VERSION, proteinId, accVersion);
+                cache.store(CacheEntry.PROTEIN_ACCESSION_VERSION, proteinId, accVersion);
             }
         }
         return accVersion;
@@ -432,10 +415,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public double getProteinScore(Comparable proteinId) {
-        Double score = (Double) cache.get(CacheCategory.SCORE, proteinId);
+        Double score = (Double) cache.get(CacheEntry.SCORE, proteinId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && score == null) {
             score = super.getProteinScore(proteinId);
-            cache.store(CacheCategory.SCORE, proteinId, score);
+            cache.store(CacheEntry.SCORE, proteinId, score);
         }
         return score == null ? -1 : score;
     }
@@ -449,10 +432,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public double getProteinThreshold(Comparable proteinId) {
-        Double threshold = (Double) cache.get(CacheCategory.THRESHOLD, proteinId);
+        Double threshold = (Double) cache.get(CacheEntry.THRESHOLD, proteinId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && threshold == null) {
             threshold = super.getProteinThreshold(proteinId);
-            cache.store(CacheCategory.THRESHOLD, proteinId, threshold);
+            cache.store(CacheEntry.THRESHOLD, proteinId, threshold);
         }
         return threshold == null ? -1 : threshold;
     }
@@ -465,11 +448,11 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public SearchDataBase getSearchDatabase(Comparable proteinId) {
-        SearchDataBase database = (SearchDataBase) cache.get(CacheCategory.PROTEIN_SEARCH_DATABASE, proteinId);
+        SearchDataBase database = (SearchDataBase) cache.get(CacheEntry.PROTEIN_SEARCH_DATABASE, proteinId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && database == null) {
             database = super.getSearchDatabase(proteinId);
             if (database != null) {
-                cache.store(CacheCategory.PROTEIN_SEARCH_DATABASE, proteinId, database);
+                cache.store(CacheEntry.PROTEIN_SEARCH_DATABASE, proteinId, database);
             }
         }
         return database;
@@ -483,11 +466,11 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public String getSearchDatabaseVersion(Comparable proteinId) {
-        String version = (String) cache.get(CacheCategory.PROTEIN_SEARCH_DATABASE_VERSION, proteinId);
+        String version = (String) cache.get(CacheEntry.PROTEIN_SEARCH_DATABASE_VERSION, proteinId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && version == null) {
             version = super.getSearchDatabaseVersion(proteinId);
             if (version != null) {
-                cache.store(CacheCategory.PROTEIN_SEARCH_DATABASE_VERSION, proteinId, version);
+                cache.store(CacheEntry.PROTEIN_SEARCH_DATABASE_VERSION, proteinId, version);
             }
         }
         return version;
@@ -503,10 +486,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @Override
     @SuppressWarnings("unchecked")
     public Collection<Comparable> getPeptideIds(Comparable proteinId) {
-        Collection<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.PROTEIN_TO_PEPTIDE, proteinId);
+        Collection<Comparable> ids = (List<Comparable>) cache.get(CacheEntry.PROTEIN_TO_PEPTIDE, proteinId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && ids == null) {
             ids = super.getPeptideIds(proteinId);
-            cache.store(CacheCategory.PROTEIN_TO_PEPTIDE, proteinId, ids);
+            cache.store(CacheEntry.PROTEIN_TO_PEPTIDE, proteinId, ids);
         }
         return ids;
     }
@@ -521,7 +504,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
         if (useCache) {
             // check whether the identification exist in the cache already
-            Protein ident = (Protein) cache.get(CacheCategory.PROTEIN, proteinId);
+            Protein ident = (Protein) cache.get(CacheEntry.PROTEIN, proteinId);
             if (ident != null) {
                 int indexInt = Integer.parseInt(index.toString());
                 List<Peptide> peptides = ident.getPeptides();
@@ -529,7 +512,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
                     pep = peptides.get(indexInt);
                 }
             } else {
-                pep = (Peptide) cache.get(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(proteinId, index));
+                pep = (Peptide) cache.get(CacheEntry.PEPTIDE, new Tuple<Comparable, Comparable>(proteinId, index));
             }
         }
 
@@ -546,11 +529,11 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @Override
     @SuppressWarnings("unchecked")
     public List<String> getPeptideSequences(Comparable proteinId) {
-        List<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.PROTEIN_TO_PEPTIDE, proteinId);
+        List<Comparable> ids = (List<Comparable>) cache.get(CacheEntry.PROTEIN_TO_PEPTIDE, proteinId);
         List<String> sequences = new ArrayList<String>();
-        if (ids != null && cache.hasCacheCategory(CacheCategory.PEPTIDE_SEQUENCE)) {
+        if (ids != null && cache.hasCacheEntry(CacheEntry.PEPTIDE_SEQUENCE)) {
             // get each peptide sequence one by one from cache
-            Collection<String> seqs = (Collection<String>) cache.getInBatch(CacheCategory.PEPTIDE_SEQUENCE, ids);
+            Collection<String> seqs = (Collection<String>) cache.getInBatch(CacheEntry.PEPTIDE_SEQUENCE, ids);
             sequences.addAll(seqs);
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
             // read from data source
@@ -573,7 +556,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @SuppressWarnings("unchecked")
     public int getNumberOfPeptides(Comparable proteinId) {
         int cnt = 0;
-        List<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.PROTEIN_TO_PEPTIDE, proteinId);
+        List<Comparable> ids = (List<Comparable>) cache.get(CacheEntry.PROTEIN_TO_PEPTIDE, proteinId);
         if (ids != null) {
             cnt = ids.size();
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
@@ -593,9 +576,9 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @SuppressWarnings("unchecked")
     public int getNumberOfUniquePeptides(Comparable proteinId) {
         int cnt = 0;
-        List<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.PROTEIN_TO_PEPTIDE, proteinId);
-        if (ids != null && cache.hasCacheCategory(CacheCategory.PEPTIDE_SEQUENCE)) {
-            Collection<String> seqs = (Collection<String>) cache.getInBatch(CacheCategory.PEPTIDE_SEQUENCE, ids);
+        List<Comparable> ids = (List<Comparable>) cache.get(CacheEntry.PROTEIN_TO_PEPTIDE, proteinId);
+        if (ids != null && cache.hasCacheEntry(CacheEntry.PEPTIDE_SEQUENCE)) {
+            Collection<String> seqs = (Collection<String>) cache.getInBatch(CacheEntry.PEPTIDE_SEQUENCE, ids);
             cnt = (new HashSet<String>(seqs)).size();
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
             cnt = super.getNumberOfUniquePeptides(proteinId);
@@ -614,10 +597,10 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @SuppressWarnings("unchecked")
     public int getNumberOfPTMs(Comparable proteinId) {
         int cnt = 0;
-        List<Comparable> ids = (List<Comparable>) cache.get(CacheCategory.PROTEIN_TO_PEPTIDE, proteinId);
-        if (ids != null && cache.hasCacheCategory(CacheCategory.PEPTIDE_TO_MODIFICATION)) {
+        List<Comparable> ids = (List<Comparable>) cache.get(CacheEntry.PROTEIN_TO_PEPTIDE, proteinId);
+        if (ids != null && cache.hasCacheEntry(CacheEntry.PEPTIDE_TO_MODIFICATION)) {
             // get all ptm locations
-            Collection<List<Tuple<String, Integer>>> ptms = (Collection<List<Tuple<String, Integer>>>) cache.getInBatch(CacheCategory.PEPTIDE_TO_MODIFICATION, ids);
+            Collection<List<Tuple<String, Integer>>> ptms = (Collection<List<Tuple<String, Integer>>>) cache.getInBatch(CacheEntry.PEPTIDE_TO_MODIFICATION, ids);
             for (List<Tuple<String, Integer>> ptm : ptms) {
                 cnt += ptm.size();
             }
@@ -639,7 +622,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @SuppressWarnings("unchecked")
     public int getNumberOfPTMs(Comparable proteinId, Comparable peptideId) {
         int cnt = 0;
-        List<Tuple<String, Integer>> locations = (List<Tuple<String, Integer>>) cache.get(CacheCategory.PEPTIDE_TO_MODIFICATION, peptideId);
+        List<Tuple<String, Integer>> locations = (List<Tuple<String, Integer>>) cache.get(CacheEntry.PEPTIDE_TO_MODIFICATION, peptideId);
         if (locations != null) {
             cnt = locations.size();
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
@@ -658,7 +641,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public String getPeptideSequence(Comparable proteinId, Comparable peptideId) {
-        String seq = (String) cache.get(CacheCategory.PEPTIDE_SEQUENCE, peptideId);
+        String seq = (String) cache.get(CacheEntry.PEPTIDE_SEQUENCE, peptideId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && seq == null) {
             seq = super.getPeptideSequence(proteinId, peptideId);
             // note: peptide id is not supported by pride xml
@@ -676,7 +659,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public int getPeptideSequenceStart(Comparable proteinId, Comparable peptideId) {
-        Integer start = (Integer) cache.get(CacheCategory.PEPTIDE_START, peptideId);
+        Integer start = (Integer) cache.get(CacheEntry.PEPTIDE_START, peptideId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && start == null) {
             start = super.getPeptideSequenceStart(proteinId, peptideId);
             // note: peptide id is not supported by pride xml
@@ -694,7 +677,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public int getPeptideSequenceEnd(Comparable proteinId, Comparable peptideId) {
-        Integer stop = (Integer) cache.get(CacheCategory.PEPTIDE_END, peptideId);
+        Integer stop = (Integer) cache.get(CacheEntry.PEPTIDE_END, peptideId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && stop == null) {
             stop = super.getPeptideSequenceEnd(proteinId, peptideId);
             // note: peptide id is not supported by pride xml
@@ -712,7 +695,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public Comparable getPeptideSpectrumId(Comparable proteinId, Comparable peptideId) {
-        Comparable specId = (Comparable) cache.get(CacheCategory.PEPTIDE_TO_SPECTRUM, peptideId);
+        Comparable specId = (Comparable) cache.get(CacheEntry.PEPTIDE_TO_SPECTRUM, peptideId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && specId == null) {
             specId = super.getPeptideSpectrumId(proteinId, peptideId);
             // note: peptide id is not supported by pride xml
@@ -731,7 +714,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @Override
     @SuppressWarnings("unchecked")
     public List<Modification> getPTMs(Comparable proteinId, Comparable peptideId) {
-        List<Tuple<String, Integer>> ptms = (List<Tuple<String, Integer>>) cache.get(CacheCategory.PEPTIDE_TO_MODIFICATION, peptideId);
+        List<Tuple<String, Integer>> ptms = (List<Tuple<String, Integer>>) cache.get(CacheEntry.PEPTIDE_TO_MODIFICATION, peptideId);
 
         List<Modification> mods = new ArrayList<Modification>();
 
@@ -740,7 +723,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
             for (Tuple<String, Integer> ptm : ptms) {
                 String modAcc = ptm.getKey();
                 Integer location = ptm.getValue();
-                Modification mod = (Modification) cache.get(CacheCategory.MODIFICATION, modAcc);
+                Modification mod = (Modification) cache.get(CacheEntry.MODIFICATION, modAcc);
                 //Modification newMod = new Modification(mod, modAcc, mod.getModDatabase(), mod.getModDatabaseVersion(), mod.getMonoisotopicMassDelta(), mod.getAvgMassDelta(), location);
                 Modification newMod = new Modification(modAcc, mod.getName(), location, mod.getResidues(), mod.getAvgMassDelta(), mod.getMonoisotopicMassDelta(), mod.getModDatabase(), mod.getModDatabaseVersion());
                 mods.add(newMod);
@@ -760,7 +743,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public int getNumberOfFragmentIons(Comparable proteinId, Comparable peptideId) {
-        Integer num = (Integer) cache.get(CacheCategory.NUMBER_OF_FRAGMENT_IONS, peptideId);
+        Integer num = (Integer) cache.get(CacheEntry.NUMBER_OF_FRAGMENT_IONS, peptideId);
         if (!DataAccessMode.CACHE_ONLY.equals(mode) && num == null) {
             num = super.getNumberOfFragmentIons(proteinId, peptideId);
         }
@@ -778,7 +761,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     public Score getPeptideScore(Comparable proteinId, Comparable peptideId) {
         Score score = null;
         // get peptide additional parameters
-        ParamGroup paramGroup = (ParamGroup) cache.get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
+        ParamGroup paramGroup = (ParamGroup) cache.get(CacheEntry.PEPTIDE_TO_PARAM, peptideId);
         if (paramGroup != null) {
             // get peptide score
             score = DataAccessUtilities.getScore(paramGroup);
@@ -796,7 +779,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public List<SearchEngineType> getSearchEngineTypes() {
-        Collection<SearchEngineType> searchEngineTypes = (Collection<SearchEngineType>) cache.get(CacheCategory.SEARCH_ENGINE_TYPE);
+        Collection<SearchEngineType> searchEngineTypes = (Collection<SearchEngineType>) cache.get(CacheEntry.SEARCH_ENGINE_TYPE);
 
         if (searchEngineTypes != null && !searchEngineTypes.isEmpty()) {
             return new ArrayList<SearchEngineType>(searchEngineTypes);
@@ -814,7 +797,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public List<CvTermReference> getAvailableProteinLevelScores() {
-        Collection<CvTermReference> proteinLevelScores = (Collection<CvTermReference>) cache.get(CacheCategory.PROTEIN_LEVEL_SCORES);
+        Collection<CvTermReference> proteinLevelScores = (Collection<CvTermReference>) cache.get(CacheEntry.PROTEIN_LEVEL_SCORES);
 
         if (proteinLevelScores != null && !proteinLevelScores.isEmpty()) {
             return new ArrayList<CvTermReference>(proteinLevelScores);
@@ -833,7 +816,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public List<CvTermReference> getAvailablePeptideLevelScores() {
-        Collection<CvTermReference> peptideLevelScores = (Collection<CvTermReference>) cache.get(CacheCategory.PEPTIDE_LEVEL_SCORES);
+        Collection<CvTermReference> peptideLevelScores = (Collection<CvTermReference>) cache.get(CacheEntry.PEPTIDE_LEVEL_SCORES);
 
         if (peptideLevelScores != null && !peptideLevelScores.isEmpty()) {
             return new ArrayList<CvTermReference>(peptideLevelScores);
@@ -875,13 +858,13 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @Override
     public QuantCvTermReference getProteinQuantUnit() {
         Collection<QuantCvTermReference> units;
-        units = (Collection<QuantCvTermReference>) cache.get(CacheCategory.PROTEIN_QUANT_UNIT);
+        units = (Collection<QuantCvTermReference>) cache.get(CacheEntry.PROTEIN_QUANT_UNIT);
 
         if (units != null && !units.isEmpty()) {
             return CollectionUtils.getElement(units, 0);
         } else {
             QuantCvTermReference unit = super.getProteinQuantUnit();
-            cache.store(CacheCategory.PROTEIN_QUANT_UNIT, unit);
+            cache.store(CacheEntry.PROTEIN_QUANT_UNIT, unit);
             return unit;
         }
     }
@@ -894,13 +877,13 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     @Override
     public QuantCvTermReference getPeptideQuantUnit() {
         Collection<QuantCvTermReference> units;
-        units = (Collection<QuantCvTermReference>) cache.get(CacheCategory.PEPTIDE_QUANT_UNIT);
+        units = (Collection<QuantCvTermReference>) cache.get(CacheEntry.PEPTIDE_QUANT_UNIT);
 
         if (units != null && !units.isEmpty()) {
             return CollectionUtils.getElement(units, 0);
         } else {
             QuantCvTermReference unit = super.getPeptideQuantUnit();
-            cache.store(CacheCategory.PEPTIDE_QUANT_UNIT, unit);
+            cache.store(CacheEntry.PEPTIDE_QUANT_UNIT, unit);
             return unit;
         }
     }
@@ -912,7 +895,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public ExperimentMetaData getExperimentMetaData() {
-        Collection<ExperimentMetaData> metaDatas = (Collection<ExperimentMetaData>) cache.get(CacheCategory.EXPERIMENT_METADATA);
+        Collection<ExperimentMetaData> metaDatas = (Collection<ExperimentMetaData>) cache.get(CacheEntry.EXPERIMENT_METADATA);
 
         if (metaDatas != null && !metaDatas.isEmpty()) {
             return CollectionUtils.getElement(metaDatas, 0);
@@ -927,7 +910,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public IdentificationMetaData getIdentificationMetaData() {
-        Collection<IdentificationMetaData> metaDatas = (Collection<IdentificationMetaData>) cache.get(CacheCategory.PROTEIN_METADATA);
+        Collection<IdentificationMetaData> metaDatas = (Collection<IdentificationMetaData>) cache.get(CacheEntry.PROTEIN_METADATA);
         if (metaDatas != null && !metaDatas.isEmpty()) {
             return CollectionUtils.getElement(metaDatas, 0);
         }
@@ -941,7 +924,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public MzGraphMetaData getMzGraphMetaData() {
-        Collection<MzGraphMetaData> metaDatas = (Collection<MzGraphMetaData>) cache.get(CacheCategory.MZGRAPH_METADATA);
+        Collection<MzGraphMetaData> metaDatas = (Collection<MzGraphMetaData>) cache.get(CacheEntry.MZGRAPH_METADATA);
 
         if (metaDatas != null && !metaDatas.isEmpty()) {
             return CollectionUtils.getElement(metaDatas, 0);
@@ -951,7 +934,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
 
     @Override
     public Collection<Comparable> getProteinAmbiguityGroupIds() {
-        Collection<Comparable> groupIds = (Collection<Comparable>) cache.get(CacheCategory.PROTEIN_GROUP_ID);
+        Collection<Comparable> groupIds = (Collection<Comparable>) cache.get(CacheEntry.PROTEIN_GROUP_ID);
 
         if (groupIds == null || groupIds.isEmpty()) {
             groupIds = Collections.emptyList();
@@ -964,7 +947,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
      */
     @Override
     public void close() {
-        clearCache();
+        cache.clear();
         super.close();
     }
 }

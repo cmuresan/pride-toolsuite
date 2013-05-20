@@ -11,8 +11,8 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
-import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
-import uk.ac.ebi.pride.data.controller.cache.impl.PrideDBCacheBuilder;
+import uk.ac.ebi.pride.data.controller.cache.CacheEntry;
+import uk.ac.ebi.pride.data.controller.cache.strategy.PrideDBCachingStrategy;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.db.*;
 import uk.ac.ebi.pride.data.utils.BinaryDataUtils;
@@ -85,7 +85,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         }
 
         // set cache builder
-        setCacheBuilder(new PrideDBCacheBuilder(this));
+        setCachingStrategy(new PrideDBCachingStrategy());
 
         // populate cache
         populateCache();
@@ -422,7 +422,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             List<Reference> references = getReferences();
             metaData = new ExperimentMetaData(additional, accession, title, version, shortLabel, samples, software, persons, sourceFiles, null, organizations, references, null, null, protocol);
             // store in cache
-            getCache().store(CacheCategory.EXPERIMENT_METADATA, metaData);
+            getCache().store(CacheEntry.EXPERIMENT_METADATA, metaData);
         }
 
         return metaData;
@@ -663,7 +663,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
 
                     if (useCache) {
-                        getCache().store(CacheCategory.SPECTRUM, spectrumId, spectrum);
+                        getCache().store(CacheEntry.SPECTRUM, spectrumId, spectrum);
                     }
                 } catch (UnsupportedEncodingException e) {
                     logger.error("Failed to decode binary data array", e);
@@ -826,7 +826,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 }
 
                 if (useCache) {
-                    getCache().store(CacheCategory.PROTEIN, proteinId, protein);
+                    getCache().store(CacheEntry.PROTEIN, proteinId, protein);
                 }
             }
         }
@@ -835,7 +835,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     @Override
     public boolean isIdentifiedSpectrum(Comparable specId) {
-        Map<Comparable, Comparable> peptideToSpectrum = (Map<Comparable, Comparable>) getCache().get(CacheCategory.PEPTIDE_TO_SPECTRUM);
+        Map<Comparable, Comparable> peptideToSpectrum = (Map<Comparable, Comparable>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM);
         return peptideToSpectrum != null && peptideToSpectrum.containsValue(specId);
     }
 
@@ -844,10 +844,10 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         Peptide peptide = super.getPeptideByIndex(proteinId, peptideId, useCache);
         if (peptide == null) {
             //todo: check whether to use cache
-            String sequence = (String) getCache().get(CacheCategory.PEPTIDE_SEQUENCE, peptideId);
+            String sequence = (String) getCache().get(CacheEntry.PEPTIDE_SEQUENCE, peptideId);
             logger.debug("getPeptideById(identId, peptideId): ID[{}] : Sequence[{}]", new Object[]{peptideId, sequence});
-            Integer start = (Integer) getCache().get(CacheCategory.PEPTIDE_START, peptideId);
-            Integer end = (Integer) getCache().get(CacheCategory.PEPTIDE_END, peptideId);
+            Integer start = (Integer) getCache().get(CacheEntry.PEPTIDE_START, peptideId);
+            Integer end = (Integer) getCache().get(CacheEntry.PEPTIDE_END, peptideId);
             int pid = Integer.parseInt(peptideId.toString());
             ParamGroup params = new ParamGroup(getCvParams("pride_peptide_param", pid), getUserParams("pride_peptide_param", pid));
             List<Modification> modifications = this.getPTMs(proteinId, peptideId);
@@ -869,7 +869,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             peptide = new Peptide(peptideEvidence, spectrumIdentification);
 
             if (useCache) {
-                getCache().store(CacheCategory.PEPTIDE, new Tuple<Comparable, Comparable>(proteinId, peptideId), peptide);
+                getCache().store(CacheEntry.PEPTIDE, new Tuple<Comparable, Comparable>(proteinId, peptideId), peptide);
             }
         }
 
@@ -882,13 +882,13 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         List<SearchEngineType> searchEngineTypes = super.getSearchEngineTypes();
         if (searchEngineTypes.isEmpty() && hasProtein()) {
             // get search engine types
-            Map<Comparable, ParamGroup> params = (Map<Comparable, ParamGroup>) getCache().get(CacheCategory.PEPTIDE_TO_PARAM);
+            Map<Comparable, ParamGroup> params = (Map<Comparable, ParamGroup>) getCache().get(CacheEntry.PEPTIDE_TO_PARAM);
             if (params != null && !params.isEmpty()) {
                 Collection<ParamGroup> paramGroups = params.values();
                 ParamGroup paramGroup = CollectionUtils.getElement(paramGroups, 0);
                 searchEngineTypes = DataAccessUtilities.getSearchEngineTypes(paramGroup);
             }
-            getCache().store(CacheCategory.SEARCH_ENGINE_TYPE, searchEngineTypes);
+            getCache().store(CacheEntry.SEARCH_ENGINE_TYPE, searchEngineTypes);
         }
 
         return searchEngineTypes == null ? Collections.<SearchEngineType>emptyList() : searchEngineTypes;
@@ -906,9 +906,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     public int getNumberOfSpectrumPeaks(Comparable specId) {
         // check with cache if exists then use the in-memory spectrum object
         int cnt = 0;
-        Integer num = (Integer) getCache().get(CacheCategory.NUMBER_OF_PEAKS, specId);
+        Integer num = (Integer) getCache().get(CacheEntry.NUMBER_OF_PEAKS, specId);
         if (num == null) {
-            Spectrum spectrum = (Spectrum) getCache().get(CacheCategory.SPECTRUM, specId);
+            Spectrum spectrum = (Spectrum) getCache().get(CacheEntry.SPECTRUM, specId);
             if (spectrum != null) {
                 cnt = DataAccessUtilities.getNumberOfPeaks(spectrum);
             } else {
@@ -923,7 +923,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     try {
                         mzBinaryArray = getBinaryDataArray(mzArrId, CvTermReference.MZ_ARRAY);
                         cnt = mzBinaryArray.getDoubleArray().length;
-                        getCache().store(CacheCategory.NUMBER_OF_PEAKS, specId, cnt);
+                        getCache().store(CacheEntry.NUMBER_OF_PEAKS, specId, cnt);
                     } catch (UnsupportedEncodingException e) {
                         String errMsg = "Failed to query number of peaks during decoding of the binary data array";
                         logger.error(errMsg, e);
@@ -942,9 +942,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     @Override
     public double getSumOfIntensity(Comparable specId) {
         double sum = 0;
-        Double sumOfIntent = (Double) getCache().get(CacheCategory.SUM_OF_INTENSITY, specId);
+        Double sumOfIntent = (Double) getCache().get(CacheEntry.SUM_OF_INTENSITY, specId);
         if (sumOfIntent == null) {
-            Spectrum spectrum = (Spectrum) getCache().get(CacheCategory.SPECTRUM, specId);
+            Spectrum spectrum = (Spectrum) getCache().get(CacheEntry.SPECTRUM, specId);
             if (spectrum != null) {
                 sum = DataAccessUtilities.getSumOfIntensity(spectrum);
             } else {
@@ -962,13 +962,13 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                             for (double intent : originalIntentArr) {
                                 sum += intent;
                             }
-                            getCache().store(CacheCategory.SUM_OF_INTENSITY, specId, sum);
+                            getCache().store(CacheEntry.SUM_OF_INTENSITY, specId, sum);
                             int numOfPeaks = intentBinaryArray.getDoubleArray().length;
                             if (numOfPeaks == 1 && intentBinaryArray.getDoubleArray()[0] == 0) {
                                 numOfPeaks = 0;
                             }
 
-                            getCache().store(CacheCategory.NUMBER_OF_PEAKS, specId, numOfPeaks);
+                            getCache().store(CacheEntry.NUMBER_OF_PEAKS, specId, numOfPeaks);
                         }
                     } catch (UnsupportedEncodingException e) {
                         String errMsg = "Failed to query sum of intensity while decoding the binary data array";
@@ -986,7 +986,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     @Override
     public Quantification getProteinQuantData(Comparable proteinId) {
-        ParamGroup paramGroup = (ParamGroup) getCache().get(CacheCategory.PROTEIN_TO_PARAM, proteinId);
+        ParamGroup paramGroup = (ParamGroup) getCache().get(CacheEntry.PROTEIN_TO_PARAM, proteinId);
 
         if (paramGroup != null) {
             return new Quantification(Quantification.Type.PROTEIN, paramGroup.getCvParams());
@@ -997,7 +997,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     @Override
     public Quantification getPeptideQuantData(Comparable proteinId, Comparable peptideId) {
-        ParamGroup paramGroup = (ParamGroup) getCache().get(CacheCategory.PEPTIDE_TO_PARAM, peptideId);
+        ParamGroup paramGroup = (ParamGroup) getCache().get(CacheEntry.PEPTIDE_TO_PARAM, peptideId);
 
         if (paramGroup != null) {
             return new Quantification(Quantification.Type.PEPTIDE, paramGroup.getCvParams());

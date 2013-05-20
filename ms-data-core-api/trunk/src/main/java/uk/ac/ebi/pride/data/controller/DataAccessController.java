@@ -18,7 +18,8 @@ import java.util.Collection;
 public interface DataAccessController
         extends MetaDataAccess, MzGraphDataAccess,
                 ProteinDataAccess, ProteinGroupDataAccess,
-                PeptideDataAccess, QuantDataAccess, ChartAccess {
+                PeptideDataAccess, QuantDataAccess,
+                ChartAccess {
 
     /**
      * ContentCategory defines the type of content a data access controller should have.

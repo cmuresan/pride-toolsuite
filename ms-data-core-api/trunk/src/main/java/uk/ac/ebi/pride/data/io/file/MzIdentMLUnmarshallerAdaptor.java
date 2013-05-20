@@ -27,10 +27,9 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
 
     public MzIdentMLUnmarshallerAdaptor(File mzIdentMLFile) {
         super(mzIdentMLFile);
-        init();
     }
 
-    private void init() {
+    public void scanIdMappings() {
 
         scannedIdMappings = new HashMap<String, Map<String, List<IndexElement>>>();
 

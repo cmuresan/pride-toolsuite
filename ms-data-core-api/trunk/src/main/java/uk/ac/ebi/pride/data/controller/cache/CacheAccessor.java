@@ -21,13 +21,13 @@ public class CacheAccessor implements Cache {
     /**
      * All data are stored in here.
      */
-    private final Map<CacheCategory, Object> contents;
+    private final Map<CacheEntry, Object> contents;
 
     /**
      * CacheAccessor constructor
      */
     public CacheAccessor() {
-        contents = new HashMap<CacheCategory, Object>();
+        contents = new HashMap<CacheEntry, Object>();
     }
 
     /**
@@ -37,7 +37,7 @@ public class CacheAccessor implements Cache {
      * @param key  key
      */
     @Override
-    public void store(CacheCategory type, Object key) {
+    public void store(CacheEntry type, Object key) {
         store(type, key, null);
     }
 
@@ -50,7 +50,7 @@ public class CacheAccessor implements Cache {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void store(CacheCategory type, Object key, Object value) {
+    public void store(CacheEntry type, Object key, Object value) {
         Object content = createIfNotExist(type);
 
         // put into a map if underlying data structure is map
@@ -85,7 +85,7 @@ public class CacheAccessor implements Cache {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void storeInBatch(CacheCategory type, Map values) {
+    public void storeInBatch(CacheEntry type, Map values) {
         if (values == null) {
             String errMsg = "Map values cannot be null";
 
@@ -111,7 +111,7 @@ public class CacheAccessor implements Cache {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void storeInBatch(CacheCategory type, Collection values) {
+    public void storeInBatch(CacheEntry type, Collection values) {
         if (values == null) {
             String errMsg = "Collection values cannot be null";
 
@@ -137,7 +137,7 @@ public class CacheAccessor implements Cache {
      * @return Object data
      */
     @Override
-    public Object get(CacheCategory type, Object key) {
+    public Object get(CacheEntry type, Object key) {
         return retrieveContent(type, key);
     }
 
@@ -150,7 +150,7 @@ public class CacheAccessor implements Cache {
      * @return Collection   value collection
      */
     @Override
-    public Collection getInBatch(CacheCategory type, Collection keys) {
+    public Collection getInBatch(CacheEntry type, Collection keys) {
         Collection<Object> results = new ArrayList<Object>();
 
         for (Object key : keys) {
@@ -171,7 +171,7 @@ public class CacheAccessor implements Cache {
      * @return Object   data
      */
     @Override
-    public Object get(CacheCategory type) {
+    public Object get(CacheEntry type) {
         return retrieveContent(type, null);
     }
 
@@ -182,7 +182,7 @@ public class CacheAccessor implements Cache {
      * @return boolean  true if exists.
      */
     @Override
-    public boolean hasCacheCategory(CacheCategory type) {
+    public boolean hasCacheEntry(CacheEntry type) {
         return contents.containsKey(type);
     }
 
@@ -192,7 +192,7 @@ public class CacheAccessor implements Cache {
      * @param type cache category
      */
     @Override
-    public void clear(CacheCategory type) {
+    public void clear(CacheEntry type) {
         contents.remove(type);
     }
 
@@ -205,7 +205,7 @@ public class CacheAccessor implements Cache {
     }
 
     @SuppressWarnings("unchecked")
-    private Object createIfNotExist(CacheCategory type) {
+    private Object createIfNotExist(CacheEntry type) {
         Object content = contents.get(type);
 
         if (content == null) {
@@ -244,7 +244,7 @@ public class CacheAccessor implements Cache {
     }
 
     @SuppressWarnings("unchecked")
-    private Object retrieveContent(CacheCategory type, Object key) {
+    private Object retrieveContent(CacheEntry type, Object key) {
         Object result  = null;
         Object content = contents.get(type);
 

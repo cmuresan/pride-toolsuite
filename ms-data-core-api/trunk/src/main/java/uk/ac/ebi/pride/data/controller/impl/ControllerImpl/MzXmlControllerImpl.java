@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
-import uk.ac.ebi.pride.data.controller.cache.CacheCategory;
-import uk.ac.ebi.pride.data.controller.cache.impl.MzXmlCacheBuilder;
+import uk.ac.ebi.pride.data.controller.cache.CacheEntry;
+import uk.ac.ebi.pride.data.controller.cache.strategy.MzMlCachingStrategy;
 import uk.ac.ebi.pride.data.controller.impl.Transformer.MzXmlTransformer;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.file.MzXmlUnmarshallerAdaptor;
@@ -88,7 +88,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
                 DataAccessController.ContentCategory.SOFTWARE,
                 DataAccessController.ContentCategory.DATA_PROCESSING);
         // create cache builder
-        setCacheBuilder(new MzXmlCacheBuilder(this));
+        setCachingStrategy(new MzMlCachingStrategy());
         // populate cache
         populateCache();
     }
@@ -304,7 +304,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
                 rawSpec = unmarshaller.getSpectrumById(id.toString());
                 spectrum = MzXmlTransformer.transformSpectrum(rawSpec);
                 if (useCache) {
-                    getCache().store(CacheCategory.SPECTRUM, id, spectrum);
+                    getCache().store(CacheEntry.SPECTRUM, id, spectrum);
                 }
             } catch (JMzReaderException ex) {
                 logger.error("Get spectrum by id", ex);

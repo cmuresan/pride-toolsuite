@@ -21,18 +21,16 @@ import java.util.*;
  */
 public class MzIdentMLTransformer {
 
-    // todo: this caching of fragmentation table need to be refactored, there can be multiple spectrimIdentificationList
     private static Map<String, IdentifiableParamGroup> fragmentationTable = null;
 
     private static Map<String, CVLookup> cvLookupMap = null;
 
-    public static void setCvLookupMap(List<CVLookup> cvLookupList) {
-        if (cvLookupList != null && !cvLookupList.isEmpty()) {
-            cvLookupMap = new HashMap<String, CVLookup>();
-            for (CVLookup cvLookup : cvLookupList) {
-                cvLookupMap.put(cvLookup.getCvLabel(), cvLookup);
-            }
-        }
+    public static void setCvLookupMap(Map<String, CVLookup> cvLookupList) {
+        cvLookupMap = cvLookupList;
+    }
+
+    public static void setFragmentationTable(Map<String, IdentifiableParamGroup> fragTable) {
+        fragmentationTable = fragTable;
     }
 
     public static List<SourceFile> transformToSourceFile(List<uk.ac.ebi.jmzidml.model.mzidml.SourceFile> oldSourceFiles) {
@@ -293,11 +291,7 @@ public class MzIdentMLTransformer {
     }
 
     public static Protein transformProteinHypothesisToIdentification(uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis oldIdent,
-                                                                     uk.ac.ebi.jmzidml.model.mzidml.DBSequence oldDbSequence,
-                                                                     uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
-        if (fragmentationTable == null) {
-            fragmentationTable = transformToFragmentationTable(oldFragmentationTable);
-        }
+                                                                     uk.ac.ebi.jmzidml.model.mzidml.DBSequence oldDbSequence) {
 
         DBSequence dbSequence = transformToDBSequence(oldDbSequence);
 
@@ -314,20 +308,16 @@ public class MzIdentMLTransformer {
             }
         }
 
-        List<Peptide> peptides = transformToPeptideIdentificationsFromSpectrumItems(spectrumIdentificationItems, oldFragmentationTable);
+        List<Peptide> peptides = transformToPeptideIdentificationsFromSpectrumItems(spectrumIdentificationItems);
         return new Protein(paramGroup, dbSequence.getId(), name, dbSequence, passThreshold, peptides, score, -1, -1, null);
     }
 
     public static Protein transformSpectrumIdentificationItemToIdentification(uk.ac.ebi.jmzidml.model.mzidml.DBSequence oldDbSequence,
-                                                                              List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> spectrumIdentificationItemList,
-                                                                              uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
-        if (fragmentationTable == null) {
-            fragmentationTable = transformToFragmentationTable(oldFragmentationTable);
-        }
+                                                                              List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> spectrumIdentificationItemList) {
 
         DBSequence dbSequence = transformToDBSequence(oldDbSequence);
 
-        List<Peptide> peptides = transformToPeptideIdentificationsFromSpectrumItems(spectrumIdentificationItemList, oldFragmentationTable);
+        List<Peptide> peptides = transformToPeptideIdentificationsFromSpectrumItems(spectrumIdentificationItemList);
         //Todo: threshold and sequence coverage
         return new Protein(null, dbSequence.getId(), null, dbSequence, false, peptides, null, -1, -1, null);
     }
@@ -344,11 +334,11 @@ public class MzIdentMLTransformer {
         return fragmentationTable;
     }
 
-    public static List<Peptide> transformToPeptideIdentificationsFromSpectrumItems(List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> spectrumIdentificationItems, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
+    public static List<Peptide> transformToPeptideIdentificationsFromSpectrumItems(List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> spectrumIdentificationItems) {
         List<Peptide> peptides = new ArrayList<Peptide>();
         if (spectrumIdentificationItems != null && !spectrumIdentificationItems.isEmpty()) {
             for (uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem oldSpectrumidentification : spectrumIdentificationItems) {
-                SpectrumIdentification spectrumIdent = transformToPeptideIdentification(oldSpectrumidentification, oldFragmentationTable);
+                SpectrumIdentification spectrumIdent = transformToPeptideIdentification(oldSpectrumidentification);
                 for (uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidenceRef evidence : oldSpectrumidentification.getPeptideEvidenceRef()) {
                     PeptideEvidence peptideEvidence = transformToPeptideEvidence(evidence.getPeptideEvidence());
                     peptides.add(new Peptide(peptideEvidence, spectrumIdent));
@@ -358,7 +348,7 @@ public class MzIdentMLTransformer {
         return peptides;
     }
 
-    public static SpectrumIdentification transformToPeptideIdentification(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem oldSpectrumIdentification, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
+    public static SpectrumIdentification transformToPeptideIdentification(uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem oldSpectrumIdentification) {
         SpectrumIdentification peptide = null;
         if (oldSpectrumIdentification != null) {
             String id = oldSpectrumIdentification.getId();
@@ -382,16 +372,13 @@ public class MzIdentMLTransformer {
             peptide = new SpectrumIdentification(scoreParamGroup, id, name, chargeState, massToCharge, calcMassToCharge, pI,
                     transformToPeptide(peptideSeq), rank, passThrehold, transformToMassTable(massTable),
                     transformToSample(sample), transformToPeptideEvidence(peptideEvidence),
-                    transformToFragmentationIon(fragmentation, oldFragmentationTable), score, null, null);
+                    transformToFragmentationIon(fragmentation), score, null, null);
         }
         return peptide;
     }
 
-    private static List<FragmentIon> transformToFragmentationIon(uk.ac.ebi.jmzidml.model.mzidml.Fragmentation fragmentation, uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable) {
+    private static List<FragmentIon> transformToFragmentationIon(uk.ac.ebi.jmzidml.model.mzidml.Fragmentation fragmentation) {
         List<FragmentIon> fragmentIons = null;
-        if (fragmentationTable == null) {
-            fragmentationTable = transformToFragmentationTable(oldFragmentationTable);
-        }
         if (fragmentation != null) {
             fragmentIons = new ArrayList<FragmentIon>();
             for (uk.ac.ebi.jmzidml.model.mzidml.IonType ionType : fragmentation.getIonType()) {

@@ -33,7 +33,7 @@ public class MzIdentMLCachingStrategyDecider implements CachingStrategyDecider {
     public CachingStrategy decide(File file) {
 
         try {
-            if (tail(file, 10).contains(PROTEIN_AMBIGUITY_GROUP)) {
+            if (tail(file, 1500).contains(PROTEIN_AMBIGUITY_GROUP)) {
                 return new MzIdentMLProteinGroupCachingStrategy();
             }
         } catch (IOException e) {
@@ -47,47 +47,20 @@ public class MzIdentMLCachingStrategyDecider implements CachingStrategyDecider {
         return new MzIdentMLEagarCachingStrategy();
     }
 
-    public String tail(File file, int lines) throws IOException {
+    public String tail(File file, int numberOfChars) throws IOException {
         RandomAccessFile fileHandler = null;
         try {
             fileHandler = new java.io.RandomAccessFile(file, "r");
             long fileLength = file.length() - 1;
             StringBuilder sb = new StringBuilder();
-            int line = 0;
 
-            for (long filePointer = fileLength; filePointer != -1; filePointer--) {
+            for (long filePointer = fileLength; filePointer > (fileLength - numberOfChars); filePointer--) {
                 fileHandler.seek(filePointer);
                 int readByte = fileHandler.readByte();
-
-                if (readByte == 0xA) {
-                    if (line == lines) {
-                        if (filePointer == fileLength) {
-                            continue;
-                        } else {
-                            break;
-                        }
-                    }
-                } else if (readByte == 0xD) {
-                    line = line + 1;
-                    if (line == lines) {
-                        if (filePointer == fileLength - 1) {
-                            continue;
-                        } else {
-                            break;
-                        }
-                    }
-                }
                 sb.append((char) readByte);
             }
 
-            sb.deleteCharAt(sb.length() - 1);
             return sb.reverse().toString();
-        } catch (java.io.FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-            return null;
         } finally {
             if (fileHandler != null)
                 fileHandler.close();

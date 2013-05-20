@@ -6,7 +6,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.cache.CacheEntry;
-import uk.ac.ebi.pride.data.controller.cache.strategy.MzMlCachingStrategy;
+import uk.ac.ebi.pride.data.controller.cache.strategy.MzXmlCachingStrategy;
 import uk.ac.ebi.pride.data.controller.impl.Transformer.MzXmlTransformer;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.file.MzXmlUnmarshallerAdaptor;
@@ -88,7 +88,7 @@ public class MzXmlControllerImpl extends CachedDataAccessController {
                 DataAccessController.ContentCategory.SOFTWARE,
                 DataAccessController.ContentCategory.DATA_PROCESSING);
         // create cache builder
-        setCachingStrategy(new MzMlCachingStrategy());
+        setCachingStrategy(new MzXmlCachingStrategy());
         // populate cache
         populateCache();
     }

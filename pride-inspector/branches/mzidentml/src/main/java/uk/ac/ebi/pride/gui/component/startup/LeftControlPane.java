@@ -72,23 +72,23 @@ public class LeftControlPane extends JPanel {
                     dataSourcePanel.setLayout(new BorderLayout());
                 }
 
-                org.jdesktop.layout.GroupLayout panel2Layout = new org.jdesktop.layout.GroupLayout(panel2);
+                GroupLayout panel2Layout = new GroupLayout(panel2);
                 panel2.setLayout(panel2Layout);
                 panel2Layout.setHorizontalGroup(
                     panel2Layout.createParallelGroup()
-                        .add(org.jdesktop.layout.GroupLayout.TRAILING, panel2Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .add(panel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, dataSourcePanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, dataSourceLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE))
-                            .addContainerGap())
+                        .addGroup(GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(panel2Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                        .addComponent(dataSourcePanel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                                        .addComponent(dataSourceLabel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE))
+                                .addContainerGap())
                 );
                 panel2Layout.setVerticalGroup(
                     panel2Layout.createParallelGroup()
-                        .add(panel2Layout.createSequentialGroup()
-                            .add(dataSourceLabel)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(dataSourcePanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+                        .addGroup(panel2Layout.createSequentialGroup()
+                            .addComponent(dataSourceLabel)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(dataSourcePanel, GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
                             .addContainerGap())
                 );
             }
@@ -109,23 +109,23 @@ public class LeftControlPane extends JPanel {
                     summaryPanel.setLayout(new BorderLayout());
                 }
 
-                org.jdesktop.layout.GroupLayout panel3Layout = new org.jdesktop.layout.GroupLayout(panel3);
+                GroupLayout panel3Layout = new GroupLayout(panel3);
                 panel3.setLayout(panel3Layout);
                 panel3Layout.setHorizontalGroup(
                     panel3Layout.createParallelGroup()
-                        .add(panel3Layout.createSequentialGroup()
+                        .addGroup(panel3Layout.createSequentialGroup()
                             .addContainerGap()
-                            .add(panel3Layout.createParallelGroup()
-                                .add(org.jdesktop.layout.GroupLayout.TRAILING, summaryPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.TRAILING, summaryLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE))
+                            .addGroup(panel3Layout.createParallelGroup()
+                                .addComponent(summaryPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                                .addComponent(summaryLabel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE))
                             .addContainerGap())
                 );
                 panel3Layout.setVerticalGroup(
                     panel3Layout.createParallelGroup()
-                        .add(panel3Layout.createSequentialGroup()
-                            .add(summaryLabel)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(summaryPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                        .addGroup(panel3Layout.createSequentialGroup()
+                            .addComponent(summaryLabel)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(summaryPanel, GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
                             .addContainerGap())
                 );
             }
@@ -140,23 +140,23 @@ public class LeftControlPane extends JPanel {
             launchMenuPanel.setLayout(new BorderLayout());
         }
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup()
-                .add(splitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-                .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .addComponent(splitPane2, GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                     .addContainerGap()
-                    .add(launchMenuPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-                    .add(6, 6, 6))
+                    .addComponent(launchMenuPanel, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                    .addGap(6, 6, 6))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup()
-                .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                     .addContainerGap()
-                    .add(launchMenuPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                    .add(splitPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE))
+                    .addComponent(launchMenuPanel, GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(splitPane2, GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE))
         );
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
 

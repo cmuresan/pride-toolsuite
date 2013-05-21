@@ -25,6 +25,10 @@ mzdata.batch.load.size=100
 # this will trigger a warning message if the file is bigger
 open.file.threshold = 500
 
+# threshold for mzidentml file size (in M)
+# if greater than the threshold, prescanning of the file won't be performed
+open.mzidentml.file.threshold = 70
+
 # threshold for download size (in M)
 # this will trigger a warning message if the download size is over this limit
 download.size.threshold = 200

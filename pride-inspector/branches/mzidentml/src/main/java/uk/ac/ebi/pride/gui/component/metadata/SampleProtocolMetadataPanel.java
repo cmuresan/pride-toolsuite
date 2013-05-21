@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
 import uk.ac.ebi.pride.data.core.ExperimentProtocol;
 import uk.ac.ebi.pride.data.core.Parameter;
 import uk.ac.ebi.pride.data.core.Sample;
@@ -88,31 +86,31 @@ public class SampleProtocolMetadataPanel extends JPanel {
         setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup()
-                        .add(GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap()
-                                .add(layout.createParallelGroup(GroupLayout.TRAILING)
-                                        .add(GroupLayout.LEADING, scrollPane2, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
-                                        .add(GroupLayout.LEADING, sampleTabbedPane, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
-                                        .add(GroupLayout.LEADING, layout.createSequentialGroup()
-                                                .add(protocolLabel, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(LayoutStyle.UNRELATED)
-                                                .add(protocolNameField, GroupLayout.PREFERRED_SIZE, 400, GroupLayout.PREFERRED_SIZE))
-                                        .add(GroupLayout.LEADING, sampleLabel, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                        .addComponent(scrollPane2, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                                        .addComponent(sampleTabbedPane, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
+                                        .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addComponent(protocolLabel, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(protocolNameField, GroupLayout.PREFERRED_SIZE, 400, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(sampleLabel, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap())
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup()
-                        .add(layout.createSequentialGroup()
-                                .add(5, 5, 5)
-                                .add(sampleLabel)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(sampleTabbedPane, GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
-                                .add(18, 18, 18)
-                                .add(layout.createParallelGroup(GroupLayout.BASELINE)
-                                        .add(protocolLabel)
-                                        .add(protocolNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(scrollPane2, GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(sampleLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sampleTabbedPane, GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(protocolLabel)
+                                        .addComponent(protocolNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                                 .addContainerGap(31, Short.MAX_VALUE))
         );
         // JFormDesigner - End of component initialization  //GEN-END:initComponents

@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
 import uk.ac.ebi.pride.data.core.ProcessingMethod;
 import uk.ac.ebi.pride.data.core.Software;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
@@ -73,29 +71,29 @@ public class DataProcessingMetadataPanel extends JPanel {
         setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup()
-                .add(layout.createSequentialGroup()
-                    .add(12, 12, 12)
-                    .add(softwareLabel)
-                    .addPreferredGap(LayoutStyle.RELATED)
-                    .add(softwareNameField, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-                    .add(39, 39, 39)
-                    .add(softwareVersionLabel)
-                    .addPreferredGap(LayoutStyle.RELATED)
-                    .add(softwareVersionField, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(12, 12, 12)
+                    .addComponent(softwareLabel)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(softwareNameField, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+                    .addGap(39, 39, 39)
+                    .addComponent(softwareVersionLabel)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(softwareVersionField, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(55, Short.MAX_VALUE))
-                .add(scrollPane1, GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
+                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup()
-                .add(layout.createSequentialGroup()
-                    .add(10, 10, 10)
-                    .add(layout.createParallelGroup(GroupLayout.BASELINE)
-                        .add(softwareLabel)
-                        .add(softwareNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .add(softwareVersionField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .add(softwareVersionLabel))
-                    .addPreferredGap(LayoutStyle.RELATED)
-                    .add(scrollPane1, GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(10, 10, 10)
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(softwareLabel)
+                        .addComponent(softwareNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(softwareVersionField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(softwareVersionLabel))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE))
         );
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }

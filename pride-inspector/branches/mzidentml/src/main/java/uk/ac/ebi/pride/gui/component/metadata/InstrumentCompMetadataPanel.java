@@ -1,8 +1,5 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
-import uk.ac.ebi.pride.data.core.InstrumentComponent;
 import uk.ac.ebi.pride.data.core.InstrumentConfiguration;
 import uk.ac.ebi.pride.data.core.Parameter;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
@@ -87,32 +84,32 @@ public class InstrumentCompMetadataPanel extends JPanel {
         setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup()
-                        .add(GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap()
-                                .add(layout.createParallelGroup(GroupLayout.TRAILING)
-                                        .add(GroupLayout.LEADING, scrollPane2, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
-                                        .add(GroupLayout.LEADING, scrollPane3, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
-                                        .add(GroupLayout.LEADING, scrollPane1, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
-                                        .add(GroupLayout.LEADING, ionSourceLabel, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
-                                        .add(GroupLayout.LEADING, analyzerLabel, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
-                                        .add(GroupLayout.LEADING, detectorLabel, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                        .addComponent(scrollPane2, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                                        .addComponent(scrollPane3, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                                        .addComponent(scrollPane1, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+                                        .addComponent(ionSourceLabel, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(analyzerLabel, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(detectorLabel, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap())
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup()
-                        .add(layout.createSequentialGroup()
-                                .add(8, 8, 8)
-                                .add(ionSourceLabel)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(scrollPane1, GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(analyzerLabel)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(scrollPane3, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(detectorLabel)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(scrollPane2, GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addComponent(ionSourceLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(analyzerLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(scrollPane3, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(detectorLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
                                 .addContainerGap())
         );
         // JFormDesigner - End of component initialization  //GEN-END:initComponents

@@ -35,10 +35,6 @@ public class SubmissionFileDetail {
         return fileDetail.getId();
     }
 
-    public String getFilePath() {
-        return fileDetail.getFilePath();
-    }
-
     public Long getAssayId() {
         return fileDetail.getAssayId();
     }
@@ -53,10 +49,6 @@ public class SubmissionFileDetail {
 
     public void setAssayId(Long assayId) {
         fileDetail.setAssayId(assayId);
-    }
-
-    public void setFilePath(String filePath) {
-        fileDetail.setFilePath(filePath);
     }
 
     public void setId(Long id) {

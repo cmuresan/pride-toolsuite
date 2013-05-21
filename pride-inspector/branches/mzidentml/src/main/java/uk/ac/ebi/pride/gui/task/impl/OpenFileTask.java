@@ -9,9 +9,6 @@ import uk.ac.ebi.pride.data.core.SpectraData;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.access.EmptyDataAccessController;
-import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
-import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
-import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 
@@ -22,8 +19,6 @@ import java.util.Map;
 
 /**
  * Task to open mzML/MzIdentML or PRIDE xml files.
- * Note: this task doesn't check whether file has been loaded before
- * This is handled by OpenFileAction.
  * <p/>
  * <p/>
  * User: rwang
@@ -66,7 +61,6 @@ public class OpenFileTask<D extends DataAccessController> extends TaskAdapter<Vo
         context = ((PrideInspectorContext) Desktop.getInstance().getDesktopContext());
         this.msFiles = msFiles;
     }
-
 
 
     @Override
@@ -126,25 +120,17 @@ public class OpenFileTask<D extends DataAccessController> extends TaskAdapter<Vo
     private void createNewDataAccessController(File file) {
         try {
             // create dummy
-            EmptyDataAccessController dummy = new EmptyDataAccessController();
-            dummy.setName(inputFile.getName());
-            if(dataAccessControllerClass == MzIdentMLControllerImpl.class){
-                dummy.setType(DataAccessController.Type.MZIDENTML);
-            }else{
-                dummy.setType(DataAccessController.Type.XML_FILE);
-            }
-            // add a closure hook
-            this.addOwner(dummy);
-            context.addDataAccessController(dummy);
+            EmptyDataAccessController dummy = createEmptyDataAccessController();
+
 
             Constructor<D> cstruct = dataAccessControllerClass.getDeclaredConstructor(File.class);
             DataAccessController controller = cstruct.newInstance(inputFile);
 
-            if(dataAccessControllerClass == MzIdentMLControllerImpl.class && msFiles != null){
-                Map<SpectraData, File> msFileMap = null;
+            if (MzIdentMLControllerImpl.class.equals(dataAccessControllerClass) && msFiles != null) {
                 try {
-                    msFileMap = ((MzIdentMLControllerImpl) controller).checkMScontrollers(msFiles);
-                    ((MzIdentMLControllerImpl)controller).addMSController(msFileMap);
+                    //todo: this is strange way of implement
+                    Map<SpectraData, File> msFileMap = ((MzIdentMLControllerImpl) controller).checkMScontrollers(msFiles);
+                    ((MzIdentMLControllerImpl) controller).addMSController(msFileMap);
                 } catch (DataAccessException e1) {
                     logger.error("Failed to check the files as controllers", e1);
                 }
@@ -166,5 +152,21 @@ public class OpenFileTask<D extends DataAccessController> extends TaskAdapter<Vo
             logger.error(msg, err);
             GUIUtilities.error(Desktop.getInstance().getMainComponent(), msg, "Open File Error");
         }
+    }
+
+    private EmptyDataAccessController createEmptyDataAccessController() {
+        EmptyDataAccessController dummy = new EmptyDataAccessController();
+        dummy.setName(inputFile.getName());
+
+        if (dataAccessControllerClass == MzIdentMLControllerImpl.class) {
+            dummy.setType(DataAccessController.Type.MZIDENTML);
+        } else {
+            dummy.setType(DataAccessController.Type.XML_FILE);
+        }
+
+        // add a closure hook
+        this.addOwner(dummy);
+        context.addDataAccessController(dummy);
+        return dummy;
     }
 }

@@ -104,37 +104,37 @@ public class IdentificationMetadataPanel extends JPanel {
             scrollPane2.setViewportView(proteinProtocolTable);
         }
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup()
-                        .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, peptideProtocolTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, dataBaseTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, databaseLabel)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, peptideProtocol)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, proteinProtocolLabel)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, scrollPane2))
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                        .addComponent(peptideProtocolTabbedPane, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
+                                        .addComponent(dataBaseTabbedPane, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
+                                        .addComponent(databaseLabel, GroupLayout.Alignment.LEADING)
+                                        .addComponent(peptideProtocol, GroupLayout.Alignment.LEADING)
+                                        .addComponent(proteinProtocolLabel, GroupLayout.Alignment.LEADING)
+                                        .addComponent(scrollPane2, GroupLayout.Alignment.LEADING))
                                 .addContainerGap())
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup()
-                        .add(layout.createSequentialGroup()
+                        .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .add(databaseLabel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(dataBaseTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                                .add(18, 18, 18)
-                                .add(peptideProtocol)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(peptideProtocolTabbedPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-                                .add(18, 18, 18)
-                                .add(proteinProtocolLabel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(scrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                                .add(28, 28, 28))
+                                .addComponent(databaseLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(dataBaseTabbedPane, GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(peptideProtocol)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(peptideProtocolTabbedPane, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(proteinProtocolLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                                .addGap(28, 28, 28))
 
         );
         // JFormDesigner - End of component initialization  //GEN-END:initComponents

@@ -107,7 +107,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             MzIdentMLTransformer.setCvLookupMap((Map<String, CVLookup>) cvLookup);
         }
 
-        Object fragmentationTable = getCache().get(CacheEntry.CV_LOOKUP);
+        Object fragmentationTable = getCache().get(CacheEntry.FRAGMENTATION_TABLE);
         MzIdentMLTransformer.setFragmentationTable((Map<String, IdentifiableParamGroup>) fragmentationTable);
     }
 

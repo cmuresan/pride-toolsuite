@@ -13,9 +13,10 @@ import java.io.File;
  * Date: 8/14/12
  * Time: 4:17 PM
  */
-public class MzIdentMLUtils {
+public final class MzIdentMLUtils {
 
-
+    private MzIdentMLUtils() {
+    }
 
     public static Constants.SpecIdFormat getSpectraDataIdFormat(uk.ac.ebi.pride.data.core.SpectraData spectraData){
         uk.ac.ebi.pride.data.core.CvParam specIdFormat = spectraData.getSpectrumIdFormat();

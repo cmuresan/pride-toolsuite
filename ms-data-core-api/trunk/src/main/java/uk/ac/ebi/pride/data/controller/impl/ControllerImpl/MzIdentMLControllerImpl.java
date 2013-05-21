@@ -10,8 +10,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.controller.cache.CacheEntry;
-import uk.ac.ebi.pride.data.controller.cache.CachingStrategy;
-import uk.ac.ebi.pride.data.controller.cache.strategy.MzIdentMLEagarCachingStrategy;
+import uk.ac.ebi.pride.data.controller.cache.strategy.MzIdentMLCachingStrategy;
 import uk.ac.ebi.pride.data.controller.impl.Transformer.MzIdentMLTransformer;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
@@ -62,12 +61,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
     public MzIdentMLControllerImpl(File file) {
         super(file, DataAccessMode.CACHE_AND_SOURCE);
-        initialize(new MzIdentMLEagarCachingStrategy());
-    }
-
-    public MzIdentMLControllerImpl(File file, CachingStrategy cachingStrategy) {
-        super(file, DataAccessMode.CACHE_AND_SOURCE);
-        initialize(cachingStrategy);
+        initialize();
     }
 
     /**
@@ -75,7 +69,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * used the Cache System. In this case it wil be use cache for PROTEIN,
      * PEPTIDE, SAMPLE and SOFTWARE.
      */
-    protected void initialize(CachingStrategy cachingStrategy) {
+    protected void initialize() {
         // create pride access utils
         File file = (File) getSource();
         unmarshaller = new MzIdentMLUnmarshallerAdaptor(file);
@@ -99,7 +93,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 ContentCategory.SPECTRUM
         );
 
-        setCachingStrategy(cachingStrategy);
+        setCachingStrategy(new MzIdentMLCachingStrategy());
         populateCache();
 
         Object cvLookup = getCache().get(CacheEntry.CV_LOOKUP);
@@ -711,13 +705,13 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         }
     }
 
-    public Map<SpectraData, File> checkMScontrollers(List<File> dataAccessControllerFiles) {
+    public Map<SpectraData, File> checkMScontrollers(List<File> mzIdentMLFiles) {
 
         Map<Comparable, SpectraData> spectraDataMap = getSpectraDataMap();
 
         Map<SpectraData, File> spectraFileMap = new HashMap<SpectraData, File>();
 
-        for (File file : dataAccessControllerFiles) {
+        for (File file : mzIdentMLFiles) {
             for (Comparable id : spectraDataMap.keySet()) {
                 SpectraData spectraData = spectraDataMap.get(id);
                 if (spectraData.getLocation().indexOf(file.getName()) > 0) {
@@ -734,8 +728,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
         for (SpectraData spectraData : spectraDataControllerMap.keySet()) {
             for (SpectraData spectraDataFile : spectraDataFileMap.keySet()) {
-                if (spectraDataControllerMap.get(spectraData) == null &&
-                        spectraData.getId().compareTo(spectraDataFile.getId()) == 0) {
+                if (spectraDataControllerMap.get(spectraData) == null && spectraData.getId().equals(spectraDataFile.getId())) {
                     if (MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.MZXML)
                         msDataAccessControllers.put(spectraData.getId(), new MzXmlControllerImpl(spectraDataFileMap.get(spectraDataFile)));
                     if (MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.MGF)

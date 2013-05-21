@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.action.PrideAction;
@@ -45,17 +44,10 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
      */
     private JTable identTable;
 
-    /**
-     * Constructor
-     * @param controller    data access controller
-     */
     public ProteinSelectionPane(DataAccessController controller) {
         super(controller);
     }
 
-    /**
-     * Setup the main pane
-     */
     @Override
     protected void setupMainPane() {
         // set layout
@@ -63,9 +55,6 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
         this.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
     }
 
-    /**
-     * Add the rest of components
-     */
     @Override
     protected void addComponents() {
         // create identification table
@@ -91,11 +80,6 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
         this.add(scrollPane, BorderLayout.CENTER);
     }
 
-    /**
-     * This builds the top panel to display, it includes
-     *
-     * @return  JPanel  header panel
-     */
     private JPanel buildHeaderPane() {
         // add meta data panel
         JPanel metaDataPanel = buildMetaDataPane();
@@ -108,11 +92,6 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
         return titlePanel;
     }
 
-    /**
-     * Build meta data pane, this panel displays the identification type, search engine and search database
-     *
-     * @return JPanel   meta data pane
-     */
     private JPanel buildMetaDataPane() {
         // add descriptive panel
         JPanel metaDataPanel = new JPanel();
@@ -125,32 +104,26 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
             metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
             // identification type
-            Collection<Comparable> identIds = controller.getProteinIds();
-            Comparable identId = CollectionUtils.getElement(identIds, 0);
-            Object type = identId == null ? "Unknown" : controller.getProteinType(identId);
-            type = type == null ? "Unknown" : type;
-            JLabel identLabel = new JLabel("<html><b>Type</b>: " + type + "</html>");
-            identLabel.setToolTipText(type.toString());
-            metaDataPanel.add(identLabel);
-            metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+//            Collection<Comparable> identIds = controller.getProteinIds();
+//            Comparable identId = CollectionUtils.getElement(identIds, 0);
 
-            // search engine
-            Object engine = identId == null ? "Unknown" : getSearchEngineName(controller.getSearchEngineTypes());
-            engine = engine == null ? "Unknown" : engine;
-            JLabel dbLabel = new JLabel("<html><b>Search Engine</b>: " + engine + "</htlm>");
-            dbLabel.setToolTipText(engine.toString());
-            metaDataPanel.add(dbLabel);
-            metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
-
-            // search database
-            Object database = ((identId == null) || (controller.getSearchDatabase(identId).getName() == null)) ? "Unknown" : controller.getSearchDatabase(identId).getName();
-            database = database == null ? "Unknown" : database;
-            JLabel engineLabel = new JLabel("<html><b>Search Database</b>: </html>");
-            JLabel engineValLabel = new JLabel(database.toString());
-            engineValLabel.setPreferredSize(new Dimension(200, 15));
-            engineValLabel.setToolTipText(database.toString());
-            metaDataPanel.add(engineLabel);
-            metaDataPanel.add(engineValLabel);
+//            // search engine
+//            Object engine = identId == null ? "Unknown" : getSearchEngineName(controller.getSearchEngineTypes());
+//            engine = engine == null ? "Unknown" : engine;
+//            JLabel dbLabel = new JLabel("<html><b>Search Engine</b>: " + engine + "</htlm>");
+//            dbLabel.setToolTipText(engine.toString());
+//            metaDataPanel.add(dbLabel);
+//            metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+//
+//            // search database
+//            Object database = ((identId == null) || (controller.getSearchDatabase(identId).getName() == null)) ? "Unknown" : controller.getSearchDatabase(identId).getName();
+//            database = database == null ? "Unknown" : database;
+//            JLabel engineLabel = new JLabel("<html><b>Search Database</b>: </html>");
+//            JLabel engineValLabel = new JLabel(database.toString());
+//            engineValLabel.setPreferredSize(new Dimension(200, 15));
+//            engineValLabel.setToolTipText(database.toString());
+//            metaDataPanel.add(engineLabel);
+//            metaDataPanel.add(engineValLabel);
         } catch (DataAccessException e) {
             String msg = "Failed to createAttributedSequence meta data pane for identifications";
             logger.error(msg, e);

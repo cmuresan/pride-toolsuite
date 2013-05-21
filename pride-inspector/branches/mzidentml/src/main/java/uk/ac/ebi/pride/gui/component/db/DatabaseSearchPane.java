@@ -3,8 +3,6 @@ package uk.ac.ebi.pride.gui.component.db;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventSubscriber;
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
@@ -171,40 +169,40 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                     panel3.setLayout(panel3Layout);
                     panel3Layout.setHorizontalGroup(
                             panel3Layout.createParallelGroup()
-                                    .add(panel3Layout.createSequentialGroup()
+                                    .addGroup(panel3Layout.createSequentialGroup()
                                             .addContainerGap()
-                                            .add(searchLabel)
-                                            .addPreferredGap(LayoutStyle.RELATED)
-                                            .add(categoryComboBox, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
-                                            .add(12, 12, 12)
-                                            .add(criteriaComboBox, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(LayoutStyle.RELATED)
-                                            .add(panel3Layout.createParallelGroup()
-                                                    .add(GroupLayout.TRAILING, panel3Layout.createSequentialGroup()
-                                                            .add(searchResultCheckBox, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
-                                                            .add(10, 10, 10)
-                                                            .add(resetSearchButton))
-                                                    .add(panel3Layout.createSequentialGroup()
-                                                            .add(searchTextField, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
-                                                            .addPreferredGap(LayoutStyle.RELATED)
-                                                            .add(searchButton)))
+                                            .addComponent(searchLabel)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(categoryComboBox, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
+                                            .addGap(12, 12, 12)
+                                            .addComponent(criteriaComboBox, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addGroup(panel3Layout.createParallelGroup()
+                                                    .addGroup(GroupLayout.Alignment.TRAILING, panel3Layout.createSequentialGroup()
+                                                            .addComponent(searchResultCheckBox, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
+                                                            .addGap(10, 10, 10)
+                                                            .addComponent(resetSearchButton))
+                                                    .addGroup(panel3Layout.createSequentialGroup()
+                                                            .addComponent(searchTextField, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
+                                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                            .addComponent(searchButton)))
                                             .addContainerGap())
                     );
                     panel3Layout.setVerticalGroup(
                         panel3Layout.createParallelGroup()
-                            .add(GroupLayout.TRAILING, panel3Layout.createSequentialGroup()
+                            .addGroup(GroupLayout.Alignment.TRAILING, panel3Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .add(panel3Layout.createParallelGroup(GroupLayout.BASELINE)
-                                    .add(searchButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .add(searchTextField)
-                                    .add(categoryComboBox)
-                                    .add(searchLabel)
-                                    .add(criteriaComboBox))
-                                .addPreferredGap(LayoutStyle.UNRELATED)
-                                .add(panel3Layout.createParallelGroup(GroupLayout.BASELINE)
-                                    .add(resetSearchButton)
-                                    .add(searchResultCheckBox))
-                                .add(18, 18, 18))
+                                .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(searchButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(searchTextField)
+                                    .addComponent(categoryComboBox)
+                                    .addComponent(searchLabel)
+                                    .addComponent(criteriaComboBox))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(resetSearchButton)
+                                    .addComponent(searchResultCheckBox))
+                                .addGap(18, 18, 18))
                     );
                 }
 
@@ -212,16 +210,16 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                 panel2.setLayout(panel2Layout);
                 panel2Layout.setHorizontalGroup(
                         panel2Layout.createParallelGroup()
-                                .add(panel2Layout.createSequentialGroup()
+                                .addGroup(panel2Layout.createSequentialGroup()
                                         .addContainerGap()
-                                        .add(panel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(panel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                         .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
                 panel2Layout.setVerticalGroup(
                         panel2Layout.createParallelGroup()
-                                .add(panel2Layout.createSequentialGroup()
+                                .addGroup(panel2Layout.createSequentialGroup()
                                         .addContainerGap(12, Short.MAX_VALUE)
-                                        .add(panel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(panel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 );
             }
             panel1.add(panel2);
@@ -268,28 +266,28 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
             panel4.setLayout(panel4Layout);
             panel4Layout.setHorizontalGroup(
                     panel4Layout.createParallelGroup()
-                            .add(panel4Layout.createSequentialGroup()
+                            .addGroup(panel4Layout.createSequentialGroup()
                                     .addContainerGap()
-                                    .add(panel4Layout.createParallelGroup()
-                                            .add(GroupLayout.TRAILING, panel4Layout.createSequentialGroup()
-                                                    .add(closeButton, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
-                                                    .add(20, 20, 20))
-                                            .add(GroupLayout.TRAILING, panel4Layout.createSequentialGroup()
-                                                    .add(panel4Layout.createParallelGroup(GroupLayout.TRAILING)
-                                                            .add(resultSummaryPanel, GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
-                                                            .add(scrollPane1, GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE))
+                                    .addGroup(panel4Layout.createParallelGroup()
+                                            .addGroup(GroupLayout.Alignment.TRAILING, panel4Layout.createSequentialGroup()
+                                                    .addComponent(closeButton, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(20, 20, 20))
+                                            .addGroup(GroupLayout.Alignment.TRAILING, panel4Layout.createSequentialGroup()
+                                                    .addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                            .addComponent(resultSummaryPanel, GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+                                                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE))
                                                     .addContainerGap())))
             );
             panel4Layout.setVerticalGroup(
                     panel4Layout.createParallelGroup()
-                            .add(panel4Layout.createSequentialGroup()
-                                    .add(resultSummaryPanel, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(LayoutStyle.RELATED)
-                                    .add(scrollPane1, GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
-                                    .addPreferredGap(LayoutStyle.RELATED)
-                                    .add(panel4Layout.createParallelGroup(GroupLayout.BASELINE)
-                                            .add(closeButton))
-                                    .add(13, 13, 13))
+                            .addGroup(panel4Layout.createSequentialGroup()
+                                    .addComponent(resultSummaryPanel, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(closeButton))
+                                    .addGap(13, 13, 13))
             );
         }
         container.add(panel4, BorderLayout.CENTER);

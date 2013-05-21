@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.gui.component.decoy;
 
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
@@ -103,32 +101,32 @@ public class DecoyFilterDialog extends JDialog {
                     panel1.setLayout(panel1Layout);
                     panel1Layout.setHorizontalGroup(
                             panel1Layout.createParallelGroup()
-                                    .add(panel1Layout.createSequentialGroup()
-                                            .add(panel1Layout.createParallelGroup()
-                                                    .add(panel1Layout.createSequentialGroup()
-                                                            .add(prefixRadioButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                            .add(70, 70, 70)
-                                                            .add(postRadioButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                            .add(55, 55, 55)
-                                                            .add(containRadioButton))
-                                                    .add(panel1Layout.createSequentialGroup()
-                                                            .add(9, 9, 9)
-                                                            .add(descriptionLabel)
-                                                            .addPreferredGap(LayoutStyle.RELATED)
-                                                            .add(descriptionContentLabel, GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)))
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                            .addGroup(panel1Layout.createParallelGroup()
+                                                    .addGroup(panel1Layout.createSequentialGroup()
+                                                            .addComponent(prefixRadioButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                            .addGap(70, 70, 70)
+                                                            .addComponent(postRadioButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                            .addGap(55, 55, 55)
+                                                            .addComponent(containRadioButton))
+                                                    .addGroup(panel1Layout.createSequentialGroup()
+                                                            .addGap(9, 9, 9)
+                                                            .addComponent(descriptionLabel)
+                                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                            .addComponent(descriptionContentLabel, GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)))
                                             .addContainerGap())
                     );
                     panel1Layout.setVerticalGroup(
                             panel1Layout.createParallelGroup()
-                                    .add(panel1Layout.createSequentialGroup()
-                                            .add(panel1Layout.createParallelGroup(GroupLayout.BASELINE)
-                                                    .add(prefixRadioButton)
-                                                    .add(postRadioButton)
-                                                    .add(containRadioButton))
-                                            .addPreferredGap(LayoutStyle.RELATED, 7, Short.MAX_VALUE)
-                                            .add(panel1Layout.createParallelGroup(GroupLayout.BASELINE)
-                                                    .add(descriptionLabel)
-                                                    .add(descriptionContentLabel)))
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                            .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                    .addComponent(prefixRadioButton)
+                                                    .addComponent(postRadioButton)
+                                                    .addComponent(containRadioButton))
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                                            .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                    .addComponent(descriptionLabel)
+                                                    .addComponent(descriptionContentLabel)))
                     );
                 }
 
@@ -139,21 +137,21 @@ public class DecoyFilterDialog extends JDialog {
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
                         contentPanelLayout.createParallelGroup()
-                                .add(panel1, GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
-                                .add(contentPanelLayout.createSequentialGroup()
-                                        .add(8, 8, 8)
-                                        .add(criteriaLabel, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(panel1, GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addGap(8, 8, 8)
+                                        .addComponent(criteriaLabel, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
                                         .addContainerGap(262, Short.MAX_VALUE))
-                                .add(criteriaTextField, GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
+                                .addComponent(criteriaTextField, GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
                 );
                 contentPanelLayout.setVerticalGroup(
                         contentPanelLayout.createParallelGroup()
-                                .add(GroupLayout.TRAILING, contentPanelLayout.createSequentialGroup()
-                                        .add(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .add(18, 18, 18)
-                                        .add(criteriaLabel)
-                                        .addPreferredGap(LayoutStyle.RELATED)
-                                        .add(criteriaTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
+                                        .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(criteriaLabel)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(criteriaTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);

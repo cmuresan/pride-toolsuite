@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.gui.component.metadata;
 
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
 import uk.ac.ebi.pride.data.core.DataProcessing;
 import uk.ac.ebi.pride.data.core.InstrumentConfiguration;
 import uk.ac.ebi.pride.data.core.ProcessingMethod;
@@ -78,27 +76,27 @@ public class InstrumentProcessingMetadataPanel extends JPanel {
         setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup()
-                        .add(GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap()
-                                .add(layout.createParallelGroup(GroupLayout.TRAILING)
-                                        .add(GroupLayout.LEADING, dataProcTabbedPane, GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
-                                        .add(GroupLayout.LEADING, instrumentTabbedPane, GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
-                                        .add(GroupLayout.LEADING, instrumentLabel)
-                                        .add(GroupLayout.LEADING, dataProcLabel))
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                        .addComponent(dataProcTabbedPane, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
+                                        .addComponent(instrumentTabbedPane, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE)
+                                        .addComponent(instrumentLabel, GroupLayout.Alignment.LEADING)
+                                        .addComponent(dataProcLabel, GroupLayout.Alignment.LEADING))
                                 .addContainerGap())
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup()
-                        .add(layout.createSequentialGroup()
+                        .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .add(instrumentLabel)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(instrumentTabbedPane, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-                                .add(18, 18, 18)
-                                .add(dataProcLabel)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(dataProcTabbedPane, GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                                .add(28, 28, 28))
+                                .addComponent(instrumentLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(instrumentTabbedPane, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(dataProcLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(dataProcTabbedPane, GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                                .addGap(28, 28, 28))
         );
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }

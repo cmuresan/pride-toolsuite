@@ -11,11 +11,11 @@ import uk.ac.ebi.pride.gui.component.mzidentml.MzIdMsDialog;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.OpenFileTask;
 import uk.ac.ebi.pride.gui.task.impl.OpenGzippedFileTask;
 import uk.ac.ebi.pride.gui.utils.Constants;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.gui.utils.FileUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -34,9 +34,9 @@ import java.util.*;
 public class OpenFileAction extends PrideAction implements TaskListener<Void, File> {
     private static final Logger logger = LoggerFactory.getLogger(OpenFileAction.class);
 
-    private List<File> inputFilesToOpen;
+    private static final String PROTEIN_AMBIGUITY_GROUP_XML_TAG = "ProteinAmbiguityGroup";
 
-    private List<File> mzidentmlFiles;
+    private List<File> inputFilesToOpen;
 
     private PrideInspectorContext context;
 
@@ -70,8 +70,9 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
 
     /**
      * Show a warning message if the file size is over certain threshold
+     *
      * @param files a list of input files
-     * @return  boolean open files if returns true
+     * @return boolean open files if returns true
      */
     private boolean showBigFileWarningMessage(List<File> files) {
         boolean tooBig = false;
@@ -197,7 +198,7 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
                 Constants.MS2_FILE,
                 Constants.PKL_FILE,
                 Constants.DTA_FILE,
-                Constants.GZIPPED_FILE );
+                Constants.GZIPPED_FILE);
 
         int result = ofd.showDialog(Desktop.getInstance().getMainComponent(), null);
 
@@ -224,7 +225,7 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
         Map<File, Class> openFiles = new HashMap<File, Class>();
         List<File> mzidFileList = new ArrayList<File>();
 
-        for (File selectedFile: files){
+        for (File selectedFile : files) {
             // check the file type
             Class classType = null;
             try {
@@ -232,68 +233,88 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
             } catch (IOException e1) {
                 logger.error("Failed to check the file type", e1);
             }
+
             if (classType != null) {
-                openFiles.put(selectedFile,classType);
+                openFiles.put(selectedFile, classType);
             }
-            if(MzIdentMLControllerImpl.isValidFormat(selectedFile)){
+
+            if (MzIdentMLControllerImpl.isValidFormat(selectedFile)) {
                 mzidFileList.add(selectedFile);
+            }
+
+        }
+
+        // detect protein grouping
+        if (mzidFileList.size() > 0) {
+            List<File> mzIdentMLWithoutProteinGroups = new ArrayList<File>();
+            for (File mzIdentMLFile : mzidFileList) {
+                if (!hasProteinGroups(mzIdentMLFile)) {
+                    mzIdentMLWithoutProteinGroups.add(mzIdentMLFile);
+                }
+            }
+
+            if (mzIdentMLWithoutProteinGroups.size() > 0) {
+                int option = JOptionPane.showConfirmDialog(null,
+                        "<html> <b>Protein grouping information missing from mzIdentML file. " +
+                                "</b><br/> <br/> File scan is needed and can be time consuming, " +
+                                "would you like to continue? </html>", "mzIdentML", JOptionPane.YES_NO_OPTION);
+
+                if (option == JOptionPane.NO_OPTION) {
+                    return;
+                }
             }
         }
 
+        // load peak list files
         Map<File, List<File>> mzIdentMLFiles = null;
-        if(mzidFileList.size() > 0){
-            int option = JOptionPane.showConfirmDialog(null, "<html><b>About to load mzIdentML</b>.<br><br> " +
-                            "Would you like to load related spectrum files?</html>", "mzIdentML Detected", JOptionPane.YES_NO_OPTION);
+        if (mzidFileList.size() > 0) {
+            int option = JOptionPane.showConfirmDialog(null,
+                    "Would you like to load spectrum files related to the mzIdentML files?", "mzIdentML", JOptionPane.YES_NO_OPTION);
 
             if (option == JOptionPane.YES_OPTION) {
-                MzIdMsDialog mzidDialog = new MzIdMsDialog(Desktop.getInstance().getMainComponent(),mzidFileList);
+                MzIdMsDialog mzidDialog = new MzIdMsDialog(Desktop.getInstance().getMainComponent(), mzidFileList);
                 mzidDialog.setModal(true);
                 mzidDialog.setVisible(true);
                 mzIdentMLFiles = mzidDialog.getMzIdentMlMap();
-                System.out.println(mzIdentMLFiles.size());
             }
         }
-        // Open all mzIdentML Files
 
-        if(mzIdentMLFiles != null){
-            for(File mzIdentML: mzIdentMLFiles.keySet()){
+        // Open all mzIdentML Files
+        if (mzIdentMLFiles != null) {
+            for (File mzIdentML : mzIdentMLFiles.keySet()) {
                 String msg = "Opening " + mzIdentML.getName();
 
-                if(mzIdentMLFiles.get(mzIdentML) != null && mzIdentMLFiles.get(mzIdentML).size() > 0){
-
-                    OpenFileTask newTask = new OpenFileTask(mzIdentML, mzIdentMLFiles.get(mzIdentML), openFiles.get(mzIdentML), msg, msg);
-                    // set task's gui blocker
-                    newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-                    // add task listeners
-                    // ToDo: this why we need a singleton DesktopContext
-                    Desktop.getInstance().getDesktopContext().addTask(newTask);
-                }else{
-
-                    OpenFileTask newTask = new OpenFileTask(mzIdentML, openFiles.get(mzIdentML), msg, msg);
-                    // set task's gui blocker
-                    newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-                    // add task listeners
-                    // ToDo: this why we need a singleton DesktopContext
-                    Desktop.getInstance().getDesktopContext().addTask(newTask);
-
+                OpenFileTask newTask;
+                if (mzIdentMLFiles.get(mzIdentML) != null && mzIdentMLFiles.get(mzIdentML).size() > 0) {
+                    newTask = new OpenFileTask(mzIdentML, mzIdentMLFiles.get(mzIdentML), openFiles.get(mzIdentML), msg, msg);
+                } else {
+                    newTask = new OpenFileTask(mzIdentML, openFiles.get(mzIdentML), msg, msg);
                 }
+                TaskUtil.startBackgroundTask(newTask);
             }
         }
 
         // Open the rest of the selected files
         for (File selectedFile : openFiles.keySet()) {
             String msg = "Opening " + selectedFile.getName();
-            if( mzIdentMLFiles == null || !mzIdentMLFiles.containsKey(selectedFile)){
-
-                OpenFileTask newTask = new OpenFileTask(selectedFile, openFiles.get(selectedFile), msg, msg);
-                // set task's gui blocker
-                newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-                // add task listeners
-                // ToDo: this why we need a singleton DesktopContext
-                Desktop.getInstance().getDesktopContext().addTask(newTask);
-            }
-
+            OpenFileTask newTask = new OpenFileTask(selectedFile, openFiles.get(selectedFile), msg, msg);
+            TaskUtil.startBackgroundTask(newTask);
         }
+    }
+
+    private boolean hasProteinGroups(File mzIdentMLFile) {
+        boolean proteinGroupPresent = false;
+
+        try {
+            if (FileUtils.tail(mzIdentMLFile, 1500).contains(PROTEIN_AMBIGUITY_GROUP_XML_TAG)) {
+                proteinGroupPresent = true;
+            }
+        } catch (IOException e) {
+            String msg = "Failed to read the end of the mzIdentML file: " + mzIdentMLFile.getAbsolutePath();
+            logger.error(msg, e);
+        }
+
+        return proteinGroupPresent;
     }
 
     private void openGzippedFiles(List<File> files, String path) {
@@ -303,12 +324,7 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
         // listen this this task
         newTask.addTaskListener(this);
 
-        // set task's gui blocker
-        newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-
-        // add task listeners
-        // ToDo: this why we need a singleton DesktopContext
-        Desktop.getInstance().getDesktopContext().addTask(newTask);
+        TaskUtil.startBackgroundTask(newTask);
     }
 
     /**
@@ -324,18 +340,20 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
         // check file type
         if (MzMLControllerImpl.isValidFormat(file)) {
             classType = MzMLControllerImpl.class;
-        }else if (PrideXmlControllerImpl.isValidFormat(file)) {
+        } else if (PrideXmlControllerImpl.isValidFormat(file)) {
             classType = PrideXmlControllerImpl.class;
-        }else if(MzIdentMLControllerImpl.isValidFormat(file)){
+        } else if (MzIdentMLControllerImpl.isValidFormat(file)) {
             classType = MzIdentMLControllerImpl.class;
-        }else if(MzXmlControllerImpl.isValidFormat(file)){
+        } else if (MzXmlControllerImpl.isValidFormat(file)) {
             classType = MzXmlControllerImpl.class;
-        }else if(MzDataControllerImpl.isValidFormat(file)){
+        } else if (MzDataControllerImpl.isValidFormat(file)) {
             classType = MzDataControllerImpl.class;
-        }else if(PeakControllerImpl.isValidFormat(file) != null){
+        } else if (PeakControllerImpl.isValidFormat(file) != null) {
             classType = PeakControllerImpl.class;
-        } else{
-            GUIUtilities.error(Desktop.getInstance().getMainComponent(), "<html><h4>The files you selected are not in supported format.</h4> The formats are supported by PRIDE Inspector are: <br> <b> PRIDE XML </b> <br> <b> mzIdentML </b> <br> <b> mzML </b> </html>", "Wrong File Format");
+        } else {
+            GUIUtilities.error(Desktop.getInstance().getMainComponent(),
+                    "<html><h4>The files you selected are not in supported format.</h4> The formats are supported by PRIDE Inspector are: <br> <b> PRIDE XML </b> <br> <b> mzIdentML </b> <br> <b> mzML </b> </html>",
+                    "Wrong File Format");
         }
 
         return classType;

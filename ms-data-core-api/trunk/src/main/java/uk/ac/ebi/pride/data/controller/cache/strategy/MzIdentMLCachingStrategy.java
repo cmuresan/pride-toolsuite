@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data.controller.cache.strategy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.jmzidml.MzIdentMLElement;
 import uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidence;
 import uk.ac.ebi.jmzidml.model.mzidml.SpectraData;
@@ -7,7 +9,11 @@ import uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationResult;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.cache.CacheEntry;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
+import uk.ac.ebi.pride.data.controller.impl.Transformer.MzIdentMLTransformer;
+import uk.ac.ebi.pride.data.core.CVLookup;
+import uk.ac.ebi.pride.data.core.IdentifiableParamGroup;
 import uk.ac.ebi.pride.data.io.file.MzIdentMLUnmarshallerAdaptor;
+import uk.ac.ebi.pride.data.utils.Constants;
 import uk.ac.ebi.pride.data.utils.MzIdentMLUtils;
 
 import javax.naming.ConfigurationException;
@@ -20,7 +26,9 @@ import java.util.*;
  * Date: 19/09/11
  * Time: 16:44
  */
-public class MzIdentMLEagarCachingStrategy extends MzIdentMLQuickCachingStrategy {
+public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
+    private static final Logger logger = LoggerFactory.getLogger(MzIdentMLCachingStrategy.class);
+
 
     /**
      * Spectrum ids and identification ids are cached.
@@ -28,7 +36,14 @@ public class MzIdentMLEagarCachingStrategy extends MzIdentMLQuickCachingStrategy
     @Override
     public void cache(){
         MzIdentMLUnmarshallerAdaptor unmarshaller = ((MzIdentMLControllerImpl) controller).getUnmarshaller();
-        unmarshaller.scanIdMappings();
+        boolean proteinGroupPresent = false;
+        try {
+            proteinGroupPresent = isProteinGroupPresent(unmarshaller);
+        } catch (ConfigurationException e) {
+            String msg = "Failed while checking whether protein groups are present";
+            logger.error(msg, e);
+            throw new DataAccessException(msg, e);
+        }
 
         // cache spectra data
         cacheSpectraData(unmarshaller);
@@ -44,26 +59,75 @@ public class MzIdentMLEagarCachingStrategy extends MzIdentMLQuickCachingStrategy
          * same structure that currently follow the mzidentml library.
          * */
         try {
-            getPreScanIdMaps();
+            if (proteinGroupPresent) {
+                cacheProteinGroups(unmarshaller);
+            } else {
+                cachePrescanIdMaps(unmarshaller);
+            }
         } catch (ConfigurationException e) {
             throw new DataAccessException("Failed to prescan id maps for mzIdentML file", e);
         }
     }
-//
-//    private void getProteinAmbiguityGroupMaps(Set<String> proteinAmbiguityGroupIds) throws ConfigurationException, JAXBException {
-//        cache.clear(CacheEntry.PROTEIN_GROUP_ID);
-//        cache.storeInBatch(CacheEntry.PROTEIN_GROUP_ID, new ArrayList<Comparable>(proteinAmbiguityGroupIds));
-//
-//        MzIdentMLUnmarshallerAdaptor unmarshaller = ((MzIdentMLControllerImpl) controller).getUnmarshaller();
-//        List<Comparable> proteinHIds = new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.ProteinDetectionHypothesis));
-//        Map<Comparable, Comparable> proteinHypothesisMap = new HashMap<Comparable, Comparable>();
-//        for (Comparable id : proteinHIds) {
-//            proteinHypothesisMap.put(unmarshaller.getDBSequencebyProteinHypothesis(id), id);
-//        }
-//
-//        cache.clear(CacheEntry.PROTEIN_TO_PROTEIN_GROUP_ID);
-//        cache.storeInBatch(CacheEntry.PROTEIN_TO_PROTEIN_GROUP_ID, proteinHypothesisMap);
-//    }
+
+    protected void cacheCvlookupMap(MzIdentMLUnmarshallerAdaptor unmarshaller) {
+        List<CVLookup> cvLookupList = MzIdentMLTransformer.transformCVList(unmarshaller.getCvList());
+        if (cvLookupList != null && !cvLookupList.isEmpty()) {
+            Map<String, CVLookup> cvLookupMap = new HashMap<String, CVLookup>();
+            for (CVLookup cvLookup : cvLookupList) {
+                cvLookupMap.put(cvLookup.getCvLabel(), cvLookup);
+            }
+            cache.clear(CacheEntry.CV_LOOKUP);
+            cache.storeInBatch(CacheEntry.CV_LOOKUP, cvLookupMap);
+        }
+    }
+
+    protected void cacheFragmentationTable(MzIdentMLUnmarshallerAdaptor unmarshaller) {
+        uk.ac.ebi.jmzidml.model.mzidml.FragmentationTable oldFragmentationTable = unmarshaller.getFragmentationTable();
+        if (oldFragmentationTable != null) {
+            Map<String, IdentifiableParamGroup> fragmentationTable = MzIdentMLTransformer.transformToFragmentationTable(oldFragmentationTable);
+            cache.clear(CacheEntry.FRAGMENTATION_TABLE);
+            cache.storeInBatch(CacheEntry.FRAGMENTATION_TABLE, fragmentationTable);
+        }
+    }
+
+    protected void cacheSpectraData(MzIdentMLUnmarshallerAdaptor unmarshaller) {
+        Map<Comparable, uk.ac.ebi.jmzidml.model.mzidml.SpectraData> oldSpectraDataMap = unmarshaller.getSpectraDataMap();
+        if (oldSpectraDataMap != null && !oldSpectraDataMap.isEmpty()) {
+            Map<Comparable, uk.ac.ebi.pride.data.core.SpectraData> spectraDataMapResult = new HashMap<Comparable, uk.ac.ebi.pride.data.core.SpectraData>();
+
+            for (Comparable id : oldSpectraDataMap.keySet()) {
+                uk.ac.ebi.pride.data.core.SpectraData spectraData = MzIdentMLTransformer.transformToSpectraData(oldSpectraDataMap.get(id));
+                if (isSpectraDataSupported(spectraData)) {
+                    spectraDataMapResult.put(id, spectraData);
+                }
+            }
+
+            cache.clear(CacheEntry.SPECTRA_DATA);
+            cache.storeInBatch(CacheEntry.SPECTRA_DATA, spectraDataMapResult);
+        }
+    }
+
+    private boolean isSpectraDataSupported(uk.ac.ebi.pride.data.core.SpectraData spectraData) {
+        return (!(MzIdentMLUtils.getSpectraDataIdFormat(spectraData) == Constants.SpecIdFormat.NONE ||
+                MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.NONE));
+    }
+
+    private void cacheProteinGroups(MzIdentMLUnmarshallerAdaptor unmarshaller) throws ConfigurationException {
+        Set<String> proteinAmbiguityGroupIds = unmarshaller.getIDsForElement(MzIdentMLElement.ProteinAmbiguityGroup);
+
+        if (proteinAmbiguityGroupIds != null && !proteinAmbiguityGroupIds.isEmpty()) {
+
+            cache.clear(CacheEntry.PROTEIN_GROUP_ID);
+            cache.storeInBatch(CacheEntry.PROTEIN_GROUP_ID, new ArrayList<Comparable>(proteinAmbiguityGroupIds));
+
+            List<Comparable> proteinHIds = new ArrayList<Comparable>(unmarshaller.getIDsForElement(MzIdentMLElement.ProteinDetectionHypothesis));
+
+            if (!proteinHIds.isEmpty()) {
+                cache.clear(CacheEntry.PROTEIN_ID);
+                cache.storeInBatch(CacheEntry.PROTEIN_ID, proteinHIds);
+            }
+        }
+    }
 
     /**
      * This function try to Map in memory ids mapping and relation for an mzidentml file. The structure of the
@@ -76,12 +140,13 @@ public class MzIdentMLEagarCachingStrategy extends MzIdentMLQuickCachingStrategy
      * @throws javax.naming.ConfigurationException
      *
      */
-    private void getPreScanIdMaps() throws ConfigurationException {
+    private void cachePrescanIdMaps(MzIdentMLUnmarshallerAdaptor unmarshaller) throws ConfigurationException {
+
+        unmarshaller.scanIdMappings();
 
         /**
          * Map of IDs to SpectraData, e.g. IDs to spectra files
          */
-        MzIdentMLUnmarshallerAdaptor unmarshaller = ((MzIdentMLControllerImpl) controller).getUnmarshaller();
         Map<Comparable, SpectraData> spectraDataIds = unmarshaller.getSpectraDataMap();
 
 
@@ -186,6 +251,10 @@ public class MzIdentMLEagarCachingStrategy extends MzIdentMLQuickCachingStrategy
         cache.storeInBatch(CacheEntry.PEPTIDE_TO_SPECTRUM, identSpectrumMap);
     }
 
+    public boolean isProteinGroupPresent(MzIdentMLUnmarshallerAdaptor unmarshaller) throws ConfigurationException {
+        Set<String> proteinAmbiguityGroupIds = unmarshaller.getIDsForElement(MzIdentMLElement.ProteinAmbiguityGroup);
+        return proteinAmbiguityGroupIds != null && !proteinAmbiguityGroupIds.isEmpty();
+    }
 }
 
 

@@ -25,11 +25,12 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
     // Map<SpectrumIdentificationResult ID, Map<SpectrumIdentificationItem ID, List<PeptideEvidenceRef IndexElement>>
     private Map<String, Map<String, List<IndexElement>>> scannedIdMappings;
 
-    public MzIdentMLUnmarshallerAdaptor(File mzIdentMLFile) {
+    public MzIdentMLUnmarshallerAdaptor(File mzIdentMLFile) throws ConfigurationException {
         super(mzIdentMLFile);
+        scanIdMappings();
     }
 
-    public void scanIdMappings() {
+    private void scanIdMappings() throws ConfigurationException {
 
         scannedIdMappings = new HashMap<String, Map<String, List<IndexElement>>>();
 
@@ -42,13 +43,16 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
         // get index elements of PeptideEvidenceRef
         List<IndexElement> peptideEvidenceRefIndexElements = this.index.getIndexElements(MzIdentMLElement.PeptideEvidenceRef.getXpath());
 
-        scanForIdMappings(spectrumIdentResultIdToIndexElements, spectrumIdentItemIdToIndexElements, peptideEvidenceRefIndexElements);
+        boolean proteinGroupPresent = hasProteinGroup();
+
+        scanForIdMappings(spectrumIdentResultIdToIndexElements, spectrumIdentItemIdToIndexElements, peptideEvidenceRefIndexElements, proteinGroupPresent);
 
     }
 
     private void scanForIdMappings(Map<String, IndexElement> spectrumIdentResultIdToIndexElements,
                                    Map<String, IndexElement> spectrumIdentItemIdToIndexElements,
-                                   List<IndexElement> peptideEvidenceRefIndexElements) {
+                                   List<IndexElement> peptideEvidenceRefIndexElements,
+                                   boolean proteinGroupPresent) {
 
         for (String spectrumIdentResultId : spectrumIdentResultIdToIndexElements.keySet()) {
             IndexElement spectrumIdentResultIndexElement = spectrumIdentResultIdToIndexElements.get(spectrumIdentResultId);
@@ -64,7 +68,13 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
                         spectrumIdentItemWithin = new HashMap<String, List<IndexElement>>();
                         scannedIdMappings.put(spectrumIdentResultId, spectrumIdentItemWithin);
                     }
-                    spectrumIdentItemWithin.put(spectrumIdentItemId, findPeptideEvidenceRefIndexElements(spectrumIdentItemIndexElement, peptideEvidenceRefIndexElements));
+
+                    if (proteinGroupPresent) {
+                        spectrumIdentItemWithin.put(spectrumIdentItemId, null);
+                    } else {
+                        spectrumIdentItemWithin.put(spectrumIdentItemId, findPeptideEvidenceRefIndexElements(spectrumIdentItemIndexElement, peptideEvidenceRefIndexElements));
+                    }
+
                     spectrumIdentItemElementEntryIterator.remove();
                 }
             }
@@ -176,7 +186,7 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
         return this.unmarshal(uk.ac.ebi.jmzidml.model.mzidml.Provider.class);
     }
 
-    public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtcol() {
+    public List<SpectrumIdentificationProtocol> getSpectrumIdentificationProtocol() {
         AnalysisProtocolCollection apc = this.unmarshal(AnalysisProtocolCollection.class);
         return (apc != null) ? apc.getSpectrumIdentificationProtocol() : null;
     }
@@ -254,7 +264,13 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
         return this.unmarshal(DBSequence.class, (String) id);
     }
 
-    public List<SpectrumIdentificationItem> getSpectrumIdentificationsbyIds(List<Comparable> spectrumIdentIds) throws JAXBException {
+    public boolean hasProteinGroup() throws ConfigurationException {
+        Set<String> proteinAmbiguityGroupIds = this.getIDsForElement(MzIdentMLElement.ProteinAmbiguityGroup);
+
+        return proteinAmbiguityGroupIds != null && !proteinAmbiguityGroupIds.isEmpty();
+    }
+
+    public List<SpectrumIdentificationItem> getSpectrumIdentificationsByIds(List<Comparable> spectrumIdentIds) throws JAXBException {
         List<SpectrumIdentificationItem> spectrumIdentifications = null;
         if (spectrumIdentIds != null && spectrumIdentIds.size() > 0) {
             spectrumIdentifications = new ArrayList<SpectrumIdentificationItem>();
@@ -267,7 +283,7 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
         return spectrumIdentifications;
     }
 
-    public Map<Comparable, String[]> getSpectrumIdentificationsbySpectrumResult(Comparable id) throws JAXBException {
+    public Map<Comparable, String[]> getSpectrumIdentificationsBySpectrumResult(Comparable id) throws JAXBException {
         SpectrumIdentificationResult results = this.unmarshal(SpectrumIdentificationResult.class, (String) id);
         Map<Comparable, String[]> spectrumIds = new HashMap<Comparable, String[]>(results.getSpectrumIdentificationItem().size());
         for (SpectrumIdentificationItem idSpectrumItem : results.getSpectrumIdentificationItem()) {

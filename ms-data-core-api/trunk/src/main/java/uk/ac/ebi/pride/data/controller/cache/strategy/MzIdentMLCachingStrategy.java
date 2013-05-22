@@ -36,14 +36,7 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
     @Override
     public void cache(){
         MzIdentMLUnmarshallerAdaptor unmarshaller = ((MzIdentMLControllerImpl) controller).getUnmarshaller();
-        boolean proteinGroupPresent = false;
-        try {
-            proteinGroupPresent = isProteinGroupPresent(unmarshaller);
-        } catch (ConfigurationException e) {
-            String msg = "Failed while checking whether protein groups are present";
-            logger.error(msg, e);
-            throw new DataAccessException(msg, e);
-        }
+        boolean proteinGroupPresent = hasProteinGroup(unmarshaller);
 
         // cache spectra data
         cacheSpectraData(unmarshaller);
@@ -60,6 +53,7 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
          * */
         try {
             if (proteinGroupPresent) {
+                cacheSpectrumIds(unmarshaller);
                 cacheProteinGroups(unmarshaller);
             } else {
                 cachePrescanIdMaps(unmarshaller);
@@ -67,6 +61,18 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
         } catch (ConfigurationException e) {
             throw new DataAccessException("Failed to prescan id maps for mzIdentML file", e);
         }
+    }
+
+    private boolean hasProteinGroup(MzIdentMLUnmarshallerAdaptor unmarshaller) {
+        boolean proteinGroupPresent = false;
+        try {
+            proteinGroupPresent = unmarshaller.hasProteinGroup();
+        } catch (ConfigurationException e) {
+            String msg = "Failed while checking whether protein groups are present";
+            logger.error(msg, e);
+            throw new DataAccessException(msg, e);
+        }
+        return proteinGroupPresent;
     }
 
     protected void cacheCvlookupMap(MzIdentMLUnmarshallerAdaptor unmarshaller) {
@@ -129,6 +135,53 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
         }
     }
 
+    private void cacheSpectrumIds(MzIdentMLUnmarshallerAdaptor unmarshaller) throws ConfigurationException {
+        Map<Comparable, String[]> identSpectrumMap = new HashMap<Comparable, String[]>();
+
+
+        Set<String> spectrumIdentResultIds = unmarshaller.getIDsForElement(MzIdentMLElement.SpectrumIdentificationResult);
+
+        Map<Comparable, SpectraData> spectraDataIds = unmarshaller.getSpectraDataMap();
+
+        Map<Comparable, List<Comparable>> spectraDataMap = new HashMap<Comparable, List<Comparable>>(spectraDataIds.size());
+
+        for (String spectrumIdentResultId : spectrumIdentResultIds) {
+
+            Map<String, String> spectrumIdentificationResultAttributes = unmarshaller.getElementAttributes(spectrumIdentResultId, SpectrumIdentificationResult.class);
+            String spectrumDataReference = spectrumIdentificationResultAttributes.get("spectraData_ref");
+            String spectrumID = spectrumIdentificationResultAttributes.get("spectrumID");
+            SpectraData spectraData = spectraDataIds.get(spectrumDataReference);
+
+            // fill the SpectraDataMap
+            // for the currently referenced spectra file, retrieve the List (if it exists already) that is to store all the spectra IDs
+            List<Comparable> spectrumIds = spectraDataMap.get(spectrumDataReference);
+            // if there is no spectra ID list for the spectrum file yet, then create one and add it to the map
+            if (spectrumIds == null) {
+                spectrumIds = new ArrayList<Comparable>();
+                spectraDataMap.put(spectrumDataReference, spectrumIds);
+            }
+            // add the spectrum ID to the list of spectrum IDs for the current spectrum file
+            spectrumIds.add(spectrumID);
+
+            // proceed to populate the identSpectrumMap
+            Set<String> spectrumIdentItemIds = unmarshaller.getSpectrumIdentificationItemIds(spectrumIdentResultId);
+            for (String spectrumIdentItemId : spectrumIdentItemIds) {
+
+                // extract the spectrum ID from the provided identifier
+                String formattedSpectrumID = MzIdentMLUtils.getSpectrumId(spectraData, spectrumID);
+                String[] spectrumFeatures = {formattedSpectrumID, spectrumDataReference};
+
+                identSpectrumMap.put(spectrumIdentItemId, spectrumFeatures);
+            }
+        }
+
+        cache.clear(CacheEntry.SPECTRADATA_TO_SPECTRUMIDS);
+        cache.storeInBatch(CacheEntry.SPECTRADATA_TO_SPECTRUMIDS, spectraDataMap);
+
+        cache.clear(CacheEntry.PEPTIDE_TO_SPECTRUM);
+        cache.storeInBatch(CacheEntry.PEPTIDE_TO_SPECTRUM, identSpectrumMap);
+    }
+
     /**
      * This function try to Map in memory ids mapping and relation for an mzidentml file. The structure of the
      * mzidentml files is from spectrum->peptide->protein, but most for the end users is more interesting to
@@ -141,8 +194,6 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
      *
      */
     private void cachePrescanIdMaps(MzIdentMLUnmarshallerAdaptor unmarshaller) throws ConfigurationException {
-
-        unmarshaller.scanIdMappings();
 
         /**
          * Map of IDs to SpectraData, e.g. IDs to spectra files
@@ -249,11 +300,6 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
 
         cache.clear(CacheEntry.PEPTIDE_TO_SPECTRUM);
         cache.storeInBatch(CacheEntry.PEPTIDE_TO_SPECTRUM, identSpectrumMap);
-    }
-
-    public boolean isProteinGroupPresent(MzIdentMLUnmarshallerAdaptor unmarshaller) throws ConfigurationException {
-        Set<String> proteinAmbiguityGroupIds = unmarshaller.getIDsForElement(MzIdentMLElement.ProteinAmbiguityGroup);
-        return proteinAmbiguityGroupIds != null && !proteinAmbiguityGroupIds.isEmpty();
     }
 }
 

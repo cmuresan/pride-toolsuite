@@ -18,6 +18,7 @@ import uk.ac.ebi.pride.data.utils.Constants;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
 import uk.ac.ebi.pride.data.utils.MzIdentMLUtils;
 
+import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
 import java.io.BufferedReader;
 import java.io.File;
@@ -72,7 +73,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     protected void initialize() {
         // create pride access utils
         File file = (File) getSource();
-        unmarshaller = new MzIdentMLUnmarshallerAdaptor(file);
+        try {
+            unmarshaller = new MzIdentMLUnmarshallerAdaptor(file);
+        } catch (ConfigurationException e) {
+            String msg = "Failed to create XML unmarshaller for mzIdentML file: " + file.getAbsolutePath();
+            throw new DataAccessException(msg, e);
+        }
 
         // init ms data accession controller map
         this.msDataAccessControllers = new HashMap<Comparable, DataAccessController>();
@@ -380,7 +386,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         IdentificationMetaData identificationMetaData = super.getIdentificationMetaData();
 
         if (identificationMetaData == null) {
-            return MzIdentMLTransformer.transformToSpectrumIdentificationProtocol(unmarshaller.getSpectrumIdentificationProtcol());
+            return MzIdentMLTransformer.transformToSpectrumIdentificationProtocol(unmarshaller.getSpectrumIdentificationProtocol());
         }
         return identificationMetaData.getSpectrumIdentificationProtocols();
     }
@@ -520,7 +526,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             spectrumIdentIds = new ArrayList<Comparable>(mapPeptides.keySet());
         }
 
-        return unmarshaller.getSpectrumIdentificationsbyIds(spectrumIdentIds);
+        return unmarshaller.getSpectrumIdentificationsByIds(spectrumIdentIds);
     }
 
     private void storeProteinToCache(Protein ident) {
@@ -647,7 +653,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * @return Spectrum spectrum object
      */
     @Override
-    Spectrum getSpectrumById(Comparable id, boolean useCache) {
+    public Spectrum getSpectrumById(Comparable id, boolean useCache) {
         String[] spectrumIdArray = ((Map<Comparable, String[]>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM)).get(id);
 
         /** To store in cache the Spectrum files, an Id was constructed using the spectrum ID and the

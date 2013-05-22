@@ -46,7 +46,7 @@ public class MzIdentMlMSControllerImplTest {
         List<File> fileList = new ArrayList<File>();
         fileList.add(filems);
         mzIdentMlController.addMSController(fileList);
-        Spectrum spectrum = mzIdentMlController.getSpectrumById("SII_67_1");
+        Spectrum spectrum = mzIdentMlController.getSpectrumById("730!SD_1");
         assertTrue("There should be 60 peaks", spectrum.getIntensityBinaryDataArray().getDoubleArray().length == 60);
         int i = mzIdentMlController.getNumberOfIdentifiedSpectra();
         int j = mzIdentMlController.getNumberOfSpectra();

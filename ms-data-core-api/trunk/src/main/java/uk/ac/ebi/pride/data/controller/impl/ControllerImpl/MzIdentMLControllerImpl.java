@@ -508,7 +508,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 }
 
                 if (ident != null) {
-                    storeProteinToCache(ident);
+                    storeProteinToCache(proteinId, ident);
                 }
             } catch (Exception ex) {
                 throw new DataAccessException("Failed to retrieve identification: " + proteinId, ex);
@@ -529,9 +529,9 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return unmarshaller.getSpectrumIdentificationsByIds(spectrumIdentIds);
     }
 
-    private void storeProteinToCache(Protein ident) {
+    private void storeProteinToCache(Comparable proteinId, Protein ident) {
         // store identification into cache
-        getCache().store(CacheEntry.PROTEIN, ident.getId(), ident);
+        getCache().store(CacheEntry.PROTEIN, proteinId, ident);
         // store precursor charge and m/z
         for (Peptide peptide : ident.getPeptides()) {
             getCache().store(CacheEntry.PEPTIDE, new Tuple<Comparable, Comparable>(ident.getId(), peptide.getSpectrumIdentification().getId()), peptide);

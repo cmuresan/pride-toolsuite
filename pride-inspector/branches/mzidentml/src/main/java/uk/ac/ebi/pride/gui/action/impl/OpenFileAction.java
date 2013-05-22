@@ -223,7 +223,7 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
     @SuppressWarnings("unchecked")
     private void openFiles(List<File> files) {
         Map<File, Class> openFiles = new HashMap<File, Class>();
-        List<File> mzidFileList = new ArrayList<File>();
+        Map<File, List<File>> mzIdentMLFiles = new HashMap<File, List<File>>();
 
         for (File selectedFile : files) {
             // check the file type
@@ -235,19 +235,18 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
             }
 
             if (classType != null) {
-                openFiles.put(selectedFile, classType);
+                if (MzIdentMLControllerImpl.isValidFormat(selectedFile)) {
+                    mzIdentMLFiles.put(selectedFile, null);
+                } else {
+                    openFiles.put(selectedFile, classType);
+                }
             }
-
-            if (MzIdentMLControllerImpl.isValidFormat(selectedFile)) {
-                mzidFileList.add(selectedFile);
-            }
-
         }
 
         // detect protein grouping
-        if (mzidFileList.size() > 0) {
+        if (mzIdentMLFiles.size() > 0) {
             List<File> mzIdentMLWithoutProteinGroups = new ArrayList<File>();
-            for (File mzIdentMLFile : mzidFileList) {
+            for (File mzIdentMLFile : mzIdentMLFiles.keySet()) {
                 if (!hasProteinGroups(mzIdentMLFile)) {
                     mzIdentMLWithoutProteinGroups.add(mzIdentMLFile);
                 }
@@ -260,35 +259,36 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
                                 "would you like to continue? </html>", "mzIdentML", JOptionPane.YES_NO_OPTION);
 
                 if (option == JOptionPane.NO_OPTION) {
-                    return;
+                    for (File mzIdentMLWithoutProteinGroup : mzIdentMLWithoutProteinGroups) {
+                        mzIdentMLFiles.remove(mzIdentMLWithoutProteinGroup);
+                    }
                 }
             }
         }
 
         // load peak list files
-        Map<File, List<File>> mzIdentMLFiles = null;
-        if (mzidFileList.size() > 0) {
+        if (mzIdentMLFiles.size() > 0) {
             int option = JOptionPane.showConfirmDialog(null,
                     "Would you like to load spectrum files related to the mzIdentML files?", "mzIdentML", JOptionPane.YES_NO_OPTION);
 
             if (option == JOptionPane.YES_OPTION) {
-                MzIdMsDialog mzidDialog = new MzIdMsDialog(Desktop.getInstance().getMainComponent(), mzidFileList);
+                MzIdMsDialog mzidDialog = new MzIdMsDialog(Desktop.getInstance().getMainComponent(), new ArrayList<File>(mzIdentMLFiles.keySet()));
                 mzidDialog.setModal(true);
                 mzidDialog.setVisible(true);
-                mzIdentMLFiles = mzidDialog.getMzIdentMlMap();
+                mzIdentMLFiles.putAll(mzidDialog.getMzIdentMlMap());
             }
         }
 
         // Open all mzIdentML Files
-        if (mzIdentMLFiles != null) {
+        if (!mzIdentMLFiles.isEmpty()) {
             for (File mzIdentML : mzIdentMLFiles.keySet()) {
                 String msg = "Opening " + mzIdentML.getName();
 
                 OpenFileTask newTask;
                 if (mzIdentMLFiles.get(mzIdentML) != null && mzIdentMLFiles.get(mzIdentML).size() > 0) {
-                    newTask = new OpenFileTask(mzIdentML, mzIdentMLFiles.get(mzIdentML), openFiles.get(mzIdentML), msg, msg);
+                    newTask = new OpenFileTask(mzIdentML, mzIdentMLFiles.get(mzIdentML), MzIdentMLControllerImpl.class, msg, msg);
                 } else {
-                    newTask = new OpenFileTask(mzIdentML, openFiles.get(mzIdentML), msg, msg);
+                    newTask = new OpenFileTask(mzIdentML, MzIdentMLControllerImpl.class, msg, msg);
                 }
                 TaskUtil.startBackgroundTask(newTask);
             }

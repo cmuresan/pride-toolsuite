@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.component.table;
 
+import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.search.SearchFactory;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.table.listener.EntryUpdateSelectionListener;
@@ -25,7 +26,7 @@ import java.awt.event.*;
  * Date: 11-Sep-2010
  * Time: 13:35:30
  */
-public class DefaultPrideTable extends AlterRowColorTable implements ActionListener {
+public class DefaultPrideTable extends JXTable implements ActionListener {
     /**
      * Action command for copy cell
      */
@@ -109,7 +110,6 @@ public class DefaultPrideTable extends AlterRowColorTable implements ActionListe
         int rowColumnNum = rowNumColumn.getModelIndex();
         rowNumColumn.setCellRenderer(new RowNumberRenderer());
         getColumnModel().getColumn(rowColumnNum).setMaxWidth(40);
-        setOmitColumn(rowColumnNum);
 
         // prevent dragging of column
         getTableHeader().setReorderingAllowed(false);

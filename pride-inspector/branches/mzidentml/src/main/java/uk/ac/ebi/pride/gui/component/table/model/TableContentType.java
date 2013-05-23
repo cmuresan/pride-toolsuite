@@ -63,5 +63,7 @@ public enum TableContentType {
     /**
      * Quantification for peptide
      */
-    PEPTIDE_QUANTITATION
+    PEPTIDE_QUANTITATION,
+
+    PEPTIDE_DELTA
 }

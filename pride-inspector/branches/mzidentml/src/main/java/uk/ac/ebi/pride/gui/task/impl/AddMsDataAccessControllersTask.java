@@ -16,10 +16,16 @@ import uk.ac.ebi.pride.gui.component.report.RemovalReportMessage;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.table.listener.EntryUpdateSelectionListener;
+import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 import uk.ac.ebi.pride.gui.event.container.SpectrumEvent;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
+import uk.ac.ebi.pride.gui.task.TaskListener;
+import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
+import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
+import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.io.File;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -70,8 +76,16 @@ public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<Spectr
             peptideContentPane.peptideChange();
             contentPane.populate();
 
-            //Update the Fragmentation Tab
+            RetrievePeptideDeltaDetailTask task = new RetrievePeptideDeltaDetailTask(controller);
+            JTable table = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
+            TableModel tableModel = table.getModel();
+            task.addTaskListener((TaskListener) tableModel);
 
+            // gui blocker
+            task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
+
+            // add task to task manager without notify
+            Desktop.getInstance().getDesktopContext().addTask(task);
 
         } catch (DataAccessException e) {
             e.printStackTrace();

@@ -203,29 +203,29 @@ public class PeptideTabPane extends PrideInspectorTabPane {
         }
     }
 
-    public void peptideChange(){
-        int rowNum = peptideDescPane.getPeptideTable().getSelectedRow();
+    public void peptideChange() {
+        int rowNum = (peptideDescPane.getPeptideTable().getSelectedRow() >= 0) ? peptideDescPane.getPeptideTable().getSelectedRow() : 0;
         if (rowNum >= 0) {
-                // get table model
-                PeptideTableModel pepTableModel = (PeptideTableModel) peptideDescPane.getPeptideTable().getModel();
+            // get table model
+            PeptideTableModel pepTableModel = (PeptideTableModel) peptideDescPane.getPeptideTable().getModel();
 
-                // get spectrum reference column
-                int identColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
-                int peptideColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
+            // get spectrum reference column
+            int identColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
+            int peptideColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
 
-                // get spectrum id
-                int modelRowIndex = peptideDescPane.getPeptideTable().convertRowIndexToModel(rowNum);
-                Comparable identId = (Comparable) pepTableModel.getValueAt(modelRowIndex, identColNum);
-                Comparable peptideId = (Comparable) pepTableModel.getValueAt(modelRowIndex, peptideColNum);
+            // get spectrum id
+            int modelRowIndex = peptideDescPane.getPeptideTable().convertRowIndexToModel(rowNum);
+            Comparable identId = (Comparable) pepTableModel.getValueAt(modelRowIndex, identColNum);
+            Comparable peptideId = (Comparable) pepTableModel.getValueAt(modelRowIndex, peptideColNum);
 
-                // fire a background task to retrieve peptide
-                if (peptideId != null && identId != null) {
-                    // publish the event to local event bus
-                    EventService eventBus = ContainerEventServiceFinder.getEventService(peptideDescPane);
-                    eventBus.publish(new PeptideEvent(peptideDescPane, controller, identId, peptideId));
+            // fire a background task to retrieve peptide
+            if (peptideId != null && identId != null) {
+                // publish the event to local event bus
+                EventService eventBus = ContainerEventServiceFinder.getEventService(peptideDescPane);
+                eventBus.publish(new PeptideEvent(peptideDescPane, controller, identId, peptideId));
 
-                }
             }
+        }
 
     }
 

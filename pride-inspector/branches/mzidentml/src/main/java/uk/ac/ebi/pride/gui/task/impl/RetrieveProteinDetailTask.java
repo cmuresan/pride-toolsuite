@@ -24,6 +24,7 @@ import java.util.*;
  * Time: 15:53:16
  */
 public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableContentType, Object>> {
+
     private static final Logger logger = LoggerFactory.getLogger(RetrieveProteinDetailTask.class);
 
     private static final String DEFAULT_TASK_NAME = "Downloading protein details";
@@ -104,9 +105,9 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
                         proteins = new HashMap<String, Protein>();
                     }
                 }
-                    // clear protein map
-                    proteins = new HashMap<String, Protein>();
-                }
+                // clear protein map
+                proteins = new HashMap<String, Protein>();
+            }
 
             // this is important for cancelling
             if (Thread.interrupted()) {
@@ -132,7 +133,9 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
      * @throws Exception exception while fetching the protein
      */
     private void fetchAndPublish(Map<Comparable, String> accs, Map<String, Protein> proteins) throws Exception {
+
         Collection<String> accsToFetch = new HashSet<String>(accs.values());
+
         accsToFetch.removeAll(proteins.keySet());
         // fetch protein details
         Map<String, Protein> results = fetcher.getProteinDetails(accsToFetch);

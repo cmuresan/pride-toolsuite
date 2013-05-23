@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * Abstract class for peptide table model
- *
+ * <p/>
  * User: rwang
  * Date: 24/08/2011
  * Time: 16:36
@@ -104,6 +104,8 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
             addSequenceCoverageData(newData.getValue());
         } else if (TableContentType.PEPTIDE_FIT.equals(type)) {
             addPeptideFitData(newData.getValue());
+        } else if (TableContentType.PEPTIDE_DELTA.equals(type)) {
+            addPeptideDeltaData(newData.getValue());
         }
     }
 
@@ -186,11 +188,12 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
 
     /**
      * Whether peptide sequence fit the protein sequence
+     *
      * @param newDataValue
      */
     private void addPeptideFitData(Object newDataValue) {
         // map contains peptide fit
-        Map<Tuple<Comparable, Comparable>, Integer> peptideFits = (Map<Tuple<Comparable,Comparable>, Integer>) newDataValue;
+        Map<Tuple<Comparable, Comparable>, Integer> peptideFits = (Map<Tuple<Comparable, Comparable>, Integer>) newDataValue;
 
         // column index for peptide fit
         int peptideFitIndex = getColumnIndex(TableHeader.PEPTIDE_FIT.getHeader());
@@ -202,9 +205,40 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
         // iterate over each row, set the protein name
         for (int row = 0; row < contents.size(); row++) {
             List<Object> content = contents.get(row);
-            Comparable identId = (Comparable)content.get(identIdIndex);
-            Comparable peptideId = (Comparable)content.get(peptideIdIndex);
+            Comparable identId = (Comparable) content.get(identIdIndex);
+            Comparable peptideId = (Comparable) content.get(peptideIdIndex);
             Integer peptideFit = peptideFits.get(new Tuple<Comparable, Comparable>(identId, peptideId));
+            if (peptideFit != null) {
+                // set protein name
+                content.set(peptideFitIndex, peptideFit);
+                // notify a row change
+                fireTableCellUpdated(row, peptideFitIndex);
+            }
+        }
+    }
+
+    /**
+     * Whether peptide sequence fit the protein sequence
+     *
+     * @param newDataValue
+     */
+    private void addPeptideDeltaData(Object newDataValue) {
+        // map contains peptide fit
+        Map<Tuple<Comparable, Comparable>, Double> peptideFits = (Map<Tuple<Comparable, Comparable>, Double>) newDataValue;
+
+        // column index for peptide fit
+        int peptideFitIndex = getColumnIndex(TableHeader.DELTA_MASS_COLUMN.getHeader());
+        // column index for protein identification id
+        int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
+        // column index for peptide id
+        int peptideIdIndex = getColumnIndex(TableHeader.PEPTIDE_ID.getHeader());
+
+        // iterate over each row, set the protein name
+        for (int row = 0; row < contents.size(); row++) {
+            List<Object> content = contents.get(row);
+            Comparable identId = (Comparable) content.get(identIdIndex);
+            Comparable peptideId = (Comparable) content.get(peptideIdIndex);
+            Double peptideFit = peptideFits.get(new Tuple<Comparable, Comparable>(identId, peptideId));
             if (peptideFit != null) {
                 // set protein name
                 content.set(peptideFitIndex, peptideFit);

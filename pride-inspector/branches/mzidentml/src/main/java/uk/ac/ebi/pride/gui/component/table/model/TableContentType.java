@@ -65,5 +65,7 @@ public enum TableContentType {
      */
     PEPTIDE_QUANTITATION,
 
-    PEPTIDE_DELTA
+    PEPTIDE_DELTA,
+
+    PEPTIDE_PRECURSOR_MZ
 }

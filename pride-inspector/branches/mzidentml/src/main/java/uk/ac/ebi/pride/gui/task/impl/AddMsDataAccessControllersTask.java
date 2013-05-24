@@ -1,24 +1,14 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
-import org.bushe.swing.event.ContainerEventServiceFinder;
-import org.bushe.swing.event.EventBus;
-import org.bushe.swing.event.EventService;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.core.SpectraData;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
-import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
-import uk.ac.ebi.pride.gui.component.mzdata.MzDataSelectionPane;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
-import uk.ac.ebi.pride.gui.component.report.RemovalReportMessage;
-import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
-import uk.ac.ebi.pride.gui.component.table.listener.EntryUpdateSelectionListener;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
-import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
-import uk.ac.ebi.pride.gui.event.container.SpectrumEvent;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
@@ -28,7 +18,6 @@ import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.io.File;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -76,7 +65,7 @@ public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<Spectr
             peptideContentPane.peptideChange();
             contentPane.populate();
 
-            RetrievePeptideDeltaDetailTask task = new RetrievePeptideDeltaDetailTask(controller);
+            RetrievePeptideSpectrumDetailTask task = new RetrievePeptideSpectrumDetailTask(controller);
             JTable table = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
             TableModel tableModel = table.getModel();
             task.addTaskListener((TaskListener) tableModel);

@@ -238,7 +238,9 @@ public class TableDataRetriever {
                 List<Number> values = score.getScores(availablePeptideLevelScore);
                 if (!values.isEmpty()) {
                     // take the first by default
-                    content.add(values.get(0));
+                    //content.add(values.get(0));
+                    content.add(NumberUtilities.scaleDouble(values.get(0).doubleValue(), 4));
+
                 } else {
                     content.add(null);
                 }

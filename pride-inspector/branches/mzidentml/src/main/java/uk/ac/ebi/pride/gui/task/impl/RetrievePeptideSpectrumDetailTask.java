@@ -5,19 +5,17 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.Modification;
+import uk.ac.ebi.pride.data.core.PeptideSequence;
 import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
-import uk.ac.ebi.pride.gui.component.sequence.PeptideAnnotation;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.mol.MoleculeUtilities;
-import uk.ac.ebi.pride.tools.protein_details_fetcher.ProteinDetailFetcher;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 import uk.ac.ebi.pride.tools.utils.AccessionResolver;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
-import javax.swing.*;
 import java.util.*;
 
 /**
@@ -27,13 +25,13 @@ import java.util.*;
  * Time: 3:10 PM
  */
 
-public class RetrievePeptideDeltaDetailTask extends TaskAdapter<Void, Tuple<TableContentType, Object>> {
+public class RetrievePeptideSpectrumDetailTask extends TaskAdapter<Void, Tuple<TableContentType, Object>> {
 
-    private static final Logger logger = LoggerFactory.getLogger(RetrievePeptideDeltaDetailTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(RetrievePeptideSpectrumDetailTask.class);
 
-    private static final String DEFAULT_TASK_NAME = "Retrieve Peptide Delta details";
+    private static final String DEFAULT_TASK_NAME = "Retrieve Peptide-Spectrum Details";
 
-    private static final String DEFAULT_TASK_DESC = "Retrieve Peptide Delta Details";
+    private static final String DEFAULT_TASK_DESC = "Retrieve Peptide-Spectrum Details";
 
     /**
      * The number of proteins for each batch download
@@ -50,7 +48,7 @@ public class RetrievePeptideDeltaDetailTask extends TaskAdapter<Void, Tuple<Tabl
      *
      * @param controller data access controller
      */
-    public RetrievePeptideDeltaDetailTask(DataAccessController controller) {
+    public RetrievePeptideSpectrumDetailTask(DataAccessController controller) {
 
         // set name and description
         this.setName(DEFAULT_TASK_NAME);
@@ -68,21 +66,35 @@ public class RetrievePeptideDeltaDetailTask extends TaskAdapter<Void, Tuple<Tabl
         //protein identification id and accession buffer
         Map<Comparable, String> accBuffer = new LinkedHashMap<Comparable, String>();
 
-        // protein map
-        Map<String, Protein> proteins = new HashMap<String, Protein>();
+        Map<Tuple<Comparable, Comparable>, Double> peptideDeltaMap = new HashMap<Tuple<Comparable, Comparable>, Double>();
 
-        Map<Tuple<Comparable, Comparable>, Double> peptideFits = new HashMap<Tuple<Comparable, Comparable>, Double>();
+        Map<Tuple<Comparable, Comparable>, Double> peptidePrecursorMap = new HashMap<Tuple<Comparable, Comparable>, Double>();
+
 
         // iterate over each protein
         for (Comparable protIdentId : protIdentIds) {
             Collection<Comparable> peptideIdentIds = controller.getPeptideIds(protIdentId);
             for (Comparable peptideId : peptideIdentIds) {
                 Double delta = computeDeltaMz(peptideId, protIdentId);
-                peptideFits.put(new Tuple<Comparable, Comparable>(protIdentId, peptideId), delta);
+                Double precursorMz = computePrecursorMz(peptideId, protIdentId);
+                peptideDeltaMap.put(new Tuple<Comparable, Comparable>(protIdentId, peptideId), delta);
+                peptidePrecursorMap.put(new Tuple<Comparable, Comparable>(protIdentId, peptideId), precursorMz);
             }
         }
-        publish(new Tuple<TableContentType, Object>(TableContentType.PEPTIDE_DELTA, peptideFits));
+        publish(new Tuple<TableContentType, Object>(TableContentType.PEPTIDE_DELTA, peptideDeltaMap));
+        publish(new Tuple<TableContentType, Object>(TableContentType.PEPTIDE_PRECURSOR_MZ, peptidePrecursorMap));
+
         return null;
+    }
+
+    private Double computePrecursorMz(Comparable peptideId, Comparable protIdentId) {
+        Double mz = null;
+        Comparable specId = controller.getPeptideSpectrumId(protIdentId, peptideId);
+        if (specId != null) {
+            mz = controller.getSpectrumPrecursorMz(specId);
+            mz = (mz == -1) ? null : NumberUtilities.scaleDouble(mz, 2);
+        }
+        return mz;
     }
 
     private Double computeDeltaMz(Comparable peptideId, Comparable identId) {

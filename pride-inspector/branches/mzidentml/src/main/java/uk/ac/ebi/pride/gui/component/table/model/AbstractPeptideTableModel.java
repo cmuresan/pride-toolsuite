@@ -106,6 +106,8 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
             addPeptideFitData(newData.getValue());
         } else if (TableContentType.PEPTIDE_DELTA.equals(type)) {
             addPeptideDeltaData(newData.getValue());
+        } else if (TableContentType.PEPTIDE_PRECURSOR_MZ.equals(type)) {
+            addPeptideMzData(newData.getValue());
         }
     }
 
@@ -218,16 +220,47 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
     }
 
     /**
-     * Whether peptide sequence fit the protein sequence
+     * The Delta mass between the Peptide MZ and the Spectrum MZ
      *
      * @param newDataValue
      */
     private void addPeptideDeltaData(Object newDataValue) {
-        // map contains peptide fit
+
         Map<Tuple<Comparable, Comparable>, Double> peptideFits = (Map<Tuple<Comparable, Comparable>, Double>) newDataValue;
 
         // column index for peptide fit
         int peptideFitIndex = getColumnIndex(TableHeader.DELTA_MASS_COLUMN.getHeader());
+        // column index for protein identification id
+        int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
+        // column index for peptide id
+        int peptideIdIndex = getColumnIndex(TableHeader.PEPTIDE_ID.getHeader());
+
+        // iterate over each row, set the protein name
+        for (int row = 0; row < contents.size(); row++) {
+            List<Object> content = contents.get(row);
+            Comparable identId = (Comparable) content.get(identIdIndex);
+            Comparable peptideId = (Comparable) content.get(peptideIdIndex);
+            Double peptideFit = peptideFits.get(new Tuple<Comparable, Comparable>(identId, peptideId));
+            if (peptideFit != null) {
+                // set protein name
+                content.set(peptideFitIndex, peptideFit);
+                // notify a row change
+                fireTableCellUpdated(row, peptideFitIndex);
+            }
+        }
+    }
+
+    /**
+     * The Precursor Mz
+     *
+     * @param newDataValue
+     */
+    private void addPeptideMzData(Object newDataValue) {
+        // map contains peptide fit
+        Map<Tuple<Comparable, Comparable>, Double> peptideFits = (Map<Tuple<Comparable, Comparable>, Double>) newDataValue;
+
+        // column index for peptide fit
+        int peptideFitIndex = getColumnIndex(TableHeader.PRECURSOR_MZ_COLUMN.getHeader());
         // column index for protein identification id
         int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
         // column index for peptide id

@@ -427,7 +427,7 @@ public class MzIdentMLTransformer {
                     CvTermReference cvCharge = CvTermReference.PRODUCT_ION_CHARGE;
                     cvParams.add(new CvParam(cvCharge.getAccession(), cvCharge.getName(), cvCharge.getCvLabel(), String.valueOf(ionType.getCharge()), null, null, null));
                     //ion type
-                    cvParams.add(new CvParam(ionType.getCvParam().getAccession(), ionType.getCvParam().getName(), ionType.getCvParam().getCvRef(), ionType.getCvParam().getValue(), null, null, null));
+                    cvParams.add(new CvParam(ionType.getCvParam().getAccession(), ionType.getCvParam().getName(), ionType.getCvParam().getCvRef(), listIds.get(index).toString(), null, null, null));
                     //mz
                     for (uk.ac.ebi.jmzidml.model.mzidml.FragmentArray fragArr : ionType.getFragmentArray()) {
                         String measureRef = fragArr.getMeasureRef();

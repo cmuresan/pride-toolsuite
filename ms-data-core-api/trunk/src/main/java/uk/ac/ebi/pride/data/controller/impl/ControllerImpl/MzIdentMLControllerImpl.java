@@ -702,6 +702,21 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return spectrumIds;
     }
 
+    @Override
+    public boolean isIdentifiedSpectrum(Comparable specId) {
+        String[] spectrumIdArray = ((Map<Comparable, String[]>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM)).get(specId);
+
+        if (spectrumIdArray != null && spectrumIdArray.length > 0) {
+            return true;
+        } else {
+            Collection<String[]> ids = ((Map<Comparable, String[]>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM)).values();
+            Set<String> idsSet = new TreeSet<String>();
+            for (String[] values : ids) idsSet.add(values[0] + "!" + values[1]);
+            if (idsSet.contains(specId)) return true;
+        }
+        return false;
+    }
+
     public void addMSController(List<File> dataAccessControllerFiles) {
         Map<SpectraData, File> spectraDataFileMap = checkMScontrollers(dataAccessControllerFiles);
 

@@ -8,15 +8,15 @@ import uk.ac.ebi.pride.term.CvTermReference;
  * <p>Object is used to retrieve protein and peptides data from the database</p>
  *
  * @author Antonio Fabregat
- * Date: 05-oct-2010
- * Time: 14:44:13
+ *         Date: 05-oct-2010
+ *         Time: 14:44:13
  */
 public class ProteinPeptide implements ProteinPeptideInterface {
 
     /**
      * Contains the spectrum ID (-1 means spectrum ID unavailable)
      */
-    protected int spectrumID = -1;
+    protected Comparable spectrumID = null;
 
     /**
      * Contains the protein ID
@@ -34,7 +34,7 @@ public class ProteinPeptide implements ProteinPeptideInterface {
     protected double ptmMass;
 
     /**
-     * Contains a number of peptide scores for a list of search engines 
+     * Contains a number of peptide scores for a list of search engines
      */
     protected PeptideScore scores = new PeptideScore();
 
@@ -42,11 +42,11 @@ public class ProteinPeptide implements ProteinPeptideInterface {
      * <p> Creates an instance of this ProteinPeptide object, setting all fields as per description below.</p>
      *
      * @param spectrumID the spectrum ID
-     * @param proteinID the protein ID
-     * @param sequence the peptide Amino-Acid sequence
-     * @param ptmMass the PTM mass
+     * @param proteinID  the protein ID
+     * @param sequence   the peptide Amino-Acid sequence
+     * @param ptmMass    the PTM mass
      */
-    public ProteinPeptide(int spectrumID, int proteinID, String sequence, double ptmMass) {
+    public ProteinPeptide(Comparable spectrumID, int proteinID, String sequence, double ptmMass) {
         this.spectrumID = spectrumID;
         this.proteinID = proteinID;
         this.sequence = sequence;
@@ -57,8 +57,8 @@ public class ProteinPeptide implements ProteinPeptideInterface {
      * <p> Creates an instance of this ProteinPeptide object, setting all fields as per description below.</p>
      *
      * @param proteinID the protein ID
-     * @param sequence the peptide Amino-Acid sequence
-     * @param ptmMass the PTM mass
+     * @param sequence  the peptide Amino-Acid sequence
+     * @param ptmMass   the PTM mass
      */
     public ProteinPeptide(int proteinID, String sequence, double ptmMass) {
         this.proteinID = proteinID;
@@ -92,8 +92,8 @@ public class ProteinPeptide implements ProteinPeptideInterface {
      * @return the spectrum ID
      */
     @Override
-    public int getSpectrumID() throws ProteinPeptideException {
-        if (spectrumID==-1) throw new ProteinPeptideException();
+    public Comparable getSpectrumID() throws ProteinPeptideException {
+        if (spectrumID == null) throw new ProteinPeptideException();
         return spectrumID;
     }
 
@@ -110,9 +110,9 @@ public class ProteinPeptide implements ProteinPeptideInterface {
     /**
      * Add a new peptide score
      *
-     * @param se    search engine
-     * @param ref   cv term reference for the score type
-     * @param num   peptide score
+     * @param se  search engine
+     * @param ref cv term reference for the score type
+     * @param num peptide score
      */
     public void addPeptideScore(SearchEngineType se, CvTermReference ref, Number num) {
         scores.addPeptideScore(se, ref, num);
@@ -130,7 +130,7 @@ public class ProteinPeptide implements ProteinPeptideInterface {
      * Returns a useful String representation of this ProteinPeptide instance that
      * includes details of all fields.
      *
-     * @return a useful String representation of this ProteinPeptide instance. 
+     * @return a useful String representation of this ProteinPeptide instance.
      */
     @Override
     public String toString() {

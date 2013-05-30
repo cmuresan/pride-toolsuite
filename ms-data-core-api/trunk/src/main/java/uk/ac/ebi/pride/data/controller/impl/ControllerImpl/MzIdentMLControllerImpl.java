@@ -684,6 +684,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException(msg, ex);
             }
         }
+        spectrum.setId(spectrumId);
         return spectrum;
     }
 

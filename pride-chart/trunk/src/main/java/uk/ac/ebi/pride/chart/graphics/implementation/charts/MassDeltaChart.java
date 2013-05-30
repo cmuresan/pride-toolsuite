@@ -24,8 +24,8 @@ import java.util.List;
  * <p>Class to plot a relative frequency distribution of identified peptide mass - precursor ion mass</p>
  *
  * @author Antonio Fabregat
- * Date: 24-sep-2010
- * Time: 14:17:28
+ *         Date: 24-sep-2010
+ *         Time: 14:17:28
  */
 public class MassDeltaChart extends PrideChart {
     private static final int BINS = 200;
@@ -43,7 +43,7 @@ public class MassDeltaChart extends PrideChart {
 
     /**
      * <p> Creates an instance of this MassDeltaChart object, setting all fields as per description below.</p>
-     * 
+     *
      * @param jsonData a Pride Chart Json Data object containing the chart values
      */
     public MassDeltaChart(String jsonData) {
@@ -52,13 +52,13 @@ public class MassDeltaChart extends PrideChart {
 
     @Override
     protected boolean isDataConsistent(ExperimentSummaryData summaryData) {
-        if(!summaryData.getState().isPrecursorChargesLoaded())
+        if (!summaryData.getState().isPrecursorChargesLoaded())
             recordError("The experiment does not contain precursor charges");
 
-        if(!summaryData.getState().isPrecursorMassesLoaded())
+        if (!summaryData.getState().isPrecursorMassesLoaded())
             recordError("The experiment does not contain precursor masses");
 
-        if(summaryData.getProteinsPeptides().size()==0)
+        if (summaryData.getProteinsPeptides().size() == 0)
             recordError("The experiment does not contain identifications data");
 
         return isValid();
@@ -67,7 +67,7 @@ public class MassDeltaChart extends PrideChart {
     @Override
     protected void initializeTypes() {
         this.supportedTypes.add(DataSeriesType.PEPTIDE);
-        
+
         this.visibleTypes.add(DataSeriesType.PEPTIDE);
     }
 
@@ -75,11 +75,11 @@ public class MassDeltaChart extends PrideChart {
     protected void processData(ExperimentSummaryData summaryData) {
         List<Double> data = new ArrayList<Double>();
 
-        for(ProteinPeptide pp : summaryData.getProteinsPeptides()){
+        for (ProteinPeptide pp : summaryData.getProteinsPeptides()) {
             SpectrumData sData;
             try {
-                int spectrumID = pp.getSpectrumID();
-                sData= summaryData.getSpectrum(String.valueOf(spectrumID));
+                Comparable spectrumID = pp.getSpectrumID();
+                sData = summaryData.getSpectrum(String.valueOf(spectrumID));
             } catch (ProteinPeptideException e) {
                 //If there is not spectrumID, the precursor mass and charge could not be found
                 continue;
@@ -101,10 +101,10 @@ public class MassDeltaChart extends PrideChart {
             ptmMasses.add(pp.getPtmMass());
             Double deltaMass = MoleculeUtilities.calculateDeltaMz(pp.getSequence(), mz, charge, ptmMasses);
 
-            if(deltaMass!=null) data.add(deltaMass);
+            if (deltaMass != null) data.add(deltaMass);
         }
 
-        if(data.size()==0){
+        if (data.size() == 0) {
             recordError("Peptide sequences could not be associated to a MS 1 precursor");
             return;
         }
@@ -116,38 +116,38 @@ public class MassDeltaChart extends PrideChart {
 
         double binWidth = Math.abs((max - min) / (double) BINS);
         binWidth = binWidth < MIN_BIN_WIDTH ? MIN_BIN_WIDTH : binWidth;
-        for(double value : data){
-            int bin = (int) Math.round(value/ binWidth); 
+        for (double value : data) {
+            int bin = (int) Math.round(value / binWidth);
             double pos = bin * binWidth;
-            if(histogram.keySet().contains(pos)){
-                histogram.put(pos, histogram.get(pos)+1);
+            if (histogram.keySet().contains(pos)) {
+                histogram.put(pos, histogram.get(pos) + 1);
             } else {
                 histogram.put(pos, 1);
             }
         }
 
-        List<SeriesPair<Double,Double>> deltaMasses = new ArrayList<SeriesPair<Double,Double>>();
+        List<SeriesPair<Double, Double>> deltaMasses = new ArrayList<SeriesPair<Double, Double>>();
 
-        if(histogram.keySet().size()==1){
+        if (histogram.keySet().size() == 1) {
             for (Double key : histogram.keySet()) {
-                if(key>0.0){ //To center the chart on 0
-                    deltaMasses.add(new SeriesPair<Double,Double>(-key-MIN_BIN_WIDTH, 0.0));
+                if (key > 0.0) { //To center the chart on 0
+                    deltaMasses.add(new SeriesPair<Double, Double>(-key - MIN_BIN_WIDTH, 0.0));
                 }
 
-                deltaMasses.add(new SeriesPair<Double,Double>(key-MIN_BIN_WIDTH, 0.0));
-                deltaMasses.add(new SeriesPair<Double,Double>(key, 1.0));
-                deltaMasses.add(new SeriesPair<Double,Double>(key+MIN_BIN_WIDTH, 0.0));
+                deltaMasses.add(new SeriesPair<Double, Double>(key - MIN_BIN_WIDTH, 0.0));
+                deltaMasses.add(new SeriesPair<Double, Double>(key, 1.0));
+                deltaMasses.add(new SeriesPair<Double, Double>(key + MIN_BIN_WIDTH, 0.0));
 
-                if(key<0.0){ //To center the chart on 0
-                    deltaMasses.add(new SeriesPair<Double,Double>(-key+MIN_BIN_WIDTH, 0.0));
+                if (key < 0.0) { //To center the chart on 0
+                    deltaMasses.add(new SeriesPair<Double, Double>(-key + MIN_BIN_WIDTH, 0.0));
                 }
             }
         } else {
             int maxFreq = Collections.max(histogram.values());
-            for(int pos = -BINS; pos < BINS; pos++){
+            for (int pos = -BINS; pos < BINS; pos++) {
                 double key = pos * binWidth;
-                double value = histogram.containsKey(key) ? histogram.get(key)/(double) maxFreq : 0.0;
-                deltaMasses.add(new SeriesPair<Double,Double>(key, value));
+                double value = histogram.containsKey(key) ? histogram.get(key) / (double) maxFreq : 0.0;
+                deltaMasses.add(new SeriesPair<Double, Double>(key, value));
             }
         }
 
@@ -162,17 +162,17 @@ public class MassDeltaChart extends PrideChart {
 
     @Override
     protected void setChart() {
-        SeriesManager<Double,Double> sf = new SeriesManager<Double,Double>(intermediateData);
-        List<DataSeries<Double,Double>> seriesList = sf.getSeries();
+        SeriesManager<Double, Double> sf = new SeriesManager<Double, Double>(intermediateData);
+        List<DataSeries<Double, Double>> seriesList = sf.getSeries();
 
-        DataSeries<Double,Double> series = seriesList.get(0);
-        List<SeriesPair<Double,Double>> values = series.getSeriesValues(Double.class, Double.class);
+        DataSeries<Double, Double> series = seriesList.get(0);
+        List<SeriesPair<Double, Double>> values = series.getSeriesValues(Double.class, Double.class);
 
         XYSeries deltaMassSeries = new XYSeries(series.getIdentifier());
         for (SeriesPair<Double, Double> value : values) {
             deltaMassSeries.add(value.getX(), value.getY());
         }
-        
+
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(deltaMassSeries);
 
@@ -208,6 +208,6 @@ public class MassDeltaChart extends PrideChart {
     @Override
     public String getChartSubTitle() {
         int seqNum = intermediateData.getInteger("sequenceNumber");
-        return "for " + NumberFormat.getInstance().format(seqNum ) + " analyzed sequences";
+        return "for " + NumberFormat.getInstance().format(seqNum) + " analyzed sequences";
     }
 }

@@ -30,6 +30,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
      *          throws a ExperimentSummaryData Exception
      */
     public PrideChartSummaryData(CachedDataAccessController cdac) throws SpectralDataPerExperimentException {
+
         spectra = new HashMap<String, SpectrumData>();
 
         Collection<Comparable> spectrumIDs = null;
@@ -234,9 +235,9 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
                     if (spectrum != null) {
 
                         // ToDo: the spectrum is a Comparable not an Integer!!
-                        int spectrumID = Integer.parseInt(spectrum.getId().toString());
+                        // Comparable spectrumID = Integer.parseInt(spectrum.getId().toString());
 
-                        pp = new ProteinPeptide(spectrumID, identification_id, seq, ptmMass);
+                        pp = new ProteinPeptide(spectrum.getId(), identification_id, seq, ptmMass);
                     } else {
                         pp = new ProteinPeptide(identification_id, seq, ptmMass);
                     }

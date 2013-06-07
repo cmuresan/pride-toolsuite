@@ -663,6 +663,11 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
+    public int getPeptideRank(Comparable proteinId, Comparable peptideId) {
+        return -1;
+    }
+
+    @Override
     public int getPeptideSequenceStart(Comparable proteinId, Comparable peptideId) {
         int start = -1;
         Protein protein = getProteinById(proteinId);

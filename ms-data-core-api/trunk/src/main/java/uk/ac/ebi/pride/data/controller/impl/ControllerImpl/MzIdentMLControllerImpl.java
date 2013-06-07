@@ -550,6 +550,9 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             logger.debug("Get new peptide from file: {}", peptideId);
             Protein ident = getProteinById(proteinId);
             peptide = ident.getPeptides().get(Integer.parseInt(peptideId.toString()));
+
+            getCache().store(CacheEntry.PROTEIN, proteinId, ident);
+            getCache().store(CacheEntry.PEPTIDE, new Tuple<Comparable, Comparable>(ident.getId(), peptide.getSpectrumIdentification().getId()), peptide);
         }
 
         Comparable spectrumIdentificationId = peptide.getSpectrumIdentification().getId();
@@ -586,6 +589,22 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             }
         }
         return peptide;
+    }
+
+    @Override
+    public int getPeptideRank(Comparable proteinId, Comparable peptideId) {
+        Peptide peptide = super.getPeptideByIndex(proteinId, peptideId, true);
+
+        if (peptide == null) {
+            logger.debug("Get new peptide from file: {}", peptideId);
+            Protein ident = getProteinById(proteinId);
+            peptide = ident.getPeptides().get(Integer.parseInt(peptideId.toString()));
+
+            getCache().store(CacheEntry.PROTEIN, proteinId, ident);
+            getCache().store(CacheEntry.PEPTIDE, new Tuple<Comparable, Comparable>(ident.getId(), peptide.getSpectrumIdentification().getId()), peptide);
+        }
+
+        return peptide.getSpectrumIdentification().getRank();
     }
 
     /**

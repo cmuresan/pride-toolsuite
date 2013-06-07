@@ -42,6 +42,15 @@ public interface PeptideDataAccess {
     public Peptide getPeptideByIndex(Comparable proteinId, Comparable peptideId);
 
     /**
+     * Convenient method for accessing the rank of the peptide
+     *
+     * @param proteinId protein id
+     * @param peptideId peptide id
+     * @return  rank in integer
+     */
+    public int getPeptideRank(Comparable proteinId, Comparable peptideId);
+
+    /**
      * This method is to get a list of redundant peptide sequences
      *
      * @param proteinId identification id

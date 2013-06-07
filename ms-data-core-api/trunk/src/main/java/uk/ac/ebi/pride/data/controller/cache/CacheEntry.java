@@ -16,7 +16,7 @@ import java.util.HashMap;
 public enum CacheEntry {
     SPECTRUM(CachedMap.class, 10),                                   // Map<Spectrum id, Spectrum>
     SPECTRADATA_TO_SPECTRUMIDS(HashMap.class,null),               // Map<Comparable, List<Comparable>>
-    PROTEIN_TO_PEPTIDE_EVIDENCES(HashMap.class, null),       //Map<Comparable,Map<Comparable, List<String[]>>>
+    PROTEIN_TO_PEPTIDE_EVIDENCES(HashMap.class, null),       //Map<db squence id,List<Spectrum identification item id>>>
     PROTEIN_TO_PROTEIN_GROUP_ID(HashMap.class,null),            // Map<Comparable, Comparable>
     PROTEIN_GROUP_ID(ArrayList.class, null),                         // List of Protein Groups
     CHROMATOGRAM(CachedMap.class, 10),                             // Map<Chromatogram id, Chromatogram>

@@ -508,7 +508,21 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 }
 
                 if (ident != null) {
-                    storeProteinToCache(proteinId, ident);
+                    // store identification into cache
+                    getCache().store(CacheEntry.PROTEIN, proteinId, ident);
+                    // store precursor charge and m/z
+                    for (Peptide peptide : ident.getPeptides()) {
+                        getCache().store(CacheEntry.PEPTIDE, new Tuple<Comparable, Comparable>(ident.getId(), peptide.getSpectrumIdentification().getId()), peptide);
+                        Comparable spectrumId = getSpectrumIdBySpectrumIdentificationItemId(peptide.getSpectrumIdentification().getId());
+                        if (hasSpectrum()) {
+                            Spectrum spectrum = getSpectrumById(spectrumId);
+                            spectrum.setPeptide(peptide);
+                            peptide.setSpectrum(spectrum);
+
+                            getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorChargeParamGroup(spectrum));
+                            getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+                        }
+                    }
                 }
             } catch (Exception ex) {
                 throw new DataAccessException("Failed to retrieve identification: " + proteinId, ex);
@@ -522,30 +536,25 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         List<Comparable> spectrumIdentIds = null;
 
         if (getCache().hasCacheEntry(CacheEntry.PROTEIN_TO_PEPTIDE_EVIDENCES)) {
-            Map<Comparable, Map<Comparable, Comparable>> mapPeptides = ((Map<Comparable, Map<Comparable, Map<Comparable, Comparable>>>) getCache().get(CacheEntry.PROTEIN_TO_PEPTIDE_EVIDENCES)).get(proteinId);
-            spectrumIdentIds = new ArrayList<Comparable>(mapPeptides.keySet());
+            spectrumIdentIds = ((Map<Comparable, List<Comparable>>) getCache().get(CacheEntry.PROTEIN_TO_PEPTIDE_EVIDENCES)).get(proteinId);
         }
 
         return unmarshaller.getSpectrumIdentificationsByIds(spectrumIdentIds);
     }
 
-    private void storeProteinToCache(Comparable proteinId, Protein ident) {
-        // store identification into cache
-        getCache().store(CacheEntry.PROTEIN, proteinId, ident);
-        // store precursor charge and m/z
-        for (Peptide peptide : ident.getPeptides()) {
-            getCache().store(CacheEntry.PEPTIDE, new Tuple<Comparable, Comparable>(ident.getId(), peptide.getSpectrumIdentification().getId()), peptide);
-            if (hasSpectrum()) {
-                Spectrum spectrum = getSpectrumById(peptide.getSpectrumIdentification().getId());
-                spectrum.setPeptide(peptide);
-                peptide.setSpectrum(spectrum);
+    @Override
+    public Comparable getPeptideSpectrumId(Comparable proteinId, Comparable peptideId) {
+        Peptide peptide = super.getPeptideByIndex(proteinId, peptideId, true);
 
-                getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorChargeParamGroup(spectrum));
-                getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
-            }
+        if (peptide == null) {
+            logger.debug("Get new peptide from file: {}", peptideId);
+            Protein ident = getProteinById(proteinId);
+            peptide = ident.getPeptides().get(Integer.parseInt(peptideId.toString()));
         }
-    }
 
+        Comparable spectrumIdentificationId = peptide.getSpectrumIdentification().getId();
+        return getSpectrumIdBySpectrumIdentificationItemId(spectrumIdentificationId);
+    }
 
     /**
      * Get peptide using a given identification id and a given peptide index
@@ -644,6 +653,20 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return super.getProteinAmbiguityGroupIds().size() > 0;
     }
 
+
+    private Comparable getSpectrumIdBySpectrumIdentificationItemId(Comparable id) {
+        String[] spectrumIdArray = ((Map<Comparable, String[]>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM)).get(id);
+
+        /** To store in cache the Spectrum files, an Id was constructed using the spectrum ID and the
+         *  id of the File.
+         **/
+        if (spectrumIdArray == null || spectrumIdArray.length <= 0) {
+            return null;
+        } else {
+            return spectrumIdArray[0] + "!" + spectrumIdArray[1];
+        }
+    }
+
     /**
      * Get spectrum using a spectrumIdentification id, gives the option to choose whether to
      * use cache. This implementation provides a way of by passing the cache.
@@ -654,21 +677,11 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      */
     @Override
     public Spectrum getSpectrumById(Comparable id, boolean useCache) {
-        String[] spectrumIdArray = ((Map<Comparable, String[]>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM)).get(id);
+        String[] spectrumIdArray = ((String) id).split("!");
 
-        /** To store in cache the Spectrum files, an Id was constructed using the spectrum ID and the
-         *  id of the File.
-         **/
-        Comparable spectrumId;
-        if (spectrumIdArray != null && spectrumIdArray.length > 0) {
-            spectrumId = spectrumIdArray[0] + "!" + spectrumIdArray[1];
-        } else {
-            spectrumId = id;
-            spectrumIdArray = ((String) spectrumId).split("!");
-        }
 
-        Spectrum spectrum = super.getSpectrumById(spectrumId, useCache);
-        if (spectrum == null && id != null) {
+        Spectrum spectrum = super.getSpectrumById(id, useCache);
+        if (spectrum == null) {
             logger.debug("Get new spectrum from file: {}", id);
             try {
                 DataAccessController spectrumController = msDataAccessControllers.get(spectrumIdArray[1]);
@@ -684,7 +697,10 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException(msg, ex);
             }
         }
-        spectrum.setId(spectrumId);
+
+        if (spectrum != null) {
+            spectrum.setId(id);
+        }
         return spectrum;
     }
 

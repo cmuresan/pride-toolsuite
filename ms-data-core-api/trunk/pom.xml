@@ -173,7 +173,7 @@
         <dependency>
             <groupId>uk.ac.ebi.pride.chart</groupId>
             <artifactId>pride-chart</artifactId>
-            <version>0.2.37</version>
+            <version>0.2.38</version>
         </dependency>
         <!-- db connection pool -->
         <dependency>

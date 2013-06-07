@@ -233,7 +233,7 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
          * the original id of the spectrum in the Spectrum file and the id of the spectrum file.
          *
          */
-        Map<Comparable, Map<Comparable, List<String[]>>> identProteinsMap = new HashMap<Comparable, Map<Comparable, List<String[]>>>();
+        Map<Comparable, List<Comparable>> identProteinsMap = new HashMap<Comparable, List<Comparable>>();
 
         for (String spectrumIdentResultId : spectrumIdentResultIds) {
 
@@ -265,25 +265,20 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
 
                 identSpectrumMap.put(spectrumIdentItemId, spectrumFeatures);
 
-                List<String[]> evidences = new ArrayList<String[]>();
                 Set<Comparable> idProteins = new HashSet<Comparable>();
                 Set<String> peptideEvidenceReferences = unmarshaller.getPeptideEvidenceReferences(spectrumIdentResultId, spectrumIdentItemId);
                 for (String peptideEvidenceReference : peptideEvidenceReferences) {
-                    String[] evidence = new String[2];
-                    evidence[0] = peptideEvidenceReference;
                     Map<String, String> attributes = unmarshaller.getElementAttributes(peptideEvidenceReference, PeptideEvidence.class);
-                    evidence[1] = attributes.get("dBSequence_ref");
-                    evidences.add(evidence);
-                    idProteins.add(evidence[1]);
+                    idProteins.add(attributes.get("dBSequence_ref"));
                 }
 
                 for (Comparable idProtein : idProteins) {
-                    Map<Comparable, List<String[]>> spectrumIdentifications = identProteinsMap.get(idProtein);
+                    List<Comparable> spectrumIdentifications = identProteinsMap.get(idProtein);
                     if (spectrumIdentifications == null) {
-                        spectrumIdentifications = new HashMap<Comparable, List<String[]>>();
+                        spectrumIdentifications = new ArrayList<Comparable>();
                         identProteinsMap.put(idProtein, spectrumIdentifications);
                     }
-                    spectrumIdentifications.put(spectrumIdentItemId, evidences);
+                    spectrumIdentifications.add(spectrumIdentItemId);
                 }
             }
         }

@@ -69,9 +69,11 @@ public class PrideXmlTransformer {
 
                 if (charge == null) {
                     charge = DataAccessUtilities.getPrecursorCharge(precursors);
-                    CvTermReference cvTerm = CvTermReference.ION_SELECTION_CHARGE_STATE;
-                    CvParam cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), charge.toString(), null, null, null);
-                    params.addCvParam(cvParam);
+                    if (charge != null) {
+                        CvTermReference cvTerm = CvTermReference.ION_SELECTION_CHARGE_STATE;
+                        CvParam cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), charge.toString(), null, null, null);
+                        params.addCvParam(cvParam);
+                    }
                 }
 
                 BinaryDataArray mz = transformBinaryDataArray(rawSpec.getMzArrayBinary(), CvTermReference.MZ_ARRAY);
@@ -574,8 +576,25 @@ public class PrideXmlTransformer {
         if (rawLocation != null) {
             location = rawLocation.intValue();
         }
-        return new Modification(params, rawMod.getModAccession(), null, location, null, avgDelta, monoDelta, rawMod.getModDatabase(), rawMod.getModDatabaseVersion());
+
+        String name = getModificationName(params, rawMod.getModAccession());
+
+        return new Modification(params, rawMod.getModAccession(), name, location, null, avgDelta, monoDelta, rawMod.getModDatabase(), rawMod.getModDatabaseVersion());
     }
+
+    private static String getModificationName(ParamGroup paramGroup, String accession) {
+        String name = null;
+        List<CvParam> cvParams = paramGroup.getCvParams();
+        if (cvParams != null) {
+            for (CvParam cvParam : cvParams) {
+                if (cvParam.getAccession().equals(accession)) {
+                    name = cvParam.getName();
+                }
+            }
+        }
+        return name;
+    }
+
 
     /**
      * transform protocol from pride xml to core data model.

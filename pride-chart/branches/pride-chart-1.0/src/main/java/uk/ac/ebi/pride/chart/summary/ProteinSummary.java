@@ -1,8 +1,8 @@
 package uk.ac.ebi.pride.chart.summary;
 
 import org.jfree.data.xy.XYBarDataset;
-import uk.ac.ebi.pride.chart.dataset.PridePlotDatasetFactory;
-import uk.ac.ebi.pride.chart.dataset.XYDataSource;
+import uk.ac.ebi.pride.chart.dataset.PrideDatasetFactory;
+import uk.ac.ebi.pride.chart.dataset.PrideXYDataSource;
 import uk.ac.ebi.pride.chart.io.PrideDataReader;
 import uk.ac.ebi.pride.chart.plot.PeptidesProteinPlot;
 import uk.ac.ebi.pride.chart.plot.PridePlot;
@@ -28,8 +28,8 @@ public class ProteinSummary extends PridePlotSummary {
             return getPlot(PEPTIDES_PROTEIN);
         }
 
-        XYDataSource dataSource = new XYDataSource(reader.readPeptidesProtein());
-        XYBarDataset dataset = PridePlotDatasetFactory.getXYBarDataset("Peptides Number", dataSource);
+        PrideXYDataSource dataSource = new PrideXYDataSource(reader.readPeptidesProtein());
+        XYBarDataset dataset = PrideDatasetFactory.getXYBarDataset(dataSource);
         PridePlot plot = new PeptidesProteinPlot(dataset);
         addPlot(plot);
 

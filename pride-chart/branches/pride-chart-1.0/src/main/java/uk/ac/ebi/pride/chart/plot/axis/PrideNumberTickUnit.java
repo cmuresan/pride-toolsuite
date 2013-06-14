@@ -9,12 +9,20 @@ import java.text.NumberFormat;
 * User: Qingwei
 * Date: 13/06/13
 */
-public class PrideIntegerTickUnit extends NumberTickUnit {
+public class PrideNumberTickUnit extends NumberTickUnit {
     private int maxValue = Integer.MAX_VALUE;
     private int minValue = Integer.MIN_VALUE;
 
-    public PrideIntegerTickUnit(NumberTickUnit unit) {
-        super(unit.getSize(), NumberFormat.getInstance(), unit.getMinorTickCount());
+    public PrideNumberTickUnit(double size) {
+        super(size);
+    }
+
+    public PrideNumberTickUnit(double size, NumberFormat formatter) {
+        super(size, formatter);
+    }
+
+    public PrideNumberTickUnit(double size, NumberFormat formatter, int minorTickCount) {
+        super(size, formatter, minorTickCount);
     }
 
     @Override

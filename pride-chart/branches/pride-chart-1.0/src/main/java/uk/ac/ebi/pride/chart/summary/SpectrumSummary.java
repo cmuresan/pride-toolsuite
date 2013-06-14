@@ -1,8 +1,9 @@
 package uk.ac.ebi.pride.chart.summary;
 
 import org.jfree.data.xy.XYBarDataset;
-import uk.ac.ebi.pride.chart.dataset.PridePlotDatasetFactory;
-import uk.ac.ebi.pride.chart.dataset.XYDataSource;
+import uk.ac.ebi.pride.chart.dataset.PrideDataSourceType;
+import uk.ac.ebi.pride.chart.dataset.PrideDatasetFactory;
+import uk.ac.ebi.pride.chart.dataset.PrideXYDataSource;
 import uk.ac.ebi.pride.chart.io.PrideDataReader;
 import uk.ac.ebi.pride.chart.plot.DeltaMZPlot;
 import uk.ac.ebi.pride.chart.plot.PridePlot;
@@ -28,8 +29,8 @@ public class SpectrumSummary extends PridePlotSummary {
             return getPlot(DELTA_MASS);
         }
 
-        XYDataSource dataSource = new XYDataSource(reader.readDeltaMZ());
-        XYBarDataset dataset = PridePlotDatasetFactory.getXYBarDataset("Peptides Number", dataSource);
+        PrideXYDataSource dataSource = new PrideXYDataSource(reader.readDeltaMZ(), PrideDataSourceType.ALL_SPECTRA);
+        XYBarDataset dataset = PrideDatasetFactory.getXYBarDataset(dataSource);
         PridePlot plot = new DeltaMZPlot(dataset);
         addPlot(plot);
 

@@ -17,7 +17,7 @@ public abstract class PrideXYPlot extends XYPlot implements PridePlot {
     private PrideChartType type;
 
     protected PrideXYPlot(PrideChartType type, XYDataset dataset, XYItemRenderer renderer) {
-        super(dataset, new NumberAxis(type.getXLabel()), new NumberAxis(type.getYLabel()), renderer);
+        super(dataset, new NumberAxis(type.getDomainLabel()), new NumberAxis(type.getRangeLabel()), renderer);
         this.type = type;
 
         setOrientation(PlotOrientation.VERTICAL);

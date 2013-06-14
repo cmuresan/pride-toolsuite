@@ -10,6 +10,7 @@ import org.jfree.data.xy.XYDataset;
 import uk.ac.ebi.pride.chart.PrideChartType;
 
 import java.awt.*;
+import java.text.DecimalFormat;
 
 /**
  * User: Qingwei
@@ -32,12 +33,12 @@ public class DeltaMZPlot extends PrideXYPlot {
 
         NumberAxis domainAxis = (NumberAxis) getDomainAxis();
         domainAxis.setAutoTickUnitSelection(false);
-        domainAxis.setTickUnit(new NumberTickUnit(0.05));
+        domainAxis.setTickUnit(new NumberTickUnit(0.05, new DecimalFormat("0.00")));
         domainAxis.setAutoRange(false);
         domainAxis.setRange(new Range(-0.16, 0.16));
 
         NumberAxis rangeAxis = (NumberAxis) getRangeAxis();
         rangeAxis.setAutoTickUnitSelection(false);
-        rangeAxis.setTickUnit(new NumberTickUnit(0.25));
+        rangeAxis.setTickUnit(new NumberTickUnit(0.25, new DecimalFormat("0.00")));
     }
 }

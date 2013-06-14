@@ -15,8 +15,8 @@ public abstract class PrideDataReader {
     protected double[][] averageMSMS;
     protected double[][] precursorIonCharge;
     protected double[][] precursorIonMasses;
-    protected double[][] peaksPerMSMS;
-    protected double[][] peakIntensity;
+    protected double[] peaksPerMSMS;
+    protected double[] peakIntensity;
 
     private long startTime;
 
@@ -70,11 +70,11 @@ public abstract class PrideDataReader {
         return precursorIonMasses;
     }
 
-    public double[][] readPeaksPerMSMS() {
+    public double[] readPeaksPerMSMS() {
         return peaksPerMSMS;
     }
 
-    public double[][] readPeakIntensity() {
+    public double[] readPeakIntensity() {
         return peakIntensity;
     }
 }

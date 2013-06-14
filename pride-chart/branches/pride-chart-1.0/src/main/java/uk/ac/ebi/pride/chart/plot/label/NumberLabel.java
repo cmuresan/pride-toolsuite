@@ -18,7 +18,7 @@ public class NumberLabel implements XYItemLabelGenerator {
     private DecimalFormat numberFormat;
 
     public NumberLabel() {
-        numberFormat = new DecimalFormat("0");
+        numberFormat = new DecimalFormat("###");
     }
 
     public NumberLabel(DecimalFormat numberFormat) {

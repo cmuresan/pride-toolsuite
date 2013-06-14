@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.chart.plot;
 
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYBarDataset;
 import uk.ac.ebi.pride.chart.PrideChartType;
 import uk.ac.ebi.pride.chart.plot.axis.PrideNumberTickUnit;
@@ -12,11 +11,13 @@ import java.text.DecimalFormat;
 
 /**
  * User: Qingwei
- * Date: 12/06/13
+ * Date: 14/06/13
  */
-public class PeptidesProteinPlot extends PrideXYPlot {
-    public PeptidesProteinPlot(XYBarDataset dataset) {
-        super(PrideChartType.PEPTIDES_PROTEIN, dataset, new XYBarRenderer());
+public class MissedCleavagesPlot extends PrideXYPlot {
+    public MissedCleavagesPlot(XYBarDataset dataset) {
+        super(PrideChartType.MISSED_CLEAVAGES, dataset, new XYBarRenderer());
+
+        setDomainZeroBaselineVisible(false);
 
         XYBarRenderer renderer = (XYBarRenderer) getRenderer();
         renderer.setBaseItemLabelGenerator(new PercentageLabel());
@@ -25,7 +26,7 @@ public class PeptidesProteinPlot extends PrideXYPlot {
         NumberAxis domainAxis = (NumberAxis) getDomainAxis();
         PrideNumberTickUnit unit = new PrideNumberTickUnit(1, new DecimalFormat("0"));
         int barCount = dataset.getItemCount(0);
-        unit.setMaxValue(barCount - 1);
+        unit.setMaxValue(barCount - 2);
         domainAxis.setTickUnit(unit);
 
         NumberAxis rangeAxis = (NumberAxis) getRangeAxis();

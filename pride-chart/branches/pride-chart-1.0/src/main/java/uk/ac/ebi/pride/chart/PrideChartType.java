@@ -5,26 +5,28 @@ package uk.ac.ebi.pride.chart;
  * Date: 12/06/13
  */
 public enum PrideChartType {
-    DELTA_MASS             (1, "Delta m/z",                 "Experimental m/z - Theoretical m/z",    "Relative Frequency"),
-    PEPTIDES_PROTEIN       (2, "Peptides per Protein",      "Number of Peptides",                    "Frequency"),
-    MISSED_TYPTIC_CLEAVAGES(3, "Missed Typtic Cleavages",   "Missed Cleavages",                      "Frequency"),
-    AVERAGE_MS             (4, "Average MS/MS Spectrum",    "m/z",                                   "Intensity"),
-    PRECURSOR_CHARGE       (5, "Precursor Ion Charge",      "Precursor Ion Charge",                  "Frequency"),
-    PRECURSOR_Masses       (6, "Precursor Ion Masses",      "Mass (Daltons)",                        "Relative Frequency"),
-    PEAKS_MS               (7, "Peaks per MS/MS Spectrum",  "Number of Peaks",                       "Frequency"),
-    PEAK_INTENSITY         (8, "Peak Intensity",            "Intensity",                             "Frequency"),
+    DELTA_MASS        (1, "Delta m/z",                 "Experimental m/z - Theoretical m/z",    "Relative Frequency",  false),
+    PEPTIDES_PROTEIN  (2, "Peptides per Protein",      "Number of Peptides",                    "Frequency",           false),
+    MISSED_CLEAVAGES  (3, "Missed Typtic Cleavages",   "Missed Cleavages",                      "Frequency",           false),
+    AVERAGE_MS        (4, "Average MS/MS Spectrum",    "m/z",                                   "Intensity",           true),
+    PRECURSOR_CHARGE  (5, "Precursor Ion Charge",      "Precursor Ion Charge",                  "Frequency",           true),
+    PRECURSOR_MASSES  (6, "Precursor Ion Masses",      "Mass (Daltons)",                        "Relative Frequency",  true),
+    PEAKS_MS          (7, "Peaks per MS/MS Spectrum",  "Number of Peaks",                       "Frequency",           false),
+    PEAK_INTENSITY    (8, "Peak Intensity",            "Intensity",                             "Frequency",           true),
     ;
 
     private int order;
     private String title;
-    private String xLabel;
-    private String yLabel;
+    private String domainLabel;
+    private String rangeLabel;
+    private boolean legend;
 
-    private PrideChartType(int order, String title, String xLabel, String yLabel) {
+    private PrideChartType(int order, String title, String domainLabel, String rangeLabel, boolean legend) {
         this.order = order;
         this.title = title;
-        this.xLabel = xLabel;
-        this.yLabel = yLabel;
+        this.domainLabel = domainLabel;
+        this.rangeLabel = rangeLabel;
+        this.legend = legend;
     }
 
     public int getOrder() {
@@ -43,19 +45,27 @@ public enum PrideChartType {
         this.title = title;
     }
 
-    public String getXLabel() {
-        return xLabel;
+    public String getDomainLabel() {
+        return domainLabel;
     }
 
-    public void setXLabel(String xLabel) {
-        this.xLabel = xLabel;
+    public void setDomainLabel(String domainLabel) {
+        this.domainLabel = domainLabel;
     }
 
-    public String getYLabel() {
-        return yLabel;
+    public String getRangeLabel() {
+        return rangeLabel;
     }
 
-    public void setYLabel(String yLabel) {
-        this.yLabel = yLabel;
+    public void setRangeLabel(String rangeLabel) {
+        this.rangeLabel = rangeLabel;
+    }
+
+    public boolean isLegend() {
+        return legend;
+    }
+
+    public void setLegend(boolean legend) {
+        this.legend = legend;
     }
 }

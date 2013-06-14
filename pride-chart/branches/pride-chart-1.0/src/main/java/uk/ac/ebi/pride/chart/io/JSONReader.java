@@ -58,10 +58,6 @@ public class JSONReader extends PrideDataReader {
         }
     }
 
-    public JSONObject writeJSON() {
-        return null;
-    }
-
     @Override
     protected void start() {
         super.start(source);

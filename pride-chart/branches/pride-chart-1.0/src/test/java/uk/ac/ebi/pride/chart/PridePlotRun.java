@@ -4,11 +4,11 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
-import uk.ac.ebi.pride.chart.dataset.PridePlotDatasetFactory;
-import uk.ac.ebi.pride.chart.dataset.XYDataSource;
-import uk.ac.ebi.pride.chart.plot.DeltaMZPlot;
-import uk.ac.ebi.pride.chart.plot.PeptidesProteinPlot;
-import uk.ac.ebi.pride.chart.plot.PrideXYPlot;
+import uk.ac.ebi.pride.chart.dataset.PrideDataSourceType;
+import uk.ac.ebi.pride.chart.dataset.PrideDatasetFactory;
+import uk.ac.ebi.pride.chart.dataset.PrideHistogramDataSource;
+import uk.ac.ebi.pride.chart.dataset.PrideXYDataSource;
+import uk.ac.ebi.pride.chart.plot.*;
 
 import java.awt.*;
 import java.util.Random;
@@ -18,33 +18,7 @@ import java.util.Random;
  * Date: 13/06/13
  */
 public class PridePlotRun {
-    private void createChart(double[][] data, PrideChartType type) {
-        XYDataSource dataSource = new XYDataSource(data);
-
-        PrideXYPlot plot = null;
-        switch (type) {
-            case DELTA_MASS:
-                plot = new DeltaMZPlot(PridePlotDatasetFactory.getDeltaMZDataset(type.name(), dataSource));
-                break;
-            case PEPTIDES_PROTEIN:
-                plot = new PeptidesProteinPlot(PridePlotDatasetFactory.getXYBarDataset(type.name(), dataSource));
-                break;
-            case MISSED_TYPTIC_CLEAVAGES:
-                break;
-            case AVERAGE_MS:
-                break;
-            case PRECURSOR_CHARGE:
-                break;
-            case PRECURSOR_Masses:
-                break;
-            case PEAKS_MS:
-                break;
-            case PEAK_INTENSITY:
-                break;
-            default:
-                plot = null;
-        }
-
+    private void drawChart(PrideXYPlot plot) {
         if (plot != null) {
             JFreeChart chart = PrideChartFactory.getChart(plot);
 
@@ -59,7 +33,61 @@ public class PridePlotRun {
         }
     }
 
-    private double[][] generateData(double minX, double maxX, double minY, double maxY, int count) {
+    private void createChart(double[][] data, PrideChartType type) {
+        PrideXYDataSource dataSource;
+
+        PrideXYPlot plot;
+        switch (type) {
+            case DELTA_MASS:
+                dataSource = new PrideXYDataSource(data, PrideDataSourceType.ALL_SPECTRA);
+                plot = new DeltaMZPlot(PrideDatasetFactory.getXYDataset(dataSource));
+                break;
+            case PEPTIDES_PROTEIN:
+                dataSource = new PrideXYDataSource(data);
+                plot = new PeptidesProteinPlot(PrideDatasetFactory.getXYBarDataset(dataSource));
+                break;
+            case MISSED_CLEAVAGES:
+                dataSource = new PrideXYDataSource(data, PrideDataSourceType.ALL_SPECTRA);
+                plot = new MissedCleavagesPlot(PrideDatasetFactory.getXYBarDataset(dataSource));
+                break;
+            case AVERAGE_MS:
+                dataSource = new PrideXYDataSource(data, PrideDataSourceType.ALL_SPECTRA);
+                plot = new AverageMSPlot(PrideDatasetFactory.getXYBarDataset(dataSource));
+                break;
+            case PRECURSOR_CHARGE:
+                dataSource = new PrideXYDataSource(data, PrideDataSourceType.IDENTIFIED_SPECTRA);
+                plot = new PrecursorChargePlot(PrideDatasetFactory.getXYBarDataset(dataSource));
+                break;
+            case PRECURSOR_MASSES:
+                dataSource = new PrideXYDataSource(data, PrideDataSourceType.ALL_SPECTRA);
+                plot = new PrecursorMassesPlot(PrideDatasetFactory.getXYDataset(dataSource));
+                break;
+            default:
+                plot = null;
+        }
+
+        drawChart(plot);
+    }
+
+    private void createChart(double[] data, PrideChartType type, double binWidth) {
+        PrideHistogramDataSource dataSource;
+
+        PrideXYPlot plot = null;
+        switch (type) {
+            case PEAKS_MS:
+                dataSource = new PrideHistogramDataSource(data, PrideDataSourceType.ALL_SPECTRA);
+                plot = new PeaksMSPlot(PrideDatasetFactory.getHistogramDataset(dataSource, binWidth));
+                break;
+            case PEAK_INTENSITY:
+                break;
+            default:
+                plot = null;
+        }
+
+        drawChart(plot);
+    }
+
+    private double[][] generateXYData(double minX, double maxX, double minY, double maxY, int count) {
         double[][] data = new double[2][count];
 
         int step = (int)((maxX - minX) * 1000) / count;
@@ -85,7 +113,28 @@ public class PridePlotRun {
         return data;
     }
 
-    private double[][] generateData(int minX, int maxX, int minY, int maxY, int count) {
+    private double[] generateXData(double minX, double maxX, int count) {
+        double[] data = new double[count];
+
+        int step = (int)((maxX - minX) * 1000) / count;
+        if (step == 0) {
+            if (minX < 0) {
+                step = -1;
+            } else {
+                step = 1;
+            }
+        }
+
+        double x;
+        for (int i = 0; i < count; i++) {
+            x = minX + step * i / 1000d;
+            data[i] = x;
+        }
+
+        return data;
+    }
+
+    private double[][] generateXYData(int minX, int maxX, int minY, int maxY, int count) {
         double[][] data = new double[2][count];
 
         int step = (maxX - minX) / count;
@@ -107,12 +156,31 @@ public class PridePlotRun {
 
     public static void main(String[] args) {
         PridePlotRun run = new PridePlotRun();
-        double[][] data;
 
-        data = run.generateData(-0.1, 0.1, 0.2, 1, 100);
-        run.createChart(data, PrideChartType.DELTA_MASS);
+//        double[][] xyData;
+//        xyData = run.generateXYData(-0.1, 0.1, 0.2, 1, 100);
+//        run.createChart(xyData, PrideChartType.DELTA_MASS);
+//
+//        xyData = run.generateXYData(1, 6, 20, 300, 6);
+//        run.createChart(xyData, PrideChartType.PEPTIDES_PROTEIN);
+//
+//        xyData = run.generateXYData(0, 4, 0, 125, 5);
+//        run.createChart(xyData, PrideChartType.MISSED_CLEAVAGES);
+//
+//        xyData = run.generateXYData(5, 2000, 200, 300000, 400);
+//        run.createChart(xyData, PrideChartType.AVERAGE_MS);
+//
+//        xyData = run.generateXYData(1, 8, 0, 100, 8);
+//        run.createChart(xyData, PrideChartType.PRECURSOR_CHARGE);
+//
+//        xyData = run.generateXYData(0, 3500, 0, 0.125, 20);
+//        run.createChart(xyData, PrideChartType.PRECURSOR_MASSES);
 
-//        data = run.generateData(1, 6, 20, 300, 6);
-//        run.createChart(data, PrideChartType.PEPTIDES_PROTEIN);
+
+
+        double[] xData;
+
+        xData = run.generateXData(0, 3000, 1000);
+        run.createChart(xData, PrideChartType.PEAKS_MS, 400);
     }
 }

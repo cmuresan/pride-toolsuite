@@ -12,6 +12,9 @@ import java.text.DecimalFormat;
 public class PercentageLabel implements XYItemLabelGenerator {
     private DecimalFormat numberFormat = new DecimalFormat("0.0");
 
+    // Whether show less than one percent value. If false, the label will display < 1%.
+    private boolean onePercent = false;
+
     public PercentageLabel() {
     }
 
@@ -31,10 +34,14 @@ public class PercentageLabel implements XYItemLabelGenerator {
 
         if (p == 0) {
             return "";
-        } else if (p < 1) {
+        } else if (p < 1 && !onePercent) {
             return "<1 %";
         } else {
             return numberFormat.format(p) + " %";
         }
+    }
+
+    public void setOnePercent(boolean onePercent) {
+        this.onePercent = onePercent;
     }
 }

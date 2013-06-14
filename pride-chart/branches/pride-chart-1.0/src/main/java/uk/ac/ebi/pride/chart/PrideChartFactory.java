@@ -19,11 +19,6 @@ public class PrideChartFactory {
     private static ChartTheme currentTheme = new StandardChartTheme("JFree");
 
     /**
-     * Contains the top margin default value
-     */
-    protected static final double CHART_UPPER_MARGIN = 0.15;
-
-    /**
      * Contains the supported quartiles as Data Series Types
      */
     protected List<QuartilesType> supportedQuartiles = new ArrayList<QuartilesType>();
@@ -38,7 +33,7 @@ public class PrideChartFactory {
     public static JFreeChart getChart(PrideXYPlot plot) {
         PrideChartType type = plot.getType();
 
-        JFreeChart chart = new JFreeChart(type.getTitle(), JFreeChart.DEFAULT_TITLE_FONT, plot, false);
+        JFreeChart chart = new JFreeChart(type.getTitle(), JFreeChart.DEFAULT_TITLE_FONT, plot, type.isLegend());
         currentTheme.apply(chart);
 
         return chart;

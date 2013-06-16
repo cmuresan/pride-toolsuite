@@ -37,10 +37,6 @@ public class PeptideTabPane extends PrideInspectorTabPane {
      */
     private static final String PEPTIDE_TITLE = "Peptide";
     /**
-     * resize weight for inner split pane
-     */
-    private static final double INNER_SPLIT_PANE_RESIZE_WEIGHT = 0.6;
-    /**
      * resize weight for outer split pane
      */
     private static final double OUTER_SPLIT_PANE_RESIZE_WEIGHT = 0.6;
@@ -48,11 +44,6 @@ public class PeptideTabPane extends PrideInspectorTabPane {
      * the size of the divider for split pane
      */
     private static final int DIVIDER_SIZE = 5;
-
-    /**
-     * Inner split pane contains peptideDescPane and peptidePTMPane
-     */
-    private JSplitPane innerSplitPane;
     /**
      * Outer split pane contains inner split pane and spectrumViewPane
      */
@@ -61,10 +52,7 @@ public class PeptideTabPane extends PrideInspectorTabPane {
      * Display peptide details
      */
     private PeptideDescriptionPane peptideDescPane;
-    /**
-     * Display ptm details
-     */
-    private PeptidePTMPane peptidePTMPane;
+
     /**
      * Visualize spectrum and protein sequence
      */
@@ -118,13 +106,6 @@ public class PeptideTabPane extends PrideInspectorTabPane {
      */
     @Override
     protected void addComponents() {
-        // inner split pane
-        innerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        innerSplitPane.setBorder(BorderFactory.createEmptyBorder());
-        innerSplitPane.setOneTouchExpandable(false);
-        innerSplitPane.setDividerSize(DIVIDER_SIZE);
-        innerSplitPane.setResizeWeight(INNER_SPLIT_PANE_RESIZE_WEIGHT);
-
         // outer split pane
         outterSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         outterSplitPane.setBorder(BorderFactory.createEmptyBorder());
@@ -136,21 +117,14 @@ public class PeptideTabPane extends PrideInspectorTabPane {
         peptideDescPane = new PeptideDescriptionPane(controller);
         outterSplitPane.setTopComponent(peptideDescPane);
 
-        // peptide selection pane
-        peptidePTMPane = new PeptidePTMPane(controller);
-        innerSplitPane.setTopComponent(peptidePTMPane);
-
 
         // Spectrum view pane
         vizTabPane = new PeptideVizPane(controller, this);
         vizTabPane.setMinimumSize(new Dimension(200, 200));
-        innerSplitPane.setBottomComponent(vizTabPane);
-        outterSplitPane.setBottomComponent(innerSplitPane);
+        outterSplitPane.setBottomComponent(vizTabPane);
 
         this.add(outterSplitPane, BorderLayout.CENTER);
 
-        // subscribe to local event bus
-        peptidePTMPane.subscribeToEventBus(null);
         vizTabPane.subscribeToEventBus(null);
     }
 
@@ -196,8 +170,8 @@ public class PeptideTabPane extends PrideInspectorTabPane {
 
         @Override
         public void onEvent(ExpandPanelEvent event) {
-            boolean visible = innerSplitPane.isVisible();
-            innerSplitPane.setVisible(!visible);
+            boolean visible = vizTabPane.isVisible();
+            vizTabPane.setVisible(!visible);
             outterSplitPane.setDividerSize(visible ? 0 : DIVIDER_SIZE);
             outterSplitPane.resetToPreferredSizes();
         }

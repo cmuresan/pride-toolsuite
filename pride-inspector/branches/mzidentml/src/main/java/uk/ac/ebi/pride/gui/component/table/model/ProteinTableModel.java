@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.gui.component.table.model;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.term.CvTermReference;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,12 +44,9 @@ public class ProteinTableModel extends AbstractProteinTableModel {
      * @param newData identification detail
      */
     private void addIdentificationData(Object newData) {
-        List<Object> content = new ArrayList<Object>();
         int rowCnt = this.getRowCount();
         // row number
-        content.add(rowCnt + 1);
-        content.addAll((List<Object>) newData);
-        contents.add(content);
+        contents.add((List<Object>) newData);
         fireTableRowsInserted(rowCnt, rowCnt);
     }
 }

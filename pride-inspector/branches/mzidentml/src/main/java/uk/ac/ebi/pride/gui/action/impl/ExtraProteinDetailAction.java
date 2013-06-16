@@ -1,7 +1,9 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
+import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.table.TableColumnModelExt;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
@@ -12,9 +14,9 @@ import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskListener;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveProteinDetailTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.gui.utils.ProteinAccession;
 import uk.ac.ebi.pride.util.InternetChecker;
 
 import javax.swing.*;
@@ -154,20 +156,22 @@ public class ExtraProteinDetailAction extends PrideAction {
         List<String> accs = new ArrayList<String>();
 
         int rowCount = table.getRowCount();
-        int column = table.getColumnModel().getColumnIndex(PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
+        int column = table.getColumnModel().getColumnIndex(PeptideTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader());
         int selectedRow = table.getSelectedRow();
         // add selected row first
         if (selectedRow >= 0) {
             Object selectedVal = table.getValueAt(selectedRow, column);
             if (selectedVal != null) {
-                accs.add((String) selectedVal);
+                String mappedAccession = ((ProteinAccession) selectedVal).getMappedAccession();
+                accs.add(mappedAccession);
             }
         }
         // add the rest
         for (int row = 0; row < rowCount; row++) {
             Object val = table.getValueAt(row, column);
             if (val != null && row != selectedRow && !accs.contains(val)) {
-                accs.add((String) val);
+                String mappedAccession = ((ProteinAccession) val).getMappedAccession();
+                accs.add(mappedAccession);
             }
         }
 
@@ -199,9 +203,9 @@ public class ExtraProteinDetailAction extends PrideAction {
         TableModel tableModel = table.getModel();
         task.addTaskListener((TaskListener) tableModel);
         // peptide tab
-        table = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
-        tableModel = table.getModel();
-        task.addTaskListener((TaskListener) tableModel);
+        JXTreeTable treetable = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
+        TreeTableModel treeTableModel = treetable.getTreeTableModel();
+        task.addTaskListener((TaskListener) treeTableModel);
         // quant tab
         if (contentPane.isQuantTabEnabled()) {
             table = contentPane.getQuantTabPane().getQuantProteinSelectionPane().getQuantProteinTable();
@@ -209,11 +213,6 @@ public class ExtraProteinDetailAction extends PrideAction {
             task.addTaskListener((TaskListener) tableModel);
         }
 
-
-        // gui blocker
-        task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-
-        // add task to task manager without notify
-        Desktop.getInstance().getDesktopContext().addTask(task);
+        TaskUtil.startBackgroundTask(task, controller);
     }
 }

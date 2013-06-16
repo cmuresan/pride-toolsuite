@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +17,6 @@ public class ChromatogramTableModel extends ProgressiveListTableModel<Void, Tupl
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("#", "Row Number"),
         CHROMATOGRAM_ID_COLUMN("Chromatogram ID", "Chromatogram ID");
 
         private final String header;
@@ -51,10 +49,7 @@ public class ChromatogramTableModel extends ProgressiveListTableModel<Void, Tupl
         TableContentType type = newData.getKey();
         int rowCnt = this.getRowCount();
         if (TableContentType.CHROMATOGRAM.equals(type)) {
-            List<Object> content = new ArrayList<Object>();
-            content.add(rowCnt + 1);
-            content.addAll(newData.getValue());
-            this.addRow(content);
+            this.addRow(newData.getValue());
             fireTableRowsInserted(rowCnt, rowCnt);
         }
     }

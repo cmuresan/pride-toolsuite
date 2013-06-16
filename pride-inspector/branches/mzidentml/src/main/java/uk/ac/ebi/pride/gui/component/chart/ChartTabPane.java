@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.chart.graphics.implementation.PrideChartException;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessController.ContentCategory;
-import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideChartManager;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
@@ -15,9 +14,8 @@ import uk.ac.ebi.pride.gui.component.PrideInspectorLoadingPanel;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.utils.Iconable;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.LoadChartDataTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -123,9 +121,7 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
         // add a task listener
         lcd.addTaskListener(this);
 
-        // start running the task
-        lcd.setGUIBlocker(new DefaultGUIBlocker(lcd, GUIBlocker.Scope.NONE, null));
-        viewerContext.addTask(lcd);
+        TaskUtil.startBackgroundTask(lcd);
     }
 
     public void showChart(PrideChartManager managedPrideChart) {

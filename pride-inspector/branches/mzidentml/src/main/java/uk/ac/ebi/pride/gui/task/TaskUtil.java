@@ -20,4 +20,10 @@ public final class TaskUtil {
 
         context.addTask(task);
     }
+
+
+    public static void startBackgroundTask(Task task, Object taskOwner) {
+        task.addOwner(taskOwner);
+        startBackgroundTask(task);
+    }
 }

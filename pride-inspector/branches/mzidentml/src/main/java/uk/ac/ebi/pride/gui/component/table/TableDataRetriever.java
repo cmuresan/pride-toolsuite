@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
 import uk.ac.ebi.pride.gui.utils.Constants;
+import uk.ac.ebi.pride.gui.utils.ProteinAccession;
 import uk.ac.ebi.pride.mol.IsoelectricPointUtils;
 import uk.ac.ebi.pride.mol.MoleculeUtilities;
 import uk.ac.ebi.pride.term.CvTermReference;
@@ -44,23 +45,25 @@ public class TableDataRetriever {
         // peptide sequence with modifications
         List<Modification> mods = new ArrayList<Modification>(controller.getPTMs(identId, peptideId));
         String sequence = controller.getPeptideSequence(identId, peptideId);
-        content.add(new PeptideSequence(null, null, sequence, mods, null));
+        String modPeptideSequence = getModifiedPeptideString(mods, sequence);
+        content.add(modPeptideSequence);
+
+        // ranking
+        int rank = controller.getPeptideRank(identId, peptideId);
+        content.add(rank);
 
         // start and end position
         int start = controller.getPeptideSequenceStart(identId, peptideId);
         int end = controller.getPeptideSequenceEnd(identId, peptideId);
 
 
-        // Original Protein Accession
+        // Protein Accession
         String protAcc = controller.getProteinAccession(identId);
         String protAccVersion = controller.getProteinAccessionVersion(identId);
         String database = (controller.getSearchDatabase(identId).getName() == null) ? "" : controller.getSearchDatabase(identId).getName();
-        content.add(protAcc);
-
-        // Mapped Protein Accession
         AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
         String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
-        content.add(mappedProtAcc);
+        content.add(new ProteinAccession(protAcc, mappedProtAcc));
 
         // get protein details
         Protein protein = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
@@ -120,80 +123,9 @@ public class TableDataRetriever {
             content.add(null);
         }
 
-
-        // peptide ptms
-        content.add(mods.size());
-
-        // Map for grouping PTMs based on location
-        Map<Integer, List<Double>> locationMap = new LinkedHashMap<Integer, List<Double>>();
-        // Map for count PTMs based on accession
-        Map<String, Integer> accessionCntMap = new LinkedHashMap<String, Integer>();
-
-        // Iterate over each modification
-        for (Modification mod : mods) {
-            // store the location
-            int location = mod.getLocation();
-            if (location == 0) {
-                location = 1;
-            } else if (location == (sequence.length() + 1)) {
-                location--;
-            }
-
-            List<Double> massDiffs = locationMap.get(location);
-            if (massDiffs == null) {
-                massDiffs = new ArrayList<Double>();
-                locationMap.put(location, massDiffs);
-                List<Double> md = mod.getMonoisotopicMassDelta();
-                if (md != null && !md.isEmpty()) {
-                    massDiffs.add(md.get(0));
-                }
-            }
-
-            // store the accession
-            String accession = (mod.getId() != null) ? mod.getId().toString() : null;
-            Integer cnt = accessionCntMap.get(accession);
-            cnt = cnt == null ? 1 : cnt + 1;
-            accessionCntMap.put(accession, cnt);
-        }
-
-        // Modified Peptide Sequence
-        //todo: can be simplified when there is no modifications
-        StringBuilder modPeptide = new StringBuilder();
-        for (int i = 0; i < sequence.length(); i++) {
-            // append the amino acid
-            modPeptide.append(sequence.charAt(i));
-            // append mass differences if there is any
-            List<Double> massDiffs = locationMap.get(i + 1);
-            if (massDiffs != null) {
-                modPeptide.append("[");
-                if (massDiffs.isEmpty()) {
-                    modPeptide.append("*");
-                } else {
-                    for (int j = 0; j < massDiffs.size(); j++) {
-                        if (j != 0) {
-                            modPeptide.append(",");
-                        }
-                        modPeptide.append(NumberUtilities.scaleDouble(massDiffs.get(j), 1));
-                    }
-                }
-                modPeptide.append("]");
-            }
-        }
-        content.add(modPeptide.toString());
-
-        // PTM Accessions with count
-        StringBuilder ptmCnt = new StringBuilder();
-        for (Map.Entry<String, Integer> entry : accessionCntMap.entrySet()) {
-            if (ptmCnt.length() != 0) {
-                ptmCnt.append(",");
-            }
-            ptmCnt.append(entry.getKey());
-            ptmCnt.append("[");
-            ptmCnt.append(entry.getValue());
-            ptmCnt.append("]");
-        }
-        content.add(ptmCnt.toString());
-
+        // modification names
+        String modNames = getModificationNames(mods);
+        content.add(modNames);
 
         // Number of fragment ions
         content.add(controller.getNumberOfFragmentIons(identId, peptideId));
@@ -227,6 +159,77 @@ public class TableDataRetriever {
         content.add(identId + Constants.COMMA + peptideId);
 
         return content;
+    }
+
+    private static String getModificationNames(List<Modification> mods) {
+        Set<String> modificationNames = new HashSet<String>();
+        String concatenatedModificationNames = "";
+
+        for (Modification mod : mods) {
+            String modName = mod.getName();
+            if (!modificationNames.contains(modName)) {
+                concatenatedModificationNames += modName + "; ";
+                modificationNames.add(mod.getName());
+            }
+        }
+
+        if (concatenatedModificationNames.length() > 1) {
+            concatenatedModificationNames = concatenatedModificationNames.substring(0, concatenatedModificationNames.length() - 2);
+        }
+
+        return concatenatedModificationNames;
+    }
+
+    private static String getModifiedPeptideString(List<Modification> mods, String sequence) {
+        // Map for grouping PTMs based on location
+        Map<Integer, List<Double>> locationMap = new LinkedHashMap<Integer, List<Double>>();
+
+        // Iterate over each modification
+        for (Modification mod : mods) {
+            // store the location
+            int location = mod.getLocation();
+            if (location == 0) {
+                location = 1;
+            } else if (location == (sequence.length() + 1)) {
+                location--;
+            }
+
+            List<Double> massDiffs = locationMap.get(location);
+            if (massDiffs == null) {
+                massDiffs = new ArrayList<Double>();
+                locationMap.put(location, massDiffs);
+                List<Double> md = mod.getMonoisotopicMassDelta();
+                if (md != null && !md.isEmpty()) {
+                    massDiffs.add(md.get(0));
+                }
+            }
+        }
+
+        // Modified Peptide Sequence
+        //todo: can be simplified when there is no modifications
+        StringBuilder modPeptide = new StringBuilder();
+        for (int i = 0; i < sequence.length(); i++) {
+            // append the amino acid
+            modPeptide.append(sequence.charAt(i));
+            // append mass differences if there is any
+            List<Double> massDiffs = locationMap.get(i + 1);
+            if (massDiffs != null) {
+                modPeptide.append("[");
+                if (massDiffs.isEmpty()) {
+                    modPeptide.append("*");
+                } else {
+                    for (int j = 0; j < massDiffs.size(); j++) {
+                        if (j != 0) {
+                            modPeptide.append(",");
+                        }
+                        modPeptide.append(NumberUtilities.scaleDouble(massDiffs.get(j), 1));
+                    }
+                }
+                modPeptide.append("]");
+            }
+        }
+
+        return modPeptide.toString();
     }
 
     private static void addPeptideScores(List<Object> content, DataAccessController controller,
@@ -268,12 +271,9 @@ public class TableDataRetriever {
         String protAcc = controller.getProteinAccession(identId);
         String protAccVersion = controller.getProteinAccessionVersion(identId);
         String database = (controller.getSearchDatabase(identId).getName() == null) ? "" : controller.getSearchDatabase(identId).getName();
-        content.add(protAcc);
-
-        // Mapped Protein Accession
         AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
         String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
-        content.add(mappedProtAcc);
+        content.add(new ProteinAccession(protAcc, mappedProtAcc));
 
         // get protein details
         Protein protein = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);

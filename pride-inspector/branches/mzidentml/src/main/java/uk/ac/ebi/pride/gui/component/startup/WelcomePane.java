@@ -8,9 +8,8 @@ import uk.ac.ebi.pride.gui.listener.MouseOverListener;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.CheckUpdateTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.gui.utils.UpdateChecker;
 import uk.ac.ebi.pride.util.IOUtilities;
 
@@ -600,10 +599,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         // start a update checking task
         Task newTask = new CheckUpdateTask();
         newTask.addTaskListener(this);
-        // set task's gui blocker
-        newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-        // add task listeners
-        uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(newTask);
+        TaskUtil.startBackgroundTask(newTask);
     }
 
     /**

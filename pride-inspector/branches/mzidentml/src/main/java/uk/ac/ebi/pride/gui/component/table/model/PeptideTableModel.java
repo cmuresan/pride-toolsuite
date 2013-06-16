@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.gui.component.table.model;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.term.CvTermReference;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,12 +38,7 @@ public class PeptideTableModel extends AbstractPeptideTableModel {
      */
     private void addPeptideData(Object newData) {
         int rowCnt = this.getRowCount();
-        List<Object> content = new ArrayList<Object>();
-        // add row number
-        content.add(rowCnt + 1);
-        // add the rest content
-        content.addAll((List<String>) newData);
-        this.addRow(content);
+        this.addRow((List<Object>) newData);
         fireTableRowsInserted(rowCnt, rowCnt);
     }
 }

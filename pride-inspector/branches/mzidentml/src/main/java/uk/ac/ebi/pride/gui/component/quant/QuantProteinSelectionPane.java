@@ -24,6 +24,7 @@ import uk.ac.ebi.pride.gui.event.ReferenceSampleChangeEvent;
 import uk.ac.ebi.pride.gui.event.container.ProteinIdentificationEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskListener;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveQuantProteinTableTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
@@ -337,9 +338,7 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
                 // register protein tab as a task listener
                 retrieveTask.addTaskListener((ProgressiveListTableModel) tableModel);
 
-                // start the task
-                retrieveTask.setGUIBlocker(new DefaultGUIBlocker(retrieveTask, GUIBlocker.Scope.NONE, null));
-                appContext.addTask(retrieveTask);
+                TaskUtil.startBackgroundTask(retrieveTask, controller);
             }
         }
 

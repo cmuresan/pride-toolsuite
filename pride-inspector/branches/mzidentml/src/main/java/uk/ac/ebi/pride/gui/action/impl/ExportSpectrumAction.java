@@ -11,9 +11,8 @@ import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.ExportSpectrumMGFTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -59,10 +58,7 @@ public class ExportSpectrumAction extends PrideAction {
             context.setOpenFilePath(filePath.replace(selectedFile.getName(), ""));
 
             ExportSpectrumMGFTask newTask = new ExportSpectrumMGFTask(controller, filePath + (filePath.endsWith(MGF_FILE) ? "" : MGF_FILE));
-            // set task's gui blocker
-            newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-            // add task listeners
-            Desktop.getInstance().getDesktopContext().addTask(newTask);
+            TaskUtil.startBackgroundTask(newTask, controller);
         }
     }
 

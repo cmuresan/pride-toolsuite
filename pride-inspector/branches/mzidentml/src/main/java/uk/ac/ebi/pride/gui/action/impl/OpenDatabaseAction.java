@@ -3,9 +3,8 @@ package uk.ac.ebi.pride.gui.action.impl;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.OpenDatabaseSearchPaneTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.util.InternetChecker;
 
 import javax.swing.*;
@@ -33,9 +32,7 @@ public class OpenDatabaseAction extends PrideAction {
 
             // create a new connection to pride database
             OpenDatabaseSearchPaneTask newTask = new OpenDatabaseSearchPaneTask();
-            // set task's gui blocker
-            newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-            context.addTask(newTask);
+            TaskUtil.startBackgroundTask(newTask);
         } else {
             String msg = Desktop.getInstance().getDesktopContext().getProperty("internet.connection.warning.message");
             String shortMsg = Desktop.getInstance().getDesktopContext().getProperty("internet.connection.warning.short.message");

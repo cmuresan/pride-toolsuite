@@ -7,9 +7,8 @@ import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.container.SpectrumEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskListener;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveSpectrumTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 /**
  * Subscribe to spectrum selection event
@@ -36,8 +35,6 @@ public class SpectrumEventSubscriber implements EventSubscriber<SpectrumEvent> {
 
         Task newTask = new RetrieveSpectrumTask(controller, specturmId);
         newTask.addTaskListener(taskListener);
-        newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-        // add task listeners
-        appContext.addTask(newTask);
+        TaskUtil.startBackgroundTask(newTask, controller);
     }
 }

@@ -12,9 +12,8 @@ import uk.ac.ebi.pride.gui.event.CentralContentPaneLockEvent;
 import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ShowWelcomePaneEvent;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.OpenWelcomePaneTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,8 +78,7 @@ public class CentralContentPane extends JPanel {
      */
     private void showWelcomePane() {
         OpenWelcomePaneTask task = new OpenWelcomePaneTask();
-        task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-        inspectorContext.addTask(task);
+        TaskUtil.startBackgroundTask(task);
     }
 
     /**

@@ -11,9 +11,8 @@ import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
 import uk.ac.ebi.pride.gui.search.Criteria;
 import uk.ac.ebi.pride.gui.search.SearchEntry;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.SearchDatabaseTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.help.CSH;
 import javax.swing.*;
@@ -352,8 +351,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
         } else {
             task = new SearchDatabaseTask(searchEntry);
         }
-        task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-        appContext.addTask(task);
+        TaskUtil.startBackgroundTask(task);
     }
 
 

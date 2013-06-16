@@ -7,9 +7,8 @@ import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskListener;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 /**
  * Event subscriber to peptide event
@@ -36,8 +35,6 @@ public class PeptideEventSubscriber implements EventSubscriber<PeptideEvent> {
 
         Task newTask = new RetrievePeptideTask(controller, protId, peptideId);
         newTask.addTaskListener(taskListener);
-        newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-        // add task listeners
-        appContext.addTask(newTask);
+        TaskUtil.startBackgroundTask(newTask, controller);
     }
 }

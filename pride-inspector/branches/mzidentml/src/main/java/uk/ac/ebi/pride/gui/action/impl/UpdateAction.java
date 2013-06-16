@@ -1,13 +1,11 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
 import uk.ac.ebi.pride.gui.action.PrideAction;
-import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.CheckUpdateTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.gui.utils.UpdateChecker;
 
 import javax.swing.*;
@@ -32,10 +30,7 @@ public class UpdateAction extends PrideAction implements TaskListener<Boolean, V
     public void actionPerformed(ActionEvent e) {
         Task newTask = new CheckUpdateTask();
         newTask.addTaskListener(this);
-        // set task's gui blocker
-        newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-        // add task listeners
-        Desktop.getInstance().getDesktopContext().addTask(newTask);
+        TaskUtil.startBackgroundTask(newTask);
     }
 
     @Override

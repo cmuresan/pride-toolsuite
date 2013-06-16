@@ -668,7 +668,7 @@ Configurations for various properties of model classes.
         <cached>false</cached>
         <clazz>uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItemRef</clazz>
         <idMapped>false</idMapped>
-        <indexed>false</indexed>
+        <indexed>true</indexed>
         <refResolverClass>uk.ac.ebi.jmzidml.xml.jaxb.resolver.SpectrumIdentificationItemRefRefResolver</refResolverClass>
         <tagName>SpectrumIdentificationItemRef</tagName>
         <xpath>/MzIdentML/DataCollection/AnalysisData/ProteinDetectionList/ProteinAmbiguityGroup/ProteinDetectionHypothesis/PeptideHypothesis/SpectrumIdentificationItemRef</xpath>

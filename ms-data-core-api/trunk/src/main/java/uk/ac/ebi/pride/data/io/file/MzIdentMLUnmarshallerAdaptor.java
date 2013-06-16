@@ -142,8 +142,13 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
     }
 
     public int getNumIdentifiedPeptides() throws ConfigurationException {
-        Set<String> listIDs = this.getIDsForElement(MzIdentMLElement.SpectrumIdentificationItem);
-        return listIDs.size();
+        List<IndexElement> spectrumIdentItemRefs = this.index.getIndexElements(MzIdentMLElement.SpectrumIdentificationItemRef.getXpath());
+
+        if (spectrumIdentItemRefs == null || spectrumIdentItemRefs.isEmpty()) {
+            return this.getIDsForElement(MzIdentMLElement.SpectrumIdentificationItem).size();
+        } else {
+            return spectrumIdentItemRefs.size();
+        }
     }
 
     public FragmentationTable getFragmentationTable() {

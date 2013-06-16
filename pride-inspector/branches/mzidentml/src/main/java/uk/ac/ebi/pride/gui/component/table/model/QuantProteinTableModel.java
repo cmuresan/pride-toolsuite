@@ -18,10 +18,8 @@ public class QuantProteinTableModel extends AbstractProteinTableModel {
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("#", "Row Number"),
         COMPARE("✓", "Click to choose the protein you want to compare"),
-        PROTEIN_ACCESSION_COLUMN("Submitted", "Submitted Protein Accession From Source"),
-        MAPPED_PROTEIN_ACCESSION_COLUMN("Mapped", "Pride Mapped Protein Accession"),
+        PROTEIN_ACCESSION_COLUMN("Protein", "Protein Accession"),
         PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
         PROTEIN_STATUS("Status", "Status Of The Protein Accession"),
         PROTEIN_SEQUENCE_COVERAGE("Coverage", "Protein Sequence Coverage"),
@@ -130,7 +128,6 @@ public class QuantProteinTableModel extends AbstractProteinTableModel {
             List<Object> content = new ArrayList<Object>();
             rowNum = this.getRowCount();
             // row number
-            content.add(rowNum + 1);
             content.add(false);
             content.addAll(data);
             contents.add(content);

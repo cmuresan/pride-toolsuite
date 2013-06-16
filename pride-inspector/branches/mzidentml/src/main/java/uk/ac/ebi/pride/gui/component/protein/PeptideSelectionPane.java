@@ -10,21 +10,19 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Modification;
 import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
-import uk.ac.ebi.pride.gui.component.table.listener.PeptideCellMouseClickListener;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.ProgressiveListTableModel;
-import uk.ac.ebi.pride.gui.component.table.renderer.OpenPTMRenderer;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 import uk.ac.ebi.pride.gui.event.container.ProteinIdentificationEvent;
 import uk.ac.ebi.pride.gui.task.Task;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideTableTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.GUIBlocker;
@@ -120,13 +118,6 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
             // hide protein accession column
             TableColumnExt proteinAccCol = (TableColumnExt) pepTable.getColumn(PeptideTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader());
             proteinAccCol.setVisible(false);
-            // hide mapped protein accession column
-            TableColumnExt proteinMappedCol = (TableColumnExt) pepTable.getColumn(PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
-            proteinMappedCol.setVisible(false);
-            // rendering number of ptms column
-            TableColumnExt numOfPTM = (TableColumnExt) pepTable.getColumn(PeptideTableModel.TableHeader.PEPTIDE_PTM_NUMBER_COLUMN.getHeader());
-            ImageIcon icon = GUIUtilities.loadImageIcon(appContext.getProperty("open.ptm.small.icon"));
-            numOfPTM.setCellRenderer(new OpenPTMRenderer(icon));
         } catch (DataAccessException e) {
             String msg = "Failed to retrieve search engine details";
             logger.error(msg, e);
@@ -137,12 +128,8 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
         pepTable.getSelectionModel().addListSelectionListener(new PeptideSelectionListener(pepTable));
 
         // add mouse listener
-        String protAccColumnHeader = PeptideTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader();
-        String ptmColumnHeader = PeptideTableModel.TableHeader.PEPTIDE_PTM_NUMBER_COLUMN.getHeader();
-        pepTable.addMouseMotionListener(new TableCellMouseMotionListener(pepTable, protAccColumnHeader, ptmColumnHeader));
-        // show PTM dialog
-        PeptideCellMouseClickListener peptideMouseListener = new PeptideCellMouseClickListener(pepTable, ptmColumnHeader);
-        pepTable.addMouseListener(peptideMouseListener);
+        String protAccColumnHeader = PeptideTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
+        pepTable.addMouseMotionListener(new TableCellMouseMotionListener(pepTable, protAccColumnHeader));
 
         JScrollPane scrollPane = new JScrollPane(pepTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -265,8 +252,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
             try {
                 RetrievePeptideTableTask retrieveTask = new RetrievePeptideTableTask(PeptideSelectionPane.this.getController(), identId);
                 retrieveTask.addTaskListener(tableModel);
-                retrieveTask.setGUIBlocker(new DefaultGUIBlocker(retrieveTask, GUIBlocker.Scope.NONE, null));
-                appContext.addTask(retrieveTask);
+                TaskUtil.startBackgroundTask(retrieveTask);
             } catch (DataAccessException e) {
                 String msg = "Failed to retrieve information for peptide table";
                 logger.error(msg, e);

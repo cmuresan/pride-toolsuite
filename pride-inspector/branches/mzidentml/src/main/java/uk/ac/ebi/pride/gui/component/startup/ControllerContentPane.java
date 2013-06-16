@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.gui.component.startup;
 
 import org.bushe.swing.event.EventBus;
+import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -16,6 +18,7 @@ import uk.ac.ebi.pride.gui.component.quant.QuantTabPane;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.table.model.ProgressiveListTableModel;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
+import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.ScanExperimentTask;
 
@@ -298,14 +301,19 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
         // register protein table model as a task listener
         JTable identTable = proteinTabPane.getIdentificationPane().getIdentificationTable();
-        retrieveTask.addTaskListener((ProgressiveListTableModel) identTable.getModel());
+        retrieveTask.addTaskListener((TaskListener) identTable.getModel());
 
         // register peptide tab as a task listener
         retrieveTask.addTaskListener(peptideTabPane);
 
         // register peptide table model as a task listener
         JTable peptideTable = peptideTabPane.getPeptidePane().getPeptideTable();
-        retrieveTask.addTaskListener((ProgressiveListTableModel) peptideTable.getModel());
+        if (peptideTable instanceof JXTreeTable) {
+            TreeTableModel treeTableModel = ((JXTreeTable) peptideTable).getTreeTableModel();
+            retrieveTask.addTaskListener((TaskListener)treeTableModel);
+        } else {
+            retrieveTask.addTaskListener((TaskListener)peptideTable.getModel());
+        }
 
         // register quantitative tab as a task listener
         try {

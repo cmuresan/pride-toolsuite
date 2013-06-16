@@ -15,9 +15,8 @@ import uk.ac.ebi.pride.gui.component.status.TaskMonitorPanel;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.menu.MenuFactory;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.OpenMyProjectTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.util.IOUtilities;
 
 import javax.jnlp.ServiceManager;
@@ -156,8 +155,7 @@ public class PrideInspector extends Desktop {
 
             if (projectAccession != null) {
                 OpenMyProjectTask task = new OpenMyProjectTask(projectAccession, username, password== null ? null : password.toCharArray());
-                task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-                getDesktopContext().addTask(task);
+                TaskUtil.startBackgroundTask(task);
             }
         } catch (ParseException e) {
             logger.error("Parsing command line option failed", e);

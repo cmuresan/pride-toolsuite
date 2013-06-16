@@ -13,11 +13,11 @@ import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.ExportTableDataTask;
 import uk.ac.ebi.pride.gui.url.HttpUtilities;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
 import uk.ac.ebi.pride.gui.utils.EnsemblSpeciesMapper;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.gui.utils.ProteinAccession;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
@@ -426,33 +426,31 @@ public class QuantExportDialog extends JDialog {
             int rowCnt = proteinTable.getRowCount();
             if (rowCnt > 0) {
                 int protColIndex = -1;
-                int mappedProtColIndex = -1;
                 int quantDataStartColIndex = -1;
                 int colCnt = proteinTable.getColumnCount();
                 for (int i = 0; i < colCnt; i++) {
                     String colName = proteinTable.getColumnName(i);
                     if (colName.equals(QuantProteinTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader())) {
                         protColIndex = i;
-                    } else if (colName.equals(QuantProteinTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader())) {
-                        mappedProtColIndex = i;
                     }
                 }
 
-                if (mappedProtColIndex < colCnt - 1) {
-                    quantDataStartColIndex = mappedProtColIndex + 1;
+                if (protColIndex < colCnt - 1) {
+                    quantDataStartColIndex = protColIndex + 1;
                 }
 
                 // add header
-                value += proteinTable.getColumnName(mappedProtColIndex) + separator;
+                value += proteinTable.getColumnName(protColIndex) + separator;
                 for (int i = quantDataStartColIndex; i < colCnt; i++) {
                     value += proteinTable.getColumnName(i) + separator;
                 }
                 value = value.substring(0, value.length() - 1) + "\n";
 
                 for (int i = 0; i < rowCnt; i++) {
-                    String prot = (String) proteinTable.getValueAt(i, mappedProtColIndex);
-                    if (prot == null) {
-                        prot = (String) proteinTable.getValueAt(i, protColIndex);
+                    Object protein =  proteinTable.getValueAt(i, protColIndex);
+                    String prot = null;
+                    if (protein == null) {
+                        prot = ((ProteinAccession)protein).getMappedAccession();
                     }
 
                     if (prot != null && quantDataStartColIndex > -1) {
@@ -486,24 +484,22 @@ public class QuantExportDialog extends JDialog {
             int rowCnt = proteinTable.getRowCount();
             if (rowCnt > 0) {
                 int protColIndex = -1;
-                int mappedProtColIndex = -1;
                 int colCnt = proteinTable.getColumnCount();
                 for (int i = 0; i < colCnt; i++) {
                     String colName = proteinTable.getColumnName(i);
                     if (colName.equals(QuantProteinTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader())) {
                         protColIndex = i;
-                    } else if (colName.equals(QuantProteinTableModel.TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader())) {
-                        mappedProtColIndex = i;
                     }
                 }
 
-                if (protColIndex >= 0 && mappedProtColIndex >= 0) {
+                if (protColIndex >= 0) {
                     String url = getBaseURL();
                     if (url != null) {
                         for (int i = 0; i < rowCnt; i++) {
-                            String prot = (String) proteinTable.getValueAt(i, mappedProtColIndex);
-                            if (prot == null) {
-                                prot = (String) proteinTable.getValueAt(i, protColIndex);
+                            Object protein =  proteinTable.getValueAt(i, protColIndex);
+                            String prot = null;
+                            if (protein == null) {
+                                prot = ((ProteinAccession)protein).getMappedAccession();
                             }
 
                             if (prot != null) {
@@ -577,10 +573,7 @@ public class QuantExportDialog extends JDialog {
                 ExportTableDataTask newTask = new ExportTableDataTask(proteinTable,
                         filePath + (filePath.endsWith(TAB_SEP_FILE) ? "" : TAB_SEP_FILE),
                         "Export Protein Quantification", "Export Protein Quantification");
-                // set task's gui blocker
-                newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-                // add task listeners
-                uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(newTask);
+                TaskUtil.startBackgroundTask(newTask);
             }
         }
     }

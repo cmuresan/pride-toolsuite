@@ -2,15 +2,13 @@ package uk.ac.ebi.pride.gui.component.table.listener;
 
 import uk.ac.ebi.pride.gui.url.HttpUtilities;
 import uk.ac.ebi.pride.gui.url.HyperLinkGenerator;
-import uk.ac.ebi.pride.gui.component.table.model.ListTableModel;
 
 import javax.swing.*;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,37 +46,18 @@ public class HyperLinkCellMouseClickListener extends MouseAdapter {
         this.pattern = pattern;
     }
 
-    private int getColumnIndex(String header, TableModel tableModel) {
-        int index = -1;
-
-        for (int i = 0; i < tableModel.getColumnCount(); i++) {
-            if (tableModel.getColumnName(i).equals(header)) {
-                index = i;
-                break;
-            }
-        }
-
-        return index;
-    }
-
     @Override
     public void mouseClicked(MouseEvent e) {
         int col = table.columnAtPoint(new Point(e.getX(), e.getY()));
         String header = table.getColumnName(col);
         if (header.equals(clickHeader)) {
             int row = table.rowAtPoint(new Point(e.getX(), e.getY()));
-            TableModel tableModel = table.getModel();
 
-            Object val = null;
-            if (clickHeader.equals(linkedHeader)) {
-                val = tableModel.getValueAt(table.convertRowIndexToModel(row), table.convertColumnIndexToModel(col));
-            } else {
-                val = tableModel.getValueAt(table.convertRowIndexToModel(row), getColumnIndex(linkedHeader, tableModel));
-            }
+            Object val = table.getValueAt(table.convertRowIndexToModel(row), col);
 
-            if (val != null) {
+            if (val != null && clickHeader.equals(linkedHeader)) {
                 String text = val.toString();
-                Set<String> urlList = new HashSet<String>();
+                Set<Object> urlList = new HashSet<Object>();
 
                 if (pattern != null) {
                     Matcher m = pattern.matcher(text);
@@ -86,12 +65,14 @@ public class HyperLinkCellMouseClickListener extends MouseAdapter {
                     while (m.find()) {
                         urlList.add(m.group());
                     }
+                } else {
+                    urlList.add(val);
                 }
 
-                for (String url : urlList) {
+                for (Object url : urlList) {
                     url = urlGen == null ? url : urlGen.generate(url);
                     if (url != null) {
-                        HttpUtilities.openURL(url);
+                        HttpUtilities.openURL(url.toString());
                     }
                 }
             }

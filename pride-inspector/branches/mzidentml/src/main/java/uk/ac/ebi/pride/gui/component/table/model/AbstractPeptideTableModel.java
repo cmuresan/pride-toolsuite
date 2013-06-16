@@ -2,10 +2,10 @@ package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
+import uk.ac.ebi.pride.gui.utils.ProteinAccession;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +23,9 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("#", "Row Number"),
-        PEPTIDE_PTM_COLUMN("Peptide", "Peptide Sequence"),
-        PROTEIN_ACCESSION_COLUMN("Submitted", "Submitted Protein Accession From Source"),
-        MAPPED_PROTEIN_ACCESSION_COLUMN("Mapped", "Pride Mapped Protein Accession"),
+        PEPTIDE_COLUMN("Peptide", "Peptide Sequence"),
+        RANKING("Ranking", "Ranking"),
+        PROTEIN_ACCESSION_COLUMN("Protein", "Protein Accession"),
         PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
         PROTEIN_STATUS("Status", "Status Of The Protein Accession"),
         PROTEIN_SEQUENCE_COVERAGE("Coverage", "Protein Sequence Coverage"),
@@ -34,9 +33,7 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
         PRECURSOR_CHARGE_COLUMN("Charge", "Precursor Charge"),
         DELTA_MASS_COLUMN("Delta m/z", "Delta m/z [Experimental m/z - Theoretical m/z]"),
         PRECURSOR_MZ_COLUMN("Precursor m/z", "Precursor m/z"),
-        PEPTIDE_PTM_NUMBER_COLUMN("# PTMs", "Number of PTMs"),
-        PEPTIDE_PTM_MASS_COLUMN("Modified Peptide Sequence", "Peptide Sequence with PTM Mass Differences"),
-        PEPTIDE_PTM_SUMMARY("PTM List", "List of All PTM Accessions"),
+        PEPTIDE_MODIFICATION_COLUMN("Modifications", "Post translational modifications"),
         NUMBER_OF_FRAGMENT_IONS_COLUMN("# Ions", "Number of Fragment Ions"),
         PEPTIDE_SEQUENCE_LENGTH_COLUMN("Length", "Length"),
         SEQUENCE_START_COLUMN("Start", "Start Position"),
@@ -116,45 +113,34 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
      *
      * @param newData protein detail map
      */
-    private void addProteinDetails(Object newData) {
+    protected void addProteinDetails(Object newData) {
         // column index for mapped protein accession column
-        int mappedAccIndex = getColumnIndex(TableHeader.MAPPED_PROTEIN_ACCESSION_COLUMN.getHeader());
+        int mappedAccIndex = getColumnIndex(TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader());
         // column index for protein name
         int identNameIndex = getColumnIndex(TableHeader.PROTEIN_NAME.getHeader());
         // column index for protein status
         int identStatusIndex = getColumnIndex(TableHeader.PROTEIN_STATUS.getHeader());
-        // column index for protein identification id
-        int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
-        // column index for peptide id
-        int peptideIdIndex = getColumnIndex(TableHeader.PEPTIDE_ID.getHeader());
 
         // get a map of protein accession to protein details
         Map<String, Protein> proteins = (Map<String, Protein>) newData;
-        // A list of protein identification id which can get sequence coverage
-        List<Comparable> identIds = new ArrayList<Comparable>();
-        // a list of protein identification id and peptide id
-        List<Tuple<Comparable, Comparable>> peptideIds = new ArrayList<Tuple<Comparable, Comparable>>();
 
         // iterate over each row, set the protein name
         for (int row = 0; row < contents.size(); row++) {
             List<Object> content = contents.get(row);
-            Object mappedAcc = content.get(mappedAccIndex);
-            if (mappedAcc != null) {
-                Protein protein = proteins.get(mappedAcc);
-                if (protein != null) {
-                    AnnotatedProtein annotatedProtein = new AnnotatedProtein(protein);
-                    // set protein name
-                    content.set(identNameIndex, annotatedProtein.getName());
-                    // set protein status
-                    content.set(identStatusIndex, annotatedProtein.getStatus().name());
-                    // add protein identification id to the list
-                    Comparable identId = (Comparable) content.get(identIdIndex);
-                    identIds.add(identId);
-                    // add peptide id
-                    Comparable peptideId = (Comparable) content.get(peptideIdIndex);
-                    peptideIds.add(new Tuple<Comparable, Comparable>(identId, peptideId));
-                    // notify a row change
-                    fireTableRowsUpdated(row, row);
+            Object proteinAccession = content.get(mappedAccIndex);
+            if (proteinAccession != null) {
+                String mappedAccession = ((ProteinAccession) proteinAccession).getMappedAccession();
+                if (mappedAccession != null) {
+                    Protein protein = proteins.get(mappedAccession);
+                    if (protein != null) {
+                        AnnotatedProtein annotatedProtein = new AnnotatedProtein(protein);
+                        // set protein name
+                        content.set(identNameIndex, annotatedProtein.getName());
+                        // set protein status
+                        content.set(identStatusIndex, annotatedProtein.getStatus().name());
+                        // notify a row change
+                        fireTableRowsUpdated(row, row);
+                    }
                 }
             }
         }
@@ -165,7 +151,7 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
      *
      * @param newData sequence coverage map
      */
-    private void addSequenceCoverageData(Object newData) {
+    protected void addSequenceCoverageData(Object newData) {
         // column index for protein identification id
         int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
         // column index for protein sequence coverage
@@ -193,7 +179,7 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
      *
      * @param newDataValue
      */
-    private void addPeptideFitData(Object newDataValue) {
+    protected void addPeptideFitData(Object newDataValue) {
         // map contains peptide fit
         Map<Tuple<Comparable, Comparable>, Integer> peptideFits = (Map<Tuple<Comparable, Comparable>, Integer>) newDataValue;
 
@@ -224,7 +210,7 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
      *
      * @param newDataValue
      */
-    private void addPeptideDeltaData(Object newDataValue) {
+    protected void addPeptideDeltaData(Object newDataValue) {
 
         Map<Tuple<Comparable, Comparable>, Double> peptideFits = (Map<Tuple<Comparable, Comparable>, Double>) newDataValue;
 
@@ -255,7 +241,7 @@ public class AbstractPeptideTableModel extends ProgressiveListTableModel<Void, T
      *
      * @param newDataValue
      */
-    private void addPeptideMzData(Object newDataValue) {
+    protected void addPeptideMzData(Object newDataValue) {
         // map contains peptide fit
         Map<Tuple<Comparable, Comparable>, Double> peptideFits = (Map<Tuple<Comparable, Comparable>, Double>) newDataValue;
 

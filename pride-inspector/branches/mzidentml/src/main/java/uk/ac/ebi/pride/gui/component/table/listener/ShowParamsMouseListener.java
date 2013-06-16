@@ -1,10 +1,9 @@
 package uk.ac.ebi.pride.gui.component.table.listener;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.ShowParamDialogTask;
 import uk.ac.ebi.pride.gui.utils.Constants;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -51,8 +50,7 @@ public class ShowParamsMouseListener extends MouseAdapter{
                 }
 
                 ShowParamDialogTask task = new ShowParamDialogTask(controller, protId, peptideId);
-                task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-                uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(task);
+                TaskUtil.startBackgroundTask(task);
             }
         }
     }

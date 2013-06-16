@@ -21,7 +21,6 @@ public class ParamTableModel extends ListTableModel<Parameter> {
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("#", "Row Number"),
         ONTOLOGY("Ontology", "Short Name Of the Ontology"),
         ACCESSION("Accession", "Accession Defined By The Ontology"),
         Name("Name", "Name Defined By The Ontology"),
@@ -117,7 +116,6 @@ public class ParamTableModel extends ListTableModel<Parameter> {
 
         // row count
         int rowCnt = this.getRowCount();
-        data.add(rowCnt + 1);
 
         if (newData instanceof CvParam) {
             CvParam cvParam = (CvParam) newData;

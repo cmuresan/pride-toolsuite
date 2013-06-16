@@ -16,9 +16,8 @@ import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveMetaDataTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
@@ -201,10 +200,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
         // register task listener
         retrieveTask.addTaskListener(this);
 
-        // start the task
-        retrieveTask.setGUIBlocker(new DefaultGUIBlocker(retrieveTask, GUIBlocker.Scope.NONE, null));
-
-        context.addTask(retrieveTask);
+        TaskUtil.startBackgroundTask(retrieveTask, controller);
     }
 
     @Override

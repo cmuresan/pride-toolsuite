@@ -11,11 +11,10 @@ import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.GetMyProjectsMetadataTask;
 import uk.ac.ebi.pride.gui.utils.BalloonTipUtil;
 import uk.ac.ebi.pride.gui.utils.ColourUtil;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.prider.webservice.project.model.ProjectDetailList;
 
 import javax.swing.*;
@@ -112,8 +111,7 @@ public class PrideLoginDialog extends JDialog implements TaskListener<ProjectDet
                     // launch a new task for login
                     Task task = new GetMyProjectsMetadataTask(userNameField.getText(), passwordField.getPassword());
                     task.addTaskListener(PrideLoginDialog.this);
-                    task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-                    PrideInspector.getInstance().getDesktopContext().addTask(task);
+                    TaskUtil.startBackgroundTask(task);
                 }
             }
         });

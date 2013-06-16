@@ -19,7 +19,6 @@ public class DatabaseSearchTableModel extends ListTableModel<List<Object>> {
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("#", "Row Number"),
         VIEW("View", "View experiment"),
         EXPERIMENT_ACCESSION("Accession", "PRIDE Experiment Accession"),
         EXPERIMENT_TITLE("Title", "PRIDE Experiment Title"),
@@ -66,13 +65,8 @@ public class DatabaseSearchTableModel extends ListTableModel<List<Object>> {
 
     @Override
     public void addData(List<Object> newData) {
-        List<Object> content = new ArrayList<Object>();
-        // row number
         int rowCnt = this.getRowCount();
-        content.add(rowCnt + 1);
-        content.add(newData.get(0));
-        content.addAll(newData);
-        contents.add(content);
+        contents.add(newData);
 
         fireTableRowsInserted(rowCnt, rowCnt);
     }

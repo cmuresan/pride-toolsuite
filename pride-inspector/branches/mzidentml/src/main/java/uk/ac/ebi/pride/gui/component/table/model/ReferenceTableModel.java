@@ -19,7 +19,6 @@ public class ReferenceTableModel extends ListTableModel<Reference> {
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("#", "Row Number"),
         REFERENCE_DESCRIPTION("Reference", "Full Details of the reference"),
         PUBMED("PubMed", "Reference ID From PubMed"),
         DOI("DOI", "Reference ID From DOI");
@@ -62,7 +61,6 @@ public class ReferenceTableModel extends ListTableModel<Reference> {
         List<Object> data = new ArrayList<Object>();
         // row count
         int rowCnt = this.getRowCount();
-        data.add(rowCnt + 1);
         // add reference
         data.add(newData.getFullReference());
 

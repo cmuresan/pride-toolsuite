@@ -14,7 +14,6 @@ import java.util.*;
 public class PrideExperimentTableModel extends ListTableModel<List<Map<String, String>>> {
 
     public enum TableHeader {
-
         EXP_ACC_COLUMN("Accession", "Pride Experiment Accession"),
         SIZE_COLUMN("Size (M)", "Download File Size (M)"),
         EXP_TITLE_COLUMN("Title", "Experiment Title"),

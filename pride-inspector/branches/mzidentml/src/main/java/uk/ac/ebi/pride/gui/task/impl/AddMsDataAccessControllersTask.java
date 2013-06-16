@@ -8,11 +8,9 @@ import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
-import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.task.TaskListener;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -70,11 +68,7 @@ public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<Spectr
             TableModel tableModel = table.getModel();
             task.addTaskListener((TaskListener) tableModel);
 
-            // gui blocker
-            task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-
-            // add task to task manager without notify
-            Desktop.getInstance().getDesktopContext().addTask(task);
+            TaskUtil.startBackgroundTask(task, controller);
 
         } catch (DataAccessException e) {
             e.printStackTrace();

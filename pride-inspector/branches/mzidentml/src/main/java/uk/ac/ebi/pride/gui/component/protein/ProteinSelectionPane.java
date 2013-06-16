@@ -99,7 +99,9 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
         metaDataPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         try {
             // protein table label
-            JLabel tableLabel =  new JLabel("<html><b>Protein</b></html>");
+            JLabel tableLabel =  new JLabel("Protein");
+            tableLabel.setFont(tableLabel.getFont().deriveFont(Font.BOLD));
+
             metaDataPanel.add(tableLabel);
             metaDataPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 

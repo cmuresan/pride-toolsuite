@@ -19,7 +19,6 @@ public class QuantSampleTableModel extends ListTableModel<QuantitativeSample> {
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("#", "Row Number"),
         SAMPLE_REAGENT("Reagent", "Isotope Labelling Reagent"),
         SAMPLE_SPECIES("Species", "Species"),
         SAMPLE_TISSUE("Tissue", "Tissue"),
@@ -59,7 +58,6 @@ public class QuantSampleTableModel extends ListTableModel<QuantitativeSample> {
     }
 
     private void addHeaders(QuantitativeSample sample) {
-        columnNames.put(TableHeader.ROW_NUMBER_COLUMN.getHeader(), TableHeader.ROW_NUMBER_COLUMN.getToolTip());
 
         if (sample.hasReagent()) {
             columnNames.put(TableHeader.SAMPLE_REAGENT.getHeader(), TableHeader.SAMPLE_REAGENT.getToolTip());
@@ -99,7 +97,6 @@ public class QuantSampleTableModel extends ListTableModel<QuantitativeSample> {
                 List<Object> content = new ArrayList<Object>();
 
                 int rowCnt = getRowCount();
-                content.add(rowCnt + 1);
 
                 if (sample.hasReagent()) {
                     CvParam cvParam = sample.getReagent(i);

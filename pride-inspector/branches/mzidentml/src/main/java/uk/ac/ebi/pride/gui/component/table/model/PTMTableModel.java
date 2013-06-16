@@ -17,7 +17,6 @@ public class PTMTableModel extends ProgressiveListTableModel<Void, Peptide> {
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("#", "Row Number"),
         PTM_ACCESSION("Accession", "PTM Accession"),
         PTM_NAME("Name", "PTM Name"),
         PTM_LOCATION("Location", "Modified location"),
@@ -62,8 +61,6 @@ public class PTMTableModel extends ProgressiveListTableModel<Void, Peptide> {
         if (!mods.isEmpty()) {
             for (Modification mod : mods) {
                 List<Object> content = new ArrayList<Object>();
-                // row number
-                content.add(this.getRowCount() + 1);
                 // accession
                 content.add(mod.getId().toString());
                 // name

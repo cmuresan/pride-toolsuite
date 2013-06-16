@@ -10,9 +10,8 @@ import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.GetMyProjectFilesMetadataTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.prider.webservice.file.model.FileDetail;
 import uk.ac.ebi.pride.prider.webservice.file.model.FileDetailList;
 import uk.ac.ebi.pride.prider.webservice.project.model.ProjectDetail;
@@ -133,8 +132,7 @@ public class MyProjectSummaryDialog extends JDialog implements TaskListener<File
                 String projectAccession = (String)projectAccessionList.getSelectedValue();
                 Task task = new GetMyProjectFilesMetadataTask(myLoginRecord.getUserName(), myLoginRecord.getPassword(), projectAccession);
                 task.addTaskListener(MyProjectSummaryDialog.this);
-                task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-                PrideInspector.getInstance().getDesktopContext().addTask(task);
+                TaskUtil.startBackgroundTask(task);
             }
         });
     }

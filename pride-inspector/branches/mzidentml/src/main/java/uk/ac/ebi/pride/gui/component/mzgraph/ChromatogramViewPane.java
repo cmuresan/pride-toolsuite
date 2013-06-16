@@ -16,9 +16,8 @@ import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.event.container.ChromatogramEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveChromatogramTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.mzgraph.ChromatogramBrowser;
 
 import javax.swing.*;
@@ -114,9 +113,7 @@ public class ChromatogramViewPane extends DataAccessControllerPane<Chromatogram,
             if (chromaId != null) {
                 Task newTask = new RetrieveChromatogramTask(controller, chromaId);
                 newTask.addTaskListener(ChromatogramViewPane.this);
-                newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-                // add task listeners
-                appContext.addTask(newTask);
+                TaskUtil.startBackgroundTask(newTask, controller);
             }
         }
     }

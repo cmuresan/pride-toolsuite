@@ -13,9 +13,8 @@ import uk.ac.ebi.pride.gui.action.impl.OpenHelpAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 import uk.ac.ebi.pride.gui.task.Task;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.mzgraph.ChromatogramBrowser;
 import uk.ac.ebi.pride.mzgraph.SpectrumBrowser;
 
@@ -233,10 +232,7 @@ public class MzGraphViewPane extends DataAccessControllerPane {
             Comparable protId = event.getIdentificationId();
 
             Task newTask = new RetrievePeptideTask(controller, protId, peptideId);
-//            newTask.addTaskListener(MzGraphViewPane.this);
-            newTask.setGUIBlocker(new DefaultGUIBlocker(newTask, GUIBlocker.Scope.NONE, null));
-            // add task listeners
-            uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(newTask);
+            TaskUtil.startBackgroundTask(newTask, controller);
         }
     }
 }

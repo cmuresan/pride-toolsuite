@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.gui.component.peptide;
 
 import org.bushe.swing.event.ContainerEventServiceFinder;
 import org.bushe.swing.event.EventService;
+import org.jdesktop.swingx.JXTreeTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -15,16 +16,21 @@ import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTreeTableModel;
 import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
+import uk.ac.ebi.pride.gui.task.impl.FilterPeptideRankingTask;
 
 import javax.help.CSH;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * PeptideDescriptionPane displays all peptides details.
@@ -36,10 +42,54 @@ import java.awt.event.ActionListener;
 public class PeptideDescriptionPane extends DataAccessControllerPane {
     private static final Logger logger = LoggerFactory.getLogger(PeptideDescriptionPane.class);
 
+    private enum PeptideRankingFilter {
+        LESS_EQUAL_THAN_ONE("<= 1", 1),
+        LESS_EQUAL_THAN_TWO("<= 2", 2),
+        LESS_EQUAL_THAN_THREE("<= 3", 3),
+        ALL("All", 1000);
+
+
+        private String rankingFilter;
+        private int rankingThreshold;
+
+        private PeptideRankingFilter(String rankingFilter, int rankingThreshold) {
+            this.rankingFilter = rankingFilter;
+            this.rankingThreshold = rankingThreshold;
+        }
+
+        private String getRankingFilter() {
+            return rankingFilter;
+        }
+
+        private int getRankingThreshold() {
+            return rankingThreshold;
+        }
+
+        public static java.util.List<String> getRankingFilters() {
+            java.util.List<String> filters = new ArrayList<String>();
+
+            for (PeptideRankingFilter peptideRankingFilter : values()) {
+                filters.add(peptideRankingFilter.getRankingFilter());
+            }
+
+            return filters;
+        }
+
+        public static int getRankingThreshold(String filter) {
+            for (PeptideRankingFilter peptideRankingFilter : values()) {
+                if (peptideRankingFilter.getRankingFilter().equalsIgnoreCase(filter)) {
+                    return peptideRankingFilter.getRankingThreshold();
+                }
+            }
+
+            return -1;
+        }
+    }
+
     /**
      * peptide details table
      */
-    private JTable pepTable;
+    private JXTreeTable pepTable;
 
     /**
      * Constructor
@@ -67,7 +117,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
     protected void addComponents() {
         // create identification table
         try {
-            pepTable = TableFactory.createPeptideTable(controller.getAvailablePeptideLevelScores(), controller);
+            pepTable = TableFactory.createPeptideTreeTable(controller.getAvailablePeptideLevelScores(), PeptideRankingFilter.LESS_EQUAL_THAN_ONE.rankingThreshold);
         } catch (DataAccessException e) {
             String msg = "Failed to retrieve search engine details";
             logger.error(msg, e);
@@ -113,7 +163,8 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
         metaDataPanel.setOpaque(false);
 
         // table label
-        JLabel label = new JLabel("<html><b>Peptide</b></html>");
+        JLabel label = new JLabel("Peptide spectrum match");
+        label.setFont(label.getFont().deriveFont(Font.BOLD));
         metaDataPanel.add(label);
 
         return metaDataPanel;
@@ -121,15 +172,24 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
 
     private JToolBar buildButtonPane() {
         JToolBar toolBar = new JToolBar();
+        toolBar.setBorder(BorderFactory.createEmptyBorder());
         toolBar.setFloatable(false);
         toolBar.setOpaque(false);
+
+        // filter peptide by ranking
+        JLabel rankingFilterLabel = new JLabel("Filter by ranking: ");
+        toolBar.add(rankingFilterLabel);
+
+        JComboBox rankingFilterList = getRankingFilterComboBox();
+        toolBar.add(rankingFilterList);
+
+        // add gap
+        toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
 
         // load protein names
         JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
         loadAllProteinNameButton.setForeground(Color.blue);
-
         loadAllProteinNameButton.setAction(new ExtraProteinDetailAction(controller));
-
         toolBar.add(loadAllProteinNameButton);
 
         // add gap
@@ -174,12 +234,28 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
         return toolBar;
     }
 
+    private JComboBox getRankingFilterComboBox() {
+        JComboBox rankingFilterList = new JComboBox(PeptideRankingFilter.getRankingFilters().toArray());
+        rankingFilterList.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComboBox filterComboBox = (JComboBox)e.getSource();
+                String filter = (String) filterComboBox.getSelectedItem();
+                int rankingThreshold = PeptideRankingFilter.getRankingThreshold(filter);
+                PeptideTreeTableModel treeTableModel = (PeptideTreeTableModel)pepTable.getTreeTableModel();
+                FilterPeptideRankingTask filterPeptideRankingTask = new FilterPeptideRankingTask(treeTableModel, rankingThreshold);
+                TaskUtil.startBackgroundTask(filterPeptideRankingTask, controller);
+            }
+        });
+        return rankingFilterList;
+    }
+
     /**
      * Return peptide table
      *
      * @return JTable  peptide table
      */
-    public JTable getPeptideTable() {
+    public JXTreeTable getPeptideTable() {
         return pepTable;
     }
 
@@ -189,9 +265,11 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
     @SuppressWarnings("unchecked")
     private class PeptideSelectionListener implements ListSelectionListener {
         private final JTable table;
+        private int previousSelectedRow;
 
         private PeptideSelectionListener(JTable table) {
             this.table = table;
+            this.previousSelectedRow = -1;
         }
 
         @Override
@@ -199,19 +277,22 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
 
             if (!e.getValueIsAdjusting()) {
                 int rowNum = table.getSelectedRow();
-                if (rowNum >= 0) {
+                if (rowNum >= 0 && rowNum != previousSelectedRow) {
+                    previousSelectedRow = rowNum;
                     logger.debug("Peptide table has been clicked, row number: {}", rowNum);
                     // get table model
-                    PeptideTableModel pepTableModel = (PeptideTableModel) pepTable.getModel();
+                    PeptideTreeTableModel treeTableModel = (PeptideTreeTableModel)pepTable.getTreeTableModel();
+
 
                     // get spectrum reference column
-                    int identColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
-                    int peptideColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
+                    int identColNum = treeTableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
+                    int peptideColNum = treeTableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
 
+                    TreePath treePath = pepTable.getPathForRow(rowNum);
                     // get spectrum id
-                    int modelRowIndex = pepTable.convertRowIndexToModel(rowNum);
-                    Comparable identId = (Comparable) pepTableModel.getValueAt(modelRowIndex, identColNum);
-                    Comparable peptideId = (Comparable) pepTableModel.getValueAt(modelRowIndex, peptideColNum);
+                    Object rowNode = treePath.getLastPathComponent();
+                    Comparable identId = (Comparable) treeTableModel.getValueAt(rowNode, identColNum);
+                    Comparable peptideId = (Comparable) treeTableModel.getValueAt(rowNode, peptideColNum);
 
                     logger.debug("Peptide table selection:  Protein id: " + identId + " Peptide Id: " + peptideId);
 

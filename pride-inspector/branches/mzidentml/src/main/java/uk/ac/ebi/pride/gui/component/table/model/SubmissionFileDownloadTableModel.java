@@ -16,6 +16,7 @@ import java.util.Set;
  * @version $Id$
  */
 public class SubmissionFileDownloadTableModel extends AbstractTreeTableModel {
+
     public enum TableHeader {
 
         FILE_NAME_COLUMN("File Name", "File Name"),

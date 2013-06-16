@@ -1,8 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table.listener;
 
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.OpenPrideDatabaseTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -38,8 +37,7 @@ public class OpenExperimentMouseListener extends MouseAdapter {
             Object val = tableModel.getValueAt(table.convertRowIndexToModel(row), table.convertColumnIndexToModel(col));
             if (val != null) {
                 OpenPrideDatabaseTask task = new OpenPrideDatabaseTask(val.toString());
-                task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-                uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().addTask(task);
+                TaskUtil.startBackgroundTask(task);
             }
         }
     }

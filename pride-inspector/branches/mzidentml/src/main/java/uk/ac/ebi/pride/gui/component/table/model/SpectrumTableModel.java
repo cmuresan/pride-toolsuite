@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.gui.component.table.model;
 
 import uk.ac.ebi.pride.data.Tuple;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +15,6 @@ public class SpectrumTableModel extends ProgressiveListTableModel<Void, Tuple<Ta
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("#", "Row Number"),
         SPECTRUM_ID_COLUMN("Spectrum ID", "Spectrum ID"),
         MZ_LEVEL_COLUMN("MS level", "MS Level"),
         IDENTIFIED_COLUMN("Identified", "Peptide Identified"),
@@ -57,10 +55,7 @@ public class SpectrumTableModel extends ProgressiveListTableModel<Void, Tuple<Ta
         TableContentType type = newData.getKey();
         int rowCnt = this.getRowCount();
         if (TableContentType.SPECTRUM.equals(type)) {
-            List<Object> content = new ArrayList<Object>();
-            content.add(this.getRowCount() + 1);
-            content.addAll(newData.getValue());
-            addRow(content);
+            addRow(newData.getValue());
             fireTableRowsInserted(rowCnt, rowCnt);
         }
     }

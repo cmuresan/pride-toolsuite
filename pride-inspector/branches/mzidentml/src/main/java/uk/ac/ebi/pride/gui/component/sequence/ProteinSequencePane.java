@@ -13,11 +13,10 @@ import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveProteinDetailModelTask;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveSelectedPeptideAnnotation;
 import uk.ac.ebi.pride.gui.utils.Constants;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
 import javax.swing.*;
@@ -551,8 +550,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                 task.addTaskListener(ProteinSequencePane.this);
             }
 
-            task.setGUIBlocker(new DefaultGUIBlocker(task, GUIBlocker.Scope.NONE, null));
-            appContext.addTask(task);
+            TaskUtil.startBackgroundTask(task, controller);
         }
     }
 }

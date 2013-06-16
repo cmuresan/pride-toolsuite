@@ -10,10 +10,9 @@ import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.table.filter.DecoyAccessionFilter;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.Task;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.DecoyFilterTask;
 import uk.ac.ebi.pride.gui.task.impl.DecoyRatioTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import javax.swing.table.TableRowSorter;
@@ -129,12 +128,10 @@ public class DecoyFilterAction extends PrideAction implements PropertyChangeList
             Tuple<DecoyAccessionFilter.Type, String> newValue = (Tuple<DecoyAccessionFilter.Type, String>) evt.getNewValue();
             // decoy task
             Task decoyRatioTask = new DecoyRatioTask(controller, newValue.getKey(), newValue.getValue());
-            decoyRatioTask.setGUIBlocker(new DefaultGUIBlocker(decoyRatioTask, GUIBlocker.Scope.NONE, null));
-            appContext.addTask(decoyRatioTask);
+            TaskUtil.startBackgroundTask(decoyRatioTask, controller);
 
             Task decoyFilterTask = new DecoyFilterTask(controller, newValue.getKey(), newValue.getValue());
-            decoyFilterTask.setGUIBlocker(new DefaultGUIBlocker(decoyFilterTask, GUIBlocker.Scope.NONE, null));
-            appContext.addTask(decoyFilterTask);
+            TaskUtil.startBackgroundTask(decoyFilterTask, controller);
 
             // enable menu items
             nonDecoyMenuItem.setEnabled(true);

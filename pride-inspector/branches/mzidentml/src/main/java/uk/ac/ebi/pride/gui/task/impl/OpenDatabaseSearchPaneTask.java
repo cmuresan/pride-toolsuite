@@ -7,8 +7,7 @@ import uk.ac.ebi.pride.gui.component.db.DatabaseSearchPane;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.DatabaseSearchEvent;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 
 /**
  * Task to open database search pane
@@ -44,8 +43,7 @@ public class OpenDatabaseSearchPaneTask extends TaskAdapter<Void, Void> {
 
             // start loading
             SearchDatabaseTask searchTask = new SearchDatabaseTask();
-            searchTask.setGUIBlocker(new DefaultGUIBlocker(searchTask, GUIBlocker.Scope.NONE, null));
-            context.addTask(searchTask);
+            TaskUtil.startBackgroundTask(searchTask);
         }
 
         EventBus.publish(new DatabaseSearchEvent(DatabaseSearchEvent.Status.SHOW));

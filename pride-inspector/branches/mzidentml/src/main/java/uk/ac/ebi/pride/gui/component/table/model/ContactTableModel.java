@@ -23,7 +23,6 @@ public class ContactTableModel extends ListTableModel<ParamGroup> {
      * table column title
      */
     public enum TableHeader {
-        ROW_NUMBER_COLUMN("#", "Row Number"),
         NAME("Name", "Name Of The Contact"),
         INSTITUTE("Institute", "Institute Or Organization Of The Contact"),
         INFORMATION("Information", "Contact Information");
@@ -74,7 +73,6 @@ public class ContactTableModel extends ListTableModel<ParamGroup> {
 
         // row count
         int rowCnt = this.getRowCount();
-        data.add(rowCnt + 1);
 
         // contact name
         // contact institute

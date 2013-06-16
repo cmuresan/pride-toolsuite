@@ -26,10 +26,9 @@ import uk.ac.ebi.pride.gui.event.container.LoadBatchEvent;
 import uk.ac.ebi.pride.gui.event.container.SpectrumEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskListener;
+import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveChromatogramTableTask;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveSpectrumTableTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.help.CSH;
 import javax.swing.*;
@@ -356,9 +355,7 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
             // add count label as a task listener
             retrieveTask.addTaskListener(countLabel);
 
-            // start running the task
-            retrieveTask.setGUIBlocker(new DefaultGUIBlocker(retrieveTask, GUIBlocker.Scope.NONE, null));
-            appContext.addTask(retrieveTask);
+            TaskUtil.startBackgroundTask(retrieveTask, controller);
         }
     }
 

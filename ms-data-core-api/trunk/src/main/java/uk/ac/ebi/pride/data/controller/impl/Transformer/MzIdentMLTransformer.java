@@ -1,10 +1,28 @@
 package uk.ac.ebi.pride.data.controller.impl.Transformer;
 
 
-import uk.ac.ebi.jmzidml.model.mzidml.PeptideHypothesis;
-import uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItemRef;
+import uk.ac.ebi.jmzidml.model.mzidml.*;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
+import uk.ac.ebi.pride.data.core.CvParam;
+import uk.ac.ebi.pride.data.core.DBSequence;
+import uk.ac.ebi.pride.data.core.Enzyme;
+import uk.ac.ebi.pride.data.core.Filter;
+import uk.ac.ebi.pride.data.core.MassTable;
+import uk.ac.ebi.pride.data.core.Modification;
+import uk.ac.ebi.pride.data.core.Organization;
+import uk.ac.ebi.pride.data.core.Peptide;
+import uk.ac.ebi.pride.data.core.PeptideEvidence;
+import uk.ac.ebi.pride.data.core.Person;
+import uk.ac.ebi.pride.data.core.Provider;
+import uk.ac.ebi.pride.data.core.Sample;
+import uk.ac.ebi.pride.data.core.SearchModification;
+import uk.ac.ebi.pride.data.core.SourceFile;
+import uk.ac.ebi.pride.data.core.SpectraData;
+import uk.ac.ebi.pride.data.core.SpectrumIdentification;
+import uk.ac.ebi.pride.data.core.SpectrumIdentificationProtocol;
+import uk.ac.ebi.pride.data.core.SubstitutionModification;
+import uk.ac.ebi.pride.data.core.UserParam;
 import uk.ac.ebi.pride.data.utils.MapUtils;
 import uk.ac.ebi.pride.term.CvTermReference;
 
@@ -306,15 +324,24 @@ public class MzIdentMLTransformer {
         boolean passThreshold = oldIdent.isPassThreshold();
 
         // get all the spectrum identification items
-        List<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem> spectrumIdentificationItems = new ArrayList<uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem>();
+        List<Peptide> peptides = new ArrayList<Peptide>();
         for (PeptideHypothesis peptideHypothesis : oldIdent.getPeptideHypothesis()) {
+            uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidence oldPeptideEvidence = peptideHypothesis.getPeptideEvidence();
             for (SpectrumIdentificationItemRef spectrumIdentificationItemRef : peptideHypothesis.getSpectrumIdentificationItemRef()) {
-                spectrumIdentificationItems.add(spectrumIdentificationItemRef.getSpectrumIdentificationItem());
+                SpectrumIdentificationItem oldSpectrumIdentificationItem = spectrumIdentificationItemRef.getSpectrumIdentificationItem();
+                Peptide peptide = transformToPeptideFromSpectrumItemAndPeptideEvidence(oldSpectrumIdentificationItem, oldPeptideEvidence);
+                peptides.add(peptide);
             }
         }
 
-        List<Peptide> peptides = transformToPeptideIdentificationsFromSpectrumItems(spectrumIdentificationItems);
         return new Protein(paramGroup, dbSequence.getId(), name, dbSequence, passThreshold, peptides, score, -1, -1, null);
+    }
+
+    private static Peptide transformToPeptideFromSpectrumItemAndPeptideEvidence(SpectrumIdentificationItem oldSpectrumidentification,
+                                                                                uk.ac.ebi.jmzidml.model.mzidml.PeptideEvidence oldPeptideEvidence) {
+        SpectrumIdentification spectrumIdent = transformToPeptideIdentification(oldSpectrumidentification);
+        PeptideEvidence peptideEvidence = transformToPeptideEvidence(oldPeptideEvidence);
+        return new Peptide(peptideEvidence, spectrumIdent);
     }
 
     public static Protein transformSpectrumIdentificationItemToIdentification(uk.ac.ebi.jmzidml.model.mzidml.DBSequence oldDbSequence,

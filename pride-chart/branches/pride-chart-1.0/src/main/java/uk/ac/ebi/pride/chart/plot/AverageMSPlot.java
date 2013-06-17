@@ -7,7 +7,6 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYBarDataset;
 import org.jfree.data.xy.XYDataset;
 import uk.ac.ebi.pride.chart.PrideChartType;
-import uk.ac.ebi.pride.chart.dataset.PrideXYDatasetUtils;
 
 import java.text.DecimalFormat;
 
@@ -17,11 +16,7 @@ import java.text.DecimalFormat;
  */
 public class AverageMSPlot extends PrideXYPlot {
     public AverageMSPlot(XYBarDataset dataset) {
-        this(dataset, new XYBarRenderer());
-    }
-
-    public AverageMSPlot(XYDataset dataset, XYItemRenderer renderer) {
-        super(PrideChartType.AVERAGE_MS, dataset, renderer);
+        super(PrideChartType.AVERAGE_MS, dataset, new XYBarRenderer());
 
         setDomainUnitSize(250);
         setRangeUnitSize(50000);

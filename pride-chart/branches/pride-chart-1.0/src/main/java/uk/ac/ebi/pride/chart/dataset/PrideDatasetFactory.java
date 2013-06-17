@@ -1,9 +1,12 @@
 package uk.ac.ebi.pride.chart.dataset;
 
+import org.jfree.data.statistics.HistogramBin;
 import org.jfree.data.xy.XYBarDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+
+import java.util.List;
 
 /**
  * User: Qingwei
@@ -30,11 +33,32 @@ public class PrideDatasetFactory {
         return dataset;
     }
 
-    public static PrideHistogramDataset getHistogramDataset(PrideHistogramDataSource dataSource, double binWidth) {
-        double[] domainValues = dataSource.getDomainData();
-        PrideHistogramDataset dataset = new PrideHistogramDataset(binWidth);
-        dataset.addSeries(dataSource.getType().toString(), domainValues);
+    public static HistogramBarDataset getHistogramDataset(PrideHistogramDataSource dataSource, double binWidth, boolean startZero) {
+        XYSeries series = new XYSeries(dataSource.getType().toString());
+        List<HistogramBin> bins = dataSource.generateBins(binWidth, startZero);
+        dataSource.addAllBins(bins);
 
-        return dataset;
+        double[][] data = dataSource.getHistogram();
+
+        for (int i = 0; i < data[0].length; i++) {
+            series.add(data[0][i], data[1][i]);
+        }
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(series);
+        return new HistogramBarDataset(dataset, 0.5, dataSource.getBins());
+    }
+
+    public static HistogramBarDataset getHistogramDataset(PrideHistogramDataSource dataSource) {
+        XYSeries series = new XYSeries(dataSource.getType().toString());
+        double[][] data = dataSource.getHistogram();
+
+        for (int i = 0; i < data[0].length; i++) {
+            series.add(data[0][i], data[1][i]);
+        }
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(series);
+        return new HistogramBarDataset(dataset, 0.5, dataSource.getBins());
     }
 }

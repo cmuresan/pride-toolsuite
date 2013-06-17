@@ -2,10 +2,13 @@ package uk.ac.ebi.pride.chart.plot.axis;
 
 import org.jfree.chart.axis.NumberTickUnit;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
+ * This is a boundary number tick unit, which means if the tick value great than the max value
+ * the label is "> max"; while the tick value less than the min value, the label is "< min".
+ * Others label is "value".
+ *
 * User: Qingwei
 * Date: 13/06/13
 */

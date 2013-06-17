@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.chart;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.data.statistics.HistogramBin;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 import uk.ac.ebi.pride.chart.dataset.PrideDataSourceType;
@@ -69,16 +70,23 @@ public class PridePlotRun {
         drawChart(plot);
     }
 
-    private void createChart(double[] data, PrideChartType type, double binWidth) {
+    private void createChart(double[] data, PrideChartType type) {
         PrideHistogramDataSource dataSource;
 
-        PrideXYPlot plot = null;
+        PrideXYPlot plot;
         switch (type) {
             case PEAKS_MS:
                 dataSource = new PrideHistogramDataSource(data, PrideDataSourceType.ALL_SPECTRA);
-                plot = new PeaksMSPlot(PrideDatasetFactory.getHistogramDataset(dataSource, binWidth));
+                int binWidth = 400;
+                plot = new PeaksMSPlot(PrideDatasetFactory.getHistogramDataset(dataSource, binWidth, true));
                 break;
             case PEAK_INTENSITY:
+                dataSource = new PrideHistogramDataSource(data, PrideDataSourceType.ALL_SPECTRA);
+                dataSource.addBin(new HistogramBin(1, 100));
+                dataSource.addBin(new HistogramBin(100, 1000));
+                dataSource.addBin(new HistogramBin(1000, 2000));
+                dataSource.addBin(new HistogramBin(2000, Integer.MAX_VALUE));
+                plot = new PeakIntensityPlot(PrideDatasetFactory.getHistogramDataset(dataSource));
                 break;
             default:
                 plot = null;
@@ -157,30 +165,33 @@ public class PridePlotRun {
     public static void main(String[] args) {
         PridePlotRun run = new PridePlotRun();
 
-//        double[][] xyData;
-//        xyData = run.generateXYData(-0.1, 0.1, 0.2, 1, 100);
-//        run.createChart(xyData, PrideChartType.DELTA_MASS);
-//
-//        xyData = run.generateXYData(1, 6, 20, 300, 6);
-//        run.createChart(xyData, PrideChartType.PEPTIDES_PROTEIN);
-//
-//        xyData = run.generateXYData(0, 4, 0, 125, 5);
-//        run.createChart(xyData, PrideChartType.MISSED_CLEAVAGES);
-//
-//        xyData = run.generateXYData(5, 2000, 200, 300000, 400);
-//        run.createChart(xyData, PrideChartType.AVERAGE_MS);
-//
-//        xyData = run.generateXYData(1, 8, 0, 100, 8);
-//        run.createChart(xyData, PrideChartType.PRECURSOR_CHARGE);
-//
-//        xyData = run.generateXYData(0, 3500, 0, 0.125, 20);
-//        run.createChart(xyData, PrideChartType.PRECURSOR_MASSES);
+        // test XY style plots.
+        double[][] xyData;
+        xyData = run.generateXYData(-0.1, 0.1, 0.2, 1, 100);
+        run.createChart(xyData, PrideChartType.DELTA_MASS);
 
+        xyData = run.generateXYData(1, 6, 20, 300, 6);
+        run.createChart(xyData, PrideChartType.PEPTIDES_PROTEIN);
 
+        xyData = run.generateXYData(0, 4, 0, 125, 5);
+        run.createChart(xyData, PrideChartType.MISSED_CLEAVAGES);
 
+        xyData = run.generateXYData(5, 2000, 200, 300000, 400);
+        run.createChart(xyData, PrideChartType.AVERAGE_MS);
+
+        xyData = run.generateXYData(1, 8, 0, 100, 8);
+        run.createChart(xyData, PrideChartType.PRECURSOR_CHARGE);
+
+        xyData = run.generateXYData(0, 3500, 0, 0.125, 20);
+        run.createChart(xyData, PrideChartType.PRECURSOR_MASSES);
+
+        // test histogram plots.
         double[] xData;
 
         xData = run.generateXData(0, 3000, 1000);
-        run.createChart(xData, PrideChartType.PEAKS_MS, 400);
+        run.createChart(xData, PrideChartType.PEAKS_MS);
+
+        xData = run.generateXData(0, 5000, 1000);
+        run.createChart(xData, PrideChartType.PEAK_INTENSITY);
     }
 }

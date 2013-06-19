@@ -69,6 +69,7 @@ public class PxDownloadSelectionPane extends JPanel
         this.toDispose = toDispose;
         this.currentUserName = username;
         this.currentPassWord = password;
+        this.context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
 
         setupMainPane();
     }
@@ -231,7 +232,6 @@ public class PxDownloadSelectionPane extends JPanel
             DownloadPxSubmissionTask downloadTask = new DownloadPxSubmissionTask(pxSubmissionEntries, path, currentUserName, currentPassWord, openAfterDownloadCheckbox.isSelected());
             downloadTask.addTaskListener(dialog);
             downloadTask.setGUIBlocker(new DefaultGUIBlocker(downloadTask, GUIBlocker.Scope.NONE, null));
-            PrideInspectorContext context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
             context.addTask(downloadTask);
             if (toDispose) {
                 parent.setVisible(false);

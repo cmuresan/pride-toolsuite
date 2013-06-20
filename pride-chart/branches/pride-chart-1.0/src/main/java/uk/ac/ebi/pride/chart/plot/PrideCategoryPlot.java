@@ -1,27 +1,28 @@
 package uk.ac.ebi.pride.chart.plot;
 
+import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.xy.XYDataset;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.CategoryDataset;
 import uk.ac.ebi.pride.chart.PrideChartType;
+import uk.ac.ebi.pride.chart.plot.PridePlot;
 
 import java.awt.*;
 
 /**
- * User: Qingwei
- * Date: 12/06/13
+ * User: qingwei
+ * Date: 19/06/13
  */
-public class PrideXYPlot extends XYPlot implements PridePlot {
+public class PrideCategoryPlot extends CategoryPlot implements PridePlot {
     private PrideChartType type;
 
-    protected PrideXYPlot(PrideChartType type, XYDataset dataset, XYItemRenderer renderer) {
-        super(dataset, new NumberAxis(type.getDomainLabel()), new NumberAxis(type.getRangeLabel()), renderer);
+    protected PrideCategoryPlot(PrideChartType type, CategoryDataset dataset) {
+        super(dataset, new CategoryAxis(type.getDomainLabel()), new NumberAxis(type.getRangeLabel()), new BarRenderer());
         this.type = type;
 
         setOrientation(PlotOrientation.VERTICAL);
-        setDomainZeroBaselineVisible(true);
         setBackgroundAlpha(0f);
         setDomainGridlinePaint(Color.red);
         setRangeGridlinePaint(Color.blue);

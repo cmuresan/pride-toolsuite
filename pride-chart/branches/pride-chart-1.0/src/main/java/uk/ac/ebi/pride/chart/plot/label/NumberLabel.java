@@ -1,8 +1,6 @@
 package uk.ac.ebi.pride.chart.plot.label;
 
-import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.labels.XYItemLabelGenerator;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.xy.XYDataset;
 
 import java.text.DecimalFormat;

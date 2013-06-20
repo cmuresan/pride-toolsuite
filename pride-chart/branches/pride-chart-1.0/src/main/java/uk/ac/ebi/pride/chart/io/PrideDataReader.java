@@ -2,25 +2,24 @@ package uk.ac.ebi.pride.chart.io;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.chart.PrideChartType;
+import uk.ac.ebi.pride.chart.dataset.PrideHistogramDataSource;
+import uk.ac.ebi.pride.chart.dataset.PrideXYDataSource;
 import uk.ac.ebi.pride.chart.utils.PridePlotConstants;
+
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * User: Qingwei
  * Date: 12/06/13
  */
 public abstract class PrideDataReader {
-    protected double[][] peptidesProtein;
-    protected double[][] deltaMZ;
-    protected double[][] missedCleavages;
-    protected double[][] averageMSMS;
-    protected double[][] precursorIonCharge;
-    protected double[][] precursorIonMasses;
-    protected double[] peaksPerMSMS;
-    protected double[] peakIntensity;
-
     private long startTime;
-
     private Logger logger = LoggerFactory.getLogger(PrideDataReader.class);
+
+    protected SortedMap<PrideChartType, PrideXYDataSource> xyDataSourceMap = new TreeMap<PrideChartType, PrideXYDataSource>();
+    protected SortedMap<PrideChartType, PrideHistogramDataSource> histogramDataSourceMap = new TreeMap<PrideChartType, PrideHistogramDataSource>();
 
     public void readData() {
         start();
@@ -46,35 +45,11 @@ public abstract class PrideDataReader {
         logger.debug("Cost time: " + String.format("%1$.2f", costTime) + "(min)" + PridePlotConstants.NEW_LINE);
     }
 
-    public double[][] readPeptidesProtein() {
-        return peptidesProtein;
+    public SortedMap<PrideChartType, PrideXYDataSource> getXYDataSourceMap() {
+        return xyDataSourceMap;
     }
 
-    public double[][] readDeltaMZ() {
-        return deltaMZ;
-    }
-
-    public double[][] readMissedCleavages() {
-        return missedCleavages;
-    }
-
-    public double[][] readAverageMSMS() {
-        return averageMSMS;
-    }
-
-    public double[][] readPrecursorIonCharge() {
-        return precursorIonCharge;
-    }
-
-    public double[][] readPrecursorIonMasses() {
-        return precursorIonMasses;
-    }
-
-    public double[] readPeaksPerMSMS() {
-        return peaksPerMSMS;
-    }
-
-    public double[] readPeakIntensity() {
-        return peakIntensity;
+    public SortedMap<PrideChartType, PrideHistogramDataSource> getHistogramDataSourceMap() {
+        return histogramDataSourceMap;
     }
 }

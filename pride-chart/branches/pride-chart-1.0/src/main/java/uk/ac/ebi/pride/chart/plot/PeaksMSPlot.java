@@ -1,27 +1,20 @@
 package uk.ac.ebi.pride.chart.plot;
 
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.renderer.xy.XYBarRenderer;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.xy.XYDataset;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.CategoryDataset;
 import uk.ac.ebi.pride.chart.PrideChartType;
-import uk.ac.ebi.pride.chart.dataset.HistogramBarDataset;
-import uk.ac.ebi.pride.chart.plot.axis.PrideHistogramTickUnit;
-import uk.ac.ebi.pride.chart.plot.label.PercentageLabel;
+import uk.ac.ebi.pride.chart.plot.label.CategoryPercentageLabel;
 
 /**
- * User: Qingwei
- * Date: 14/06/13
- */
-public class PeaksMSPlot extends PrideXYPlot {
-    public PeaksMSPlot(HistogramBarDataset dataset) {
-        super(PrideChartType.PEAKS_MS, dataset, new XYBarRenderer());
+* User: Qingwei
+* Date: 14/06/13
+*/
+public class PeaksMSPlot extends PrideCategoryPlot {
+    public PeaksMSPlot(CategoryDataset dataset) {
+        super(PrideChartType.PEAKS_MS, dataset);
 
-        XYBarRenderer renderer = (XYBarRenderer) getRenderer();
-        renderer.setBaseItemLabelGenerator(new PercentageLabel());
+        BarRenderer renderer = (BarRenderer) getRenderer();
+        renderer.setBaseItemLabelGenerator(new CategoryPercentageLabel());
         renderer.setBaseItemLabelsVisible(true);
-
-        NumberAxis domainAxis = (NumberAxis) getDomainAxis();
-        domainAxis.setTickUnit(new PrideHistogramTickUnit(dataset.getBins()));
     }
 }

@@ -8,4 +8,14 @@ import uk.ac.ebi.pride.chart.PrideChartType;
  */
 public interface PridePlot {
     public PrideChartType getType();
+
+    public String getTitle();
+
+    public String getFullTitle();
+
+    public String getDomainLabel();
+
+    public String getRangeLabel();
+
+    public boolean isLegend();
 }

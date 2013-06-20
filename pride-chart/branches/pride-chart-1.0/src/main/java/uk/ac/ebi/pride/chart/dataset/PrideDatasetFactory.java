@@ -1,12 +1,13 @@
 package uk.ac.ebi.pride.chart.dataset;
 
-import org.jfree.data.statistics.HistogramBin;
-import org.jfree.data.xy.XYBarDataset;
-import org.jfree.data.xy.XYDataset;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * User: Qingwei
@@ -15,50 +16,68 @@ import java.util.List;
 public class PrideDatasetFactory {
     private PrideDatasetFactory() {}
 
-    public static XYBarDataset getXYBarDataset(PrideXYDataSource dataSource) {
-        return new XYBarDataset(getXYDataset(dataSource), 0.5);
-    }
-
-    public static XYDataset getXYDataset(PrideXYDataSource dataSource) {
+    private static XYSeries getSeries(PrideXYDataSource dataSource) {
         XYSeries series = new XYSeries(dataSource.getType().toString());
-        double[] domainValues = dataSource.getDomainData();
-        double[] rangeValues = dataSource.getRangeData();
+        Double[] domainValues = dataSource.getDomainData();
+        PrideData[] rangeValues = dataSource.getRangeData();
 
         for (int i = 0; i < domainValues.length; i++) {
-            series.add(domainValues[i], rangeValues[i]);
+            series.add(domainValues[i], rangeValues[i].getData());
         }
+
+        return series;
+    }
+
+    public static XYSeriesCollection getXYDataset(PrideXYDataSource dataSource, boolean includeCompatibleSubType) {
+        XYSeries series = getSeries(dataSource);
 
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series);
+
+        if (includeCompatibleSubType) {
+            Collection<PrideDataType> subTypes = dataSource.getType().getChildren();
+            for (PrideDataType subType : subTypes) {
+                series = getSeries(dataSource.filter(subType));
+                dataset.addSeries(series);
+            }
+        }
+
         return dataset;
     }
 
-    public static HistogramBarDataset getHistogramDataset(PrideHistogramDataSource dataSource, double binWidth, boolean startZero) {
-        XYSeries series = new XYSeries(dataSource.getType().toString());
-        List<HistogramBin> bins = dataSource.generateBins(binWidth, startZero);
-        dataSource.addAllBins(bins);
+    public static CategoryDataset getHistogramDataset(PrideHistogramDataSource dataSource, boolean includeCompatibleSubType) {
+        Map<PrideHistogramBin, Integer> histogram = dataSource.getHistogram();
 
-        double[][] data = dataSource.getHistogram();
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        for (int i = 0; i < data[0].length; i++) {
-            series.add(data[0][i], data[1][i]);
+        String category;
+        String seriesKey;
+
+        Iterator<PrideHistogramBin> it = dataSource.iterator();
+        PrideHistogramBin bin;
+        while (it.hasNext()) {
+            bin = it.next();
+            category = bin.getEndBoundary() == Integer.MAX_VALUE ? ">" + bin.getStartBoundary() : bin.toString();
+            seriesKey = dataSource.getType().getTitle();
+            dataset.addValue(histogram.get(bin), seriesKey, category);
         }
 
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(series);
-        return new HistogramBarDataset(dataset, 0.5, dataSource.getBins());
-    }
+        if (includeCompatibleSubType) {
+            Collection<PrideDataType> subTypes = dataSource.getType().getChildren();
+            for (PrideDataType subType : subTypes) {
+                PrideHistogramDataSource subDataSource = dataSource.filter(subType);
+                Map<PrideHistogramBin, Integer> subHistogram = subDataSource.getHistogram();
 
-    public static HistogramBarDataset getHistogramDataset(PrideHistogramDataSource dataSource) {
-        XYSeries series = new XYSeries(dataSource.getType().toString());
-        double[][] data = dataSource.getHistogram();
-
-        for (int i = 0; i < data[0].length; i++) {
-            series.add(data[0][i], data[1][i]);
+                Iterator<PrideHistogramBin> subIt = subDataSource.iterator();
+                while (subIt.hasNext()) {
+                    bin = subIt.next();
+                    category = bin.getEndBoundary() == Integer.MAX_VALUE ? ">" + bin.getStartBoundary() : bin.toString();
+                    seriesKey = subType.getTitle();
+                    dataset.addValue(subHistogram.get(bin), seriesKey, category);
+                }
+            }
         }
 
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(series);
-        return new HistogramBarDataset(dataset, 0.5, dataSource.getBins());
+        return dataset;
     }
 }

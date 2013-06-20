@@ -1,12 +1,10 @@
 package uk.ac.ebi.pride.chart.dataset;
 
-import org.jfree.data.statistics.HistogramBin;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 /**
@@ -14,8 +12,8 @@ import static junit.framework.Assert.assertTrue;
  * Date: 14/06/13
  */
 public class PrideHistogramDataSourceTest {
-    private double[] generateXData(double minX, double maxX, int count) {
-        double[] data = new double[count];
+    private PrideData[] generateXData(double minX, double maxX, int count) {
+        PrideData[] data = new PrideData[count];
 
         int step = (int)((maxX - minX) * 1000) / count;
         if (step == 0) {
@@ -27,18 +25,20 @@ public class PrideHistogramDataSourceTest {
         }
 
         double x;
+        PrideDataType type;
         for (int i = 0; i < count; i++) {
             x = minX + step * i / 1000d;
-            data[i] = x;
+            type = (int)x % 2 == 0 ? PrideDataType.IDENTIFIED_SPECTRA : PrideDataType.UNIDENTIFIED_SPECTRA;
+            data[i] = new PrideData(x, type);
         }
 
         return data;
     }
 
-    private double getSum(double[] data) {
-        double sum = 0;
+    private int getSum(Collection<Integer> data) {
+        int sum = 0;
 
-        for (double d : data) {
+        for (int d : data) {
             sum += d;
         }
 
@@ -47,39 +47,30 @@ public class PrideHistogramDataSourceTest {
 
     @Test
     public void testEqualHistogram() throws Exception {
-        double[] value;
-        double[][] data;
+        PrideData[] value;
 
-        int count = 10000;
-        value = generateXData(20, 2000, count);
-        PrideHistogramDataSource dataSource = new PrideHistogramDataSource(value);
+        int count = 100;
+        value = generateXData(20, 200, count);
+        PrideHistogramDataSource dataSource = new PrideEqualWidthHistogramDataSource(value, PrideDataType.ALL_SPECTRA, 0, 50, 4);
 
-        List<HistogramBin> bins = dataSource.generateBins(50, true);
-        dataSource.addAllBins(bins);
-        data = dataSource.getHistogram();
-        assertTrue(getSum(data[1]) == count);
-
-        dataSource.clearBins();
-        bins = dataSource.generateBins(50, false);
-        dataSource.addAllBins(bins);
-        data = dataSource.getHistogram();
-        assertTrue(getSum(data[1]) == count);
+        Map<PrideHistogramBin, Integer> histogram = dataSource.getHistogram();
+        assertTrue(histogram.keySet().size() == 4);
+        assertEquals(getSum(histogram.values()), count);
     }
 
     @Test
     public void testBinHistogram() throws Exception {
-        double[] value;
-        double[][] data;
+        PrideData[] values;
 
         int count = 20;
+        values = generateXData(20, 2000, count);
 
-        value = generateXData(20, 2000, count);
-        PrideHistogramDataSource dataSource = new PrideHistogramDataSource(value);
-        dataSource.addBin(new HistogramBin(20, 200));
-        dataSource.addBin(new HistogramBin(200, 1000));
-        dataSource.addBin(new HistogramBin(1000, 2001));
+        PrideHistogramDataSource dataSource = new PrideHistogramDataSource(values, PrideDataType.ALL_SPECTRA);
+        dataSource.appendBin(new PrideHistogramBin(20, 200));
+        dataSource.appendBin(new PrideHistogramBin(200, 1000));
+        dataSource.appendBin(new PrideHistogramBin(1000, Integer.MAX_VALUE));
 
-        data = dataSource.getHistogram();
-        assertTrue(getSum(data[1]) == count);
+        Map<PrideHistogramBin, Integer> histogram = dataSource.getHistogram();
+        assertEquals(getSum(histogram.values()), count);
     }
 }

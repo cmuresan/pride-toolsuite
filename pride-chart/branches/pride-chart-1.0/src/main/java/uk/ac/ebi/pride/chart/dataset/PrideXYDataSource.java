@@ -1,35 +1,63 @@
 package uk.ac.ebi.pride.chart.dataset;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * User: Qingwei
  * Date: 12/06/13
  */
-public class PrideXYDataSource implements PrideDataSource {
-    private double[][] data;
-    private PrideDataSourceType type;
+public class PrideXYDataSource {
+    private Double[] domainData;
+    private PrideData[] rangeData;
+    private PrideDataType type;
 
-    public PrideXYDataSource(double[][] data) {
-        this(data, PrideDataSourceType.UNKNOWN);
-    }
-
-    public PrideXYDataSource(double[][] data, PrideDataSourceType type) {
-        if (data.length != 2 || data[0].length != data[1].length) {
+    public PrideXYDataSource(Double[] domainData, PrideData[] rangeData, PrideDataType type) {
+        if (domainData.length != rangeData.length) {
             throw new IllegalArgumentException("Input data not correct!");
         }
 
-        this.data = data;
-        this.type = type == null ? PrideDataSourceType.UNKNOWN : type;
+        for (PrideData value : rangeData) {
+            if (! value.getType().compatible(type)) {
+                throw new IllegalArgumentException("There exists incompatible value " + value + " in range array!");
+            }
+        }
+
+        this.type = type;
+        this.domainData = domainData;
+        this.rangeData = rangeData;
     }
 
-    public double[] getDomainData() {
-        return data[0];
+    public Double[] getDomainData() {
+        return domainData;
     }
 
-    public double[] getRangeData() {
-        return data[1];
+    public PrideData[] getRangeData() {
+        return rangeData;
     }
 
-    public PrideDataSourceType getType() {
+    public PrideDataType getType() {
         return type;
+    }
+
+    public PrideXYDataSource filter(PrideDataType type) {
+        List<Double> filterDomainData = new ArrayList<Double>();
+        List<PrideData> filterRangeData = new ArrayList<PrideData>();
+
+        PrideData data;
+        for (int i = 0; i < rangeData.length; i++) {
+            data = rangeData[i];
+            if (data.getType().compatible(type)) {
+                filterDomainData.add(domainData[i]);
+                filterRangeData.add(rangeData[i]);
+            }
+        }
+
+        int size = filterDomainData.size();
+        return new PrideXYDataSource(
+                filterDomainData.toArray(new Double[size]),
+                filterRangeData.toArray(new PrideData[size]),
+                type
+        );
     }
 }

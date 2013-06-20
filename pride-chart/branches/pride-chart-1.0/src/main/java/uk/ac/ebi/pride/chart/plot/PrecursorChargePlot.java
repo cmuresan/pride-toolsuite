@@ -3,12 +3,11 @@ package uk.ac.ebi.pride.chart.plot;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.data.xy.XYBarDataset;
+import org.jfree.data.xy.XYDataset;
 import uk.ac.ebi.pride.chart.PrideChartType;
 import uk.ac.ebi.pride.chart.plot.axis.PrideNumberTickUnit;
 import uk.ac.ebi.pride.chart.plot.label.NumberLabel;
-import uk.ac.ebi.pride.chart.plot.label.PercentageLabel;
 
-import java.awt.*;
 import java.text.DecimalFormat;
 
 /**
@@ -16,8 +15,8 @@ import java.text.DecimalFormat;
  * Date: 14/06/13
  */
 public class PrecursorChargePlot extends PrideXYPlot {
-    public PrecursorChargePlot(XYBarDataset dataset) {
-        super(PrideChartType.PRECURSOR_CHARGE, dataset, new XYBarRenderer());
+    public PrecursorChargePlot(XYDataset dataset) {
+        super(PrideChartType.PRECURSOR_CHARGE, new XYBarDataset(dataset, 0.5), new XYBarRenderer());
 
         XYBarRenderer renderer = (XYBarRenderer) getRenderer();
         renderer.setBaseItemLabelsVisible(true);

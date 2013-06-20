@@ -2,17 +2,16 @@ package uk.ac.ebi.pride.chart;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.statistics.HistogramBin;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
-import uk.ac.ebi.pride.chart.dataset.PrideDataSourceType;
-import uk.ac.ebi.pride.chart.dataset.PrideDatasetFactory;
-import uk.ac.ebi.pride.chart.dataset.PrideHistogramDataSource;
-import uk.ac.ebi.pride.chart.dataset.PrideXYDataSource;
+import uk.ac.ebi.pride.chart.dataset.*;
+import uk.ac.ebi.pride.chart.io.QuartilesType;
 import uk.ac.ebi.pride.chart.plot.*;
 
 import java.awt.*;
 import java.util.Random;
+
+//import uk.ac.ebi.pride.chart.dataset.PrideHistogramDataSource;
 
 /**
  * User: Qingwei
@@ -22,7 +21,6 @@ public class PridePlotRun {
     private void drawChart(PrideXYPlot plot) {
         if (plot != null) {
             JFreeChart chart = PrideChartFactory.getChart(plot);
-
             ChartPanel chartPanel = new ChartPanel(chart);
             chartPanel.setPreferredSize(new Dimension(500, 300));
             ApplicationFrame mainFrame = new ApplicationFrame("test");
@@ -34,34 +32,55 @@ public class PridePlotRun {
         }
     }
 
-    private void createChart(double[][] data, PrideChartType type) {
+    private void drawChart(PrideCategoryPlot plot) {
+        if (plot != null) {
+            JFreeChart chart = PrideChartFactory.getChart(plot);
+            ChartPanel chartPanel = new ChartPanel(chart);
+            chartPanel.setPreferredSize(new Dimension(500, 300));
+            ApplicationFrame mainFrame = new ApplicationFrame("test");
+            mainFrame.setContentPane(chartPanel);
+
+            mainFrame.pack();
+            RefineryUtilities.centerFrameOnScreen(mainFrame);
+            mainFrame.setVisible(true);
+        }
+    }
+
+    private void createChart(Double[] domainData, PrideData[] rangeData, PrideChartType type) {
         PrideXYDataSource dataSource;
 
         PrideXYPlot plot;
         switch (type) {
             case DELTA_MASS:
-                dataSource = new PrideXYDataSource(data, PrideDataSourceType.ALL_SPECTRA);
-                plot = new DeltaMZPlot(PrideDatasetFactory.getXYDataset(dataSource));
+                dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
+                plot = new DeltaMZPlot(PrideDatasetFactory.getXYDataset(dataSource, false));
                 break;
             case PEPTIDES_PROTEIN:
-                dataSource = new PrideXYDataSource(data);
-                plot = new PeptidesProteinPlot(PrideDatasetFactory.getXYBarDataset(dataSource));
+                dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
+                plot = new PeptidesProteinPlot(PrideDatasetFactory.getXYDataset(dataSource, false));
                 break;
             case MISSED_CLEAVAGES:
-                dataSource = new PrideXYDataSource(data, PrideDataSourceType.ALL_SPECTRA);
-                plot = new MissedCleavagesPlot(PrideDatasetFactory.getXYBarDataset(dataSource));
+                dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
+                plot = new MissedCleavagesPlot(PrideDatasetFactory.getXYDataset(dataSource, false));
                 break;
             case AVERAGE_MS:
-                dataSource = new PrideXYDataSource(data, PrideDataSourceType.ALL_SPECTRA);
-                plot = new AverageMSPlot(PrideDatasetFactory.getXYBarDataset(dataSource));
+                dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
+                plot = new AverageMSPlot(PrideDatasetFactory.getXYDataset(dataSource, true), PrideDataType.UNIDENTIFIED_SPECTRA);
+                AverageMSPlot avgPlot = (AverageMSPlot) plot;
+                avgPlot.updateSpectraSeries(PrideDataType.IDENTIFIED_SPECTRA);
+//                avgPlot.updateSpectraSeries(PrideDataType.ALL_SPECTRA);
                 break;
             case PRECURSOR_CHARGE:
-                dataSource = new PrideXYDataSource(data, PrideDataSourceType.IDENTIFIED_SPECTRA);
-                plot = new PrecursorChargePlot(PrideDatasetFactory.getXYBarDataset(dataSource));
+                dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.IDENTIFIED_SPECTRA);
+                plot = new PrecursorChargePlot(PrideDatasetFactory.getXYDataset(dataSource, false));
                 break;
             case PRECURSOR_MASSES:
-                dataSource = new PrideXYDataSource(data, PrideDataSourceType.ALL_SPECTRA);
-                plot = new PrecursorMassesPlot(PrideDatasetFactory.getXYDataset(dataSource));
+                dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
+                plot = new PrecursorMassesPlot(PrideDatasetFactory.getXYDataset(dataSource, true), PrideDataType.IDENTIFIED_SPECTRA);
+                PrecursorMassesPlot massesPlot = (PrecursorMassesPlot)plot ;
+                massesPlot.updateQuartilesType(QuartilesType.HUMAN);
+//                massesPlot.updateQuartilesType(QuartilesType.NONE);
+//                massesPlot.updateSpectraSeries(PrideDataType.ALL_SPECTRA);
                 break;
             default:
                 plot = null;
@@ -70,23 +89,27 @@ public class PridePlotRun {
         drawChart(plot);
     }
 
-    private void createChart(double[] data, PrideChartType type) {
+    private void createChart(PrideData[] data, PrideChartType type) {
         PrideHistogramDataSource dataSource;
 
-        PrideXYPlot plot;
+        PrideCategoryPlot plot;
         switch (type) {
             case PEAKS_MS:
-                dataSource = new PrideHistogramDataSource(data, PrideDataSourceType.ALL_SPECTRA);
-                int binWidth = 400;
-                plot = new PeaksMSPlot(PrideDatasetFactory.getHistogramDataset(dataSource, binWidth, true));
+                dataSource = new PrideEqualWidthHistogramDataSource(data, PrideDataType.ALL_SPECTRA, 0, 400, 8);
+                plot = new PeaksMSPlot(PrideDatasetFactory.getHistogramDataset(dataSource, false));
                 break;
             case PEAK_INTENSITY:
-                dataSource = new PrideHistogramDataSource(data, PrideDataSourceType.ALL_SPECTRA);
-                dataSource.addBin(new HistogramBin(1, 100));
-                dataSource.addBin(new HistogramBin(100, 1000));
-                dataSource.addBin(new HistogramBin(1000, 2000));
-                dataSource.addBin(new HistogramBin(2000, Integer.MAX_VALUE));
-                plot = new PeakIntensityPlot(PrideDatasetFactory.getHistogramDataset(dataSource));
+                dataSource = new PrideHistogramDataSource(data, PrideDataType.ALL_SPECTRA);
+                dataSource.appendBin(new PrideHistogramBin(1, 100));
+                dataSource.appendBin(new PrideHistogramBin(100, 1000));
+                dataSource.appendBin(new PrideHistogramBin(1000, 2000));
+                dataSource.appendBin(new PrideHistogramBin(2000, Integer.MAX_VALUE));
+                plot = new PeakIntensityPlot(PrideDatasetFactory.getHistogramDataset(dataSource, true), PrideDataType.ALL_SPECTRA);
+
+                PeakIntensityPlot peakPlot = (PeakIntensityPlot) plot;
+                peakPlot.setVisible(true, PrideDataType.IDENTIFIED_SPECTRA);
+                peakPlot.setVisible(true, PrideDataType.UNIDENTIFIED_SPECTRA);
+                peakPlot.setVisible(false, PrideDataType.ALL_SPECTRA);
                 break;
             default:
                 plot = null;
@@ -95,34 +118,40 @@ public class PridePlotRun {
         drawChart(plot);
     }
 
-    private double[][] generateXYData(double minX, double maxX, double minY, double maxY, int count) {
-        double[][] data = new double[2][count];
+    private PrideData[] generateRangeData(double minY, double maxY, int count) {
+        return generateRangeData(minY, maxY, count, null);
+    }
 
-        int step = (int)((maxX - minX) * 1000) / count;
-        if (step == 0) {
-            if (minX < 0) {
-                step = -1;
-            } else {
-                step = 1;
-            }
-        }
+    private PrideData[] generateRangeData(double minY, double maxY, int count, PrideDataType type) {
+        PrideData[] values = new PrideData[count];
+
         int high = (int)((maxY - minY) * 1000);
 
         Random yRandom = new Random();
-        double x;
         double y;
+        PrideData value;
+        PrideDataType randomType;
         for (int i = 0; i < count; i++) {
-            x = minX + step * i / 1000d;
             y = minY + yRandom.nextInt(high) / 1000d;
-            data[0][i] = x;
-            data[1][i] = y;
+            if (type == null) {
+                double tempY = y;
+                while (tempY < 10) {
+                    tempY *= 10;
+                }
+                randomType = (int)tempY % 2 == 0 ? PrideDataType.IDENTIFIED_SPECTRA : PrideDataType.UNIDENTIFIED_SPECTRA;
+            } else {
+                randomType = type;
+            }
+
+            value = new PrideData(y, randomType);
+            values[i] = value;
         }
 
-        return data;
+        return values;
     }
 
-    private double[] generateXData(double minX, double maxX, int count) {
-        double[] data = new double[count];
+    private Double[] generateDomainData(double minX, double maxX, int count) {
+        Double[] data = new Double[count];
 
         int step = (int)((maxX - minX) * 1000) / count;
         if (step == 0) {
@@ -142,21 +171,16 @@ public class PridePlotRun {
         return data;
     }
 
-    private double[][] generateXYData(int minX, int maxX, int minY, int maxY, int count) {
-        double[][] data = new double[2][count];
+    private Double[] generateDomainData(int minX, int maxX, int count) {
+        Double[] data = new Double[count];
 
         int step = (maxX - minX) / count;
         step = step < 1 ? 1 : step;
-        int high = maxY - minY;
 
-        Random yRandom = new Random();
         double x;
-        double y;
         for (int i = 0; i < count; i++) {
             x = minX + step * i;
-            y = minY + yRandom.nextInt(high);
-            data[0][i] = x;
-            data[1][i] = y;
+            data[i] = x;
         }
 
         return data;
@@ -166,32 +190,40 @@ public class PridePlotRun {
         PridePlotRun run = new PridePlotRun();
 
         // test XY style plots.
-        double[][] xyData;
-        xyData = run.generateXYData(-0.1, 0.1, 0.2, 1, 100);
-        run.createChart(xyData, PrideChartType.DELTA_MASS);
+        Double[] domainData;
+        PrideData[] rangeData;
 
-        xyData = run.generateXYData(1, 6, 20, 300, 6);
-        run.createChart(xyData, PrideChartType.PEPTIDES_PROTEIN);
+//        domainData = run.generateDomainData(-0.1, 0.1, 100);
+//        rangeData = run.generateRangeData(0.2, 1, 100);
+//        run.createChart(domainData, rangeData, PrideChartType.DELTA_MASS);
 
-        xyData = run.generateXYData(0, 4, 0, 125, 5);
-        run.createChart(xyData, PrideChartType.MISSED_CLEAVAGES);
+//        domainData = run.generateDomainData(1, 6, 6);
+//        rangeData = run.generateRangeData(20, 300, 6);
+//        run.createChart(domainData, rangeData, PrideChartType.PEPTIDES_PROTEIN);
 
-        xyData = run.generateXYData(5, 2000, 200, 300000, 400);
-        run.createChart(xyData, PrideChartType.AVERAGE_MS);
-
-        xyData = run.generateXYData(1, 8, 0, 100, 8);
-        run.createChart(xyData, PrideChartType.PRECURSOR_CHARGE);
-
-        xyData = run.generateXYData(0, 3500, 0, 0.125, 20);
-        run.createChart(xyData, PrideChartType.PRECURSOR_MASSES);
+//        domainData = run.generateDomainData(0, 4, 5);
+//        rangeData = run.generateRangeData(0, 125, 5);
+//        run.createChart(domainData, rangeData, PrideChartType.MISSED_CLEAVAGES);
+//
+//        domainData = run.generateDomainData(5, 2000, 40);
+//        rangeData = run.generateRangeData(200, 300000, 40);
+//        run.createChart(domainData, rangeData, PrideChartType.AVERAGE_MS);
+//
+//        domainData = run.generateDomainData(1, 8, 8);
+//        rangeData = run.generateRangeData(0, 100, 8, PrideDataType.IDENTIFIED_SPECTRA);
+//        run.createChart(domainData, rangeData, PrideChartType.PRECURSOR_CHARGE);
+//
+//        domainData = run.generateDomainData(0, 3500, 20);
+//        rangeData = run.generateRangeData(0, 0.125, 20);
+//        run.createChart(domainData, rangeData, PrideChartType.PRECURSOR_MASSES);
 
         // test histogram plots.
-        double[] xData;
+        PrideData[] xData;
 
-        xData = run.generateXData(0, 3000, 1000);
-        run.createChart(xData, PrideChartType.PEAKS_MS);
-
-        xData = run.generateXData(0, 5000, 1000);
+//        xData = run.generateRangeData(0, 3000, 1000);
+//        run.createChart(xData, PrideChartType.PEAKS_MS);
+//
+        xData = run.generateRangeData(0, 5000, 1000);
         run.createChart(xData, PrideChartType.PEAK_INTENSITY);
     }
 }

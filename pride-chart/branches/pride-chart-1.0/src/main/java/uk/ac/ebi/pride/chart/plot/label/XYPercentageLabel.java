@@ -9,13 +9,13 @@ import java.text.DecimalFormat;
  * User: Qingwei
  * Date: 13/06/13
  */
-public class PercentageLabel implements XYItemLabelGenerator {
+public class XYPercentageLabel implements XYItemLabelGenerator {
     private DecimalFormat numberFormat = new DecimalFormat("0.0");
 
     // Whether show less than one percent value. If false, the label will display < 1%.
     private boolean onePercent = false;
 
-    public PercentageLabel() {
+    public XYPercentageLabel() {
     }
 
     public String generateLabel(XYDataset dataset, int series, int item) {

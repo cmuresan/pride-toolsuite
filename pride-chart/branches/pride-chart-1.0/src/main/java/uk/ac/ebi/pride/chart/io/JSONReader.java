@@ -1,9 +1,8 @@
 package uk.ac.ebi.pride.chart.io;
 
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.chart.utils.PridePlotConstants;
 
 import java.io.*;
@@ -13,7 +12,7 @@ import java.io.*;
  * Date: 11/06/13
  */
 public class JSONReader extends PrideDataReader {
-    private Logger logger = LoggerFactory.getLogger(JSONReader.class);
+    private Logger logger = Logger.getLogger(JSONReader.class);
     private String source = "JSON";
 
     private JSONObject json = null;

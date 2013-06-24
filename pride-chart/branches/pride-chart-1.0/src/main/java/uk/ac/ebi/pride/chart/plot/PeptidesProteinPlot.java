@@ -16,7 +16,11 @@ import java.text.DecimalFormat;
  */
 public class PeptidesProteinPlot extends PrideXYPlot {
     public PeptidesProteinPlot(XYDataset dataset) {
-        super(PrideChartType.PEPTIDES_PROTEIN, new XYBarDataset(dataset, 0.5), new XYBarRenderer());
+        this(dataset, true);
+    }
+
+    public PeptidesProteinPlot(XYDataset dataset, boolean smallPlot) {
+        super(PrideChartType.PEPTIDES_PROTEIN, new XYBarDataset(dataset, 0.5), new XYBarRenderer(), smallPlot);
 
         XYBarRenderer renderer = (XYBarRenderer) getRenderer();
         renderer.setBaseItemLabelGenerator(new XYPercentageLabel());

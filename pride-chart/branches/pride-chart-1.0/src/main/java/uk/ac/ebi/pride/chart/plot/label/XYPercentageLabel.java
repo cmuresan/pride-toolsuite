@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
  * Date: 13/06/13
  */
 public class XYPercentageLabel implements XYItemLabelGenerator {
-    private DecimalFormat numberFormat = new DecimalFormat("0.0");
+    private DecimalFormat numberFormat = new DecimalFormat("#.#");
 
     // Whether show less than one percent value. If false, the label will display < 1%.
     private boolean onePercent = false;

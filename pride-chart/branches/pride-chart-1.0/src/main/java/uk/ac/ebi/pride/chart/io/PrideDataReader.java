@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.chart.io;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.chart.PrideChartType;
 import uk.ac.ebi.pride.chart.dataset.PrideHistogramDataSource;
 import uk.ac.ebi.pride.chart.dataset.PrideXYDataSource;
@@ -16,12 +15,12 @@ import java.util.TreeMap;
  */
 public abstract class PrideDataReader {
     private long startTime;
-    private Logger logger = LoggerFactory.getLogger(PrideDataReader.class);
+    private Logger logger = Logger.getLogger(PrideDataReader.class);
 
     protected SortedMap<PrideChartType, PrideXYDataSource> xyDataSourceMap = new TreeMap<PrideChartType, PrideXYDataSource>();
     protected SortedMap<PrideChartType, PrideHistogramDataSource> histogramDataSourceMap = new TreeMap<PrideChartType, PrideHistogramDataSource>();
 
-    public void readData() {
+    public void readData() throws PrideDataException {
         start();
         reading();
         end();
@@ -34,7 +33,7 @@ public abstract class PrideDataReader {
         startTime = System.currentTimeMillis();
     }
 
-    protected abstract void reading();
+    protected abstract void reading() throws PrideDataException;
 
     protected abstract void end();
 

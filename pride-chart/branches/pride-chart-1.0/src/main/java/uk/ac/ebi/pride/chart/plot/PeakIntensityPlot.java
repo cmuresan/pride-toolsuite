@@ -18,7 +18,11 @@ public class PeakIntensityPlot extends PrideCategoryPlot {
     private PrideDataType dataType;
 
     public PeakIntensityPlot(CategoryDataset dataset, PrideDataType dataType) {
-        super(PrideChartType.PEAK_INTENSITY, dataset);
+        this(dataset, dataType, true);
+    }
+
+    public PeakIntensityPlot(CategoryDataset dataset, PrideDataType dataType, boolean smallPlot) {
+        super(PrideChartType.PEAK_INTENSITY, dataset, smallPlot);
 
         BarRenderer renderer = (BarRenderer) getRenderer();
         for (int i = 0; i < dataset.getColumnCount(); i++) {

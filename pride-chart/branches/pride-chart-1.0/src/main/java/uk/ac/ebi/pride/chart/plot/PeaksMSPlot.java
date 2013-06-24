@@ -11,7 +11,11 @@ import uk.ac.ebi.pride.chart.plot.label.CategoryPercentageLabel;
 */
 public class PeaksMSPlot extends PrideCategoryPlot {
     public PeaksMSPlot(CategoryDataset dataset) {
-        super(PrideChartType.PEAKS_MS, dataset);
+        this(dataset, true);
+    }
+
+    public PeaksMSPlot(CategoryDataset dataset, boolean smallPlot) {
+        super(PrideChartType.PEAKS_MS, dataset, smallPlot);
 
         BarRenderer renderer = (BarRenderer) getRenderer();
         renderer.setBaseItemLabelGenerator(new CategoryPercentageLabel());

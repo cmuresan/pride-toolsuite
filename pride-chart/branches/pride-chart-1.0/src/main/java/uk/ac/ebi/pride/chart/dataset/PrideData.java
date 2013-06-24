@@ -21,6 +21,10 @@ public class PrideData implements Comparable<PrideData> {
         return data;
     }
 
+    public void setData(Double data) {
+        this.data = data;
+    }
+
     public PrideDataType getType() {
         return type;
     }

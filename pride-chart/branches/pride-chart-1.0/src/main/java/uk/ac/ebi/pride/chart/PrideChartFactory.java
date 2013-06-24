@@ -4,6 +4,7 @@ import org.jfree.chart.ChartTheme;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
 import uk.ac.ebi.pride.chart.dataset.*;
+import uk.ac.ebi.pride.chart.io.PrideDataException;
 import uk.ac.ebi.pride.chart.io.PrideDataReader;
 import uk.ac.ebi.pride.chart.plot.*;
 
@@ -100,11 +101,6 @@ public class PrideChartFactory {
                 plot = new PeaksMSPlot(PrideDatasetFactory.getHistogramDataset(dataSource, false));
                 break;
             case PEAK_INTENSITY:
-                dataSource.appendBin(new PrideHistogramBin(1, 10));
-                dataSource.appendBin(new PrideHistogramBin(10, 100));
-                dataSource.appendBin(new PrideHistogramBin(100, 1000));
-                dataSource.appendBin(new PrideHistogramBin(1000, 10000));
-                dataSource.appendBin(new PrideHistogramBin(10000, Integer.MAX_VALUE));
                 plot = new PeakIntensityPlot(PrideDatasetFactory.getHistogramDataset(dataSource, true), PrideDataType.ALL_SPECTRA);
                 break;
             default:
@@ -115,21 +111,52 @@ public class PrideChartFactory {
     }
 
     public static JFreeChart getChart(PrideCategoryPlot plot) {
-        JFreeChart chart = new JFreeChart(plot.getTitle(), JFreeChart.DEFAULT_TITLE_FONT, plot, plot.isLegend());
+        String title = plot.isSmallPlot() ? plot.getTitle() : plot.getFullTitle();
+
+        JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, plot.isLegend());
         currentTheme.apply(chart);
         return chart;
     }
 
     public static JFreeChart getChart(PrideXYPlot plot) {
-        JFreeChart chart = new JFreeChart(plot.getTitle(), JFreeChart.DEFAULT_TITLE_FONT, plot, plot.isLegend());
+        String title = plot.isSmallPlot() ? plot.getTitle() : plot.getFullTitle();
+
+        JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, plot.isLegend());
         currentTheme.apply(chart);
         return chart;
     }
 
-    public static List<JFreeChart> getChartList(PrideDataReader reader, PrideChartSummary summary) {
+    public static JFreeChart getChart(PrideDataReader reader, PrideChartType chartType) throws PrideDataException {
         if (reader == null) {
             throw new NullPointerException("PrideDataReader is null!");
         }
+
+        reader.readData();
+
+        SortedMap<PrideChartType, PrideXYDataSource> xyDataSourceMap = reader.getXYDataSourceMap();
+        SortedMap<PrideChartType, PrideHistogramDataSource> histogramDataSourceMap = reader.getHistogramDataSourceMap();
+
+        PrideXYDataSource xyDataSource;
+        PrideHistogramDataSource histogramDataSource;
+
+        xyDataSource = xyDataSourceMap.get(chartType);
+        if (xyDataSource != null) {
+            return getChart(getXYPlot(xyDataSource, chartType));
+        }
+
+        histogramDataSource = histogramDataSourceMap.get(chartType);
+        if (histogramDataSource != null) {
+            return getChart(getHistogramPlot(histogramDataSource, chartType));
+        }
+
+        return null;
+    }
+
+    public static List<JFreeChart> getChartList(PrideDataReader reader, PrideChartSummary summary) throws PrideDataException {
+        if (reader == null) {
+            throw new NullPointerException("PrideDataReader is null!");
+        }
+        reader.readData();
 
         List<JFreeChart> charts = new ArrayList<JFreeChart>();
 

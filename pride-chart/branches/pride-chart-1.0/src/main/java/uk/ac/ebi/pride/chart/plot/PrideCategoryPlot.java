@@ -7,7 +7,6 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import uk.ac.ebi.pride.chart.PrideChartType;
-import uk.ac.ebi.pride.chart.plot.PridePlot;
 
 import java.awt.*;
 
@@ -17,8 +16,9 @@ import java.awt.*;
  */
 public class PrideCategoryPlot extends CategoryPlot implements PridePlot {
     private PrideChartType type;
+    private boolean smallPlot;
 
-    protected PrideCategoryPlot(PrideChartType type, CategoryDataset dataset) {
+    protected PrideCategoryPlot(PrideChartType type, CategoryDataset dataset, boolean smallPlot) {
         super(dataset, new CategoryAxis(type.getDomainLabel()), new NumberAxis(type.getRangeLabel()), new BarRenderer());
         this.type = type;
 
@@ -27,6 +27,13 @@ public class PrideCategoryPlot extends CategoryPlot implements PridePlot {
         setDomainGridlinePaint(Color.red);
         setRangeGridlinePaint(Color.blue);
         getRangeAxis().setUpperMargin(0.15);
+
+        this.smallPlot = smallPlot;
+    }
+
+    @Override
+    public boolean isSmallPlot() {
+        return smallPlot;
     }
 
     @Override

@@ -15,8 +15,9 @@ import java.awt.*;
  */
 public class PrideXYPlot extends XYPlot implements PridePlot {
     private PrideChartType type;
+    private boolean smallPlot;
 
-    protected PrideXYPlot(PrideChartType type, XYDataset dataset, XYItemRenderer renderer) {
+    protected PrideXYPlot(PrideChartType type, XYDataset dataset, XYItemRenderer renderer, boolean smallPlot) {
         super(dataset, new NumberAxis(type.getDomainLabel()), new NumberAxis(type.getRangeLabel()), renderer);
         this.type = type;
 
@@ -26,6 +27,13 @@ public class PrideXYPlot extends XYPlot implements PridePlot {
         setDomainGridlinePaint(Color.red);
         setRangeGridlinePaint(Color.blue);
         getRangeAxis().setUpperMargin(0.15);
+
+        this.smallPlot = smallPlot;
+    }
+
+    @Override
+    public boolean isSmallPlot() {
+        return smallPlot;
     }
 
     @Override

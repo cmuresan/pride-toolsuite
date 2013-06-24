@@ -16,7 +16,11 @@ import java.text.DecimalFormat;
  */
 public class MissedCleavagesPlot extends PrideXYPlot {
     public MissedCleavagesPlot(XYDataset dataset) {
-        super(PrideChartType.MISSED_CLEAVAGES, new XYBarDataset(dataset, 0.5), new XYBarRenderer());
+        this(dataset, true);
+    }
+
+    public MissedCleavagesPlot(XYDataset dataset, boolean smallPlot) {
+        super(PrideChartType.MISSED_CLEAVAGES, new XYBarDataset(dataset, 0.5), new XYBarRenderer(), smallPlot);
 
         setDomainZeroBaselineVisible(false);
 

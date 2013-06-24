@@ -1,20 +1,20 @@
 package uk.ac.ebi.pride.chart.io;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+
 
 /**
  * User: Qingwei
  * Date: 12/06/13
  */
 public class DataAccessReader extends PrideDataReader {
-    private Logger logger = LoggerFactory.getLogger(DataAccessReader.class);
+    private Logger logger = Logger.getLogger(DataAccessReader.class);
     private String source = "DataAccessController";
 
     private DataAccessController controller;
 
-    public DataAccessReader(DataAccessController controller) {
+    public DataAccessReader(DataAccessController controller) throws PrideDataException {
         if (controller == null) {
             throw new NullPointerException(source + " is null!");
         }
@@ -29,7 +29,7 @@ public class DataAccessReader extends PrideDataReader {
     }
 
     @Override
-    protected void reading() {
+    protected void reading() throws PrideDataException {
 
     }
 

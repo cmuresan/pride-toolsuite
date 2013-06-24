@@ -16,7 +16,11 @@ import java.text.DecimalFormat;
  */
 public class PrecursorChargePlot extends PrideXYPlot {
     public PrecursorChargePlot(XYDataset dataset) {
-        super(PrideChartType.PRECURSOR_CHARGE, new XYBarDataset(dataset, 0.5), new XYBarRenderer());
+        this(dataset, true);
+    }
+
+    public PrecursorChargePlot(XYDataset dataset, boolean smallPlot) {
+        super(PrideChartType.PRECURSOR_CHARGE, new XYBarDataset(dataset, 0.5), new XYBarRenderer(), smallPlot);
 
         XYBarRenderer renderer = (XYBarRenderer) getRenderer();
         renderer.setBaseItemLabelsVisible(true);

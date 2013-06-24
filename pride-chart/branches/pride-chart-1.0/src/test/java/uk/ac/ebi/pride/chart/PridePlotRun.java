@@ -11,8 +11,6 @@ import uk.ac.ebi.pride.chart.plot.*;
 import java.awt.*;
 import java.util.Random;
 
-//import uk.ac.ebi.pride.chart.dataset.PrideHistogramDataSource;
-
 /**
  * User: Qingwei
  * Date: 13/06/13
@@ -193,35 +191,35 @@ public class PridePlotRun {
         Double[] domainData;
         PrideData[] rangeData;
 
-//        domainData = run.generateDomainData(-0.1, 0.1, 100);
-//        rangeData = run.generateRangeData(0.2, 1, 100);
-//        run.createChart(domainData, rangeData, PrideChartType.DELTA_MASS);
+        domainData = run.generateDomainData(-0.1, 0.1, 100);
+        rangeData = run.generateRangeData(0.2, 1, 100);
+        run.createChart(domainData, rangeData, PrideChartType.DELTA_MASS);
 
-//        domainData = run.generateDomainData(1, 6, 6);
-//        rangeData = run.generateRangeData(20, 300, 6);
-//        run.createChart(domainData, rangeData, PrideChartType.PEPTIDES_PROTEIN);
+        domainData = run.generateDomainData(1, 6, 6);
+        rangeData = run.generateRangeData(20, 300, 6);
+        run.createChart(domainData, rangeData, PrideChartType.PEPTIDES_PROTEIN);
 
-//        domainData = run.generateDomainData(0, 4, 5);
-//        rangeData = run.generateRangeData(0, 125, 5);
-//        run.createChart(domainData, rangeData, PrideChartType.MISSED_CLEAVAGES);
-//
-//        domainData = run.generateDomainData(5, 2000, 40);
-//        rangeData = run.generateRangeData(200, 300000, 40);
-//        run.createChart(domainData, rangeData, PrideChartType.AVERAGE_MS);
-//
-//        domainData = run.generateDomainData(1, 8, 8);
-//        rangeData = run.generateRangeData(0, 100, 8, PrideDataType.IDENTIFIED_SPECTRA);
-//        run.createChart(domainData, rangeData, PrideChartType.PRECURSOR_CHARGE);
-//
-//        domainData = run.generateDomainData(0, 3500, 20);
-//        rangeData = run.generateRangeData(0, 0.125, 20);
-//        run.createChart(domainData, rangeData, PrideChartType.PRECURSOR_MASSES);
+        domainData = run.generateDomainData(0, 4, 5);
+        rangeData = run.generateRangeData(0, 125, 5);
+        run.createChart(domainData, rangeData, PrideChartType.MISSED_CLEAVAGES);
+
+        domainData = run.generateDomainData(5, 2000, 40);
+        rangeData = run.generateRangeData(200, 300000, 40);
+        run.createChart(domainData, rangeData, PrideChartType.AVERAGE_MS);
+
+        domainData = run.generateDomainData(1, 8, 8);
+        rangeData = run.generateRangeData(0, 100, 8, PrideDataType.IDENTIFIED_SPECTRA);
+        run.createChart(domainData, rangeData, PrideChartType.PRECURSOR_CHARGE);
+
+        domainData = run.generateDomainData(0, 3500, 20);
+        rangeData = run.generateRangeData(0, 0.125, 20);
+        run.createChart(domainData, rangeData, PrideChartType.PRECURSOR_MASSES);
 
         // test histogram plots.
         PrideData[] xData;
 
-//        xData = run.generateRangeData(0, 3000, 1000);
-//        run.createChart(xData, PrideChartType.PEAKS_MS);
+        xData = run.generateRangeData(0, 3000, 1000);
+        run.createChart(xData, PrideChartType.PEAKS_MS);
 //
         xData = run.generateRangeData(0, 5000, 1000);
         run.createChart(xData, PrideChartType.PEAK_INTENSITY);

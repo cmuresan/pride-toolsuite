@@ -13,7 +13,7 @@ public class CategoryPercentageLabel extends StandardCategoryItemLabelGenerator 
     private DecimalFormat numberFormat = null;
 
     public CategoryPercentageLabel() {
-        super();
+        this(new DecimalFormat("#.#"));
     }
 
     public CategoryPercentageLabel(DecimalFormat numberFormat) {

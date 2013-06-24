@@ -9,6 +9,8 @@ import uk.ac.ebi.pride.chart.PrideChartType;
 public interface PridePlot {
     public PrideChartType getType();
 
+    public boolean isSmallPlot();
+
     public String getTitle();
 
     public String getFullTitle();

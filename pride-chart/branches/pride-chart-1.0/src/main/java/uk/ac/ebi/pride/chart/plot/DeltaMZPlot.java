@@ -4,8 +4,6 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.Range;
-import org.jfree.data.xy.XYBarDataset;
 import org.jfree.data.xy.XYDataset;
 import uk.ac.ebi.pride.chart.PrideChartType;
 
@@ -18,11 +16,11 @@ import java.text.DecimalFormat;
  */
 public class DeltaMZPlot extends PrideXYPlot {
     public DeltaMZPlot(XYDataset dataset) {
-        this(dataset, new XYLineAndShapeRenderer(true, false));
+        this(dataset, new XYLineAndShapeRenderer(true, false), true);
     }
 
-    public DeltaMZPlot(XYDataset dataset, XYItemRenderer renderer) {
-        super(PrideChartType.DELTA_MASS, dataset, renderer);
+    public DeltaMZPlot(XYDataset dataset, XYItemRenderer renderer, boolean smallPlot) {
+        super(PrideChartType.DELTA_MASS, dataset, renderer, smallPlot);
 
         setDomainZeroBaselineVisible(true);
         setBackgroundAlpha(0f);
@@ -32,10 +30,8 @@ public class DeltaMZPlot extends PrideXYPlot {
         setRangeGridlinesVisible(true);
 
         NumberAxis domainAxis = (NumberAxis) getDomainAxis();
-        domainAxis.setAutoTickUnitSelection(false);
-        domainAxis.setTickUnit(new NumberTickUnit(0.05, new DecimalFormat("0.00")));
-        domainAxis.setAutoRange(false);
-        domainAxis.setRange(new Range(-0.16, 0.16));
+        domainAxis.setAutoTickUnitSelection(true);
+        domainAxis.setNumberFormatOverride(new DecimalFormat("#.##"));
 
         NumberAxis rangeAxis = (NumberAxis) getRangeAxis();
         rangeAxis.setAutoTickUnitSelection(false);

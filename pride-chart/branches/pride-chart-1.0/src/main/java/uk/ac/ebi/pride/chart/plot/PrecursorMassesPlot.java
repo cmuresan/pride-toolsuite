@@ -37,11 +37,11 @@ public class PrecursorMassesPlot extends PrideXYPlot {
     private List<XYSeries> prideQuartilesSeries;
 
     public PrecursorMassesPlot(XYSeriesCollection dataset, PrideDataType spectraType) {
-        this(dataset, spectraType, QuartilesType.NONE);
+        this(dataset, spectraType, QuartilesType.NONE, true);
     }
 
-    public PrecursorMassesPlot(XYSeriesCollection dataset, PrideDataType spectraType, QuartilesType quartilesType) {
-        super(PrideChartType.PRECURSOR_MASSES, dataset, new XYSplineRenderer());
+    public PrecursorMassesPlot(XYSeriesCollection dataset, PrideDataType spectraType, QuartilesType quartilesType, boolean smallPlot) {
+        super(PrideChartType.PRECURSOR_MASSES, dataset, new XYSplineRenderer(), smallPlot);
         this.spectraSeriesList.addAll(dataset.getSeries());
 
         noneQuartilesSeries = new ArrayList<XYSeries>();

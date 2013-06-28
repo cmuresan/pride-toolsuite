@@ -11,6 +11,7 @@ public class PrideXYDataSource {
     private Double[] domainData;
     private PrideData[] rangeData;
     private PrideDataType type;
+    private boolean includeSubType = false;
 
     public PrideXYDataSource(Double[] domainData, PrideData[] rangeData, PrideDataType type) {
         if (domainData.length != rangeData.length) {
@@ -20,6 +21,9 @@ public class PrideXYDataSource {
         for (PrideData value : rangeData) {
             if (! value.getType().compatible(type)) {
                 throw new IllegalArgumentException("There exists incompatible value " + value + " in range array!");
+            }
+            if (value.getType() != type) {
+                includeSubType = true;
             }
         }
 
@@ -40,14 +44,30 @@ public class PrideXYDataSource {
         return type;
     }
 
+    /**
+     * Whether exists subType data in current data source.
+     */
+    public boolean isIncludeSubType() {
+        return includeSubType;
+    }
+
     public PrideXYDataSource filter(PrideDataType type) {
+        if (! this.type.compatible(type)) {
+            // current data source type not compatible with filter type. return empty.
+            return null;
+        }
+
+        if (! includeSubType) {
+            return this;
+        }
+
         List<Double> filterDomainData = new ArrayList<Double>();
         List<PrideData> filterRangeData = new ArrayList<PrideData>();
 
         PrideData data;
         for (int i = 0; i < rangeData.length; i++) {
             data = rangeData[i];
-            if (data.getType().compatible(type)) {
+            if (data.getType().equals(type)) {
                 filterDomainData.add(domainData[i]);
                 filterRangeData.add(rangeData[i]);
             }

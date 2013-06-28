@@ -52,22 +52,22 @@ public class PrideChartFactory {
         PrideXYPlot plot;
         switch (type) {
             case DELTA_MASS:
-                plot = new DeltaMZPlot(PrideDatasetFactory.getXYDataset(dataSource, false));
+                plot = new DeltaMZPlot(PrideDatasetFactory.getXYDataset(dataSource));
                 break;
             case PEPTIDES_PROTEIN:
-                plot = new PeptidesProteinPlot(PrideDatasetFactory.getXYDataset(dataSource, false));
+                plot = new PeptidesProteinPlot(PrideDatasetFactory.getXYDataset(dataSource));
                 break;
             case MISSED_CLEAVAGES:
-                plot = new MissedCleavagesPlot(PrideDatasetFactory.getXYDataset(dataSource, false));
+                plot = new MissedCleavagesPlot(PrideDatasetFactory.getXYDataset(dataSource));
                 break;
             case AVERAGE_MS:
-                plot = new AverageMSPlot(PrideDatasetFactory.getXYDataset(dataSource, true), PrideDataType.ALL_SPECTRA);
+                plot = new AverageMSPlot(PrideDatasetFactory.getXYDataset(dataSource), PrideDataType.ALL_SPECTRA);
                 break;
             case PRECURSOR_CHARGE:
-                plot = new PrecursorChargePlot(PrideDatasetFactory.getXYDataset(dataSource, false));
+                plot = new PrecursorChargePlot(PrideDatasetFactory.getXYDataset(dataSource));
                 break;
             case PRECURSOR_MASSES:
-                plot = new PrecursorMassesPlot(PrideDatasetFactory.getXYDataset(dataSource, true), PrideDataType.ALL_SPECTRA);
+                plot = new PrecursorMassesPlot(PrideDatasetFactory.getXYDataset(dataSource), PrideDataType.ALL_SPECTRA);
                 break;
             default:
                 throw new IllegalArgumentException("Can not create XY style plot.");
@@ -81,7 +81,8 @@ public class PrideChartFactory {
 
         switch (type) {
             case PEAKS_MS:
-                dataSource = new PrideEqualWidthHistogramDataSource(data, PrideDataType.ALL_SPECTRA, 0, 400, 10);
+                dataSource = new PrideEqualWidthHistogramDataSource(data, PrideDataType.ALL_SPECTRA);
+                dataSource.appendBins(((PrideEqualWidthHistogramDataSource)dataSource).generateBins(0, 400, 10));
                 break;
             case PEAK_INTENSITY:
                 dataSource = new PrideHistogramDataSource(data, PrideDataType.ALL_SPECTRA);
@@ -98,10 +99,10 @@ public class PrideChartFactory {
 
         switch (type) {
             case PEAKS_MS:
-                plot = new PeaksMSPlot(PrideDatasetFactory.getHistogramDataset(dataSource, false));
+                plot = new PeaksMSPlot(PrideDatasetFactory.getHistogramDataset(dataSource));
                 break;
             case PEAK_INTENSITY:
-                plot = new PeakIntensityPlot(PrideDatasetFactory.getHistogramDataset(dataSource, true), PrideDataType.ALL_SPECTRA);
+                plot = new PeakIntensityPlot(PrideDatasetFactory.getHistogramDataset(dataSource), PrideDataType.ALL_SPECTRA);
                 break;
             default:
                 throw new IllegalArgumentException("Can not create Histogram style plot.");
@@ -130,8 +131,6 @@ public class PrideChartFactory {
         if (reader == null) {
             throw new NullPointerException("PrideDataReader is null!");
         }
-
-        reader.readData();
 
         SortedMap<PrideChartType, PrideXYDataSource> xyDataSourceMap = reader.getXYDataSourceMap();
         SortedMap<PrideChartType, PrideHistogramDataSource> histogramDataSourceMap = reader.getHistogramDataSourceMap();

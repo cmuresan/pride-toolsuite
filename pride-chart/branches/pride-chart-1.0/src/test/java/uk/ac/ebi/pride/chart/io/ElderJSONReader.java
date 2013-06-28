@@ -6,12 +6,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import uk.ac.ebi.pride.chart.PrideChartType;
 import uk.ac.ebi.pride.chart.dataset.*;
-import uk.ac.ebi.pride.chart.utils.PridePlotConstants;
+import uk.ac.ebi.pride.chart.dataset.PrideHistogramBin;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,48 +19,81 @@ import java.util.regex.Pattern;
  */
 public class ElderJSONReader extends PrideDataReader {
     Logger logger = Logger.getLogger(ElderJSONReader.class);
-    private PrideChartType type;
+    private Map<PrideChartType, JSONObject> jsonMap = new TreeMap<PrideChartType, JSONObject>();
 
-    private String source = "JSON";
+    private final String source = "JSON";
 
-    private String ERROR = "ErrorMessages";
-    private String SERIES = "Series";
-    private String ID = "id";
-    private String X_AXIS = "XAxis";
-    private String Y_AXIS = "YAxis";
-
-    private JSONObject json = null;
-
-    private void init(JSONObject json, PrideChartType type) throws PrideDataException {
-        if (json == null) {
-            throw new IllegalArgumentException("JSON Object can not set null!");
-        }
-
-        readErrorMsg(json);
-
-        this.json = json;
-        this.type = type;
-    }
+    private final String ERROR = "ErrorMessages";
+    private final String SERIES = "Series";
+    private final String ID = "id";
+    private final String X_AXIS = "XAxis";
+    private final String Y_AXIS = "YAxis";
+    private final String IDENTIFIED_FREQUENCY = "idenFreq";
+    private final String UNIDENTIFIED_FREQUENCY = "unidenFreq";
 
     public ElderJSONReader(String jsonString, PrideChartType type) throws PrideDataException {
         try {
-            init(new JSONObject(jsonString), type);
+            JSONObject json = new JSONObject(jsonString);
+            checkErrorMsg(json);
+            jsonMap.put(type, json);
         } catch (JSONException e) {
             logger.error(e.getMessage());
         }
+
+        readData();
     }
 
-    public ElderJSONReader(File jsonFile, PrideChartType type) throws PrideDataException {
+    private PrideChartType getChartType(int id) {
+        PrideChartType type = null;
+        switch (id) {
+            case 1:
+                type = PrideChartType.PEAK_INTENSITY;
+                break;
+            case 2:
+                type = PrideChartType.PRECURSOR_CHARGE;
+                break;
+            case 3:
+                type = PrideChartType.AVERAGE_MS;
+                break;
+            case 4:
+                type = PrideChartType.PRECURSOR_MASSES;
+                break;
+            case 5:
+                type = PrideChartType.PEPTIDES_PROTEIN;
+                break;
+            case 6:
+                type = PrideChartType.PEAKS_MS;
+                break;
+            case 7:
+                type = PrideChartType.DELTA_MASS;
+                break;
+            case 8:
+                type = PrideChartType.MISSED_CLEAVAGES;
+                break;
+        }
+
+        return type;
+    }
+
+    /**
+     * The jsonFile is txt file, which export from database.
+     * Reference testset directory json files.
+     */
+    public ElderJSONReader(File jsonFile) throws PrideDataException {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(jsonFile));
-            StringBuilder sb = new StringBuilder();
 
             String line;
+            String[] items;
+            JSONObject json;
             while ((line = reader.readLine()) != null) {
-                sb.append(line).append(PridePlotConstants.NEW_LINE);
+                items = line.split(", ");
+                json = new JSONObject(items[1]);
+                checkErrorMsg(json);
+                jsonMap.put(getChartType(Integer.parseInt(items[0])), json);
             }
 
-            init(new JSONObject(sb.toString()), type);
+            reader.close();
         } catch (FileNotFoundException e) {
             logger.error(e.getMessage());
         } catch (IOException e) {
@@ -70,6 +101,8 @@ public class ElderJSONReader extends PrideDataReader {
         } catch (JSONException e) {
             logger.error(e.getMessage());
         }
+
+        readData();
     }
 
     @Override
@@ -77,7 +110,7 @@ public class ElderJSONReader extends PrideDataReader {
         super.start(source);
     }
 
-    private void readErrorMsg(JSONObject object) throws PrideDataException {
+    private void checkErrorMsg(JSONObject object) throws PrideDataException {
         try {
             StringBuilder sb = new StringBuilder();
             JSONArray msgList = object.getJSONArray(ERROR);
@@ -132,7 +165,7 @@ public class ElderJSONReader extends PrideDataReader {
         }
     }
 
-    private void readDelta() throws JSONException {
+    private void readDelta(JSONObject json) throws JSONException {
         JSONObject series = json.getJSONArray(SERIES).getJSONObject(0);
         Double[] domainData = getDomainData(series.getJSONArray(X_AXIS));
         PrideData[] rangeData = getRangeData(series.getJSONArray(Y_AXIS), PrideDataType.ALL_SPECTRA);
@@ -140,7 +173,7 @@ public class ElderJSONReader extends PrideDataReader {
         xyDataSourceMap.put(PrideChartType.DELTA_MASS, dataSource);
     }
 
-    private void readPeptide() throws JSONException {
+    private void readPeptide(JSONObject json) throws JSONException {
         JSONObject series = json.getJSONArray(SERIES).getJSONObject(0);
         Double[] domainData = getDomainData(series.getJSONArray(X_AXIS));
         PrideData[] rangeData = getRangeData(series.getJSONArray(Y_AXIS), PrideDataType.ALL);
@@ -158,7 +191,7 @@ public class ElderJSONReader extends PrideDataReader {
         xyDataSourceMap.put(PrideChartType.PEPTIDES_PROTEIN, dataSource);
     }
 
-    private void readMissed() throws JSONException {
+    private void readMissed(JSONObject json) throws JSONException {
         JSONObject series = json.getJSONArray(SERIES).getJSONObject(0);
         Double[] domainData = getDomainData(series.getJSONArray(X_AXIS));
         PrideData[] rangeData = getRangeData(series.getJSONArray(Y_AXIS), PrideDataType.ALL_SPECTRA);
@@ -176,31 +209,55 @@ public class ElderJSONReader extends PrideDataReader {
         xyDataSourceMap.put(PrideChartType.MISSED_CLEAVAGES, dataSource);
     }
 
-    private void readAvg() throws JSONException {
+    private void readAvg(JSONObject json) throws JSONException {
+        List<Double> domainDataList0 = new ArrayList<Double>();
+        List<PrideData> rangeDataList0 = new ArrayList<PrideData>();
+        JSONObject series0 = json.getJSONArray(SERIES).getJSONObject(0);
+        PrideDataType type0 = PrideDataType.findBy(series0.getString(ID));
+        if (series0.has(X_AXIS)) {
+            domainDataList0.addAll(Arrays.asList(getDomainData(series0.getJSONArray(X_AXIS))));
+            rangeDataList0.addAll(Arrays.asList(getRangeData(series0.getJSONArray(Y_AXIS), type0)));
+        }
+
+        List<Double> domainDataList1 = new ArrayList<Double>();
+        List<PrideData> rangeDataList1 = new ArrayList<PrideData>();
+        JSONObject series1 = json.getJSONArray(SERIES).getJSONObject(1);
+        PrideDataType type1 = PrideDataType.findBy(series1.getString(ID));
+        if (series1.has(X_AXIS)) {
+            domainDataList1.addAll(Arrays.asList(getDomainData(series1.getJSONArray(X_AXIS))));
+            rangeDataList1.addAll(Arrays.asList(getRangeData(series1.getJSONArray(Y_AXIS), type1)));
+        }
+
         List<Double> domainDataList = new ArrayList<Double>();
         List<PrideData> rangeDataList = new ArrayList<PrideData>();
-
-        JSONObject series = json.getJSONArray(SERIES).getJSONObject(0);
-        PrideDataType type = PrideDataType.findBy(series.getString(ID));
-        if (series.has(X_AXIS)) {
-            domainDataList.addAll(Arrays.asList(getDomainData(series.getJSONArray(X_AXIS))));
-            rangeDataList.addAll(Arrays.asList(getRangeData(series.getJSONArray(Y_AXIS), type)));
+        if (! domainDataList0.isEmpty() && domainDataList1.isEmpty()) {
+            domainDataList.addAll(Arrays.asList(getDomainData(series0.getJSONArray(X_AXIS))));
+            rangeDataList.addAll(Arrays.asList(getRangeData(series0.getJSONArray(Y_AXIS), PrideDataType.ALL_SPECTRA)));
+        } else if (domainDataList0.isEmpty() && ! domainDataList1.isEmpty()) {
+            domainDataList.addAll(Arrays.asList(getDomainData(series1.getJSONArray(X_AXIS))));
+            rangeDataList.addAll(Arrays.asList(getRangeData(series1.getJSONArray(Y_AXIS), PrideDataType.ALL_SPECTRA)));
+        } else if (! domainDataList0.isEmpty() && ! domainDataList1.isEmpty()) {
+            for (int i = 0; i < domainDataList0.size(); i++) {
+                domainDataList.add(domainDataList0.get(i));
+                rangeDataList.add(new PrideData(rangeDataList0.get(i).getData() + rangeDataList1.get(i).getData(), PrideDataType.ALL_SPECTRA));
+            }
         }
 
-        series = json.getJSONArray(SERIES).getJSONObject(1);
-        type = PrideDataType.findBy(series.getString(ID));
-        if (series.has(X_AXIS)) {
-            domainDataList.addAll(Arrays.asList(getDomainData(series.getJSONArray(X_AXIS))));
-            rangeDataList.addAll(Arrays.asList(getRangeData(series.getJSONArray(Y_AXIS), type)));
-        }
-
-        Double[] domainData = domainDataList.toArray(new Double[domainDataList.size()]);
-        PrideData[] rangeData = rangeDataList.toArray(new PrideData[rangeDataList.size()]);
+        List<Double> totalDomainDataList = new ArrayList<Double>();
+        List<PrideData> totalRangeDataList = new ArrayList<PrideData>();
+        totalDomainDataList.addAll(domainDataList0);
+        totalDomainDataList.addAll(domainDataList1);
+        totalDomainDataList.addAll(domainDataList);
+        totalRangeDataList.addAll(rangeDataList0);
+        totalRangeDataList.addAll(rangeDataList1);
+        totalRangeDataList.addAll(rangeDataList);
+        Double[] domainData = totalDomainDataList.toArray(new Double[totalDomainDataList.size()]);
+        PrideData[] rangeData = totalRangeDataList.toArray(new PrideData[totalRangeDataList.size()]);
         PrideXYDataSource dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
         xyDataSourceMap.put(PrideChartType.AVERAGE_MS, dataSource);
     }
 
-    private void readPreCharge() throws JSONException {
+    private void readPreCharge(JSONObject json) throws JSONException {
         JSONObject series = json.getJSONArray(SERIES).getJSONObject(0);
         Double[] domainData = getDomainData(series.getJSONArray(X_AXIS));
         PrideData[] rangeData = getRangeData(series.getJSONArray(Y_AXIS), PrideDataType.IDENTIFIED_SPECTRA);
@@ -218,26 +275,61 @@ public class ElderJSONReader extends PrideDataReader {
         xyDataSourceMap.put(PrideChartType.PRECURSOR_CHARGE, dataSource);
     }
 
-    private void readPreMasses() throws JSONException {
+    private void readPreMasses(JSONObject json) throws JSONException {
+        List<Double> domainDataList0 = new ArrayList<Double>();
+        List<PrideData> rangeDataList0 = new ArrayList<PrideData>();
+        JSONObject series0 = json.getJSONArray(SERIES).getJSONObject(0);
+        PrideDataType type0 = PrideDataType.findBy(series0.getString(ID));
+        if (series0.has(X_AXIS)) {
+            domainDataList0.addAll(Arrays.asList(getDomainData(series0.getJSONArray(X_AXIS))));
+            rangeDataList0.addAll(Arrays.asList(getRangeData(series0.getJSONArray(Y_AXIS), type0)));
+        }
+
+        List<Double> domainDataList1 = new ArrayList<Double>();
+        List<PrideData> rangeDataList1 = new ArrayList<PrideData>();
+        JSONObject series1 = json.getJSONArray(SERIES).getJSONObject(1);
+        PrideDataType type1 = PrideDataType.findBy(series1.getString(ID));
+        if (series1.has(X_AXIS)) {
+            domainDataList1.addAll(Arrays.asList(getDomainData(series1.getJSONArray(X_AXIS))));
+            rangeDataList1.addAll(Arrays.asList(getRangeData(series1.getJSONArray(Y_AXIS), type1)));
+        }
+
         List<Double> domainDataList = new ArrayList<Double>();
         List<PrideData> rangeDataList = new ArrayList<PrideData>();
+        if (! domainDataList0.isEmpty() && domainDataList1.isEmpty()) {
+            domainDataList.addAll(Arrays.asList(getDomainData(series0.getJSONArray(X_AXIS))));
+            rangeDataList.addAll(Arrays.asList(getRangeData(series0.getJSONArray(Y_AXIS), PrideDataType.ALL_SPECTRA)));
+        } else if (domainDataList0.isEmpty() && ! domainDataList1.isEmpty()) {
+            domainDataList.addAll(Arrays.asList(getDomainData(series1.getJSONArray(X_AXIS))));
+            rangeDataList.addAll(Arrays.asList(getRangeData(series1.getJSONArray(Y_AXIS), PrideDataType.ALL_SPECTRA)));
+        } else if (! domainDataList0.isEmpty() && ! domainDataList1.isEmpty()) {
+            int max = Math.max(domainDataList0.size(), domainDataList1.size());
+            double identified;
+            double unidentified;
+            double offset;
+            for (int i = 0; i < max; i++) {
+                identified = i < rangeDataList0.size() ? rangeDataList0.get(i).getData() : 0.0;
+                unidentified = i < rangeDataList1.size() ? rangeDataList1.get(i).getData() : 0.0;
 
-        JSONObject series = json.getJSONArray(SERIES).getJSONObject(0);
-        PrideDataType type = PrideDataType.findBy(series.getString(ID));
-        if (series.has(X_AXIS)) {
-            domainDataList.addAll(Arrays.asList(getDomainData(series.getJSONArray(X_AXIS))));
-            rangeDataList.addAll(Arrays.asList(getRangeData(series.getJSONArray(Y_AXIS), type)));
+                offset = i < domainDataList0.size() ? domainDataList0.get(i) : domainDataList1.get(i);
+                domainDataList.add(offset);
+                rangeDataList.add(new PrideData(
+                        (identified * json.getInt(IDENTIFIED_FREQUENCY)  + unidentified * json.getInt(UNIDENTIFIED_FREQUENCY)) / (json.getInt(IDENTIFIED_FREQUENCY) + json.getInt(UNIDENTIFIED_FREQUENCY)),
+                        PrideDataType.ALL_SPECTRA
+                ));
+            }
         }
 
-        series = json.getJSONArray(SERIES).getJSONObject(1);
-        type = PrideDataType.findBy(series.getString(ID));
-        if (series.has(X_AXIS)) {
-            domainDataList.addAll(Arrays.asList(getDomainData(series.getJSONArray(X_AXIS))));
-            rangeDataList.addAll(Arrays.asList(getRangeData(series.getJSONArray(Y_AXIS), type)));
-        }
-
-        Double[] domainData = domainDataList.toArray(new Double[domainDataList.size()]);
-        PrideData[] rangeData = rangeDataList.toArray(new PrideData[rangeDataList.size()]);
+        List<Double> totalDomainDataList = new ArrayList<Double>();
+        List<PrideData> totalRangeDataList = new ArrayList<PrideData>();
+        totalDomainDataList.addAll(domainDataList0);
+        totalDomainDataList.addAll(domainDataList1);
+        totalDomainDataList.addAll(domainDataList);
+        totalRangeDataList.addAll(rangeDataList0);
+        totalRangeDataList.addAll(rangeDataList1);
+        totalRangeDataList.addAll(rangeDataList);
+        Double[] domainData = totalDomainDataList.toArray(new Double[totalDomainDataList.size()]);
+        PrideData[] rangeData = totalRangeDataList.toArray(new PrideData[totalRangeDataList.size()]);
         PrideXYDataSource dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
         xyDataSourceMap.put(PrideChartType.PRECURSOR_MASSES, dataSource);
     }
@@ -290,7 +382,7 @@ public class ElderJSONReader extends PrideDataReader {
         return countList;
     }
 
-    private void readPeakMS() throws JSONException {
+    private void readPeakMS(JSONObject json) throws JSONException {
         JSONObject series = json.getJSONArray(SERIES).getJSONObject(0);
         List<PrideHistogramBin> bins = parseBins(series.getJSONArray(X_AXIS));
         List<Integer> countList = parseCounts(series.getJSONArray(Y_AXIS));
@@ -321,7 +413,7 @@ public class ElderJSONReader extends PrideDataReader {
         }
     }
 
-    private void readPeakIntensity() throws JSONException {
+    private void readPeakIntensity(JSONObject json) throws JSONException {
         List<PrideData> values = new ArrayList<PrideData>();
 
         JSONObject series = json.getJSONArray(SERIES).getJSONObject(0);
@@ -347,33 +439,34 @@ public class ElderJSONReader extends PrideDataReader {
     @Override
     protected void reading() throws PrideDataException {
         try {
-            switch (type) {
-                case DELTA_MASS:
-                    readDelta();
-                    break;
-                case PEPTIDES_PROTEIN:
-                    readPeptide();
-                    break;
-                case MISSED_CLEAVAGES:
-                    readMissed();
-                    break;
-                case AVERAGE_MS:
-                    readAvg();
-                    break;
-                case PRECURSOR_CHARGE:
-                    readPreCharge();
-                    break;
-                case PRECURSOR_MASSES:
-                    readPreMasses();
-                    break;
-                case PEAKS_MS:
-                    readPeakMS();
-                    break;
-                case PEAK_INTENSITY:
-                    readPeakIntensity();
-                    break;
+            for (PrideChartType type : jsonMap.keySet()) {
+                switch (type) {
+                    case DELTA_MASS:
+                        readDelta(jsonMap.get(type));
+                        break;
+                    case PEPTIDES_PROTEIN:
+                        readPeptide(jsonMap.get(type));
+                        break;
+                    case MISSED_CLEAVAGES:
+                        readMissed(jsonMap.get(type));
+                        break;
+                    case AVERAGE_MS:
+                        readAvg(jsonMap.get(type));
+                        break;
+                    case PRECURSOR_CHARGE:
+                        readPreCharge(jsonMap.get(type));
+                        break;
+                    case PRECURSOR_MASSES:
+                        readPreMasses(jsonMap.get(type));
+                        break;
+                    case PEAKS_MS:
+                        readPeakMS(jsonMap.get(type));
+                        break;
+                    case PEAK_INTENSITY:
+                        readPeakIntensity(jsonMap.get(type));
+                        break;
+                }
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }

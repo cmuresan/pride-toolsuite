@@ -7,6 +7,7 @@ import org.jfree.ui.RefineryUtilities;
 import uk.ac.ebi.pride.chart.dataset.*;
 import uk.ac.ebi.pride.chart.io.QuartilesType;
 import uk.ac.ebi.pride.chart.plot.*;
+import uk.ac.ebi.pride.chart.dataset.PrideHistogramBin;
 
 import java.awt.*;
 import java.util.Random;
@@ -51,30 +52,30 @@ public class PridePlotRun {
         switch (type) {
             case DELTA_MASS:
                 dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
-                plot = new DeltaMZPlot(PrideDatasetFactory.getXYDataset(dataSource, false));
+                plot = new DeltaMZPlot(PrideDatasetFactory.getXYDataset(dataSource));
                 break;
             case PEPTIDES_PROTEIN:
                 dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
-                plot = new PeptidesProteinPlot(PrideDatasetFactory.getXYDataset(dataSource, false));
+                plot = new PeptidesProteinPlot(PrideDatasetFactory.getXYDataset(dataSource));
                 break;
             case MISSED_CLEAVAGES:
                 dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
-                plot = new MissedCleavagesPlot(PrideDatasetFactory.getXYDataset(dataSource, false));
+                plot = new MissedCleavagesPlot(PrideDatasetFactory.getXYDataset(dataSource));
                 break;
             case AVERAGE_MS:
                 dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
-                plot = new AverageMSPlot(PrideDatasetFactory.getXYDataset(dataSource, true), PrideDataType.UNIDENTIFIED_SPECTRA);
+                plot = new AverageMSPlot(PrideDatasetFactory.getXYDataset(dataSource), PrideDataType.UNIDENTIFIED_SPECTRA);
                 AverageMSPlot avgPlot = (AverageMSPlot) plot;
                 avgPlot.updateSpectraSeries(PrideDataType.IDENTIFIED_SPECTRA);
 //                avgPlot.updateSpectraSeries(PrideDataType.ALL_SPECTRA);
                 break;
             case PRECURSOR_CHARGE:
                 dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.IDENTIFIED_SPECTRA);
-                plot = new PrecursorChargePlot(PrideDatasetFactory.getXYDataset(dataSource, false));
+                plot = new PrecursorChargePlot(PrideDatasetFactory.getXYDataset(dataSource));
                 break;
             case PRECURSOR_MASSES:
                 dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
-                plot = new PrecursorMassesPlot(PrideDatasetFactory.getXYDataset(dataSource, true), PrideDataType.IDENTIFIED_SPECTRA);
+                plot = new PrecursorMassesPlot(PrideDatasetFactory.getXYDataset(dataSource), PrideDataType.IDENTIFIED_SPECTRA);
                 PrecursorMassesPlot massesPlot = (PrecursorMassesPlot)plot ;
                 massesPlot.updateQuartilesType(QuartilesType.HUMAN);
 //                massesPlot.updateQuartilesType(QuartilesType.NONE);
@@ -93,8 +94,9 @@ public class PridePlotRun {
         PrideCategoryPlot plot;
         switch (type) {
             case PEAKS_MS:
-                dataSource = new PrideEqualWidthHistogramDataSource(data, PrideDataType.ALL_SPECTRA, 0, 400, 8);
-                plot = new PeaksMSPlot(PrideDatasetFactory.getHistogramDataset(dataSource, false));
+                dataSource = new PrideEqualWidthHistogramDataSource(data, PrideDataType.ALL_SPECTRA);
+                dataSource.appendBins(((PrideEqualWidthHistogramDataSource)dataSource).generateBins(0, 400, 8));
+                plot = new PeaksMSPlot(PrideDatasetFactory.getHistogramDataset(dataSource));
                 break;
             case PEAK_INTENSITY:
                 dataSource = new PrideHistogramDataSource(data, PrideDataType.ALL_SPECTRA);
@@ -102,7 +104,7 @@ public class PridePlotRun {
                 dataSource.appendBin(new PrideHistogramBin(100, 1000));
                 dataSource.appendBin(new PrideHistogramBin(1000, 2000));
                 dataSource.appendBin(new PrideHistogramBin(2000, Integer.MAX_VALUE));
-                plot = new PeakIntensityPlot(PrideDatasetFactory.getHistogramDataset(dataSource, true), PrideDataType.ALL_SPECTRA);
+                plot = new PeakIntensityPlot(PrideDatasetFactory.getHistogramDataset(dataSource), PrideDataType.ALL_SPECTRA);
 
                 PeakIntensityPlot peakPlot = (PeakIntensityPlot) plot;
                 peakPlot.setVisible(true, PrideDataType.IDENTIFIED_SPECTRA);

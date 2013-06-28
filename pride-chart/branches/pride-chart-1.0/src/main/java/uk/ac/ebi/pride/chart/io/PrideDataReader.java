@@ -6,8 +6,10 @@ import uk.ac.ebi.pride.chart.dataset.PrideHistogramDataSource;
 import uk.ac.ebi.pride.chart.dataset.PrideXYDataSource;
 import uk.ac.ebi.pride.chart.utils.PridePlotConstants;
 
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * User: Qingwei
@@ -40,8 +42,8 @@ public abstract class PrideDataReader {
     protected void end(String source) {
         logger.debug("End load data from " + source + "." + PridePlotConstants.NEW_LINE);
         long endTime = System.currentTimeMillis();
-        double costTime = (endTime - startTime) / 1000d / 60;
-        logger.debug("Cost time: " + String.format("%1$.2f", costTime) + "(min)" + PridePlotConstants.NEW_LINE);
+        double costTime = (endTime - startTime) / 1000d;
+        logger.debug("Cost time: " + String.format("%1$.2f", costTime) + "(s)" + PridePlotConstants.NEW_LINE);
     }
 
     public SortedMap<PrideChartType, PrideXYDataSource> getXYDataSourceMap() {
@@ -50,5 +52,14 @@ public abstract class PrideDataReader {
 
     public SortedMap<PrideChartType, PrideHistogramDataSource> getHistogramDataSourceMap() {
         return histogramDataSourceMap;
+    }
+
+    public Set<PrideChartType> getChartTypeList() {
+        Set<PrideChartType> chartTypeList = new TreeSet<PrideChartType>();
+
+        chartTypeList.addAll(xyDataSourceMap.keySet());
+        chartTypeList.addAll(histogramDataSourceMap.keySet());
+
+        return chartTypeList;
     }
 }

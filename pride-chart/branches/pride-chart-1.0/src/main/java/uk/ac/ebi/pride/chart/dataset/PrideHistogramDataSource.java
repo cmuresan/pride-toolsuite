@@ -18,11 +18,15 @@ public class PrideHistogramDataSource {
 
     protected PrideData[] values;
     protected PrideDataType type;
+    private boolean includeSubType = false;
 
     public PrideHistogramDataSource(PrideData[] values, PrideDataType type) {
         for (PrideData value : values) {
             if (! value.getType().compatible(type)) {
                 throw new IllegalArgumentException("There exists incompatible value " + value + " in range array!");
+            }
+            if (value.getType() != type) {
+                includeSubType = true;
             }
         }
 
@@ -30,11 +34,27 @@ public class PrideHistogramDataSource {
         this.type = type;
     }
 
+    /**
+     * Whether exists subType data in current data source.
+     */
+    public boolean isIncludeSubType() {
+        return includeSubType;
+    }
+
     public Iterator<PrideHistogramBin> iterator() {
         return bins.iterator();
     }
 
     public PrideHistogramDataSource filter(PrideDataType type) {
+        if (! this.type.compatible(type)) {
+            // current data source type not compatible with filter type. return empty.
+            return null;
+        }
+
+        if (! includeSubType) {
+            return this;
+        }
+
         List<PrideData> filterData = new ArrayList<PrideData>();
 
         for (PrideData value : values) {
@@ -67,6 +87,12 @@ public class PrideHistogramDataSource {
         this.bins.add(bin);
     }
 
+    public void appendBins(Collection<PrideHistogramBin> bins) {
+        for (PrideHistogramBin bin : bins) {
+            appendBin(bin);
+        }
+    }
+
     public void removeBins(double lowerBound, double upperBound) {
         if (upperBound <= lowerBound) {
             throw new IllegalArgumentException("the upperBound <= lowerBound");
@@ -87,11 +113,15 @@ public class PrideHistogramDataSource {
         bins.clear();
     }
 
+    public int getBinCount() {
+        return bins.size();
+    }
+
     public PrideHistogramBin getFirstBin() {
         return bins.first();
     }
 
-    public int getStart() {
+    public double getStart() {
         return getFirstBin().getStartBoundary();
     }
 
@@ -99,30 +129,27 @@ public class PrideHistogramDataSource {
         return bins.last();
     }
 
-    public int getEnd() {
+    public double getEnd() {
         return getLastBin().getEndBoundary();
     }
 
-    public SortedMap<PrideHistogramBin, Integer> getHistogram() {
+    public SortedMap<PrideHistogramBin, Collection<PrideData>> getHistogram() {
         if (values == null) {
             throw new NullPointerException("Input data is null!");
         }
 
         // initial map.
-        SortedMap<PrideHistogramBin, Integer> histogram = new TreeMap<PrideHistogramBin, Integer>();
+        SortedMap<PrideHistogramBin, Collection<PrideData>> histogram = new TreeMap<PrideHistogramBin, Collection<PrideData>>();
         for (PrideHistogramBin bin : bins) {
-            histogram.put(bin, 0);
+            histogram.put(bin, new ArrayList<PrideData>());
         }
 
-        // calculate count.
-        Integer count;
         Set<PrideHistogramBin> keySet = histogram.keySet();
         for (PrideData d : values) {
             for (PrideHistogramBin bin : keySet) {
                 if (d.getData() >= bin.getStartBoundary() && d.getData() < bin.getEndBoundary()) {
-                    count = histogram.get(bin);
-                    count = count + 1;
-                    histogram.put(bin, count);
+                    Collection<PrideData> cell = histogram.get(bin);
+                    cell.add(d);
                     break;
                 }
             }

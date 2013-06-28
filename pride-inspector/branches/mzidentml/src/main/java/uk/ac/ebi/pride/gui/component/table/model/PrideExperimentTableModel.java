@@ -11,7 +11,7 @@ import java.util.*;
  * Date: 11-Sep-2010
  * Time: 14:02:07
  */
-public class PrideExperimentTableModel extends ListTableModel<List<Map<String, String>>> {
+public class PrideExperimentTableModel extends ListBasedListTableModel<List<Map<String, String>>> {
 
     public enum TableHeader {
         EXP_ACC_COLUMN("Accession", "Pride Experiment Accession"),
@@ -75,8 +75,9 @@ public class PrideExperimentTableModel extends ListTableModel<List<Map<String, S
 
     private boolean isAlreadyExist(String accession) {
         boolean exist = false;
-        for (List<Object> content : contents) {
-            if (content.get(0).equals(accession)) {
+        for (Object content : contents) {
+            List<Object> contentList = (List<Object>)content;
+            if (contentList.get(0).equals(accession)) {
                 exist = true;
             }
         }
@@ -114,7 +115,7 @@ public class PrideExperimentTableModel extends ListTableModel<List<Map<String, S
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        List<Object> content = contents.get(rowIndex);
+        List<Object> content = (List<Object>)contents.get(rowIndex);
         content.set(columnIndex, aValue);
         fireTableCellUpdated(rowIndex, columnIndex);
     }

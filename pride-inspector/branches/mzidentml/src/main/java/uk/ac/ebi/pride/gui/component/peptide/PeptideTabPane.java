@@ -13,9 +13,10 @@ import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
-import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideSpeciesPSMTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableHeader;
 import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
-import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
+import uk.ac.ebi.pride.gui.event.container.PSMEvent;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 
 import javax.swing.*;
@@ -37,6 +38,10 @@ public class PeptideTabPane extends PrideInspectorTabPane {
      */
     private static final String PEPTIDE_TITLE = "Peptide";
     /**
+     * resize weight for inner split pane
+     */
+    private static final double INNER_SPLIT_PANE_RESIZE_WEIGHT = 0.6;
+    /**
      * resize weight for outer split pane
      */
     private static final double OUTER_SPLIT_PANE_RESIZE_WEIGHT = 0.6;
@@ -45,6 +50,10 @@ public class PeptideTabPane extends PrideInspectorTabPane {
      */
     private static final int DIVIDER_SIZE = 5;
     /**
+     * Inner split pane contains peptideDescPane and peptidePTMPane
+     */
+    private JSplitPane innerSplitPane;
+    /**
      * Outer split pane contains inner split pane and spectrumViewPane
      */
     private JSplitPane outterSplitPane;
@@ -52,7 +61,10 @@ public class PeptideTabPane extends PrideInspectorTabPane {
      * Display peptide details
      */
     private PeptideDescriptionPane peptideDescPane;
-
+    /**
+     * Display PSM details
+     */
+    private PeptidePSMPane peptidePSMPane;
     /**
      * Visualize spectrum and protein sequence
      */
@@ -83,6 +95,7 @@ public class PeptideTabPane extends PrideInspectorTabPane {
 
         // set properties for IdentTabPane
         this.setLayout(new BorderLayout());
+
         // title for the tab pane
         try {
             int numberOfPeptides = controller.getNumberOfPeptides();
@@ -106,6 +119,13 @@ public class PeptideTabPane extends PrideInspectorTabPane {
      */
     @Override
     protected void addComponents() {
+        // inner split pane
+        innerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        innerSplitPane.setBorder(BorderFactory.createEmptyBorder());
+        innerSplitPane.setOneTouchExpandable(false);
+        innerSplitPane.setDividerSize(DIVIDER_SIZE);
+        innerSplitPane.setResizeWeight(INNER_SPLIT_PANE_RESIZE_WEIGHT);
+
         // outer split pane
         outterSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         outterSplitPane.setBorder(BorderFactory.createEmptyBorder());
@@ -117,14 +137,21 @@ public class PeptideTabPane extends PrideInspectorTabPane {
         peptideDescPane = new PeptideDescriptionPane(controller);
         outterSplitPane.setTopComponent(peptideDescPane);
 
+        // peptide selection pane
+        peptidePSMPane = new PeptidePSMPane(controller);
+        innerSplitPane.setTopComponent(peptidePSMPane);
+
 
         // Spectrum view pane
         vizTabPane = new PeptideVizPane(controller, this);
         vizTabPane.setMinimumSize(new Dimension(200, 200));
-        outterSplitPane.setBottomComponent(vizTabPane);
+        innerSplitPane.setBottomComponent(vizTabPane);
+        outterSplitPane.setBottomComponent(innerSplitPane);
 
         this.add(outterSplitPane, BorderLayout.CENTER);
 
+        // subscribe to local event bus
+        peptidePSMPane.subscribeToEventBus(null);
         vizTabPane.subscribeToEventBus(null);
     }
 
@@ -178,14 +205,16 @@ public class PeptideTabPane extends PrideInspectorTabPane {
     }
 
     public void peptideChange() {
-        int rowNum = (peptideDescPane.getPeptideTable().getSelectedRow() >= 0) ? peptideDescPane.getPeptideTable().getSelectedRow() : 0;
+        JTable psmTable = peptidePSMPane.getPSMTable();
+
+        int rowNum = (psmTable.getSelectedRow() >= 0) ? psmTable.getSelectedRow() : 0;
         if (rowNum >= 0) {
             // get table model
-            PeptideTableModel pepTableModel = (PeptideTableModel) peptideDescPane.getPeptideTable().getModel();
+            PeptideSpeciesPSMTableModel pepTableModel = (PeptideSpeciesPSMTableModel) psmTable.getModel();
 
             // get spectrum reference column
-            int identColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
-            int peptideColNum = pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
+            int identColNum = pepTableModel.getColumnIndex(PeptideTableHeader.IDENTIFICATION_ID.getHeader());
+            int peptideColNum = pepTableModel.getColumnIndex(PeptideTableHeader.PEPTIDE_ID.getHeader());
 
             // get spectrum id
             int modelRowIndex = peptideDescPane.getPeptideTable().convertRowIndexToModel(rowNum);
@@ -196,7 +225,7 @@ public class PeptideTabPane extends PrideInspectorTabPane {
             if (peptideId != null && identId != null) {
                 // publish the event to local event bus
                 EventService eventBus = ContainerEventServiceFinder.getEventService(peptideDescPane);
-                eventBus.publish(new PeptideEvent(peptideDescPane, controller, identId, peptideId));
+                eventBus.publish(new PSMEvent(peptideDescPane, controller, identId, peptideId));
 
             }
         }

@@ -1,8 +1,6 @@
 package uk.ac.ebi.pride.gui.component.startup;
 
 import org.bushe.swing.event.EventBus;
-import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -308,12 +306,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
         // register peptide table model as a task listener
         JTable peptideTable = peptideTabPane.getPeptidePane().getPeptideTable();
-        if (peptideTable instanceof JXTreeTable) {
-            TreeTableModel treeTableModel = ((JXTreeTable) peptideTable).getTreeTableModel();
-            retrieveTask.addTaskListener((TaskListener)treeTableModel);
-        } else {
-            retrieveTask.addTaskListener((TaskListener)peptideTable.getModel());
-        }
+        retrieveTask.addTaskListener((TaskListener)peptideTable.getModel());
 
         // register quantitative tab as a task listener
         try {

@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
-import uk.ac.ebi.pride.gui.component.table.model.PeptideTreeTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideSpeciesTableModel;
 import uk.ac.ebi.pride.gui.task.Task;
 
 /**
@@ -9,17 +9,17 @@ import uk.ac.ebi.pride.gui.task.Task;
  */
 public class FilterPeptideRankingTask extends Task<Void, Void> {
 
-    private PeptideTreeTableModel peptideTreeTableModel;
+    private PeptideSpeciesTableModel peptideSpeciesTableModel;
     private int rankingThreshold;
 
-    public FilterPeptideRankingTask(PeptideTreeTableModel peptideTreeTableModel, int rankingThreshold) {
-        this.peptideTreeTableModel = peptideTreeTableModel;
+    public FilterPeptideRankingTask(PeptideSpeciesTableModel peptideSpeciesTableModel, int rankingThreshold) {
+        this.peptideSpeciesTableModel = peptideSpeciesTableModel;
         this.rankingThreshold = rankingThreshold;
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-        peptideTreeTableModel.setRankingThreshold(rankingThreshold);
+        peptideSpeciesTableModel.setRankingThreshold(rankingThreshold);
         return null;
     }
 

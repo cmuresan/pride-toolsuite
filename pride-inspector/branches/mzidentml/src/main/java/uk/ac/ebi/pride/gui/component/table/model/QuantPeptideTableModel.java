@@ -26,7 +26,7 @@ public class QuantPeptideTableModel extends AbstractPeptideTableModel {
         if (TableContentType.PEPTIDE_QUANTITATION_HEADER.equals(type)) {
             setHeaders(newData.getValue());
         } else if (TableContentType.PEPTIDE_QUANTITATION.equals(type)) {
-            addPeptideData(newData.getValue());
+            addPeptideData((PeptideTableRow)newData.getValue());
         } else {
             super.addData(newData);
         }
@@ -50,11 +50,28 @@ public class QuantPeptideTableModel extends AbstractPeptideTableModel {
     /**
      * Add peptide row data
      *
-     * @param newData peptide data
+     * @param peptideTableRow peptide table row
      */
-    private void addPeptideData(Object newData) {
+    private void addPeptideData(PeptideTableRow peptideTableRow) {
         int rowCnt = this.getRowCount();
-        this.addRow((List<Object>) newData);
+        this.addRow(peptideTableRow);
         fireTableRowsInserted(rowCnt, rowCnt);
+    }
+
+
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        PeptideTableRow peptideTableRow = (PeptideTableRow)contents.get(rowIndex);
+
+        int additionalColumnIndex = getColumnIndex(PeptideTableHeader.ADDITIONAL.getHeader());
+
+        if (columnIndex > additionalColumnIndex) {
+            // quantification columns will always be at the end of the table
+            List<Object> quantifications = peptideTableRow.getQuantifications();
+            return quantifications.get(columnIndex - additionalColumnIndex);
+        } else {
+            return super.getValueAt(rowIndex, columnIndex);
+        }
     }
 }

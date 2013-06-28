@@ -9,17 +9,17 @@ import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableRow;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * User: rwang
  * Date: 08-Sep-2010
  * Time: 10:25:11
  */
-public class RetrievePeptideTableTask extends AbstractDataAccessTask<Void, Tuple<TableContentType, List<Object>>> {
+public class RetrievePeptideTableTask extends AbstractDataAccessTask<Void, Tuple<TableContentType, Object>> {
     private static final Logger logger = LoggerFactory.getLogger(RetrievePeptideTableTask.class);
 
     /**
@@ -100,8 +100,8 @@ public class RetrievePeptideTableTask extends AbstractDataAccessTask<Void, Tuple
                     Collection<Comparable> ids = controller.getPeptideIds(identId);
                     if (ids != null) {
                         for (Comparable peptideId : ids) {
-                            List<Object> content = TableDataRetriever.getPeptideTableRow(controller, identId, peptideId);
-                            publish(new Tuple<TableContentType, List<Object>>(TableContentType.PEPTIDE, content));
+                            PeptideTableRow content = TableDataRetriever.getPeptideTableRow(controller, identId, peptideId);
+                            publish(new Tuple<TableContentType, Object>(TableContentType.PEPTIDE, content));
                         }
                     }
 

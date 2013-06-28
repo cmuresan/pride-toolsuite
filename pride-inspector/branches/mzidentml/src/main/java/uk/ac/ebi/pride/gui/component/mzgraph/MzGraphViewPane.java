@@ -11,7 +11,7 @@ import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.action.impl.OpenHelpAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
-import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
+import uk.ac.ebi.pride.gui.event.container.PSMEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideTask;
@@ -220,14 +220,14 @@ public class MzGraphViewPane extends DataAccessControllerPane {
         peptideSubscriber = new SelectPeptideSubscriber();
 
         // subscribeToEventBus
-        eventBus.subscribe(PeptideEvent.class, peptideSubscriber);
+        eventBus.subscribe(PSMEvent.class, peptideSubscriber);
     }
 
 
-    private class SelectPeptideSubscriber implements EventSubscriber<PeptideEvent> {
+    private class SelectPeptideSubscriber implements EventSubscriber<PSMEvent> {
 
         @Override
-        public void onEvent(PeptideEvent event) {
+        public void onEvent(PSMEvent event) {
             Comparable peptideId = event.getPeptideId();
             Comparable protId = event.getIdentificationId();
 

@@ -10,11 +10,11 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
  * Date: 10/06/11
  * Time: 11:33
  */
-public class PeptideEvent extends AbstractEventServiceEvent {
+public class PSMEvent extends AbstractEventServiceEvent {
 
-    private Comparable identificationId;
-    private Comparable peptideId;
-    private DataAccessController controller;
+    private final Comparable identificationId;
+    private final Comparable peptideId;
+    private final DataAccessController controller;
 
     /**
      * Default constructor
@@ -24,7 +24,7 @@ public class PeptideEvent extends AbstractEventServiceEvent {
      * @param identId   identification id
      * @param pepId peptide id
      */
-    public PeptideEvent(Object source, DataAccessController controller, Comparable identId, Comparable pepId) {
+    public PSMEvent(Object source, DataAccessController controller, Comparable identId, Comparable pepId) {
         super(source);
         this.controller = controller;
         this.identificationId = identId;
@@ -35,23 +35,11 @@ public class PeptideEvent extends AbstractEventServiceEvent {
         return identificationId;
     }
 
-    public void setIdentificationId(Comparable identificationId) {
-        this.identificationId = identificationId;
-    }
-
     public Comparable getPeptideId() {
         return peptideId;
     }
 
-    public void setPeptideId(Comparable peptideId) {
-        this.peptideId = peptideId;
-    }
-
     public DataAccessController getController() {
         return controller;
-    }
-
-    public void setController(DataAccessController controller) {
-        this.controller = controller;
     }
 }

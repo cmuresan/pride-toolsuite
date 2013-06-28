@@ -12,11 +12,11 @@ import java.util.*;
  */
 public abstract class ListTableModel<T> extends AbstractTableModel {
     protected final Map<String, String> columnNames;
-    protected final List<List<Object>> contents;
+    protected final List<Object> contents;
 
     public ListTableModel() {
         columnNames = new LinkedHashMap<String, String>();
-        contents = new ArrayList<List<Object>>();
+        contents = new ArrayList<Object>();
         initializeTableModel();
     }
 
@@ -57,7 +57,7 @@ public abstract class ListTableModel<T> extends AbstractTableModel {
      *
      * @param content a list of data objects
      */
-    public void addRow(List<Object> content) {
+    public void addRow(Object content) {
         contents.add(content);
     }
 
@@ -65,15 +65,16 @@ public abstract class ListTableModel<T> extends AbstractTableModel {
      * Add the row data using a given row number
      *
      * @param rowNum row number
-     * @return  List<Object>    row data
+     * @return  Object    row data
      */
-    public List<Object> getRow(int rowNum) {
-        List<Object> content = null;
+    public Object getRow(int rowNum) {
         int rowCnt = contents.size();
+
         if (rowNum >= 0 && rowNum <= rowCnt) {
-            content = new ArrayList<Object>(contents.get(rowNum));
+            return contents.get(rowNum);
         }
-        return  content;
+
+        return  null;
     }
 
     public void removeAllRows() {
@@ -137,30 +138,30 @@ public abstract class ListTableModel<T> extends AbstractTableModel {
 
         return tooltip;
     }
-
-
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        Object result = null;
-
-        if (!contents.isEmpty() && rowIndex >= 0 && columnIndex >= 0) {
-            List<Object> colValues = contents.get(rowIndex);
-            if (colValues != null) {
-                result = colValues.get(columnIndex);
-            }
-        }
-
-        return result;
-    }
-
-    @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        if (!contents.isEmpty() && rowIndex >= 0 && columnIndex >= 0) {
-            List<Object> colValues = contents.get(rowIndex);
-            if (colValues != null) {
-                colValues.set(columnIndex, aValue);
-                fireTableCellUpdated(rowIndex, columnIndex);
-            }
-        }
-    }
+//
+//
+//    @Override
+//    public Object getValueAt(int rowIndex, int columnIndex) {
+//        Object result = null;
+//
+//        if (!contents.isEmpty() && rowIndex >= 0 && columnIndex >= 0) {
+//            List<Object> colValues = contents.get(rowIndex);
+//            if (colValues != null) {
+//                result = colValues.get(columnIndex);
+//            }
+//        }
+//
+//        return result;
+//    }
+//
+//    @Override
+//    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+//        if (!contents.isEmpty() && rowIndex >= 0 && columnIndex >= 0) {
+//            List<Object> colValues = contents.get(rowIndex);
+//            if (colValues != null) {
+//                colValues.set(columnIndex, aValue);
+//                fireTableCellUpdated(rowIndex, columnIndex);
+//            }
+//        }
+//    }
 }

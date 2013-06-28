@@ -14,7 +14,7 @@ import java.util.List;
  * Date: 02/06/11
  * Time: 15:23
  */
-public class DatabaseSearchTableModel extends ListTableModel<List<Object>> {
+public class DatabaseSearchTableModel extends ListBasedListTableModel<List<Object>> {
     /**
      * table column title
      */
@@ -73,7 +73,7 @@ public class DatabaseSearchTableModel extends ListTableModel<List<Object>> {
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        List<Object> content = contents.get(rowIndex);
+        List<Object> content = (List<Object>)contents.get(rowIndex);
         if (content != null) {
             content.set(columnIndex, aValue);
         }
@@ -89,10 +89,11 @@ public class DatabaseSearchTableModel extends ListTableModel<List<Object>> {
     public List<List<String>> getAllContent() {
         List<List<String>> results = new ArrayList<List<String>>();
         int startIndexOfContent = getStartIndexOfContent();
-        for (List<Object> content : contents) {
+        for (Object content : contents) {
+            List<Object> contentList = (List<Object>)content;
             List<String> result = new ArrayList<String>();
-            for (int i = startIndexOfContent; i < content.size(); i++) {
-                result.add(content.get(i).toString());
+            for (int i = startIndexOfContent; i < contentList.size(); i++) {
+                result.add(contentList.get(i).toString());
             }
             results.add(result);
         }

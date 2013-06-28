@@ -19,7 +19,7 @@ import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.component.report.RemovalReportMessage;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
-import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
+import uk.ac.ebi.pride.gui.event.container.PSMEvent;
 import uk.ac.ebi.pride.gui.event.subscriber.PeptideEventSubscriber;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.utils.AnnotationUtils;
@@ -95,7 +95,7 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
         peptideSubscriber = new PeptideEventSubscriber(controller, this);
 
         // subscribeToEventBus
-        eventBus.subscribe(PeptideEvent.class, peptideSubscriber);
+        eventBus.subscribe(PSMEvent.class, peptideSubscriber);
     }
 
     public MzTablePanel getMzTablePanel() {

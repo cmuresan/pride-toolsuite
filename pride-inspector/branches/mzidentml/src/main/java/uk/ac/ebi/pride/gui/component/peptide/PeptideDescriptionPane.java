@@ -2,23 +2,23 @@ package uk.ac.ebi.pride.gui.component.peptide;
 
 import org.bushe.swing.event.ContainerEventServiceFinder;
 import org.bushe.swing.event.EventService;
-import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.JXTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.action.PrideAction;
-import uk.ac.ebi.pride.gui.action.impl.DecoyFilterAction;
 import uk.ac.ebi.pride.gui.action.impl.ExtraProteinDetailAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
-import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.PeptideTreeTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.ListTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideSpecies;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideSpeciesTableModel;
+import uk.ac.ebi.pride.gui.event.container.ChangeRankingThresholdEvent;
 import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
-import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
+import uk.ac.ebi.pride.gui.event.container.PeptideSpeciesEvent;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.FilterPeptideRankingTask;
 
@@ -26,7 +26,6 @@ import javax.help.CSH;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,54 +41,13 @@ import java.util.ArrayList;
 public class PeptideDescriptionPane extends DataAccessControllerPane {
     private static final Logger logger = LoggerFactory.getLogger(PeptideDescriptionPane.class);
 
-    private enum PeptideRankingFilter {
-        LESS_EQUAL_THAN_ONE("<= 1", 1),
-        LESS_EQUAL_THAN_TWO("<= 2", 2),
-        LESS_EQUAL_THAN_THREE("<= 3", 3),
-        ALL("All", 1000);
-
-
-        private String rankingFilter;
-        private int rankingThreshold;
-
-        private PeptideRankingFilter(String rankingFilter, int rankingThreshold) {
-            this.rankingFilter = rankingFilter;
-            this.rankingThreshold = rankingThreshold;
-        }
-
-        private String getRankingFilter() {
-            return rankingFilter;
-        }
-
-        private int getRankingThreshold() {
-            return rankingThreshold;
-        }
-
-        public static java.util.List<String> getRankingFilters() {
-            java.util.List<String> filters = new ArrayList<String>();
-
-            for (PeptideRankingFilter peptideRankingFilter : values()) {
-                filters.add(peptideRankingFilter.getRankingFilter());
-            }
-
-            return filters;
-        }
-
-        public static int getRankingThreshold(String filter) {
-            for (PeptideRankingFilter peptideRankingFilter : values()) {
-                if (peptideRankingFilter.getRankingFilter().equalsIgnoreCase(filter)) {
-                    return peptideRankingFilter.getRankingThreshold();
-                }
-            }
-
-            return -1;
-        }
-    }
+    public static final String PEPTIDE_TABLE_DESC = "Peptide";
+    public static final String FILTER_BY_RANKING_DESC = "Filter by ranking";
 
     /**
      * peptide details table
      */
-    private JXTreeTable pepTable;
+    private JXTable pepTable;
 
     /**
      * Constructor
@@ -117,7 +75,9 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
     protected void addComponents() {
         // create identification table
         try {
-            pepTable = TableFactory.createPeptideTreeTable(controller.getAvailablePeptideLevelScores(), PeptideRankingFilter.LESS_EQUAL_THAN_ONE.rankingThreshold);
+            double minLimit = Double.parseDouble(uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().getProperty("delta.mz.min.limit"));
+            double maxLimit = Double.parseDouble(uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext().getProperty("delta.mz.max.limit"));
+            pepTable = TableFactory.createPeptideSpeciesTable(PeptideRankingFilter.LESS_EQUAL_THAN_ONE.getRankingThreshold(), minLimit, maxLimit);
         } catch (DataAccessException e) {
             String msg = "Failed to retrieve search engine details";
             logger.error(msg, e);
@@ -163,7 +123,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
         metaDataPanel.setOpaque(false);
 
         // table label
-        JLabel label = new JLabel("Peptide spectrum match");
+        JLabel label = new JLabel(PEPTIDE_TABLE_DESC);
         label.setFont(label.getFont().deriveFont(Font.BOLD));
         metaDataPanel.add(label);
 
@@ -177,7 +137,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
         toolBar.setOpaque(false);
 
         // filter peptide by ranking
-        JLabel rankingFilterLabel = new JLabel("Filter by ranking: ");
+        JLabel rankingFilterLabel = new JLabel(FILTER_BY_RANKING_DESC);
         toolBar.add(rankingFilterLabel);
 
         JComboBox rankingFilterList = getRankingFilterComboBox();
@@ -195,19 +155,19 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
         // add gap
         toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
 
-        // decoy filter
-        JButton decoyFilterButton = GUIUtilities.createLabelLikeButton(null, null);
-        decoyFilterButton.setForeground(Color.blue);
-        PrideAction action = appContext.getPrideAction(controller, DecoyFilterAction.class);
-        if (action == null) {
-            action = new DecoyFilterAction(controller);
-            appContext.addPrideAction(controller, action);
-        }
-        decoyFilterButton.setAction(action);
-        toolBar.add(decoyFilterButton);
-
-        // add gap
-        toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
+//        // decoy filter
+//        JButton decoyFilterButton = GUIUtilities.createLabelLikeButton(null, null);
+//        decoyFilterButton.setForeground(Color.blue);
+//        PrideAction action = appContext.getPrideAction(controller, DecoyFilterAction.class);
+//        if (action == null) {
+//            action = new DecoyFilterAction(controller);
+//            appContext.addPrideAction(controller, action);
+//        }
+//        decoyFilterButton.setAction(action);
+//        toolBar.add(decoyFilterButton);
+//
+//        // add gap
+//        toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
 
         // expand button
         Icon expandIcon = GUIUtilities.loadIcon(appContext.getProperty("expand.table.icon.small"));
@@ -242,9 +202,13 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
                 JComboBox filterComboBox = (JComboBox)e.getSource();
                 String filter = (String) filterComboBox.getSelectedItem();
                 int rankingThreshold = PeptideRankingFilter.getRankingThreshold(filter);
-                PeptideTreeTableModel treeTableModel = (PeptideTreeTableModel)pepTable.getTreeTableModel();
-                FilterPeptideRankingTask filterPeptideRankingTask = new FilterPeptideRankingTask(treeTableModel, rankingThreshold);
+                PeptideSpeciesTableModel peptideSpeciesTableModel = (PeptideSpeciesTableModel)pepTable.getModel();
+                FilterPeptideRankingTask filterPeptideRankingTask = new FilterPeptideRankingTask(peptideSpeciesTableModel, rankingThreshold);
                 TaskUtil.startBackgroundTask(filterPeptideRankingTask, controller);
+
+                // publish the event to local event bus
+                EventService eventBus = ContainerEventServiceFinder.getEventService(PeptideDescriptionPane.this);
+                eventBus.publish(new ChangeRankingThresholdEvent(PeptideDescriptionPane.this, rankingThreshold));
             }
         });
         return rankingFilterList;
@@ -255,7 +219,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
      *
      * @return JTable  peptide table
      */
-    public JXTreeTable getPeptideTable() {
+    public JXTable getPeptideTable() {
         return pepTable;
     }
 
@@ -281,26 +245,18 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
                     previousSelectedRow = rowNum;
                     logger.debug("Peptide table has been clicked, row number: {}", rowNum);
                     // get table model
-                    PeptideTreeTableModel treeTableModel = (PeptideTreeTableModel)pepTable.getTreeTableModel();
+                    ListTableModel tableModel = (ListTableModel)pepTable.getModel();
 
 
                     // get spectrum reference column
-                    int identColNum = treeTableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
-                    int peptideColNum = treeTableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
-
-                    TreePath treePath = pepTable.getPathForRow(rowNum);
-                    // get spectrum id
-                    Object rowNode = treePath.getLastPathComponent();
-                    Comparable identId = (Comparable) treeTableModel.getValueAt(rowNode, identColNum);
-                    Comparable peptideId = (Comparable) treeTableModel.getValueAt(rowNode, peptideColNum);
-
-                    logger.debug("Peptide table selection:  Protein id: " + identId + " Peptide Id: " + peptideId);
+                    int peptideSpeciesColumnIndex = tableModel.getColumnIndex(PeptideSpeciesTableModel.TableHeader.PEPTIDE_SPECIES_COLUMN.getHeader());
+                    PeptideSpecies peptideSpecies = (PeptideSpecies)tableModel.getValueAt(table.convertRowIndexToModel(rowNum), peptideSpeciesColumnIndex);
 
                     // fire a background task to retrieve peptide
-                    if (peptideId != null && identId != null) {
+                    if (peptideSpecies != null) {
                         // publish the event to local event bus
                         EventService eventBus = ContainerEventServiceFinder.getEventService(PeptideDescriptionPane.this);
-                        eventBus.publish(new PeptideEvent(PeptideDescriptionPane.this, controller, identId, peptideId));
+                        eventBus.publish(new PeptideSpeciesEvent(PeptideDescriptionPane.this, peptideSpecies));
                     }
                 }
             }

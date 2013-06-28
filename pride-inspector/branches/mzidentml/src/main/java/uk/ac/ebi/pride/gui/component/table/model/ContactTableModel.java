@@ -17,7 +17,7 @@ import java.util.List;
  * Date: 24/07/2011
  * Time: 11:50
  */
-public class ContactTableModel extends ListTableModel<ParamGroup> {
+public class ContactTableModel extends ListBasedListTableModel<ParamGroup> {
 
     /**
      * table column title

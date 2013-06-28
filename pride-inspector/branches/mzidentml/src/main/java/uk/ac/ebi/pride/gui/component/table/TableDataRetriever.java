@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableRow;
 import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.utils.ProteinAccession;
 import uk.ac.ebi.pride.mol.IsoelectricPointUtils;
@@ -37,25 +38,19 @@ public class TableDataRetriever {
      * @throws uk.ac.ebi.pride.data.controller.DataAccessException
      *          data access exception
      */
-    public static List<Object> getPeptideTableRow(DataAccessController controller,
+    public static PeptideTableRow getPeptideTableRow(DataAccessController controller,
                                                   Comparable identId,
                                                   Comparable peptideId) throws DataAccessException {
-        List<Object> content = new ArrayList<Object>();
+        PeptideTableRow peptideTableRow = new PeptideTableRow();
 
         // peptide sequence with modifications
         List<Modification> mods = new ArrayList<Modification>(controller.getPTMs(identId, peptideId));
         String sequence = controller.getPeptideSequence(identId, peptideId);
-        String modPeptideSequence = getModifiedPeptideString(mods, sequence);
-        content.add(modPeptideSequence);
-
-        // ranking
-        int rank = controller.getPeptideRank(identId, peptideId);
-        content.add(rank);
+        peptideTableRow.setSequence(new PeptideSequence(null, null, sequence, mods, null));
 
         // start and end position
         int start = controller.getPeptideSequenceStart(identId, peptideId);
         int end = controller.getPeptideSequenceEnd(identId, peptideId);
-
 
         // Protein Accession
         String protAcc = controller.getProteinAccession(identId);
@@ -63,7 +58,7 @@ public class TableDataRetriever {
         String database = (controller.getSearchDatabase(identId).getName() == null) ? "" : controller.getSearchDatabase(identId).getName();
         AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
         String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
-        content.add(new ProteinAccession(protAcc, mappedProtAcc));
+        peptideTableRow.setProteinAccession(new ProteinAccession(protAcc, mappedProtAcc));
 
         // get protein details
         Protein protein = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
@@ -72,27 +67,33 @@ public class TableDataRetriever {
         }
 
         // Protein name
-        content.add(protein == null ? null : protein.getName());
+        peptideTableRow.setProteinName(protein == null ? null : protein.getName());
 
         // protein status
-        content.add(protein == null ? null : protein.getStatus().name());
+        peptideTableRow.setProteinAccessionStatus(protein == null ? null : protein.getStatus().name());
 
         // sequence coverage
         Double coverage = PrideInspectorCacheManager.getInstance().getSequenceCoverage(controller.getUid(), identId);
-        content.add(coverage);
+        peptideTableRow.setSequenceCoverage(coverage);
 
         // peptide present
+        int peptideFitState;
         if (protein == null || protein.getSequenceString() == null || "".equals(protein.getSequenceString())) {
-            content.add(PeptideFitState.UNKNOWN);
+            peptideFitState = PeptideFitState.UNKNOWN;
         } else {
             if (protein.hasSubSequenceString(sequence, start, end)) {
-                content.add(PeptideFitState.STRICT_FIT);
+                peptideFitState = PeptideFitState.STRICT_FIT;
             } else if (protein.hasSubSequenceString(sequence)) {
-                content.add(PeptideFitState.FIT);
+                peptideFitState = PeptideFitState.FIT;
             } else {
-                content.add(PeptideFitState.NOT_FIT);
+                peptideFitState = PeptideFitState.NOT_FIT;
             }
         }
+        peptideTableRow.setPeptideFitState(peptideFitState);
+
+        // ranking
+        int rank = controller.getPeptideRank(identId, peptideId);
+        peptideTableRow.setRanking(rank);
 
         // precursor charge
         Integer charge = controller.getPeptidePrecursorCharge(identId, peptideId);
@@ -103,7 +104,7 @@ public class TableDataRetriever {
                 charge = null;
             }
         }
-        content.add(charge);
+        peptideTableRow.setPrecursorCharge(charge);
 
         if (specId != null) {
             double mz = controller.getSpectrumPrecursorMz(specId);
@@ -115,124 +116,39 @@ public class TableDataRetriever {
                 }
             }
             Double deltaMass = MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
-            content.add(deltaMass == null ? null : NumberUtilities.scaleDouble(deltaMass, 2));
+            peptideTableRow.setDeltaMz(deltaMass == null ? null : NumberUtilities.scaleDouble(deltaMass, 2));
 
-            content.add(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 2));
+            peptideTableRow.setPrecursorMz(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 2));
         } else {
-            content.add(null);
-            content.add(null);
+            peptideTableRow.setDeltaMz(null);
+            peptideTableRow.setPrecursorMz(null);
         }
-
-        // modification names
-        String modNames = getModificationNames(mods);
-        content.add(modNames);
 
         // Number of fragment ions
-        content.add(controller.getNumberOfFragmentIons(identId, peptideId));
+        peptideTableRow.setNumberOfFragmentIons(controller.getNumberOfFragmentIons(identId, peptideId));
 
         // peptide scores
-        addPeptideScores(content, controller, identId, peptideId);
-
-        // Sequence length
-        content.add(sequence.length());
+        addPeptideScores(peptideTableRow, controller, identId, peptideId);
 
         // Start
-        content.add(start == -1 ? null : start);
+        peptideTableRow.setSequenceStartPosition(start == -1 ? null : start);
 
         // End
-        content.add(end == -1 ? null : end);
-
-        // Theoritical isoelectric point
-        content.add(IsoelectricPointUtils.calculate(sequence));
-        // content.add(null);
+        peptideTableRow.setSequenceEndPosition(end == -1 ? null : end);
 
         // Spectrum reference
-        content.add(specId);
+        peptideTableRow.setSpectrumId(specId);
 
         // identification id
-        content.add(identId);
+        peptideTableRow.setProteinId(identId);
 
         // peptide index
-        content.add(peptideId);
+        peptideTableRow.setPeptideId(peptideId);
 
-        // additional details
-        content.add(identId + Constants.COMMA + peptideId);
-
-        return content;
+        return peptideTableRow;
     }
 
-    private static String getModificationNames(List<Modification> mods) {
-        Set<String> modificationNames = new HashSet<String>();
-        String concatenatedModificationNames = "";
-
-        for (Modification mod : mods) {
-            String modName = mod.getName();
-            if (!modificationNames.contains(modName)) {
-                concatenatedModificationNames += modName + "; ";
-                modificationNames.add(mod.getName());
-            }
-        }
-
-        if (concatenatedModificationNames.length() > 1) {
-            concatenatedModificationNames = concatenatedModificationNames.substring(0, concatenatedModificationNames.length() - 2);
-        }
-
-        return concatenatedModificationNames;
-    }
-
-    private static String getModifiedPeptideString(List<Modification> mods, String sequence) {
-        // Map for grouping PTMs based on location
-        Map<Integer, List<Double>> locationMap = new LinkedHashMap<Integer, List<Double>>();
-
-        // Iterate over each modification
-        for (Modification mod : mods) {
-            // store the location
-            int location = mod.getLocation();
-            if (location == 0) {
-                location = 1;
-            } else if (location == (sequence.length() + 1)) {
-                location--;
-            }
-
-            List<Double> massDiffs = locationMap.get(location);
-            if (massDiffs == null) {
-                massDiffs = new ArrayList<Double>();
-                locationMap.put(location, massDiffs);
-                List<Double> md = mod.getMonoisotopicMassDelta();
-                if (md != null && !md.isEmpty()) {
-                    massDiffs.add(md.get(0));
-                }
-            }
-        }
-
-        // Modified Peptide Sequence
-        //todo: can be simplified when there is no modifications
-        StringBuilder modPeptide = new StringBuilder();
-        for (int i = 0; i < sequence.length(); i++) {
-            // append the amino acid
-            modPeptide.append(sequence.charAt(i));
-            // append mass differences if there is any
-            List<Double> massDiffs = locationMap.get(i + 1);
-            if (massDiffs != null) {
-                modPeptide.append("[");
-                if (massDiffs.isEmpty()) {
-                    modPeptide.append("*");
-                } else {
-                    for (int j = 0; j < massDiffs.size(); j++) {
-                        if (j != 0) {
-                            modPeptide.append(",");
-                        }
-                        modPeptide.append(NumberUtilities.scaleDouble(massDiffs.get(j), 1));
-                    }
-                }
-                modPeptide.append("]");
-            }
-        }
-
-        return modPeptide.toString();
-    }
-
-    private static void addPeptideScores(List<Object> content, DataAccessController controller,
+    private static void addPeptideScores(PeptideTableRow peptideTableRow, DataAccessController controller,
                                          Comparable identId, Comparable peptideId) {
         Score score = controller.getPeptideScore(identId, peptideId);
         Collection<CvTermReference> availablePeptideLevelScores = controller.getAvailablePeptideLevelScores();
@@ -242,15 +158,15 @@ public class TableDataRetriever {
                 if (!values.isEmpty()) {
                     // take the first by default
                     //content.add(values.get(0));
-                    content.add(NumberUtilities.scaleDouble(values.get(0).doubleValue(), 4));
+                    peptideTableRow.addScore(NumberUtilities.scaleDouble(values.get(0).doubleValue(), 4));
 
                 } else {
-                    content.add(null);
+                    peptideTableRow.addScore(null);
                 }
             }
         } else {
             for (CvTermReference availablePeptideLevelScore : availablePeptideLevelScores) {
-                content.add(null);
+                peptideTableRow.addScore(null);
             }
         }
     }

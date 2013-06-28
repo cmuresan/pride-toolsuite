@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.gui.component.report.RemovalReportMessage;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.table.filter.DecoyAccessionFilter;
-import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableHeader;
 import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
@@ -59,7 +59,7 @@ public class DecoyRatioTask extends TaskAdapter<Void, Void> {
 
         // peptide tab
         table = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
-        protAccColName = PeptideTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
+        protAccColName = PeptideTableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
         index = getAccessionColumnIndex(table.getModel(), protAccColName);
         // peptide decoy ratio
         String peptideDecoyRatio = calculateDecoyRatio(table.getModel(), index, type, criteria);

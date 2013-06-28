@@ -4,7 +4,6 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * PeptideTableModel contains all the detailed that displayed in peptide table.
@@ -25,7 +24,7 @@ public class PeptideTableModel extends AbstractPeptideTableModel {
         TableContentType type = newData.getKey();
 
         if (TableContentType.PEPTIDE.equals(type)) {
-            addPeptideData(newData.getValue());
+            addPeptideTableRow((PeptideTableRow) newData.getValue());
         } else {
             super.addData(newData);
         }
@@ -34,11 +33,12 @@ public class PeptideTableModel extends AbstractPeptideTableModel {
     /**
      * Add peptide row data
      *
-     * @param newData peptide data
+     * @param peptideTableRow peptide data
      */
-    private void addPeptideData(Object newData) {
+    protected void addPeptideTableRow(PeptideTableRow peptideTableRow) {
         int rowCnt = this.getRowCount();
-        this.addRow((List<Object>) newData);
+        this.addRow(peptideTableRow);
         fireTableRowsInserted(rowCnt, rowCnt);
     }
+
 }

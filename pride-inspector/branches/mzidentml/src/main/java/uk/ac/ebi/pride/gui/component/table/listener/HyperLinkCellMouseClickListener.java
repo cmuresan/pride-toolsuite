@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -56,14 +57,18 @@ public class HyperLinkCellMouseClickListener extends MouseAdapter {
             Object val = table.getValueAt(table.convertRowIndexToModel(row), col);
 
             if (val != null && clickHeader.equals(linkedHeader)) {
-                String text = val.toString();
+
                 Set<Object> urlList = new HashSet<Object>();
 
                 if (pattern != null) {
-                    Matcher m = pattern.matcher(text);
+                    Matcher m = pattern.matcher(val.toString());
 
                     while (m.find()) {
                         urlList.add(m.group());
+                    }
+                } else if (val instanceof Collection){
+                    for (Object o : (Collection)val) {
+                        urlList.add(o);
                     }
                 } else {
                     urlList.add(val);

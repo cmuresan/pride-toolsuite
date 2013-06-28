@@ -13,11 +13,12 @@ import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableHeader;
 import uk.ac.ebi.pride.gui.component.table.model.ProgressiveListTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.QuantPeptideTableModel;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.event.ReferenceSampleChangeEvent;
-import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
+import uk.ac.ebi.pride.gui.event.container.PSMEvent;
 import uk.ac.ebi.pride.gui.event.container.ProteinIdentificationEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
@@ -108,7 +109,7 @@ public class QuantPeptideSelectionPane extends DataAccessControllerPane implemen
             pepTable.getSelectionModel().addListSelectionListener(new PeptideSelectionListener(pepTable));
 
             // add mouse listener
-            String protAccColumnHeader = QuantPeptideTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
+            String protAccColumnHeader = PeptideTableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
             pepTable.addMouseMotionListener(new TableCellMouseMotionListener(pepTable, protAccColumnHeader));
 
             JScrollPane scrollPane = new JScrollPane(pepTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -296,8 +297,8 @@ public class QuantPeptideSelectionPane extends DataAccessControllerPane implemen
                     // get table model
                     QuantPeptideTableModel tableModel = (QuantPeptideTableModel) table.getModel();
                     // get identification and peptide column
-                    int identColNum = tableModel.getColumnIndex(QuantPeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
-                    int peptideColNum = tableModel.getColumnIndex(QuantPeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
+                    int identColNum = tableModel.getColumnIndex(PeptideTableHeader.IDENTIFICATION_ID.getHeader());
+                    int peptideColNum = tableModel.getColumnIndex(PeptideTableHeader.PEPTIDE_ID.getHeader());
 
                     // get identification and peptide id
                     if (table.getRowCount() > 0) {
@@ -308,7 +309,7 @@ public class QuantPeptideSelectionPane extends DataAccessControllerPane implemen
                         if (peptideId != null && identId != null) {
                             // publish the event to local event bus
                             EventService eventBus = ContainerEventServiceFinder.getEventService(QuantPeptideSelectionPane.this);
-                            eventBus.publish(new PeptideEvent(QuantPeptideSelectionPane.this, controller, identId, peptideId));
+                            eventBus.publish(new PSMEvent(QuantPeptideSelectionPane.this, controller, identId, peptideId));
                         }
                     }
                 }

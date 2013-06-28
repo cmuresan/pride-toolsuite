@@ -117,7 +117,7 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
 
         // iterate over each row, set the protein name
         for (int row = 0; row < contents.size(); row++) {
-            List<Object> content = contents.get(row);
+            List<Object> content = (List<Object>)contents.get(row);
             Object proteinAccession = content.get(mappedAccIndex);
             if (proteinAccession != null) {
                 String mappedAccession = ((ProteinAccession) proteinAccession).getMappedAccession();
@@ -156,7 +156,7 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
 
         // iterate over each row, set the protein name
         for (int row = 0; row < contents.size(); row++) {
-            List<Object> content = contents.get(row);
+            List<Object> content = (List<Object>)contents.get(row);
             Object identId = content.get(identIdIndex);
             Double coverage = coverageMap.get(identId);
             if (coverage != null) {
@@ -166,5 +166,21 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
                 fireTableCellUpdated(row, coverageIndex);
             }
         }
+    }
+
+
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        Object result = null;
+
+        if (!contents.isEmpty() && rowIndex >= 0 && columnIndex >= 0) {
+            List<Object> colValues = (List<Object>)contents.get(rowIndex);
+            if (colValues != null) {
+                result = colValues.get(columnIndex);
+            }
+        }
+
+        return result;
     }
 }

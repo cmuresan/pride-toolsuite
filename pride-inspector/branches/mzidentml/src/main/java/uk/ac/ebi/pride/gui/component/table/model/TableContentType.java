@@ -28,6 +28,10 @@ public enum TableContentType {
      */
     PEPTIDE,
     /**
+     * peptide species
+     */
+    PEPTIDE_SPECIES,
+    /**
      * ptm table
      */
     PTM,

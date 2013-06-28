@@ -318,7 +318,7 @@ public class QuantExportDialog extends JDialog {
         // copy all the data
         int rowCnt = existingTableModel.getRowCount();
         for (int i = 0; i < rowCnt; i++) {
-            java.util.List<Object> row = existingTableModel.getRow(i);
+            java.util.List<Object> row = (java.util.List<Object>)existingTableModel.getRow(i);
             row.remove(compareColumnIndex);
             tableModel.addRow(row);
         }

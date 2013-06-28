@@ -14,7 +14,7 @@ import java.util.List;
  * Date: 24/07/2011
  * Time: 08:15
  */
-public class ReferenceTableModel extends ListTableModel<Reference> {
+public class ReferenceTableModel extends ListBasedListTableModel<Reference> {
     /**
      * table column title
      */

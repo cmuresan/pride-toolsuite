@@ -11,11 +11,8 @@ import java.util.List;
  * Date: 12-Apr-2010
  * Time: 16:05:12
  */
-public class ChromatogramTableModel extends ProgressiveListTableModel<Void, Tuple<TableContentType, List<Object>>> {
+public class ChromatogramTableModel extends ListBasedProgressiveListTableModel<Void, Tuple<TableContentType, List<Object>>> {
 
-    /**
-     * table column title
-     */
     public enum TableHeader {
         CHROMATOGRAM_ID_COLUMN("Chromatogram ID", "Chromatogram ID");
 

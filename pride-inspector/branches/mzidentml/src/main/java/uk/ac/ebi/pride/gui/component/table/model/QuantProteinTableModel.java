@@ -134,16 +134,17 @@ public class QuantProteinTableModel extends AbstractProteinTableModel {
             identIdToRowNumMapping.put(identId, rowNum);
             fireTableRowsInserted(rowNum, rowNum);
         } else {
-            List<Object> content = contents.get(rowNum);
+            List<Object> content = (List<Object>)contents.get(rowNum);
 
             // adjust all content's size
             int offset = compareColIndex + 1;
             int contentSize = content.size();
             int dataSize = data.size();
             if (contentSize - offset < dataSize) {
-                for (List<Object> con : contents) {
+                for (Object con : contents) {
+                    List<Object> conList = (List<Object>)con;
                     for (int i = contentSize - offset; i < dataSize; i++) {
-                        con.add(null);
+                        conList.add(null);
                     }
                 }
             }

@@ -17,7 +17,7 @@ import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.action.impl.OpenHelpAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
-import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
+import uk.ac.ebi.pride.gui.event.container.PSMEvent;
 import uk.ac.ebi.pride.gui.event.container.SpectrumEvent;
 import uk.ac.ebi.pride.gui.event.subscriber.PeptideSpectrumEventSubscriber;
 import uk.ac.ebi.pride.gui.event.subscriber.SpectrumEventSubscriber;
@@ -172,7 +172,7 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
         spectrumSelectSubscriber = new SpectrumEventSubscriber(controller, this);
 
         // subscribeToEventBus
-        eventBus.subscribe(PeptideEvent.class, spectrumSubscriber);
+        eventBus.subscribe(PSMEvent.class, spectrumSubscriber);
         eventBus.subscribe(SpectrumEvent.class, spectrumSelectSubscriber);
     }
 

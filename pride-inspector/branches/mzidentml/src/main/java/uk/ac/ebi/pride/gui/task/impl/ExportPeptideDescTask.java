@@ -7,7 +7,9 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.ExperimentMetaData;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableHeader;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableRow;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 
 import java.io.File;
@@ -27,6 +29,8 @@ import static uk.ac.ebi.pride.gui.utils.Constants.TAB;
  * User: rwang
  * Date: 13-Oct-2010
  * Time: 16:08:37
+ *
+ * todo: this task is broken, please fix this
  */
 public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
     private static final Logger logger = LoggerFactory.getLogger(ExportIdentificationDescTask.class);
@@ -98,9 +102,9 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
             // a list of columns to be skipped
             List<Integer> skipIndexes = new ArrayList<Integer>();
             // skip identification id
-            skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader()));
+            skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableHeader.IDENTIFICATION_ID.getHeader()));
             // skip peptide id
-            skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader()));
+            skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableHeader.PEPTIDE_ID.getHeader()));
             // get number of columns in peptide table model
             int numOfCols = pepTableModel.getColumnCount();
             // iterate over each column to construct the header
@@ -122,16 +126,16 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
                     for (Comparable pepId : pepIds) {
 
                         // get row data
-                        List<Object> content = TableDataRetriever.getPeptideTableRow(controller, identId, pepId);
+                        PeptideTableRow content = TableDataRetriever.getPeptideTableRow(controller, identId, pepId);
 
                         // output the rest of the results
-                        for (int i = 0; i < content.size(); i++) {
-                            if (!skipIndexes.contains(i + 1)) {
-                                Object entry = content.get(i);
-                                writer.print(entry == null ? "" : entry.toString());
-                                writer.print(TAB);
-                            }
-                        }
+//                        for (int i = 0; i < content.size(); i++) {
+//                            if (!skipIndexes.contains(i + 1)) {
+//                                Object entry = content.get(i);
+//                                writer.print(entry == null ? "" : entry.toString());
+//                                writer.print(TAB);
+//                            }
+//                        }
 
                         // line break
                         writer.print(LINE_SEPARATOR);

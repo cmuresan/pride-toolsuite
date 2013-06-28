@@ -16,16 +16,15 @@ import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableHeader;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.ProgressiveListTableModel;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
-import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
+import uk.ac.ebi.pride.gui.event.container.PSMEvent;
 import uk.ac.ebi.pride.gui.event.container.ProteinIdentificationEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideTableTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -116,7 +115,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
         try {
             pepTable = TableFactory.createPeptideTable(controller.getAvailablePeptideLevelScores(), controller);
             // hide protein accession column
-            TableColumnExt proteinAccCol = (TableColumnExt) pepTable.getColumn(PeptideTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader());
+            TableColumnExt proteinAccCol = (TableColumnExt) pepTable.getColumn(PeptideTableHeader.PROTEIN_ACCESSION_COLUMN.getHeader());
             proteinAccCol.setVisible(false);
         } catch (DataAccessException e) {
             String msg = "Failed to retrieve search engine details";
@@ -128,7 +127,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
         pepTable.getSelectionModel().addListSelectionListener(new PeptideSelectionListener(pepTable));
 
         // add mouse listener
-        String protAccColumnHeader = PeptideTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
+        String protAccColumnHeader = PeptideTableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
         pepTable.addMouseMotionListener(new TableCellMouseMotionListener(pepTable, protAccColumnHeader));
 
         JScrollPane scrollPane = new JScrollPane(pepTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -335,8 +334,8 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
                     // get table model
                     PeptideTableModel tableModel = (PeptideTableModel) table.getModel();
                     // get identification and peptide column
-                    int identColNum = tableModel.getColumnIndex(PeptideTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
-                    int peptideColNum = tableModel.getColumnIndex(PeptideTableModel.TableHeader.PEPTIDE_ID.getHeader());
+                    int identColNum = tableModel.getColumnIndex(PeptideTableHeader.IDENTIFICATION_ID.getHeader());
+                    int peptideColNum = tableModel.getColumnIndex(PeptideTableHeader.PEPTIDE_ID.getHeader());
 
                     // get identification and peptide id
                     if (table.getRowCount() > 0) {
@@ -347,7 +346,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
                         if (peptideId != null && identId != null) {
                             // publish the event to local event bus
                             EventService eventBus = ContainerEventServiceFinder.getEventService(PeptideSelectionPane.this);
-                            eventBus.publish(new PeptideEvent(PeptideSelectionPane.this, controller, identId, peptideId));
+                            eventBus.publish(new PSMEvent(PeptideSelectionPane.this, controller, identId, peptideId));
                         }
                     }
                 }

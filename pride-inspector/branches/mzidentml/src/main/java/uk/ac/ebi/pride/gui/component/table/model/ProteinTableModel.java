@@ -4,7 +4,6 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * IdentificationTableModel stores all information to be displayed in the identification table.
@@ -46,7 +45,7 @@ public class ProteinTableModel extends AbstractProteinTableModel {
     private void addIdentificationData(Object newData) {
         int rowCnt = this.getRowCount();
         // row number
-        contents.add((List<Object>) newData);
+        contents.add(newData);
         fireTableRowsInserted(rowCnt, rowCnt);
     }
 }

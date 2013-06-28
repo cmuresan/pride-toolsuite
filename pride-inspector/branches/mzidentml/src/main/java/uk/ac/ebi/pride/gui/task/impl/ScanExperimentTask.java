@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableRow;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 
@@ -23,7 +24,7 @@ import java.util.*;
  * Date: 14-Sep-2010
  * Time: 11:34:33
  */
-public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<TableContentType, List<Object>>> {
+public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<TableContentType, Object>> {
     private final static Logger logger = LoggerFactory.getLogger(ScanExperimentTask.class);
 
     /**
@@ -62,7 +63,7 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
                 logger.debug("Scan quantification table header");
                 // protein quantitative table header
                 List<Object> proteinQuantHeaders = TableDataRetriever.getProteinQuantTableHeaders(controller, -1);
-                publish(new Tuple<TableContentType, List<Object>>(TableContentType.PROTEIN_QUANTITATION_HEADER, proteinQuantHeaders));
+                publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_QUANTITATION_HEADER, proteinQuantHeaders));
             }
 
             for (Comparable identId : identIds) {
@@ -70,7 +71,7 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
                 // get and publish protein related details
                 logger.debug("Scan protein details: {}", identId);
                 List<Object> identContent = TableDataRetriever.getProteinTableRow(controller, identId);
-                publish(new Tuple<TableContentType, List<Object>>(TableContentType.PROTEIN, identContent));
+                publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN, identContent));
 
 
                 if (hasQuantData) {
@@ -80,7 +81,7 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
                     allQuantContent.addAll(identContent);
                     List<Object> identQuantContent = TableDataRetriever.getProteinQuantTableRow(controller, identId, -1);
                     allQuantContent.addAll(identQuantContent);
-                    publish(new Tuple<TableContentType, List<Object>>(TableContentType.PROTEIN_QUANTITATION, allQuantContent));
+                    publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_QUANTITATION, allQuantContent));
                 }
 
                 // get and publish peptide related details
@@ -88,8 +89,8 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
                 if (ids != null) {
                     for (Comparable peptideId : ids) {
                         logger.debug("Scan peptide details: {}-{}", identId, peptideId);
-                        List<Object> peptideContent = TableDataRetriever.getPeptideTableRow(controller, identId, peptideId);
-                        publish(new Tuple<TableContentType, List<Object>>(TableContentType.PEPTIDE, peptideContent));
+                        PeptideTableRow peptideTableRow = TableDataRetriever.getPeptideTableRow(controller, identId, peptideId);
+                        publish(new Tuple<TableContentType, Object>(TableContentType.PEPTIDE, peptideTableRow));
 
                         if (controller.getPeptideSpectrumId(identId, peptideId) == null) {
                             missingSpectrumLinks++;

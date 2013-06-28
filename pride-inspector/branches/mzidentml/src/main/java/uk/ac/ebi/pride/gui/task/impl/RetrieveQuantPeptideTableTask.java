@@ -3,10 +3,10 @@ package uk.ac.ebi.pride.gui.task.impl;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableRow;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
  * Date: 18/08/2011
  * Time: 11:09
  */
-public class RetrieveQuantPeptideTableTask extends TaskAdapter<Void, Tuple<TableContentType, List<Object>>> {
+public class RetrieveQuantPeptideTableTask extends TaskAdapter<Void, Tuple<TableContentType, Object>> {
 
     private static final String DEFAULT_TASK_NAME = "Updating Peptide Table";
 
@@ -40,21 +40,19 @@ public class RetrieveQuantPeptideTableTask extends TaskAdapter<Void, Tuple<Table
         // get new headers
         // protein quantitative table header
         List<Object> peptideQuantHeaders = TableDataRetriever.getPeptideQuantTableHeaders(controller, referenceSampleIndex);
-        publish(new Tuple<TableContentType, List<Object>>(TableContentType.PEPTIDE_QUANTITATION_HEADER, peptideQuantHeaders));
+        publish(new Tuple<TableContentType, Object>(TableContentType.PEPTIDE_QUANTITATION_HEADER, peptideQuantHeaders));
 
         // get all the peptide ids
         Collection<Comparable> peptideIds = controller.getPeptideIds(identId);
         for (Comparable peptideId : peptideIds) {
-            // get each row
-            List<Object> allQuantContent = new ArrayList<Object>();
             // get and publish protein related details
-            List<Object> peptideContent = TableDataRetriever.getPeptideTableRow(controller, identId, peptideId);
-            allQuantContent.addAll(peptideContent);
+            PeptideTableRow peptideContent = TableDataRetriever.getPeptideTableRow(controller, identId, peptideId);
+
             // get and publish quantitative data
             List<Object> peptideQuantContent = TableDataRetriever.getPeptideQuantTableRow(controller, identId, peptideId, referenceSampleIndex);
-            allQuantContent.addAll(peptideQuantContent);
+            peptideContent.addQuantifications(peptideQuantContent);
 
-            publish(new Tuple<TableContentType, List<Object>>(TableContentType.PEPTIDE_QUANTITATION, allQuantContent));
+            publish(new Tuple<TableContentType, Object>(TableContentType.PEPTIDE_QUANTITATION, peptideContent));
         }
 
         // check for interruption

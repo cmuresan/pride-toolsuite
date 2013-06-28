@@ -1,15 +1,14 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
-import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.table.TableColumnModelExt;
-import org.jdesktop.swingx.treetable.TreeTableModel;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
-import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableHeader;
 import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
@@ -97,7 +96,7 @@ public class ExtraProteinDetailAction extends PrideAction {
         columns = showHideColModel.getColumns(true);
         for (TableColumn column : columns) {
             Object header = column.getHeaderValue();
-            if (PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader().equals(header)) {
+            if (PeptideTableHeader.PEPTIDE_FIT.getHeader().equals(header)) {
                 ((TableColumnExt) column).setVisible(true);
             }
         }
@@ -108,8 +107,8 @@ public class ExtraProteinDetailAction extends PrideAction {
         columns = showHideColModel.getColumns(true);
         for (TableColumn column : columns) {
             Object header = column.getHeaderValue();
-            if (PeptideTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(header) ||
-                    PeptideTableModel.TableHeader.PEPTIDE_FIT.getHeader().equals(header)) {
+            if (PeptideTableHeader.PROTEIN_NAME.getHeader().equals(header) ||
+                    PeptideTableHeader.PEPTIDE_FIT.getHeader().equals(header)) {
                 ((TableColumnExt) column).setVisible(true);
             }
         }
@@ -156,7 +155,7 @@ public class ExtraProteinDetailAction extends PrideAction {
         List<String> accs = new ArrayList<String>();
 
         int rowCount = table.getRowCount();
-        int column = table.getColumnModel().getColumnIndex(PeptideTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader());
+        int column = table.getColumnModel().getColumnIndex(PeptideTableHeader.PROTEIN_ACCESSION_COLUMN.getHeader());
         int selectedRow = table.getSelectedRow();
         // add selected row first
         if (selectedRow >= 0) {
@@ -203,9 +202,8 @@ public class ExtraProteinDetailAction extends PrideAction {
         TableModel tableModel = table.getModel();
         task.addTaskListener((TaskListener) tableModel);
         // peptide tab
-        JXTreeTable treetable = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
-        TreeTableModel treeTableModel = treetable.getTreeTableModel();
-        task.addTaskListener((TaskListener) treeTableModel);
+        JXTable peptideTable = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
+        task.addTaskListener((TaskListener) peptideTable.getModel());
         // quant tab
         if (contentPane.isQuantTabEnabled()) {
             table = contentPane.getQuantTabPane().getQuantProteinSelectionPane().getQuantProteinTable();

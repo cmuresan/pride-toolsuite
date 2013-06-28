@@ -208,16 +208,17 @@ public class PeptideTreeTableModel extends AbstractTreeTableModel implements Tas
         int rankingIndex = getColumnIndex(TableHeader.RANKING.getHeader());
         int ranking = (Integer) peptideRow.getContentByIndex(rankingIndex);
 
-        int spectrumIdIndex = getColumnIndex(TableHeader.SPECTRUM_ID.getHeader());
-        String spectrumId = peptideRow.getContentByIndex(spectrumIdIndex).toString();
+        int proteinAccIndex = getColumnIndex(TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader());
+        ProteinAccession protein = (ProteinAccession)peptideRow.getContentByIndex(proteinAccIndex);
+        String proteinAccession = protein.getAccession();
 
         int peptideIndex = getColumnIndex(TableHeader.PEPTIDE_COLUMN.getHeader());
-        String peptide = peptideRow.getContentByIndex(peptideIndex).toString();
+        String peptide = peptideRow.getContentByIndex(peptideIndex).toString().trim();
 
-        PeptideRow parentPeptideRow = spectrumIdToPeptideRow.get(new Tuple<String, String>(peptide, spectrumId));
+        PeptideRow parentPeptideRow = spectrumIdToPeptideRow.get(new Tuple<String, String>(peptide, proteinAccession));
 
         if (parentPeptideRow == null) {
-            spectrumIdToPeptideRow.put(new Tuple<String, String>(peptide, spectrumId), peptideRow);
+            spectrumIdToPeptideRow.put(new Tuple<String, String>(peptide, proteinAccession), peptideRow);
             if (ranking <= rankingThreshold) {
                 ((PeptideRow) getRoot()).addChild(peptideRow);
                 int childIndex = ((PeptideRow) getRoot()).getChildIndex(peptideRow);
@@ -237,8 +238,20 @@ public class PeptideTreeTableModel extends AbstractTreeTableModel implements Tas
 
     private void emptyParentPeptideRow(PeptideRow parentPeptideRow) {
 
-        int proteinAccessionIndex = getColumnIndex(TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader());
-        parentPeptideRow.setContentByIndex(proteinAccessionIndex, null);
+        int peptideIdIndex = getColumnIndex(TableHeader.PEPTIDE_ID.getHeader());
+        parentPeptideRow.setContentByIndex(peptideIdIndex, null);
+
+        int numOfFragIonIndex = getColumnIndex(TableHeader.NUMBER_OF_FRAGMENT_IONS_COLUMN.getHeader());
+        parentPeptideRow.setContentByIndex(numOfFragIonIndex, null);
+
+        int additionalIndex = getColumnIndex(TableHeader.ADDITIONAL.getHeader());
+        parentPeptideRow.setContentByIndex(additionalIndex, null);
+
+        int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
+        parentPeptideRow.setContentByIndex(identIdIndex, null);
+
+        int spectrumIdIndex = getColumnIndex(TableHeader.SPECTRUM_ID.getHeader());
+        parentPeptideRow.setContentByIndex(spectrumIdIndex, null);
 
     }
 

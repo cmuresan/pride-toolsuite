@@ -112,12 +112,10 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
         spectrumViewPane = new SpectrumViewPane(controller, true);
         tabbedPane.insertTab(appContext.getProperty("spectrum.tab.title"), null,
                 spectrumViewPane, appContext.getProperty("spectrum.tab.tooltip"), tabIndex);
-
     }
 
     public void addSpectrumViewPane() {
         // Spectrum view pane
-
         spectrumViewPane = new SpectrumViewPane(controller, true);
 
         int tabbedPaneIndex = 0;
@@ -138,7 +136,6 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
     }
 
     public void addFragmentationViewPane() {
-
         fragmentationTablePane = new FragmentationTablePane(controller);
 
         int tabbedPaneIndex = 1;
@@ -156,8 +153,5 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
         proteinSequencePaneIndex = tabbedPaneIndex;
 
         fragmentationTablePane.subscribeToEventBus(null);
-
-
     }
-
 }

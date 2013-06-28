@@ -13,7 +13,7 @@ import java.util.List;
  * Date: 11/08/2011
  * Time: 10:13
  */
-public class QuantSampleTableModel extends ListTableModel<QuantitativeSample> {
+public class QuantSampleTableModel extends ListBasedListTableModel<QuantitativeSample> {
 
     /**
      * table column title

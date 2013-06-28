@@ -10,7 +10,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
-import uk.ac.ebi.pride.gui.event.container.PeptideEvent;
+import uk.ac.ebi.pride.gui.event.container.PSMEvent;
 import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
@@ -518,7 +518,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
         peptideEventSubscriber = new PeptideEventSubscriber();
 
         // subscribe
-        eventBus.subscribe(PeptideEvent.class, peptideEventSubscriber);
+        eventBus.subscribe(PSMEvent.class, peptideEventSubscriber);
     }
 
     @Override
@@ -530,10 +530,10 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
     /**
      * Subscribe to peptide event
      */
-    private class PeptideEventSubscriber implements EventSubscriber<PeptideEvent> {
+    private class PeptideEventSubscriber implements EventSubscriber<PSMEvent> {
 
         @Override
-        public void onEvent(PeptideEvent event) {
+        public void onEvent(PSMEvent event) {
             Comparable identId = event.getIdentificationId();
             Comparable peptideId = event.getPeptideId();
 

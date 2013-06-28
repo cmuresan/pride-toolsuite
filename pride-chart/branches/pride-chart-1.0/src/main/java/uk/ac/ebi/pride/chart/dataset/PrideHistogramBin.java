@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.chart.dataset;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 
 /**
  * Extend org.jfree.data.statistics.PrideHistogramBin, add hashCode and comparable capability.
@@ -18,10 +19,10 @@ public class PrideHistogramBin implements Cloneable, Serializable, Comparable<Pr
     private int count;
 
     /** The start boundary. */
-    private int startBoundary;
+    private double startBoundary;
 
     /** The end boundary. */
-    private int endBoundary;
+    private double endBoundary;
 
     /**
      * Creates a new bin.
@@ -29,7 +30,7 @@ public class PrideHistogramBin implements Cloneable, Serializable, Comparable<Pr
      * @param startBoundary  the start boundary.
      * @param endBoundary  the end boundary.
      */
-    public PrideHistogramBin(int startBoundary, int endBoundary) {
+    public PrideHistogramBin(double startBoundary, double endBoundary) {
         if (startBoundary >= endBoundary) {
             throw new IllegalArgumentException(
                     "PrideHistogramBin():  startBoundary >= endBoundary.");
@@ -60,8 +61,12 @@ public class PrideHistogramBin implements Cloneable, Serializable, Comparable<Pr
      *
      * @return The start boundary.
      */
-    public int getStartBoundary() {
+    public double getStartBoundary() {
         return this.startBoundary;
+    }
+
+    public void setStartBoundary(double startBoundary) {
+        this.startBoundary = startBoundary;
     }
 
     /**
@@ -69,12 +74,16 @@ public class PrideHistogramBin implements Cloneable, Serializable, Comparable<Pr
      *
      * @return The end boundary.
      */
-    public int getEndBoundary() {
+    public double getEndBoundary() {
         return this.endBoundary;
     }
 
-    public void setEndBoundary(int endBoundary) {
+    public void setEndBoundary(double endBoundary) {
         this.endBoundary = endBoundary;
+    }
+
+    public double getMedian() {
+        return startBoundary + getBinWidth() / 2;
     }
 
     /**
@@ -82,7 +91,7 @@ public class PrideHistogramBin implements Cloneable, Serializable, Comparable<Pr
      *
      * @return The bin width.
      */
-    public int getBinWidth() {
+    public double getBinWidth() {
         return this.endBoundary - this.startBoundary;
     }
 
@@ -135,11 +144,22 @@ public class PrideHistogramBin implements Cloneable, Serializable, Comparable<Pr
 
     @Override
     public int compareTo(PrideHistogramBin o) {
-        return this.startBoundary - o.startBoundary;
+        double v = this.startBoundary - o.startBoundary;
+        if (v > 0) {
+            return 1;
+        } else if (v < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 
     @Override
     public String toString() {
         return startBoundary + "-" + endBoundary;
+    }
+
+    public String toString(DecimalFormat format) {
+        return format.format(startBoundary) + "-" + format.format(endBoundary);
     }
 }

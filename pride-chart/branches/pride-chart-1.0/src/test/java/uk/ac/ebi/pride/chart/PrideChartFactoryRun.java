@@ -18,11 +18,9 @@ import java.io.FileReader;
  * Date: 21/06/13
  */
 public class PrideChartFactoryRun {
-    private void drawChart(String jsonString, PrideChartType chartType) {
-        PrideDataReader reader;
+    private void drawChart(ElderJSONReader reader, PrideChartType chartType) {
         JFreeChart chart;
         try {
-            reader = new ElderJSONReader(jsonString, chartType);
             chart = PrideChartFactory.getChart(reader, chartType);
         } catch (PrideDataException e) {
             System.err.println(e.getMessage());
@@ -39,50 +37,21 @@ public class PrideChartFactoryRun {
         mainFrame.setVisible(true);
     }
 
-    private void drawChartList(File jsonFile) throws Exception {
-        BufferedReader reader = new BufferedReader(new FileReader(jsonFile));
-        String line;
-        String[] items;
-        int id;
-        while ((line = reader.readLine()) != null) {
-            items = line.split(", ");
-            id = Integer.parseInt(items[0]);
-            switch (id) {
-                case 1:
-                    drawChart(items[1], PrideChartType.PEAK_INTENSITY);
-                    break;
-                case 2:
-                    drawChart(items[1], PrideChartType.PRECURSOR_CHARGE);
-                    break;
-                case 3:
-                    drawChart(items[1], PrideChartType.AVERAGE_MS);
-                    break;
-                case 4:
-                    drawChart(items[1], PrideChartType.PRECURSOR_MASSES);
-                    break;
-                case 5:
-                    drawChart(items[1], PrideChartType.PEPTIDES_PROTEIN);
-                    break;
-                case 6:
-                    drawChart(items[1], PrideChartType.PEAKS_MS);
-                    break;
-                case 7:
-                    drawChart(items[1], PrideChartType.DELTA_MASS);
-                    break;
-                case 8:
-                    drawChart(items[1], PrideChartType.MISSED_CLEAVAGES);
-                    break;
-            }
-        }
+    public void drawChartList(File jsonFile) throws Exception {
+        ElderJSONReader jsonReader = new ElderJSONReader(jsonFile);
 
-        reader.close();
+        for (PrideChartType chartType : jsonReader.getChartTypeList()) {
+            drawChart(jsonReader, chartType);
+        }
     }
 
     public static void main(String[] args) throws Exception {
         PrideChartFactoryRun run = new PrideChartFactoryRun();
 
-//        File jsonFile = new File("testset/2.json");
-        File jsonFile = new File("testset/10.json");
+//        File jsonFile = new File("testset/old_2.json");
+        File jsonFile = new File("testset/old_1643.json");
+//        File jsonFile = new File("testset/old_10.json");
+
         run.drawChartList(jsonFile);
     }
 }

@@ -52,13 +52,13 @@ public enum PrideDataType {
     }
 
     public static PrideDataType findBy(String title) {
-        if (title.equals(ALL.title)) {
+        if (title.equalsIgnoreCase(ALL.title)) {
             return ALL;
-        } else if (title.equals(ALL_SPECTRA.title)) {
+        } else if (title.equalsIgnoreCase(ALL_SPECTRA.title)) {
             return ALL_SPECTRA;
-        } else if (title.equals(IDENTIFIED_SPECTRA.title)) {
+        } else if (title.equalsIgnoreCase(IDENTIFIED_SPECTRA.title)) {
             return IDENTIFIED_SPECTRA;
-        } else if (title.equals(UNIDENTIFIED_SPECTRA.title)) {
+        } else if (title.equalsIgnoreCase(UNIDENTIFIED_SPECTRA.title)) {
             return UNIDENTIFIED_SPECTRA;
         } else {
             return null;
@@ -109,6 +109,14 @@ public enum PrideDataType {
         }
 
         return typeList;
+    }
+
+    public boolean isLeaf() {
+        return getChildren().size() == 0;
+    }
+
+    public boolean isRoot() {
+        return getParents().size() == 0;
     }
 
     @Override

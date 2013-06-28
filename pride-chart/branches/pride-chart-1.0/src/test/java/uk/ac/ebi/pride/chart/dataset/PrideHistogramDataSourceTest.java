@@ -35,11 +35,11 @@ public class PrideHistogramDataSourceTest {
         return data;
     }
 
-    private int getSum(Collection<Integer> data) {
+    private int getSum(Collection<Collection<PrideData>> data) {
         int sum = 0;
 
-        for (int d : data) {
-            sum += d;
+        for (Collection<PrideData> cell : data) {
+            sum += cell.size();
         }
 
         return sum;
@@ -51,9 +51,10 @@ public class PrideHistogramDataSourceTest {
 
         int count = 100;
         value = generateXData(20, 200, count);
-        PrideHistogramDataSource dataSource = new PrideEqualWidthHistogramDataSource(value, PrideDataType.ALL_SPECTRA, 0, 50, 4);
+        PrideHistogramDataSource dataSource = new PrideEqualWidthHistogramDataSource(value, PrideDataType.ALL_SPECTRA);
+        dataSource.appendBins(((PrideEqualWidthHistogramDataSource)dataSource).generateBins(0, 50, 4));
 
-        Map<PrideHistogramBin, Integer> histogram = dataSource.getHistogram();
+        Map<PrideHistogramBin, Collection<PrideData>> histogram = dataSource.getHistogram();
         assertTrue(histogram.keySet().size() == 4);
         assertEquals(getSum(histogram.values()), count);
     }
@@ -70,7 +71,7 @@ public class PrideHistogramDataSourceTest {
         dataSource.appendBin(new PrideHistogramBin(200, 1000));
         dataSource.appendBin(new PrideHistogramBin(1000, Integer.MAX_VALUE));
 
-        Map<PrideHistogramBin, Integer> histogram = dataSource.getHistogram();
+        Map<PrideHistogramBin, Collection<PrideData>> histogram = dataSource.getHistogram();
         assertEquals(getSum(histogram.values()), count);
     }
 }

@@ -34,8 +34,6 @@ public class AverageMSPlot extends PrideXYPlot {
     public AverageMSPlot(XYSeriesCollection dataset, PrideDataType spectraType, boolean smallPlot) {
         super(PrideChartType.AVERAGE_MS, dataset, new XYBarRenderer(), smallPlot);
 
-        setDomainUnitSize(250);
-        setRangeUnitSize(50000);
         setDomainZeroBaselineVisible(false);
         getDomainAxis().setLowerBound(0);
 

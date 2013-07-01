@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.data;
 
 
+import java.io.Serializable;
+
 /**
  * Tuple stores two elements.
  *
@@ -8,7 +10,7 @@ package uk.ac.ebi.pride.data;
  * Date: 08-Sep-2010
  * Time: 11:17:04
  */
-public class Tuple <K, V> {
+public class Tuple <K, V> implements Serializable {
     private K key;
     private V value;
 

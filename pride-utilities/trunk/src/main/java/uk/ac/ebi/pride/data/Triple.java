@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.data;
 
+import java.io.Serializable;
+
 /**
  * Data structure contains three elements
  *
@@ -7,7 +9,7 @@ package uk.ac.ebi.pride.data;
  * Date: 24/06/11
  * Time: 14:20
  */
-public class Triple<K, V, T> {
+public class Triple<K, V, T> implements Serializable{
     private K first;
     private V second;
     private T third;

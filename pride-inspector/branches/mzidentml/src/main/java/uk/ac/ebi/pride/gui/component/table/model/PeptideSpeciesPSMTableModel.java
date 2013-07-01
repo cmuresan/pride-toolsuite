@@ -63,7 +63,8 @@ public class PeptideSpeciesPSMTableModel extends AbstractPeptideTableModel {
 
     private void showSuitablePeptideTableRows() {
         for (PeptideTableRow peptide : allPeptideTableRows) {
-            if (peptide.getRanking() <= rankingThreshold) {
+            Integer ranking = peptide.getRanking();
+            if (ranking == null || ranking <= rankingThreshold) {
                 addRow(peptide);
             }
         }

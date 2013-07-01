@@ -235,9 +235,9 @@ public class PeptideSpeciesTableModel extends ProgressiveListTableModel<Void, Tu
         peptideSpecies.setModifications((String) modificationText);
 
         // ranking
-        int ranking = peptideTableRowData.getRanking();
+        Integer ranking = peptideTableRowData.getRanking();
 
-        if (ranking <= rankingThreshold) {
+        if (ranking == null || ranking <= rankingThreshold) {
             // psm
             peptideSpecies.setNumberOfPSMs(peptideSpecies.getNumberOfPSMs() + 1);
 

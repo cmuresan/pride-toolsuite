@@ -229,8 +229,5 @@ public class PeptideTabPane extends PrideInspectorTabPane {
 
             }
         }
-
     }
-
-
 }

@@ -93,7 +93,7 @@ public class TableDataRetriever {
 
         // ranking
         int rank = controller.getPeptideRank(identId, peptideId);
-        peptideTableRow.setRanking(rank);
+        peptideTableRow.setRanking(rank == -1 ? null : rank);
 
         // precursor charge
         Integer charge = controller.getPeptidePrecursorCharge(identId, peptideId);

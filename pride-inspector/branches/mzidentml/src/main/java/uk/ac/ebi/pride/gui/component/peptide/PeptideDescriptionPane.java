@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.action.impl.ExtraProteinDetailAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
@@ -29,7 +28,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 /**
  * PeptideDescriptionPane displays all peptides details.
@@ -42,7 +40,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
     private static final Logger logger = LoggerFactory.getLogger(PeptideDescriptionPane.class);
 
     public static final String PEPTIDE_TABLE_DESC = "Peptide";
-    public static final String FILTER_BY_RANKING_DESC = "Filter by ranking";
+    public static final String FILTER_BY_RANKING_DESC = "Filter by PSM ranking: ";
 
     /**
      * peptide details table
@@ -146,14 +144,14 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
         // add gap
         toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
 
-        // load protein names
-        JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
-        loadAllProteinNameButton.setForeground(Color.blue);
-        loadAllProteinNameButton.setAction(new ExtraProteinDetailAction(controller));
-        toolBar.add(loadAllProteinNameButton);
-
-        // add gap
-        toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
+//        // load protein names
+//        JButton loadAllProteinNameButton = GUIUtilities.createLabelLikeButton(null, null);
+//        loadAllProteinNameButton.setForeground(Color.blue);
+//        loadAllProteinNameButton.setAction(new ExtraProteinDetailAction(controller));
+//        toolBar.add(loadAllProteinNameButton);
+//
+//        // add gap
+//        toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
 
 //        // decoy filter
 //        JButton decoyFilterButton = GUIUtilities.createLabelLikeButton(null, null);

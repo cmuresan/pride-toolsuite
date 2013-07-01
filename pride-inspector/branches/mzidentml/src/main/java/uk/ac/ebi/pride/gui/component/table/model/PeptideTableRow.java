@@ -58,9 +58,14 @@ public class PeptideTableRow {
 
         for (Modification mod : sequence.getModifications()) {
             String modName = mod.getName();
-            if (!modificationNames.contains(modName)) {
+            if (modName == null) {
+                // use mod accession instead
+                modName = mod.getId().toString().trim();
+            }
+
+            if (modName != null && !modificationNames.contains(modName)) {
                 concatenatedModificationNames += modName + "; ";
-                modificationNames.add(mod.getName());
+                modificationNames.add(modName);
             }
         }
 

@@ -129,6 +129,10 @@ public class TableFactory {
         TableColumnExt protAcc = (TableColumnExt) table.getColumn(protAccColumnHeader);
         protAcc.setCellRenderer(new ProteinAccessionHyperLinkCellRenderer());
 
+        // hide delta m/z error
+        TableColumnExt deltaMzError = (TableColumnExt) table.getColumn(PeptideSpeciesTableModel.TableHeader.NUMBER_OF_DELTA_MZ_ERROR_COLUMN.getHeader());
+        deltaMzError.setVisible(false);
+
         // hide peptide species column
         TableColumnExt peptideSpecies = (TableColumnExt) table.getColumn(PeptideSpeciesTableModel.TableHeader.PEPTIDE_SPECIES_COLUMN.getHeader());
         peptideSpecies.setVisible(false);
@@ -280,10 +284,10 @@ public class TableFactory {
         TableColumnExt numOfFragmentIons = (TableColumnExt) table.getColumn(PeptideTableHeader.NUMBER_OF_FRAGMENT_IONS_COLUMN.getHeader());
         numOfFragmentIons.setVisible(false);
 
-        // hide spectrum id column
-        String spectrumIdHeader = PeptideTableHeader.SPECTRUM_ID.getHeader();
-        TableColumnExt spectrumIdColumn = (TableColumnExt) table.getColumn(spectrumIdHeader);
-        spectrumIdColumn.setVisible(false);
+//        // hide spectrum id column
+//        String spectrumIdHeader = PeptideTableHeader.SPECTRUM_ID.getHeader();
+//        TableColumnExt spectrumIdColumn = (TableColumnExt) table.getColumn(spectrumIdHeader);
+//        spectrumIdColumn.setVisible(false);
 
         // additional column
         String additionalColHeader = PeptideTableHeader.ADDITIONAL.getHeader();

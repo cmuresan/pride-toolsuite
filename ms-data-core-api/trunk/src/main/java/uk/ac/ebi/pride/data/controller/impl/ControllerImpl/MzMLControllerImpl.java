@@ -47,7 +47,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     /**
      * Pattern for validating mzML format
      */
-    private static final Pattern mzMLHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<(mzML)|(indexedmzML) xmlns=.*", Pattern.MULTILINE);
+    private static final Pattern mzMLHeaderPattern = Pattern.compile("^[^<]*(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<(mzML)|(indexedmzML) xmlns=.*", Pattern.MULTILINE);
 
     /**
      * Reader for getting information from mzML file

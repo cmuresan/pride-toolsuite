@@ -49,7 +49,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     private MzIdentMLUnmarshallerAdaptor unmarshaller;
 
     // The Match pattern for a valid mzidentml file, its support now the version 1.1.
-    private static final Pattern mzIdentMLHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<(MzIdentML)|(indexedmzIdentML) xmlns=.*", Pattern.MULTILINE);
+    private static final Pattern mzIdentMLHeaderPattern = Pattern.compile("^[^<]*(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<(MzIdentML)|(indexedmzIdentML) xmlns=.*", Pattern.MULTILINE);
 
     /*
       * This is a set of controllers related with the MS information in the mzidentml file

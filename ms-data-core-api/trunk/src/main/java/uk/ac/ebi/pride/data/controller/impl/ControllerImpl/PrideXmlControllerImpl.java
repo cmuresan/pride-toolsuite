@@ -36,7 +36,7 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
     /**
      * Pattern for match pride xml format
      */
-    private static final Pattern prideXmlHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<ExperimentCollection [^>]*>", Pattern.MULTILINE);
+    private static final Pattern prideXmlHeaderPattern = Pattern.compile("^[^<]*(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<ExperimentCollection [^>]*>", Pattern.MULTILINE);
 
     /**
      * Reader to get information from pride xml file

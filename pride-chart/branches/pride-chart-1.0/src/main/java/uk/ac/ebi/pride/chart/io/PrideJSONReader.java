@@ -11,8 +11,8 @@ import java.io.*;
  * User: Qingwei
  * Date: 11/06/13
  */
-public class JSONReader extends PrideDataReader {
-    private Logger logger = Logger.getLogger(JSONReader.class);
+public class PrideJSONReader extends PrideDataReader {
+    private Logger logger = Logger.getLogger(PrideJSONReader.class);
     private String source = "JSON";
 
     private JSONObject json = null;
@@ -25,11 +25,11 @@ public class JSONReader extends PrideDataReader {
         this.json = json;
     }
 
-    public JSONReader(JSONObject json) {
+    public PrideJSONReader(JSONObject json) {
         init(json);
     }
 
-    public JSONReader(String jsonString) {
+    public PrideJSONReader(String jsonString) {
         try {
             init(new JSONObject(jsonString));
         } catch (JSONException e) {
@@ -37,7 +37,7 @@ public class JSONReader extends PrideDataReader {
         }
     }
 
-    public JSONReader(File jsonFile) {
+    public PrideJSONReader(File jsonFile) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(jsonFile));
             StringBuilder sb = new StringBuilder();
@@ -59,7 +59,7 @@ public class JSONReader extends PrideDataReader {
 
     @Override
     protected void start() {
-        super.start(source);
+        // do noting.
     }
 
     @Override
@@ -69,6 +69,6 @@ public class JSONReader extends PrideDataReader {
 
     @Override
     protected void end() {
-        super.end(source);
+        // do noting.
     }
 }

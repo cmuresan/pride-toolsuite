@@ -49,9 +49,6 @@ public class PrecursorMassesPlot extends PrideXYPlot {
         mouseQuartilesSeries = getQuartilesSeries(QuartilesType.MOUSE);
         prideQuartilesSeries = getQuartilesSeries(QuartilesType.PRIDE);
 
-        setDomainUnitSize(500);
-        setRangeUnitSize(0.025);
-
         spectraSeries = getSpectraSeries(spectraType);
         if (spectraSeries != null) {
             seriesCollection.addSeries(spectraSeries);

@@ -57,10 +57,6 @@ public class PrideXYDataSource {
             return null;
         }
 
-        if (! includeSubType) {
-            return this;
-        }
-
         List<Double> filterDomainData = new ArrayList<Double>();
         List<PrideData> filterRangeData = new ArrayList<PrideData>();
 

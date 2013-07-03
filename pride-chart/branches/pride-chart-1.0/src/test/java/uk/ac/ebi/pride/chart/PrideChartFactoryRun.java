@@ -4,21 +4,21 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
+import uk.ac.ebi.pride.chart.io.DataAccessReader;
 import uk.ac.ebi.pride.chart.io.ElderJSONReader;
 import uk.ac.ebi.pride.chart.io.PrideDataException;
 import uk.ac.ebi.pride.chart.io.PrideDataReader;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
 
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 
 /**
  * User: qingwei
  * Date: 21/06/13
  */
 public class PrideChartFactoryRun {
-    private void drawChart(ElderJSONReader reader, PrideChartType chartType) {
+    private void drawChart(PrideDataReader reader, PrideChartType chartType) {
         JFreeChart chart;
         try {
             chart = PrideChartFactory.getChart(reader, chartType);
@@ -37,21 +37,22 @@ public class PrideChartFactoryRun {
         mainFrame.setVisible(true);
     }
 
-    public void drawChartList(File jsonFile) throws Exception {
-        ElderJSONReader jsonReader = new ElderJSONReader(jsonFile);
-
-        for (PrideChartType chartType : jsonReader.getChartTypeList()) {
-            drawChart(jsonReader, chartType);
+    public void drawChartList(PrideDataReader reader) throws Exception {
+        for (PrideChartType chartType : reader.getChartTypeList()) {
+            drawChart(reader, chartType);
         }
     }
 
     public static void main(String[] args) throws Exception {
         PrideChartFactoryRun run = new PrideChartFactoryRun();
 
-//        File jsonFile = new File("testset/old_2.json");
-        File jsonFile = new File("testset/old_1643.json");
+        File jsonFile = new File("testset/old_2.json");
+//        File jsonFile = new File("testset/old_1643.json");
 //        File jsonFile = new File("testset/old_10.json");
+        run.drawChartList(new ElderJSONReader(jsonFile));
 
-        run.drawChartList(jsonFile);
+//        File prideXMLFile = new File("testset/PRIDE_Exp_Complete_Ac_2_single_spectrum.xml");
+
+//        run.drawChartList(new DataAccessReader(new PrideXmlControllerImpl(prideXMLFile)));
     }
 }

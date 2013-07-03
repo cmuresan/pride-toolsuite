@@ -2,7 +2,7 @@ package uk.ac.ebi.pride.chart.plot;
 
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
-import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import uk.ac.ebi.pride.chart.PrideChartType;
@@ -32,19 +32,25 @@ public class AverageMSPlot extends PrideXYPlot {
     }
 
     public AverageMSPlot(XYSeriesCollection dataset, PrideDataType spectraType, boolean smallPlot) {
-        super(PrideChartType.AVERAGE_MS, dataset, new XYBarRenderer(), smallPlot);
+        super(PrideChartType.AVERAGE_MS, dataset, new XYLineAndShapeRenderer(true, false), smallPlot);
 
         setDomainZeroBaselineVisible(false);
         getDomainAxis().setLowerBound(0);
 
-        this.spectraSeriesList.addAll(dataset.getSeries());
+        XYSeries series;
+        for (Object o : dataset.getSeries()) {
+            series = (XYSeries) o;
+            if (series.getItemCount() != 0) {
+                this.spectraSeriesList.add(series);
+            }
+        }
 
         spectraSeries = getSpectraSeries(spectraType);
         if (spectraSeries != null) {
             seriesCollection.addSeries(spectraSeries);
         }
 
-        refresh();
+        setDataset(seriesCollection);
     }
 
     public Collection<PrideDataType> getSpectraDataTypeList() {
@@ -86,17 +92,8 @@ public class AverageMSPlot extends PrideXYPlot {
         seriesCollection.removeSeries(spectraSeries);
         spectraSeries = series;
         seriesCollection.addSeries(spectraSeries);
-        refresh();
-    }
 
-    private void refresh() {
         setDataset(seriesCollection);
-        XYBarRenderer renderer = (XYBarRenderer) getRenderer();
-        for (int i = 0; i < getSeriesCount(); i++) {
-            renderer.setShadowVisible(false);
-            renderer.setShadowXOffset(0);
-            renderer.setShadowXOffset(0);
-        }
     }
 
     public void setDomainUnitSize(double domainUnitSize) {

@@ -6,10 +6,7 @@ import uk.ac.ebi.pride.chart.dataset.PrideHistogramDataSource;
 import uk.ac.ebi.pride.chart.dataset.PrideXYDataSource;
 import uk.ac.ebi.pride.chart.utils.PridePlotConstants;
 
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * User: Qingwei
@@ -21,8 +18,16 @@ public abstract class PrideDataReader {
 
     protected SortedMap<PrideChartType, PrideXYDataSource> xyDataSourceMap = new TreeMap<PrideChartType, PrideXYDataSource>();
     protected SortedMap<PrideChartType, PrideHistogramDataSource> histogramDataSourceMap = new TreeMap<PrideChartType, PrideHistogramDataSource>();
+    protected SortedMap<PrideChartType, PrideDataException> errorMap = new TreeMap<PrideChartType, PrideDataException>();
 
-    public void readData() throws PrideDataException {
+    // peptides size in the experiment data.
+    protected int peptideSize = 0;
+    // identified spectra size in the experiment data.
+    protected int identifiedSpectraSize = 0;
+    // unidentified spectra size in the experiment data.
+    protected int unidentifiedSpectraSize = 0;
+
+    public void readData() {
         start();
         reading();
         end();
@@ -30,21 +35,9 @@ public abstract class PrideDataReader {
 
     protected abstract void start();
 
-    protected void start(String source) {
-        logger.debug("Start load data by calling " + source + "." + PridePlotConstants.NEW_LINE);
-        startTime = System.currentTimeMillis();
-    }
-
-    protected abstract void reading() throws PrideDataException;
+    protected abstract void reading();
 
     protected abstract void end();
-
-    protected void end(String source) {
-        logger.debug("End load data from " + source + "." + PridePlotConstants.NEW_LINE);
-        long endTime = System.currentTimeMillis();
-        double costTime = (endTime - startTime) / 1000d;
-        logger.debug("Cost time: " + String.format("%1$.2f", costTime) + "(s)" + PridePlotConstants.NEW_LINE);
-    }
 
     public SortedMap<PrideChartType, PrideXYDataSource> getXYDataSourceMap() {
         return xyDataSourceMap;
@@ -54,6 +47,10 @@ public abstract class PrideDataReader {
         return histogramDataSourceMap;
     }
 
+    public SortedMap<PrideChartType, PrideDataException> getErrorMap() {
+        return errorMap;
+    }
+
     public Set<PrideChartType> getChartTypeList() {
         Set<PrideChartType> chartTypeList = new TreeSet<PrideChartType>();
 
@@ -61,5 +58,21 @@ public abstract class PrideDataReader {
         chartTypeList.addAll(histogramDataSourceMap.keySet());
 
         return chartTypeList;
+    }
+
+    public int getPeptideSize() {
+        return peptideSize;
+    }
+
+    public int getIdentifiedSpectraSize() {
+        return identifiedSpectraSize;
+    }
+
+    public int getUnidentifiedSpectraSize() {
+        return unidentifiedSpectraSize;
+    }
+
+    public int getSpectraSize() {
+        return identifiedSpectraSize + unidentifiedSpectraSize;
     }
 }

@@ -23,6 +23,8 @@ public class ElderJSONReader extends PrideDataReader {
 
     private final String source = "JSON";
 
+    public static final String ERROR_MSG_SPLIT_CHAR = "\n";
+
     private final String ERROR = "ErrorMessages";
     private final String SERIES = "Series";
     private final String ID = "id";
@@ -31,11 +33,15 @@ public class ElderJSONReader extends PrideDataReader {
     private final String IDENTIFIED_FREQUENCY = "idenFreq";
     private final String UNIDENTIFIED_FREQUENCY = "unidenFreq";
 
-    public ElderJSONReader(String jsonString, PrideChartType type) throws PrideDataException {
+    public ElderJSONReader(String jsonString, PrideChartType chartType) {
         try {
             JSONObject json = new JSONObject(jsonString);
-            checkErrorMsg(json);
-            jsonMap.put(type, json);
+            try {
+                checkErrorMsg(json);
+            } catch (PrideDataException e) {
+                errorMap.put(chartType, e);
+            }
+            jsonMap.put(chartType, json);
         } catch (JSONException e) {
             logger.error(e.getMessage());
         }
@@ -43,7 +49,7 @@ public class ElderJSONReader extends PrideDataReader {
         readData();
     }
 
-    private PrideChartType getChartType(int id) {
+    public static PrideChartType getChartType(int id) {
         PrideChartType type = null;
         switch (id) {
             case 1:
@@ -75,22 +81,60 @@ public class ElderJSONReader extends PrideDataReader {
         return type;
     }
 
+    public static int getChartID(PrideChartType chartType) {
+        int id = -1;
+        switch (chartType) {
+            case PEAK_INTENSITY:
+                id = 1;
+                break;
+            case PRECURSOR_CHARGE:
+                id = 2;
+                break;
+            case AVERAGE_MS:
+                id = 3;
+                break;
+            case PRECURSOR_MASSES:
+                id = 4;
+                break;
+            case PEPTIDES_PROTEIN:
+                id = 5;
+                break;
+            case PEAKS_MS:
+                id = 6;
+                break;
+            case DELTA_MASS:
+                id = 7;
+                break;
+            case MISSED_CLEAVAGES:
+                id = 8;
+                break;
+        }
+
+        return id;
+    }
+
     /**
      * The jsonFile is txt file, which export from database.
      * Reference testset directory json files.
      */
-    public ElderJSONReader(File jsonFile) throws PrideDataException {
+    public ElderJSONReader(File jsonFile) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(jsonFile));
 
             String line;
             String[] items;
             JSONObject json;
+            PrideChartType chartType;
             while ((line = reader.readLine()) != null) {
                 items = line.split(", ");
                 json = new JSONObject(items[1]);
-                checkErrorMsg(json);
-                jsonMap.put(getChartType(Integer.parseInt(items[0])), json);
+                chartType = getChartType(Integer.parseInt(items[0]));
+                try {
+                    checkErrorMsg(json);
+                } catch (PrideDataException e) {
+                    errorMap.put(chartType, e);
+                }
+                jsonMap.put(chartType, json);
             }
 
             reader.close();
@@ -107,7 +151,7 @@ public class ElderJSONReader extends PrideDataReader {
 
     @Override
     protected void start() {
-        super.start(source);
+        // do noting.
     }
 
     private void checkErrorMsg(JSONObject object) throws PrideDataException {
@@ -116,7 +160,7 @@ public class ElderJSONReader extends PrideDataReader {
             JSONArray msgList = object.getJSONArray(ERROR);
             sb.append(msgList.getString(0));
             for (int i = 1; i < msgList.length(); i++) {
-                sb.append("\n").append(msgList.getString(i));
+                sb.append(ERROR_MSG_SPLIT_CHAR).append(msgList.getString(i));
             }
 
             throw new PrideDataException(sb.toString());
@@ -166,6 +210,7 @@ public class ElderJSONReader extends PrideDataReader {
     }
 
     private void readDelta(JSONObject json) throws JSONException {
+        peptideSize = json.getInt("sequenceNumber");
         JSONObject series = json.getJSONArray(SERIES).getJSONObject(0);
         Double[] domainData = getDomainData(series.getJSONArray(X_AXIS));
         PrideData[] rangeData = getRangeData(series.getJSONArray(Y_AXIS), PrideDataType.ALL_SPECTRA);
@@ -276,6 +321,9 @@ public class ElderJSONReader extends PrideDataReader {
     }
 
     private void readPreMasses(JSONObject json) throws JSONException {
+        identifiedSpectraSize = json.getInt(IDENTIFIED_FREQUENCY);
+        unidentifiedSpectraSize = json.getInt(UNIDENTIFIED_FREQUENCY);
+
         List<Double> domainDataList0 = new ArrayList<Double>();
         List<PrideData> rangeDataList0 = new ArrayList<PrideData>();
         JSONObject series0 = json.getJSONArray(SERIES).getJSONObject(0);
@@ -314,7 +362,7 @@ public class ElderJSONReader extends PrideDataReader {
                 offset = i < domainDataList0.size() ? domainDataList0.get(i) : domainDataList1.get(i);
                 domainDataList.add(offset);
                 rangeDataList.add(new PrideData(
-                        (identified * json.getInt(IDENTIFIED_FREQUENCY)  + unidentified * json.getInt(UNIDENTIFIED_FREQUENCY)) / (json.getInt(IDENTIFIED_FREQUENCY) + json.getInt(UNIDENTIFIED_FREQUENCY)),
+                        (identified * identifiedSpectraSize  + unidentified * unidentifiedSpectraSize) / (identifiedSpectraSize + unidentifiedSpectraSize),
                         PrideDataType.ALL_SPECTRA
                 ));
             }
@@ -437,9 +485,13 @@ public class ElderJSONReader extends PrideDataReader {
     }
 
     @Override
-    protected void reading() throws PrideDataException {
+    protected void reading() {
         try {
             for (PrideChartType type : jsonMap.keySet()) {
+                if (errorMap.containsKey(type)) {
+                    continue;
+                }
+
                 switch (type) {
                     case DELTA_MASS:
                         readDelta(jsonMap.get(type));
@@ -474,6 +526,6 @@ public class ElderJSONReader extends PrideDataReader {
 
     @Override
     protected void end() {
-        super.end(source);
+        // do noting.
     }
 }

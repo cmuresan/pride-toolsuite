@@ -253,6 +253,16 @@ public class ElderJSONReader extends PrideDataReader {
         xyDataSourceMap.put(PrideChartType.MISSED_CLEAVAGES, dataSource);
     }
 
+    private void addPeaks(PrideSpectrumHistogramDataSource dataSource, List<Double> domainList, List<PrideData> rangeList) {
+        for (int i = 0; i < domainList.size(); i++) {
+            dataSource.addPeak(
+                    domainList.get(i),
+                    rangeList.get(i).getData(),
+                    rangeList.get(i).getType()
+            );
+        }
+    }
+
     private void readAvg(JSONObject json) throws JSONException {
         List<Double> domainDataList0 = new ArrayList<Double>();
         List<PrideData> rangeDataList0 = new ArrayList<PrideData>();
@@ -287,18 +297,14 @@ public class ElderJSONReader extends PrideDataReader {
             }
         }
 
-        List<Double> totalDomainDataList = new ArrayList<Double>();
-        List<PrideData> totalRangeDataList = new ArrayList<PrideData>();
-        totalDomainDataList.addAll(domainDataList0);
-        totalDomainDataList.addAll(domainDataList1);
-        totalDomainDataList.addAll(domainDataList);
-        totalRangeDataList.addAll(rangeDataList0);
-        totalRangeDataList.addAll(rangeDataList1);
-        totalRangeDataList.addAll(rangeDataList);
-        Double[] domainData = totalDomainDataList.toArray(new Double[totalDomainDataList.size()]);
-        PrideData[] rangeData = totalRangeDataList.toArray(new PrideData[totalRangeDataList.size()]);
-        PrideXYDataSource dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
-        xyDataSourceMap.put(PrideChartType.AVERAGE_MS, dataSource);
+        PrideSpectrumHistogramDataSource dataSource = new PrideSpectrumHistogramDataSource(false);
+        addPeaks(dataSource, domainDataList0, rangeDataList0);
+        addPeaks(dataSource, domainDataList1, rangeDataList1);
+        addPeaks(dataSource, domainDataList, rangeDataList);
+
+        dataSource.appendBins(dataSource.generateBins(0, 1));
+
+        histogramDataSourceMap.put(PrideChartType.AVERAGE_MS, dataSource);
     }
 
     private void readPreCharge(JSONObject json) throws JSONException {

@@ -7,9 +7,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.SortedMap;
 
 import static junit.framework.Assert.assertEquals;
@@ -83,18 +81,18 @@ public class DataAccessReaderTest {
     public void testAvg() throws Exception {
         PrideChartType type = PrideChartType.AVERAGE_MS;
 
-        PrideXYDataSource prideDataSource = dataReader.getXYDataSourceMap().get(type);
-        PrideXYDataSource jsonDataSource = jsonReader.getXYDataSourceMap().get(type);
+        PrideSpectrumHistogramDataSource prideDataSource = (PrideSpectrumHistogramDataSource) dataReader.getHistogramDataSourceMap().get(type);
+        PrideSpectrumHistogramDataSource jsonDataSource = (PrideSpectrumHistogramDataSource) jsonReader.getHistogramDataSourceMap().get(type);
 
-        PrideXYDataSource idPrideDataSource = prideDataSource.filter(PrideDataType.IDENTIFIED_SPECTRA);
-        PrideXYDataSource unPrideDataSource = prideDataSource.filter(PrideDataType.UNIDENTIFIED_SPECTRA);
-        PrideXYDataSource allPrideDataSource = prideDataSource.filter(PrideDataType.ALL_SPECTRA);
+        SortedMap<PrideHistogramBin, Double> idPrideHistogram = prideDataSource.getIntensityMap().get(PrideDataType.IDENTIFIED_SPECTRA);
+        SortedMap<PrideHistogramBin, Double> unPrideHistogram = prideDataSource.getIntensityMap().get(PrideDataType.UNIDENTIFIED_SPECTRA);
+        SortedMap<PrideHistogramBin, Double> allPrideHistogram = prideDataSource.getIntensityMap().get(PrideDataType.ALL_SPECTRA);
 
-        PrideXYDataSource idJSONDataSource = jsonDataSource.filter(PrideDataType.IDENTIFIED_SPECTRA);
-        PrideXYDataSource unJSONDataSource = jsonDataSource.filter(PrideDataType.UNIDENTIFIED_SPECTRA);
-        PrideXYDataSource allJSONDataSource = jsonDataSource.filter(PrideDataType.ALL_SPECTRA);
+        SortedMap<PrideHistogramBin, Double> idJSONHistogram = prideDataSource.getIntensityMap().get(PrideDataType.IDENTIFIED_SPECTRA);
+        SortedMap<PrideHistogramBin, Double> unJSONHistogram = prideDataSource.getIntensityMap().get(PrideDataType.UNIDENTIFIED_SPECTRA);
+        SortedMap<PrideHistogramBin, Double> allJSONHistogram = prideDataSource.getIntensityMap().get(PrideDataType.ALL_SPECTRA);
 
-//        int min = Math.min(idPrideDataSource.getDomainData().length, idJSONDataSource.getDomainData().length);
+        int min = Math.min(idPrideHistogram.keySet().size(), idJSONHistogram.keySet().size());
 //        for (int i = 0; i < min; i++) {
 //            assertEquals(idPrideDataSource.getDomainData()[i], idJSONDataSource.getDomainData()[i]);
 //            assertTrue(Math.abs(idPrideDataSource.getRangeData()[i].getData() - idJSONDataSource.getRangeData()[i].getData()) < 0.01);

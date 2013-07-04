@@ -83,6 +83,22 @@ public class PrideJSONWriter {
         return values;
     }
 
+    private List<Object> getRangeValues(Double[] rangeData) {
+        List<Object> values = new ArrayList<Object>();
+
+        Collections.addAll(values, rangeData);
+
+        return values;
+    }
+
+    private List<Object> getRangeValues(Collection<Double> rangeData) {
+        List<Object> values = new ArrayList<Object>();
+
+        Collections.addAll(values, rangeData);
+
+        return values;
+    }
+
     private List<Object> getRangeValues(PrideData[] rangeData, PrideDataType dataType) {
         List<Object> values = new ArrayList<Object>();
 
@@ -169,32 +185,32 @@ public class PrideJSONWriter {
             return getErrorMessages(PrideChartType.AVERAGE_MS);
         }
 
-        PrideXYDataSource dataSource = reader.getXYDataSourceMap().get(PrideChartType.AVERAGE_MS);
+        PrideSpectrumHistogramDataSource dataSource = (PrideSpectrumHistogramDataSource) reader.getHistogramDataSourceMap().get(PrideChartType.AVERAGE_MS);
         if (dataSource != null) {
-            List<Series> seriesList = new ArrayList<Series>();
-            List<Object> unSpectraList = getRangeValues(dataSource.getRangeData(), PrideDataType.UNIDENTIFIED_SPECTRA);
-            List<Object> idSpectraList = getRangeValues(dataSource.getRangeData(), PrideDataType.IDENTIFIED_SPECTRA);
+            SortedMap<PrideHistogramBin, Double> idPrideHistogram = dataSource.getIntensityMap().get(PrideDataType.IDENTIFIED_SPECTRA);
+            SortedMap<PrideHistogramBin, Double> unPrideHistogram = dataSource.getIntensityMap().get(PrideDataType.UNIDENTIFIED_SPECTRA);
 
-            if (unSpectraList.size() == 0) {
+            List<Series> seriesList = new ArrayList<Series>();
+            if (unPrideHistogram == null) {
                 seriesList.add(new Series(UNIDENTIFIED_SPECTRA, UNIDENTIFIED_SPECTRA, null, null));
             } else {
                 seriesList.add(
                         new Series(
                                 UNIDENTIFIED_SPECTRA, UNIDENTIFIED_SPECTRA,
-                                getDomainValues(dataSource.getDomainData()),
-                                unSpectraList
+                                getDomainValues(unPrideHistogram.keySet()),
+                                getRangeValues(unPrideHistogram.values())
                         )
                 );
             }
 
-            if (idSpectraList.size() == 0) {
+            if (idPrideHistogram == null) {
                 seriesList.add(new Series(IDENTIFIED_SPECTRA, IDENTIFIED_SPECTRA, null, null));
             } else {
                 seriesList.add(
                         new Series(
                                 IDENTIFIED_SPECTRA, IDENTIFIED_SPECTRA,
-                                getDomainValues(dataSource.getDomainData()),
-                                idSpectraList
+                                getDomainValues(idPrideHistogram.keySet()),
+                                getRangeValues(idPrideHistogram.values())
                         )
                 );
             }

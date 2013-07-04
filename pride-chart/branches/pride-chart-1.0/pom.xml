@@ -124,7 +124,7 @@
                     <archive>
                         <manifest>
                             <!--export a JSON string -->
-                            <mainClass>uk.ac.ebi.pride.chart.io.PrideJSONWriterRun</mainClass>
+                            <mainClass>uk.ac.ebi.pride.chart.utils.PrideJSONTransformer</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib</classpathPrefix>
                         </manifest>

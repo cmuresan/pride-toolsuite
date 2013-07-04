@@ -6,6 +6,7 @@ import org.jfree.chart.StandardChartTheme;
 import uk.ac.ebi.pride.chart.dataset.*;
 import uk.ac.ebi.pride.chart.io.PrideDataException;
 import uk.ac.ebi.pride.chart.io.PrideDataReader;
+import uk.ac.ebi.pride.chart.io.PrideSpectrumHistogramDataSource;
 import uk.ac.ebi.pride.chart.plot.*;
 
 import java.util.ArrayList;
@@ -60,9 +61,6 @@ public class PrideChartFactory {
             case MISSED_CLEAVAGES:
                 plot = new MissedCleavagesPlot(PrideDatasetFactory.getXYDataset(dataSource));
                 break;
-            case AVERAGE_MS:
-                plot = new AverageMSPlot(PrideDatasetFactory.getXYDataset(dataSource), PrideDataType.ALL_SPECTRA);
-                break;
             case PRECURSOR_CHARGE:
                 plot = new PrecursorChargePlot(PrideDatasetFactory.getXYDataset(dataSource));
                 break;
@@ -76,23 +74,27 @@ public class PrideChartFactory {
         return plot;
     }
 
-    public static PrideCategoryPlot getHistogramPlot(PrideData[] data, PrideChartType type) {
-        PrideHistogramDataSource dataSource;
-
-        switch (type) {
-            case PEAKS_MS:
-                dataSource = new PrideEqualWidthHistogramDataSource(data, false);
-                dataSource.appendBins(((PrideEqualWidthHistogramDataSource)dataSource).generateBins(0, 400, 10));
-                break;
-            case PEAK_INTENSITY:
-                dataSource = new PrideHistogramDataSource(data, true);
-                break;
-            default:
-                throw new IllegalArgumentException("Can not create Histogram style plot.");
-        }
-
-        return getHistogramPlot(dataSource, type);
+    private static PrideXYPlot getAvgPlot(PrideHistogramDataSource dataSource) {
+        return new AverageMSPlot(PrideDatasetFactory.getXYDataset((PrideSpectrumHistogramDataSource) dataSource), PrideDataType.ALL_SPECTRA);
     }
+
+//    public static PrideCategoryPlot getHistogramPlot(PrideData[] data, PrideChartType type) {
+//        PrideHistogramDataSource dataSource;
+//
+//        switch (type) {
+//            case PEAKS_MS:
+//                dataSource = new PrideEqualWidthHistogramDataSource(data, false);
+//                dataSource.appendBins(((PrideEqualWidthHistogramDataSource)dataSource).generateBins(0, 400, 10));
+//                break;
+//            case PEAK_INTENSITY:
+//                dataSource = new PrideHistogramDataSource(data, true);
+//                break;
+//            default:
+//                throw new IllegalArgumentException("Can not create Histogram style plot.");
+//        }
+//
+//        return getHistogramPlot(dataSource, type);
+//    }
 
     public static PrideCategoryPlot getHistogramPlot(PrideHistogramDataSource dataSource, PrideChartType type) {
         PrideCategoryPlot plot;
@@ -144,8 +146,13 @@ public class PrideChartFactory {
         }
 
         histogramDataSource = histogramDataSourceMap.get(chartType);
-        if (histogramDataSource != null) {
+        if (chartType != PrideChartType.AVERAGE_MS && histogramDataSource != null) {
             return getChart(getHistogramPlot(histogramDataSource, chartType));
+        }
+
+        PrideHistogramDataSource avgDataSource = histogramDataSourceMap.get(PrideChartType.AVERAGE_MS);
+        if (avgDataSource != null) {
+            return getChart(getAvgPlot(avgDataSource));
         }
 
         return null;

@@ -13,9 +13,9 @@ import java.awt.*;
 import java.util.Random;
 
 /**
- * User: Qingwei
- * Date: 13/06/13
- */
+* User: Qingwei
+* Date: 13/06/13
+*/
 public class PridePlotRun {
     private void drawChart(PrideXYPlot plot) {
         if (plot != null) {
@@ -94,12 +94,12 @@ public class PridePlotRun {
         PrideCategoryPlot plot;
         switch (type) {
             case PEAKS_MS:
-                dataSource = new PrideEqualWidthHistogramDataSource(data, PrideDataType.ALL_SPECTRA);
+                dataSource = new PrideEqualWidthHistogramDataSource(data, false);
                 dataSource.appendBins(((PrideEqualWidthHistogramDataSource)dataSource).generateBins(0, 400, 8));
                 plot = new PeaksMSPlot(PrideDatasetFactory.getHistogramDataset(dataSource));
                 break;
             case PEAK_INTENSITY:
-                dataSource = new PrideHistogramDataSource(data, PrideDataType.ALL_SPECTRA);
+                dataSource = new PrideHistogramDataSource(data, true);
                 dataSource.appendBin(new PrideHistogramBin(1, 100));
                 dataSource.appendBin(new PrideHistogramBin(100, 1000));
                 dataSource.appendBin(new PrideHistogramBin(1000, 2000));

@@ -9,8 +9,8 @@ import java.util.*;
  * Date: 20/06/13
  */
 public class PrideEqualWidthHistogramDataSource extends PrideHistogramDataSource {
-    public PrideEqualWidthHistogramDataSource(PrideData[] values, PrideDataType type) {
-        super(values, type);
+    public PrideEqualWidthHistogramDataSource(PrideData[] values, boolean calcAllSpectra) {
+        super(values, calcAllSpectra);
     }
 
     /**

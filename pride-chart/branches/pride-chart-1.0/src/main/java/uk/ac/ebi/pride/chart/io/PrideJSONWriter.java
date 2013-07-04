@@ -9,9 +9,9 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 /**
- * User: qingwei
- * Date: 20/06/13
- */
+* User: qingwei
+* Date: 20/06/13
+*/
 public class PrideJSONWriter {
     public static final String ERROR = "ErrorMessages";
     public static final String SERIES = "Series";
@@ -44,10 +44,10 @@ public class PrideJSONWriter {
         String id;
         String type = null;
 
-        List<Object> xArray = null;
-        List<Object> yArray = null;
+        Collection<Object> xArray = null;
+        Collection<Object> yArray = null;
 
-        private Series(String id, String type, List<Object> xArray, List<Object> yArray) {
+        private Series(String id, String type, Collection<Object> xArray, Collection<Object> yArray) {
             this.id = id;
             this.type = type;
             this.xArray = xArray;
@@ -292,21 +292,10 @@ public class PrideJSONWriter {
         return values;
     }
 
-    private List<Object> getRangeValues(Collection<Collection<PrideData>> data, PrideDataType dataType) {
+    private Collection<Object> getRangeValues(Collection<Integer> data) {
         List<Object> values = new ArrayList<Object>();
 
-        Collection<PrideData> filterData = new ArrayList<PrideData>();
-        for (Collection<PrideData> cell : data) {
-            filterData.clear();
-            for (PrideData v : cell) {
-                if (dataType != null && v.getType() == dataType) {
-                    filterData.add(v);
-                } else if (dataType == null) {
-                    filterData.add(v);
-                }
-            }
-            values.add(filterData.size());
-        }
+        values.addAll(data);
 
         return values;
     }
@@ -319,11 +308,11 @@ public class PrideJSONWriter {
         PrideHistogramDataSource dataSource = reader.getHistogramDataSourceMap().get(PrideChartType.PEAKS_MS);
 
         if (dataSource != null) {
-            SortedMap<PrideHistogramBin, Collection<PrideData>> histogram = dataSource.getHistogram();
+            SortedMap<PrideHistogramBin, Integer> histogram = dataSource.getHistogramMap().get(PrideDataType.ALL_SPECTRA);
             Series series = new Series(
                     INTENSITY, null,
                     getDomainValues(histogram.keySet()),
-                    getRangeValues(histogram.values(), null)
+                    getRangeValues(histogram.values())
             );
 
             JSONObject obj = new JSONObject();
@@ -344,19 +333,26 @@ public class PrideJSONWriter {
         PrideHistogramDataSource dataSource = reader.getHistogramDataSourceMap().get(PrideChartType.PEAK_INTENSITY);
 
         if (dataSource != null) {
-            SortedMap<PrideHistogramBin, Collection<PrideData>> histogram = dataSource.getHistogram();
+            SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>> histogramMap = dataSource.getHistogramMap();
             List<Series> seriesList = new ArrayList<Series>();
 
-            seriesList.add(new Series(
-                    IDENTIFIED_SPECTRA, IDENTIFIED_SPECTRA,
-                    getDomainValues(histogram.keySet()),
-                    getRangeValues(histogram.values(), PrideDataType.IDENTIFIED_SPECTRA)
-            ));
-            seriesList.add(new Series(
-                    UNIDENTIFIED_SPECTRA, UNIDENTIFIED_SPECTRA,
-                    getDomainValues(histogram.keySet()),
-                    getRangeValues(histogram.values(), PrideDataType.UNIDENTIFIED_SPECTRA)
-            ));
+            SortedMap<PrideHistogramBin, Integer> histogram = histogramMap.get(PrideDataType.IDENTIFIED_SPECTRA);
+            if (histogram != null) {
+                seriesList.add(new Series(
+                        IDENTIFIED_SPECTRA, IDENTIFIED_SPECTRA,
+                        getDomainValues(histogram.keySet()),
+                        getRangeValues(histogram.values())
+                ));
+            }
+
+            histogram = histogramMap.get(PrideDataType.UNIDENTIFIED_SPECTRA);
+            if (histogram != null) {
+                seriesList.add(new Series(
+                        UNIDENTIFIED_SPECTRA, UNIDENTIFIED_SPECTRA,
+                        getDomainValues(histogram.keySet()),
+                        getRangeValues(histogram.values())
+                ));
+            }
 
             JSONObject obj = new JSONObject();
             for (Series series : seriesList) {

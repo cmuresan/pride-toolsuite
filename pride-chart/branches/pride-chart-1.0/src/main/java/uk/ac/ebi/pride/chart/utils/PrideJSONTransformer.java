@@ -13,7 +13,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.math.BigDecimal;
 
 import static uk.ac.ebi.pride.chart.utils.PridePlotConstants.NEW_LINE;
 
@@ -41,12 +40,6 @@ public class PrideJSONTransformer {
         BufferedWriter out = new BufferedWriter(new FileWriter(outFile));
         out.write(sb.toString());
         out.close();
-    }
-
-    private String getCost(long start, long end) {
-        double time = (end - start) / 1000d;
-        BigDecimal cost = new BigDecimal(time).setScale(2);
-        return cost.toString();
     }
 
     public void transform(File inFile, File outDir) throws Exception {
@@ -82,7 +75,7 @@ public class PrideJSONTransformer {
                 break;
         }
         end = System.currentTimeMillis();
-        logger.debug("End load " + type + " file: " + inFile.getName() + ". Cost " + getCost(start, end) + "(s)");
+        logger.debug("End load " + type + " file: " + inFile.getName() + ". Cost " + PridePlotUtils.getTimeCost(start, end) + "(s)");
 
 
         logger.debug("Begin export json file " + outFile.getAbsolutePath());
@@ -92,7 +85,7 @@ public class PrideJSONTransformer {
         writeJSONFile(writer, outFile);
 
         end = System.currentTimeMillis();
-        logger.debug("End export json file: " + outFile.getAbsolutePath() + ". Cost " + getCost(start, end) + "(s)");
+        logger.debug("End export json file: " + outFile.getAbsolutePath() + ". Cost " + PridePlotUtils.getTimeCost(start, end) + "(s)");
     }
 
     public static void main(String[] args) throws Exception {

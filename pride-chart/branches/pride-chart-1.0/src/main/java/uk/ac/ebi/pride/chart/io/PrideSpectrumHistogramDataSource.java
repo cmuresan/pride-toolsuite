@@ -9,7 +9,7 @@ import java.util.*;
  * User: qingwei
  * Date: 02/07/13
  */
-public class PrideSpectrumHistogram extends PrideEqualWidthHistogramDataSource {
+public class PrideSpectrumHistogramDataSource extends PrideEqualWidthHistogramDataSource {
     private class PridePeak {
         double mz;
         double intensity;
@@ -24,7 +24,12 @@ public class PrideSpectrumHistogram extends PrideEqualWidthHistogramDataSource {
 
     private List<PridePeak> peakList = new ArrayList<PridePeak>();
 
-    public PrideSpectrumHistogram(boolean calcAllSpectra) {
+    // If add data into data source, modify set true. Which means histogram map need to regenerate again.
+    private boolean modify = true;
+    private SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Double>> histMap;
+
+
+    public PrideSpectrumHistogramDataSource(boolean calcAllSpectra) {
         super(new PrideData[0], calcAllSpectra);
     }
 
@@ -41,6 +46,15 @@ public class PrideSpectrumHistogram extends PrideEqualWidthHistogramDataSource {
             );
             peakList.add(peak);
         }
+
+        modify = true;
+    }
+
+    public void addPeak(double mz, double intensity, PrideDataType dataType) {
+        PridePeak peak = new PridePeak(mz, intensity, dataType);
+        peakList.add(peak);
+
+        modify = true;
     }
 
     @Override
@@ -69,43 +83,51 @@ public class PrideSpectrumHistogram extends PrideEqualWidthHistogramDataSource {
         return histogram;
     }
 
+    @Deprecated
+    public SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>> getHistogramMap() {
+        throw new UnsupportedOperationException("Please use getIntensityMap() method.");
+    }
+
     public SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Double>> getIntensityMap() {
-        SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Double>> histMap = new TreeMap<PrideDataType, SortedMap<PrideHistogramBin, Double>>();
+        if (! modify) {
+            return histMap;
+        }
+
+        this.histMap = new TreeMap<PrideDataType, SortedMap<PrideHistogramBin, Double>>();
 
         SortedMap<PrideHistogramBin, Double> idHistogram;
         SortedMap<PrideHistogramBin, Double> unHistogram;
         SortedMap<PrideHistogramBin, Double> allHistogram = createEmptyHistogram();
         histMap.put(PrideDataType.ALL_SPECTRA, allHistogram);
 
+        PrideHistogramBin bin;
+        PrideHistogramBin[] binArray = bins.toArray(new PrideHistogramBin[bins.size()]);
         for (PridePeak peak : peakList) {
-            for (PrideHistogramBin bin : bins) {
-                if (peak.mz >= bin.getStartBoundary() && peak.mz < bin.getEndBoundary()) {
-                    if (peak.dataType == PrideDataType.IDENTIFIED_SPECTRA) {
-                        idHistogram = histMap.get(PrideDataType.IDENTIFIED_SPECTRA);
-                        if (idHistogram == null) {
-                            idHistogram = createEmptyHistogram();
-                            histMap.put(PrideDataType.IDENTIFIED_SPECTRA, idHistogram);
-                        }
-                        idHistogram.put(bin, idHistogram.get(bin) + peak.intensity);
-                    } else if (peak.dataType == PrideDataType.UNIDENTIFIED_SPECTRA) {
-                        unHistogram = histMap.get(PrideDataType.UNIDENTIFIED_SPECTRA);
-                        if (unHistogram == null) {
-                            unHistogram = createEmptyHistogram();
-                            histMap.put(PrideDataType.UNIDENTIFIED_SPECTRA, unHistogram);
-                        }
-                        unHistogram.put(bin, unHistogram.get(bin) + peak.intensity);
-                    } else if (peak.dataType == PrideDataType.ALL_SPECTRA) {
-                        allHistogram.put(bin, allHistogram.get(bin) + peak.intensity);
-                    }
-
-                    if (isCalcAllSpectra()) {
-                        allHistogram.put(bin, allHistogram.get(bin) + peak.intensity);
-                    }
-                    break;
+            bin = binArray[(int)Math.floor(peak.mz)];
+            if (peak.dataType == PrideDataType.IDENTIFIED_SPECTRA) {
+                idHistogram = histMap.get(PrideDataType.IDENTIFIED_SPECTRA);
+                if (idHistogram == null) {
+                    idHistogram = createEmptyHistogram();
+                    histMap.put(PrideDataType.IDENTIFIED_SPECTRA, idHistogram);
                 }
+                idHistogram.put(bin, idHistogram.get(bin) + peak.intensity);
+            } else if (peak.dataType == PrideDataType.UNIDENTIFIED_SPECTRA) {
+                unHistogram = histMap.get(PrideDataType.UNIDENTIFIED_SPECTRA);
+                if (unHistogram == null) {
+                    unHistogram = createEmptyHistogram();
+                    histMap.put(PrideDataType.UNIDENTIFIED_SPECTRA, unHistogram);
+                }
+                unHistogram.put(bin, unHistogram.get(bin) + peak.intensity);
+            } else if (peak.dataType == PrideDataType.ALL_SPECTRA) {
+                allHistogram.put(bin, allHistogram.get(bin) + peak.intensity);
+            }
+
+            if (isCalcAllSpectra()) {
+                allHistogram.put(bin, allHistogram.get(bin) + peak.intensity);
             }
         }
 
+        modify = false;
         return histMap;
     }
 }

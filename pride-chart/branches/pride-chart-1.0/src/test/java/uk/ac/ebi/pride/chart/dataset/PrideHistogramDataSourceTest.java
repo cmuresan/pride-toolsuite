@@ -63,7 +63,7 @@ public class PrideHistogramDataSourceTest {
             sum = getSum(histogram.values());
         }
 
-        assertEquals(sum, count * 2);
+        assertEquals(sum * 2, count);
     }
 
     @Test
@@ -86,6 +86,6 @@ public class PrideHistogramDataSourceTest {
             sum = getSum(histogram.values());
         }
 
-        assertEquals(sum, count);
+        assertEquals(sum * 2, count);
     }
 }

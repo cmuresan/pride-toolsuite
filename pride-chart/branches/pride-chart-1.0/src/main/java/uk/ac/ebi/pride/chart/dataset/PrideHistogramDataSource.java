@@ -19,6 +19,8 @@ public class PrideHistogramDataSource {
     protected PrideData[] values;
     private boolean calcAllSpectra = false;
 
+    private SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>> histMap;
+
     public PrideHistogramDataSource(PrideData[] values, boolean calcAllSpectra) {
         this.calcAllSpectra = calcAllSpectra;
         this.values = values;
@@ -101,7 +103,11 @@ public class PrideHistogramDataSource {
     }
 
     public SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>> getHistogramMap() {
-        SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>> histMap = new TreeMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>>();
+        if (histMap != null) {
+            return histMap;
+        }
+
+        this.histMap = new TreeMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>>();
 
         SortedMap<PrideHistogramBin, Integer> idHistogram;
         SortedMap<PrideHistogramBin, Integer> unHistogram;

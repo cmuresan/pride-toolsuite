@@ -44,9 +44,6 @@ public class DataAccessReader extends PrideDataReader {
     private Double[] missedDomain = new Double[5];
     private PrideData[] missedRange = new PrideData[5];
 
-    private List<Double> avgDomain = new ArrayList<Double>();
-    private List<PrideData> avgRange = new ArrayList<PrideData>();
-
     private Double[] preChargeDomain = new Double[8];
     private PrideData[] preChargeRange = new PrideData[8];
 
@@ -93,20 +90,6 @@ public class DataAccessReader extends PrideDataReader {
         sequence = sequence.replaceAll("[K|R]","");
         return initialLength - sequence.length();
     }
-
-//    private double calcAverageMZ(Spectrum spectrum) {
-//        double[] dataList = spectrum.getMzBinaryDataArray().getDoubleArray();
-//        if (dataList == null || dataList.length == 0) {
-//            return 0;
-//        }
-//
-//        double sum = 0;
-//        for (double v : dataList) {
-//            sum += v;
-//        }
-//
-//        return sum / dataList.length;
-//    }
 
     private void readDelta(List<PrideData> deltaMZList) {
         if (noPeptide) {
@@ -198,29 +181,15 @@ public class DataAccessReader extends PrideDataReader {
         ));
     }
 
-    private void readAvg(PrideSpectrumHistogram dataSource) {
+    private void readAvg(PrideSpectrumHistogramDataSource dataSource) {
         if (noTandemSpectra) {
             errorMap.put(PrideChartType.AVERAGE_MS, new PrideDataException(PrideDataException.NO_TANDEM_SPECTRA));
             return;
         }
 
         dataSource.appendBins(dataSource.generateBins(0, 1));
-        SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Double>> histogramMap = dataSource.getIntensityMap();
 
-        SortedMap<PrideHistogramBin, Double> histogram;
-        for (PrideDataType dataType : histogramMap.keySet()) {
-            histogram = histogramMap.get(dataType);
-            for (PrideHistogramBin bin : histogram.keySet()) {
-                avgDomain.add(bin.getStartBoundary());
-                avgRange.add(new PrideData(histogram.get(bin), dataType));
-            }
-        }
-
-        xyDataSourceMap.put(PrideChartType.AVERAGE_MS, new PrideXYDataSource(
-                avgDomain.toArray(new Double[avgDomain.size()]),
-                avgRange.toArray(new PrideData[avgRange.size()]),
-                PrideDataType.ALL_SPECTRA
-        ));
+        histogramDataSourceMap.put(PrideChartType.AVERAGE_MS, dataSource);
     }
 
     private void readPreCharge(int[] preChargeBars) {
@@ -403,7 +372,7 @@ public class DataAccessReader extends PrideDataReader {
         Spectrum spectrum;
         List<PrideData> peaksMSList = new ArrayList<PrideData>();
         List<PrideData> peaksIntensityList = new ArrayList<PrideData>();
-        PrideSpectrumHistogram avgHistogram = new PrideSpectrumHistogram(true);
+        PrideSpectrumHistogramDataSource avgDataSource = new PrideSpectrumHistogramDataSource(true);
 
         PrideDataType dataType;
         for (Comparable spectrumId : controller.getSpectrumIds()) {
@@ -443,7 +412,7 @@ public class DataAccessReader extends PrideDataReader {
             if (controller.getSpectrumMsLevel(spectrumId) == 2) {
                 noTandemSpectra = false;
                 peaksMSList.add(new PrideData(spectrum.getMzBinaryDataArray().getDoubleArray().length + 0.0d, PrideDataType.ALL_SPECTRA)) ;
-                avgHistogram.addSpectrum(spectrum, dataType);
+                avgDataSource.addSpectrum(spectrum, dataType);
 
                 for (double v : spectrum.getIntensityBinaryDataArray().getDoubleArray()) {
                     peaksIntensityList.add(new PrideData(v, dataType));
@@ -455,50 +424,50 @@ public class DataAccessReader extends PrideDataReader {
         // release memory.
         controller = null;
 
-        start = System.currentTimeMillis();
-        readPeptide(peptideBars);
-        logger.debug("create peptide data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
-
-        start = System.currentTimeMillis();
-        readDelta(deltaMZList);
-        logger.debug("create delta mz data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
-
-        start = System.currentTimeMillis();
-        readMissed(missedBars);
-        logger.debug("create missed cleavages data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
-
-        start = System.currentTimeMillis();
-        readPreCharge(preChargeBars);
-        logger.debug("create precursor charge data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
-
-        start = System.currentTimeMillis();
-        readPreMasses(preMassedList);
-        logger.debug("create precursor masses data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
-
-        start = System.currentTimeMillis();
-        readAvg(avgHistogram);
-        logger.debug("create average ms/ms data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
-
-        start = System.currentTimeMillis();
-        readPeakMS(peaksMSList);
-        logger.debug("create peaks per ms/ms data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
-
-        start = System.currentTimeMillis();
-        readPeakIntensity(peaksIntensityList);
-        logger.debug("create peak intensity data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
-
 //        start = System.currentTimeMillis();
 //        readPeptide(peptideBars);
+//        logger.debug("create peptide data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
+//
+//        start = System.currentTimeMillis();
 //        readDelta(deltaMZList);
+//        logger.debug("create delta mz data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
+//
+//        start = System.currentTimeMillis();
 //        readMissed(missedBars);
+//        logger.debug("create missed cleavages data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
 //
+//        start = System.currentTimeMillis();
 //        readPreCharge(preChargeBars);
-//        readPreMasses(preMassedList);
+//        logger.debug("create precursor charge data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
 //
-//        readAvg(avgHistogram);
+//        start = System.currentTimeMillis();
+//        readPreMasses(preMassedList);
+//        logger.debug("create precursor masses data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
+//
+//        start = System.currentTimeMillis();
+//        readAvg(avgDataSource);
+//        logger.debug("create average ms/ms data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
+//
+//        start = System.currentTimeMillis();
 //        readPeakMS(peaksMSList);
+//        logger.debug("create peaks per ms/ms data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
+//
+//        start = System.currentTimeMillis();
 //        readPeakIntensity(peaksIntensityList);
-//        logger.debug("create data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
+//        logger.debug("create peak intensity data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
+
+        start = System.currentTimeMillis();
+        readPeptide(peptideBars);
+        readDelta(deltaMZList);
+        readMissed(missedBars);
+
+        readPreCharge(preChargeBars);
+        readPreMasses(preMassedList);
+
+        readAvg(avgDataSource);
+        readPeakMS(peaksMSList);
+        readPeakIntensity(peaksIntensityList);
+        logger.debug("create data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
     }
 
     @Override

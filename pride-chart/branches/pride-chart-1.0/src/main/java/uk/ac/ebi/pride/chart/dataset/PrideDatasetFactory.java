@@ -4,11 +4,10 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import uk.ac.ebi.pride.chart.io.PrideSpectrumHistogramDataSource;
 
 import java.text.DecimalFormat;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.SortedMap;
 
 /**
@@ -45,6 +44,24 @@ public class PrideDatasetFactory {
                     dataset.addSeries(series);
                 }
             }
+        }
+
+        return dataset;
+    }
+
+    public static XYSeriesCollection getXYDataset(PrideSpectrumHistogramDataSource dataSource) {
+        XYSeriesCollection dataset = new XYSeriesCollection();
+
+        SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Double>> histMap = dataSource.getIntensityMap();
+        XYSeries series;
+        SortedMap<PrideHistogramBin, Double> histogram;
+        for (PrideDataType dataType : histMap.keySet()) {
+            series = new XYSeries(dataType.getTitle());
+            histogram = histMap.get(dataType);
+            for (PrideHistogramBin bin : histogram.keySet()) {
+                series.add(bin.getStartBoundary(), histogram.get(bin));
+            }
+            dataset.addSeries(series);
         }
 
         return dataset;

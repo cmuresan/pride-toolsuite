@@ -13,8 +13,7 @@ import java.util.*;
  * Date: 12/06/13
  */
 public abstract class PrideDataReader {
-    private long startTime;
-    private Logger logger = Logger.getLogger(PrideDataReader.class);
+    private static Logger logger = Logger.getLogger(PrideDataReader.class);
 
     protected SortedMap<PrideChartType, PrideXYDataSource> xyDataSourceMap = new TreeMap<PrideChartType, PrideXYDataSource>();
     protected SortedMap<PrideChartType, PrideHistogramDataSource> histogramDataSourceMap = new TreeMap<PrideChartType, PrideHistogramDataSource>();

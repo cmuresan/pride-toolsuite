@@ -17,60 +17,19 @@ public class PrideHistogramDataSource {
     protected SortedSet<PrideHistogramBin> bins = new TreeSet<PrideHistogramBin>();
 
     protected PrideData[] values;
-    protected PrideDataType type;
-    private boolean includeSubType = false;
+    private boolean calcAllSpectra = false;
 
-    public PrideHistogramDataSource(PrideData[] values, PrideDataType type) {
-        for (PrideData value : values) {
-            if (! value.getType().compatible(type)) {
-                throw new IllegalArgumentException("There exists incompatible value " + value + " in range array!");
-            }
-            if (value.getType() != type) {
-                includeSubType = true;
-            }
-        }
-
+    public PrideHistogramDataSource(PrideData[] values, boolean calcAllSpectra) {
+        this.calcAllSpectra = calcAllSpectra;
         this.values = values;
-        this.type = type;
     }
 
-    /**
-     * Whether exists subType data in current data source.
-     */
-    public boolean isIncludeSubType() {
-        return includeSubType;
+    public boolean isCalcAllSpectra() {
+        return calcAllSpectra;
     }
 
     public Iterator<PrideHistogramBin> iterator() {
         return bins.iterator();
-    }
-
-    public PrideHistogramDataSource filter(PrideDataType type) {
-        if (! this.type.compatible(type)) {
-            // current data source type not compatible with filter type. return empty.
-            return null;
-        }
-
-        if (! includeSubType) {
-            return this;
-        }
-
-        List<PrideData> filterData = new ArrayList<PrideData>();
-
-        for (PrideData value : values) {
-            if (value.getType().compatible(type)) {
-                filterData.add(value);
-            }
-        }
-
-        int size = filterData.size();
-        PrideHistogramDataSource subDataSource = new PrideHistogramDataSource(
-                filterData.toArray(new PrideData[size]),
-                type
-        );
-        subDataSource.bins = this.bins;
-
-        return subDataSource;
     }
 
     /**
@@ -133,36 +92,59 @@ public class PrideHistogramDataSource {
         return getLastBin().getEndBoundary();
     }
 
-    public SortedMap<PrideHistogramBin, Collection<PrideData>> getHistogram() {
-        if (values == null) {
-            throw new NullPointerException("Input data is null!");
-        }
-
-        // initial map.
-        SortedMap<PrideHistogramBin, Collection<PrideData>> histogram = new TreeMap<PrideHistogramBin, Collection<PrideData>>();
+    private SortedMap<PrideHistogramBin, Integer> createEmptyHistogram() {
+        SortedMap<PrideHistogramBin, Integer> histogram = new TreeMap<PrideHistogramBin, Integer>();
         for (PrideHistogramBin bin : bins) {
-            histogram.put(bin, new ArrayList<PrideData>());
+            histogram.put(bin, 0);
         }
+        return histogram;
+    }
 
-        Set<PrideHistogramBin> keySet = histogram.keySet();
+    public SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>> getHistogramMap() {
+        SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>> histMap = new TreeMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>>();
+
+        SortedMap<PrideHistogramBin, Integer> idHistogram;
+        SortedMap<PrideHistogramBin, Integer> unHistogram;
+
+        SortedMap<PrideHistogramBin, Integer> allHistogram = createEmptyHistogram();
+        histMap.put(PrideDataType.ALL_SPECTRA, allHistogram);
+
         for (PrideData d : values) {
-            for (PrideHistogramBin bin : keySet) {
+            for (PrideHistogramBin bin : bins) {
                 if (d.getData() >= bin.getStartBoundary() && d.getData() < bin.getEndBoundary()) {
-                    Collection<PrideData> cell = histogram.get(bin);
-                    cell.add(d);
+                    if (d.getType() == PrideDataType.IDENTIFIED_SPECTRA) {
+                        idHistogram = histMap.get(PrideDataType.IDENTIFIED_SPECTRA);
+                        if (idHistogram == null) {
+                            idHistogram = createEmptyHistogram();
+                            histMap.put(PrideDataType.IDENTIFIED_SPECTRA, idHistogram);
+                        }
+                        idHistogram.put(bin, idHistogram.get(bin) + 1);
+                    } else if (d.getType() == PrideDataType.UNIDENTIFIED_SPECTRA) {
+                        unHistogram = histMap.get(PrideDataType.UNIDENTIFIED_SPECTRA);
+                        if (unHistogram == null) {
+                            unHistogram = createEmptyHistogram();
+                            histMap.put(PrideDataType.UNIDENTIFIED_SPECTRA, unHistogram);
+                        }
+                        unHistogram.put(bin, unHistogram.get(bin) + 1);
+                    } else if (d.getType() == PrideDataType.ALL_SPECTRA) {
+                        allHistogram.put(bin, allHistogram.get(bin) + 1);
+                    }
+
+                    if (calcAllSpectra) {
+                        allHistogram.put(bin, allHistogram.get(bin) + 1);
+                    }
+
                     break;
                 }
             }
         }
 
-        return histogram;
-    }
-
-    public PrideDataType getType() {
-        return type;
+        return histMap;
     }
 
     public PrideData[] getValues() {
         return values;
     }
+
+
 }

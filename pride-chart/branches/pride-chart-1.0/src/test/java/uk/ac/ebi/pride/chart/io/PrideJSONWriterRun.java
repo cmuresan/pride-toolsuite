@@ -39,8 +39,8 @@ public class PrideJSONWriterRun {
 //        PrideDataReader reader = new ElderJSONReader(new File("testset/old_2.json"));
 
 //        PrideDataReader reader = new DataAccessReader(new PrideXmlControllerImpl(new File("testset/PRIDE_Exp_Complete_Ac_2.xml")));
-//        PrideDataReader reader = new DataAccessReader(new PrideXmlControllerImpl(new File("testset/PRIDE_Exp_Complete_Ac_1643.xml")));
-        PrideDataReader reader = new DataAccessReader(new PrideXmlControllerImpl(new File("testset/PRIDE_Exp_Complete_Ac_18249.xml")));
+        PrideDataReader reader = new DataAccessReader(new PrideXmlControllerImpl(new File("testset/PRIDE_Exp_Complete_Ac_1643.xml")));
+//        PrideDataReader reader = new DataAccessReader(new PrideXmlControllerImpl(new File("testset/PRIDE_Exp_Complete_Ac_18249.xml")));
         PrideJSONWriterRun run = new PrideJSONWriterRun(reader);
 
         System.out.println(run.toJSONString());

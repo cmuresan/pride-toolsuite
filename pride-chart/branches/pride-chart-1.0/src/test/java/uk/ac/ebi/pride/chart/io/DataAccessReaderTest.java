@@ -17,9 +17,9 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertArrayEquals;
 
 /**
- * User: qingwei
- * Date: 25/06/13
- */
+* User: qingwei
+* Date: 25/06/13
+*/
 public class DataAccessReaderTest {
     private File prideXMLFile = new File("testset/PRIDE_Exp_Complete_Ac_2.xml");
     private File jsonFile = new File("testset/old_2.json");
@@ -93,7 +93,7 @@ public class DataAccessReaderTest {
         PrideXYDataSource idJSONDataSource = jsonDataSource.filter(PrideDataType.IDENTIFIED_SPECTRA);
         PrideXYDataSource unJSONDataSource = jsonDataSource.filter(PrideDataType.UNIDENTIFIED_SPECTRA);
         PrideXYDataSource allJSONDataSource = jsonDataSource.filter(PrideDataType.ALL_SPECTRA);
-//
+
 //        int min = Math.min(idPrideDataSource.getDomainData().length, idJSONDataSource.getDomainData().length);
 //        for (int i = 0; i < min; i++) {
 //            assertEquals(idPrideDataSource.getDomainData()[i], idJSONDataSource.getDomainData()[i]);
@@ -158,18 +158,12 @@ public class DataAccessReaderTest {
         }
     }
 
-    private void compareHistogram(SortedMap<PrideHistogramBin, Collection<PrideData>> prideHistogram,
-                                  SortedMap<PrideHistogramBin, Collection<PrideData>> jsonHistogram) {
+    private void compareHistogram(SortedMap<PrideHistogramBin, Integer> prideHistogram,
+                                  SortedMap<PrideHistogramBin, Integer> jsonHistogram) {
         assertArrayEquals(prideHistogram.keySet().toArray(), jsonHistogram.keySet().toArray());
 
-        List<Integer> prideFrequencyList = new ArrayList<Integer>();
-        for (Collection<PrideData> cell : prideHistogram.values()) {
-            prideFrequencyList.add(cell.size());
-        }
-        List<Integer> jsonFrequencyList = new ArrayList<Integer>();
-        for (Collection<PrideData> cell : jsonHistogram.values()) {
-            jsonFrequencyList.add(cell.size());
-        }
+        Collection<Integer> prideFrequencyList = prideHistogram.values();
+        Collection<Integer> jsonFrequencyList = jsonHistogram.values();
 
         assertArrayEquals(prideFrequencyList.toArray(), jsonFrequencyList.toArray());
     }
@@ -181,10 +175,10 @@ public class DataAccessReaderTest {
         PrideHistogramDataSource prideDataSource = dataReader.getHistogramDataSourceMap().get(type);
         PrideHistogramDataSource jsonDataSource = jsonReader.getHistogramDataSourceMap().get(type);
 
-        SortedMap<PrideHistogramBin, Collection<PrideData>> prideHistogram = prideDataSource.getHistogram();
-        SortedMap<PrideHistogramBin, Collection<PrideData>> jsonHistogram = jsonDataSource.getHistogram();
+        SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>> prideHistogram = prideDataSource.getHistogramMap();
+        SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>> jsonHistogram = jsonDataSource.getHistogramMap();
 
-        compareHistogram(prideHistogram, jsonHistogram);
+        compareHistogram(prideHistogram.get(PrideDataType.ALL_SPECTRA), jsonHistogram.get(PrideDataType.ALL_SPECTRA));
     }
 
     @Test
@@ -194,13 +188,13 @@ public class DataAccessReaderTest {
         PrideHistogramDataSource prideDataSource = dataReader.getHistogramDataSourceMap().get(type);
         PrideHistogramDataSource jsonDataSource = jsonReader.getHistogramDataSourceMap().get(type);
 
-        SortedMap<PrideHistogramBin, Collection<PrideData>> idPrideHistogram = prideDataSource.filter(PrideDataType.IDENTIFIED_SPECTRA).getHistogram();
-        SortedMap<PrideHistogramBin, Collection<PrideData>> unPrideHistogram = prideDataSource.filter(PrideDataType.UNIDENTIFIED_SPECTRA).getHistogram();
-        SortedMap<PrideHistogramBin, Collection<PrideData>> allPrideHistogram = prideDataSource.filter(PrideDataType.ALL_SPECTRA).getHistogram();
+        SortedMap<PrideHistogramBin, Integer> idPrideHistogram = prideDataSource.getHistogramMap().get(PrideDataType.IDENTIFIED_SPECTRA);
+        SortedMap<PrideHistogramBin, Integer> unPrideHistogram = prideDataSource.getHistogramMap().get(PrideDataType.UNIDENTIFIED_SPECTRA);
+        SortedMap<PrideHistogramBin, Integer> allPrideHistogram = prideDataSource.getHistogramMap().get(PrideDataType.ALL_SPECTRA);
 
-        SortedMap<PrideHistogramBin, Collection<PrideData>> idJSONHistogram = jsonDataSource.filter(PrideDataType.IDENTIFIED_SPECTRA).getHistogram();
-        SortedMap<PrideHistogramBin, Collection<PrideData>> unJSONHistogram = jsonDataSource.filter(PrideDataType.UNIDENTIFIED_SPECTRA).getHistogram();
-        SortedMap<PrideHistogramBin, Collection<PrideData>> allJSONHistogram = jsonDataSource.filter(PrideDataType.ALL_SPECTRA).getHistogram();
+        SortedMap<PrideHistogramBin, Integer> idJSONHistogram = jsonDataSource.getHistogramMap().get(PrideDataType.IDENTIFIED_SPECTRA);
+        SortedMap<PrideHistogramBin, Integer> unJSONHistogram = jsonDataSource.getHistogramMap().get(PrideDataType.UNIDENTIFIED_SPECTRA);
+        SortedMap<PrideHistogramBin, Integer> allJSONHistogram = jsonDataSource.getHistogramMap().get(PrideDataType.ALL_SPECTRA);
 
 //        compareHistogram(idPrideHistogram, idJSONHistogram);
 //        compareHistogram(unPrideHistogram, unJSONHistogram);

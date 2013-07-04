@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * User: Qingwei
@@ -50,35 +51,19 @@ public class PrideDatasetFactory {
     }
 
     public static CategoryDataset getHistogramDataset(PrideHistogramDataSource dataSource) {
-        Map<PrideHistogramBin, Collection<PrideData>> histogram = dataSource.getHistogram();
+        SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>> histogramMap = dataSource.getHistogramMap();
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         String category;
         String seriesKey;
-
-        Iterator<PrideHistogramBin> it = dataSource.filter(dataSource.getType()).iterator();
-        PrideHistogramBin bin;
-        while (it.hasNext()) {
-            bin = it.next();
-            category = bin.getEndBoundary() == Integer.MAX_VALUE ? ">" + bin.getStartBoundary() : bin.toString(new DecimalFormat("#"));
-            seriesKey = dataSource.getType().getTitle();
-            dataset.addValue(histogram.get(bin).size(), seriesKey, category);
-        }
-
-        if (dataSource.isIncludeSubType()) {
-            Collection<PrideDataType> subTypes = dataSource.getType().getChildren();
-            for (PrideDataType subType : subTypes) {
-                PrideHistogramDataSource subDataSource = dataSource.filter(subType);
-                Map<PrideHistogramBin, Collection<PrideData>> subHistogram = subDataSource.getHistogram();
-
-                Iterator<PrideHistogramBin> subIt = subDataSource.iterator();
-                while (subIt.hasNext()) {
-                    bin = subIt.next();
-                    category = bin.getEndBoundary() == Integer.MAX_VALUE ? ">" + bin.getStartBoundary() : bin.toString(new DecimalFormat("#"));
-                    seriesKey = subType.getTitle();
-                    dataset.addValue(subHistogram.get(bin).size(), seriesKey, category);
-                }
+        SortedMap<PrideHistogramBin, Integer> histogram;
+        for (PrideDataType dataType : histogramMap.keySet()) {
+            histogram = histogramMap.get(dataType);
+            seriesKey = dataType.getTitle();
+            for (PrideHistogramBin bin : histogram.keySet()) {
+                category = bin.getEndBoundary() == Integer.MAX_VALUE ? ">" + bin.getStartBoundary() : bin.toString(new DecimalFormat("#"));
+                dataset.addValue(histogram.get(bin), seriesKey, category);
             }
         }
 

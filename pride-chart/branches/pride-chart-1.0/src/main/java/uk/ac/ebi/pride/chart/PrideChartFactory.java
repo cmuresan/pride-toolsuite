@@ -81,11 +81,11 @@ public class PrideChartFactory {
 
         switch (type) {
             case PEAKS_MS:
-                dataSource = new PrideEqualWidthHistogramDataSource(data, PrideDataType.ALL_SPECTRA);
+                dataSource = new PrideEqualWidthHistogramDataSource(data, false);
                 dataSource.appendBins(((PrideEqualWidthHistogramDataSource)dataSource).generateBins(0, 400, 10));
                 break;
             case PEAK_INTENSITY:
-                dataSource = new PrideHistogramDataSource(data, PrideDataType.ALL_SPECTRA);
+                dataSource = new PrideHistogramDataSource(data, true);
                 break;
             default:
                 throw new IllegalArgumentException("Can not create Histogram style plot.");

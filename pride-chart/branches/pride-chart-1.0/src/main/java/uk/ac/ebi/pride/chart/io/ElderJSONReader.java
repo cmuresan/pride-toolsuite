@@ -6,7 +6,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import uk.ac.ebi.pride.chart.PrideChartType;
 import uk.ac.ebi.pride.chart.dataset.*;
-import uk.ac.ebi.pride.chart.dataset.PrideHistogramBin;
 
 import java.io.*;
 import java.util.*;
@@ -444,7 +443,7 @@ public class ElderJSONReader extends PrideDataReader {
             }
         }
 
-        PrideHistogramDataSource dataSource = new PrideHistogramDataSource(values.toArray(new PrideData[values.size()]), PrideDataType.ALL_SPECTRA);
+        PrideHistogramDataSource dataSource = new PrideHistogramDataSource(values.toArray(new PrideData[values.size()]), false);
         for (PrideHistogramBin bin : bins) {
             dataSource.appendBin(bin);
         }
@@ -476,7 +475,7 @@ public class ElderJSONReader extends PrideDataReader {
         countList = parseCounts(series.getJSONArray(Y_AXIS));
         addSeries(values, bins, countList, type);
 
-        PrideHistogramDataSource dataSource = new PrideHistogramDataSource(values.toArray(new PrideData[values.size()]), PrideDataType.ALL_SPECTRA);
+        PrideHistogramDataSource dataSource = new PrideHistogramDataSource(values.toArray(new PrideData[values.size()]), true);
         for (PrideHistogramBin bin : bins) {
             dataSource.appendBin(bin);
         }

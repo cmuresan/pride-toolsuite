@@ -162,7 +162,7 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
     /**
      * Get contents from the file
      *
-     * @param reader    buffered reader
+     * @param reader buffered reader
      * @throws IOException exception while reading
      */
     private void getContents(BufferedReader reader) throws IOException {
@@ -214,10 +214,12 @@ public class SearchDatabaseTask extends TaskAdapter<Void, List<List<Object>>> {
             String part = parts[i];
             if (part == null || "".equals(part.trim())) {
                 rowParts.add(" " + Constants.NOT_AVAILABLE);
-            } else if (headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.EXPERIMENT_ACCESSION) ||
-                        headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.NUMBER_OF_SPECTRA) ||
-                        headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.NUMBER_OF_PEPTIDE) ||
-                        headers[i + 2].equals(DatabaseSearchTableModel.TableHeader.NUMBER_OF_PROTEIN)) {
+            } else if (headers[i + 1].equals(DatabaseSearchTableModel.TableHeader.EXPERIMENT_ACCESSION)) {
+                rowParts.add(Integer.parseInt(part));
+                rowParts.add(Integer.parseInt(part));
+            } else if (headers[i + 1].equals(DatabaseSearchTableModel.TableHeader.NUMBER_OF_SPECTRA) ||
+                    headers[i + 1].equals(DatabaseSearchTableModel.TableHeader.NUMBER_OF_PEPTIDE) ||
+                    headers[i + 1].equals(DatabaseSearchTableModel.TableHeader.NUMBER_OF_PROTEIN)) {
                 rowParts.add(Integer.parseInt(part));
             } else {
                 rowParts.add(part);

@@ -139,8 +139,8 @@ public class DataAccessUtilities {
      */
     public static double getPrecursorMz(Spectrum spectrum) {
         double mz = -1;
-        List<Precursor> precursors = spectrum.getPrecursors();
-        if (!precursors.isEmpty()) {
+        if (spectrum != null && spectrum.getPrecursors() != null && !spectrum.getPrecursors().isEmpty()) {
+            List<Precursor> precursors = spectrum.getPrecursors();
             Double m = getSelectedIonMz(precursors.get(0), 0);
             if (m != null) {
                 mz = m;

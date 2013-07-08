@@ -83,9 +83,8 @@ public class MzIdentMLTransformer {
     }
 
     private static List<CvParam> transformToCvParam(List<uk.ac.ebi.jmzidml.model.mzidml.CvParam> oldCvParams) {
-        List<CvParam> cvParams = null;
-        if (oldCvParams != null) {
-            cvParams = new ArrayList<CvParam>();
+        List<CvParam> cvParams = new ArrayList<CvParam>();
+        if (oldCvParams != null && oldCvParams.size() != 0) {
             for (uk.ac.ebi.jmzidml.model.mzidml.CvParam oldCvParam : oldCvParams) {
                 cvParams.add(transformToCvParam(oldCvParam));
             }
@@ -152,9 +151,10 @@ public class MzIdentMLTransformer {
             CvTermReference contactOrg = CvTermReference.CONTACT_ORG;
             String organizationStr = "";
             for (Organization organization : affiliation) {
-                organizationStr += organization.getName() + " ";
+                organizationStr += (organization.getName() != null) ? organization.getName() + " " : "";
             }
-            cvParams.add(new CvParam(contactOrg.getAccession(), contactOrg.getName(), contactOrg.getCvLabel(), organizationStr, null, null, null));
+            if (organizationStr.length() != 0)
+                cvParams.add(new CvParam(contactOrg.getAccession(), contactOrg.getName(), contactOrg.getCvLabel(), organizationStr, null, null, null));
             ParamGroup paramGroup = new ParamGroup(transformToCvParam(oldPerson.getCvParam()), transformToUserParam(oldPerson.getUserParam()));
             paramGroup.addCvParams(cvParams);
             return new Person(paramGroup, oldPerson.getId(), oldPerson.getName(), oldPerson.getLastName(), oldPerson.getFirstName(), oldPerson.getMidInitials(), affiliation, null);

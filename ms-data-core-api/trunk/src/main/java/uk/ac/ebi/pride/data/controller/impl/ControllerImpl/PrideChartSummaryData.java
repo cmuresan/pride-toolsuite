@@ -146,7 +146,7 @@ public class PrideChartSummaryData extends ExperimentSummaryData {
             mzHist = mzUnidentifiedHist;
         }
 
-        int charge = DataAccessUtilities.getPrecursorChargeParamGroup(spectrum);
+        Integer charge = DataAccessUtilities.getPrecursorChargeParamGroup(spectrum);
         PrideHistogram histogram;
 
         if (mzHist.containsKey(charge)) {

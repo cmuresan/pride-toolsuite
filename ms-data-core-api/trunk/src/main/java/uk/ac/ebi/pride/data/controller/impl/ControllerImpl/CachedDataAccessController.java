@@ -805,7 +805,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
             return super.getAvailableProteinLevelScores();
         }
 
-        return null;
+        return Collections.emptyList();
 
     }
 
@@ -824,7 +824,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
             return super.getAvailablePeptideLevelScores();
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     /**

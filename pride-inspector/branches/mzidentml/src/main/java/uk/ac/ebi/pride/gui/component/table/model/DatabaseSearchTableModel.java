@@ -73,7 +73,7 @@ public class DatabaseSearchTableModel extends ListBasedListTableModel<List<Objec
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        List<Object> content = (List<Object>)contents.get(rowIndex);
+        List<Object> content = (List<Object>) contents.get(rowIndex);
         if (content != null) {
             content.set(columnIndex, aValue);
         }
@@ -90,7 +90,7 @@ public class DatabaseSearchTableModel extends ListBasedListTableModel<List<Objec
         List<List<String>> results = new ArrayList<List<String>>();
         int startIndexOfContent = getStartIndexOfContent();
         for (Object content : contents) {
-            List<Object> contentList = (List<Object>)content;
+            List<Object> contentList = (List<Object>) content;
             List<String> result = new ArrayList<String>();
             for (int i = startIndexOfContent; i < contentList.size(); i++) {
                 result.add(contentList.get(i).toString());
@@ -121,7 +121,7 @@ public class DatabaseSearchTableModel extends ListBasedListTableModel<List<Objec
     public List<String> getAllHeaders() {
         List<String> headers = new ArrayList<String>();
         int cnt = this.getColumnCount();
-        for (int i = 2; i < cnt; i++) {
+        for (int i = 1; i < cnt; i++) {
             headers.add(this.getColumnName(i));
         }
         return headers;

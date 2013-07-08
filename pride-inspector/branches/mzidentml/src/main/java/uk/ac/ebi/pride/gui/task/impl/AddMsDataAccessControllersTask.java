@@ -70,6 +70,8 @@ public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<Spectr
 
             TaskUtil.startBackgroundTask(task, controller);
 
+            contentPane.populate();
+
         } catch (DataAccessException e) {
             e.printStackTrace();
         }

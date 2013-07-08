@@ -107,7 +107,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return uid;
     }
 
-    private List<CvParam> getCvParams(String table_name, int parent_element_id) {
+    private List<CvParam> getCvParams(String table_name, long parent_element_id) {
         String query = "SELECT accession, name, value, cv_label FROM " + table_name
                 + " WHERE parent_element_fk = ? AND cv_label is not null";
 
@@ -116,7 +116,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
     //same as before, but returns a list of UserParam
 
-    private List<UserParam> getUserParams(String table_name, int parent_element_id) {
+    private List<UserParam> getUserParams(String table_name, long parent_element_id) {
         String query = "SELECT name, value FROM " + table_name +
                 " WHERE parent_element_fk = ? AND cv_label is null";
 
@@ -680,7 +680,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return jdbcTemplate.queryForList(query, Double.class, modification_id, deltaType);
     }
 
-    private List<Modification> getModificationsPeptide(int peptide_id) {
+    private List<Modification> getModificationsPeptide(long peptide_id) {
         logger.debug("Get a list of modifications, peptide {}", peptide_id);
 
         List<Modification> modifications = new ArrayList<Modification>();
@@ -689,7 +689,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         List<Map<String, Object>> results = jdbcTemplate.queryForList(query, peptide_id);
 
         for (Map<String, Object> result : results) {
-            ParamGroup params = new ParamGroup(getCvParams("pride_modification_param", (Integer) result.get("modification_id")), getUserParams("pride_modification_param",
+            ParamGroup params = new ParamGroup(getCvParams("pride_modification_param", (Long) result.get("modification_id")), getUserParams("pride_modification_param",
                     (Integer) result.get("modification_id")));
             List<Double> monoMassDeltas = getDeltaValues((Integer) result.get("modification_id"), "uk.ac.ebi.pride.rdbms.ojb.model.core.MonoMassDeltaBean");
             List<Double> avgMassDeltas = getDeltaValues((Integer) result.get("modification_id"), "uk.ac.ebi.pride.rdbms.ojb.model.core.AverageMassDeltaBean");
@@ -699,7 +699,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return modifications;
     }
 
-    private List<FragmentIon> getFragmentIons(int peptide_id) {
+    private List<FragmentIon> getFragmentIons(long peptide_id) {
         logger.debug("Get list of fragment ions for peptide {}", peptide_id);
 
         List<FragmentIon> fragmentIons = new ArrayList<FragmentIon>();
@@ -736,7 +736,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return fragmentIons;
     }
 
-    private Spectrum getSpectrumByPeptide(int experiment_id, int spectrum_ref) {
+    private Spectrum getSpectrumByPeptide(long experiment_id, long spectrum_ref) {
         logger.debug("Get spectrum by spectrum reference {}", spectrum_ref);
 
         String query = "SELECT spectrum_id FROM pride_experiment pe, mzdata_spectrum ms WHERE pe.experiment_id = ? AND " +
@@ -747,7 +747,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return getSpectrumById(spectrumId);
     }
 
-    private List<Peptide> getPeptideIdentification(int identification_id, int experiment_id) {
+    private List<Peptide> getPeptideIdentification(long identification_id, long experiment_id) {
         logger.debug("Get a list of peptides for identification {}", identification_id);
         List<Peptide> peptides = new ArrayList<Peptide>();
 
@@ -756,23 +756,23 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         List<Map<String, Object>> results = jdbcTemplate.queryForList(query, identification_id);
 
         for (Map<String, Object> result : results) {
-            ParamGroup params = new ParamGroup(getCvParams("pride_peptide_param", (Integer) result.get("peptide_id")),
-                    getUserParams("pride_peptide_param", (Integer) result.get("peptide_id")));
-            List<Modification> modifications = getModificationsPeptide((Integer) result.get("peptide_id"));
-            List<FragmentIon> fragmentIons = getFragmentIons((Integer) result.get("peptide_id"));
-            Spectrum spectrum = getSpectrumByPeptide(experiment_id, (Integer) result.get("spectrum_ref"));
+            ParamGroup params = new ParamGroup(getCvParams("pride_peptide_param", (Long) result.get("peptide_id")),
+                    getUserParams("pride_peptide_param", (Long) result.get("peptide_id")));
+            List<Modification> modifications = getModificationsPeptide((Long) result.get("peptide_id"));
+            List<FragmentIon> fragmentIons = getFragmentIons((Long) result.get("peptide_id"));
+            Spectrum spectrum = (result.get("spectrum_ref") != null) ? getSpectrumByPeptide(experiment_id, (Long) result.get("spectrum_ref")) : null;
             PeptideSequence peptideSequence = new PeptideSequence(null, null, (String) result.get("sequence"), modifications);
             List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
             PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, (Integer) result.get("pep_start"), (Integer) result.get("pep_end"), false, peptideSequence, null);
             peptideEvidences.add(peptideEvidence);
 
-            int charge = DataAccessUtilities.getPrecursorChargeParamGroup(spectrum);
-            double mz = DataAccessUtilities.getPrecursorMz(spectrum);
+            Integer charge = DataAccessUtilities.getPrecursorChargeParamGroup(spectrum);
+            Double mz = DataAccessUtilities.getPrecursorMz(spectrum);
 
             //get Scores
             Score score = DataAccessUtilities.getScore(params);
 
-            SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, charge, mz, 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, score, spectrum, null);
+            SpectrumIdentification spectrumIdentification = new SpectrumIdentification(params, null, null, (charge == null ? -1 : charge), (mz == null ? -1 : mz), 0.0, 0.0, peptideSequence, -1, false, null, null, peptideEvidences, fragmentIons, score, spectrum, null);
             peptides.add(new Peptide(peptideEvidence, spectrumIdentification));
         }
 
@@ -809,11 +809,11 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                 String accession = (String) result.get("accession_number");
                 logger.debug("Getting a identification from database: {}", accession);
                 Double seqConverage = (Double) result.get("sequence_coverage");
-                double seqConverageVal = seqConverage == 0 ? -1 : seqConverage;
-                ParamGroup params = new ParamGroup(getCvParams("pride_identification_param", (Integer) result.get("identification_id")),
-                        getUserParams("pride_identification_param", (Integer) result.get("identification_id")));
+                double seqConverageVal = seqConverage == null ? -1 : seqConverage;
+                ParamGroup params = new ParamGroup(getCvParams("pride_identification_param", (Long) result.get("identification_id")),
+                        getUserParams("pride_identification_param", (Long) result.get("identification_id")));
 
-                List<Peptide> peptides = getPeptideIdentification((Integer) result.get("identification_id"), (Integer) result.get("pi.experiment_id"));
+                List<Peptide> peptides = getPeptideIdentification((Long) result.get("identification_id"), (Long) result.get("experiment_id"));
                 String className = (String) result.get("classname");
                 DBSequence dbSequence = new DBSequence(null, null, null, -1, accession, new SearchDataBase((String) result.get("search_database"), (String) result.get("database_version")), null, (String) result.get("accession_version"), (String) result.get("splice_isoform"));
 
@@ -822,9 +822,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     Gel gel = getPeptideGel((Integer) result.get("gel_id"), (Double) result.get("x_coordinate"), (Double) result.get("y_coordinate"), (Double) result.get("molecular_weight"), (Double) result.get("pi"));
                     protein = new Protein(params, (Integer) result.get("identification_id"), null, dbSequence, false, peptides, null, (Double) result.get("threshold"), seqConverageVal, gel);
                 } else if ("uk.ac.ebi.pride.rdbms.ojb.model.core.GelFreeIdentificationBean".equals(className)) {
-                    protein = new Protein(params, (Integer) result.get("identification_id"), null, dbSequence, false, peptides, null, (Double) result.get("threshold"), seqConverageVal, null);
+                    protein = new Protein(params, (Long) result.get("identification_id"), null, dbSequence, false, peptides, null, (result.get("threshold") == null) ? -1 : (Double) result.get("threshold"), seqConverageVal, null);
                 }
-
                 if (useCache) {
                     getCache().store(CacheEntry.PROTEIN, proteinId, protein);
                 }

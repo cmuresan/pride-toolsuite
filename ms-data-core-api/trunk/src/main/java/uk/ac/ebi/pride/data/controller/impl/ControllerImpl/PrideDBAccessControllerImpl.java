@@ -4,9 +4,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import uk.ac.ebi.pride.chart.controller.PrideChartSummaryData;
-import uk.ac.ebi.pride.chart.graphics.implementation.PrideChart;
-import uk.ac.ebi.pride.chart.graphics.implementation.PrideChartFactory;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;
@@ -26,7 +23,6 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.ByteOrder;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
 import java.util.*;
 
 /**
@@ -1003,62 +999,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         }
 
         return null;
-    }
-
-    @Override
-    public List<PrideChartManager> getChartData() {
-        List<PrideChartManager> list = new ArrayList<PrideChartManager>();
-
-        String query = "select c.chart_type, c.intermediate_data " +
-                "from pride_chart_data c, pride_experiment e " +
-                "where c.experiment_id = e.experiment_id and " +
-                "   e.accession = ? and " +
-                "   c.intermediate_data is not null " +
-                "order by c.chart_type";
-
-        List<Map<String, Object>> results = jdbcTemplate.queryForList(query, experimentAcc);
-        Map<Integer, PrideChartManager> map = new HashMap<Integer, PrideChartManager>();
-        for (Map<String, Object> result : results) {
-            int type = ((Long) result.get("chart_type")).intValue();
-            String jsonData = (String) result.get("intermediate_data");
-
-            PrideChart prideChart = PrideChartFactory.getChart(type, jsonData);
-            map.put(type, new PrideChartManager(prideChart));
-        }
-
-        if (!map.isEmpty())
-            for (Integer id : PrideChartFactory.getChartOrder())
-                if (map.containsKey(id)) list.add(map.get(id));
-
-
-        //If the list is empty means that the intermediate data has not been retrieved for some reason
-        Connection connection = null;
-        if (list.isEmpty()) {
-            try {
-                /**
-                 * The next PrideChartSummaryData object if from PRIDE-Chart package
-                 * uk.ac.ebi.pride.chart.controller.PrideChartSummaryData
-                 * and is used for retrieving the summary data from the experiment
-                 * instead of using the intermediate data (because it could not be retrieved
-                 * in the above step)
-                 */
-                String accession = experimentAcc.toString();
-                connection = PooledConnectionFactory.getConnection();
-                PrideChartSummaryData summaryData = new PrideChartSummaryData(accession, connection);
-                for (PrideChart prideChart : PrideChartFactory.getAllCharts(summaryData)) {
-                    list.add(new PrideChartManager(prideChart));
-                }
-            } catch (Exception e) {
-                String errMsg = "Charts summary data could not be retrieved from database";
-                logger.error(errMsg, e);
-                throw new DataAccessException(errMsg, e);
-            } finally {
-                //ToDo: what to use instead of st and rs (because they are from previous try)
-                DBUtilities.releaseResources(connection, null, null);
-            }
-        }
-
-        return list;
     }
 
     public Comparable getExperimentAcc() {

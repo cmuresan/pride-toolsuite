@@ -2,10 +2,6 @@ package uk.ac.ebi.pride.data.controller.impl.ControllerImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.pride.chart.graphics.implementation.PrideChart;
-import uk.ac.ebi.pride.chart.graphics.implementation.PrideChartFactory;
-import uk.ac.ebi.pride.chart.model.implementation.ExperimentSummaryData;
-import uk.ac.ebi.pride.chart.model.implementation.SpectralDataPerExperimentException;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.DataAccessMode;

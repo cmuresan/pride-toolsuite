@@ -697,10 +697,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     @Override
     public Spectrum getSpectrumById(Comparable id, boolean useCache) {
         String[] spectrumIdArray = ((String) id).split("!");
-
+        if (spectrumIdArray.length != 2) {
+            spectrumIdArray = ((Map<Comparable, String[]>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM)).get(id);
+        }
 
         Spectrum spectrum = super.getSpectrumById(id, useCache);
-        if (spectrum == null) {
+        if (spectrum == null && spectrumIdArray != null) {
             logger.debug("Get new spectrum from file: {}", id);
             try {
                 DataAccessController spectrumController = msDataAccessControllers.get(spectrumIdArray[1]);

@@ -11,6 +11,7 @@ import java.util.*;
  * @version $Id$
  */
 public class PeptideSpecies {
+
     private PeptideSequence sequence;
     private int numberOfPSMs;
     private final Set<ProteinAccession> proteinAccessions;

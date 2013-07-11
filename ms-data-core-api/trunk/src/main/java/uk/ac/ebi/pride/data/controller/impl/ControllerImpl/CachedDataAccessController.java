@@ -828,29 +828,6 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     }
 
     /**
-     * Get chart data for generating chart component
-     *
-     * @return List<PrideChartManager> a list of chart data
-     */
-    @Override
-    public List<PrideChartManager> getChartData() {
-        ExperimentSummaryData spectralSummaryData;
-        try {
-            spectralSummaryData = new PrideChartSummaryData(this);
-        } catch (SpectralDataPerExperimentException e) {
-            String msg = "PrideChartSummaryData object could not be created";
-            logger.error(msg, e);
-            return Collections.emptyList();
-        }
-
-        List<PrideChartManager> list = new ArrayList<PrideChartManager>();
-        for (PrideChart prideChart : PrideChartFactory.getAllCharts(spectralSummaryData)) {
-            list.add(new PrideChartManager(prideChart));
-        }
-        return list;
-    }
-
-    /**
      * Get protein quantification unit
      *
      * @return QuantCvTermReference    quantification unit

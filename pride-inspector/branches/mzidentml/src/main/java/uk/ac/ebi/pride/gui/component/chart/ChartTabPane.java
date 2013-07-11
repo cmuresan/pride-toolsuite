@@ -1,11 +1,8 @@
 package uk.ac.ebi.pride.gui.component.chart;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import uk.ac.ebi.pride.chart.graphics.implementation.PrideChartException;
+import uk.ac.ebi.pride.chart.PrideChartType;
+import uk.ac.ebi.pride.chart.io.PrideDataReader;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.controller.DataAccessController.ContentCategory;
-import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideChartManager;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
@@ -14,15 +11,14 @@ import uk.ac.ebi.pride.gui.component.PrideInspectorLoadingPanel;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.utils.Iconable;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
-import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.LoadChartDataTask;
+import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
+import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>Class to create a TabPane for integrating the PRIDE-Chart into PRIDE-Inspector.</p>
@@ -31,9 +27,8 @@ import java.util.List;
  *         Date: 10-ago-2010
  *         Time: 14:10:41
  */
-public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManager>, String>
+public class ChartTabPane extends DataAccessControllerPane<PrideDataReader, Void>
         implements Iconable {
-    private static final Logger logger = LoggerFactory.getLogger(ChartTabPane.class);
     /**
      * The tab title
      */
@@ -52,10 +47,7 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
     /**
      * The list of charts to be managed in the tab
      */
-    private List<PrideChartManager> managedPrideCharts;
-
-    private JPanel panelThumbnailChart;
-
+    private PrideDataReader reader;
 
     /**
      * Constructor
@@ -72,7 +64,6 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
      */
     @Override
     protected void setupMainPane() {
-
         viewerContext = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
         setTitle(PANE_TITLE);
 
@@ -90,30 +81,16 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
      * @param charts the number of charts to be displayed
      */
     private void setupInitialMainPane(int charts) {
-        panelThumbnailChart = new JPanel();
         int border = 3;
         int rows = (int) Math.ceil(charts / (double) COLS);
-        panelThumbnailChart.setBorder(BorderFactory.createEmptyBorder(border, border, border, border));
-        panelThumbnailChart.setLayout(new GridLayout(rows, COLS, border, border));
-        add(panelThumbnailChart);
-    }
-
-    private void resetTitle() {
-        int numberOfCharts = (managedPrideCharts == null) ? 0 : managedPrideCharts.size();
-        String title = PANE_TITLE + ((numberOfCharts == 0) ? "" : " (" + numberOfCharts + ")");
-        setTitle(title);
-
-        ControllerContentPane dataContentPane = (ControllerContentPane) viewerContext.getDataContentPane(controller);
-        if (dataContentPane != null) {
-            dataContentPane.setTabTitle(dataContentPane.getChartTabIndex(), title);
-        }
+        setBorder(BorderFactory.createEmptyBorder(border, border, border, border));
+        setLayout(new GridLayout(rows, COLS, border, border));
     }
 
     private void createPrideCharts() {
-        if (DataAccessController.Type.XML_FILE.equals(controller.getType()) ||
-                DataAccessController.Type.MZIDENTML.equals(controller.getType())){
+        if (DataAccessController.Type.XML_FILE.equals(controller.getType())) {
             String msg = viewerContext.getProperty("chart.time.warning.message");
-            showWarningMessage("Start",msg, false);
+            showWarningMessage(msg, false);
         }
 
         LoadChartDataTask lcd = new LoadChartDataTask(controller);
@@ -121,47 +98,34 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
         // add a task listener
         lcd.addTaskListener(this);
 
-        TaskUtil.startBackgroundTask(lcd);
+        // start running the task
+        lcd.setGUIBlocker(new DefaultGUIBlocker(lcd, GUIBlocker.Scope.NONE, null));
+        viewerContext.addTask(lcd);
     }
 
-    public void showChart(PrideChartManager managedPrideChart) {
+    public void showBigView(PrideChartType chartType) {
         removeAll();
         setLayout(new BorderLayout());
-        add(new ChartBigPane(this, managedPrideChart), BorderLayout.CENTER);
+        add(new PrideChartBigPane(this, reader, chartType), BorderLayout.CENTER);
         revalidate();
         repaint();
     }
 
-    public void showPreviousChart(PrideChartManager managedPrideChart) {
-        int index = managedPrideCharts.indexOf(managedPrideChart) - 1;
-        int previous = index < 0 ? managedPrideCharts.size() - 1 : index;
-        showChart(managedPrideCharts.get(previous));
-    }
-
-    public void showNextChart(PrideChartManager managedPrideChart) {
-        int index = managedPrideCharts.indexOf(managedPrideChart) + 1;
-        int next = index % managedPrideCharts.size();
-        showChart(managedPrideCharts.get(next));
-    }
-
-    public void setThumbnailView() {
+    public void showThumbnailView(PrideDataReader reader) {
         removeAll();
-        if (DataAccessController.Type.MZIDENTML.equals(controller.getType())){
-            String msg = viewerContext.getProperty("chart.time.warning.message");
-            showWarningMessage("Update",msg, true);
-        }else{
-            this.setLayout(new BorderLayout());
-        }
-        setupInitialMainPane(managedPrideCharts.size());
-        for (PrideChartManager managedPrideChart : managedPrideCharts) {
-            ChartThumbnailPane ct = new ChartThumbnailPane(this, managedPrideChart);
-            panelThumbnailChart.add(ct);
+
+        PrideChartType[] chartTypeList = PrideChartType.values();
+        setupInitialMainPane(chartTypeList.length);
+
+        for (PrideChartType chartType : chartTypeList) {
+            PrideChartThumbnailPane ct = new PrideChartThumbnailPane(this, reader, chartType);
+            add(ct);
         }
         revalidate();
         repaint();
     }
 
-    private void showWarningMessage(String buttonTitle, String msg, boolean launchButton) {
+    private void showWarningMessage(String msg, boolean launchButton) {
         this.setLayout(new BorderLayout());
 
         JPanel msgPanel = new JPanel();
@@ -175,7 +139,6 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
         // warning message label
         JLabel msgLabel = new JLabel(GUIUtilities.loadIcon(viewerContext.getProperty("chart.warning.icon.small")));
         msgLabel.setText(msg);
-//        msgLabel.setPreferredSize(new Dimension(800, 25));
         msgPanel.add(msgLabel);
 
         // add a glue to fill the empty space
@@ -183,7 +146,7 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
 
         if (launchButton) {
             // button to start calculate charts
-            JButton computeButton = new JButton(buttonTitle);
+            JButton computeButton = new JButton("Start");
             computeButton.addActionListener(new ActionListener() {
 
                 @Override
@@ -217,26 +180,24 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
             createPrideCharts();
         } else {
             String msg = viewerContext.getProperty("chart.warning.message");
-            showWarningMessage("Start", msg, true);
+            showWarningMessage(msg, true);
         }
     }
 
     @Override
-    public void succeed(TaskEvent<List<PrideChartManager>> listTaskEvent) {
-        managedPrideCharts = new ArrayList<PrideChartManager>();
-        for (PrideChartManager managedPrideChart : listTaskEvent.getValue()) {
-            try {
-                ChartCategoryMapping ccm = new ChartCategoryMapping(managedPrideChart.getPrideChart());
+    public void succeed(TaskEvent<PrideDataReader> listTaskEvent) {
+        this.reader = listTaskEvent.getValue();
+        int chartSize = reader.getHistogramDataSourceMap().size() + reader.getXYDataSourceMap().size() + reader.getErrorMap().size();
 
-                boolean addChart = false;
-                for (ContentCategory category : controller.getContentCategories()) {
-                    addChart |= ccm.belong(category);
-                }
-                if (addChart) managedPrideCharts.add(managedPrideChart);
-            } catch (PrideChartException e) {/*Nothing here*/}
+        showThumbnailView(reader);
+
+        String title = PANE_TITLE + " (" + chartSize + ")";
+        setTitle(title);
+
+        ControllerContentPane dataContentPane = (ControllerContentPane) viewerContext.getDataContentPane(controller);
+        if (dataContentPane != null) {
+            dataContentPane.setTabTitle(dataContentPane.getChartTabIndex(), title);
         }
-        setThumbnailView();
-        resetTitle();
     }
 
     @Override
@@ -259,10 +220,5 @@ public class ChartTabPane extends DataAccessControllerPane<List<PrideChartManage
             ControllerContentPane contentPane = (ControllerContentPane) parentComponent;
             contentPane.setTabIcon(contentPane.getChartTabIndex(), icon);
         }
-    }
-
-    @Override
-    public void process(TaskEvent<List<String>> listTaskEvent) {
-        super.process(listTaskEvent);
     }
 }

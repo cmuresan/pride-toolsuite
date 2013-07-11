@@ -4,7 +4,7 @@
     <groupId>uk.ac.ebi.pride.gui</groupId>
     <artifactId>pride-inspector</artifactId>
     <packaging>jar</packaging>
-    <version>1.5.2-SNAPSHOT</version>
+    <version>1.5.3-SNAPSHOT</version>
     <name>pride-inspector</name>
     <url>http://code.google.com/p/pride-toolsuite/wiki/PRIDEInspector</url>
 
@@ -337,26 +337,27 @@
             <id>PRIDE_SourceForge_Maven2_Repository</id>
             <url>http://pride-proteome.sourceforge.net/maven2</url>
         </repository>
+        <!-- EBI repo -->
         <repository>
-            <id>ebi-repo</id>
+            <id>nexus-ebi-repo</id>
             <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo/</url>
             <releases>
-                <enabled>true</enabled>
             </releases>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+
+        <!-- EBI SNAPSHOT repo -->
         <repository>
-            <id>ebi-snapshot-repo</id>
+            <id>nexus-ebi-snapshot-repo</id>
             <name>The EBI internal snapshot repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo-snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>

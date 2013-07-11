@@ -1,0 +1,82 @@
+package uk.ac.ebi.pride.gui.component.chart;
+
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.title.LegendTitle;
+import org.jfree.chart.title.Title;
+import uk.ac.ebi.pride.chart.PrideChartFactory;
+import uk.ac.ebi.pride.chart.PrideChartType;
+import uk.ac.ebi.pride.chart.io.PrideDataException;
+import uk.ac.ebi.pride.chart.io.PrideDataReader;
+
+import javax.swing.*;
+import java.awt.*;
+
+/**
+ * <p>Abstract class to define the chart common characteristics.</p>
+ *
+ * @author Antonio Fabregat
+ * Date: 25-ago-2010
+ * Time: 15:25:59
+ */
+public abstract class PrideChartPane extends JPanel {
+    protected PrideDataReader reader;
+
+    /**
+     * <p> Creates an instance of this ChartPane object, setting all fields as per description below.</p>
+     */
+    public PrideChartPane(PrideDataReader reader) {
+        super(new BorderLayout());
+        this.reader = reader;
+    }
+
+    public void drawChart(PrideChartType chartType) {
+        removeAll();
+
+        setBackground(Color.WHITE);
+        JPanel titlePanel = new JPanel();
+        JLabel title = new JLabel(getTitle(chartType));
+        titlePanel.add(title);
+        title.setFont(new Font(title.getFont().getFontName(), Font.BOLD, getTitleFontSize()));
+        titlePanel.setBackground(Color.WHITE);
+        add(titlePanel, BorderLayout.NORTH);
+
+        JFreeChart chart = PrideChartFactory.getChart(reader, chartType);
+        JPanel mainPanel;
+        if (chart == null) {
+            PrideDataException ex = reader.getErrorMap().get(chartType);
+            mainPanel = getErrorPanel(ex.getMessage().split("\n"));
+        } else {
+            initChart(chart);
+            mainPanel = getMainPanel(chart, chartType);
+        }
+
+        JPanel toolsPanel = getToolsPanel(chartType);
+        add(toolsPanel, BorderLayout.SOUTH);
+        add(mainPanel, BorderLayout.CENTER);
+
+//        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, mainPanel, toolsPanel);
+//        if (toolsPanel != null) {
+//            splitPane.setResizeWeight(0.8);
+//            splitPane.setAutoscrolls(false);
+//        }
+//        add(splitPane, BorderLayout.CENTER);
+    }
+
+    protected abstract String getTitle(PrideChartType chartType);
+    protected abstract int getTitleFontSize();
+    protected abstract JPanel getMainPanel(JFreeChart chart, PrideChartType chartType);
+    protected abstract JPanel getToolsPanel(PrideChartType chartType);
+    protected abstract JPanel getErrorPanel(String[] errMsgList);
+
+    private void initChart(JFreeChart chart){
+        //Removing title and subtitle from the JFreeCharts
+        chart.setTitle("");
+        for (Object subtitle : chart.getSubtitles()) {
+            //The legend is returned as a subtitle, but it has not to be deleted
+            if (!(subtitle instanceof LegendTitle)) {
+                chart.removeSubtitle((Title) subtitle);
+            }
+        }
+    }
+
+}

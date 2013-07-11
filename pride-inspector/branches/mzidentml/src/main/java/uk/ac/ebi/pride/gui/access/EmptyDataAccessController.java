@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.gui.access;
 
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.AbstractDataAccessController;
-import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideChartManager;
 import uk.ac.ebi.pride.data.core.*;
 
 import java.util.Collection;
@@ -38,11 +37,6 @@ public class EmptyDataAccessController extends AbstractDataAccessController {
     @Override
     public ParamGroup getAdditional() throws DataAccessException {
         return null;
-    }
-
-    @Override
-    public List<PrideChartManager> getChartData() throws DataAccessException {
-        return Collections.emptyList();
     }
 
     @Override

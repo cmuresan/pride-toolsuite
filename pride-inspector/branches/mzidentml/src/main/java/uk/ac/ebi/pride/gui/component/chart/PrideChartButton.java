@@ -12,11 +12,10 @@ import java.awt.event.MouseListener;
  * Date: 23-ago-2010
  * Time: 14:25:06
  */
-class ChartButton extends JToggleButton implements MouseListener {
-
+class PrideChartButton extends JToggleButton implements MouseListener {
     private boolean keepSelected = false;
 
-    ChartButton(Icon icon, String tooltip) {
+    PrideChartButton(Icon icon, String tooltip) {
         super(icon);
         setToolTipText(tooltip);
         setContentAreaFilled(false);
@@ -52,8 +51,8 @@ class ChartButton extends JToggleButton implements MouseListener {
     @Override
     public void mouseEntered(MouseEvent mouseEvent) {
         Component cmp = mouseEvent.getComponent();
-        if (cmp instanceof ChartButton) {
-            ChartButton b = (ChartButton) cmp;
+        if (cmp instanceof PrideChartButton) {
+            PrideChartButton b = (PrideChartButton) cmp;
             b.setContentAreaFilled(true);
         }
     }
@@ -61,8 +60,8 @@ class ChartButton extends JToggleButton implements MouseListener {
     @Override
     public void mouseExited(MouseEvent mouseEvent) {
         Component cmp = mouseEvent.getComponent();
-        if (cmp instanceof ChartButton) {
-            ChartButton b = (ChartButton) cmp;
+        if (cmp instanceof PrideChartButton) {
+            PrideChartButton b = (PrideChartButton) cmp;
             if(!keepSelected) b.setContentAreaFilled(false);
         }
     }

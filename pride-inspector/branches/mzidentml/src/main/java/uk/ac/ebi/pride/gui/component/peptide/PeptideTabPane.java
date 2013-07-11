@@ -205,6 +205,7 @@ public class PeptideTabPane extends PrideInspectorTabPane {
     }
 
     public void peptideChange() {
+
         JTable psmTable = peptidePSMPane.getPSMTable();
 
         int rowNum = (psmTable.getSelectedRow() >= 0) ? psmTable.getSelectedRow() : 0;
@@ -226,7 +227,6 @@ public class PeptideTabPane extends PrideInspectorTabPane {
                 // publish the event to local event bus
                 EventService eventBus = ContainerEventServiceFinder.getEventService(peptideDescPane);
                 eventBus.publish(new PSMEvent(peptideDescPane, controller, identId, peptideId));
-
             }
         }
     }

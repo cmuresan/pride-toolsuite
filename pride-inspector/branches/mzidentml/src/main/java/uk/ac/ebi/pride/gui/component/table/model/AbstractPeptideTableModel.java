@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Abstract class for peptide table model
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 24/08/2011
  * Time: 16:36
  */
@@ -78,7 +78,7 @@ public abstract class AbstractPeptideTableModel extends ProgressiveListTableMode
 
         // iterate over each row, set the protein name
         for (int row = 0; row < contents.size(); row++) {
-            PeptideTableRow peptideTableRow = (PeptideTableRow)contents.get(row);
+            PeptideTableRow peptideTableRow = (PeptideTableRow) contents.get(row);
             ProteinAccession proteinAccession = peptideTableRow.getProteinAccession();
             if (proteinAccession != null) {
                 String mappedAccession = proteinAccession.getMappedAccession();
@@ -112,7 +112,7 @@ public abstract class AbstractPeptideTableModel extends ProgressiveListTableMode
 
         // iterate over each row, set the protein name
         for (int row = 0; row < contents.size(); row++) {
-            PeptideTableRow peptideTableRow = (PeptideTableRow)contents.get(row);
+            PeptideTableRow peptideTableRow = (PeptideTableRow) contents.get(row);
             Comparable identId = peptideTableRow.getProteinId();
             Double coverage = coverageMap.get(identId);
             if (coverage != null) {
@@ -138,7 +138,7 @@ public abstract class AbstractPeptideTableModel extends ProgressiveListTableMode
 
         // iterate over each row, set the protein name
         for (int row = 0; row < contents.size(); row++) {
-            PeptideTableRow peptideTableRow = (PeptideTableRow)contents.get(row);
+            PeptideTableRow peptideTableRow = (PeptideTableRow) contents.get(row);
             Comparable identId = peptideTableRow.getProteinId();
             Comparable peptideId = peptideTableRow.getPeptideId();
             Integer peptideFit = peptideFits.get(new Tuple<Comparable, Comparable>(identId, peptideId));
@@ -165,7 +165,7 @@ public abstract class AbstractPeptideTableModel extends ProgressiveListTableMode
 
         // iterate over each row, set the protein name
         for (int row = 0; row < contents.size(); row++) {
-            PeptideTableRow content = (PeptideTableRow)contents.get(row);
+            PeptideTableRow content = (PeptideTableRow) contents.get(row);
             Comparable identId = content.getProteinId();
             Comparable peptideId = content.getPeptideId();
             Double deltaMz = deltaMzs.get(new Tuple<Comparable, Comparable>(identId, peptideId));
@@ -192,7 +192,7 @@ public abstract class AbstractPeptideTableModel extends ProgressiveListTableMode
 
         // iterate over each row, set the protein name
         for (int row = 0; row < contents.size(); row++) {
-            PeptideTableRow peptideTableRow = (PeptideTableRow)contents.get(row);
+            PeptideTableRow peptideTableRow = (PeptideTableRow) contents.get(row);
             Comparable identId = peptideTableRow.getProteinId();
             Comparable peptideId = peptideTableRow.getPeptideId();
             Double precursorMz = precursorMzs.get(new Tuple<Comparable, Comparable>(identId, peptideId));
@@ -207,7 +207,7 @@ public abstract class AbstractPeptideTableModel extends ProgressiveListTableMode
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        PeptideTableRow peptideTableRow = (PeptideTableRow)contents.get(rowIndex);
+        PeptideTableRow peptideTableRow = (PeptideTableRow) contents.get(rowIndex);
 
         String columnName = getColumnName(columnIndex);
 

@@ -14,7 +14,7 @@ import java.awt.*;
  * User: qingwei
  * Date: 19/06/13
  */
-public class PrideCategoryPlot extends CategoryPlot implements PridePlot {
+public abstract class PrideCategoryPlot extends CategoryPlot implements PridePlot {
     private PrideChartType type;
     private boolean smallPlot;
 
@@ -26,6 +26,8 @@ public class PrideCategoryPlot extends CategoryPlot implements PridePlot {
         setBackgroundAlpha(0f);
         setDomainGridlinePaint(Color.red);
         setRangeGridlinePaint(Color.blue);
+        setDomainGridlinesVisible(true);
+        setRangeGridlinesVisible(true);
         getRangeAxis().setUpperMargin(0.15);
 
         this.smallPlot = smallPlot;

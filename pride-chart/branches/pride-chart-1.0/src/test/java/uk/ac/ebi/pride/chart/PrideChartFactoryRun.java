@@ -19,13 +19,7 @@ import java.io.File;
  */
 public class PrideChartFactoryRun {
     private void drawChart(PrideDataReader reader, PrideChartType chartType) {
-        JFreeChart chart;
-        try {
-            chart = PrideChartFactory.getChart(reader, chartType);
-        } catch (PrideDataException e) {
-            System.err.println(e.getMessage());
-            return;
-        }
+        JFreeChart chart = PrideChartFactory.getChart(reader, chartType);
 
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(500, 300));
@@ -37,8 +31,8 @@ public class PrideChartFactoryRun {
         mainFrame.setVisible(true);
     }
 
-    public void drawChartList(PrideDataReader reader) throws Exception {
-        for (PrideChartType chartType : reader.getChartTypeList()) {
+    public void drawChartList(PrideDataReader reader, PrideChartSummary summary) throws Exception {
+        for (PrideChartType chartType : summary.getAll()) {
             drawChart(reader, chartType);
         }
     }
@@ -46,13 +40,13 @@ public class PrideChartFactoryRun {
     public static void main(String[] args) throws Exception {
         PrideChartFactoryRun run = new PrideChartFactoryRun();
 
-        File jsonFile = new File("testset/old_2.json");
+//        File jsonFile = new File("testset/old_2.json");
 //        File jsonFile = new File("testset/old_1643.json");
 //        File jsonFile = new File("testset/old_10.json");
-        run.drawChartList(new ElderJSONReader(jsonFile));
+//        run.drawChartList(new ElderJSONReader(jsonFile), PrideChartSummary.PROJECT_SUMMARY);
 
-//        File prideXMLFile = new File("testset/PRIDE_Exp_Complete_Ac_2_single_spectrum.xml");
+        File prideXMLFile = new File("testset/PRIDE_Exp_Complete_Ac_2.xml");
 
-//        run.drawChartList(new DataAccessReader(new PrideXmlControllerImpl(prideXMLFile)));
+        run.drawChartList(new DataAccessReader(new PrideXmlControllerImpl(prideXMLFile)), PrideChartSummary.PROJECT_SUMMARY);
     }
 }

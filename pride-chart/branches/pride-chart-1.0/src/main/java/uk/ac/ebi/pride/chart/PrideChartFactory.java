@@ -3,8 +3,10 @@ package uk.ac.ebi.pride.chart;
 import org.jfree.chart.ChartTheme;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
-import uk.ac.ebi.pride.chart.dataset.*;
-import uk.ac.ebi.pride.chart.io.PrideDataException;
+import uk.ac.ebi.pride.chart.dataset.PrideDataType;
+import uk.ac.ebi.pride.chart.dataset.PrideDatasetFactory;
+import uk.ac.ebi.pride.chart.dataset.PrideHistogramDataSource;
+import uk.ac.ebi.pride.chart.dataset.PrideXYDataSource;
 import uk.ac.ebi.pride.chart.io.PrideDataReader;
 import uk.ac.ebi.pride.chart.io.PrideSpectrumHistogramDataSource;
 import uk.ac.ebi.pride.chart.plot.*;
@@ -19,35 +21,6 @@ import java.util.SortedMap;
  */
 public class PrideChartFactory {
     private static ChartTheme currentTheme = new StandardChartTheme("JFree");
-
-    public static PrideXYPlot getXYPlot(Double[] domainData, PrideData[] rangeData, PrideChartType type) {
-        PrideXYDataSource dataSource;
-
-        switch (type) {
-            case DELTA_MASS:
-                dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
-                break;
-            case PEPTIDES_PROTEIN:
-                dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
-                break;
-            case MISSED_CLEAVAGES:
-                dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
-                break;
-            case AVERAGE_MS:
-                dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
-                break;
-            case PRECURSOR_CHARGE:
-                dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.IDENTIFIED_SPECTRA);
-                break;
-            case PRECURSOR_MASSES:
-                dataSource = new PrideXYDataSource(domainData, rangeData, PrideDataType.ALL_SPECTRA);
-                break;
-            default:
-                throw new IllegalArgumentException("Can not create XY style plot.");
-        }
-
-        return getXYPlot(dataSource, type);
-    }
 
     public static PrideXYPlot getXYPlot(PrideXYDataSource dataSource, PrideChartType type) {
         PrideXYPlot plot;
@@ -74,27 +47,9 @@ public class PrideChartFactory {
         return plot;
     }
 
-    private static PrideXYPlot getAvgPlot(PrideHistogramDataSource dataSource) {
+    public static PrideXYPlot getAvgPlot(PrideHistogramDataSource dataSource) {
         return new AverageMSPlot(PrideDatasetFactory.getXYDataset((PrideSpectrumHistogramDataSource) dataSource), PrideDataType.ALL_SPECTRA);
     }
-
-//    public static PrideCategoryPlot getHistogramPlot(PrideData[] data, PrideChartType type) {
-//        PrideHistogramDataSource dataSource;
-//
-//        switch (type) {
-//            case PEAKS_MS:
-//                dataSource = new PrideEqualWidthHistogramDataSource(data, false);
-//                dataSource.appendBins(((PrideEqualWidthHistogramDataSource)dataSource).generateBins(0, 400, 10));
-//                break;
-//            case PEAK_INTENSITY:
-//                dataSource = new PrideHistogramDataSource(data, true);
-//                break;
-//            default:
-//                throw new IllegalArgumentException("Can not create Histogram style plot.");
-//        }
-//
-//        return getHistogramPlot(dataSource, type);
-//    }
 
     public static PrideCategoryPlot getHistogramPlot(PrideHistogramDataSource dataSource, PrideChartType type) {
         PrideCategoryPlot plot;
@@ -129,7 +84,7 @@ public class PrideChartFactory {
         return chart;
     }
 
-    public static JFreeChart getChart(PrideDataReader reader, PrideChartType chartType) throws PrideDataException {
+    public static JFreeChart getChart(PrideDataReader reader, PrideChartType chartType) {
         if (reader == null) {
             throw new NullPointerException("PrideDataReader is null!");
         }
@@ -158,30 +113,11 @@ public class PrideChartFactory {
         return null;
     }
 
-    public static List<JFreeChart> getChartList(PrideDataReader reader, PrideChartSummary summary) throws PrideDataException {
-        if (reader == null) {
-            throw new NullPointerException("PrideDataReader is null!");
-        }
-        reader.readData();
-
+    public static List<JFreeChart> getChartList(PrideDataReader reader, PrideChartSummary summary) {
         List<JFreeChart> charts = new ArrayList<JFreeChart>();
 
-        SortedMap<PrideChartType, PrideXYDataSource> xyDataSourceMap = reader.getXYDataSourceMap();
-        SortedMap<PrideChartType, PrideHistogramDataSource> histogramDataSourceMap = reader.getHistogramDataSourceMap();
-
-        PrideXYDataSource xyDataSource;
-        PrideHistogramDataSource histogramDataSource;
         for (PrideChartType chartType : summary.getAll()) {
-            xyDataSource = xyDataSourceMap.get(chartType);
-            if (xyDataSource != null) {
-                charts.add(getChart(getXYPlot(xyDataSource, chartType)));
-                continue;
-            }
-
-            histogramDataSource = histogramDataSourceMap.get(chartType);
-            if (histogramDataSource != null) {
-                charts.add(getChart(getHistogramPlot(histogramDataSource, chartType)));
-            }
+            charts.add(getChart(reader, chartType));
         }
 
         return charts;

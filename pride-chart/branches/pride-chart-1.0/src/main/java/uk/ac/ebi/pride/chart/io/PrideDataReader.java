@@ -1,20 +1,17 @@
 package uk.ac.ebi.pride.chart.io;
 
-import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.chart.PrideChartType;
 import uk.ac.ebi.pride.chart.dataset.PrideHistogramDataSource;
 import uk.ac.ebi.pride.chart.dataset.PrideXYDataSource;
-import uk.ac.ebi.pride.chart.utils.PridePlotConstants;
 
-import java.util.*;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * User: Qingwei
  * Date: 12/06/13
  */
 public abstract class PrideDataReader {
-    private static Logger logger = Logger.getLogger(PrideDataReader.class);
-
     protected SortedMap<PrideChartType, PrideXYDataSource> xyDataSourceMap = new TreeMap<PrideChartType, PrideXYDataSource>();
     protected SortedMap<PrideChartType, PrideHistogramDataSource> histogramDataSourceMap = new TreeMap<PrideChartType, PrideHistogramDataSource>();
     protected SortedMap<PrideChartType, PrideDataException> errorMap = new TreeMap<PrideChartType, PrideDataException>();
@@ -48,15 +45,6 @@ public abstract class PrideDataReader {
 
     public SortedMap<PrideChartType, PrideDataException> getErrorMap() {
         return errorMap;
-    }
-
-    public Set<PrideChartType> getChartTypeList() {
-        Set<PrideChartType> chartTypeList = new TreeSet<PrideChartType>();
-
-        chartTypeList.addAll(xyDataSourceMap.keySet());
-        chartTypeList.addAll(histogramDataSourceMap.keySet());
-
-        return chartTypeList;
     }
 
     public int getPeptideSize() {

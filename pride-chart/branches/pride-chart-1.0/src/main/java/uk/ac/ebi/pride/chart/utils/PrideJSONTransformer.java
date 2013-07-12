@@ -3,16 +3,16 @@ package uk.ac.ebi.pride.chart.utils;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import uk.ac.ebi.pride.chart.io.DataAccessReader;
+import uk.ac.ebi.pride.chart.io.PrideDataException;
 import uk.ac.ebi.pride.chart.io.PrideDataReader;
 import uk.ac.ebi.pride.chart.io.PrideJSONWriter;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import static uk.ac.ebi.pride.chart.utils.PridePlotConstants.NEW_LINE;
 
@@ -42,7 +42,12 @@ public class PrideJSONTransformer {
         out.close();
     }
 
-    public void transform(File inFile, File outDir) throws Exception {
+    private String getFileSize(File file) {
+        double size = file.length() / 1024d / 1024;
+        return new BigDecimal(size).setScale(2, RoundingMode.CEILING).toString() + "(MB)";
+    }
+
+    public void transform(File inFile, File outDir) throws PrideDataException, IOException, JSONException {
         PrideDataReader reader;
         PrideJSONWriter writer;
         DataAccessController controller = null;
@@ -64,7 +69,7 @@ public class PrideJSONTransformer {
             return;
         }
 
-        logger.debug("Begin load " + type + " file: " + inFile.getName());
+        logger.debug("Begin load " + type + " file: " + inFile.getName() + ", file size: " + getFileSize(inFile));
         start = System.currentTimeMillis();
         switch (type) {
             case PRIDE_XML:
@@ -77,18 +82,15 @@ public class PrideJSONTransformer {
         end = System.currentTimeMillis();
         logger.debug("End load " + type + " file: " + inFile.getName() + ". Cost " + PridePlotUtils.getTimeCost(start, end) + "(s)");
 
-
-        logger.debug("Begin export json file " + outFile.getAbsolutePath());
-        start = System.currentTimeMillis();
         reader = new DataAccessReader(controller);
+
+        start = System.currentTimeMillis();
         writer = new PrideJSONWriter(reader);
         writeJSONFile(writer, outFile);
-
-        end = System.currentTimeMillis();
-        logger.debug("End export json file: " + outFile.getAbsolutePath() + ". Cost " + PridePlotUtils.getTimeCost(start, end) + "(s)");
+        logger.debug("End export json file: " + outFile.getName() + ". Cost " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()) + "(s)\n\n\n");
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         File inDir = new File(args[0]);
         File outDir = new File(args[1]);
 
@@ -99,7 +101,19 @@ public class PrideJSONTransformer {
         }
 
         for (File inFile : inDir.listFiles()) {
-            transformer.transform(inFile, outDir);
+            if (inFile.isDirectory()) {
+                continue;
+            }
+
+            try {
+                transformer.transform(inFile, outDir);
+            } catch (PrideDataException e) {
+                logger.error(e.getMessage());
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+            } catch (JSONException e) {
+                logger.error(e.getMessage());
+            }
         }
     }
 }

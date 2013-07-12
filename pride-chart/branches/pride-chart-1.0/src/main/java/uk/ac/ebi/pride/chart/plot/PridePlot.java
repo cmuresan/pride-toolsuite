@@ -1,6 +1,9 @@
 package uk.ac.ebi.pride.chart.plot;
 
 import uk.ac.ebi.pride.chart.PrideChartType;
+import uk.ac.ebi.pride.chart.dataset.PrideDataType;
+
+import java.util.Map;
 
 /**
  * User: Qingwei
@@ -20,4 +23,8 @@ public interface PridePlot {
     public String getRangeLabel();
 
     public boolean isLegend();
+
+    public Map<PrideDataType, Boolean> getOptionList();
+
+    public boolean isMultiOptional();
 }

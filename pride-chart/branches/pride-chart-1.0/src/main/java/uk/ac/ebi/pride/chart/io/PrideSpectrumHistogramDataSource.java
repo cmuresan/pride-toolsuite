@@ -102,8 +102,15 @@ public class PrideSpectrumHistogramDataSource extends PrideEqualWidthHistogramDa
 
         PrideHistogramBin bin;
         PrideHistogramBin[] binArray = bins.toArray(new PrideHistogramBin[bins.size()]);
+        int offset;
         for (PridePeak peak : peakList) {
-            bin = binArray[(int)Math.floor(peak.mz)];
+            offset = (int)Math.floor(peak.mz);
+            if (offset < binArray.length) {
+                bin = binArray[offset];
+            } else {
+                bin = binArray[binArray.length - 1];
+            }
+
             if (peak.dataType == PrideDataType.IDENTIFIED_SPECTRA) {
                 idHistogram = histMap.get(PrideDataType.IDENTIFIED_SPECTRA);
                 if (idHistogram == null) {

@@ -6,7 +6,7 @@
 
     <groupId>uk.ac.ebi.pride</groupId>
     <artifactId>pride-chart</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.4-SNAPSHOT</version>
 
     <licenses>
         <license>
@@ -63,7 +63,7 @@
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>ms-data-core-api</artifactId>
-            <version>0.11.2</version>
+            <version>0.11.4</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

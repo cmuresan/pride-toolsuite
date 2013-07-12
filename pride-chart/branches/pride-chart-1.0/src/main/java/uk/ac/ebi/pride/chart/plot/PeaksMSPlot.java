@@ -3,7 +3,11 @@ package uk.ac.ebi.pride.chart.plot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import uk.ac.ebi.pride.chart.PrideChartType;
+import uk.ac.ebi.pride.chart.dataset.PrideDataType;
 import uk.ac.ebi.pride.chart.plot.label.CategoryPercentageLabel;
+
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
 * User: Qingwei
@@ -20,5 +24,15 @@ public class PeaksMSPlot extends PrideCategoryPlot {
         BarRenderer renderer = (BarRenderer) getRenderer();
         renderer.setBaseItemLabelGenerator(new CategoryPercentageLabel());
         renderer.setBaseItemLabelsVisible(true);
+    }
+
+    @Override
+    public Map<PrideDataType, Boolean> getOptionList() {
+        return new TreeMap<PrideDataType, Boolean>();
+    }
+
+    @Override
+    public boolean isMultiOptional() {
+        return false;
     }
 }

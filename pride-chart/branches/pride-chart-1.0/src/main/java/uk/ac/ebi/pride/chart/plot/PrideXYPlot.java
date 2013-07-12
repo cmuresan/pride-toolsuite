@@ -13,7 +13,7 @@ import java.awt.*;
  * User: Qingwei
  * Date: 12/06/13
  */
-public class PrideXYPlot extends XYPlot implements PridePlot {
+public abstract class PrideXYPlot extends XYPlot implements PridePlot {
     private PrideChartType type;
     private boolean smallPlot;
 
@@ -24,8 +24,8 @@ public class PrideXYPlot extends XYPlot implements PridePlot {
         setOrientation(PlotOrientation.VERTICAL);
         setDomainZeroBaselineVisible(true);
         setBackgroundAlpha(0f);
-        setDomainGridlinePaint(Color.red);
-        setRangeGridlinePaint(Color.blue);
+        setDomainCrosshairPaint(Color.red);
+        setRangeCrosshairPaint(Color.blue);
         getRangeAxis().setUpperMargin(0.15);
 
         this.smallPlot = smallPlot;

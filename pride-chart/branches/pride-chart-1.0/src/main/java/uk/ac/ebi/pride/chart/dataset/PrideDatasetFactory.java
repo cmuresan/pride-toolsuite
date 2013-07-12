@@ -18,7 +18,7 @@ public class PrideDatasetFactory {
     private PrideDatasetFactory() {}
 
     private static XYSeries getSeries(PrideXYDataSource dataSource) {
-        XYSeries series = new XYSeries(dataSource.getType().toString());
+        XYSeries series = new XYSeries(dataSource.getDataType().toString());
         Double[] domainValues = dataSource.getDomainData();
         PrideData[] rangeValues = dataSource.getRangeData();
 
@@ -30,19 +30,17 @@ public class PrideDatasetFactory {
     }
 
     public static XYSeriesCollection getXYDataset(PrideXYDataSource dataSource) {
-        XYSeries series = getSeries(dataSource.filter(dataSource.getType()));
+        XYSeries series = getSeries(dataSource.filter(dataSource.getDataType()));
 
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series);
 
-        if (dataSource.isIncludeSubType()) {
-            Collection<PrideDataType> subTypes = dataSource.getType().getChildren();
-            for (PrideDataType subType : subTypes) {
-                PrideXYDataSource filterDataSource = dataSource.filter(subType);
-                if (filterDataSource != null) {
-                    series = getSeries(filterDataSource);
-                    dataset.addSeries(series);
-                }
+        Collection<PrideDataType> subTypes = dataSource.getDataType().getChildren();
+        for (PrideDataType subType : subTypes) {
+            PrideXYDataSource filterDataSource = dataSource.filter(subType);
+            if (filterDataSource != null) {
+                series = getSeries(filterDataSource);
+                dataset.addSeries(series);
             }
         }
 

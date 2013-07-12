@@ -10,8 +10,10 @@ import uk.ac.ebi.pride.chart.dataset.PrideDataType;
 import uk.ac.ebi.pride.chart.io.QuartilesReader;
 import uk.ac.ebi.pride.chart.io.QuartilesType;
 
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.List;
 
 /**
  * User: Qingwei
@@ -67,6 +69,7 @@ public class PrecursorMassesPlot extends PrideXYPlot {
             default:
                 this.quartilesSeries = noneQuartilesSeries;
         }
+
         for (XYSeries series : quartilesSeries) {
             seriesCollection.addSeries(series);
         }
@@ -75,22 +78,29 @@ public class PrecursorMassesPlot extends PrideXYPlot {
         refresh();
     }
 
-    public Collection<PrideDataType> getSpectraDataTypeList() {
-        Collection<PrideDataType> seriesKeyList = new ArrayList<PrideDataType>();
+    public Map<PrideDataType, Boolean> getOptionList() {
+        Map<PrideDataType, Boolean> optionList = new TreeMap<PrideDataType, Boolean>();
 
-        PrideDataType type;
-        String seriesKey;
+        optionList.put(PrideDataType.IDENTIFIED_SPECTRA, false);
+        optionList.put(PrideDataType.UNIDENTIFIED_SPECTRA, false);
+        optionList.put(PrideDataType.ALL_SPECTRA, false);
+
+        PrideDataType dataType;
         for (XYSeries series : spectraSeriesList) {
-            seriesKey = (String) series.getKey();
-            type = PrideDataType.findBy(seriesKey);
-            seriesKeyList.add(type);
+            dataType = PrideDataType.findBy((String) series.getKey());
+            optionList.put(dataType, true);
         }
 
-        return seriesKeyList;
+        return optionList;
     }
 
-    private XYSeries getSpectraSeries(PrideDataType spectraType) {
-        String seriesKey = spectraType.getTitle();
+    @Override
+    public boolean isMultiOptional() {
+        return true;
+    }
+
+    private XYSeries getSpectraSeries(PrideDataType dataType) {
+        String seriesKey = dataType.getTitle();
 
         for (XYSeries series : spectraSeriesList) {
             if (series.getKey().equals(seriesKey)) {
@@ -100,12 +110,12 @@ public class PrecursorMassesPlot extends PrideXYPlot {
         return null;
     }
 
-    public void updateSpectraSeries(PrideDataType spectraType) {
-        if (spectraSeries.getKey().equals(spectraType.getTitle())) {
+    public void updateSpectraSeries(PrideDataType dateType) {
+        if (spectraSeries.getKey().equals(dateType.getTitle())) {
             return;
         }
 
-        XYSeries series = getSpectraSeries(spectraType);
+        XYSeries series = getSpectraSeries(dateType);
         if (series == null) {
             // can not find series in internal spectra series list.
             return;
@@ -187,9 +197,36 @@ public class PrecursorMassesPlot extends PrideXYPlot {
     private void refresh() {
         setDataset(seriesCollection);
         XYSplineRenderer renderer = (XYSplineRenderer) getRenderer();
+
+        String seriesKey;
+        Color color;
         for (int i = 0; i < getSeriesCount(); i++) {
             renderer.setSeriesShapesVisible(i, false);
+            seriesKey = (String) getDataset().getSeriesKey(i);
+
+            if (seriesKey.equals(PrideDataType.IDENTIFIED_SPECTRA.getTitle()) ||
+                    seriesKey.equals(PrideDataType.UNIDENTIFIED_SPECTRA.getTitle()) ||
+                    seriesKey.equals(PrideDataType.ALL_SPECTRA.getTitle())) {
+                color = Color.RED;
+            } else if (seriesKey.equals(QuartilesType.HUMAN.getReference())) {
+                color = new Color(70,130,180);
+            } else if (seriesKey.equals(QuartilesType.MOUSE.getReference())) {
+                color = new Color(95,158,160);
+            } else if (seriesKey.equals(QuartilesType.PRIDE.getReference())) {
+                color = new Color(0,0,255);
+            } else if (seriesKey.equals("Quartiles")) {
+                color = new Color(95,158,160);
+            } else {
+                // setting QuartilesType.NONE color
+                color = Color.WHITE;
+            }
+
+            renderer.setSeriesPaint(i, color);
         }
+
+        int seriesSize = seriesCollection.getSeries().size();
+        if (seriesSize > 3)
+            renderer.setSeriesVisibleInLegend(seriesSize - 3, false);
     }
 
     public void setDomainUnitSize(double domainUnitSize) {

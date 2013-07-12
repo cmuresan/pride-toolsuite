@@ -49,4 +49,17 @@ public enum PrideChartType {
         return legend;
     }
 
+    public PrideChartType previous() {
+        int index = ordinal();
+        int previous = index - 1 < 0 ? 0 : index - 1;
+
+        return values()[previous];
+    }
+
+    public PrideChartType next() {
+        int index = ordinal();
+        int next = index + 1 < values().length ? index + 1 : index;
+
+        return values()[next];
+    }
 }

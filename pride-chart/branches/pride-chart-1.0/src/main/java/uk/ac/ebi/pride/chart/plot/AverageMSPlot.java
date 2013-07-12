@@ -2,15 +2,16 @@ package uk.ac.ebi.pride.chart.plot;
 
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import uk.ac.ebi.pride.chart.PrideChartType;
 import uk.ac.ebi.pride.chart.dataset.PrideDataType;
 
+import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -53,22 +54,8 @@ public class AverageMSPlot extends PrideXYPlot {
         setDataset(seriesCollection);
     }
 
-    public Collection<PrideDataType> getSpectraDataTypeList() {
-        Collection<PrideDataType> typeList = new ArrayList<PrideDataType>();
-
-        PrideDataType type;
-        String seriesKey;
-        for (XYSeries series : spectraSeriesList) {
-            seriesKey = (String) series.getKey();
-            type = PrideDataType.findBy(seriesKey);
-            typeList.add(type);
-        }
-
-        return typeList;
-    }
-
-    private XYSeries getSpectraSeries(PrideDataType spectraType) {
-        String seriesKey = spectraType.getTitle();
+    private XYSeries getSpectraSeries(PrideDataType dataType) {
+        String seriesKey = dataType.getTitle();
 
         for (XYSeries series : spectraSeriesList) {
             if (series.getKey().equals(seriesKey)) {
@@ -78,12 +65,12 @@ public class AverageMSPlot extends PrideXYPlot {
         return null;
     }
 
-    public void updateSpectraSeries(PrideDataType spectraType) {
-        if (spectraSeries.getKey().equals(spectraType.getTitle())) {
+    public void updateSpectraSeries(PrideDataType dataType) {
+        if (spectraSeries.getKey().equals(dataType.getTitle())) {
             return;
         }
 
-        XYSeries series = getSpectraSeries(spectraType);
+        XYSeries series = getSpectraSeries(dataType);
         if (series == null) {
             // can not find series in internal spectra series list.
             return;
@@ -104,5 +91,26 @@ public class AverageMSPlot extends PrideXYPlot {
     public void setRangeUnitSize(double rangeUnitSize) {
         NumberAxis rangeAxis = (NumberAxis) getRangeAxis();
         rangeAxis.setTickUnit(new NumberTickUnit(rangeUnitSize, new DecimalFormat("#,###,###")));
+    }
+
+    public Map<PrideDataType, Boolean> getOptionList() {
+        Map<PrideDataType, Boolean> optionList = new TreeMap<PrideDataType, Boolean>();
+
+        optionList.put(PrideDataType.IDENTIFIED_SPECTRA, false);
+        optionList.put(PrideDataType.UNIDENTIFIED_SPECTRA, false);
+        optionList.put(PrideDataType.ALL_SPECTRA, false);
+
+        PrideDataType dataType;
+        for (XYSeries series : spectraSeriesList) {
+            dataType = PrideDataType.findBy((String) series.getKey());
+            optionList.put(dataType, true);
+        }
+
+        return optionList;
+    }
+
+    @Override
+    public boolean isMultiOptional() {
+        return false;
     }
 }

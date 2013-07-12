@@ -13,7 +13,7 @@ import java.util.*;
 * User: Qingwei
 * Date: 14/06/13
 */
-public class PrideHistogramDataSource {
+public class PrideHistogramDataSource implements PrideDataSource {
     protected SortedSet<PrideHistogramBin> bins = new TreeSet<PrideHistogramBin>();
 
     protected PrideData[] values;
@@ -21,9 +21,24 @@ public class PrideHistogramDataSource {
 
     private SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>> histMap;
 
+    private Set<PrideDataType> dataTypeList = new HashSet<PrideDataType>();   // list all data type which stored in current data source.
+    private boolean displayDataTypeList = false;
+
     public PrideHistogramDataSource(PrideData[] values, boolean calcAllSpectra) {
         this.calcAllSpectra = calcAllSpectra;
         this.values = values;
+
+        for (PrideData value : values) {
+            dataTypeList.add(value.getType());
+        }
+
+        if (calcAllSpectra) {
+            dataTypeList.add(PrideDataType.ALL_SPECTRA);
+        }
+    }
+
+    public Set<PrideDataType> getDataTypeList() {
+        return dataTypeList;
     }
 
     public boolean isCalcAllSpectra() {

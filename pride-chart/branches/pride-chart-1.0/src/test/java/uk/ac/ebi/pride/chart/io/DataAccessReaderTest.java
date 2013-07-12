@@ -137,17 +137,23 @@ public class DataAccessReaderTest {
         PrideXYDataSource unJSONDataSource = jsonDataSource.filter(PrideDataType.UNIDENTIFIED_SPECTRA);
         PrideXYDataSource allJSONDataSource = jsonDataSource.filter(PrideDataType.ALL_SPECTRA);
 
-        int min = Math.min(idPrideDataSource.getDomainData().length, idJSONDataSource.getDomainData().length);
-        for (int i = 0; i < min; i++) {
-            assertEquals(idPrideDataSource.getDomainData()[i], idJSONDataSource.getDomainData()[i]);
-            assertTrue(Math.abs(idPrideDataSource.getRangeData()[i].getData() - idJSONDataSource.getRangeData()[i].getData()) < 0.01);
+        int min;
+        if (idPrideDataSource != null) {
+            min = Math.min(idPrideDataSource.getDomainData().length, idJSONDataSource.getDomainData().length);
+            for (int i = 0; i < min; i++) {
+                assertEquals(idPrideDataSource.getDomainData()[i], idJSONDataSource.getDomainData()[i]);
+                assertTrue(Math.abs(idPrideDataSource.getRangeData()[i].getData() - idJSONDataSource.getRangeData()[i].getData()) < 0.01);
+            }
         }
 
-        min = Math.min(unPrideDataSource.getDomainData().length, unJSONDataSource.getDomainData().length);
-        for (int i = 0; i < min; i++) {
-            assertEquals(unPrideDataSource.getDomainData()[i], unJSONDataSource.getDomainData()[i]);
-            assertTrue(Math.abs(unPrideDataSource.getRangeData()[i].getData() - unJSONDataSource.getRangeData()[i].getData()) < 0.01);
+        if (unPrideDataSource != null) {
+            min = Math.min(unPrideDataSource.getDomainData().length, unJSONDataSource.getDomainData().length);
+            for (int i = 0; i < min; i++) {
+                assertEquals(unPrideDataSource.getDomainData()[i], unJSONDataSource.getDomainData()[i]);
+                assertTrue(Math.abs(unPrideDataSource.getRangeData()[i].getData() - unJSONDataSource.getRangeData()[i].getData()) < 0.01);
+            }
         }
+
 
         min = Math.min(allPrideDataSource.getDomainData().length, allJSONDataSource.getDomainData().length);
         for (int i = 0; i < min; i++) {

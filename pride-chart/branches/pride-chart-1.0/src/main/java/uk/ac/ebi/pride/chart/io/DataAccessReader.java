@@ -23,6 +23,7 @@ import java.util.SortedMap;
  */
 public class DataAccessReader extends PrideDataReader {
     private static Logger logger = Logger.getLogger(DataAccessReader.class);
+    private long start;
 
     private static final int DELTA_BIN_COUNT = 200;
     private static final double DELTA_MIN_BIN_WIDTH = 0.0005;
@@ -61,7 +62,7 @@ public class DataAccessReader extends PrideDataReader {
 
     @Override
     protected void start() {
-        // do noting.
+        start = System.currentTimeMillis();
     }
 
     private Double calcDeltaMZ(Peptide peptide) {
@@ -97,11 +98,11 @@ public class DataAccessReader extends PrideDataReader {
             return;
         }
 
-        PrideDataType dataType = PrideDataType.IDENTIFIED_SPECTRA;
+        PrideDataType dataType = PrideDataType.ALL_SPECTRA;
 
         PrideEqualWidthHistogramDataSource dataSource = new PrideEqualWidthHistogramDataSource(
                 deltaMZList.toArray(new PrideData[deltaMZList.size()]),
-                false
+                true
         );
         double start = Double.MAX_VALUE;
         double end = Double.MIN_VALUE;
@@ -122,16 +123,18 @@ public class DataAccessReader extends PrideDataReader {
         SortedMap<PrideDataType, SortedMap<PrideHistogramBin, Integer>> histogramMap = dataSource.getHistogramMap();
         SortedMap<PrideHistogramBin, Integer> histogram;
         int maxFreq = 0;
-        histogram = histogramMap.get(PrideDataType.IDENTIFIED_SPECTRA);
+        histogram = histogramMap.get(dataType);
         for (Integer size : histogram.values()) {
             if (size > maxFreq) {
                 maxFreq = size;
             }
         }
 
+        double relativeFreq;
         for (PrideHistogramBin bin : histogram.keySet()) {
             deltaDomain.add(bin.getStartBoundary());
-            deltaRange.add(new PrideData(histogram.get(bin) * 1.0d / maxFreq, dataType));
+            relativeFreq = maxFreq == 0 ? 0 : histogram.get(bin) * 1.0d / maxFreq;
+            deltaRange.add(new PrideData(relativeFreq, dataType));
         }
 
         for (int i = 0; i < deltaRange.size(); i++) {
@@ -143,28 +146,32 @@ public class DataAccessReader extends PrideDataReader {
         xyDataSourceMap.put(PrideChartType.DELTA_MASS, new PrideXYDataSource(
                 deltaDomain.toArray(new Double[deltaDomain.size()]),
                 deltaRange.toArray(new PrideData[deltaRange.size()]),
-                PrideDataType.ALL_SPECTRA
+                dataType
         ));
     }
 
     private void readPeptide(int[] peptideBars) {
+        PrideDataType dataType = PrideDataType.ALL_SPECTRA;
+
         if (noPeptide) {
             errorMap.put(PrideChartType.PEPTIDES_PROTEIN, new PrideDataException(PrideDataException.NO_PEPTIDE));
             return;
         }
 
         for (int i = 0; i < peptideBars.length; i++) {
-            peptidesRange[i] = new PrideData(peptideBars[i] + 0.0, PrideDataType.ALL);
+            peptidesRange[i] = new PrideData(peptideBars[i] + 0.0, dataType);
         }
 
         xyDataSourceMap.put(PrideChartType.PEPTIDES_PROTEIN, new PrideXYDataSource(
                 peptidesDomain,
                 peptidesRange,
-                PrideDataType.ALL
+                dataType
         ));
     }
 
     private void readMissed(int[] missedBars) {
+        PrideDataType dataType = PrideDataType.ALL_SPECTRA;
+
         if (noPeptide) {
             errorMap.put(PrideChartType.MISSED_CLEAVAGES, new PrideDataException(PrideDataException.NO_PEPTIDE));
             return;
@@ -177,7 +184,7 @@ public class DataAccessReader extends PrideDataReader {
         xyDataSourceMap.put(PrideChartType.MISSED_CLEAVAGES, new PrideXYDataSource(
                 missedDomain,
                 missedRange,
-                PrideDataType.ALL_SPECTRA
+                dataType
         ));
     }
 
@@ -308,8 +315,6 @@ public class DataAccessReader extends PrideDataReader {
 
     @Override
     protected void reading() {
-        long start = System.currentTimeMillis();
-
         for (int i = 0; i < 6; i++) {
             peptidesDomain[i] = i + 1.0;
         }
@@ -419,7 +424,6 @@ public class DataAccessReader extends PrideDataReader {
                 }
             }
         }
-        logger.debug("fill data cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
 
         // release memory.
         controller = null;
@@ -456,7 +460,6 @@ public class DataAccessReader extends PrideDataReader {
 //        readPeakIntensity(peaksIntensityList);
 //        logger.debug("create peak intensity data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
 
-        start = System.currentTimeMillis();
         readPeptide(peptideBars);
         readDelta(deltaMZList);
         readMissed(missedBars);
@@ -467,11 +470,10 @@ public class DataAccessReader extends PrideDataReader {
         readAvg(avgDataSource);
         readPeakMS(peaksMSList);
         readPeakIntensity(peaksIntensityList);
-        logger.debug("create data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
     }
 
     @Override
     protected void end() {
-        // do nothing.
+        logger.debug("create data set cost: " + PridePlotUtils.getTimeCost(start, System.currentTimeMillis()));
     }
 }

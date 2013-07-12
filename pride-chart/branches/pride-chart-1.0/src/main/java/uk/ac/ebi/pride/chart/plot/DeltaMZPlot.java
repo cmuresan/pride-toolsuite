@@ -6,9 +6,12 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import uk.ac.ebi.pride.chart.PrideChartType;
+import uk.ac.ebi.pride.chart.dataset.PrideDataType;
 
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * User: Qingwei
@@ -36,5 +39,15 @@ public class DeltaMZPlot extends PrideXYPlot {
         NumberAxis rangeAxis = (NumberAxis) getRangeAxis();
         rangeAxis.setAutoTickUnitSelection(false);
         rangeAxis.setTickUnit(new NumberTickUnit(0.25, new DecimalFormat("0.00")));
+    }
+
+    @Override
+    public Map<PrideDataType, Boolean> getOptionList() {
+        return new TreeMap<PrideDataType, Boolean>();
+    }
+
+    @Override
+    public boolean isMultiOptional() {
+        return false;
     }
 }

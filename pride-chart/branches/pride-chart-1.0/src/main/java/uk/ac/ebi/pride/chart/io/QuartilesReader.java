@@ -57,8 +57,12 @@ public class QuartilesReader {
         String line;
         try {
             while ((line = br.readLine()) != null) {
+                if (line.startsWith("\"V1\",\"V2\",\"V3\"")) {
+                    continue;
+                }
+
                 String[] values = line.split(",");
-                points.add(Integer.valueOf(values[0]));
+                points.add(Integer.valueOf(values[0].replaceAll("\"", "")));
                 q1Values.add(Double.valueOf(values[1]));
                 q2Values.add(Double.valueOf(values[2]));
                 q3Values.add(Double.valueOf(values[3]));

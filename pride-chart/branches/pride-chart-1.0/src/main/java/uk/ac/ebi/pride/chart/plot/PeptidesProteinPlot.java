@@ -5,10 +5,13 @@ import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.data.xy.XYBarDataset;
 import org.jfree.data.xy.XYDataset;
 import uk.ac.ebi.pride.chart.PrideChartType;
+import uk.ac.ebi.pride.chart.dataset.PrideDataType;
 import uk.ac.ebi.pride.chart.plot.axis.PrideNumberTickUnit;
 import uk.ac.ebi.pride.chart.plot.label.XYPercentageLabel;
 
 import java.text.DecimalFormat;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * User: Qingwei
@@ -34,5 +37,15 @@ public class PeptidesProteinPlot extends PrideXYPlot {
 
         NumberAxis rangeAxis = (NumberAxis) getRangeAxis();
         rangeAxis.setMinorTickCount(barCount);
+    }
+
+    @Override
+    public Map<PrideDataType, Boolean> getOptionList() {
+        return new TreeMap<PrideDataType, Boolean>();
+    }
+
+    @Override
+    public boolean isMultiOptional() {
+        return false;
     }
 }

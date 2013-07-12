@@ -6,8 +6,9 @@ import uk.ac.ebi.pride.chart.PrideChartType;
 import uk.ac.ebi.pride.chart.dataset.PrideDataType;
 import uk.ac.ebi.pride.chart.plot.label.CategoryPercentageLabel;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
 * User: Qingwei
@@ -15,7 +16,6 @@ import java.util.List;
 */
 public class PeakIntensityPlot extends PrideCategoryPlot {
     private CategoryDataset dataset;
-    private PrideDataType dataType;
 
     public PeakIntensityPlot(CategoryDataset dataset, PrideDataType dataType) {
         this(dataset, dataType, true);
@@ -30,7 +30,6 @@ public class PeakIntensityPlot extends PrideCategoryPlot {
             renderer.setSeriesItemLabelsVisible(i, true);
         }
 
-        this.dataType = dataType;
         this.dataset = dataset;
 
         // only display current data type series.
@@ -40,21 +39,43 @@ public class PeakIntensityPlot extends PrideCategoryPlot {
         setVisible(true, dataType);
     }
 
-    public List<PrideDataType> getSpectraDataTypeList() {
-        List<PrideDataType> typeList = new ArrayList<PrideDataType>();
-
-        typeList.addAll(dataType.getChildren());
-        typeList.add(dataType);
-
-        return typeList;
-    }
-
     public void setVisible(boolean visible, PrideDataType dataType) {
         BarRenderer renderer = (BarRenderer) getRenderer();
+
         for (int i = 0; i < dataset.getRowCount(); i++) {
+            if (dataset.getRowKey(i).equals(PrideDataType.ALL_SPECTRA)) {
+                renderer.setSeriesPaint(i, Color.BLUE);
+            } else if (dataset.getRowKey(i).equals(PrideDataType.IDENTIFIED_SPECTRA)) {
+                renderer.setSeriesPaint(i, Color.RED);
+            } else if (dataset.getRowKey(i).equals(PrideDataType.UNIDENTIFIED_SPECTRA)) {
+                renderer.setSeriesPaint(i, Color.GREEN);
+            }
+
             if (dataset.getRowKey(i).equals(dataType.getTitle())) {
                 renderer.setSeriesVisible(i, visible);
             }
         }
+    }
+
+    @Override
+    public Map<PrideDataType, Boolean> getOptionList() {
+        Map<PrideDataType, Boolean> optionList = new TreeMap<PrideDataType, Boolean>();
+
+        optionList.put(PrideDataType.IDENTIFIED_SPECTRA, false);
+        optionList.put(PrideDataType.UNIDENTIFIED_SPECTRA, false);
+        optionList.put(PrideDataType.ALL_SPECTRA, false);
+
+        PrideDataType dataType;
+        for (Object key : dataset.getRowKeys()) {
+            dataType = PrideDataType.findBy((String) key);
+            optionList.put(dataType, true);
+        }
+
+        return optionList;
+    }
+
+    @Override
+    public boolean isMultiOptional() {
+        return true;
     }
 }

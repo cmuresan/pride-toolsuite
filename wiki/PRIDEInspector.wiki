@@ -108,7 +108,7 @@ The zip file contains also an `examples` folder with 2 sample files: one in mzML
   Go to: Systems Perferences -> Security & Privacy -> General tab and change the "Allow applications downloaded from" setting from the default "Mac App Store and identified developers" to "Anywhere".
   More information can be found [http://support.apple.com/kb/HT5290 here].
 
-  *Note*: Java has it's own security checks and the PRIDE Inspector is properly equipped with recognised security certificates. Unfortunately Apple does not recognise them for their new security feature. 
+  Note: Java has it's own security checks and the PRIDE Inspector is properly equipped with recognised security certificates. Unfortunately Apple does not recognise them for their new security feature. 
  
 [PRIDEInspector top of page]
 

@@ -3,6 +3,8 @@ package uk.ac.ebi.pride.data.controller.impl.ControllerImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.jmzidml.model.mzidml.ProteinAmbiguityGroup;
+import uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis;
 import uk.ac.ebi.jmzidml.model.mzidml.SpectrumIdentificationItem;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -504,32 +506,38 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                     uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis proteinHypothesis = unmarshaller.getIdentificationById(proteinId);
                     // when protein groups are present
                     uk.ac.ebi.jmzidml.model.mzidml.DBSequence dbSequence = unmarshaller.getDBSequenceById(proteinHypothesis.getDBSequenceRef());
-                    ident = MzIdentMLTransformer.transformProteinHypothesisToIdentification(proteinHypothesis, dbSequence);
+                    proteinHypothesis.setDBSequence(dbSequence);
+
+                    ident = MzIdentMLTransformer.transformProteinHypothesisToIdentification(proteinHypothesis);
                 }
 
                 if (ident != null) {
-                    // store identification into cache
-                    getCache().store(CacheEntry.PROTEIN, proteinId, ident);
-                    // store precursor charge and m/z
-                    for (Peptide peptide : ident.getPeptides()) {
-                        getCache().store(CacheEntry.PEPTIDE, new Tuple<Comparable, Comparable>(ident.getId(), peptide.getSpectrumIdentification().getId()), peptide);
-                        Comparable spectrumId = getSpectrumIdBySpectrumIdentificationItemId(peptide.getSpectrumIdentification().getId());
-                        if (hasSpectrum()) {
-                            Spectrum spectrum = getSpectrumById(spectrumId);
-                            spectrum.setPeptide(peptide);
-                            peptide.setSpectrum(spectrum);
-
-                            getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorChargeParamGroup(spectrum));
-                            getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
-                        }
-                    }
+                    cacheProtein(ident);
                 }
             } catch (Exception ex) {
-                throw new DataAccessException("Failed to retrieve identification: " + proteinId, ex);
+                throw new DataAccessException("Failed to retrieve protein identification: " + proteinId, ex);
             }
         }
 
         return ident;
+    }
+
+    private void cacheProtein(Protein ident) {
+        // store identification into cache
+        getCache().store(CacheEntry.PROTEIN, ident.getId(), ident);
+        // store precursor charge and m/z
+        for (Peptide peptide : ident.getPeptides()) {
+            getCache().store(CacheEntry.PEPTIDE, new Tuple<Comparable, Comparable>(ident.getId(), peptide.getSpectrumIdentification().getId()), peptide);
+            Comparable spectrumId = getSpectrumIdBySpectrumIdentificationItemId(peptide.getSpectrumIdentification().getId());
+            if (hasSpectrum()) {
+                Spectrum spectrum = getSpectrumById(spectrumId);
+                spectrum.setPeptide(peptide);
+                peptide.setSpectrum(spectrum);
+
+                getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorChargeParamGroup(spectrum));
+                getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+            }
+        }
     }
 
     private List<SpectrumIdentificationItem> getScannedSpectrumIdentificationItems(Comparable proteinId) throws JAXBException {
@@ -672,6 +680,38 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return super.getProteinAmbiguityGroupIds().size() > 0;
     }
 
+    @Override
+    public ProteinGroup getProteinAmbiguityGroupById(Comparable proteinGroupId) {
+        ProteinGroup proteinGroup = super.getProteinAmbiguityGroupById(proteinGroupId);
+
+        if (proteinGroup == null) {
+
+            try {
+                ProteinAmbiguityGroup proteinAmbiguityGroup = unmarshaller.getProteinAmbiguityGroup(proteinGroupId);
+
+                for (ProteinDetectionHypothesis proteinDetectionHypothesis : proteinAmbiguityGroup.getProteinDetectionHypothesis()) {
+                    uk.ac.ebi.jmzidml.model.mzidml.DBSequence dbSequence = unmarshaller.getDBSequenceById(proteinDetectionHypothesis.getDBSequenceRef());
+                    proteinDetectionHypothesis.setDBSequence(dbSequence);
+                }
+
+                proteinGroup = MzIdentMLTransformer.transformProteinAmbiguityGroupToProteinGroup(proteinAmbiguityGroup);
+
+                if (proteinGroup != null) {
+                    // store identification into cache
+                    getCache().store(CacheEntry.PROTEIN_GROUP, proteinGroupId, proteinGroup);
+
+                    for (Protein protein : proteinGroup.getProteinDetectionHypothesis()) {
+                        cacheProtein(protein);
+                    }
+                }
+
+            } catch (Exception ex) {
+                throw new DataAccessException("Failed to retrieve protein group: " + proteinGroupId, ex);
+            }
+        }
+
+        return proteinGroup;
+    }
 
     private Comparable getSpectrumIdBySpectrumIdentificationItemId(Comparable id) {
         String[] spectrumIdArray = ((Map<Comparable, String[]>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM)).get(id);

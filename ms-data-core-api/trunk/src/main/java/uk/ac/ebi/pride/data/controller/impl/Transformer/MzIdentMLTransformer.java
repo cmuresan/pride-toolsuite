@@ -313,10 +313,9 @@ public class MzIdentMLTransformer {
         return references;
     }
 
-    public static Protein transformProteinHypothesisToIdentification(uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis oldIdent,
-                                                                     uk.ac.ebi.jmzidml.model.mzidml.DBSequence oldDbSequence) {
+    public static Protein transformProteinHypothesisToIdentification(uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionHypothesis oldIdent) {
 
-        DBSequence dbSequence = transformToDBSequence(oldDbSequence);
+        DBSequence dbSequence = transformToDBSequence(oldIdent.getDBSequence());
 
         ParamGroup paramGroup = new ParamGroup(transformToCvParam(oldIdent.getCvParam()), transformToUserParam(oldIdent.getUserParam()));
         Score score = DataAccessUtilities.getScore(paramGroup);
@@ -334,7 +333,7 @@ public class MzIdentMLTransformer {
             }
         }
 
-        return new Protein(paramGroup, dbSequence.getId(), name, dbSequence, passThreshold, peptides, score, -1, -1, null);
+        return new Protein(paramGroup, oldIdent.getId(), name, dbSequence, passThreshold, peptides, score, -1, -1, null);
     }
 
     private static Peptide transformToPeptideFromSpectrumItemAndPeptideEvidence(SpectrumIdentificationItem oldSpectrumidentification,
@@ -879,5 +878,19 @@ public class MzIdentMLTransformer {
     public static CvParam transformDateToCvParam(Date creationDate) {
         CvTermReference cvTerm = CvTermReference.EXPERIMENT_GLOBAL_CREATIONDATE;
         return new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), creationDate.toString(), null, null, null);
+    }
+
+    public static ProteinGroup transformProteinAmbiguityGroupToProteinGroup(ProteinAmbiguityGroup proteinAmbiguityGroup) {
+
+        ParamGroup paramGroup = new ParamGroup(transformToCvParam(proteinAmbiguityGroup.getCvParam()), transformToUserParam(proteinAmbiguityGroup.getUserParam()));
+
+        List<ProteinDetectionHypothesis> proteinDetectionHypothesis = proteinAmbiguityGroup.getProteinDetectionHypothesis();
+        List<Protein> proteins = new ArrayList<Protein>();
+        for (ProteinDetectionHypothesis proteinDetectionHypothesi : proteinDetectionHypothesis) {
+            Protein protein = transformProteinHypothesisToIdentification(proteinDetectionHypothesi);
+            proteins.add(protein);
+        }
+
+        return new ProteinGroup(paramGroup, proteinAmbiguityGroup.getId(), proteinAmbiguityGroup.getName(), proteins);
     }
 }

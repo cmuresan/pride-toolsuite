@@ -294,6 +294,7 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         return charge;
     }
 
+
     /**
      * Get precursor m/z value using spectrum id.
      * This implementation will check cache first.
@@ -913,6 +914,11 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
             groupIds = Collections.emptyList();
         }
         return groupIds;
+    }
+
+    @Override
+    public ProteinGroup getProteinAmbiguityGroupById(Comparable proteinGroupId) {
+        return (ProteinGroup) cache.get(CacheEntry.PROTEIN_GROUP, proteinGroupId);
     }
 
     /**

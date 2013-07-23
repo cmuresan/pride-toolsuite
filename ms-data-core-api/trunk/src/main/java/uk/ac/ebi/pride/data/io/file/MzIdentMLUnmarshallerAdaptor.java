@@ -234,6 +234,10 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
         return spectraDataMap;
     }
 
+    public ProteinAmbiguityGroup getProteinAmbiguityGroup(Comparable id) throws JAXBException {
+        return this.unmarshal(ProteinAmbiguityGroup.class, (String)id);
+    }
+
     public List<PeptideHypothesis> getPeptideHypothesisbyID(Comparable id) throws JAXBException {
         ProteinDetectionHypothesis proteinDetectionHypothesis = getIdentificationById(id);
         List<PeptideHypothesis> peptideHypothesises = new ArrayList<PeptideHypothesis>();

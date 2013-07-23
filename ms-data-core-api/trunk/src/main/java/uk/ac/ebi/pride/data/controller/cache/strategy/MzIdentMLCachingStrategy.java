@@ -64,7 +64,7 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
     }
 
     private boolean hasProteinGroup(MzIdentMLUnmarshallerAdaptor unmarshaller) {
-        boolean proteinGroupPresent = false;
+        boolean proteinGroupPresent;
         try {
             proteinGroupPresent = unmarshaller.hasProteinGroup();
         } catch (ConfigurationException e) {

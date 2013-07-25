@@ -7,8 +7,7 @@ import uk.ac.ebi.pride.gui.component.report.RemovalReportMessage;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.table.filter.DecoyAccessionFilter;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableHeader;
-import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.ProteinTableHeader;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
@@ -52,7 +51,7 @@ public class DecoyFilterTask extends TaskAdapter<Void, Void>{
         ControllerContentPane contentPane = (ControllerContentPane) appContext.getDataContentPane(controller);
         // protein tab
         JTable table = contentPane.getProteinTabPane().getIdentificationPane().getIdentificationTable();
-        String protAccColName = ProteinTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
+        String protAccColName = ProteinTableHeader.PROTEIN_ACCESSION.getHeader();
         int index = getAccessionColumnIndex(table.getModel(), protAccColName);
         setRowFilter(table, new DecoyAccessionFilter(type, criteria, index, false));
         // protein decoy ratio
@@ -65,7 +64,7 @@ public class DecoyFilterTask extends TaskAdapter<Void, Void>{
         // quant tab
         if (contentPane.isQuantTabEnabled()) {
             table = contentPane.getQuantTabPane().getQuantProteinSelectionPane().getQuantProteinTable();
-            protAccColName = QuantProteinTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
+            protAccColName = ProteinTableHeader.PROTEIN_ACCESSION.getHeader();
             index = getAccessionColumnIndex(table.getModel(), protAccColName);
             setRowFilter(table, new DecoyAccessionFilter(type, criteria, index, false));
         }

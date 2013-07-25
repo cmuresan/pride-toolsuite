@@ -14,63 +14,27 @@ import java.util.*;
  */
 public class QuantProteinTableModel extends AbstractProteinTableModel {
 
-    /**
-     * table column title
-     */
-    public enum TableHeader {
-        COMPARE("✓", "Click to choose the protein you want to compare"),
-        PROTEIN_ACCESSION_COLUMN("Protein", "Protein Accession"),
-        PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
-        PROTEIN_STATUS("Status", "Status Of The Protein Accession"),
-        PROTEIN_SEQUENCE_COVERAGE("Coverage", "Protein Sequence Coverage"),
-        THEORITICAL_ISOELECTRIC_POINT_COLUMN("pI", "Theoritical isoelectric point"),
-        //IDENTIFICATION_SCORE_COLUMN("Score", "PRIDE Protein Score"),
-        IDENTIFICATION_THRESHOLD_COLUMN("Threshold", "PRIDE Protein Threshold"),
-        NUMBER_OF_PEPTIDES("# Peptides", "Number of Peptides"),
-        NUMBER_OF_UNIQUE_PEPTIDES("# Distinct Peptides", "Number of Distinct Peptides"),
-        NUMBER_OF_PTMS("# PTMs", "Number of PTMs"),
-        IDENTIFICATION_ID("Identification ID", "Identification ID"),
-        ADDITIONAL("More", "Additional Details");
-
-        private final String header;
-        private final String toolTip;
-
-        private TableHeader(String header, String tooltip) {
-            this.header = header;
-            this.toolTip = tooltip;
-        }
-
-        public String getHeader() {
-            return header;
-        }
-
-        public String getToolTip() {
-            return toolTip;
-        }
-    }
-
-    /**
-     * mapping between protein identification id and row number
-     */
-    Map<Comparable, Integer> identIdToRowNumMapping;
-
     public QuantProteinTableModel(Collection<CvTermReference> listProteinScores) {
         super(listProteinScores);
-        this.identIdToRowNumMapping = new HashMap<Comparable, Integer>();
     }
 
-    @Override
-    public void initializeTableModel() {
-        TableHeader[] headers = TableHeader.values();
-        for (TableHeader header : headers) {
-            columnNames.put(header.getHeader(), header.getToolTip());
+    @SuppressWarnings("unchecked")
+    private void updateQuantColumnHeaders(Object value) {
+        // add fixed columns
+        setColumnHeaders();
+
+        List<String> hs = (List<String>)value;
+        for (String h : hs) {
+            columnNames.put(h, h);
         }
+
+        fireTableStructureChanged();
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         String columnName = getColumnName(columnIndex);
-        if (columnName.equals(TableHeader.COMPARE.getHeader())) {
+        if (columnName.equals(ProteinTableHeader.COMPARE.getHeader())) {
             return Boolean.class;
         } else {
             return super.getColumnClass(columnIndex);
@@ -80,7 +44,19 @@ public class QuantProteinTableModel extends AbstractProteinTableModel {
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         String columnName = getColumnName(columnIndex);
-        return columnName.equals(TableHeader.COMPARE.getHeader()) || super.isCellEditable(rowIndex, columnIndex);
+        return columnName.equals(ProteinTableHeader.COMPARE.getHeader()) || super.isCellEditable(rowIndex, columnIndex);
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        String columnName = getColumnName(columnIndex);
+        if (columnName.equals(ProteinTableHeader.COMPARE.getHeader())) {
+            ProteinTableRow proteinTableRow = (ProteinTableRow)contents.get(rowIndex);
+            proteinTableRow.setComparisonState((Boolean)aValue);
+            fireTableCellUpdated(rowIndex, columnIndex);
+        } else {
+            super.setValueAt(aValue, rowIndex, columnIndex);
+        }
     }
 
     @Override
@@ -88,74 +64,33 @@ public class QuantProteinTableModel extends AbstractProteinTableModel {
         TableContentType type = newData.getKey();
 
         if (TableContentType.PROTEIN_QUANTITATION_HEADER.equals(type)) {
-            setHeaders(newData.getValue());
+            updateQuantColumnHeaders(newData.getValue());
         } else if (TableContentType.PROTEIN_QUANTITATION.equals(type)) {
-            addProteinQuantData(newData.getValue());
+            addProteinQuantData((ProteinTableRow)newData.getValue());
         } else {
             super.addData(newData);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void setHeaders(Object value) {
-        // clear all the columns
-        columnNames.clear();
-        // add fixed columns
-        TableHeader[] headers = TableHeader.values();
-        for (TableHeader header : headers) {
-            columnNames.put(header.getHeader(), header.getToolTip());
-        }
-
-        List<String> hs = (List<String>) value;
-        for (String h : hs) {
-            columnNames.put(h, h);
-        }
-
-        fireTableStructureChanged();
+    private void addProteinQuantData(ProteinTableRow proteinTableRow) {
+        int rowCnt = this.getRowCount();
+        this.addRow(proteinTableRow);
+        fireTableRowsInserted(rowCnt, rowCnt);
     }
 
-    @SuppressWarnings("unchecked")
-    private void addProteinQuantData(Object value) {
-        int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
-        int compareColIndex = getColumnIndex(TableHeader.COMPARE.getHeader());
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        ProteinTableRow proteinTableRow = (ProteinTableRow)contents.get(rowIndex);
 
-        List<Object> data = (List<Object>) value;
-        // get the ident id
-        Comparable identId = (Comparable) data.get(identIdIndex - 2);
-        Integer rowNum = identIdToRowNumMapping.get(identId);
-        if (rowNum == null) {
-            // full row
-            List<Object> content = new ArrayList<Object>();
-            rowNum = this.getRowCount();
-            // row number
-            content.add(false);
-            content.addAll(data);
-            contents.add(content);
-            identIdToRowNumMapping.put(identId, rowNum);
-            fireTableRowsInserted(rowNum, rowNum);
+        int additionalColumnIndex = getColumnIndex(ProteinTableHeader.ADDITIONAL.getHeader());
+
+        if (columnIndex > additionalColumnIndex) {
+            // quantification columns will always be at the end of the table
+            List<Object> quantifications = proteinTableRow.getQuantifications();
+            return quantifications.get(columnIndex - additionalColumnIndex - 1);
         } else {
-            List<Object> content = (List<Object>)contents.get(rowNum);
-
-            // adjust all content's size
-            int offset = compareColIndex + 1;
-            int contentSize = content.size();
-            int dataSize = data.size();
-            if (contentSize - offset < dataSize) {
-                for (Object con : contents) {
-                    List<Object> conList = (List<Object>)con;
-                    for (int i = contentSize - offset; i < dataSize; i++) {
-                        conList.add(null);
-                    }
-                }
-            }
-
-            // replace previous quant data
-            for (int i = 0; i < dataSize; i++) {
-                content.set(i + offset, data.get(i));
-            }
-
-            // notify
-            fireTableRowsUpdated(rowNum, rowNum);
+            return super.getValueAt(rowIndex, columnIndex);
         }
     }
 }

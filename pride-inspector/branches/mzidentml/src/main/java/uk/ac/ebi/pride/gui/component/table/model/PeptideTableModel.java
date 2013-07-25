@@ -40,5 +40,4 @@ public class PeptideTableModel extends AbstractPeptideTableModel {
         this.addRow(peptideTableRow);
         fireTableRowsInserted(rowCnt, rowCnt);
     }
-
 }

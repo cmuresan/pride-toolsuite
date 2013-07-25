@@ -7,11 +7,14 @@ import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.Modification;
+import uk.ac.ebi.pride.data.core.Protein;
+import uk.ac.ebi.pride.data.core.ProteinGroup;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportMessage;
 import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableRow;
+import uk.ac.ebi.pride.gui.component.table.model.ProteinTableRow;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
 
@@ -36,6 +39,10 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
      */
     private static final String DEFAULT_TASK_DESCRIPTION = "Loading experiment content";
 
+    private int missingSpectrumLinks = 0;
+
+    private final Map<String, String> ptmMap = new HashMap<String, String>();
+
 
     /**
      * Retrieve a subset of identifications.
@@ -48,71 +55,51 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
         this.setDescription(DEFAULT_TASK_DESCRIPTION);
     }
 
+
     @Override
     protected Void retrieve() throws Exception {
-        try {
-            Collection<Comparable> identIds = controller.getProteinIds();
-            // count stores the number of peptides without any spectrum
-            int missingSpectrumLinks = 0;
 
+        try {
+            // get quant headers
             boolean hasQuantData = controller.hasQuantData();
-            // ptm maps
-            Map<String, String> ptmMap = new HashMap<String, String>();
-            // get headers
             if (hasQuantData) {
-                logger.debug("Scan quantification table header");
-                // protein quantitative table header
-                List<Object> proteinQuantHeaders = TableDataRetriever.getProteinQuantTableHeaders(controller, -1);
-                publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_QUANTITATION_HEADER, proteinQuantHeaders));
+                getQuantHeaders();
             }
 
-            for (Comparable identId : identIds) {
+            // retrieve protein group ids
+            Collection<Comparable> proteinGroupIds = getProteinGroupIds();
 
-                // get and publish protein related details
-                logger.debug("Scan protein details: {}", identId);
-                List<Object> identContent = TableDataRetriever.getProteinTableRow(controller, identId);
-                publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN, identContent));
+            // retrieve protein, peptide and PTM details
+            for (Comparable proteinGroupId : proteinGroupIds) {
+                // retrieve protein id belongs to the protein group
+                Collection<Comparable> proteinIds = getProteinIds(proteinGroupId);
+
+                for (Comparable proteinId : proteinIds) {
+                    // get and publish protein related details
+                    ProteinTableRow proteinData = getProteinData(proteinId, proteinGroupId);
 
 
-                if (hasQuantData) {
-                    // get and publish quantitative data
-                    logger.debug("Scan quantification details: {}", identId);
-                    List<Object> allQuantContent = new ArrayList<Object>();
-                    allQuantContent.addAll(identContent);
-                    List<Object> identQuantContent = TableDataRetriever.getProteinQuantTableRow(controller, identId, -1);
-                    allQuantContent.addAll(identQuantContent);
-                    publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_QUANTITATION, allQuantContent));
-                }
+                    if (hasQuantData) {
+                        // get and publish quantitative data
+                        getQuantData(proteinId, proteinData);
+                    }
 
-                // get and publish peptide related details
-                Collection<Comparable> ids = controller.getPeptideIds(identId);
-                if (ids != null) {
-                    for (Comparable peptideId : ids) {
-                        logger.debug("Scan peptide details: {}-{}", identId, peptideId);
-                        PeptideTableRow peptideTableRow = TableDataRetriever.getPeptideTableRow(controller, identId, peptideId);
-                        publish(new Tuple<TableContentType, Object>(TableContentType.PEPTIDE, peptideTableRow));
+                    // get and publish peptide related details
+                    Collection<Comparable> ids = controller.getPeptideIds(proteinId);
+                    if (ids != null) {
+                        for (Comparable peptideId : ids) {
+                            getPeptideData(proteinId, peptideId);
 
-                        if (controller.getPeptideSpectrumId(identId, peptideId) == null) {
-                            missingSpectrumLinks++;
-                        }
-
-                        Collection<Modification> mods = controller.getPTMs(identId, peptideId);
-                        if (mods != null) {
-                            for (Modification mod : mods) {
-                                String accession = (mod.getId() !=null)?mod.getId().toString():null;
-                                String name = mod.getName();
-                                if (!ptmMap.containsKey(accession)) {
-                                    EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.INFO, "Mod: " + accession,
-                                            "Modification found: [" + accession + "]\t" + name)));
-                                    ptmMap.put(mod.getId().toString(), mod.getName());
-                                }
+                            if (controller.getPeptideSpectrumId(proteinId, peptideId) == null) {
+                                missingSpectrumLinks++;
                             }
+
+                            sendPTMNotification(proteinId, peptideId);
                         }
                     }
 
+                    checkInterruption();
                 }
-
-                checkInterruption();
             }
 
             if (missingSpectrumLinks > 0) {
@@ -126,6 +113,74 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
             logger.warn("Protein table and peptide table update has been cancelled");
         }
         return null;
+    }
+
+    private Collection<Comparable> getProteinGroupIds() {
+        Collection<Comparable> proteinGroupIds;
+        if (controller.hasProteinAmbiguityGroup()) {
+            proteinGroupIds = controller.getProteinAmbiguityGroupIds();
+        } else {
+            proteinGroupIds = new HashSet<Comparable>();
+            proteinGroupIds.add(null);
+        }
+        return proteinGroupIds;
+    }
+
+    private Collection<Comparable> getProteinIds(Comparable proteinGroupId) {
+        if (proteinGroupId == null) {
+            return controller.getProteinIds();
+        } else {
+            ProteinGroup proteinGroup = controller.getProteinAmbiguityGroupById(proteinGroupId);
+            Collection<Comparable> proteinIds = new LinkedHashSet<Comparable>();
+            List<Protein> proteins = proteinGroup.getProteinDetectionHypothesis();
+            for (Protein protein : proteins) {
+                proteinIds.add(protein.getId());
+            }
+
+            return proteinIds;
+        }
+    }
+
+    private void sendPTMNotification(Comparable proteinId, Comparable peptideId) {
+        Collection<Modification> mods = controller.getPTMs(proteinId, peptideId);
+        if (mods != null) {
+            for (Modification mod : mods) {
+                String accession = (mod.getId() != null) ? mod.getId().toString() : null;
+                String name = mod.getName();
+                if (!ptmMap.containsKey(accession)) {
+                    EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.INFO, "Mod: " + accession,
+                            "Modification found: [" + accession + "]\t" + name)));
+                    ptmMap.put(mod.getId().toString(), mod.getName());
+                }
+            }
+        }
+    }
+
+    private ProteinTableRow getProteinData(Comparable proteinId, Comparable proteinGroupId) {
+        logger.debug("Scan protein details: {}", proteinId);
+        ProteinTableRow proteinTableRow = TableDataRetriever.getProteinTableRow(controller, proteinId, proteinGroupId);
+        publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN, proteinTableRow));
+        return proteinTableRow;
+    }
+
+    private void getPeptideData(Comparable identId, Comparable peptideId) {
+        logger.debug("Scan peptide details: {}-{}", identId, peptideId);
+        PeptideTableRow peptideTableRow = TableDataRetriever.getPeptideTableRow(controller, identId, peptideId);
+        publish(new Tuple<TableContentType, Object>(TableContentType.PEPTIDE, peptideTableRow));
+    }
+
+    private void getQuantData(Comparable identId, ProteinTableRow proteinTableRow) {
+        logger.debug("Scan quantification details: {}", identId);
+        List<Object> identQuantContent = TableDataRetriever.getProteinQuantTableRow(controller, identId, -1);
+        proteinTableRow.addQuantifications(identQuantContent);
+        publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_QUANTITATION, proteinTableRow));
+    }
+
+    private void getQuantHeaders() {
+        logger.debug("Scan quantification table header");
+        // protein quantitative table header
+        List<Object> proteinQuantHeaders = TableDataRetriever.getProteinQuantTableHeaders(controller, -1);
+        publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_QUANTITATION_HEADER, proteinQuantHeaders));
     }
 
     private void checkInterruption() throws InterruptedException {

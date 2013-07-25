@@ -3,10 +3,10 @@ package uk.ac.ebi.pride.gui.task.impl;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
+import uk.ac.ebi.pride.gui.component.table.model.ProteinTableRow;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * Date: 16/08/2011
  * Time: 16:24
  */
-public class RetrieveQuantProteinTableTask extends TaskAdapter<Void, Tuple<TableContentType, List<Object>>> {
+public class RetrieveQuantProteinTableTask extends TaskAdapter<Void, Tuple<TableContentType, Object>> {
 
     private static final String DEFAULT_TASK_NAME = "Updating Protein Table";
 
@@ -39,19 +39,17 @@ public class RetrieveQuantProteinTableTask extends TaskAdapter<Void, Tuple<Table
         // get new headers
         // protein quantitative table header
         List<Object> proteinQuantHeaders = TableDataRetriever.getProteinQuantTableHeaders(controller, referenceSampleIndex);
-        publish(new Tuple<TableContentType, List<Object>>(TableContentType.PROTEIN_QUANTITATION_HEADER, proteinQuantHeaders));
+        publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_QUANTITATION_HEADER, proteinQuantHeaders));
 
         // get each row
         for (Comparable identId : identIds) {
-            List<Object> allQuantContent = new ArrayList<Object>();
             // get and publish protein related details
-            List<Object> identContent = TableDataRetriever.getProteinTableRow(controller, identId);
-            allQuantContent.addAll(identContent);
+            ProteinTableRow proteinTableRow = TableDataRetriever.getProteinTableRow(controller, identId, null);
             // get and publish quantitative data
             List<Object> identQuantContent = TableDataRetriever.getProteinQuantTableRow(controller, identId, referenceSampleIndex);
-            allQuantContent.addAll(identQuantContent);
+            proteinTableRow.addQuantifications(identQuantContent);
 
-            publish(new Tuple<TableContentType, List<Object>>(TableContentType.PROTEIN_QUANTITATION, allQuantContent));
+            publish(new Tuple<TableContentType, Object>(TableContentType.PROTEIN_QUANTITATION, proteinTableRow));
         }
 
         // check for interruption

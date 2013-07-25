@@ -45,7 +45,6 @@ public class MouseClickPopupListener extends MouseAdapter {
         }
     }
 
-
     private static class PopupDialog extends JDialog {
         private JTextArea textArea;
 

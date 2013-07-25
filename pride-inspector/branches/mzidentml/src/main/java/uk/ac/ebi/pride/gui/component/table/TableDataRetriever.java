@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableRow;
+import uk.ac.ebi.pride.gui.component.table.model.ProteinTableRow;
 import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.gui.utils.ProteinAccession;
 import uk.ac.ebi.pride.mol.IsoelectricPointUtils;
@@ -17,7 +18,9 @@ import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 import uk.ac.ebi.pride.tools.utils.AccessionResolver;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * <code>TableDataRetriever </code> provides methods for retrieving row data for tables.
@@ -39,8 +42,8 @@ public class TableDataRetriever {
      *          data access exception
      */
     public static PeptideTableRow getPeptideTableRow(DataAccessController controller,
-                                                  Comparable identId,
-                                                  Comparable peptideId) throws DataAccessException {
+                                                     Comparable identId,
+                                                     Comparable peptideId) throws DataAccessException {
         PeptideTableRow peptideTableRow = new PeptideTableRow();
 
         // peptide sequence with modifications
@@ -175,21 +178,23 @@ public class TableDataRetriever {
      * Retrieve a row of data for identification table.
      *
      * @param controller data access controller
-     * @param identId    identification id
+     * @param proteinId  identification id
      * @return List<Object> row data
      * @throws DataAccessException data access exception
      */
-    public static List<Object> getProteinTableRow(DataAccessController controller,
-                                                  Comparable identId) throws DataAccessException {
-        List<Object> content = new ArrayList<Object>();
+    public static ProteinTableRow getProteinTableRow(DataAccessController controller,
+                                                     Comparable proteinId,
+                                                     Comparable proteinGroupId) throws DataAccessException {
+
+        ProteinTableRow proteinTableRow = new ProteinTableRow();
 
         // Original Protein Accession
-        String protAcc = controller.getProteinAccession(identId);
-        String protAccVersion = controller.getProteinAccessionVersion(identId);
-        String database = (controller.getSearchDatabase(identId).getName() == null) ? "" : controller.getSearchDatabase(identId).getName();
+        String protAcc = controller.getProteinAccession(proteinId);
+        String protAccVersion = controller.getProteinAccessionVersion(proteinId);
+        String database = (controller.getSearchDatabase(proteinId).getName() == null) ? "" : controller.getSearchDatabase(proteinId).getName();
         AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
         String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
-        content.add(new ProteinAccession(protAcc, mappedProtAcc));
+        proteinTableRow.setProteinAccession(new ProteinAccession(protAcc, mappedProtAcc));
 
         // get protein details
         Protein protein = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
@@ -198,53 +203,48 @@ public class TableDataRetriever {
         }
 
         // Protein name
-        content.add(protein == null ? null : protein.getName());
+        proteinTableRow.setProteinName(protein == null ? null : protein.getName());
 
         // protein status
-        content.add(protein == null ? null : protein.getStatus().name());
+        proteinTableRow.setProteinAccessionStatus(protein == null ? null : protein.getStatus().name());
 
         // sequence coverage
-        Double coverage = PrideInspectorCacheManager.getInstance().getSequenceCoverage(controller.getUid(), identId);
-        content.add(coverage);
+        Double coverage = PrideInspectorCacheManager.getInstance().getSequenceCoverage(controller.getUid(), proteinId);
+        proteinTableRow.setSequenceCoverage(coverage);
 
         // isoelectric points
-        if (protein != null) {
-            String sequence = protein.getSequenceString();
-            if (sequence != null) {
-                content.add(IsoelectricPointUtils.calculate(protein.getSequenceString()));
-            } else {
-                content.add(null);
-            }
+        if (protein != null && protein.getSequenceString() != null) {
+            proteinTableRow.setIsoelectricPoint(IsoelectricPointUtils.calculate(protein.getSequenceString()));
         } else {
-            content.add(null);
+            proteinTableRow.setIsoelectricPoint(null);
         }
 
         // Threshold
-        double threshold = controller.getProteinThreshold(identId);
-        content.add(threshold == -1 ? null : threshold);
+        double threshold = controller.getProteinThreshold(proteinId);
+        proteinTableRow.setThreshold(threshold == -1 ? null : threshold);
 
         // number of peptides
-        content.add(controller.getNumberOfPeptides(identId));
+        proteinTableRow.setNumberOfPeptides(controller.getNumberOfPeptides(proteinId));
 
         // unique peptides
-        content.add(controller.getNumberOfUniquePeptides(identId));
+        proteinTableRow.setNumberOfUniquePeptides(controller.getNumberOfUniquePeptides(proteinId));
 
         // number of PTMs
-        content.add(controller.getNumberOfPTMs(identId));
+        proteinTableRow.setNumberOfPTMs(controller.getNumberOfPTMs(proteinId));
 
         // unique id for identification
-        content.add(identId);
+        proteinTableRow.setProteinId(proteinId);
+
+        // protein group id
+        proteinTableRow.setProteinGroupId(proteinGroupId);
 
         // protein scores
-        addProteinScores(content, controller, identId);
+        addProteinScores(proteinTableRow, controller, proteinId);
 
-        // additional details is always null
-        content.add(identId);
-
-        return content;
+        return proteinTableRow;
     }
 
-    private static void addProteinScores(List<Object> content, DataAccessController controller, Comparable identId) {
+    private static void addProteinScores(ProteinTableRow proteinTableRow, DataAccessController controller, Comparable identId) {
         Score score = controller.getProteinScores(identId);
         Collection<CvTermReference> availablePeptideLevelScores = controller.getAvailablePeptideLevelScores();
         if (score != null) {
@@ -252,14 +252,15 @@ public class TableDataRetriever {
                 List<Number> values = score.getScores(availablePeptideLevelScore);
                 if (!values.isEmpty()) {
                     // take the first by default
-                    content.add(values.get(0));
+                    Number value = values.get(0);
+                    proteinTableRow.addScore(value == null ? null : NumberUtilities.scaleDouble(value.doubleValue(), 4));
                 } else {
-                    content.add(null);
+                    proteinTableRow.addScore(null);
                 }
             }
         } else {
             for (CvTermReference availablePeptideLevelScore : availablePeptideLevelScores) {
-                content.add(null);
+                proteinTableRow.addScore(null);
             }
         }
     }

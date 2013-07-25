@@ -24,7 +24,7 @@ public class QuantPeptideTableModel extends AbstractPeptideTableModel {
         TableContentType type = newData.getKey();
 
         if (TableContentType.PEPTIDE_QUANTITATION_HEADER.equals(type)) {
-            setHeaders(newData.getValue());
+            updateQuantColumnHeaders(newData.getValue());
         } else if (TableContentType.PEPTIDE_QUANTITATION.equals(type)) {
             addPeptideData((PeptideTableRow)newData.getValue());
         } else {
@@ -33,11 +33,9 @@ public class QuantPeptideTableModel extends AbstractPeptideTableModel {
     }
 
     @SuppressWarnings("unchecked")
-    private void setHeaders(Object value) {
-        // clear all the columns
-        columnNames.clear();
+    private void updateQuantColumnHeaders(Object value) {
         // add fixed columns
-        addAdditionalColumns();
+        setColumnHeaders();
 
         List<String> hs = (List<String>)value;
         for (String h : hs) {
@@ -69,7 +67,7 @@ public class QuantPeptideTableModel extends AbstractPeptideTableModel {
         if (columnIndex > additionalColumnIndex) {
             // quantification columns will always be at the end of the table
             List<Object> quantifications = peptideTableRow.getQuantifications();
-            return quantifications.get(columnIndex - additionalColumnIndex);
+            return quantifications.get(columnIndex - additionalColumnIndex - 1);
         } else {
             return super.getValueAt(rowIndex, columnIndex);
         }

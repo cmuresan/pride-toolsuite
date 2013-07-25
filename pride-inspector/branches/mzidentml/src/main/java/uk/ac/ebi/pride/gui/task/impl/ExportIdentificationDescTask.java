@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.ExperimentMetaData;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
+import uk.ac.ebi.pride.gui.component.table.model.ProteinTableRow;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.utils.Constants;
 
@@ -97,15 +98,17 @@ public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, V
             Collection<Comparable> identIds = controller.getProteinIds();
             for (Comparable identId : identIds) {
                 // a row of data
-                List<Object> content = TableDataRetriever.getProteinTableRow(controller, identId);
+                ProteinTableRow content = TableDataRetriever.getProteinTableRow(controller, identId, null);
 
-                // output the result
-                // identification id is ignored
-                for (int i = 0; i < content.size() - 1; i++) {
-                    Object entry = content.get(i);
-                    writer.print(entry == null ? "" : entry.toString());
-                    writer.print(Constants.TAB);
-                }
+                //todo: this needs to implement
+
+//                // output the result
+//                // identification id is ignored
+//                for (int i = 0; i < content.size() - 1; i++) {
+//                    Object entry = content.get(i);
+//                    writer.print(entry == null ? "" : entry.toString());
+//                    writer.print(Constants.TAB);
+//                }
 
                 // line break
                 writer.print(Constants.LINE_SEPARATOR);

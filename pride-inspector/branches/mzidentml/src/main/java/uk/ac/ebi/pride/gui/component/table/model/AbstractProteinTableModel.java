@@ -3,7 +3,6 @@ package uk.ac.ebi.pride.gui.component.table.model;
 import uk.ac.ebi.pride.data.Tuple;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.utils.ProteinAccession;
-import uk.ac.ebi.pride.mol.IsoelectricPointUtils;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
@@ -20,69 +19,32 @@ import java.util.Map;
  */
 public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, Tuple<TableContentType, Object>> {
 
-
-    /**
-     * table column title
-     */
-    public enum TableHeader {
-        PROTEIN_ACCESSION_COLUMN("Protein", "Protein Accession"),
-        PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
-        PROTEIN_STATUS("Status", "Status Of The Protein Accession"),
-        PROTEIN_SEQUENCE_COVERAGE("Coverage", "Protein Sequence Coverage"),
-        THEORITICAL_ISOELECTRIC_POINT_COLUMN("pI", "Theoritical isoelectric point"),
-        //IDENTIFICATION_SCORE_COLUMN("Score", "PRIDE Protein Score"),
-        IDENTIFICATION_THRESHOLD_COLUMN("Threshold", "PRIDE Protein Threshold"),
-        NUMBER_OF_PEPTIDES("# Peptides", "Number of Peptides"),
-        NUMBER_OF_UNIQUE_PEPTIDES("# Distinct Peptides", "Number of Distinct Peptides"),
-        NUMBER_OF_PTMS("# PTMs", "Number of PTMs"),
-        IDENTIFICATION_ID("Identification ID", "Identification ID"),
-        ADDITIONAL("More", "Additional Details");
-
-        private final String header;
-        private final String toolTip;
-
-        private TableHeader(String header, String tooltip) {
-            this.header = header;
-            this.toolTip = tooltip;
-        }
-
-        public String getHeader() {
-            return header;
-        }
-
-        public String getToolTip() {
-            return toolTip;
-        }
-    }
-
-    private Collection<CvTermReference> listScores;
+    protected Collection<CvTermReference> listScores;
 
     public AbstractProteinTableModel(Collection<CvTermReference> listScores) {
         this.listScores = listScores;
-        addAdditionalColumns();
+        initializeTableModel();
     }
 
-    void addAdditionalColumns() {
+    @Override
+    public void initializeTableModel() {
+        setColumnHeaders();
+    }
+
+    void setColumnHeaders() {
+        columnNames.clear();
+
         // add columns for search engine scores
-        TableHeader[] headers = TableHeader.values();
-        for (TableHeader header : headers) {
+        ProteinTableHeader[] headers = ProteinTableHeader.values();
+        for (ProteinTableHeader header : headers) {
             columnNames.put(header.getHeader(), header.getToolTip());
-            if (listScores != null && TableHeader.IDENTIFICATION_ID.getHeader().equals(header.getHeader())) {
+            if (listScores != null && ProteinTableHeader.PROTEIN_ID.getHeader().equals(header.getHeader())) {
                 for (CvTermReference scoreCvTerm : listScores) {
                     String name = scoreCvTerm.getName();
                     columnNames.put(name, name);
                 }
             }
         }
-    }
-
-    @Override
-    public void initializeTableModel() {
-       /* TableHeader[] headers = TableHeader.values();
-        for (TableHeader header : headers) {
-            columnNames.put(header.getHeader(), header.getToolTip());
-        }     */
-        // nothing to do here
     }
 
     @Override
@@ -101,37 +63,24 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
      *
      * @param newData protein detail map
      */
-    void addProteinDetailData(Object newData) {
-
-        // column index for mapped protein accession column
-        int mappedAccIndex = getColumnIndex(TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader());
-        // column index for protein name
-        int identNameIndex = getColumnIndex(TableHeader.PROTEIN_NAME.getHeader());
-        // column index for protein status
-        int identStatusIndex = getColumnIndex(TableHeader.PROTEIN_STATUS.getHeader());
-        // column index for isoelectric point
-        int isoelectricIndex = getColumnIndex(TableHeader.THEORITICAL_ISOELECTRIC_POINT_COLUMN.getHeader());
-
+    protected void addProteinDetailData(Object newData) {
         // get a map of protein accession to protein details
         Map<String, Protein> proteins = (Map<String, Protein>) newData;
 
         // iterate over each row, set the protein name
         for (int row = 0; row < contents.size(); row++) {
-            List<Object> content = (List<Object>)contents.get(row);
-            Object proteinAccession = content.get(mappedAccIndex);
+            ProteinTableRow proteinTableRow = (ProteinTableRow) contents.get(row);
+            ProteinAccession proteinAccession = proteinTableRow.getProteinAccession();
             if (proteinAccession != null) {
-                String mappedAccession = ((ProteinAccession) proteinAccession).getMappedAccession();
+                String mappedAccession = proteinAccession.getMappedAccession();
                 if (mappedAccession != null) {
                     Protein protein = proteins.get(mappedAccession);
                     if (protein != null) {
-                        protein = new AnnotatedProtein(proteins.get(mappedAccession));
+                        AnnotatedProtein annotatedProtein = new AnnotatedProtein(protein);
                         // set protein name
-                        content.set(identNameIndex, protein.getName());
+                        proteinTableRow.setProteinName(annotatedProtein.getName());
                         // set protein status
-                        content.set(identStatusIndex, protein.getStatus().name());
-                        // set isoelectric point
-                        String sequence = protein.getSequenceString();
-                        content.set(isoelectricIndex, sequence == null ? null : IsoelectricPointUtils.calculate(sequence));
+                        proteinTableRow.setProteinAccessionStatus(annotatedProtein.getStatus().name());
                         // notify a row change
                         fireTableRowsUpdated(row, row);
                     }
@@ -146,22 +95,21 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
      * @param newData sequence coverage map
      */
     void addSequenceCoverageData(Object newData) {
-        // column index for protein identification id
-        int identIdIndex = getColumnIndex(TableHeader.IDENTIFICATION_ID.getHeader());
         // column index for protein sequence coverage
-        int coverageIndex = getColumnIndex(TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader());
+        int coverageIndex = getColumnIndex(ProteinTableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader());
 
         // map contains sequence coverage
         Map<Comparable, Double> coverageMap = (Map<Comparable, Double>) newData;
 
         // iterate over each row, set the protein name
         for (int row = 0; row < contents.size(); row++) {
-            List<Object> content = (List<Object>)contents.get(row);
-            Object identId = content.get(identIdIndex);
-            Double coverage = coverageMap.get(identId);
+            ProteinTableRow proteinTableRow = (ProteinTableRow) contents.get(row);
+            
+            Comparable proteinId = proteinTableRow.getProteinId();
+            Double coverage = coverageMap.get(proteinId);
             if (coverage != null) {
                 // set protein name
-                content.set(coverageIndex, coverage);
+                proteinTableRow.setSequenceCoverage(coverage);
                 // notify a row change
                 fireTableCellUpdated(row, coverageIndex);
             }
@@ -172,15 +120,53 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Object result = null;
+        ProteinTableRow proteinTableRow = (ProteinTableRow) contents.get(rowIndex);
 
-        if (!contents.isEmpty() && rowIndex >= 0 && columnIndex >= 0) {
-            List<Object> colValues = (List<Object>)contents.get(rowIndex);
-            if (colValues != null) {
-                result = colValues.get(columnIndex);
+        String columnName = getColumnName(columnIndex);
+
+        if (ProteinTableHeader.COMPARE.getHeader().equals(columnName)) {
+            return proteinTableRow.getComparisonState();
+        } else if (ProteinTableHeader.PROTEIN_ACCESSION.getHeader().equals(columnName)) {
+            return proteinTableRow.getProteinAccession();
+        } else if (ProteinTableHeader.PROTEIN_NAME.getHeader().equals(columnName)) {
+            return proteinTableRow.getProteinName();
+        } else if (ProteinTableHeader.PROTEIN_STATUS.getHeader().equals(columnName)) {
+            return proteinTableRow.getProteinAccessionStatus();
+        } else if (ProteinTableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(columnName)) {
+            return proteinTableRow.getSequenceCoverage();
+        } else if (ProteinTableHeader.THEORITICAL_ISOELECTRIC_POINT.getHeader().equals(columnName)) {
+            return proteinTableRow.getIsoelectricPoint();
+        } else if (ProteinTableHeader.IDENTIFICATION_THRESHOLD.getHeader().equals(columnName)) {
+            return proteinTableRow.getThreshold();
+        } else if (ProteinTableHeader.NUMBER_OF_PEPTIDES.getHeader().equals(columnName)) {
+            return proteinTableRow.getNumberOfPeptides();
+        } else if (ProteinTableHeader.NUMBER_OF_UNIQUE_PEPTIDES.getHeader().equals(columnName)) {
+            return proteinTableRow.getNumberOfUniquePeptides();
+        } else if (ProteinTableHeader.NUMBER_OF_PTMS.getHeader().equals(columnName)) {
+            return proteinTableRow.getNumberOfPTMs();
+        } else if (ProteinTableHeader.PROTEIN_ID.getHeader().equals(columnName)) {
+            return proteinTableRow.getProteinId();
+        } else if (ProteinTableHeader.PROTEIN_GROUP_ID.getHeader().equals(columnName)) {
+            return proteinTableRow.getProteinGroupId();
+        } else if (ProteinTableHeader.ADDITIONAL.getHeader().equals(columnName)) {
+            return proteinTableRow.getProteinId();
+        } else {
+            return getProteinScore(proteinTableRow, columnName);
+        }
+    }
+
+    private Double getProteinScore(ProteinTableRow proteinTableRow, String columnName) {
+        List<Double> scores = proteinTableRow.getScores();
+
+        int scoreIndex = 0;
+
+        for (CvTermReference scoreTermReference : listScores) {
+            if (scoreTermReference.getName().equals(columnName)) {
+                return scores.get(scoreIndex);
             }
+            scoreIndex++;
         }
 
-        return result;
+        return null;
     }
 }

@@ -9,8 +9,10 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.utils.QuantCvTermReference;
 import uk.ac.ebi.pride.gui.GUIUtilities;
-import uk.ac.ebi.pride.gui.action.PrideAction;
-import uk.ac.ebi.pride.gui.action.impl.*;
+import uk.ac.ebi.pride.gui.action.impl.ExportQuantitativeDataAction;
+import uk.ac.ebi.pride.gui.action.impl.ExtraProteinDetailAction;
+import uk.ac.ebi.pride.gui.action.impl.OpenHelpAction;
+import uk.ac.ebi.pride.gui.action.impl.SetRefSampleAction;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
@@ -18,6 +20,7 @@ import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.protein.ProteinTabPane;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.ProgressiveListTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.ProteinTableHeader;
 import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
 import uk.ac.ebi.pride.gui.event.QuantSelectionEvent;
 import uk.ac.ebi.pride.gui.event.ReferenceSampleChangeEvent;
@@ -26,8 +29,6 @@ import uk.ac.ebi.pride.gui.task.Task;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.RetrieveQuantProteinTableTask;
-import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
-import uk.ac.ebi.pride.gui.utils.GUIBlocker;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -221,18 +222,18 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
         toolBar.add(Box.createRigidArea(new Dimension(10, 10)));
 
         // decoy filter
-        JButton decoyFilterButton = GUIUtilities.createLabelLikeButton(null, null);
-        decoyFilterButton.setForeground(Color.blue);
-        PrideAction action = appContext.getPrideAction(controller, DecoyFilterAction.class);
-        if (action == null) {
-            action = new DecoyFilterAction(controller);
-            appContext.addPrideAction(controller, action);
-        }
-        decoyFilterButton.setAction(action);
-        toolBar.add(decoyFilterButton);
+//        JButton decoyFilterButton = GUIUtilities.createLabelLikeButton(null, null);
+//        decoyFilterButton.setForeground(Color.blue);
+//        PrideAction action = appContext.getPrideAction(controller, DecoyFilterAction.class);
+//        if (action == null) {
+//            action = new DecoyFilterAction(controller);
+//            appContext.addPrideAction(controller, action);
+//        }
+//        decoyFilterButton.setAction(action);
+//        toolBar.add(decoyFilterButton);
 
         // add gap
-        toolBar.add(Box.createRigidArea(new Dimension(20, 10)));
+//        toolBar.add(Box.createRigidArea(new Dimension(20, 10)));
 
         moreButton = GUIUtilities.createLabelLikeButton(null, "More...");
         moreButton.setForeground(Color.blue);
@@ -371,7 +372,7 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
         public void valueChanged(ListSelectionEvent e) {
             if (!e.getValueIsAdjusting()) {
                 int colTableNum = table.convertColumnIndexToModel(table.getSelectedColumn());
-                int checkBoxTableColumn = ((QuantProteinTableModel) table.getModel()).getColumnIndex(QuantProteinTableModel.TableHeader.COMPARE.getHeader());
+                int checkBoxTableColumn = ((QuantProteinTableModel) table.getModel()).getColumnIndex(ProteinTableHeader.COMPARE.getHeader());
                 if (checkBoxTableColumn != colTableNum) {
                     int rowTableNum = table.getSelectedRow();
                     int rowCnt = table.getRowCount();
@@ -380,7 +381,7 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
                         QuantProteinTableModel tableModel = (QuantProteinTableModel) proteinTable.getModel();
 
                         // fire a property change event with selected identification id
-                        int identColNum = tableModel.getColumnIndex(QuantProteinTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
+                        int identColNum = tableModel.getColumnIndex(ProteinTableHeader.PROTEIN_ID.getHeader());
                         int rowModelNum = table.convertRowIndexToModel(rowTableNum);
                         Comparable identId = (Comparable) tableModel.getValueAt(rowModelNum, identColNum);
 
@@ -414,10 +415,10 @@ public class QuantProteinSelectionPane extends DataAccessControllerPane implemen
             // get table model
             QuantProteinTableModel tableModel = (QuantProteinTableModel) proteinTable.getModel();
 
-            int checkBoxColumnIndex = tableModel.getColumnIndex(QuantProteinTableModel.TableHeader.COMPARE.getHeader());
+            int checkBoxColumnIndex = tableModel.getColumnIndex(ProteinTableHeader.COMPARE.getHeader());
             if (!ignore && firstRowIndex == lastRowIndex && columnIndex == checkBoxColumnIndex && TableModelEvent.UPDATE == type) {
                 // get protein identification id
-                int identColNum = tableModel.getColumnIndex(QuantProteinTableModel.TableHeader.IDENTIFICATION_ID.getHeader());
+                int identColNum = tableModel.getColumnIndex(ProteinTableHeader.PROTEIN_ID.getHeader());
                 Comparable identId = (Comparable) tableModel.getValueAt(firstRowIndex, identColNum);
 
                 // notify protein selection

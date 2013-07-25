@@ -24,27 +24,25 @@ public abstract class AbstractPeptideTableModel extends ProgressiveListTableMode
 
     AbstractPeptideTableModel(Collection<CvTermReference> listPeptideScores) {
         this.listScores = listPeptideScores;
-        addAdditionalColumns();
+        initializeTableModel();
     }
 
     @Override
     public void initializeTableModel() {
-        // nothing here
+        setColumnHeaders();
     }
 
-    void addAdditionalColumns() {
+    void setColumnHeaders() {
+        columnNames.clear();
+
         // add columns for search engine scores
         PeptideTableHeader[] headers = PeptideTableHeader.values();
         for (PeptideTableHeader header : headers) {
             columnNames.put(header.getHeader(), header.getToolTip());
             if (listScores != null && PeptideTableHeader.NUMBER_OF_FRAGMENT_IONS_COLUMN.getHeader().equals(header.getHeader())) {
-                //List<SearchEngineType> types = searchEngine.getSearchEngineTypes();
                 for (CvTermReference scoreCvTerm : listScores) {
-                    //List<CvTermReference> scoreCvTerms = type.getSearchEngineScores();
-                    ///for (CvTermReference scoreCvTerm : scoreCvTerms) {
                     String name = scoreCvTerm.getName();
                     columnNames.put(name, name);
-                    //}
                 }
             }
         }

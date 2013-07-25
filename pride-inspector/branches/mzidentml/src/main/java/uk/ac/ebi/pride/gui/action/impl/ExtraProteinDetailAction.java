@@ -9,8 +9,7 @@ import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableHeader;
-import uk.ac.ebi.pride.gui.component.table.model.ProteinTableModel;
-import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
+import uk.ac.ebi.pride.gui.component.table.model.ProteinTableHeader;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
@@ -83,9 +82,9 @@ public class ExtraProteinDetailAction extends PrideAction {
         List<TableColumn> columns = showHideColModel.getColumns(true);
         for (TableColumn column : columns) {
             Object header = column.getHeaderValue();
-            if (ProteinTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(header) ||
-                    ProteinTableModel.TableHeader.PROTEIN_STATUS.getHeader().equals(header) ||
-                    ProteinTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(header)) {
+            if (ProteinTableHeader.PROTEIN_NAME.getHeader().equals(header) ||
+                    ProteinTableHeader.PROTEIN_STATUS.getHeader().equals(header) ||
+                    ProteinTableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(header)) {
                 ((TableColumnExt) column).setVisible(true);
             }
         }
@@ -120,9 +119,9 @@ public class ExtraProteinDetailAction extends PrideAction {
             columns = showHideColModel.getColumns(true);
             for (TableColumn column : columns) {
                 Object header = column.getHeaderValue();
-                if (QuantProteinTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(header) ||
-                        QuantProteinTableModel.TableHeader.PROTEIN_STATUS.getHeader().equals(header) ||
-                        QuantProteinTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(header)) {
+                if (ProteinTableHeader.PROTEIN_NAME.getHeader().equals(header) ||
+                        ProteinTableHeader.PROTEIN_STATUS.getHeader().equals(header) ||
+                        ProteinTableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(header)) {
                     ((TableColumnExt) column).setVisible(true);
                 }
             }

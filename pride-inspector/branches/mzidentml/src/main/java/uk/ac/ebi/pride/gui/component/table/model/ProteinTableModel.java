@@ -18,20 +18,12 @@ public class ProteinTableModel extends AbstractProteinTableModel {
         super(listProteinScores);
     }
 
-    /*@Override
-    public void initializeTableModel() {
-        TableHeader[] headers = TableHeader.values();
-        for (TableHeader header : headers) {
-            columnNames.put(header.getHeader(), header.getToolTip());
-        }
-    }   */
-
     @Override
     public void addData(Tuple<TableContentType, Object> newData) {
         TableContentType type = newData.getKey();
 
         if (TableContentType.PROTEIN.equals(type)) {
-            addIdentificationData(newData.getValue());
+            addProteinTableRow((ProteinTableRow)newData.getValue());
         } else {
             super.addData(newData);
         }
@@ -40,12 +32,11 @@ public class ProteinTableModel extends AbstractProteinTableModel {
     /**
      * Add identification detail for each row
      *
-     * @param newData identification detail
+     * @param proteinTableRow protein data
      */
-    private void addIdentificationData(Object newData) {
+    private void addProteinTableRow(ProteinTableRow proteinTableRow) {
         int rowCnt = this.getRowCount();
-        // row number
-        contents.add(newData);
+        this.addRow(proteinTableRow);
         fireTableRowsInserted(rowCnt, rowCnt);
     }
 }

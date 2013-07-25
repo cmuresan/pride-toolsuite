@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
+import uk.ac.ebi.pride.gui.component.table.model.ProteinTableHeader;
 import uk.ac.ebi.pride.gui.component.table.model.QuantProteinTableModel;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
@@ -305,7 +306,7 @@ public class QuantExportDialog extends JDialog {
         QuantProteinTableModel existingTableModel = (QuantProteinTableModel) table.getModel();
 
         // get compre column index
-        int compareColumnIndex = existingTableModel.getColumnIndex(QuantProteinTableModel.TableHeader.COMPARE.getHeader());
+        int compareColumnIndex = existingTableModel.getColumnIndex(ProteinTableHeader.COMPARE.getHeader());
 
         // copy all the columns
         int colCnt = existingTableModel.getColumnCount();
@@ -430,7 +431,7 @@ public class QuantExportDialog extends JDialog {
                 int colCnt = proteinTable.getColumnCount();
                 for (int i = 0; i < colCnt; i++) {
                     String colName = proteinTable.getColumnName(i);
-                    if (colName.equals(QuantProteinTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader())) {
+                    if (colName.equals(ProteinTableHeader.PROTEIN_ACCESSION.getHeader())) {
                         protColIndex = i;
                     }
                 }
@@ -487,7 +488,7 @@ public class QuantExportDialog extends JDialog {
                 int colCnt = proteinTable.getColumnCount();
                 for (int i = 0; i < colCnt; i++) {
                     String colName = proteinTable.getColumnName(i);
-                    if (colName.equals(QuantProteinTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader())) {
+                    if (colName.equals(ProteinTableHeader.PROTEIN_ACCESSION.getHeader())) {
                         protColIndex = i;
                     }
                 }

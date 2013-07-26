@@ -72,7 +72,7 @@ open.mzml.example.title=mzML
 open.more.example.title=More examples...
 
 data.source.title=Experiments
-data.source.small.icon=icon/16x16/data_source.gif
+data.source.small.icon=icon/16x16/assays.png
 data.source.tooltip=Display data sources
 
 property.small.icon=icon/16x16/property.png
@@ -134,7 +134,7 @@ chart.warning.icon.small=icon/16x16/warning.png
 
 chart_loading.desc=Loading
 chart_loading.tooltip.small=Loading charts
-chart_loading.icon.small=icon/16x16/stats_loading.gif
+chart_loading.icon.small=icon/16x16/loading.gif
 
 chart_auto_adjust.desc=AutoAdjust
 chart_auto_adjust.tooltip=Auto adjust the chart axis
@@ -220,15 +220,15 @@ set.control.sample.small.icon=icon/16x16/setting.png
 # icons for different tabs
 loading.large.icon=icon/64x64/loading.gif
 general.tab.icon.small=icon/16x16/general.png
-general.tab.loading.icon.small=icon/16x16/general_loading.gif
+general.tab.loading.icon.small=icon/16x16/loading.gif
 identification.tab.icon.small=icon/16x16/view.png
-identification.tab.loading.icon.small=icon/16x16/view_loading.gif
+identification.tab.loading.icon.small=icon/16x16/loading.gif
 peptide.tab.icon.small=icon/16x16/view.png
-peptide.tab.loading.icon.small=icon/16x16/view_loading.gif
+peptide.tab.loading.icon.small=icon/16x16/loading.gif
 mzdata.tab.icon.small=icon/16x16/view.png
-mzdata.tab.loading.icon.small=icon/16x16/view_loading.gif
+mzdata.tab.loading.icon.small=icon/16x16/loading.gif
 quantitation.tab.icon.small=icon/16x16/view.png
-quantitation.tab.loading.icon.small=icon/16x16/view_loading.gif
+quantitation.tab.loading.icon.small=icon/16x16/loading.gif
 
 # loading text
 loading.title =  Loading... Please wait

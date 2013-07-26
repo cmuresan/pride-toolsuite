@@ -108,7 +108,7 @@ public class PeptideTabPane extends PrideInspectorTabPane {
         }
 
         // set the final icon
-        this.setIcon(GUIUtilities.loadIcon(appContext.getProperty("peptide.tab.icon.small")));
+//        this.setIcon(GUIUtilities.loadIcon(appContext.getProperty("peptide.tab.icon.small")));
 
         // set the loading icon
         this.setLoadingIcon(GUIUtilities.loadIcon(appContext.getProperty("peptide.tab.loading.icon.small")));
@@ -184,7 +184,7 @@ public class PeptideTabPane extends PrideInspectorTabPane {
      * @param icon icon to show
      */
     private void showIcon(Icon icon) {
-        if (parentComponent != null && parentComponent instanceof ControllerContentPane && icon != null) {
+        if (parentComponent != null && parentComponent instanceof ControllerContentPane) {
             ControllerContentPane contentPane = (ControllerContentPane) parentComponent;
             contentPane.setTabIcon(contentPane.getPeptideTabIndex(), icon);
         }

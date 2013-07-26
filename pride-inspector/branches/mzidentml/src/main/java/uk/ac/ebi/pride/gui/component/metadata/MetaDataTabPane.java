@@ -69,7 +69,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
 
         // set the final icon
         context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-        this.setIcon(GUIUtilities.loadIcon(context.getProperty("general.tab.icon.small")));
+//        this.setIcon(GUIUtilities.loadIcon(context.getProperty("general.tab.icon.small")));
 
         // set the loading icon
         this.setLoadingIcon(GUIUtilities.loadIcon(context.getProperty("general.tab.loading.icon.small")));
@@ -188,7 +188,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
      * @param icon icon to show
      */
     private void showIcon(Icon icon) {
-        if (parentComponent != null && parentComponent instanceof ControllerContentPane && icon != null) {
+        if (parentComponent != null && parentComponent instanceof ControllerContentPane) {
             ControllerContentPane contentPane = (ControllerContentPane) parentComponent;
             contentPane.setTabIcon(contentPane.getMetaDataTabIndex(), icon);
         }

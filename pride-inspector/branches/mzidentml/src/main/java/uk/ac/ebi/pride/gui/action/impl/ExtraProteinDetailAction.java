@@ -1,8 +1,10 @@
 package uk.ac.ebi.pride.gui.action.impl;
 
 import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.table.TableColumnModelExt;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
@@ -198,15 +200,22 @@ public class ExtraProteinDetailAction extends PrideAction {
         // add table model as a task listener
         // protein tab
         JTable table = contentPane.getProteinTabPane().getIdentificationPane().getIdentificationTable();
-        TableModel tableModel = table.getModel();
-        task.addTaskListener((TaskListener) tableModel);
+
+        if (table instanceof JXTreeTable) {
+            TreeTableModel tableModel = ((JXTreeTable) table).getTreeTableModel();
+            task.addTaskListener((TaskListener) tableModel);
+        } else {
+            TableModel tableModel = table.getModel();
+            task.addTaskListener((TaskListener) tableModel);
+        }
+
         // peptide tab
         JXTable peptideTable = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
         task.addTaskListener((TaskListener) peptideTable.getModel());
         // quant tab
         if (contentPane.isQuantTabEnabled()) {
             table = contentPane.getQuantTabPane().getQuantProteinSelectionPane().getQuantProteinTable();
-            tableModel = table.getModel();
+            TableModel tableModel = table.getModel();
             task.addTaskListener((TaskListener) tableModel);
         }
 

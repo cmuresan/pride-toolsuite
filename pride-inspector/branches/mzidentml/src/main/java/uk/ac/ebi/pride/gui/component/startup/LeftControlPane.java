@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.gui.component.startup;
 
-import org.jdesktop.swingx.border.DropShadowBorder;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.report.SummaryReportViewer;
@@ -133,12 +132,12 @@ public class LeftControlPane extends JPanel {
         }
 
         //======== launchMenuPanel ========
-        {
-            launchMenuPanel.setBackground(Color.white);
-            //launchMenuPanel.setBorder(new DropShadowBorder());
-            launchMenuPanel.setForeground(Color.lightGray);
-            launchMenuPanel.setLayout(new BorderLayout());
-        }
+//        {
+//            launchMenuPanel.setBackground(Color.white);
+//            //launchMenuPanel.setBorder(new DropShadowBorder());
+//            launchMenuPanel.setForeground(Color.lightGray);
+//            launchMenuPanel.setLayout(new BorderLayout());
+//        }
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -146,15 +145,15 @@ public class LeftControlPane extends JPanel {
             layout.createParallelGroup()
                 .addComponent(splitPane2, GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
                 .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(launchMenuPanel, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-                    .addGap(6, 6, 6))
+                    .addContainerGap())
+//                    .addComponent(launchMenuPanel, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+//                    .addGap(6, 6, 6))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup()
                 .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(launchMenuPanel, GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+//                    .addComponent(launchMenuPanel, GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(splitPane2, GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE))
         );
@@ -167,7 +166,6 @@ public class LeftControlPane extends JPanel {
         // data source viewer
         DataSourceViewer dataSourceViewer = new DataSourceViewer();
         JScrollPane dataSourceScrollPane = new JScrollPane(dataSourceViewer, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        dataSourceScrollPane.setBorder(new DropShadowBorder(Color.DARK_GRAY, 5));
         dataSourcePanel.add(dataSourceScrollPane, BorderLayout.CENTER);
 
         // get display related details
@@ -180,7 +178,6 @@ public class LeftControlPane extends JPanel {
 
         // experiment tree viewer
         summaryReportViewer = new SummaryReportViewer();
-        summaryReportViewer.setBorder(new DropShadowBorder(Color.DARK_GRAY, 5));
         summaryPanel.add(summaryReportViewer, BorderLayout.CENTER);
 
         // get display related details
@@ -191,10 +188,9 @@ public class LeftControlPane extends JPanel {
         summaryLabel.setText(sumReportTitle);
         summaryLabel.setToolTipText(sumReportToolTip);
 
-        // launch menu viewer
-        LaunchMenuViewer launchMenuViewer = new LaunchMenuViewer();
-        launchMenuViewer.setBorder(new DropShadowBorder(Color.DARK_GRAY, 5));
-        launchMenuPanel.add(launchMenuViewer, BorderLayout.CENTER);
+//        // launch menu viewer
+//        LaunchMenuViewer launchMenuViewer = new LaunchMenuViewer();
+//        launchMenuPanel.add(launchMenuViewer, BorderLayout.CENTER);
 
     }
 

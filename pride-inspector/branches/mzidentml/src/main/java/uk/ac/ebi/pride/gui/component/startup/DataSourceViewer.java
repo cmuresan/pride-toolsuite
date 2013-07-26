@@ -25,7 +25,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.ImageObserver;
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * DataSourceViewer should be monitor the DataAccessControllers in
@@ -74,8 +73,6 @@ public class DataSourceViewer extends JPanel {
 
         // set up the main pane
         this.setLayout(new BorderLayout());
-        // border
-        this.setBorder(BorderFactory.createLineBorder(Color.gray));
     }
 
     private void addComponents() {
@@ -87,6 +84,7 @@ public class DataSourceViewer extends JPanel {
         // create data source table with data access model
         sourceTableModel = new DataAccessTableModel();
         sourceTable = new DataAccessTable(sourceTableModel);
+        sourceTable.setBorder(BorderFactory.createEmptyBorder());
         sourceTable.addMouseMotionListener(new TableCellMouseMotionListener(sourceTable, TableHeader.DATA_SOURCE_COLUMN.getHeader()));
 
         // set renderer for data source column

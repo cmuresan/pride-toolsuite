@@ -354,7 +354,7 @@ public class PrideInspector extends Desktop {
         menuBar = new JMenuBar();
 
         // file menu
-        JMenu fileMenu = MenuFactory.createMenu("File",
+        JMenu fileMenu = MenuFactory.createMenu("Open",
                 openFileAction, openDbAction, openReviewerAction, MenuFactory.ACTION_SEPARATOR,
                 closeAction, closeAllAction, MenuFactory.ACTION_SEPARATOR, exitAction);
         fileMenu.setMnemonic(java.awt.event.KeyEvent.VK_F);

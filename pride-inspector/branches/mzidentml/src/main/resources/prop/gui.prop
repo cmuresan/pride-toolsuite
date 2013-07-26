@@ -1,13 +1,13 @@
 open.file.title=Open File(s)
 open.file.tooltip=Open mzML/MzIdentML or PRIDE XML Files
-open.file.icon.small=icon/16x16/open_file.gif
-open.file.icon.medium=icon/32x32/open_file.png
+open.file.icon.small=icon/16x16/open_file.png
+open.file.icon.medium=icon/24x24/open_file.png
 open.file.icon.large=icon/48x48/open_file.png
 
 open.database.title=Search PRIDE
 open.database.tooltip=Connect and Search PRIDE Public Database
-open.database.icon.small=icon/16x16/open_database.gif
-open.database.icon.medium=icon/32x32/connect_database.png
+open.database.icon.small=icon/16x16/connect_database.png
+open.database.icon.medium=icon/24x24/connect_database.png
 open.database.icon.large=icon/48x48/connect_database.png
 
 close.source.title=Close
@@ -40,13 +40,13 @@ peak.file.title = Peak files
 search.file.title = Search files
 other.file.title = Other files
 reviewer.download.icon.small=icon/16x16/reviewer_download.png
-reviewer.download.icon.medium=icon/32x32/reviewer_download.png
+reviewer.download.icon.medium=icon/24x24/reviewer_download.png
 reviewer.download.icon.large=icon/48x48/reviewer_download.png
 
 help.title=Help
 help.tooltip=Open PRIDE Inspector Help Document
 help.icon.large=icon/48x48/help.png
-help.icon.medium=icon/32x32/help.png
+help.icon.medium=icon/24x24/help.png
 help.icon.small=icon/16x16/help.gif
 help.main.set=help/MainHelp.hs
 
@@ -81,25 +81,25 @@ property.tooltip=Display Spectrum Properties
 
 loading.small.icon=icon/16x16/loading.gif
 
-file.source.small.icon=icon/16x16/xml_file.gif
-file.source.loading.small.icon=icon/16x16/kit_loading.gif
-database.source.small.icon=icon/16x16/open_database.gif
-database.source.loading.small.icon=icon/16x16/kit_loading.gif
+file.source.small.icon=icon/16x16/assay.png
+file.source.loading.small.icon=icon/16x16/loading.gif
+database.source.small.icon=icon/16x16/open_database.png
+database.source.loading.small.icon=icon/16x16/loading.gif
 
-data.source.viewer.title=Experiments
-data.source.viewer.small.icon=icon/16x16/data_source.gif
-data.source.viewer.tooltip=Opened Experiments
+data.source.viewer.title=Assays
+data.source.viewer.small.icon=icon/16x16/assays.png
+data.source.viewer.tooltip=Opened assays
 
-experiment.tree.viewer.title=Experiments
+experiment.tree.viewer.title=Assays
 experiment.tree.viewer.small.icon=icon/16x16/experiment_tree_enable.gif
 experiment.tree.viewer.node.small.icon=icon/16x16/experiment_tree_node_blue.png
-experiment.tree.viewer.root.node.small.icon=icon/16x16/open_database.gif
+experiment.tree.viewer.root.node.small.icon=icon/16x16/open_database.png
 experiment.tree.viewer.find.node.small.icon=icon/16x16/find_experiment.png
 experiment.tree.viewer.tooltip=List of experiments
 
-summary.report.viewer.small.icon=icon/16x16/experiment_tree_enable.gif
-summary.report.viewer.title=Experiment Summary
-summary.report.viewer.tooltip=Summary report on selected experiment
+summary.report.viewer.small.icon=icon/16x16/summary.png
+summary.report.viewer.title=Assay Summary
+summary.report.viewer.tooltip=Summary report on selected assay
 
 navigation.expand.small.icon=icon/16x16/navigation_expand.gif
 navigation.collapse.small.icon=icon/16x16/navigation_collapse.gif
@@ -195,7 +195,7 @@ deselect.all.title=Deselect All
 
 # icon for welcome pane
 puzzle.bulletin.icon.medium=icon/48x48/puzzle.png
-puzzle.bulletin.icon.small=icon/16x16/help_doc.png
+puzzle.bulletin.icon.small=icon/16x16/report_plain.png
 feedback.icon.small=icon/16x16/feedback.png
 
 # pride logo

@@ -88,7 +88,7 @@ public class QuantTabPane extends PrideInspectorTabPane {
         this.setTitle(QUANTITATION_TITLE);
 
         // set the final icon
-        this.setIcon(GUIUtilities.loadIcon(appContext.getProperty("quantitation.tab.icon.small")));
+//        this.setIcon(GUIUtilities.loadIcon(appContext.getProperty("quantitation.tab.icon.small")));
 
         // set the loading icon
         this.setLoadingIcon(GUIUtilities.loadIcon(appContext.getProperty("quantitation.tab.loading.icon.small")));
@@ -192,7 +192,7 @@ public class QuantTabPane extends PrideInspectorTabPane {
      * @param icon icon to show
      */
     private void showIcon(Icon icon) {
-        if (parentComponent != null && parentComponent instanceof ControllerContentPane && icon != null) {
+        if (parentComponent != null && parentComponent instanceof ControllerContentPane) {
             ControllerContentPane contentPane = (ControllerContentPane) parentComponent;
             contentPane.setTabIcon(contentPane.getQuantTabIndex(), icon);
         }

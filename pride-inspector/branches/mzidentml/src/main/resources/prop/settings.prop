@@ -36,14 +36,11 @@ download.size.threshold = 200
 # public experiments to be ignored, this is too big to open in the PRIDE Inspector
 large.pride.experiments=9776
 
-# default pride user login
-default.pride.username=inspector
-default.pride.password=inspector
-
 # URL for downloading pride experiments in xml file format
 prider.my.projects.metadata.url=http://ves-ebi-4d.ebi.ac.uk:8080/prider-ws/users/projects
-prider.file.metadata.url=http://ves-ebi-4d.ebi.ac.uk:8080/prider-ws/projects/{projectAccession}/files
-prider.file.download.url=http://ves-ebi-4d.ebi.ac.uk:8080/prider-ws/projects/{projectAccession}/files/{fileId}
+prider.project.file.metadata.url=http://ves-ebi-4d.ebi.ac.uk:8080/prider-ws/projects/{accession}/files
+prider.assay.file.metadata.url=http://ves-ebi-4d.ebi.ac.uk:8080/prider-ws/assays/{accession}/files
+prider.file.download.url=http://ves-ebi-4d.ebi.ac.uk:8080/prider-ws/files/{fileId}
 
 # URL for downloading proteomexchange submission
 px.submission.metadata.download.url=http://www.proteomexchange.org/px-ws/download/metadata

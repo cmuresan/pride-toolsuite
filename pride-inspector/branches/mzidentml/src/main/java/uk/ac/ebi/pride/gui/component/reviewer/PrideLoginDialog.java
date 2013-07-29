@@ -56,7 +56,7 @@ public class PrideLoginDialog extends JDialog implements TaskListener<ProjectDet
         hideWarningBallooTip();
 
         // user name
-        if (!validateUserName(userNameField.getText())) {
+        if (!validateUserName(getUserName())) {
             warningBalloonTip = BalloonTipUtil.createErrorBalloonTip(userNameField, PrideInspector.getInstance().getDesktopContext().getProperty("pride.login.username.error.message"));
             warningBalloonTip.setVisible(true);
             userNameField.setBackground(ColourUtil.TEXT_FIELD_WARNING_COLOUR);
@@ -66,7 +66,7 @@ public class PrideLoginDialog extends JDialog implements TaskListener<ProjectDet
         }
 
         // password
-        if (!validatePassword(passwordField.getPassword())) {
+        if (!validatePassword(getPassword())) {
             if (!invalid) {
                 warningBalloonTip = BalloonTipUtil.createErrorBalloonTip(passwordField, PrideInspector.getInstance().getDesktopContext().getProperty("pride.login.password.error.message"));
                 warningBalloonTip.setVisible(true);
@@ -108,22 +108,39 @@ public class PrideLoginDialog extends JDialog implements TaskListener<ProjectDet
             public void actionPerformed(ActionEvent e) {
                 boolean invalid = doFieldValidation();
                 if (!invalid) {
-                    // launch a new task for login
-                    Task task = new GetMyProjectsMetadataTask(userNameField.getText(), passwordField.getPassword());
-                    task.addTaskListener(PrideLoginDialog.this);
-                    TaskUtil.startBackgroundTask(task);
+                    loginAction();
+
                 }
             }
         });
+    }
+
+    protected void loginAction() {
+        // launch a new task for login
+        Task task = new GetMyProjectsMetadataTask(getUserName(), getPassword());
+        task.addTaskListener(this);
+        TaskUtil.startBackgroundTask(task);
+    }
+
+    public char[] getPassword() {
+        return passwordField.getPassword();
+    }
+
+    public String getUserName() {
+        return userNameField.getText();
     }
 
     private void setCancelButtonAction() {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PrideLoginDialog.this.dispose();
+                cancelAction();
             }
         });
+    }
+
+    protected void cancelAction() {
+        this.dispose();
     }
 
     @Override
@@ -155,11 +172,11 @@ public class PrideLoginDialog extends JDialog implements TaskListener<ProjectDet
 
         if (projectDetailList != null) {
             // set my project list into application context
-            LoginRecord loginRecord = new LoginRecord(userNameField.getText(), passwordField.getPassword(), projectDetailList);
+            LoginRecord loginRecord = new LoginRecord(getUserName(), getPassword(), projectDetailList);
             ((PrideInspectorContext)PrideInspector.getInstance().getDesktopContext()).setLoginRecord(loginRecord);
 
             // close the current panel
-            PrideLoginDialog.this.dispose();
+            this.dispose();
 
             // open project summary dialog
             MyProjectSummaryDialog myProjectSummaryDialog = new MyProjectSummaryDialog(PrideInspector.getInstance().getMainComponent());

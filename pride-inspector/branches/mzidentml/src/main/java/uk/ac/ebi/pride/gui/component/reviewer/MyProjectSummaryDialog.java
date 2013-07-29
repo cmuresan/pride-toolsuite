@@ -172,9 +172,7 @@ public class MyProjectSummaryDialog extends JDialog implements TaskListener<File
             }
 
             // open project summary dialog
-            int selectedProjectAccessionIndex = projectAccessionList.getSelectedIndex();
-            ProjectDetail selectedProjectDetail = myLoginRecord.getProjectDetailList().getProjectDetails().get(selectedProjectAccessionIndex);
-            MyProjectDownloadDialog myProjectDownloadDialog = new MyProjectDownloadDialog(PrideInspector.getInstance().getMainComponent(), myLoginRecord.getUserName(), myLoginRecord.getPassword(), selectedProjectDetail.getAccession(), submissionFileDetails);
+            MyProjectDownloadDialog myProjectDownloadDialog = new MyProjectDownloadDialog(PrideInspector.getInstance().getMainComponent(), myLoginRecord.getUserName(), myLoginRecord.getPassword(), submissionFileDetails);
             myProjectDownloadDialog.setVisible(true);
         }
     }

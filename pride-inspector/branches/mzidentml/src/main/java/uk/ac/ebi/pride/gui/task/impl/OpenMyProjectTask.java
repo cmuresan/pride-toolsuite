@@ -114,7 +114,7 @@ public class OpenMyProjectTask extends TaskAdapter<Void, Void> implements TaskLi
     }
 
     private void warning() {
-
+        JOptionPane.showMessageDialog(Desktop.getInstance().getMainComponent(), "Sorry, failed to retrieve details for " + accession, "Download Warning", JOptionPane.WARNING_MESSAGE);
     }
 
     @Override

@@ -16,7 +16,7 @@ import uk.ac.ebi.pride.prider.webservice.file.model.FileDetailList;
  * @version $Id$
  */
 public class GetMyProjectFilesMetadataTask extends Task<FileDetailList, String> {
-    private String projectAccession;
+    private String accession;
     private RestTemplate restTemplate;
 
     /**
@@ -26,30 +26,38 @@ public class GetMyProjectFilesMetadataTask extends Task<FileDetailList, String> 
      * @param password pride password
      */
     public GetMyProjectFilesMetadataTask(String userName, char[] password, String projectAccession) {
-        this.projectAccession = projectAccession;
+        this.accession = projectAccession;
 
         initRestTemplate(userName, password);
     }
 
     private void initRestTemplate(String userName, char[] password) {
         HttpClient client = new HttpClient();
-        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(userName, new String(password));
-        client.getState().setCredentials(AuthScope.ANY, credentials);
+
+        if (userName != null && password != null) {
+            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(userName, new String(password));
+            client.getState().setCredentials(AuthScope.ANY, credentials);
+        }
+
         CommonsClientHttpRequestFactory commons = new CommonsClientHttpRequestFactory(client);
         this.restTemplate = new RestTemplate(commons);
     }
 
     @Override
     protected FileDetailList doInBackground() throws Exception {
-        DesktopContext context = PrideInspector.getInstance().getDesktopContext();
-        String projectFilesUrl = context.getProperty("prider.file.metadata.url");
+        String fileDownloadUrl = getFileDownloadUrl();
 
         try {
-            return restTemplate.getForObject(projectFilesUrl, FileDetailList.class, projectAccession);
+            return restTemplate.getForObject(fileDownloadUrl, FileDetailList.class, accession);
         } catch (RestClientException ex) {
-            publish("Failed to retrieve file details for project " + projectAccession);
-            return null;
+            publish("Failed to retrieve file details for project " + accession);
+            throw ex;
         }
+    }
+
+    protected String getFileDownloadUrl() {
+        DesktopContext context = PrideInspector.getInstance().getDesktopContext();
+        return context.getProperty("prider.project.file.metadata.url");
     }
 
     @Override

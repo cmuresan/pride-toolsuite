@@ -26,8 +26,8 @@ import java.util.zip.GZIPInputStream;
  * @author Rui Wang
  * @version $Id$
  */
-public class GetMyProjectFileTask extends TaskAdapter<Void, String> {
-    private static final Logger logger = LoggerFactory.getLogger(GetMyProjectFileTask.class);
+public class GetPrideFileTask extends TaskAdapter<Void, String> {
+    private static final Logger logger = LoggerFactory.getLogger(GetPrideFileTask.class);
 
     private static final int BUFFER_SIZE = 1024;
 
@@ -35,20 +35,17 @@ public class GetMyProjectFileTask extends TaskAdapter<Void, String> {
     private File folder;
     private String user;
     private String password;
-    private String projectAccession;
     private boolean toOpenFile;
 
-    public GetMyProjectFileTask(List<SubmissionFileDetail> submissionEntries,
-                                File path,
-                                String usr,
-                                String pwd,
-                                String projectAccession,
-                                boolean toOpenFile) {
+    public GetPrideFileTask(List<SubmissionFileDetail> submissionEntries,
+                            File path,
+                            String usr,
+                            String pwd,
+                            boolean toOpenFile) {
         this.submissionEntries = submissionEntries;
         this.folder = path;
         this.user = usr;
         this.password = pwd;
-        this.projectAccession = projectAccession;
         this.toOpenFile = toOpenFile;
 
         String msg = "Downloading PRIDE submission";
@@ -66,7 +63,7 @@ public class GetMyProjectFileTask extends TaskAdapter<Void, String> {
                     DesktopContext context = Desktop.getInstance().getDesktopContext();
 
                     // initialize the download
-                    String url = buildFileDownloadUrl(context.getProperty("prider.file.download.url"), projectAccession, submissionEntry.getId());
+                    String url = buildFileDownloadUrl(context.getProperty("prider.file.download.url"), submissionEntry.getId());
 
                     // get output file path
                     File output = new File(folder.getAbsolutePath() + File.separator + submissionEntry.getFileName());
@@ -100,8 +97,7 @@ public class GetMyProjectFileTask extends TaskAdapter<Void, String> {
         return null;
     }
 
-    private String buildFileDownloadUrl(String url, String projectAccession, Long fileId) {
-        url = url.replace("{projectAccession}", projectAccession);
+    private String buildFileDownloadUrl(String url, Long fileId) {
         url = url.replace("{fileId}", fileId+"");
         return url;
     }

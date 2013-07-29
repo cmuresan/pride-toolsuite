@@ -11,7 +11,7 @@ import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.component.dialog.TaskDialog;
 import uk.ac.ebi.pride.gui.component.table.model.SubmissionFileDownloadTableModel;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
-import uk.ac.ebi.pride.gui.task.impl.GetMyProjectFileTask;
+import uk.ac.ebi.pride.gui.task.impl.GetPrideFileTask;
 import uk.ac.ebi.pride.gui.utils.BorderUtil;
 import uk.ac.ebi.pride.prider.dataprovider.file.ProjectFileType;
 
@@ -40,12 +40,10 @@ public class MyProjectDownloadDialog extends JDialog implements TreeModelListene
     public MyProjectDownloadDialog(Frame owner,
                                    String userName,
                                    char[] password,
-                                   String projectAccession,
                                    Collection<SubmissionFileDetail> submissionFileDetails) {
         super(owner);
         this.userName = userName;
         this.password = password;
-        this.projectAccession = projectAccession;
         this.submissionFileDetails = new ArrayList<SubmissionFileDetail>(submissionFileDetails);
         initComponents();
         postInitComponents();
@@ -154,7 +152,7 @@ public class MyProjectDownloadDialog extends JDialog implements TreeModelListene
         TaskDialog dialog = new TaskDialog(uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getMainComponent(), "Download project files from PRIDE", "Downloading...Please be aware that this may take a few minutes");
         dialog.setVisible(true);
 
-        GetMyProjectFileTask downloadTask = new GetMyProjectFileTask(submissionFileDetails, path, userName, new String(password), projectAccession, true);
+        GetPrideFileTask downloadTask = new GetPrideFileTask(submissionFileDetails, path, userName, new String(password), true);
         downloadTask.addTaskListener(dialog);
         TaskUtil.startBackgroundTask(downloadTask);
     }

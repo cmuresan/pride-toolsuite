@@ -16,6 +16,7 @@ import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.menu.MenuFactory;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
+import uk.ac.ebi.pride.gui.task.impl.OpenMyAssayTask;
 import uk.ac.ebi.pride.gui.task.impl.OpenMyProjectTask;
 import uk.ac.ebi.pride.util.IOUtilities;
 
@@ -39,7 +40,9 @@ public class PrideInspector extends Desktop {
     private static final Logger logger = LoggerFactory.getLogger(PrideInspector.class);
 
     // command line option for project accession
-    private static final String PROJECT_ACCESSION_CMD = "accession";
+    private static final String PROJECT_ACCESSION_CMD = "project";
+    // command line option for assay accession
+    private static final String ASSAY_ACCESSION_CMD = "assay";
     // command line option for user name
     private static final String USER_NAME_CMD = "username";
     // command line option for password
@@ -105,9 +108,10 @@ public class PrideInspector extends Desktop {
     private void createCmdLineParser() {
         cmdOptions = new Options();
 
-        // add pride accession option
-        // add proteomexchange accession option
+        // add project accession option
         cmdOptions.addOption(PROJECT_ACCESSION_CMD, true, "project accession");
+        // add assay accession option
+        cmdOptions.addOption(ASSAY_ACCESSION_CMD, true, "assay accession");
         // add a user name option
         cmdOptions.addOption(USER_NAME_CMD, true, "pride user name");
         // add a password option
@@ -141,6 +145,12 @@ public class PrideInspector extends Desktop {
                 projectAccession = cmd.getOptionValue(PROJECT_ACCESSION_CMD);
             }
 
+            // get project accession
+            String assayAccession = null;
+            if (cmd.hasOption(ASSAY_ACCESSION_CMD)) {
+                assayAccession = cmd.getOptionValue(ASSAY_ACCESSION_CMD);
+            }
+
             // get user name
             String username = null;
             if (cmd.hasOption(USER_NAME_CMD)) {
@@ -155,6 +165,9 @@ public class PrideInspector extends Desktop {
 
             if (projectAccession != null) {
                 OpenMyProjectTask task = new OpenMyProjectTask(projectAccession, username, password== null ? null : password.toCharArray());
+                TaskUtil.startBackgroundTask(task);
+            } else if (assayAccession != null) {
+                OpenMyAssayTask task = new OpenMyAssayTask(assayAccession, username, password== null ? null : password.toCharArray());
                 TaskUtil.startBackgroundTask(task);
             }
         } catch (ParseException e) {

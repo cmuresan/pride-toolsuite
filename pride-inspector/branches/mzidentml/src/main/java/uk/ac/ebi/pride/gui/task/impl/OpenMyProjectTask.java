@@ -1,14 +1,17 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.component.reviewer.MyProjectDownloadDialog;
+import uk.ac.ebi.pride.gui.component.reviewer.PrideLoginDialog;
 import uk.ac.ebi.pride.gui.component.reviewer.SubmissionFileDetail;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
-import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.task.*;
 import uk.ac.ebi.pride.prider.webservice.file.model.FileDetail;
 import uk.ac.ebi.pride.prider.webservice.file.model.FileDetailList;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class OpenMyProjectTask extends TaskAdapter<Void, Void> implements TaskLi
     /**
      * list of proteomexchange accession
      */
-    private String projectAccession;
+    private String accession;
     /**
      * PRIDE account user name
      */
@@ -35,7 +38,7 @@ public class OpenMyProjectTask extends TaskAdapter<Void, Void> implements TaskLi
 
 
     public OpenMyProjectTask(String accession, String username, char[] password) {
-        this.projectAccession = accession;
+        this.accession = accession;
         this.username = username;
         this.password = password;
 
@@ -43,19 +46,16 @@ public class OpenMyProjectTask extends TaskAdapter<Void, Void> implements TaskLi
 
     @Override
     protected Void doInBackground() throws Exception {
-        // assign default user name and password if necessary
-        if (username == null) {
-            DesktopContext context = Desktop.getInstance().getDesktopContext();
-            this.username = context.getProperty("default.pride.username");
-            this.password = context.getProperty("default.pride.password").toCharArray();
-        }
-
         // retrieve submission details
-        Task task = new GetMyProjectFilesMetadataTask(username, password, projectAccession);
-        task.addTaskListener(this);
-        TaskUtil.startBackgroundTask(task);
+        getFileMetadata(username, password, accession);
 
         return null;
+    }
+
+    protected void getFileMetadata(String un, char[] pwd, String accession) {
+        Task task = new GetMyProjectFilesMetadataTask(un, pwd, accession);
+        task.addTaskListener(this);
+        TaskUtil.startBackgroundTask(task);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class OpenMyProjectTask extends TaskAdapter<Void, Void> implements TaskLi
             }
 
             // open project summary dialog
-            MyProjectDownloadDialog myProjectDownloadDialog = new MyProjectDownloadDialog(PrideInspector.getInstance().getMainComponent(), username, password, projectAccession, submissionFileDetails);
+            MyProjectDownloadDialog myProjectDownloadDialog = new MyProjectDownloadDialog(PrideInspector.getInstance().getMainComponent(), username, password, submissionFileDetails);
             myProjectDownloadDialog.setVisible(true);
         }
     }
@@ -88,6 +88,33 @@ public class OpenMyProjectTask extends TaskAdapter<Void, Void> implements TaskLi
 
     @Override
     public void failed(TaskEvent<Throwable> event) {
+        Throwable exception = event.getValue();
+        if (exception instanceof HttpClientErrorException) {
+            HttpClientErrorException httpException = (HttpClientErrorException) exception;
+            if (httpException.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
+                login();
+            } else {
+                warning();
+            }
+        } else {
+            warning();
+        }
+    }
+
+    private void login() {
+        JFrame frame = Desktop.getInstance().getMainComponent();
+        PrideLoginDialog loginDialog = new PrideLoginDialog(frame) {
+            @Override
+            protected void loginAction() {
+                getFileMetadata(getUserName(), getPassword(), accession);
+                dispose();
+            }
+        };
+        loginDialog.setVisible(true);
+    }
+
+    private void warning() {
+
     }
 
     @Override

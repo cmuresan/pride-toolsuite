@@ -89,6 +89,7 @@ public class OpenMyProjectTask extends TaskAdapter<Void, Void> implements TaskLi
     @Override
     public void failed(TaskEvent<Throwable> event) {
         Throwable exception = event.getValue();
+
         if (exception instanceof HttpClientErrorException) {
             HttpClientErrorException httpException = (HttpClientErrorException) exception;
             if (httpException.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
@@ -106,7 +107,9 @@ public class OpenMyProjectTask extends TaskAdapter<Void, Void> implements TaskLi
         PrideLoginDialog loginDialog = new PrideLoginDialog(frame) {
             @Override
             protected void loginAction() {
-                getFileMetadata(getUserName(), getPassword(), accession);
+                username = getUserName();
+                password = getPassword();
+                getFileMetadata(username, password, accession);
                 dispose();
             }
         };

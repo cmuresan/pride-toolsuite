@@ -179,7 +179,6 @@ public class MyProjectSummaryDialog extends JDialog implements TaskListener<File
 
     @Override
     public void finished(TaskEvent<Void> event) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

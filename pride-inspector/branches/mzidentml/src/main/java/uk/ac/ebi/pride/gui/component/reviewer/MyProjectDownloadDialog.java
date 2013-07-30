@@ -31,7 +31,6 @@ import java.util.Set;
  * @author Rui Wang
  */
 public class MyProjectDownloadDialog extends JDialog implements TreeModelListener {
-    private String projectAccession;
     private String userName;
     private char[] password;
     private java.util.List<SubmissionFileDetail> submissionFileDetails;

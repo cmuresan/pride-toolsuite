@@ -11,6 +11,10 @@ public class LoginRecord {
     private char[] password;
     private ProjectDetailList projectDetailList;
 
+    public LoginRecord(String userName, char[] password) {
+        this(userName, password, null);
+    }
+
     public LoginRecord(String userName, char[] password, ProjectDetailList projectDetailList) {
         this.userName = userName;
         this.password = password;

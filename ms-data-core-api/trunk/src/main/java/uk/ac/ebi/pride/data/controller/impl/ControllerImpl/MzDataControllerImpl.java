@@ -45,7 +45,7 @@ public class MzDataControllerImpl extends CachedDataAccessController {
     /**
      * Pattern for validating mzData format
      */
-    private static final Pattern mzDataHeaderPattern = Pattern.compile("^(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<(mzData) version=.*", Pattern.MULTILINE);
+    private static final Pattern mzDataHeaderPattern = Pattern.compile("^[^<]*(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<(mzData) version=.*", Pattern.MULTILINE);
 
     /**
      * Reader for getting information from mzData file

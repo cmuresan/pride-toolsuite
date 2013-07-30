@@ -132,7 +132,9 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
             Header contentTypeHeader = method.getResponseHeader("Content-Type");
             if (contentTypeHeader != null && "application/x-gzip".equalsIgnoreCase(contentTypeHeader.getValue())) {
                 in = new GZIPInputStream(in);
-            }   output = new File(output.getAbsolutePath().replace(".gz", ""));
+            }
+
+            output = new File(output.getAbsolutePath().replace(".gz", ""));
 
             boutStream = new BufferedOutputStream(new FileOutputStream(output), BUFFER_SIZE);
 
@@ -163,16 +165,23 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
     }
 
     private void copyStream(InputStream inputStream, BufferedOutputStream outputStream, long fileSize) throws IOException {
-        long readCount = 0;
+        int readCount = 0;
         byte data[] = new byte[BUFFER_SIZE];
         int count;
 
-        setProgress(1);
         while ((count = inputStream.read(data, 0, BUFFER_SIZE)) != -1) {
             readCount += count;
             outputStream.write(data, 0, count);
-            int progress = Math.round((readCount / fileSize) * 100);
-            setProgress(progress >= 100 ? 99 : progress);
+
+            float ratio = ((float)readCount) / fileSize;
+            int progress = Math.abs(Math.round(ratio * 100));
+            if (progress >= 100) {
+                progress = 99;
+            }
+
+            if (progress > getProgress()) {
+                setProgress(progress);
+            }
         }
         outputStream.flush();
         setProgress(100);

@@ -12,10 +12,10 @@ import java.net.URL;
 /**
  * Enable opening hyperlinks in external browser
  *
- * @author Rui Wang
+ * @author Rui Wang Yasset Perez
  * @version $Id$
  */
-public class ExternalLinkContentViewerUI extends BasicContentViewerUI{
+public class ExternalLinkContentViewerUI extends BasicContentViewerUI {
 
     public ExternalLinkContentViewerUI(JHelpContentViewer b) {
         super(b);
@@ -27,15 +27,14 @@ public class ExternalLinkContentViewerUI extends BasicContentViewerUI{
 
     @Override
     public void hyperlinkUpdate(HyperlinkEvent e) {
-        if(e.getEventType()==HyperlinkEvent.EventType.ACTIVATED){
-            try{
+        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+            try {
                 URL u = e.getURL();
-                if(u.getProtocol().equalsIgnoreCase("mailto")||u.getProtocol().equalsIgnoreCase("http")||u.getProtocol().equalsIgnoreCase("ftp")){
+                if (u.getProtocol().equalsIgnoreCase("mailto") || u.getProtocol().equalsIgnoreCase("http") || u.getProtocol().equalsIgnoreCase("ftp")) {
                     HttpUtilities.openURL(u.toString());
                     return;
                 }
-            }
-            catch(Throwable t){
+            } catch (Throwable t) {
             }
         }
         super.hyperlinkUpdate(e);

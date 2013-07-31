@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.SideToolBarPanel;
+import uk.ac.ebi.pride.gui.action.impl.OpenFileAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,9 +36,7 @@ public class MainDataVisualizer extends JPanel implements PropertyChangeListener
      */
     private PrideInspectorContext context;
 
-    private  LeftControlPane dataSourceBrowser;
-
-
+    private LeftControlPane dataSourceBrowser;
 
     public MainDataVisualizer() {
         // setup the main pane
@@ -77,6 +76,7 @@ public class MainDataVisualizer extends JPanel implements PropertyChangeListener
         String dataSourceDesc = context.getProperty("data.source.title");
         String dataSourceTooltip = context.getProperty("data.source.tooltip");
 
+
         // add all the component
         mainDisplayPane.addGap(5);
         mainDisplayPane.addComponent(dataSourceIcon, null, dataSourceTooltip, dataSourceDesc, dataSourceBrowser);
@@ -86,8 +86,8 @@ public class MainDataVisualizer extends JPanel implements PropertyChangeListener
 
     /**
      * Listens to events which change the visibility of the data source browser
-     * 
-     * @param evt   property change event
+     *
+     * @param evt property change event
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {

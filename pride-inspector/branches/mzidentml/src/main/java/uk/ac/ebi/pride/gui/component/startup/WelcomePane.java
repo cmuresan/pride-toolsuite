@@ -405,25 +405,25 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         buttonPanel.add(prideButton, c);
 
         c.gridx = 1;
-        JButton prideXMLButton = createLabelLikeButton(bulletinIcon, "PRIDE XML");
-        CSH.setHelpIDString(prideXMLButton, "help.faq.pridexml");
-        prideXMLButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
-        buttonPanel.add(prideXMLButton, c);
-
-        c.gridx = 2;
         JButton prideDBButton = createLabelLikeButton(bulletinIcon, "PRIDE Public Database");
         CSH.setHelpIDString(prideDBButton, "help.faq.pridedb");
         prideDBButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
         buttonPanel.add(prideDBButton, c);
 
-        c.gridx = 3;
-        JButton protDetailButton = createLabelLikeButton(bulletinIcon, "Download Protein Details");
-        CSH.setHelpIDString(protDetailButton, "help.protein.details");
-        protDetailButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
-        buttonPanel.add(protDetailButton, c);
+        c.gridx = 2;
+        JButton downloadButton = createLabelLikeButton(bulletinIcon, "Private Download");
+        CSH.setHelpIDString(downloadButton, "help.download");
+        downloadButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
+        buttonPanel.add(downloadButton, c);
 
         c.gridy = 1;
         c.gridx = 0;
+        JButton prideXMLButton = createLabelLikeButton(bulletinIcon, "PRIDE XML");
+        CSH.setHelpIDString(prideXMLButton, "help.faq.pridexml");
+        prideXMLButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
+        buttonPanel.add(prideXMLButton, c);
+
+        c.gridx = 1;
         JButton mzIndetMLButton = createLabelLikeButton(bulletinIcon, "mzIdentML");
         CSH.setHelpIDString(mzIndetMLButton, "help.faq.mzidentml");
         mzIndetMLButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
@@ -431,20 +431,13 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         buttonPanel.add(mzIndetMLButton, c);
 
 
-        c.gridx = 1;
+        c.gridx = 2;
         JButton mzMLButton = createLabelLikeButton(bulletinIcon, "mzML");
         CSH.setHelpIDString(mzMLButton, "help.faq.mzml");
         mzMLButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
         mzMLButton.addMouseListener(new MouseOverListener(mzMLButton));
         buttonPanel.add(mzMLButton, c);
 
-
-
-        c.gridx = 2;
-        JButton downloadButton = createLabelLikeButton(bulletinIcon, "Private Download");
-        CSH.setHelpIDString(downloadButton, "help.download");
-        downloadButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
-        buttonPanel.add(downloadButton, c);
 
         c.gridx = 3;
         JButton chartButton = createLabelLikeButton(bulletinIcon, "Summary Charts");

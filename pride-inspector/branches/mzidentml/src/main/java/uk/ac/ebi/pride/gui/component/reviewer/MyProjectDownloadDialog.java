@@ -151,7 +151,7 @@ public class MyProjectDownloadDialog extends JDialog implements TreeModelListene
         TaskDialog dialog = new TaskDialog(uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getMainComponent(), "Download project files from PRIDE", "Downloading...Please be aware that this may take a few minutes");
         dialog.setVisible(true);
 
-        GetPrideFileTask downloadTask = new GetPrideFileTask(submissionFileDetails, path, userName, new String(password), true);
+        GetPrideFileTask downloadTask = new GetPrideFileTask(submissionFileDetails, path, userName, password == null ? null : new String(password), true);
         downloadTask.addTaskListener(dialog);
         TaskUtil.startBackgroundTask(downloadTask);
     }

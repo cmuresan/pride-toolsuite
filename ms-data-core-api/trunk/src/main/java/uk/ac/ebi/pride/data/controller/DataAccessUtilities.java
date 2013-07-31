@@ -602,10 +602,12 @@ public class DataAccessUtilities {
 
     public static Integer getPrecursorCharge(List<Precursor> precursors) {
 
-        for (Precursor precursor : precursors) {
-            for (ParamGroup paramGroup : precursor.getSelectedIons()) {
-                Integer charge = getPrecursorChargeParamGroup(paramGroup);
-                if (charge != null) return charge;
+        if (precursors != null) {
+            for (Precursor precursor : precursors) {
+                for (ParamGroup paramGroup : precursor.getSelectedIons()) {
+                    Integer charge = getPrecursorChargeParamGroup(paramGroup);
+                    if (charge != null) return charge;
+                }
             }
         }
 

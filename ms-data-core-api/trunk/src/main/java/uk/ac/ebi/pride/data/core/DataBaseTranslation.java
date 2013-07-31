@@ -45,8 +45,7 @@ public class DataBaseTranslation {
 
         DataBaseTranslation that = (DataBaseTranslation) o;
 
-        if (!allowedFrames.equals(that.allowedFrames)) return false;
-        return translationTables.equals(that.translationTables);
+        return allowedFrames.equals(that.allowedFrames) && translationTables.equals(that.translationTables);
 
     }
 

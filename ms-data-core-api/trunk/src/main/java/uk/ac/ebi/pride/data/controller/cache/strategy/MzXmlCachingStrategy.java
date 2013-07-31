@@ -17,11 +17,9 @@ public class MzXmlCachingStrategy extends AbstractCachingStrategy {
 
     /**
      * For the moment, MzXmlCacheBuilder only caches spectrum ids and chromatogram ids.
-     *
-     * @throws Exception error while caching the ids.
      */
     @Override
-    public void cache(){
+    public void cache() {
         // get a direct reference to unmarshaller
         MzXmlUnmarshallerAdaptor unmarshaller = ((MzXmlControllerImpl) controller).getUnmarshaller();
 

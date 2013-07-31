@@ -82,8 +82,7 @@ public class SpectrumIdentificationList extends IdentifiableParamGroup {
         SpectrumIdentificationList that = (SpectrumIdentificationList) o;
 
         if (numSequenceSearched != that.numSequenceSearched) return false;
-        if (!fragmentationTable.equals(that.fragmentationTable)) return false;
-        return spectrumIdentificationList.equals(that.spectrumIdentificationList);
+        return fragmentationTable.equals(that.fragmentationTable) && spectrumIdentificationList.equals(that.spectrumIdentificationList);
 
     }
 

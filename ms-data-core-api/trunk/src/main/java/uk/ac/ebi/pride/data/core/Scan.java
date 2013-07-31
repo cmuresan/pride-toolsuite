@@ -133,8 +133,7 @@ public class Scan extends ParamGroup {
         if (instrumentConfiguration != null ? !instrumentConfiguration.equals(scan.instrumentConfiguration) : scan.instrumentConfiguration != null)
             return false;
         if (!scanWindows.equals(scan.scanWindows)) return false;
-        if (sourceFile != null ? !sourceFile.equals(scan.sourceFile) : scan.sourceFile != null) return false;
-        return !(spectrumRef != null ? !spectrumRef.equals(scan.spectrumRef) : scan.spectrumRef != null);
+        return !(sourceFile != null ? !sourceFile.equals(scan.sourceFile) : scan.sourceFile != null) && !(spectrumRef != null ? !spectrumRef.equals(scan.spectrumRef) : scan.spectrumRef != null);
 
     }
 

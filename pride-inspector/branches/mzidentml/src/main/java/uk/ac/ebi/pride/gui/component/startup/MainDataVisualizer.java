@@ -5,7 +5,10 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.SideToolBarPanel;
+import uk.ac.ebi.pride.gui.action.PrideAction;
+import uk.ac.ebi.pride.gui.action.impl.OpenDatabaseAction;
 import uk.ac.ebi.pride.gui.action.impl.OpenFileAction;
+import uk.ac.ebi.pride.gui.action.impl.OpenMyProjectAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,6 +41,8 @@ public class MainDataVisualizer extends JPanel implements PropertyChangeListener
 
     private LeftControlPane dataSourceBrowser;
 
+    private LaunchMenuViewer launchMenuViewer;
+
     public MainDataVisualizer() {
         // setup the main pane
         setupMainPane();
@@ -65,6 +70,9 @@ public class MainDataVisualizer extends JPanel implements PropertyChangeListener
         // data source browser
         dataSourceBrowser = new LeftControlPane();
 
+        // open Source Browser
+        launchMenuViewer = new LaunchMenuViewer();
+
         // central pane
         CentralContentPane dataContentBrowser = new CentralContentPane();
 
@@ -80,6 +88,34 @@ public class MainDataVisualizer extends JPanel implements PropertyChangeListener
         // add all the component
         mainDisplayPane.addGap(5);
         mainDisplayPane.addComponent(dataSourceIcon, null, dataSourceTooltip, dataSourceDesc, dataSourceBrowser);
+
+        // add open file action
+        Icon openFileIcon = GUIUtilities.loadIcon(context.getProperty("open.file.icon.small"));
+        String openFileTooltip = context.getProperty("open.file.title");
+        PrideAction openFileAction = new OpenFileAction(null, openFileIcon);
+        openFileAction.putValue(Action.SHORT_DESCRIPTION, openFileTooltip);
+        // add all the component
+        mainDisplayPane.addGap(5);
+        mainDisplayPane.addAction(openFileAction, false);
+
+        // add database action
+        Icon prideIcon = GUIUtilities.loadIcon(context.getProperty("open.database.icon.small"));
+        String prideTooltip = context.getProperty("open.database.title");
+        PrideAction prideFileAction = new OpenDatabaseAction(null, prideIcon);
+        prideFileAction.putValue(Action.SHORT_DESCRIPTION, prideTooltip);
+        // add all the component
+        mainDisplayPane.addGap(5);
+        mainDisplayPane.addAction(prideFileAction, false);
+
+        // add download Action
+        Icon downloadIcon = GUIUtilities.loadIcon(context.getProperty("reviewer.download.icon.small"));
+        String downloadTooltip = context.getProperty("reviewer.download.title");
+        PrideAction downloadAction = new OpenMyProjectAction(null, downloadIcon);
+        downloadAction.putValue(Action.SHORT_DESCRIPTION, downloadTooltip);
+        // add all the component
+        mainDisplayPane.addGap(5);
+        mainDisplayPane.addAction(downloadAction, false);
+
 
         this.add(mainDisplayPane, BorderLayout.CENTER);
     }

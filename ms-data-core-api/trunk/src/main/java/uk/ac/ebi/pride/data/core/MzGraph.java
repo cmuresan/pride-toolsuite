@@ -135,8 +135,7 @@ public abstract class MzGraph extends IdentifiableParamGroup {
 
         if (defaultArrayLength != mzGraph.defaultArrayLength) return false;
         if (index != mzGraph.index) return false;
-        if (!binaryDataArrays.equals(mzGraph.binaryDataArrays)) return false;
-        return !(defaultDataProcessing != null ? !defaultDataProcessing.equals(mzGraph.defaultDataProcessing) : mzGraph.defaultDataProcessing != null);
+        return binaryDataArrays.equals(mzGraph.binaryDataArrays) && !(defaultDataProcessing != null ? !defaultDataProcessing.equals(mzGraph.defaultDataProcessing) : mzGraph.defaultDataProcessing != null);
 
     }
 

@@ -30,7 +30,7 @@ public class MzMLTransformer {
         if (spectrum != null) {
 
             String specId = spectrum.getId();
-            int index = spectrum.getIndex().intValue();
+            int index = spectrum.getIndex();
             String spotId = spectrum.getSpotID();
             DataProcessing dataProcessing = transformDataProcessing(spectrum.getDataProcessing());
             int arrLen = spectrum.getDefaultArrayLength();
@@ -437,7 +437,7 @@ public class MzMLTransformer {
         ProcessingMethod newProcessingMethod = null;
 
         if (oldProcMethod != null) {
-            int order = oldProcMethod.getOrder().intValue();
+            int order = oldProcMethod.getOrder();
             Software software = transformSoftware(oldProcMethod.getSoftware());
             ParamGroup paramGroup = transformParamGroup(oldProcMethod);
             newProcessingMethod = new ProcessingMethod(order, software, paramGroup);
@@ -456,7 +456,7 @@ public class MzMLTransformer {
 
         if (chroma != null) {
             String id = chroma.getId();
-            int index = chroma.getIndex().intValue();
+            int index = chroma.getIndex();
             DataProcessing dataProcessing = transformDataProcessing(chroma.getDataProcessing());
             int arrLength = chroma.getDefaultArrayLength();
             List<BinaryDataArray> binaryArr = transformBinaryDataArrayList(chroma.getBinaryDataArrayList());
@@ -574,7 +574,7 @@ public class MzMLTransformer {
                 name = oldSoftware.getCvParam().get(0).getName();
             }
             ParamGroup paramGroup = transformParamGroup(oldSoftware);
-            newSoftware = new Software(paramGroup, id, name, null,null,null,version);
+            newSoftware = new Software(paramGroup, id, name, null, null, null, version);
         }
         return newSoftware;
     }
@@ -779,7 +779,7 @@ public class MzMLTransformer {
      * @return List<Person> List of Person Contacts
      */
     public static List<Person> transformFileDescriptionToPerson(FileDescription rawFileDescription) {
-        if (rawFileDescription != null && rawFileDescription.getContact() !=null) {
+        if (rawFileDescription != null && rawFileDescription.getContact() != null) {
             List<ParamGroup> contacts = transformParamGroupList(rawFileDescription.getContact());
             List<Person> persons = new ArrayList<Person>();
             for (ParamGroup contact : contacts) {
@@ -836,6 +836,6 @@ public class MzMLTransformer {
 
     public static CvParam transformDateToCvParam(Date creationDate) {
         CvTermReference cvTerm = CvTermReference.MS_SCAN_DATE;
-        return new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),creationDate.toString(),null,null,null);
+        return new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), creationDate.toString(), null, null, null);
     }
 }

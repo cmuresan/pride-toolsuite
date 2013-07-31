@@ -7,9 +7,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzMLControllerImpl;
-import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
-import uk.ac.ebi.pride.data.util.MassSpecFileFormat;
+import uk.ac.ebi.pride.gui.action.impl.OpenFileAction;
 import uk.ac.ebi.pride.gui.component.reviewer.SubmissionFileDetail;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
@@ -17,6 +15,7 @@ import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -69,20 +68,19 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
                     File output = new File(folder.getAbsolutePath() + File.separator + submissionEntry.getFileName());
 
                     // download submission file
-                    downloadFile(url, output, user, password, submissionEntry.getFileSize());
+                    output = downloadFile(url, output, user, password, submissionEntry.getFileSize());
 
                     // open file
-                    if (toOpenFile) {
-                        MassSpecFileFormat fileFormat = MassSpecFileFormat.checkFormat(output);
-                        if (fileFormat != null) {
-                            if (fileFormat.equals(MassSpecFileFormat.PRIDE)) {
-                                publish("Opening file: " + output.getAbsolutePath());
-                                openFile(output, PrideXmlControllerImpl.class);
-                            } else if (fileFormat.equals(MassSpecFileFormat.MZML)) {
-                                publish("Opening file: " + output.getAbsolutePath());
-                                openFile(output, MzMLControllerImpl.class);
-                            }
-                        }
+                    if (toOpenFile && output != null) {
+                        OpenFileAction openFileAction = new OpenFileAction(null, null, Arrays.asList(output));
+                        openFileAction.actionPerformed(null);
+//                        if (PrideXmlControllerImpl.isValidFormat(output)) {
+//                            publish("Opening file: " + output.getAbsolutePath());
+//                            openFile(output, PrideXmlControllerImpl.class);
+//                        } else if (MzMLControllerImpl.isValidFormat(output)) {
+//                            publish("Opening file: " + output.getAbsolutePath());
+//                            openFile(output, MzMLControllerImpl.class);
+//                        }
                     }
 
                     // this is important for cancelling
@@ -98,11 +96,11 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
     }
 
     private String buildFileDownloadUrl(String url, Long fileId) {
-        url = url.replace("{fileId}", fileId+"");
+        url = url.replace("{fileId}", fileId + "");
         return url;
     }
 
-    private void downloadFile(String url, File output, String userName, String password, long fileSize) throws IOException {
+    private File downloadFile(String url, File output, String userName, String password, long fileSize) throws IOException {
         // Create an instance of HttpClient.
         HttpClient client = new HttpClient();
 
@@ -141,6 +139,8 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
             copyStream(in, boutStream, fileSize);
 
             publish("Download has finished");
+
+            return output;
         } catch (IOException ex) {
             String msg = ex.getMessage();
             if (msg.contains("403")) {
@@ -162,6 +162,8 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
                 in.close();
             }
         }
+
+        return output;
     }
 
     private void copyStream(InputStream inputStream, BufferedOutputStream outputStream, long fileSize) throws IOException {
@@ -173,7 +175,7 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
             readCount += count;
             outputStream.write(data, 0, count);
 
-            float ratio = ((float)readCount) / fileSize;
+            float ratio = ((float) readCount) / fileSize;
             int progress = Math.abs(Math.round(ratio * 100));
             if (progress >= 100) {
                 progress = 99;

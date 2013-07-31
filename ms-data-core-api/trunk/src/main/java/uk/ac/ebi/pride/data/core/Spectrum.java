@@ -153,8 +153,7 @@ public class Spectrum extends MzGraph {
         if (!precursors.equals(spectrum.precursors)) return false;
         if (!products.equals(spectrum.products)) return false;
         if (scanList != null ? !scanList.equals(spectrum.scanList) : spectrum.scanList != null) return false;
-        if (sourceFile != null ? !sourceFile.equals(spectrum.sourceFile) : spectrum.sourceFile != null) return false;
-        return !(spotID != null ? !spotID.equals(spectrum.spotID) : spectrum.spotID != null);
+        return !(sourceFile != null ? !sourceFile.equals(spectrum.sourceFile) : spectrum.sourceFile != null) && !(spotID != null ? !spotID.equals(spectrum.spotID) : spectrum.spotID != null);
 
     }
 

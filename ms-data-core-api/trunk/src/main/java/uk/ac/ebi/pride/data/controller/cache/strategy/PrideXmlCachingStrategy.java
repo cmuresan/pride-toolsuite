@@ -13,12 +13,10 @@ import java.util.ArrayList;
  * Date: 06-Sep-2010
  * Time: 17:08:20
  */
-public class PrideXmlCachingStrategy extends AbstractCachingStrategy{
+public class PrideXmlCachingStrategy extends AbstractCachingStrategy {
 
     /**
      * Spectrum ids and identification ids are cached.
-     *
-     * @throws Exception error while caching the ids.
      */
     @Override
     public void cache() {

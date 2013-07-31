@@ -63,8 +63,7 @@ public class Sample extends IdentifiableParamGroup {
 
         Sample sample = (Sample) o;
 
-        if (!contactRoles.equals(sample.contactRoles)) return false;
-        return subSamples.equals(sample.subSamples);
+        return contactRoles.equals(sample.contactRoles) && subSamples.equals(sample.subSamples);
 
     }
 

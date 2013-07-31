@@ -246,6 +246,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         JButton openDBButton = createLabelLikeButton(openDBAction);
         buttonPanel.add(openDBButton, c);
 
+
         // open reviewer download window button
         c.gridx = 0;
         c.gridy = 1;
@@ -416,6 +417,12 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         downloadButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
         buttonPanel.add(downloadButton, c);
 
+        c.gridx = 3;
+        JButton peptideButton = createLabelLikeButton(bulletinIcon, "Shared Peptides");
+        CSH.setHelpIDString(peptideButton, "help.faq.shared.peptide");
+        peptideButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
+        buttonPanel.add(peptideButton, c);
+
         c.gridy = 1;
         c.gridx = 0;
         JButton prideXMLButton = createLabelLikeButton(bulletinIcon, "PRIDE XML");
@@ -444,13 +451,6 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         CSH.setHelpIDString(chartButton, "help.chart");
         chartButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
         buttonPanel.add(chartButton, c);
-
-        c.gridx = 4;
-        JButton peptideButton = createLabelLikeButton(bulletinIcon, "Shared Peptides");
-        CSH.setHelpIDString(peptideButton, "help.faq.shared.peptide");
-        peptideButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
-        buttonPanel.add(peptideButton, c);
-
 
         JPanel positionalPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         positionalPanel.setOpaque(false);

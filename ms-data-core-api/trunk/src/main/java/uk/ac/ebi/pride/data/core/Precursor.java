@@ -124,8 +124,7 @@ public class Precursor implements MassSpecObject {
         if (isolationWindow != null ? !isolationWindow.equals(precursor.isolationWindow) : precursor.isolationWindow != null)
             return false;
         if (!selectedIons.equals(precursor.selectedIons)) return false;
-        if (sourceFile != null ? !sourceFile.equals(precursor.sourceFile) : precursor.sourceFile != null) return false;
-        return !(spectrum != null ? !spectrum.equals(precursor.spectrum) : precursor.spectrum != null);
+        return !(sourceFile != null ? !sourceFile.equals(precursor.sourceFile) : precursor.sourceFile != null) && !(spectrum != null ? !spectrum.equals(precursor.spectrum) : precursor.spectrum != null);
 
     }
 

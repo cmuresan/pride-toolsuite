@@ -45,9 +45,7 @@ public class MzGraphList {
 
         MzGraphList that = (MzGraphList) o;
 
-        if (defaultDataProcessing != null ? !defaultDataProcessing.equals(that.defaultDataProcessing) : that.defaultDataProcessing != null)
-            return false;
-        return mzGraphs.equals(that.mzGraphs);
+        return !(defaultDataProcessing != null ? !defaultDataProcessing.equals(that.defaultDataProcessing) : that.defaultDataProcessing != null) && mzGraphs.equals(that.mzGraphs);
 
     }
 

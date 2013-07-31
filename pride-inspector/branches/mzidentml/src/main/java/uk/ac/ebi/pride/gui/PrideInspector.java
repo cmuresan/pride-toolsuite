@@ -374,11 +374,11 @@ public class PrideInspector extends Desktop {
         trySampleMenu.setMnemonic(java.awt.event.KeyEvent.VK_X);
         trySampleMenu.setIcon(openFileIcon);
         Map<Integer, JMenu> menuMap = new HashMap<Integer, JMenu>();
-        menuMap.put(3, trySampleMenu);
+        menuMap.put(4, trySampleMenu);
 
         // file menu
         JMenu fileMenu = MenuFactory.createMenu("Open", menuMap,
-                openFileAction, openDbAction, openReviewerAction, MenuFactory.ACTION_SEPARATOR,
+                openFileAction, openDbAction, openReviewerAction, MenuFactory.ACTION_SEPARATOR, MenuFactory.ACTION_SEPARATOR,
                 closeAction, closeAllAction, MenuFactory.ACTION_SEPARATOR, exitAction);
         fileMenu.setMnemonic(java.awt.event.KeyEvent.VK_F);
         menuBar.add(fileMenu);

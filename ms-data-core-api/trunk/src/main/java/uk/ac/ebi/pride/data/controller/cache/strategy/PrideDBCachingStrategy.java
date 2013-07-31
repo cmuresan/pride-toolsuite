@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * DBAccessCacheBuilder is responsible for populating the cache for DBAccessController
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 06-Sep-2010
  * Time: 09:29:56
  */
@@ -38,7 +38,6 @@ public class PrideDBCachingStrategy extends AbstractCachingStrategy {
      * This is populated in populateSpectrumInfo and cleared in populatePeptideInfo
      */
     private final Map<Comparable, Comparable> spectrumRefToId = new HashMap<Comparable, Comparable>();
-    ;
 
     @Override
     public void cache() {
@@ -448,54 +447,54 @@ public class PrideDBCachingStrategy extends AbstractCachingStrategy {
         }
 
 
-                /*st = connection.prepareStatement("SELECT ms.modification_id, ms.mass_delta_value, ms.classname, pm.mod_database, pm.mod_database_version FROM pride_mass_delta ms " +
-                        "join pride_modification pm using(modification_id) where ms.modification_id= ?");
-                st.setString(1, modId.toString());
-                rs = st.executeQuery();
-                while (rs.next()) {
-                    String className = rs.getString("classname");
-                    double massDelta = rs.getDouble("mass_delta_value");
-                    modDB = rs.getString("mod_database");
-                    modDBVersion = rs.getString("mod_database_version");
-                    // set mass delta
-                    if ("uk.ac.ebi.pride.rdbms.ojb.model.core.MonoMassDeltaBean".equals(className)) {
-                        monoMasses.add(massDelta);
-                    } else {
-                        avgMasses.add(massDelta);
-                    }
-                }
-            } catch (SQLException e) {
-                logger.error("Querying PTM delta mass", e);
-                throw e;
-            } finally {
-                DBUtilities.releaseResources(connection, st, rs);
-            }
-            try {
-                // get modification cv params
-                List<CvParam> cvParams = new ArrayList<CvParam>();
-                logger.debug("Getting ptm accession");
-                innerConnection = PooledConnectionFactory.getConnection();
-                innerStmt = innerConnection.prepareStatement("SELECT accession, name, value, cv_label FROM pride_modification_param WHERE parent_element_fk = ? AND cv_label is not null");
-                innerStmt.setString(1, modId.toString());
-                innerRs = innerStmt.executeQuery();
-                while (innerRs.next()) {
-                    cvParams.add(new CvParam(innerRs.getString("accession"), innerRs.getString("name"),
-                            innerRs.getString("cv_label"), innerRs.getString("value"), "", "", ""));
-                }
-                innerRs.close();
+        /*st = connection.prepareStatement("SELECT ms.modification_id, ms.mass_delta_value, ms.classname, pm.mod_database, pm.mod_database_version FROM pride_mass_delta ms " +
+                   "join pride_modification pm using(modification_id) where ms.modification_id= ?");
+           st.setString(1, modId.toString());
+           rs = st.executeQuery();
+           while (rs.next()) {
+               String className = rs.getString("classname");
+               double massDelta = rs.getDouble("mass_delta_value");
+               modDB = rs.getString("mod_database");
+               modDBVersion = rs.getString("mod_database_version");
+               // set mass delta
+               if ("uk.ac.ebi.pride.rdbms.ojb.model.core.MonoMassDeltaBean".equals(className)) {
+                   monoMasses.add(massDelta);
+               } else {
+                   avgMasses.add(massDelta);
+               }
+           }
+       } catch (SQLException e) {
+           logger.error("Querying PTM delta mass", e);
+           throw e;
+       } finally {
+           DBUtilities.releaseResources(connection, st, rs);
+       }
+       try {
+           // get modification cv params
+           List<CvParam> cvParams = new ArrayList<CvParam>();
+           logger.debug("Getting ptm accession");
+           innerConnection = PooledConnectionFactory.getConnection();
+           innerStmt = innerConnection.prepareStatement("SELECT accession, name, value, cv_label FROM pride_modification_param WHERE parent_element_fk = ? AND cv_label is not null");
+           innerStmt.setString(1, modId.toString());
+           innerRs = innerStmt.executeQuery();
+           while (innerRs.next()) {
+               cvParams.add(new CvParam(innerRs.getString("accession"), innerRs.getString("name"),
+                       innerRs.getString("cv_label"), innerRs.getString("value"), "", "", ""));
+           }
+           innerRs.close();
 
-                ParamGroup paramGroup = new ParamGroup(cvParams, null);
-                // create a modification
-                // Note: location is a pseudo location, need to be replace before use
-                Modification mod = new Modification(paramGroup, modAcc, modDB, 0, null, avgMasses, avgMasses, modDB, modDBVersion);
-                modifications.put(modAcc, mod);
-            } catch (SQLException e) {
-                logger.error("Querying PTM delta mass", e);
-                throw e;
-            } finally {
-                DBUtilities.releaseResources(innerConnection, innerStmt, innerRs);
-            }
-        }     */
+           ParamGroup paramGroup = new ParamGroup(cvParams, null);
+           // create a modification
+           // Note: location is a pseudo location, need to be replace before use
+           Modification mod = new Modification(paramGroup, modAcc, modDB, 0, null, avgMasses, avgMasses, modDB, modDBVersion);
+           modifications.put(modAcc, mod);
+       } catch (SQLException e) {
+           logger.error("Querying PTM delta mass", e);
+           throw e;
+       } finally {
+           DBUtilities.releaseResources(innerConnection, innerStmt, innerRs);
+       }
+   }     */
 
         // add to cache
         cache.storeInBatch(CacheEntry.PEPTIDE_TO_MODIFICATION, locations);

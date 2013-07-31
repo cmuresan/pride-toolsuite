@@ -124,9 +124,7 @@ public class RunInfo extends ParamGroup {
             return false;
         if (id != null ? !id.equals(runInfo.id) : runInfo.id != null) return false;
         if (sample != null ? !sample.equals(runInfo.sample) : runInfo.sample != null) return false;
-        if (spectrumList != null ? !spectrumList.equals(runInfo.spectrumList) : runInfo.spectrumList != null)
-            return false;
-        return !(timeStamp != null ? !timeStamp.equals(runInfo.timeStamp) : runInfo.timeStamp != null);
+        return !(spectrumList != null ? !spectrumList.equals(runInfo.spectrumList) : runInfo.spectrumList != null) && !(timeStamp != null ? !timeStamp.equals(runInfo.timeStamp) : runInfo.timeStamp != null);
 
     }
 

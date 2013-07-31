@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jnlp spec="1.0+" codebase="http://www.ebi.ac.uk/pride/webstart/">
+<jnlp spec="1.0+" codebase="http://www.ebi.ac.uk/pride/webstart/inspector">
     <information>
         <title>PRIDE Inspector Webstart</title>
         <vendor>PRIDE Team</vendor>

@@ -147,18 +147,35 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!--ProteomeXchange-->
-        <dependency>
-            <groupId>uk.ac.ebi.pride</groupId>
-            <artifactId>px-submission-core</artifactId>
-            <version>1.11</version>
-        </dependency>
-
-        <!-- PRIDE-R web service-->
+        <!-- PRIDE-R web service model-->
         <dependency>
             <groupId>uk.ac.ebi.pride.prider</groupId>
-            <artifactId>prider-ws</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <artifactId>prider-ws-model</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>3.2.3.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.pride.prider</groupId>
+            <artifactId> prider-data-provider-api</artifactId>
+            <version>1.0</version>
         </dependency>
 
         <!-- apache commons httpcomponents-->

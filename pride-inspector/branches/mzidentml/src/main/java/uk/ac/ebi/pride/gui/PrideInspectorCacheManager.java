@@ -95,7 +95,8 @@ public class PrideInspectorCacheManager {
 
     /**
      * Store a collection of protein details
-      * @param proteins a collection of proteins
+     *
+     * @param proteins a collection of proteins
      */
     public void addProteinDetails(Collection<Protein> proteins) {
         if (proteins == null) {
@@ -113,9 +114,10 @@ public class PrideInspectorCacheManager {
 
     /**
      * Get protein sequence coverage
-     * @param uid  unique id for the data access controller
-     * @param identId   protein identification id
-     * @return  Double  sequence coverage
+     *
+     * @param uid     unique id for the data access controller
+     * @param identId protein identification id
+     * @return Double  sequence coverage
      */
     public Double getSequenceCoverage(String uid, Comparable identId) {
         Element element = sequenceCoverageCache.get(new Tuple<String, Comparable>(uid, identId));
@@ -128,12 +130,13 @@ public class PrideInspectorCacheManager {
 
     /**
      * Add protein sequence coverage
-     * @param uid  unique for data access controller
-     * @param identId   protein identification id
-     * @param coverage  protein sequence coverage
+     *
+     * @param uid      unique for data access controller
+     * @param identId  protein identification id
+     * @param coverage protein sequence coverage
      */
     public void addSequenceCoverage(String uid, Comparable identId, Double coverage) {
-        if (uid == null || identId ==  null || coverage == null) {
+        if (uid == null || identId == null || coverage == null) {
             String msg = "Input arguments can not be null";
             logger.error(msg);
             throw new IllegalArgumentException(msg);
@@ -144,10 +147,10 @@ public class PrideInspectorCacheManager {
     /**
      * Get the state on whether the peptide fit protein sequence
      *
-     * @param uid   unqiue id
+     * @param uid       unqiue id
      * @param identId   protein identification id
      * @param peptideId peptide id
-     * @return  Integer peptide fit state
+     * @return Integer peptide fit state
      */
     public Integer getPeptideFitState(String uid, Comparable identId, Comparable peptideId) {
         Element element = peptideFitCache.get(new Triple<String, Comparable, Comparable>(uid, identId, peptideId));
@@ -160,17 +163,18 @@ public class PrideInspectorCacheManager {
 
     /**
      * Add peptide fit state to cache
-     * @param uid   unique id
+     *
+     * @param uid       unique id
      * @param identId   protein identification id
      * @param peptideId peptide id
-     * @param state peptide fit state
+     * @param state     peptide fit state
      */
     public void addPeptideFitState(String uid, Comparable identId, Comparable peptideId, Integer state) {
-        if (uid == null || identId ==  null || peptideId == null || state == null) {
+        if (uid == null || identId == null || peptideId == null || state == null) {
             String msg = "Input arguments can not be null";
             logger.error(msg);
             throw new IllegalArgumentException(msg);
         }
-        peptideFitCache.put(new Element(new Triple<String, Comparable,Comparable>(uid, identId, peptideId), state));
+        peptideFitCache.put(new Element(new Triple<String, Comparable, Comparable>(uid, identId, peptideId), state));
     }
 }

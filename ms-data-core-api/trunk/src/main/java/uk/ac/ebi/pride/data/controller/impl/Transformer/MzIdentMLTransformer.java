@@ -61,7 +61,8 @@ public class MzIdentMLTransformer {
                 String id = oldsourcefile.getId();
                 String name = oldsourcefile.getName();
                 String location = oldsourcefile.getLocation();
-                CvParam format = transformToCvParam(oldsourcefile.getFileFormat().getCvParam());
+                uk.ac.ebi.jmzidml.model.mzidml.CvParam fileFormat = (oldsourcefile.getFileFormat() != null) ? oldsourcefile.getFileFormat().getCvParam() : null;
+                CvParam format = transformToCvParam(fileFormat);
                 String formatDocumentation = oldsourcefile.getExternalFormatDocumentation();
                 List<CvParam> cvParams = transformToCvParam(oldsourcefile.getCvParam());
                 List<UserParam> userParams = transformToUserParam(oldsourcefile.getUserParam());
@@ -595,7 +596,12 @@ public class MzIdentMLTransformer {
             String dataBaseName = null;
             //Todo: Try to make this function more flexible, we can define default Mod Databases
             for (CvParam cvParam : cvParams) {
-                if (cvParam.getCvLookupID().compareToIgnoreCase("MOD") == 0) {
+
+                if (cvParam.getCvLookupID() == null) {
+                    id = "Unknown";
+                    name = cvParam.getName();
+                    dataBaseName = "Unknown";
+                } else if (cvParam.getCvLookupID().compareToIgnoreCase("MOD") == 0) {
                     id = cvParam.getAccession();
                     name = cvParam.getName();
                     dataBaseName = (cvParam.getCvLookupID() == null) ? "MOD" : cvParam.getCvLookupID();
@@ -818,13 +824,14 @@ public class MzIdentMLTransformer {
             boolean specific = (oldEnzyme.isSemiSpecific() == null) ? false : oldEnzyme.isSemiSpecific();
             int misscleavage = (oldEnzyme.getMissedCleavages() == null) ? 0 : oldEnzyme.getMissedCleavages();
             int mindistance = (oldEnzyme.getMinDistance() == null) ? -1 : oldEnzyme.getMinDistance();
-
+            List<CvParam> cvParams = (oldEnzyme.getEnzymeName() != null) ? transformToCvParam(oldEnzyme.getEnzymeName().getCvParam()) : null;
+            List<UserParam> userParams = (oldEnzyme.getEnzymeName() != null) ? transformToUserParam(oldEnzyme.getEnzymeName().getUserParam()) : null;
             newEnzyme = new Enzyme(oldEnzyme.getId(),
                     oldEnzyme.getName(),
                     specific,
                     misscleavage,
                     mindistance,
-                    new ParamGroup(transformToCvParam(oldEnzyme.getEnzymeName().getCvParam()), transformToUserParam(oldEnzyme.getEnzymeName().getUserParam())),
+                    new ParamGroup(cvParams, userParams),
                     oldEnzyme.getSiteRegexp());
         }
         return newEnzyme;

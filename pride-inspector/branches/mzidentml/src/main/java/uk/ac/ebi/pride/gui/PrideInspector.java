@@ -32,6 +32,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is the main class to call to run PRIDE GUI
@@ -164,10 +166,10 @@ public class PrideInspector extends Desktop {
             }
 
             if (projectAccession != null) {
-                OpenMyProjectTask task = new OpenMyProjectTask(projectAccession, username, password== null ? null : password.toCharArray());
+                OpenMyProjectTask task = new OpenMyProjectTask(projectAccession, username, password == null ? null : password.toCharArray());
                 TaskUtil.startBackgroundTask(task);
             } else if (assayAccession != null) {
-                OpenMyAssayTask task = new OpenMyAssayTask(assayAccession, username, password== null ? null : password.toCharArray());
+                OpenMyAssayTask task = new OpenMyAssayTask(assayAccession, username, password == null ? null : password.toCharArray());
                 TaskUtil.startBackgroundTask(task);
             }
         } catch (ParseException e) {
@@ -366,18 +368,21 @@ public class PrideInspector extends Desktop {
         // menu items
         menuBar = new JMenuBar();
 
+        // try samples
+        JMenu trySampleMenu = MenuFactory.createMenu("Open Examples",
+                openPrideXmlExampleAction, openMzMLExampleAction, openMoreExampleAction);
+        trySampleMenu.setMnemonic(java.awt.event.KeyEvent.VK_X);
+        trySampleMenu.setIcon(openFileIcon);
+        Map<Integer, JMenu> menuMap = new HashMap<Integer, JMenu>();
+        menuMap.put(3, trySampleMenu);
+
         // file menu
-        JMenu fileMenu = MenuFactory.createMenu("Open",
+        JMenu fileMenu = MenuFactory.createMenu("Open", menuMap,
                 openFileAction, openDbAction, openReviewerAction, MenuFactory.ACTION_SEPARATOR,
                 closeAction, closeAllAction, MenuFactory.ACTION_SEPARATOR, exitAction);
         fileMenu.setMnemonic(java.awt.event.KeyEvent.VK_F);
         menuBar.add(fileMenu);
 
-        // try samples
-        JMenu trySampleMenu = MenuFactory.createMenu("Examples",
-                openPrideXmlExampleAction, openMzMLExampleAction, openMoreExampleAction);
-        trySampleMenu.setMnemonic(java.awt.event.KeyEvent.VK_X);
-        menuBar.add(trySampleMenu);
 
         // export menu
         JMenu exportMenu = MenuFactory.createMenu("Export",

@@ -74,13 +74,6 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
                     if (toOpenFile && output != null) {
                         OpenFileAction openFileAction = new OpenFileAction(null, null, Arrays.asList(output));
                         openFileAction.actionPerformed(null);
-//                        if (PrideXmlControllerImpl.isValidFormat(output)) {
-//                            publish("Opening file: " + output.getAbsolutePath());
-//                            openFile(output, PrideXmlControllerImpl.class);
-//                        } else if (MzMLControllerImpl.isValidFormat(output)) {
-//                            publish("Opening file: " + output.getAbsolutePath());
-//                            openFile(output, MzMLControllerImpl.class);
-//                        }
                     }
 
                     // this is important for cancelling

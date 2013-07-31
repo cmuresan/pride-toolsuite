@@ -97,8 +97,10 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
         // Create an instance of HttpClient.
         HttpClient client = new HttpClient();
 
-        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(userName, password);
-        client.getState().setCredentials(AuthScope.ANY, credentials);
+        if (userName != null && password != null) {
+            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(userName, password);
+            client.getState().setCredentials(AuthScope.ANY, credentials);
+        }
 
         // Create a method instance.
         GetMethod method = new GetMethod(url);

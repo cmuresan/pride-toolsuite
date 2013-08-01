@@ -6,7 +6,11 @@ import uk.ac.ebi.jmzml.model.mzml.*;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshaller;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -14,97 +18,73 @@ import java.util.Set;
 /**
  * MzMLUnmarshallerHelper provides a list of convenient methods to access mzML files
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 17-May-2010
  * Time: 10:37:45
  */
-public class MzMLUnmarshallerAdaptor {
+public class MzMLUnmarshallerAdaptor extends MzMLUnmarshaller {
 
-    private MzMLUnmarshaller unmarshaller = null;
 
-    public MzMLUnmarshallerAdaptor(MzMLUnmarshaller um) {
-        this.unmarshaller = um;
-    }
-
-    public String getMzMLId() {
-        return unmarshaller.getMzMLId();
-    }
-
-    public String getMzMLAccession() {
-        return unmarshaller.getMzMLAccession();
-    }
-
-    public String getMzMLVersion() {
-        return unmarshaller.getMzMLVersion();
+    public MzMLUnmarshallerAdaptor(File mzMLFile) {
+        super(mzMLFile);
     }
 
     public CVList getCVList() {
-        CVList cvList = unmarshaller.unmarshalFromXpath("/mzML/cvList", CVList.class);
+        CVList cvList = unmarshalFromXpath("/mzML/cvList", CVList.class);
         return cvList;
     }
 
     public FileDescription getFileDescription() {
-        FileDescription fileDescription = unmarshaller.unmarshalFromXpath("/mzML/fileDescription", FileDescription.class);
+        FileDescription fileDescription = unmarshalFromXpath("/mzML/fileDescription", FileDescription.class);
         return fileDescription;
     }
 
     public ReferenceableParamGroupList getReferenceableParamGroupList() {
-        ReferenceableParamGroupList referenceableParamGroupList = unmarshaller.unmarshalFromXpath("/mzML/referenceableParamGroupList", ReferenceableParamGroupList.class);
+        ReferenceableParamGroupList referenceableParamGroupList = unmarshalFromXpath("/mzML/referenceableParamGroupList", ReferenceableParamGroupList.class);
         return referenceableParamGroupList;
     }
 
     public SampleList getSampleList() {
-        SampleList sampleList = unmarshaller.unmarshalFromXpath("/mzML/sampleList", SampleList.class);
+        SampleList sampleList = unmarshalFromXpath("/mzML/sampleList", SampleList.class);
         return sampleList;
     }
 
     public SoftwareList getSoftwares() {
-        SoftwareList softwareList = unmarshaller.unmarshalFromXpath("/mzML/softwareList", SoftwareList.class);
+        SoftwareList softwareList = unmarshalFromXpath("/mzML/softwareList", SoftwareList.class);
         return softwareList;
     }
 
     public ScanSettingsList getScanSettingsList() {
-        ScanSettingsList scanSettingsList = unmarshaller.unmarshalFromXpath("/mzML/scanSettingsList", ScanSettingsList.class);
+        ScanSettingsList scanSettingsList = unmarshalFromXpath("/mzML/scanSettingsList", ScanSettingsList.class);
         return scanSettingsList;
     }
 
     public InstrumentConfigurationList getInstrumentConfigurationList() {
-        InstrumentConfigurationList instrumentConfigurationList = unmarshaller.unmarshalFromXpath("/mzML/instrumentConfigurationList", InstrumentConfigurationList.class);
+        InstrumentConfigurationList instrumentConfigurationList = unmarshalFromXpath("/mzML/instrumentConfigurationList", InstrumentConfigurationList.class);
         return instrumentConfigurationList;
     }
 
     public DataProcessingList getDataProcessingList() {
-        DataProcessingList dataProcessingList = unmarshaller.unmarshalFromXpath("/mzML/dataProcessingList", DataProcessingList.class);
+        DataProcessingList dataProcessingList = unmarshalFromXpath("/mzML/dataProcessingList", DataProcessingList.class);
         return dataProcessingList;
     }
 
     public Set<String> getSpectrumIds() {
-        return unmarshaller.getSpectrumIDs();
+        return getSpectrumIDs();
     }
 
     public Set<String> getChromatogramIds() {
-        return unmarshaller.getChromatogramIDs();
-    }
-
-    public Spectrum getSpectrumById(String id) throws MzMLUnmarshallerException {
-        return unmarshaller.getSpectrumById(id);
-    }
-
-    public Chromatogram getChromatogramById(String id) throws MzMLUnmarshallerException {
-        return unmarshaller.getChromatogramById(id);
+        return getChromatogramIDs();
     }
 
     public Date getCreationDate() {
-        Run run = unmarshaller.unmarshalFromXpath("/mzML/run", Run.class);
-
-        /*
-         * This is the only way that we can use now to retrieve the name property
-         * In the future we need to think in more elaborated way.
-         */
+        Map<String, String> runAttributes = getSingleElementAttributes("/mzML/run");
+        String startTimeStamp = runAttributes.get("startTimeStamp");
         Date dateCreation = null;
-        run.getStartTimeStamp();
-        if (run.getStartTimeStamp() != null) {
-            dateCreation = run.getStartTimeStamp().getTime();
+
+        if (startTimeStamp != null) {
+            Calendar calendar = javax.xml.bind.DatatypeConverter.parseDateTime(startTimeStamp);
+            dateCreation = calendar.getTime();
         }
         return dateCreation;
     }

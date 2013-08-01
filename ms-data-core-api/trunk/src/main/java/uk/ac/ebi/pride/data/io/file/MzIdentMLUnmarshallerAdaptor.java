@@ -22,7 +22,6 @@ import java.util.*;
  */
 public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
 
-    // Map<SpectrumIdentificationResult ID, Map<SpectrumIdentificationItem ID, List<PeptideEvidenceRef IndexElement>>
     private Map<String, Map<String, List<IndexElement>>> scannedIdMappings;
 
     public MzIdentMLUnmarshallerAdaptor(File mzIdentMLFile) throws ConfigurationException {
@@ -235,7 +234,7 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
     }
 
     public ProteinAmbiguityGroup getProteinAmbiguityGroup(Comparable id) throws JAXBException {
-        return this.unmarshal(ProteinAmbiguityGroup.class, (String)id);
+        return this.unmarshal(ProteinAmbiguityGroup.class, (String) id);
     }
 
     public List<PeptideHypothesis> getPeptideHypothesisbyID(Comparable id) throws JAXBException {

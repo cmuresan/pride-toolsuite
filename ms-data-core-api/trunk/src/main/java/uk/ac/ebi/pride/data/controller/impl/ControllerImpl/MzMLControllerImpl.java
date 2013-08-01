@@ -67,8 +67,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     private void initialize() {
         File file = (File) this.getSource();
         // create unmarshaller
-        MzMLUnmarshaller um = new MzMLUnmarshaller(file);
-        unmarshaller = new MzMLUnmarshallerAdaptor(um);
+        unmarshaller = new MzMLUnmarshallerAdaptor(file);
 
         // set data source name
         this.setName(file.getName());
@@ -228,11 +227,11 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     *  This summarizes the different types of spectra that can be expected
-     *  in the file. This is expected to aid processing software in skipping
-     *  files that do not contain appropriate spectrum types for it. It should
-     *  also describe the nativeID format used in the file by referring to an
-     *  appropriate CV term.
+     * This summarizes the different types of spectra that can be expected
+     * in the file. This is expected to aid processing software in skipping
+     * files that do not contain appropriate spectrum types for it. It should
+     * also describe the nativeID format used in the file by referring to an
+     * appropriate CV term.
      *
      * @return ParamGroup A list of CvTerms Related with the File Content
      */
@@ -348,11 +347,11 @@ public class MzMLControllerImpl extends CachedDataAccessController {
     public ParamGroup getAdditional() {
         ParamGroup paramGroup = null;
         ParamGroup fileContent = getFileContent();
-        if(fileContent !=null){
+        if (fileContent != null) {
             paramGroup = fileContent;
         }
         Date dateCreation = unmarshaller.getCreationDate();
-        if(dateCreation != null && paramGroup != null){
+        if (dateCreation != null && paramGroup != null) {
             paramGroup.addCvParam(MzMLTransformer.transformDateToCvParam(dateCreation));
 
         }
@@ -476,6 +475,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
 
     /**
      * The mzML do not contains Identification Metadata, just Spectrum Information
+     *
      * @return
      */
     @Override
@@ -491,7 +491,7 @@ public class MzMLControllerImpl extends CachedDataAccessController {
      */
     @Override
     public boolean hasProtein() {
-       return false;
+        return false;
     }
 
     /**

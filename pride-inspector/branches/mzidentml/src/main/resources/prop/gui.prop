@@ -1,12 +1,12 @@
 open.file.title=Open File(s)
 open.file.tooltip=Open mzML/MzIdentML or PRIDE XML Files
-open.file.icon.small=icon/16x16/open_file.png
+open.file.icon.small=icon/16x16/open_file.gif
 open.file.icon.medium=icon/24x24/open_file.png
 open.file.icon.large=icon/48x48/open_file.png
 
 open.database.title=Search PRIDE
 open.database.tooltip=Connect and Search PRIDE Public Database
-open.database.icon.small=icon/16x16/connect_database.png
+open.database.icon.small=icon/16x16/open_database.gif
 open.database.icon.medium=icon/24x24/connect_database.png
 open.database.icon.large=icon/48x48/connect_database.png
 

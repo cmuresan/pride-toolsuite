@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @author Rui Wang
+ * @author rwang, yperez
  * @version $Id$
  */
 public class PeptideSpeciesPSMTableModel extends AbstractPeptideTableModel {
@@ -27,7 +27,7 @@ public class PeptideSpeciesPSMTableModel extends AbstractPeptideTableModel {
         TableContentType type = newData.getKey();
 
         if (TableContentType.PEPTIDE_SPECIES.equals(type)) {
-            addPeptideSpecies((PeptideSpecies)newData.getValue());
+            addPeptideSpecies((PeptideSpecies) newData.getValue());
         } else {
             super.addData(newData);
         }
@@ -68,7 +68,6 @@ public class PeptideSpeciesPSMTableModel extends AbstractPeptideTableModel {
                 addRow(peptide);
             }
         }
-
         fireTableDataChanged();
     }
 }

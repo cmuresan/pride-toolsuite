@@ -116,7 +116,6 @@ public class RetrieveSpectrumTableTask extends AbstractDataAccessTask<Void, Tupl
                     // Number of peaks
                     content.add(controller.getNumberOfSpectrumPeaks(specId));
                     publish(new Tuple<TableContentType, List<Object>>(TableContentType.SPECTRUM, content));
-
                     // this is important for cancelling
                     if (Thread.interrupted()) {
                         throw new InterruptedException();

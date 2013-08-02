@@ -27,7 +27,7 @@ import java.awt.*;
 /**
  * This pane is to display the PTMs details for a peptide
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 09-Sep-2010
  * Time: 08:37:03
  */
@@ -110,6 +110,7 @@ public class PeptidePSMPane extends DataAccessControllerPane<Peptide, Void> impl
             // get peptide
             if (peptideSpecies != null) {
                 peptideSpeciesTableModel.addData(new Tuple<TableContentType, Object>(TableContentType.PEPTIDE_SPECIES, peptideSpecies));
+                table.changeSelection(0, peptideSpeciesTableModel.getColumnIndex(PeptideTableHeader.PEPTIDE_COLUMN.getHeader()), false, false);
             }
         }
     }
@@ -129,6 +130,7 @@ public class PeptidePSMPane extends DataAccessControllerPane<Peptide, Void> impl
             // table model
             PeptideSpeciesPSMTableModel peptideSpeciesTableModel = (PeptideSpeciesPSMTableModel) table.getModel();
             peptideSpeciesTableModel.setRankingThreshold(rankingThreshold);
+            table.changeSelection(0, peptideSpeciesTableModel.getColumnIndex(PeptideTableHeader.PEPTIDE_COLUMN.getHeader()), false, false);
         }
     }
 

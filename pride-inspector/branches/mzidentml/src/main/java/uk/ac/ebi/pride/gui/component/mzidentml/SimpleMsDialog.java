@@ -135,7 +135,8 @@ public class SimpleMsDialog extends JDialog {
                 Constants.MGF_FILE,
                 Constants.MZXML_FILE,
                 Constants.MZML_FILE,
-                Constants.DTA_FILE);
+                Constants.DTA_FILE,
+                Constants.XML_FILE);
 
         int result = ofd.showDialog(this, null);
 

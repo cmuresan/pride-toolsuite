@@ -157,6 +157,7 @@ public class PeptideSpeciesTableModel extends ProgressiveListTableModel<Void, Tu
             showingPeptideSpecies.remove(peptideSpecies);
             fireTableRowsDeleted(rowIndex, rowIndex);
         }
+
     }
 
     private boolean isShowablePeptideSpecies(PeptideSpecies peptideSpecies) {

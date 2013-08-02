@@ -9,6 +9,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
+import uk.ac.ebi.pride.gui.component.EventBusSubscribable;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
@@ -197,10 +198,10 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
         rankingFilterList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JComboBox filterComboBox = (JComboBox)e.getSource();
+                JComboBox filterComboBox = (JComboBox) e.getSource();
                 String filter = (String) filterComboBox.getSelectedItem();
                 int rankingThreshold = PeptideRankingFilter.getRankingThreshold(filter);
-                PeptideSpeciesTableModel peptideSpeciesTableModel = (PeptideSpeciesTableModel)pepTable.getModel();
+                PeptideSpeciesTableModel peptideSpeciesTableModel = (PeptideSpeciesTableModel) pepTable.getModel();
                 FilterPeptideRankingTask filterPeptideRankingTask = new FilterPeptideRankingTask(peptideSpeciesTableModel, rankingThreshold);
                 TaskUtil.startBackgroundTask(filterPeptideRankingTask, controller);
 
@@ -239,16 +240,16 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
 
             if (!e.getValueIsAdjusting()) {
                 int rowNum = table.getSelectedRow();
-                if (rowNum >= 0 && rowNum != previousSelectedRow) {
+                if (rowNum >= 0 && (rowNum != previousSelectedRow)) {
                     previousSelectedRow = rowNum;
                     logger.debug("Peptide table has been clicked, row number: {}", rowNum);
                     // get table model
-                    ListTableModel tableModel = (ListTableModel)pepTable.getModel();
+                    ListTableModel tableModel = (ListTableModel) pepTable.getModel();
 
 
                     // get spectrum reference column
                     int peptideSpeciesColumnIndex = tableModel.getColumnIndex(PeptideSpeciesTableModel.TableHeader.PEPTIDE_SPECIES_COLUMN.getHeader());
-                    PeptideSpecies peptideSpecies = (PeptideSpecies)tableModel.getValueAt(table.convertRowIndexToModel(rowNum), peptideSpeciesColumnIndex);
+                    PeptideSpecies peptideSpecies = (PeptideSpecies) tableModel.getValueAt(table.convertRowIndexToModel(rowNum), peptideSpeciesColumnIndex);
 
                     // fire a background task to retrieve peptide
                     if (peptideSpecies != null) {
@@ -259,5 +260,6 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
                 }
             }
         }
+
     }
 }

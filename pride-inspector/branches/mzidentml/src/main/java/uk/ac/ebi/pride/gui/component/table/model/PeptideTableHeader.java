@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.gui.component.table.model;
 
 /**
- * @author Rui Wang
+ * @author rwang, yperez
  * @version $Id$
  */
 public enum PeptideTableHeader {

@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.chart.plot;
 
+import org.jfree.data.general.Dataset;
 import uk.ac.ebi.pride.chart.PrideChartType;
 import uk.ac.ebi.pride.chart.dataset.PrideDataType;
 

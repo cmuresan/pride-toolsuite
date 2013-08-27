@@ -20,6 +20,7 @@ public class PrideDataException extends Exception {
     public static final String NO_PEPTIDE = "Peptide not found";
     public static final String NO_SPECTRA = "Spectra not found";
     public static final String NO_TANDEM_SPECTRA = "MS/MS Spectra not found";
+    public static final String NO_PRECURSOR_CHARGE = "Precursor charge not found";
 
     public PrideDataException() {
     }

@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.chart.io.DataAccessReader;
 import uk.ac.ebi.pride.chart.io.ElderJSONReader;
 import uk.ac.ebi.pride.chart.io.PrideDataException;
 import uk.ac.ebi.pride.chart.io.PrideDataReader;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzMLControllerImpl;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
 
 import java.awt.*;
@@ -20,6 +21,10 @@ import java.io.File;
 public class PrideChartFactoryRun {
     private void drawChart(PrideDataReader reader, PrideChartType chartType) {
         JFreeChart chart = PrideChartFactory.getChart(reader, chartType);
+
+        if (chart == null) {
+            return;
+        }
 
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(500, 300));
@@ -45,8 +50,10 @@ public class PrideChartFactoryRun {
 //        File jsonFile = new File("testset/old_10.json");
 //        run.drawChartList(new ElderJSONReader(jsonFile), PrideChartSummary.PROJECT_SUMMARY);
 
-        File prideXMLFile = new File("testset/PRIDE_Exp_Complete_Ac_2.xml");
+//        File prideXMLFile = new File("testset/PRIDE_Exp_Complete_Ac_2.xml");
+//        run.drawChartList(new DataAccessReader(new PrideXmlControllerImpl(prideXMLFile)), PrideChartSummary.PROJECT_SUMMARY);
 
-        run.drawChartList(new DataAccessReader(new PrideXmlControllerImpl(prideXMLFile)), PrideChartSummary.PROJECT_SUMMARY);
+        File mzMLFile = new File("testset/mzml-example.mzML");
+        run.drawChartList(new DataAccessReader(new MzMLControllerImpl(mzMLFile)), PrideChartSummary.PROJECT_SUMMARY);
     }
 }

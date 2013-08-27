@@ -205,8 +205,16 @@ public class DataAccessReader extends PrideDataReader {
             return;
         }
 
+        boolean hasCharge = false;
         for (int i = 0; i < preChargeBars.length; i++) {
             preChargeRange[i] = new PrideData(preChargeBars[i] + 0.0, PrideDataType.IDENTIFIED_SPECTRA);
+            if (preChargeBars[i] > 0.0) {
+                hasCharge = true;
+            }
+        }
+        if (! hasCharge) {
+            errorMap.put(PrideChartType.PRECURSOR_CHARGE, new PrideDataException(PrideDataException.NO_PRECURSOR_CHARGE));
+            return;
         }
 
         xyDataSourceMap.put(PrideChartType.PRECURSOR_CHARGE, new PrideXYDataSource(

@@ -23,6 +23,10 @@ public class PrideChartFactory {
     private static ChartTheme currentTheme = new StandardChartTheme("JFree");
 
     public static PrideXYPlot getXYPlot(PrideXYDataSource dataSource, PrideChartType type) {
+        if (dataSource == null) {
+            return null;
+        }
+
         PrideXYPlot plot;
         switch (type) {
             case DELTA_MASS:
@@ -52,8 +56,11 @@ public class PrideChartFactory {
     }
 
     public static PrideCategoryPlot getHistogramPlot(PrideHistogramDataSource dataSource, PrideChartType type) {
-        PrideCategoryPlot plot;
+        if (dataSource == null) {
+            return null;
+        }
 
+        PrideCategoryPlot plot;
         switch (type) {
             case PEAKS_MS:
                 plot = new PeaksMSPlot(PrideDatasetFactory.getHistogramDataset(dataSource));
@@ -69,6 +76,10 @@ public class PrideChartFactory {
     }
 
     public static JFreeChart getChart(PrideCategoryPlot plot) {
+        if (plot == null) {
+            return null;
+        }
+
         String title = plot.isSmallPlot() ? plot.getTitle() : plot.getFullTitle();
 
         JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, plot.isLegend());
@@ -77,6 +88,10 @@ public class PrideChartFactory {
     }
 
     public static JFreeChart getChart(PrideXYPlot plot) {
+        if (plot == null) {
+            return null;
+        }
+
         String title = plot.isSmallPlot() ? plot.getTitle() : plot.getFullTitle();
 
         JFreeChart chart = new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, plot.isLegend());
@@ -85,8 +100,8 @@ public class PrideChartFactory {
     }
 
     public static JFreeChart getChart(PrideDataReader reader, PrideChartType chartType) {
-        if (reader == null) {
-            throw new NullPointerException("PrideDataReader is null!");
+        if (chartType == null) {
+            throw new NullPointerException("Chart Type can not set null!");
         }
 
         SortedMap<PrideChartType, PrideXYDataSource> xyDataSourceMap = reader.getXYDataSourceMap();
@@ -101,13 +116,12 @@ public class PrideChartFactory {
         }
 
         histogramDataSource = histogramDataSourceMap.get(chartType);
-        if (chartType != PrideChartType.AVERAGE_MS && histogramDataSource != null) {
-            return getChart(getHistogramPlot(histogramDataSource, chartType));
-        }
-
-        PrideHistogramDataSource avgDataSource = histogramDataSourceMap.get(PrideChartType.AVERAGE_MS);
-        if (avgDataSource != null) {
-            return getChart(getAvgPlot(avgDataSource));
+        if (histogramDataSource != null) {
+            if (chartType == PrideChartType.AVERAGE_MS) {
+                return getChart(getAvgPlot(histogramDataSource));
+            } else {
+                return getChart(getHistogramPlot(histogramDataSource, chartType));
+            }
         }
 
         return null;
@@ -116,8 +130,13 @@ public class PrideChartFactory {
     public static List<JFreeChart> getChartList(PrideDataReader reader, PrideChartSummary summary) {
         List<JFreeChart> charts = new ArrayList<JFreeChart>();
 
+        JFreeChart chart;
         for (PrideChartType chartType : summary.getAll()) {
-            charts.add(getChart(reader, chartType));
+            chart = getChart(reader, chartType);
+
+            if (chart != null) {
+                charts.add(chart);
+            }
         }
 
         return charts;

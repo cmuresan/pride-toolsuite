@@ -2,17 +2,29 @@ package uk.ac.ebi.pride.gui.task.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.pride.chart.io.DataAccessReader;
+import uk.ac.ebi.pride.chart.io.ElderJSONReader;
+import uk.ac.ebi.pride.chart.io.PrideDataException;
+import uk.ac.ebi.pride.chart.io.PrideDataReader;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideDBAccessControllerImpl;
+import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
 import uk.ac.ebi.pride.gui.EDTUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.access.EmptyDataAccessController;
+import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
+import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Open a connection to pride database
@@ -22,7 +34,7 @@ import java.lang.reflect.InvocationTargetException;
  * Time: 14:45:00
  */
 
-public class OpenPrideDatabaseTask extends TaskAdapter<DataAccessController, Void> {
+public class OpenPrideDatabaseTask extends TaskAdapter<PrideDataReader, Void> {
     private static final Logger logger = LoggerFactory.getLogger(PrideDBAccessControllerImpl.class);
 
     /**
@@ -70,9 +82,32 @@ public class OpenPrideDatabaseTask extends TaskAdapter<DataAccessController, Voi
         context = ((PrideInspectorContext) Desktop.getInstance().getDesktopContext());
     }
 
+    private String[] getJSONFileContent() throws SQLException {
+        String sql = "select concat(c.chart_type, ', ', c.intermediate_data) content\n" +
+                "from pride_2.pride_chart_data c, pride_2.pride_experiment e\n" +
+                "where c.experiment_id = e.experiment_id\n" +
+                "and e.accession = ?\n" +
+                "order by 1";
+
+        Connection conn = PooledConnectionFactory.getConnection();
+        PreparedStatement stat = conn.prepareStatement(sql);
+        stat.setString(1, (String) experimentAccession);
+        ResultSet rs = stat.executeQuery();
+
+        ArrayList<String> content = new ArrayList<String>();
+        while (rs.next()) {
+            content.add(rs.getString(1));
+        }
+
+        stat.close();
+        conn.close();
+
+        return content.toArray(new String[content.size()]);
+    }
+
     @Override
     @SuppressWarnings("unchecked")
-    protected DataAccessController doInBackground() throws Exception {
+    protected PrideDataReader doInBackground() throws Exception {
         boolean opened = alreadyOpened(experimentAccession);
         try {
             if (opened) {
@@ -90,7 +125,15 @@ public class OpenPrideDatabaseTask extends TaskAdapter<DataAccessController, Voi
             logger.warn("Open PRIDE experiment action has been interrupted");
         }
 
-        return dbAccessController;
+        PrideDataReader reader = null;
+        try {
+            reader = new ElderJSONReader(getJSONFileContent());
+        } catch (SQLException ex) {
+            String msg = "Failed to get summary charts";
+            logger.error(msg, ex);
+        }
+
+        return reader;
     }
 
     /**

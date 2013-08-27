@@ -10,6 +10,7 @@ import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.PrideInspectorLoadingPanel;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.utils.Iconable;
+import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.impl.LoadChartDataTask;
 import uk.ac.ebi.pride.gui.utils.DefaultGUIBlocker;
@@ -93,7 +94,7 @@ public class ChartTabPane extends DataAccessControllerPane<PrideDataReader, Void
             showWarningMessage(msg, false);
         }
 
-        LoadChartDataTask lcd = new LoadChartDataTask(controller);
+        TaskAdapter<PrideDataReader, Void> lcd = new LoadChartDataTask(controller);
 
         // add a task listener
         lcd.addTaskListener(this);

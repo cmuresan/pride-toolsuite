@@ -30,9 +30,24 @@ public abstract class PrideChartPane extends JPanel {
     }
 
     public void drawChart(PrideChartType chartType) {
-        removeAll();
+        if (chartType == null) {
+            throw new NullPointerException("Chart Type can not set null!");
+        }
 
+        removeAll();
         setBackground(Color.WHITE);
+
+        JFreeChart chart = PrideChartFactory.getChart(reader, chartType);
+        JPanel mainPanel;
+        if (chart == null) {
+            PrideDataException ex = reader.getErrorMap().get(chartType);
+            mainPanel = getErrorPanel(ex.getMessage().split("\n"));
+
+        } else {
+            initChart(chart);
+            mainPanel = getMainPanel(chart, chartType);
+        }
+
         JPanel titlePanel = new JPanel();
         JLabel title = new JLabel(getTitle(chartType));
         titlePanel.add(title);
@@ -40,26 +55,9 @@ public abstract class PrideChartPane extends JPanel {
         titlePanel.setBackground(Color.WHITE);
         add(titlePanel, BorderLayout.NORTH);
 
-        JFreeChart chart = PrideChartFactory.getChart(reader, chartType);
-        JPanel mainPanel;
-        if (chart == null) {
-            PrideDataException ex = reader.getErrorMap().get(chartType);
-            mainPanel = getErrorPanel(ex.getMessage().split("\n"));
-        } else {
-            initChart(chart);
-            mainPanel = getMainPanel(chart, chartType);
-        }
-
         JPanel toolsPanel = getToolsPanel(chartType);
         add(toolsPanel, BorderLayout.SOUTH);
         add(mainPanel, BorderLayout.CENTER);
-
-//        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, mainPanel, toolsPanel);
-//        if (toolsPanel != null) {
-//            splitPane.setResizeWeight(0.8);
-//            splitPane.setAutoscrolls(false);
-//        }
-//        add(splitPane, BorderLayout.CENTER);
     }
 
     protected abstract String getTitle(PrideChartType chartType);

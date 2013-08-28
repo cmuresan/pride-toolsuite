@@ -131,7 +131,7 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
             }
 
             Double deltaMass = MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
-            if (Double.compare(Math.abs(deltaMass.doubleValue()), DELTA_MZ_THRESHOLD) >= 0) {
+            if (deltaMass == null || (deltaMass != null && Double.compare(Math.abs(deltaMass.doubleValue()), DELTA_MZ_THRESHOLD) >= 0)) {
                 overflow = true;
             }
         } catch (DataAccessException e) {

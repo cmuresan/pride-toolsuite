@@ -818,7 +818,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     Gel gel = getPeptideGel((Integer) result.get("gel_id"), (Double) result.get("x_coordinate"), (Double) result.get("y_coordinate"), (Double) result.get("molecular_weight"), (Double) result.get("pi"));
                     protein = new Protein(params, (Integer) result.get("identification_id"), null, dbSequence, false, peptides, null, (Double) result.get("threshold"), seqConverageVal, gel);
                 } else if ("uk.ac.ebi.pride.rdbms.ojb.model.core.GelFreeIdentificationBean".equals(className)) {
-                    protein = new Protein(params, (Long) result.get("identification_id"), null, dbSequence, false, peptides, null, (result.get("threshold") == null) ? -1 : (Double) result.get("threshold"), seqConverageVal, null);
+                    protein = new Protein(params, (Long) result.get("identification_id"), null, dbSequence, false, peptides, null, (result.get("threshold") == null) ? -1 : ((BigDecimal) result.get("threshold")).doubleValue(), seqConverageVal, null);
                 }
                 if (useCache) {
                     getCache().store(CacheEntry.PROTEIN, proteinId, protein);

@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.chart.io;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import uk.ac.ebi.pride.chart.PrideChartType;
@@ -83,6 +84,22 @@ public class PrideJSONWriter {
         return values;
     }
 
+    private List<Object> getDomainValues(Double[] domainData, PrideData[] rangeData, PrideDataType dataType) {
+        List<Object> values = new ArrayList<Object>();
+
+        PrideData prideData;
+        for (int i = 0; i < rangeData.length; i++) {
+            prideData = rangeData[i];
+            if (dataType != null && prideData.getType() == dataType) {
+                values.add(domainData[i]);
+            } else if (dataType == null) {
+                values.add(domainData[i]);
+            }
+        }
+
+        return values;
+    }
+
     private List<Object> getRangeValues(Double[] rangeData) {
         List<Object> values = new ArrayList<Object>();
 
@@ -94,7 +111,7 @@ public class PrideJSONWriter {
     private List<Object> getRangeValues(Collection<Double> rangeData) {
         List<Object> values = new ArrayList<Object>();
 
-        Collections.addAll(values, rangeData);
+        Collections.addAll(values, rangeData.toArray());
 
         return values;
     }
@@ -119,7 +136,21 @@ public class PrideJSONWriter {
         }
 
         PrideXYDataSource dataSource = reader.getXYDataSourceMap().get(PrideChartType.DELTA_MASS);
+        boolean hasData = false;
         if (dataSource != null) {
+            for (PrideData data : dataSource.getRangeData()) {
+                if (data.getData() > 0) {
+                    hasData = true;
+                    break;
+                }
+            }
+
+            if (! hasData) {
+                JSONObject obj = new JSONObject();
+                obj.put(ERROR, new String[] {PrideDataException.NO_PRECURSOR_CHARGE});
+                return obj;
+            }
+
             Series series = new Series(
                     DELTA_MASSES, null,
                     getDomainValues(dataSource.getDomainData()),
@@ -127,7 +158,9 @@ public class PrideJSONWriter {
             );
 
             JSONObject obj = new JSONObject();
-            obj.put(SERIES, series.getJSONObject());
+            JSONArray seriesArray = new JSONArray();
+            seriesArray.put(series.getJSONObject());
+            obj.put(SERIES, seriesArray);
             obj.put(SEQUENCE_NUMBER, reader.getPeptideSize());
 
             return obj;
@@ -150,7 +183,9 @@ public class PrideJSONWriter {
             );
 
             JSONObject obj = new JSONObject();
-            obj.put(SERIES, series.getJSONObject());
+            JSONArray seriesArray = new JSONArray();
+            seriesArray.put(series.getJSONObject());
+            obj.put(SERIES, seriesArray);
 
             return obj;
         }
@@ -172,7 +207,9 @@ public class PrideJSONWriter {
             );
 
             JSONObject obj = new JSONObject();
-            obj.put(SERIES, series.getJSONObject());
+            JSONArray seriesArray = new JSONArray();
+            seriesArray.put(series.getJSONObject());
+            obj.put(SERIES, seriesArray);
 
             return obj;
         }
@@ -241,7 +278,9 @@ public class PrideJSONWriter {
             );
 
             JSONObject obj = new JSONObject();
-            obj.put(SERIES, series.getJSONObject());
+            JSONArray seriesArray = new JSONArray();
+            seriesArray.put(series.getJSONObject());
+            obj.put(SERIES, seriesArray);
             obj.put(EXPERIMENT_SIZE, reader.getSpectraSize());
 
             return obj;
@@ -259,7 +298,9 @@ public class PrideJSONWriter {
         if (dataSource != null) {
             List<Series> seriesList = new ArrayList<Series>();
             List<Object> unSpectraList = getRangeValues(dataSource.getRangeData(), PrideDataType.UNIDENTIFIED_SPECTRA);
+            List<Object> unDomainList = getDomainValues(dataSource.getDomainData(), dataSource.getRangeData(), PrideDataType.UNIDENTIFIED_SPECTRA);
             List<Object> idSpectraList = getRangeValues(dataSource.getRangeData(), PrideDataType.IDENTIFIED_SPECTRA);
+            List<Object> idDomainList = getDomainValues(dataSource.getDomainData(), dataSource.getRangeData(), PrideDataType.IDENTIFIED_SPECTRA);
 
             if (unSpectraList.size() == 0) {
                 seriesList.add(new Series(UNIDENTIFIED_SPECTRA, UNIDENTIFIED_SPECTRA, null, null));
@@ -267,7 +308,7 @@ public class PrideJSONWriter {
                 seriesList.add(
                         new Series(
                                 UNIDENTIFIED_SPECTRA, UNIDENTIFIED_SPECTRA,
-                                getDomainValues(dataSource.getDomainData()),
+                                unDomainList,
                                 unSpectraList
                         )
                 );
@@ -279,7 +320,7 @@ public class PrideJSONWriter {
                 seriesList.add(
                         new Series(
                                 IDENTIFIED_SPECTRA, IDENTIFIED_SPECTRA,
-                                getDomainValues(dataSource.getDomainData()),
+                                idDomainList,
                                 idSpectraList
                         )
                 );
@@ -332,7 +373,9 @@ public class PrideJSONWriter {
             );
 
             JSONObject obj = new JSONObject();
-            obj.put(SERIES, series.getJSONObject());
+            JSONArray seriesArray = new JSONArray();
+            seriesArray.put(series.getJSONObject());
+            obj.put(SERIES, seriesArray);
             obj.put(EXPERIMENT_SIZE, reader.getSpectraSize());
 
             return obj;
@@ -359,6 +402,12 @@ public class PrideJSONWriter {
                         getDomainValues(histogram.keySet()),
                         getRangeValues(histogram.values())
                 ));
+            } else {
+                seriesList.add(new Series(
+                        IDENTIFIED_SPECTRA, IDENTIFIED_SPECTRA,
+                        null,
+                        null
+                ));
             }
 
             histogram = histogramMap.get(PrideDataType.UNIDENTIFIED_SPECTRA);
@@ -367,6 +416,12 @@ public class PrideJSONWriter {
                         UNIDENTIFIED_SPECTRA, UNIDENTIFIED_SPECTRA,
                         getDomainValues(histogram.keySet()),
                         getRangeValues(histogram.values())
+                ));
+            } else {
+                seriesList.add(new Series(
+                        UNIDENTIFIED_SPECTRA, UNIDENTIFIED_SPECTRA,
+                        null,
+                        null
                 ));
             }
 

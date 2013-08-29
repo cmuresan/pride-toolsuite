@@ -20,18 +20,21 @@ import static org.junit.Assert.assertArrayEquals;
 */
 public class DataAccessReaderTest {
     private File prideXMLFile = new File("testset/PRIDE_Exp_Complete_Ac_2.xml");
-    private File jsonFile = new File("testset/old_2.json");
+    private File jsonFile = new File("testset/new_2.json");
+//    private File jsonFile = new File("testset/old_2.json");
 
 //    private File prideXMLFile = new File("testset/PRIDE_Exp_Complete_Ac_1643.xml");
 //    private File jsonFile = new File("testset/old_1643.json");
 
     private DataAccessReader dataReader;
-    private ElderJSONReader jsonReader;
+    private JSONReader jsonReader;
+//    private ElderJSONReader jsonReader;
 
     public DataAccessReaderTest() throws Exception {
         DataAccessController controller = new PrideXmlControllerImpl(prideXMLFile);
         dataReader = new DataAccessReader(controller);
-        jsonReader = new ElderJSONReader(jsonFile);
+        jsonReader = new JSONReader(jsonFile);
+//        jsonReader = new ElderJSONReader(jsonFile);
     }
 
     @Test

@@ -397,6 +397,10 @@ public class ControllerContentPane extends DataAccessControllerPane {
         return quantTabPane;
     }
 
+    public ChartTabPane getChartTabPane() {
+        return chartTabPane;
+    }
+
     /**
      * Tab index of the metadata tab
      *

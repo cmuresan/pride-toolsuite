@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.component.chart;
 import uk.ac.ebi.pride.chart.PrideChartType;
 import uk.ac.ebi.pride.chart.io.PrideDataReader;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideDBAccessControllerImpl;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
@@ -89,12 +90,13 @@ public class ChartTabPane extends DataAccessControllerPane<PrideDataReader, Void
     }
 
     private void createPrideCharts() {
-        if (DataAccessController.Type.XML_FILE.equals(controller.getType())) {
-            String msg = viewerContext.getProperty("chart.time.warning.message");
-            showWarningMessage(msg, false);
-        }
+        TaskAdapter<PrideDataReader, Void> lcd;
 
-        TaskAdapter<PrideDataReader, Void> lcd = new LoadChartDataTask(controller);
+        if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
+            lcd = new LoadChartDataTask(controller, (String) ((PrideDBAccessControllerImpl) controller).getExperimentAcc());
+        } else {
+            lcd = new LoadChartDataTask(controller);
+        }
 
         // add a task listener
         lcd.addTaskListener(this);

@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.core.SpectraData;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
+import uk.ac.ebi.pride.gui.component.chart.ChartTabPane;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
@@ -41,6 +42,10 @@ public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<Spectr
             ((MzIdentMLControllerImpl) controller).addMSController(spectraDataFileMap);
             //((MzIdentMLControllerImpl) controller).addMSController(msFileMap);
             ControllerContentPane contentPane = (ControllerContentPane) context.getDataContentPane(controller);
+
+            //Update the Summary Charts Tab
+            ChartTabPane chartContentPane = contentPane.getChartTabPane();
+            chartContentPane.populate();
 
             //Update the Spectrum Tab
             MzDataTabPane mzDataTabPane;

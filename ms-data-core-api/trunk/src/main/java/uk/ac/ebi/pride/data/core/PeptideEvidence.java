@@ -30,12 +30,12 @@ public class PeptideEvidence extends IdentifiableParamGroup {
      * where the first amino acid of the protein sequence is position 1.
      * Must be provided unless this is a de novo search.
      */
-    private int endPosition;
+    private Integer endPosition;
 
     /**
      * The translation frame of this sequence if this is PeptideEvidence derived from nucleic acid sequence.
      */
-    private int frame;
+    private Integer frame;
 
     /**
      * A reference to the identified (poly)peptide sequence in the Peptide element.
@@ -58,7 +58,7 @@ public class PeptideEvidence extends IdentifiableParamGroup {
      * Start position of the peptide inside the protein sequence, where the first amino acid of the
      * protein sequence is position 1. Must be provided unless this is a de novo search.
      */
-    private int startPosition;
+    private Integer startPosition;
 
     /**
      * The details specifying this translation table are captured as cvParams, e.g. translation table,
@@ -69,28 +69,28 @@ public class PeptideEvidence extends IdentifiableParamGroup {
     /**
      * Set to true if the peptide is matched to a decoy sequence.
      */
-    private boolean decoy;
+    private Boolean decoy;
 
-    public PeptideEvidence(String id, String name, int startPosition, int endPosition, boolean decoy,
+    public PeptideEvidence(String id, String name, Integer startPosition, Integer endPosition, Boolean decoy,
                            PeptideSequence peptideSequence, DBSequence dbSequence) {
         this(null, id, name, startPosition, endPosition, decoy, peptideSequence, dbSequence);
     }
 
-    public PeptideEvidence(ParamGroup params, String id, String name, int startPosition, int endPosition,
+    public PeptideEvidence(ParamGroup params, String id, String name, Integer startPosition, Integer endPosition,
                            boolean decoy, PeptideSequence peptideSequence, DBSequence dbSequence) {
         super(params, id, name);
-        this.startPosition   = startPosition;
-        this.endPosition     = endPosition;
+        this.startPosition = startPosition;
+        this.endPosition = endPosition;
         this.frame = -1;
         this.translationTable = null;
         this.preResidue = '\u0000';
         this.postResidue = '\u0000';
-        this.decoy           = decoy;
+        this.decoy = decoy;
         this.peptideSequence = peptideSequence;
-        this.dbSequence      = dbSequence;
+        this.dbSequence = dbSequence;
     }
 
-    public int getStartPosition() {
+    public Integer getStartPosition() {
         return startPosition;
     }
 
@@ -98,7 +98,7 @@ public class PeptideEvidence extends IdentifiableParamGroup {
         this.startPosition = startPosition;
     }
 
-    public int getEndPosition() {
+    public Integer getEndPosition() {
         return endPosition;
     }
 
@@ -191,7 +191,8 @@ public class PeptideEvidence extends IdentifiableParamGroup {
         result = 31 * result + (int) preResidue;
         result = 31 * result + (int) postResidue;
         result = 31 * result + ((translationTable != null) ? translationTable.hashCode() : 0);
-        result = 31 * result + frame; result = 31 * result + (decoy ? 1 : 0);
+        result = 31 * result + frame;
+        result = 31 * result + (decoy ? 1 : 0);
         result = 31 * result + ((peptideSequence != null) ? peptideSequence.hashCode() : 0);
         result = 31 * result + ((dbSequence != null) ? dbSequence.hashCode() : 0);
 

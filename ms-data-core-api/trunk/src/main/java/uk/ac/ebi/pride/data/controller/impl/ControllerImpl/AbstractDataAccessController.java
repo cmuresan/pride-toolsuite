@@ -674,8 +674,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         if (protein != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
-                start = peptide.getPeptideEvidenceList().get(0).getStartPosition();
-                //Todo: We need to define finally how to manage the information for pride xml object as PeptideEvidence
+                start = (peptide.getPeptideEvidenceList().get(0).getStartPosition() != null) ? peptide.getPeptideEvidenceList().get(0).getStartPosition() : start;
             }
         }
         return start;
@@ -688,7 +687,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         if (protein != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
             if (peptide != null) {
-                stop = peptide.getPeptideEvidenceList().get(0).getEndPosition();
+                stop = (peptide.getPeptideEvidenceList().get(0).getEndPosition() != null) ? peptide.getPeptideEvidenceList().get(0).getEndPosition() : stop;
             }
         }
         return stop;

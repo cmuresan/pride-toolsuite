@@ -5,11 +5,11 @@ import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import java.util.List;
 
 /**
- * One (poly)peptide (a sequence with modifications).
- * The combination of Peptide sequence and modifications must be unique in the file.
+ * One (poly)peptide (a sequence with modifications). The combination of Peptide sequence
+ * and modifications must be unique in the file.
  * User: yperez
  * Date: 04/08/11
- * Time: 10:29
+ * <p/>
  * <p/>
  * todo: compareTo method is implemented using bad practice, need to be refactored
  */

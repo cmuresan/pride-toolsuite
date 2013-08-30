@@ -270,7 +270,7 @@ public class PeptideSpeciesTableModel extends ProgressiveListTableModel<Void, Tu
                 PeptideTableRow peptideDetails = peptideTableRow;
                 Object existingSpectrumId = peptideDetails.getSpectrumId();
 
-                if (existingSpectrumId.equals(spectrumId)) {
+                if (existingSpectrumId != null && existingSpectrumId.equals(spectrumId)) {
                     return true;
                 }
             }

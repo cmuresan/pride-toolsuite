@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * DataAccessController to access pride public instance.
  * <p/>
- * User: dani, rwang
+ * User: yperez, dani, rwang
  * Date: 13-Apr-2010
  * Time: 14:32:25
  */
@@ -655,11 +655,12 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
                     spectrumParams.addUserParams(getUserParams("mzdata_spectrum_instrument_param", idInt));
                     // add comments
                     spectrumParams.addUserParams(getSpectrumDesc(idInt));
-                    spectrum = new Spectrum(spectrumParams, (Long) result.get("spectrum_id"), null, index, null, defaultArrLength, binaryArray, null, null, scanList, precursors, null);
+                    spectrum = new Spectrum(spectrumParams, ((Long) result.get("spectrum_id")).toString(), null, index, null, defaultArrLength, binaryArray, null, null, scanList, precursors, null);
 
 
                     if (useCache) {
                         getCache().store(CacheEntry.SPECTRUM, spectrumId, spectrum);
+                        getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrumId, super.getSpectrumPrecursorMz(spectrumId));
                     }
                 } catch (UnsupportedEncodingException e) {
                     logger.error("Failed to decode binary data array", e);
@@ -759,7 +760,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
             Spectrum spectrum = (result.get("spectrum_ref") != null) ? getSpectrumByPeptide(experiment_id, (Long) result.get("spectrum_ref")) : null;
             PeptideSequence peptideSequence = new PeptideSequence(null, null, (String) result.get("sequence"), modifications);
             List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
-            PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, (Integer) result.get("pep_start"), (Integer) result.get("pep_end"), false, peptideSequence, null);
+            PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, (result.get("pep_start") == null) ? null : (Integer) result.get("pep_start"), (result.get("pep_end") == null) ? null : (Integer) result.get("pep_end"), false, peptideSequence, null);
             peptideEvidences.add(peptideEvidence);
 
             Integer charge = DataAccessUtilities.getPrecursorChargeParamGroup(spectrum);

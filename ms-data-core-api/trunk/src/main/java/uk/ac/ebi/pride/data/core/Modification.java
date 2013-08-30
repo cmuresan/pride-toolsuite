@@ -45,6 +45,7 @@ public class Modification extends IdentifiableParamGroup {
      * given the location 0. Modification to the C-terminus should be given as peptide length + 1.
      * MzIdentMl and PrideXML
      */
+
     private int location;
 
     /**

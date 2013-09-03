@@ -14,7 +14,7 @@ public class Peptide {
 
     private SpectrumIdentification spectrumIdentification;
 
-    public Peptide(PeptideEvidence peptideEvidence, SpectrumIdentification spectrumIdentification){
+    public Peptide(PeptideEvidence peptideEvidence, SpectrumIdentification spectrumIdentification) {
         this.peptideEvidence = peptideEvidence;
         this.spectrumIdentification = spectrumIdentification;
     }
@@ -43,7 +43,7 @@ public class Peptide {
         return this.getSpectrumIdentification().getSpectrum();
     }
 
-    public void setSpectrum(Spectrum spectrum){
+    public void setSpectrum(Spectrum spectrum) {
         this.getSpectrumIdentification().setSpectrum(spectrum);
     }
 
@@ -81,6 +81,14 @@ public class Peptide {
 
     public Score getScore() {
         return this.getSpectrumIdentification().getScore();
+    }
+
+    public boolean isFragmentIonsChargeAnnotated() {
+        boolean annotated = false;
+        for (FragmentIon fragmentIon : getFragmentation())
+            if (fragmentIon.getCharge() < 1) annotated = true;
+        return annotated;
+
     }
 
     @Override

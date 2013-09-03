@@ -1,7 +1,9 @@
 package uk.ac.ebi.pride.data.core;
 
 import uk.ac.ebi.pride.data.utils.CollectionUtils;
+import uk.ac.ebi.pride.mol.AminoAcid;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -89,6 +91,12 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
 
     public void setSubstitutionModifications(List<SubstitutionModification> substitutionModifications) {
         CollectionUtils.replaceValuesInCollection(substitutionModifications, this.substitutionModifications);
+    }
+
+    public List<AminoAcid> getAminoAcidList() {
+        List<AminoAcid> sequenceList = new ArrayList<AminoAcid>();
+        for (Character character : sequence.toCharArray()) sequenceList.add(AminoAcid.getAminoAcid(character));
+        return sequenceList;
     }
 
     @Override

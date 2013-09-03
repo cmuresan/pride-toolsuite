@@ -7,10 +7,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideDBAccessControllerImpl;
-import uk.ac.ebi.pride.data.core.BinaryDataArray;
-import uk.ac.ebi.pride.data.core.Modification;
-import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.data.core.Spectrum;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.SideToolBarPanel;
 import uk.ac.ebi.pride.gui.action.PrideAction;
@@ -208,8 +205,8 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
                     ptmMasses.add(monoMasses.get(0));
                 }
             }
-
             Double deltaMass = MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
+
             if (deltaMass == null || (deltaMass != null && Double.compare(Math.abs(deltaMass.doubleValue()), FragmentationTablePane.DELTA_MZ_THRESHOLD) >= 0)) {
                 overflow = true;
             }
@@ -245,7 +242,7 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
                 spectrumBrowser.setAminoAcidAnnotationParameters(peptide.getSequenceLength(), modifications);
                 java.util.List<IonAnnotation> ions = AnnotationUtils.convertToIonAnnotations(peptide.getFragmentation());
 
-                if (!ions.isEmpty()) {
+                if (!ions.isEmpty() && !peptide.isFragmentIonsChargeAnnotated()) {
                     // manual annotations
                     spectrumBrowser.addFragmentIons(ions);
                 } else if (spectrumBrowser.getSpectrumPanel().getModel().getIonDataset().getSeriesCount() == 0) {

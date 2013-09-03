@@ -84,9 +84,9 @@ public class Peptide {
     }
 
     public boolean isFragmentIonsChargeAnnotated() {
-        boolean annotated = false;
+        boolean annotated = true;
         for (FragmentIon fragmentIon : getFragmentation())
-            if (fragmentIon.getCharge() < 1) annotated = true;
+            if (fragmentIon.getCharge() < 1) annotated = false;
         return annotated;
 
     }

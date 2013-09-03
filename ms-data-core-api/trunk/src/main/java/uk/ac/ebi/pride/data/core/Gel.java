@@ -1,9 +1,10 @@
 package uk.ac.ebi.pride.data.core;
 
 /**
- * Descriptions of the gel.
+ * Gel is a class to Describe the Gel Spot for each Protein. it contains the GelLink
+ * and the X and Y coordinates for the protein identification.
  * <p/>
- * User: rwang
+ * User: yperez, rwang
  * Date: 25-Mar-2010
  * Time: 12:36:55
  */
@@ -17,22 +18,22 @@ public class Gel extends ParamGroup {
     /**
      * molecular weight
      */
-    private double molecularWeight;
+    private Double molecularWeight;
 
     /**
      * pI value
      */
-    private double pI;
+    private Double pI;
 
     /**
      * x coordinate
      */
-    private double xCoordinate;
+    private Double xCoordinate;
 
     /**
      * y coordinate
      */
-    private double yCoordinate;
+    private Double yCoordinate;
 
     /**
      * Constructor
@@ -45,8 +46,8 @@ public class Gel extends ParamGroup {
      * @param pI              optional.
      */
     public Gel(ParamGroup params, String gelLink,
-               double xCoordinate, double yCoordinate,
-               double molecularWeight, double pI) {
+               Double xCoordinate, Double yCoordinate,
+               Double molecularWeight, Double pI) {
         super(params);
         this.gelLink = gelLink;
         this.xCoordinate = xCoordinate;
@@ -63,35 +64,35 @@ public class Gel extends ParamGroup {
         this.gelLink = gelLink;
     }
 
-    public double getXCoordinate() {
+    public Double getXCoordinate() {
         return xCoordinate;
     }
 
-    public void setXCoordinate(double xCoordinate) {
+    public void setXCoordinate(Double xCoordinate) {
         this.xCoordinate = xCoordinate;
     }
 
-    public double getYCoordinate() {
+    public Double getYCoordinate() {
         return yCoordinate;
     }
 
-    public void setYCoordinate(double yCoordinate) {
+    public void setYCoordinate(Double yCoordinate) {
         this.yCoordinate = yCoordinate;
     }
 
-    public double getMolecularWeight() {
+    public Double getMolecularWeight() {
         return molecularWeight;
     }
 
-    public void setMolecularWeight(double molecularWeight) {
+    public void setMolecularWeight(Double molecularWeight) {
         this.molecularWeight = molecularWeight;
     }
 
-    public double getPI() {
+    public Double getPI() {
         return pI;
     }
 
-    public void setPI(double pI) {
+    public void setPI(Double pI) {
         this.pI = pI;
     }
 

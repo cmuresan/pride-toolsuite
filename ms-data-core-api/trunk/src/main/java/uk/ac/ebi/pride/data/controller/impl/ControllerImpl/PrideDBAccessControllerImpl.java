@@ -104,10 +104,15 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
     private List<CvParam> getCvParams(String table_name, long parent_element_id) {
+
         String query = "SELECT accession, name, value, cv_label FROM " + table_name
                 + " WHERE parent_element_fk = ? AND cv_label is not null";
-
-        return jdbcTemplate.query(query, new CvParamRowMapper(), parent_element_id);
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(query, parent_element_id);
+        if (!result.isEmpty()) {
+            return jdbcTemplate.query(query, new CvParamRowMapper(), parent_element_id);
+        } else {
+            return CollectionUtils.createEmptyList();
+        }
     }
 
     //same as before, but returns a list of UserParam
@@ -115,8 +120,12 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     private List<UserParam> getUserParams(String table_name, long parent_element_id) {
         String query = "SELECT name, value FROM " + table_name +
                 " WHERE parent_element_fk = ? AND cv_label is null";
-
-        return jdbcTemplate.query(query, new UserParamRowMapper(), parent_element_id);
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(query, parent_element_id);
+        if (!result.isEmpty()) {
+            return jdbcTemplate.query(query, new UserParamRowMapper(), parent_element_id);
+        } else {
+            return CollectionUtils.createEmptyList();
+        }
     }
 
 
@@ -670,7 +679,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         return spectrum;
     }
 
-    private List<Double> getDeltaValues(int modification_id, String deltaType) {
+    private List<Double> getDeltaValues(long modification_id, String deltaType) {
         logger.debug("Get delta values");
 
         String query = "SELECT mass_delta_value FROM pride_mass_delta WHERE modification_id = ? AND classname = ?";
@@ -687,9 +696,9 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
         for (Map<String, Object> result : results) {
             ParamGroup params = new ParamGroup(getCvParams("pride_modification_param", (Long) result.get("modification_id")), getUserParams("pride_modification_param",
-                    (Integer) result.get("modification_id")));
-            List<Double> monoMassDeltas = getDeltaValues((Integer) result.get("modification_id"), "uk.ac.ebi.pride.rdbms.ojb.model.core.MonoMassDeltaBean");
-            List<Double> avgMassDeltas = getDeltaValues((Integer) result.get("modification_id"), "uk.ac.ebi.pride.rdbms.ojb.model.core.AverageMassDeltaBean");
+                    (Long) result.get("modification_id")));
+            List<Double> monoMassDeltas = getDeltaValues((Long) result.get("modification_id"), "uk.ac.ebi.pride.rdbms.ojb.model.core.MonoMassDeltaBean");
+            List<Double> avgMassDeltas = getDeltaValues((Long) result.get("modification_id"), "uk.ac.ebi.pride.rdbms.ojb.model.core.AverageMassDeltaBean");
             modifications.add(new Modification(params, (String) result.get("accession"), null, (Integer) result.get("location"), null, monoMassDeltas, avgMassDeltas, (String) result.get("mod_database"), (String) result.get("mod_database_version")));
         }
 
@@ -777,13 +786,18 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
     }
 
 
-    private Gel getPeptideGel(int gel_id, double x_coordinate, double y_coordinate, double molecular_weight, double pi) {
+    private Gel getPeptideGel(long gel_id, Double x_coordinate, Double y_coordinate, Double molecular_weight, Double pi) {
         logger.debug("Get peptide gel {}", gel_id);
 
+        String gelLink = null;
 
         String query = "SELECT gel_link FROM pride_gel WHERE gel_id = ?";
 
-        String gelLink = jdbcTemplate.queryForObject(query, String.class, gel_id);
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(query, gel_id);
+
+        if (!result.isEmpty()) {
+            gelLink = jdbcTemplate.queryForObject(query, String.class, gel_id);
+        }
 
         ParamGroup params = new ParamGroup(getCvParams("pride_gel_param", gel_id), getUserParams("pride_gel_param", gel_id));
 
@@ -816,8 +830,8 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
 
                 if ("uk.ac.ebi.pride.rdbms.ojb.model.core.TwoDimensionalIdentificationBean".equals(className)) {
-                    Gel gel = getPeptideGel((Integer) result.get("gel_id"), (Double) result.get("x_coordinate"), (Double) result.get("y_coordinate"), (Double) result.get("molecular_weight"), (Double) result.get("pi"));
-                    protein = new Protein(params, (Integer) result.get("identification_id"), null, dbSequence, false, peptides, null, (Double) result.get("threshold"), seqConverageVal, gel);
+                    Gel gel = getPeptideGel((Long) result.get("gel_id"), result.get("x_coordinate") != null ? (Double) result.get("x_coordinate") : null, result.get("x_coordinate") != null ? (Double) result.get("y_coordinate") : null, result.get("molecular_weight") != null ? (Double) result.get("molecular_weight") : null, result.get("pi") != null ? (Double) result.get("pi") : null);
+                    protein = new Protein(params, (Long) result.get("identification_id"), null, dbSequence, false, peptides, null, (result.get("threshold") == null) ? -1 : ((BigDecimal) result.get("threshold")).doubleValue(), seqConverageVal, gel);
                 } else if ("uk.ac.ebi.pride.rdbms.ojb.model.core.GelFreeIdentificationBean".equals(className)) {
                     protein = new Protein(params, (Long) result.get("identification_id"), null, dbSequence, false, peptides, null, (result.get("threshold") == null) ? -1 : ((BigDecimal) result.get("threshold")).doubleValue(), seqConverageVal, null);
                 }
@@ -856,7 +870,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
 
             //todo: change this to take into account peptide level charges
             int charge = this.getSpectrumPrecursorCharge(specId);
-            double mz = this.getSpectrumPrecursorMz(specId);
+            Double mz = this.getSpectrumPrecursorMz(specId);
             PeptideSequence peptideSequence = new PeptideSequence(null, null, sequence, modifications);
             List<PeptideEvidence> peptideEvidences = new ArrayList<PeptideEvidence>();
             PeptideEvidence peptideEvidence = new PeptideEvidence(null, null, start, end, false, peptideSequence, null);

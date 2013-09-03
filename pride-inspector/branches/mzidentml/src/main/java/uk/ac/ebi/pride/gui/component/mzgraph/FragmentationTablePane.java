@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.data.core.BinaryDataArray;
-import uk.ac.ebi.pride.data.core.CvParam;
-import uk.ac.ebi.pride.data.core.Modification;
-import uk.ac.ebi.pride.data.core.Peptide;
+import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.action.impl.OpenHelpAction;
@@ -131,7 +128,7 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
             }
 
             Double deltaMass = MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
-            if (deltaMass == null || (deltaMass != null && Double.compare(Math.abs(deltaMass.doubleValue()), DELTA_MZ_THRESHOLD) >= 0)) {
+            if (!peptide.isFragmentIonsChargeAnnotated() || deltaMass == null || (deltaMass != null && Double.compare(Math.abs(deltaMass.doubleValue()), DELTA_MZ_THRESHOLD) >= 0)) {
                 overflow = true;
             }
         } catch (DataAccessException e) {
@@ -207,7 +204,7 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
                 mzTablePanel.setCalculate(!isOverflow(peptide));
 
                 java.util.List<IonAnnotation> ions = AnnotationUtils.convertToIonAnnotations(peptide.getFragmentation());
-                if (ions.size() > 0) {
+                if (ions.size() > 0 && peptide.isFragmentIonsChargeAnnotated()) {
                     // manual annotations
                     mzTablePanel.addAllManualAnnotations(ions);
                     table.setShowAuto(false);

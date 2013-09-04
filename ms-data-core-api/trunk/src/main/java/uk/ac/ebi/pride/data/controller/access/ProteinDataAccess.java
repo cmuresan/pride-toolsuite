@@ -13,24 +13,11 @@ import java.util.Collection;
 /**
  * ProteinDataAccess defines the interface for accessing identification data.
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 29-Aug-2010
  * Time: 17:59:20
- *
- * todo: remove protein type constants
- * todo: remove indexOfProtein method
  */
 public interface ProteinDataAccess {
-
-    /**
-     * The name for gel free identification
-     */
-    public static final String GEL_FREE_PROTEIN_IDENTIFICATION_TYPE = "Gel Free";
-
-    /**
-     * The name for two dimensional identification
-     */
-    public static final String TWO_DIM_PROTEIN_IDENTIFICATION_TYPE = "Two Dimensional";
 
     /**
      * Whether this controller contains identifications
@@ -39,12 +26,12 @@ public interface ProteinDataAccess {
      */
     public boolean hasProtein();
 
-  /**
+    /**
      * Get a collection of identification ids
      *
      * @return Collection   a string collection of identification ids
      */
-   public Collection<Comparable> getProteinIds();
+    public Collection<Comparable> getProteinIds();
 
 
     /**
@@ -87,14 +74,6 @@ public interface ProteinDataAccess {
     public String getProteinAccessionVersion(Comparable proteinId);
 
     /**
-     * Get the type of the identification.
-     *
-     * @param proteinId identification id.
-     * @return String   protein accession.
-     */
-    public String getProteinType(Comparable proteinId);
-
-    /**
      * Get the score of a identification.
      *
      * @param proteinId identification id.
@@ -105,8 +84,8 @@ public interface ProteinDataAccess {
     /**
      * Get protein identification score
      *
-     * @param proteinId   Protein Id
-     * @return  Protein Score List
+     * @param proteinId Protein Id
+     * @return Protein Score List
      */
     public Score getProteinScores(Comparable proteinId);
 
@@ -135,8 +114,9 @@ public interface ProteinDataAccess {
 
     /**
      * Get the search database version of a identification
-     * @param proteinId   identification id
-     * @return  String  search database version
+     *
+     * @param proteinId identification id
+     * @return String  search database version
      */
     public String getSearchDatabaseVersion(Comparable proteinId);
 

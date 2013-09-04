@@ -746,10 +746,10 @@ public class MzMLTransformer {
     }
 
     /**
-     * Retrieve the file contenct
+     * Retrieve the file content
      *
-     * @param rawFileDescription
-     * @return
+     * @param rawFileDescription The raw file description objects.
+     * @return ParamGroup
      */
     public static ParamGroup transformFileDescriptionToFileContent(FileDescription rawFileDescription) {
         if (rawFileDescription != null) {
@@ -775,7 +775,7 @@ public class MzMLTransformer {
     /**
      * Method to retrieve the Contact Persons From the FileDescription Object in the MzMl Files
      *
-     * @param rawFileDescription
+     * @param rawFileDescription raw file description
      * @return List<Person> List of Person Contacts
      */
     public static List<Person> transformFileDescriptionToPerson(FileDescription rawFileDescription) {
@@ -806,7 +806,7 @@ public class MzMLTransformer {
     /**
      * Method to transform FileDescription in the MzMl file to an Organization Objet List
      *
-     * @param rawFileDescription
+     * @param rawFileDescription raw file description
      * @return List<Organization> Organization List
      */
     public static List<Organization> transformFileDescriptionOrganization(FileDescription rawFileDescription) {

@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.component.protein;
 import org.bushe.swing.event.ContainerEventServiceFinder;
 import org.bushe.swing.event.EventService;
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
@@ -14,6 +15,7 @@ import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
+import uk.ac.ebi.pride.gui.component.table.model.ProteinTableHeader;
 import uk.ac.ebi.pride.gui.component.table.model.ProteinTableRow;
 import uk.ac.ebi.pride.gui.component.table.model.ProteinTreeTableModel;
 import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
@@ -21,6 +23,8 @@ import uk.ac.ebi.pride.gui.event.container.ProteinIdentificationEvent;
 
 import javax.help.CSH;
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
@@ -70,6 +74,7 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
         // add row selection listener
         TreeSelectionModel selectionModel = identTable.getTreeSelectionModel();
         selectionModel.addTreeSelectionListener(new IdentificationSelectionListener(identTable));
+        identTable.getModel().addTableModelListener(new ProteinInsertListener(identTable));
 
         // add identification table to scroll pane
         JScrollPane scrollPane = new JScrollPane(identTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -239,11 +244,35 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
                 TreePath selectionPath = treeSelectionModel.getSelectionPath();
                 Object node = selectionPath.getLastPathComponent();
 
-                Comparable identId = ((ProteinTableRow)node).getProteinId();
+                Comparable identId = ((ProteinTableRow) node).getProteinId();
 
                 // publish the event to local event bus
                 EventService eventBus = ContainerEventServiceFinder.getEventService(ProteinSelectionPane.this);
                 eventBus.publish(new ProteinIdentificationEvent(ProteinSelectionPane.this, controller, identId));
+            }
+        }
+    }
+
+    /**
+     * Trigger when a protein is inserted on the table,
+     * a new background task will be started to retrieve the peptide.
+     */
+    @SuppressWarnings("unchecked")
+    private class ProteinInsertListener implements TableModelListener {
+
+        private final JTable table;
+
+        private ProteinInsertListener(JTable table) {
+            this.table = table;
+        }
+
+        @Override
+        public void tableChanged(TableModelEvent e) {
+            if (e.getType() == TableModelEvent.INSERT) {
+                if (table.getRowCount() > 0 && table.getSelectedRow() < 0) {
+                    //TreeTableModel peptideModel = (TreeTableModel) table.getModel();
+                    table.changeSelection(0, 0, false, false);
+                }
             }
         }
     }

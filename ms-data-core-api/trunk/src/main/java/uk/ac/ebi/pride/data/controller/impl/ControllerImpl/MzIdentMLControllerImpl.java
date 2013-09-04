@@ -318,7 +318,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     /**
      * The mzidentml do not support Quatitation Data
      *
-     * @return
+     * @return false.
      */
     @Override
     public boolean hasQuantData() {
@@ -439,9 +439,9 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * Get the List of File Spectras that the Mzidentml use to identified peptides
+     * Get the List of File Spectra that the Mzidentml use to identified peptides
      *
-     * @return
+     * @return List of SpectraData Files associated with mzidentml.
      */
     public List<SpectraData> getSpectraDataFiles() {
         ExperimentMetaData metaData = super.getExperimentMetaData();
@@ -455,7 +455,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * MzidemtML files will support in the future Spectra MetaData if is present
      * PRIDE Objects, also by other file Formats.
      *
-     * @return
+     * @return The metadata related with mz information
      */
     @Override
     public MzGraphMetaData getMzGraphMetaData() {
@@ -463,9 +463,10 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     }
 
     /**
-     * The MzGraphMetadata is not supported by mzidentml.
+     * If the spectrum information associated with the identification files is provided
+     * then the mzidentml contains spectrums.
      *
-     * @return
+     * @return if the spectrum files is provided then is true else false.
      */
     @Override
     public boolean hasSpectrum() {

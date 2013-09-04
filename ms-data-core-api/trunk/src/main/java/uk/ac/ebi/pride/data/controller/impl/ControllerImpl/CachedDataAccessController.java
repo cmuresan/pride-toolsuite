@@ -788,9 +788,9 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     }
 
     /**
-     * todo: need to see wether to cache this properly
+     * This function return the possible protein scores in the Source.
      *
-     * @return
+     * @return List of available Protein Scores
      */
     @Override
     public List<CvTermReference> getAvailableProteinLevelScores() {
@@ -807,9 +807,9 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
     }
 
     /**
-     * todo: need to see wether to cache this properly
+     * This function return the possible peptide scores in the Source.
      *
-     * @return
+     * @return List of available Peptide Scores
      */
     @Override
     public List<CvTermReference> getAvailablePeptideLevelScores() {

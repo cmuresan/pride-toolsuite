@@ -3,14 +3,15 @@ package uk.ac.ebi.pride.data.core;
 /**
  * Organizations are entities like companies, universities, government agencies. Any additional information such as the address,
  * email etc. should be supplied either as CV parameters or as user parameters.
- * User: yperez
+ * User: yperez, rwang
  * Date: 04/08/11
  * Time: 11:46
- *
- * todo: review this class together with Person
  */
+
 public class Organization extends Contact {
+
     private String mail;
+
     private Organization parentOrganization;
 
     public Organization(ParamGroup params, String name, String mail) {
@@ -24,7 +25,7 @@ public class Organization extends Contact {
     public Organization(ParamGroup params, Comparable id, String name, Organization parentOrganization, String mail) {
         super(params, id, name);
         this.parentOrganization = parentOrganization;
-        this.mail               = mail;
+        this.mail = mail;
     }
 
     /**
@@ -71,11 +72,11 @@ public class Organization extends Contact {
         int result = super.hashCode();
 
         result = 31 * result + ((parentOrganization != null)
-                                ? parentOrganization.hashCode()
-                                : 0);
+                ? parentOrganization.hashCode()
+                : 0);
         result = 31 * result + ((mail != null)
-                                ? mail.hashCode()
-                                : 0);
+                ? mail.hashCode()
+                : 0);
 
         return result;
     }

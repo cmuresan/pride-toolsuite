@@ -130,8 +130,6 @@ public interface MzGraphDataAccess {
      *
      * @param specId spectrum id.
      * @return double  precursor m/z value
-     *
-     * todo: change double to Double
      */
     public double getSpectrumPrecursorMz(Comparable specId);
 
@@ -141,8 +139,6 @@ public interface MzGraphDataAccess {
      * @param specId spectrum id.
      * @return double   precursor intensity.
      * @throws DataAccessException data access exception.
-     *
-     * todo: change double to Double
      */
     public double getSpectrumPrecursorIntensity(Comparable specId) throws DataAccessException;
 

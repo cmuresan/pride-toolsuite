@@ -13,10 +13,9 @@ import java.util.ArrayList;
  * Time: 8:00 AM
  */
 public class MzDataCachingStrategy extends AbstractCachingStrategy {
+
     /**
      * For the moment, MzXmlCacheBuilder only caches spectrum ids and chromatogram ids.
-     *
-     * @throws Exception error while caching the ids.
      */
     @Override
     public void cache() {

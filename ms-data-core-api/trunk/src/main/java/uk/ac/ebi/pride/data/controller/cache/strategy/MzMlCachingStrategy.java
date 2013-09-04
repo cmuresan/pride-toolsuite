@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * The CacheBuilder class provides the functionality to initialize the cache
  * categories for mzML files.
- *
+ * <p/>
  * User: yperez
  * Date: 3/13/12
  * Time: 2:48 PM
@@ -18,11 +18,10 @@ public class MzMlCachingStrategy extends AbstractCachingStrategy {
 
     /**
      * For the moment, MzXmlCacheBuilder only caches spectrum ids and chromatogram ids.
-     *
-     * @throws Exception error while caching the ids.
      */
+
     @Override
-    public void cache(){
+    public void cache() {
         // get a direct reference to unmarshaller
         MzMLUnmarshallerAdaptor unmarshaller = ((MzMLControllerImpl) controller).getUnmarshaller();
 

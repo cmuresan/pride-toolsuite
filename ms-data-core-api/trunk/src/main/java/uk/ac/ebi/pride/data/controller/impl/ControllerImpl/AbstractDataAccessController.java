@@ -253,7 +253,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     @Override
     public double getPeptidePrecursorMz(Comparable proteinId, Comparable peptideId) {
         double mz = -1;
-
         Protein protein = getProteinById(proteinId);
         if (protein != null) {
             Peptide peptide = DataAccessUtilities.getPeptide(protein, Integer.parseInt(peptideId.toString()));
@@ -261,7 +260,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
                 mz = peptide.getPrecursorMz();
             }
         }
-
         return mz;
     }
 
@@ -404,16 +402,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    public String getProteinType(Comparable proteinId) {
-        String type = null;
-        Protein protein = getProteinById(proteinId);
-        if (protein != null) {
-            type = (protein.getGel() != null) ? TWO_DIM_PROTEIN_IDENTIFICATION_TYPE : GEL_FREE_PROTEIN_IDENTIFICATION_TYPE;
-        }
-        return type;
-    }
-
-    @Override
     public double getProteinScore(Comparable proteinId) {
         double score = -1;
         Protein protein = getProteinById(proteinId);
@@ -473,7 +461,6 @@ public abstract class AbstractDataAccessController implements DataAccessControll
                 if (protein.getScore() != null) {
                     searchEngineTypes.addAll(protein.getScore().getSearchEngineTypes());
                 }
-
                 // check the search engine types from the data source
                 List<Peptide> peptides = protein.getPeptides();
                 if (!peptides.isEmpty()) {

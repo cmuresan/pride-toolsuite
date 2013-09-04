@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * DataAccessUtilities provides methods for getting information out from the core objects.
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 30-Aug-2010
  * Time: 11:52:45
  */
@@ -125,7 +125,7 @@ public class DataAccessUtilities {
         for (CvTermReference ref : refs) {
             List<CvParam> cvParams = getCvParam(paramGroup, ref.getCvLabel(), ref.getAccession());
             if (cvParams != null && !cvParams.isEmpty()) {
-                value = new Double(cvParams.get(0).getValue());
+                value = (cvParams.get(0).getValue() != null) ? new Double(cvParams.get(0).getValue()) : null;
             }
         }
         return value;
@@ -164,7 +164,6 @@ public class DataAccessUtilities {
                 mz = m;
             }
         }
-
         return mz;
     }
 

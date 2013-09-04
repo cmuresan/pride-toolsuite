@@ -11,19 +11,23 @@ import java.util.List;
  * Date: 08/08/11
  * Time: 16:35
  * <p/>
- * todo: review contactInfo
  */
 public class Person extends Contact {
 
     private final List<Organization> affiliation;
+    /*A list of Person Affiliations*/
 
     private String firstname;
+    /*First Name of the Person*/
 
     private String lastname;
+    /*Last name of the Person*/
 
     private String contactInfo;
+    /*mail or web page*/
 
     private String midInitials;
+    /*Mid initials*/
 
     public Person(ParamGroup params, String firstname, String contactInfo) {
         this(params, null, null, null, firstname, null, null, contactInfo);

@@ -5,6 +5,8 @@ import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import java.util.List;
 
 /**
+ * PSM Spectrum identification match. The relation between an Spectrum and a PeptideEvidence.
+ * It contains a number of Scores from different search Engines.
  * User: yperez
  * Date: 05/08/11
  * Time: 15:49

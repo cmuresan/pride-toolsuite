@@ -44,7 +44,7 @@ public class PeakTransformer {
             paramGroup.addCvParam(cvParam);
 
             cvTerm = CvTermReference.ION_SELECTION_CHARGE_STATE;
-            cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), spectrum.getPrecursorCharge().toString(), null, null, null);
+            cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), (spectrum.getPrecursorCharge() != null) ? spectrum.getPrecursorCharge().toString() : null, null, null, null);
             paramGroup.addCvParam(cvParam);
 
             if (spectrum.getPrecursorMZ() != null || spectrum.getPrecursorIntensity() != null || spectrum.getPrecursorCharge() != null) {

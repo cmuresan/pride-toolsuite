@@ -401,7 +401,7 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
      */
     private int getExperimentId(Comparable accession) {
         String query = "SELECT experiment_id FROM pride_experiment WHERE accession= ?";
-        return jdbcTemplate.queryForInt(query, accession);
+        return jdbcTemplate.queryForObject(query, Integer.class, accession);
     }
 
     @Override
@@ -902,14 +902,6 @@ public class PrideDBAccessControllerImpl extends CachedDataAccessController {
         }
 
         return searchEngineTypes == null ? Collections.<SearchEngineType>emptyList() : searchEngineTypes;
-    }
-
-    @Override
-    public String getProteinType(Comparable proteinId) {
-        String query = "select classname from pride_identification where identification_id=?";
-        String className = jdbcTemplate.queryForObject(query, String.class, proteinId);
-
-        return className.contains("TwoDimensionalIdentificationBean") ? TWO_DIM_PROTEIN_IDENTIFICATION_TYPE : GEL_FREE_PROTEIN_IDENTIFICATION_TYPE;
     }
 
     @Override

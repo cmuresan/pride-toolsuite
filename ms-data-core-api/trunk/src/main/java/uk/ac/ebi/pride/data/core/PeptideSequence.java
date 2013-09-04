@@ -12,8 +12,6 @@ import java.util.List;
  * User: yperez
  * Date: 04/08/11
  * <p/>
- * <p/>
- * todo: compareTo method is implemented using bad practice, need to be refactored
  */
 public class PeptideSequence extends IdentifiableParamGroup implements Comparable {
 

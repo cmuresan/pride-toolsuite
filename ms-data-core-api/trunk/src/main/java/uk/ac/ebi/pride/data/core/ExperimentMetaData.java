@@ -71,7 +71,6 @@ public class ExperimentMetaData extends IdentifiableParamGroup {
      * List of SpectraData Objects used by MZIdentML to refereed the original mass spectra files.
      * A data set containing spectra data (consisting of one or more spectra).
      * <p/>
-     * todo: can this be stored in MzGraphMetaData?
      */
     private final List<SpectraData> spectraDatas;
 

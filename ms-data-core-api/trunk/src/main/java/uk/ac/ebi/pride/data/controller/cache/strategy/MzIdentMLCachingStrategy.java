@@ -34,7 +34,7 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
      * Spectrum ids and identification ids are cached.
      */
     @Override
-    public void cache(){
+    public void cache() {
         MzIdentMLUnmarshallerAdaptor unmarshaller = ((MzIdentMLControllerImpl) controller).getUnmarshaller();
         boolean proteinGroupPresent = hasProteinGroup(unmarshaller);
 
@@ -189,7 +189,6 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
      * spectrumItems and read the Peptide Evidences and the Proteins related with these peptideEvidence. Finally
      * the function construct a map in from proteins to spectrums named identProteinsMap.
      *
-     * @return
      * @throws javax.naming.ConfigurationException
      *
      */

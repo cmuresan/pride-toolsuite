@@ -103,6 +103,7 @@ public class RetrievePeptideTableTask extends AbstractDataAccessTask<Void, Tuple
                             PeptideTableRow content = TableDataRetriever.getPeptideTableRow(controller, identId, peptideId);
                             publish(new Tuple<TableContentType, Object>(TableContentType.PEPTIDE, content));
                         }
+
                     }
 
                     // this is important for cancelling

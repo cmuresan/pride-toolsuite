@@ -336,6 +336,16 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
             return Collections.emptySet();
         }
     }
+
+    public boolean hasProteinSequence() throws ConfigurationException {
+        boolean proteinSequencePresent = false;
+        Set<String> proteinSequence = this.getIDsForElement(MzIdentMLElement.DBSequence);
+        if (proteinSequence != null && !proteinSequence.isEmpty()) {
+            Map<String, String> attributes = this.getElementAttributes((String) proteinSequence.toArray()[0], DBSequence.class);
+            return attributes.containsKey("Seq");
+        }
+        return proteinSequencePresent;
+    }
 }
 
 

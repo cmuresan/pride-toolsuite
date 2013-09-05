@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.chart.ChartTabPane;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
+import uk.ac.ebi.pride.gui.component.protein.ProteinTabPane;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.task.TaskListener;
@@ -57,9 +58,9 @@ public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<Spectr
             mzDataTabPane.spectrumChange();
             mzDataTabPane.populate();
 
-            //Update the Peptide and Protein Tabs
-            PeptideTabPane peptideContentPane = contentPane.getPeptideTabPane();
 
+            //Update the Peptide Tabs
+            PeptideTabPane peptideContentPane = contentPane.getPeptideTabPane();
             //Add Spectrum View
             peptideContentPane.getVizTabPane().addSpectrumViewPane();
             //Add Spectrum View
@@ -67,6 +68,13 @@ public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<Spectr
 
             peptideContentPane.peptideChange();
             contentPane.populate();
+
+            //Update Protein Tab
+            ProteinTabPane proteinTabPane = contentPane.getProteinTabPane();
+            proteinTabPane.getVizTabPane().addSpectrumViewPane();
+            proteinTabPane.getVizTabPane().addFragmentationViewPane();
+            proteinTabPane.peptideChange();
+            proteinTabPane.populate();
 
             RetrievePeptideSpectrumDetailTask task = new RetrievePeptideSpectrumDetailTask(controller);
             JTable table = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();

@@ -79,6 +79,7 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
 
     public ProteinSequencePane(DataAccessController controller, Action downloadProteinAction) {
         super(controller);
+
         this.downloadProteinAction = downloadProteinAction;
         this.setLayout(new BorderLayout());
         this.addPropertyChangeListener(this);

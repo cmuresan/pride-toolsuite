@@ -268,9 +268,8 @@ public class ProteinSelectionPane extends DataAccessControllerPane {
 
         @Override
         public void tableChanged(TableModelEvent e) {
-            if (e.getType() == TableModelEvent.INSERT) {
+            if (e.getType() == TableModelEvent.INSERT || e.getType() == TableModelEvent.UPDATE) {
                 if (table.getRowCount() > 0 && table.getSelectedRow() < 0) {
-                    //TreeTableModel peptideModel = (TreeTableModel) table.getModel();
                     table.changeSelection(0, 0, false, false);
                 }
             }

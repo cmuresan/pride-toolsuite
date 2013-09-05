@@ -137,6 +137,11 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
+    public boolean hasProteinSequence() {
+        return false;
+    }
+
+    @Override
     public int getNumberOfSpectra() {
         return getSpectrumIds().size();
     }

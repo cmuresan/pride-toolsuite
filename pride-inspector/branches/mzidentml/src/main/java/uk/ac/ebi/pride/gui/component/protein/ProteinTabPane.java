@@ -2,6 +2,8 @@ package uk.ac.ebi.pride.gui.component.protein;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.bushe.swing.event.ContainerEventServiceFinder;
+import org.bushe.swing.event.EventService;
 import org.bushe.swing.event.EventSubscriber;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
@@ -10,8 +12,12 @@ import uk.ac.ebi.pride.gui.component.PrideInspectorTabPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
+import uk.ac.ebi.pride.gui.component.peptide.PeptideVizPane;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableHeader;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
+import uk.ac.ebi.pride.gui.event.container.PSMEvent;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 
 import javax.swing.*;
@@ -192,6 +198,10 @@ public class ProteinTabPane extends PrideInspectorTabPane {
         }
     }
 
+    public ProteinVizPane getVizTabPane() {
+        return vizTabPane;
+    }
+
     /**
      * Event handler for expanding protein panel
      */
@@ -203,6 +213,33 @@ public class ProteinTabPane extends PrideInspectorTabPane {
             innerPane.setVisible(!visible);
             outerPane.setDividerSize(visible ? 0 : DIVIDER_SIZE);
             outerPane.resetToPreferredSizes();
+        }
+    }
+
+    public void peptideChange() {
+
+        JTable table = peptidePane.getPeptideTable();
+
+        int rowNum = (table.getSelectedRow() >= 0) ? table.getSelectedRow() : 0;
+        if (rowNum >= 0) {
+            // get table model
+            PeptideTableModel tableModel = (PeptideTableModel) table.getModel();
+            // get identification and peptide column
+            int identColNum = tableModel.getColumnIndex(PeptideTableHeader.IDENTIFICATION_ID.getHeader());
+            int peptideColNum = tableModel.getColumnIndex(PeptideTableHeader.PEPTIDE_ID.getHeader());
+
+            // get identification and peptide id
+            if (table.getRowCount() > 0) {
+                int modelRowIndex = table.convertRowIndexToModel(rowNum);
+                Comparable identId = (Comparable) tableModel.getValueAt(modelRowIndex, identColNum);
+                Comparable peptideId = (Comparable) tableModel.getValueAt(modelRowIndex, peptideColNum);
+
+                if (peptideId != null && identId != null) {
+                    // publish the event to local event bus
+                    EventService eventBus = ContainerEventServiceFinder.getEventService(peptidePane);
+                    eventBus.publish(new PSMEvent(peptidePane, controller, identId, peptideId));
+                }
+            }
         }
     }
 }

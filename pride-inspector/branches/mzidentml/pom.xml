@@ -34,8 +34,8 @@
             <timezone>0</timezone>
         </developer>
         <developer>
-            <id>fabregat</id>
-            <name>Antonio Fabregat</name>
+            <id>yperez</id>
+            <name>Yasset Perez-Riverol</name>
             <organization>Proteomics Services Team, PANDA Group, EMBL-European Bioinformatics Institute</organization>
             <organizationUrl>http://www.ebi.ac.uk/pride</organizationUrl>
             <roles>
@@ -44,8 +44,8 @@
             <timezone>0</timezone>
         </developer>
         <developer>
-            <id>yperez</id>
-            <name>Yasset Perez-Riverol</name>
+            <id>fabregat</id>
+            <name>Antonio Fabregat</name>
             <organization>Proteomics Services Team, PANDA Group, EMBL-European Bioinformatics Institute</organization>
             <organizationUrl>http://www.ebi.ac.uk/pride</organizationUrl>
             <roles>
@@ -81,12 +81,12 @@
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>ms-data-core-api</artifactId>
-            <version>0.11.6</version>
+            <version>0.11.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>pride-mzgraph-browser</artifactId>
-            <version>1.0.12-SNAPSHOT</version>
+            <version>1.0.13-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
@@ -181,7 +181,7 @@
 
         <dependency>
             <groupId>uk.ac.ebi.pride.prider</groupId>
-            <artifactId> prider-data-provider-api</artifactId>
+            <artifactId>prider-data-provider-api</artifactId>
             <version>1.0</version>
         </dependency>
 

@@ -29,6 +29,8 @@ import uk.ac.ebi.pride.gui.task.impl.RetrievePeptideTableTask;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.Collection;
@@ -43,6 +45,7 @@ import java.util.Map;
  * Time: 11:26:45
  */
 public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void> implements EventBusSubscribable {
+
     private static final Logger logger = LoggerFactory.getLogger(PeptideSelectionPane.class);
 
     /**
@@ -126,6 +129,8 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
         // add row selection listener
         pepTable.getSelectionModel().addListSelectionListener(new PeptideSelectionListener(pepTable));
 
+        pepTable.getModel().addTableModelListener(new PeptideInsertListener(pepTable));
+
         // add mouse listener
         String protAccColumnHeader = PeptideTableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
         pepTable.addMouseMotionListener(new TableCellMouseMotionListener(pepTable, protAccColumnHeader));
@@ -140,7 +145,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
     /**
      * Get peptide table
      *
-     * @return  peptide table
+     * @return peptide table
      */
     public JTable getPeptideTable() {
         return pepTable;
@@ -187,6 +192,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
 
             // update peptide table
             updateTable(tableModel, identId);
+
         }
 
         private void updateProteinLabel(Comparable identId) {
@@ -276,7 +282,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
                     Collection<Modification> mods = controller.getPTMs(identId, peptideId);
                     for (Modification mod : mods) {
                         // get accession
-                        String accession = (mod.getId() != null)?mod.getId().toString():null;
+                        String accession = (mod.getId() != null) ? mod.getId().toString() : null;
                         Map<String, Double> aminoAcidMap = modMap.get(accession);
                         if (aminoAcidMap == null) {
                             aminoAcidMap = new HashMap<String, Double>();
@@ -319,6 +325,7 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
      */
     @SuppressWarnings("unchecked")
     private class PeptideSelectionListener implements ListSelectionListener {
+
         private final JTable table;
 
         private PeptideSelectionListener(JTable table) {
@@ -353,4 +360,32 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
             }
         }
     }
+
+    /**
+     * Trigger when a peptide is inserted on the table,
+     * a new background task will be started to retrieve the peptide.
+     */
+    @SuppressWarnings("unchecked")
+    private class PeptideInsertListener implements TableModelListener {
+
+        private final JTable table;
+
+        private PeptideInsertListener(JTable table) {
+            this.table = table;
+        }
+
+        @Override
+        public void tableChanged(TableModelEvent e) {
+            if (e.getType() == TableModelEvent.UPDATE || e.getType() == TableModelEvent.INSERT) {
+                if (table.getRowCount() > 0 && table.getSelectedRow() < 0) {
+                    PeptideTableModel peptideModel = (PeptideTableModel) table.getModel();
+                    table.changeSelection(0, peptideModel.getColumnIndex(PeptideTableHeader.PEPTIDE_COLUMN.getHeader()), false, false);
+                }
+            }
+        }
+
+
+    }
+
+
 }

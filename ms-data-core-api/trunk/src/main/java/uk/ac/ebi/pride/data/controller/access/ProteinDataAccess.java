@@ -135,6 +135,14 @@ public interface ProteinDataAccess {
      */
     public DBSequence getProteinSequence(Comparable proteinId);
 
+    /**
+     * Whether this controller contains protein sequences
+     *
+     * @return boolean  return true if identifications exist
+     */
+
+    public boolean hasProteinSequence();
+
 }
 
 

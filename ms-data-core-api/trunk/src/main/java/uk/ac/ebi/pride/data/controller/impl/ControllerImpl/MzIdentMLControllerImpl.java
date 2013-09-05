@@ -916,5 +916,14 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return new ArrayList<DataAccessController>(msDataAccessControllers.values());
     }
 
-
+    @Override
+    public boolean hasProteinSequence() {
+        try {
+            return unmarshaller.hasProteinSequence();
+        } catch (ConfigurationException ex) {
+            String msg = "Error while reading the mzidentml file";
+            logger.error(msg, ex);
+            throw new DataAccessException(msg, ex);
+        }
+    }
 }

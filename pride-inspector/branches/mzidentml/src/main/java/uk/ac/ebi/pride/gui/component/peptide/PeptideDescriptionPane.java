@@ -26,6 +26,8 @@ import javax.help.CSH;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -89,6 +91,9 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
 
         // add selection listener
         pepTable.getSelectionModel().addListSelectionListener(new PeptideSelectionListener(pepTable));
+
+        // add modification listener
+        pepTable.getModel().addTableModelListener(new PeptideInsertListener(pepTable));
 
         JScrollPane scrollPane = new JScrollPane(pepTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -261,5 +266,28 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
             }
         }
 
+    }
+
+    /**
+     * Trigger when a peptide is inserted on the table,
+     * a new background task will be started to retrieve the peptide.
+     */
+    @SuppressWarnings("unchecked")
+    private class PeptideInsertListener implements TableModelListener {
+
+        private final JTable table;
+
+        private PeptideInsertListener(JTable table) {
+            this.table = table;
+        }
+
+        @Override
+        public void tableChanged(TableModelEvent e) {
+            if (e.getType() == TableModelEvent.UPDATE || e.getType() == TableModelEvent.INSERT) {
+                if (table.getRowCount() > 0 && table.getSelectedRow() < 0) {
+                    table.changeSelection(0, 0, true, false);
+                }
+            }
+        }
     }
 }

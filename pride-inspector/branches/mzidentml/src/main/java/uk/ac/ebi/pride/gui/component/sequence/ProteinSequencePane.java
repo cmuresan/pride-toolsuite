@@ -46,6 +46,7 @@ import static uk.ac.ebi.pride.gui.component.sequence.AttributedSequenceBuilder.P
 public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProtein, Void> implements EventBusSubscribable {
     private final static Logger logger = LoggerFactory.getLogger(ProteinSequencePane.class);
     private final static int TOP_MARGIN = 5;
+    private final static int TOP_MARGIN_MESSAGE = 45;
     private final static int BOTTOM_MARGIN = 20;
     private final static int LEFT_MARGIN = 70;
     private final static int RIGHT_MARGIN = 70;
@@ -149,6 +150,12 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
                     JPanel panel = createWarningPanel(msg, true);
                     this.add(panel, BorderLayout.NORTH);
                 }
+            } else if (downloadProteinAction != null && proteinModel.getSequenceString() != null) {
+                // protein sequence can not be download
+                String msg = appContext.getProperty("protein.sequence.unchecked.title") +
+                        ", " + proteinModel.getAccession() + " is not checked in repositories";
+                JPanel panel = createWarningPanel(msg, true);
+                this.add(panel, BorderLayout.NORTH);
             } else if (proteinModel.getSequenceString() == null) {
                 // protein sequence can not be download
                 String msg = appContext.getProperty("protein.sequence.unavailable.title") +
@@ -233,9 +240,8 @@ public class ProteinSequencePane extends DataAccessControllerPane<AnnotatedProte
     private void drawProteinSequence(Graphics2D g2, AttributedString sequence, AnnotatedProtein protein) {
         Container viewport = getParent();
         int width = viewport.getWidth();
-
         // spacing within the panel
-        int yMargin = drawLegend(g2, TOP_MARGIN) + ROW_GAP;
+        int yMargin = (downloadProteinAction != null) ? drawLegend(g2, TOP_MARGIN_MESSAGE) + ROW_GAP : drawLegend(g2, TOP_MARGIN) + ROW_GAP;
         yMargin = drawProteinMetaData(g2, protein, yMargin) + ROW_GAP;
         int rightMargin = width - RIGHT_MARGIN;
 

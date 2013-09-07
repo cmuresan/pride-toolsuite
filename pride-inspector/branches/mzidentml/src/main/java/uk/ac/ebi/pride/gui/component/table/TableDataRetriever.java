@@ -200,6 +200,9 @@ public class TableDataRetriever {
         Protein protein = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
         if (protein != null) {
             protein = new AnnotatedProtein(protein);
+        } else if (controller.getProteinById(proteinId).getDbSequence() != null && controller.getProteinById(proteinId).getDbSequence().getSequence() != null) {
+            protein = new AnnotatedProtein(mappedProtAcc, controller.getProteinById(proteinId).getDbSequence().getName(), Protein.STATUS.UNKNOWN, controller.getProteinById(proteinId).getDbSequence().getSequence());
+            PrideInspectorCacheManager.getInstance().addProteinDetails(protein);
         }
 
         // Protein name

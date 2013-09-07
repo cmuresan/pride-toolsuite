@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.gui.component.sequence;
 import uk.ac.ebi.pride.gui.prop.PropertyChangeHelper;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
 
+
 import java.beans.PropertyChangeListener;
 import java.util.*;
 
@@ -14,11 +15,13 @@ import java.util.*;
  * Time: 11:37
  */
 public class AnnotatedProtein extends Protein {
+
     public static final String PEPTIDE_SELECTION_PROP = "selectedAnnotation";
 
     private List<PeptideAnnotation> annotations;
     private PeptideAnnotation selectedAnnotation;
     private PropertyChangeHelper propertyChangeHelper;
+
     /**
      * these peptides can be duplicated
      */
@@ -66,6 +69,7 @@ public class AnnotatedProtein extends Protein {
                 break;
             case UNKNOWN:
                 setName(name);
+                setSequenceString(protein.getSequenceString());
                 break;
             case DELETED:
                 setName(name);
@@ -80,6 +84,37 @@ public class AnnotatedProtein extends Protein {
         for (PROPERTY property : PROPERTY.values()) {
             setProperty(property, protein.getProperty(property));
         }
+    }
+
+    /**
+     * Create an annotable active protein from an existing protein
+     *
+     * @param accession
+     * @param name
+     * @param status
+     * @param sequence
+     */
+    public AnnotatedProtein(String accession, String name, STATUS status, String sequence) {
+        this(accession);
+        switch (status) {
+            case ACTIVE:
+                setName(name);
+                setSequenceString(sequence);
+                break;
+            case DEMERGED:
+                setName(name);
+                break;
+            case UNKNOWN:
+                setName(name);
+                setSequenceString(sequence);
+                break;
+            case DELETED:
+                setName(name);
+                break;
+            case ERROR:
+                break;
+        }
+        setStatus(status);
     }
 
     public AnnotatedProtein(String accession) {

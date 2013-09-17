@@ -11,6 +11,7 @@
             <outputDirectory>${assembly.dir}/lib</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
+            <outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
     </dependencySets>
 

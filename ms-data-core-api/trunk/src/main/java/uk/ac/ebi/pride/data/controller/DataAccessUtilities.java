@@ -487,7 +487,7 @@ public class DataAccessUtilities {
             for (SearchEngineType searchEngineType : searchEngineTypes) {
                 for (CvParam term : params.getCvParams()) {
                     CvTermReference reference = CvTermReference.getCvRefByAccession(term.getAccession());
-                    if (reference != null) {
+                    if (reference != null && NumberUtilities.isNumber(term.getValue())) {
                         score.addScore(searchEngineType, reference, new Double(term.getValue()));
                     }
                 }

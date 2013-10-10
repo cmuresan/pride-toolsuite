@@ -31,7 +31,7 @@ public class PrideInspectorBootstrap {
 
         // get max memory
         String maxMem = bootstrapProps.getProperty("pride.inspector.max.memory");
-
+        logger.debug("Maximum memory setting is: " + maxMem);
 
         // createAttributedSequence the command
         StringBuilder cmdBuffer = new StringBuilder();
@@ -51,7 +51,7 @@ public class PrideInspectorBootstrap {
         // call the command
         Process process;
         try {
-            logger.info(cmdBuffer.toString());
+            logger.debug(cmdBuffer.toString());
             process = Runtime.getRuntime().exec(cmdBuffer.toString());
 
             StreamProxy errorStreamProxy = new StreamProxy(process.getErrorStream(), System.err);
@@ -79,6 +79,7 @@ public class PrideInspectorBootstrap {
         try {
             URL pathURL = IOUtilities.getFullPath(PrideInspectorBootstrap.class, "config/config.props");
             File file = IOUtilities.convertURLToFile(pathURL);
+            logger.debug("Loading configuration file: " + file.getAbsolutePath());
             // input stream of the property file
             inputStream = new FileInputStream(file);
             props.load(inputStream);

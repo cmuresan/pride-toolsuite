@@ -13,7 +13,6 @@ import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.mzgraph.FragmentationTablePane;
 import uk.ac.ebi.pride.gui.component.mzgraph.SpectrumViewPane;
 import uk.ac.ebi.pride.gui.component.sequence.ProteinSequencePane;
-import uk.ac.ebi.pride.mzgraph.gui.ExperimentalFragmentedIonsTable;
 
 import javax.swing.*;
 import java.awt.*;

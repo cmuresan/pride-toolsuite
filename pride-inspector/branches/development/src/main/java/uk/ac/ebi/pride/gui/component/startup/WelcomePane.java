@@ -627,7 +627,6 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
     public void succeed(TaskEvent<Object> objectTaskEvent) {
         Object obj = objectTaskEvent.getValue();
         if (obj instanceof Boolean && (Boolean) obj) {
-//            messageBoard.showMessage(MessageBoard.Type.WARNING, context.getProperty("new.update.message"));
             UpdateChecker.showUpdateDialog();
         }
     }

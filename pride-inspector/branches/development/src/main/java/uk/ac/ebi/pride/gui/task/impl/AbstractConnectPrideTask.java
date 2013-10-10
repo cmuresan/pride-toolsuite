@@ -160,6 +160,23 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
         return cmd.toString();
     }
 
+
+    private void copyStream(InputStream inputStream, BufferedOutputStream outputStream, double fileSize) throws IOException {
+        long readCount = 0;
+        byte data[] = new byte[BUFFER_SIZE];
+        int count;
+
+        setProgress(1);
+        while ((count = inputStream.read(data, 0, BUFFER_SIZE)) != -1) {
+            readCount += count;
+            outputStream.write(data, 0, count);
+            int progress = (int)Math.round((readCount / fileSize) * 100);
+            setProgress(progress >= 100 ? 99 : progress);
+        }
+        outputStream.flush();
+        setProgress(100);
+    }
+
     /**
      * Download pride experiment
      *
@@ -184,24 +201,7 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
 
                 FileOutputStream outStream = new FileOutputStream(file);
                 boutStream = new BufferedOutputStream(outStream, BUFFER_SIZE);
-                byte data[] = new byte[BUFFER_SIZE];
-                int count;
-                long readCount = 0;
-                if (size != null) {
-                    setProgress(1);
-                }
-                while ((count = in.read(data, 0, BUFFER_SIZE)) != -1) {
-                    readCount += count;
-                    boutStream.write(data, 0, count);
-                    if (size != null) {
-                        int progress = (int) Math.round((readCount / size) * 100);
-                        setProgress(progress >= 100 ? 99 : progress);
-                    }
-                }
-                if (size != null) {
-                    setProgress(100);
-                }
-                boutStream.flush();
+                copyStream(in, boutStream, size);
                 publish("Download has finished");
             } else {
                 if (statusCode == 404) {
@@ -215,13 +215,13 @@ public abstract class AbstractConnectPrideTask extends TaskAdapter<List<Map<Stri
         } catch (IOException ex) {
             String msg = ex.getMessage();
             if (msg.contains("403")) {
-                logger.warn("Wrong login credentials: {}", msg);
+                logger.warn("Wrong login credentials: {}", msg, ex);
                 publish("Warning:Wrong login credentials");
             } else if (msg.contains("400")) {
-                logger.warn("Fail to connect to the remote server: {}", msg);
+                logger.warn("Fail to connect to the remote server: {}", msg, ex);
                 publish("Warning:Fail to connect to the remote server");
             } else {
-                logger.warn("Unexpected error: " + ex.getMessage());
+                logger.warn("Unexpected error: " + ex.getMessage(), ex);
                 publish("Unexpected error: " + ex.getMessage());
             }
         } finally {

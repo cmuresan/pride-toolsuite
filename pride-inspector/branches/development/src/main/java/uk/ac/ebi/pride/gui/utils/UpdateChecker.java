@@ -45,9 +45,7 @@ public class UpdateChecker {
                 URL url = new URL(website + "/downloads/detail?name=" + name + "-" + version + ".zip");
                 // connect to the url
                 int response = ((HttpURLConnection) url.openConnection()).getResponseCode();
-                if (response == 404) {
-                    toUpdate = true;
-                } else {
+                if (response != 404) {
                     // parse the web page
                     reader = new BufferedReader(new InputStreamReader(url.openStream()));
                     String line;
@@ -78,10 +76,10 @@ public class UpdateChecker {
      * Show update dialog
      */
     public static void showUpdateDialog() {
-        int option = JOptionPane.showConfirmDialog(null, "<html><b>A new version of PRIDE Inspector is available</b>.<br><br> " +
-                "Would you like to update?</html>", "Update Info", JOptionPane.YES_NO_OPTION);
+        int option = JOptionPane.showConfirmDialog(null, "<html><b>A major release of PRIDE Inspector is available</b>.<br><br> " +
+                "Please update now, you will <b>NOT</b> be able to download data from PRIDE using this version.</html>", "Update Info", JOptionPane.OK_CANCEL_OPTION);
 
-        if (option == JOptionPane.YES_OPTION) {
+        if (option == JOptionPane.OK_OPTION) {
             DesktopContext context = Desktop.getInstance().getDesktopContext();
             String website = context.getProperty("pride.inspector.website");
             HttpUtilities.openURL(website);

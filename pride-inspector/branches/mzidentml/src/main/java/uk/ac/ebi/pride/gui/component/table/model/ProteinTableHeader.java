@@ -7,7 +7,7 @@ package uk.ac.ebi.pride.gui.component.table.model;
 public enum ProteinTableHeader {
     PROTEIN_GROUP_ID("Protein Group ID", "Protein Group ID"),
     PROTEIN_ACCESSION("Protein", "Protein Accession"),
-    COMPARE("✓", "Click to choose the protein you want to compare"),
+    COMPARE("Compare", "Click to choose the protein you want to compare"),
     PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
     PROTEIN_STATUS("Status", "Status Of The Protein Accession"),
     PROTEIN_SEQUENCE_COVERAGE("Coverage", "Protein Sequence Coverage"),

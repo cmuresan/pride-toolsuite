@@ -32,6 +32,8 @@ import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalFragmentedIonsTableModel;
 import uk.ac.ebi.pride.mzgraph.gui.data.ExperimentalParams;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
@@ -312,4 +314,6 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
             spectrumBrowser.repaint();
         }
     }
+
+
 }

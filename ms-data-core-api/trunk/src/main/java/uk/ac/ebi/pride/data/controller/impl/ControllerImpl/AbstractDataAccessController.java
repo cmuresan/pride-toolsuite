@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.data.controller.impl.ControllerImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.org.mozilla.javascript.IdScriptableObject;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.*;
@@ -599,6 +600,22 @@ public abstract class AbstractDataAccessController implements DataAccessControll
             }
         }
 
+        return cnt;
+    }
+
+    @Override
+    public int getNumberOfPeptidesByRank(int rank) {
+        int cnt = 0;
+
+        Collection<Comparable> ids = getProteinIds();
+        if (ids != null) {
+            for (Comparable id : ids) {
+                Collection<Comparable> peptideIds = getPeptideIds(id);
+                for (Comparable peptideId : peptideIds) {
+                    cnt += (getPeptideRank(id, peptideId) == rank) ? 1 : 0;
+                }
+            }
+        }
         return cnt;
     }
 

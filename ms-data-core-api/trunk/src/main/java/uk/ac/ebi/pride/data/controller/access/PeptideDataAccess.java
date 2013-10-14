@@ -102,6 +102,13 @@ public interface PeptideDataAccess {
     public int getNumberOfPeptides();
 
     /**
+     * Get the total number of peptides of a given Rank
+     *
+     * @return int  total number of peptides.
+     */
+    public int getNumberOfPeptidesByRank(int rank);
+
+    /**
      * Get the number peptides of a identification.
      *
      * @param proteinId identification id.

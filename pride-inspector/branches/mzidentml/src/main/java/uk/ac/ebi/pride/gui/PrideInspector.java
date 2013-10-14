@@ -306,6 +306,17 @@ public class PrideInspector extends Desktop {
         PrideAction openMzMLExampleAction = new OpenFileAction(openMzMLExampleDesc, null, mzMLFiles);
         openMzMLExampleAction.setEnabled(mzMLExampleFile != null && mzMLExampleFile.exists());
 
+        // try mzidentml sample
+        String openMzIdentMLExampleDesc = context.getProperty("open.mzidentml.example.title");
+        File mzIdentMLExampleFile = getExampleFiles(context.getProperty("pride.inspector.mzidentml.example.file"));
+        java.util.List<File> mzIdentMLFiles = new ArrayList<File>();
+        if (mzMLExampleFile != null) {
+            mzIdentMLFiles.add(mzIdentMLExampleFile);
+        }
+        PrideAction openMzIdentMLExampleAction = new OpenFileAction(openMzIdentMLExampleDesc, null, mzMLFiles);
+        openMzIdentMLExampleAction.setEnabled(mzIdentMLExampleFile != null && mzIdentMLExampleFile.exists());
+
+
         // try more samples
         String openMoreExampleDesc = context.getProperty("open.more.example.title");
         PrideAction openMoreExampleAction = new OpenUrlAction(openMoreExampleDesc, null, context.getProperty("pride.inspector.download.website"));
@@ -370,7 +381,7 @@ public class PrideInspector extends Desktop {
 
         // try samples
         JMenu trySampleMenu = MenuFactory.createMenu("Open Examples",
-                openPrideXmlExampleAction, openMzMLExampleAction, openMoreExampleAction);
+                openPrideXmlExampleAction, openMzMLExampleAction, openMzIdentMLExampleAction, openMoreExampleAction);
         trySampleMenu.setMnemonic(java.awt.event.KeyEvent.VK_X);
         trySampleMenu.setIcon(openFileIcon);
         Map<Integer, JMenu> menuMap = new HashMap<Integer, JMenu>();

@@ -329,6 +329,19 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         openPrideExampleButton.setAction(openPrideExampleAction);
         buttonPanel.add(openPrideExampleButton, c);
 
+        c.gridy = 0;
+        c.gridx = 1;
+        File mzIdentMlExampleFile = getExampleFiles(context.getProperty("pride.inspector.mzidentml.example.file"));
+        List<File> mzIdentMlFiles = new ArrayList<File>();
+        if (mzIdentMlExampleFile != null) {
+            mzIdentMlFiles.add(mzIdentMlExampleFile);
+        }
+        Action openMzIdentMlExampleAction = new OpenFileAction(context.getProperty("open.mzidentml.example.title"), circleIcon, prideXmlFiles);
+        openMzIdentMlExampleAction.setEnabled(mzIdentMlExampleFile != null && mzIdentMlExampleFile.exists());
+        JButton mzIdentMlExampleButton = createLabelLikeButton(openMzIdentMlExampleAction);
+        mzIdentMlExampleButton.setAction(openMzIdentMlExampleAction);
+        buttonPanel.add(mzIdentMlExampleButton, c);
+
         JPanel positionalPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         positionalPanel.setOpaque(false);
         positionalPanel.add(buttonPanel);

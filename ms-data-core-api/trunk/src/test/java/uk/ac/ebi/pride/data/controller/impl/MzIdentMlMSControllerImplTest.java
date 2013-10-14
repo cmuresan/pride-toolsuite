@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
  * To change this template use File | Settings | File Templates.
  */
 public class MzIdentMlMSControllerImplTest {
+
     private MzIdentMLControllerImpl mzIdentMlController = null;
 
 
@@ -33,6 +34,7 @@ public class MzIdentMlMSControllerImplTest {
         File inputFile = new File(url.toURI());
         mzIdentMlController = new MzIdentMLControllerImpl(inputFile);
     }
+
     @After
     public void tearDown() throws Exception {
         mzIdentMlController.close();
@@ -51,7 +53,6 @@ public class MzIdentMlMSControllerImplTest {
         int i = mzIdentMlController.getNumberOfIdentifiedSpectra();
         int j = mzIdentMlController.getNumberOfSpectra();
     }
-
 
 
 }

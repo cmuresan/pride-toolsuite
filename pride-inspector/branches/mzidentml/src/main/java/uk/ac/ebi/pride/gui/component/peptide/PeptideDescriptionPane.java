@@ -215,6 +215,7 @@ public class PeptideDescriptionPane extends DataAccessControllerPane {
                 eventBus.publish(new ChangeRankingThresholdEvent(PeptideDescriptionPane.this, rankingThreshold));
             }
         });
+        if (!controller.getType().equals(DataAccessController.Type.MZIDENTML)) rankingFilterList.setEnabled(false);
         return rankingFilterList;
     }
 

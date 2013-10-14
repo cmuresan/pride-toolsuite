@@ -32,10 +32,7 @@ import uk.ac.ebi.pride.gui.task.impl.RetrieveSpectrumTableTask;
 
 import javax.help.CSH;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.*;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -154,6 +151,7 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
 
         // add selection listener
         spectrumTable.getSelectionModel().addListSelectionListener(new MzDataListSelectionListener(spectrumTable));
+        spectrumTable.getModel().addTableModelListener(new SpectrumTableInsertListener(spectrumTable));
 
         // add to scroll pane
         JScrollPane spectrumScrollPane = new JScrollPane(spectrumTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -165,6 +163,7 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
 
         // add selection listener
         chromaTable.getSelectionModel().addListSelectionListener(new MzDataListSelectionListener(chromaTable));
+        chromaTable.getModel().addTableModelListener(new SpectrumTableInsertListener(chromaTable));
 
         // add to scroll pane
         JScrollPane chromaScrollPane = new JScrollPane(chromaTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -492,7 +491,7 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
                     columnNum = ((SpectrumTableModel) spectrumTable.getModel()).getColumnIndex(SpectrumTableModel.TableHeader.SPECTRUM_ID_COLUMN.getHeader());
                     rowNum = spectrumTable.getSelectedRow();
                     rowCnt = spectrumTable.getRowCount();
-                    Comparable spectrumId = (rowCnt > 0 && rowNum >= 0)? (Comparable) spectrumTable.getValueAt(rowNum, columnNum):null;
+                    Comparable spectrumId = (rowCnt > 0 && rowNum >= 0) ? (Comparable) spectrumTable.getValueAt(rowNum, columnNum) : null;
                     eventBus.publish(new SpectrumEvent(this, controller, spectrumId));
                     exportButton.setEnabled(true);
                     exportButton.setForeground(Color.blue);
@@ -501,7 +500,7 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
                     columnNum = ((ChromatogramTableModel) chromaTable.getModel()).getColumnIndex(ChromatogramTableModel.TableHeader.CHROMATOGRAM_ID_COLUMN.getHeader());
                     rowNum = chromaTable.getSelectedRow();
                     rowCnt = chromaTable.getRowCount();
-                    Comparable chromaId = (rowCnt > 0 && rowNum >= 0)? (Comparable) chromaTable.getValueAt(rowNum, columnNum):null;
+                    Comparable chromaId = (rowCnt > 0 && rowNum >= 0) ? (Comparable) chromaTable.getValueAt(rowNum, columnNum) : null;
                     eventBus.publish(new ChromatogramEvent(this, controller, chromaId));
                     exportButton.setEnabled(false);
                     exportButton.setForeground(Color.gray);
@@ -510,11 +509,34 @@ public class MzDataSelectionPane extends DataAccessControllerPane<MzGraph, Void>
         }
     }
 
-    public Comparable getFirstSpectrum(){
+    public Comparable getFirstSpectrum() {
         TableModel tableModel = spectrumTable.getModel();
         int columnNum = ((SpectrumTableModel) tableModel).getColumnIndex(SpectrumTableModel.TableHeader.SPECTRUM_ID_COLUMN.getHeader());
         Comparable id = (Comparable) spectrumTable.getValueAt(0, columnNum);
         return id;
+    }
+
+    /**
+     * Trigger when a protein is inserted on the table,
+     * a new background task will be started to retrieve the peptide.
+     */
+    @SuppressWarnings("unchecked")
+    private class SpectrumTableInsertListener implements TableModelListener {
+
+        private final JTable table;
+
+        private SpectrumTableInsertListener(JTable table) {
+            this.table = table;
+        }
+
+        @Override
+        public void tableChanged(TableModelEvent e) {
+            if (e.getType() == TableModelEvent.INSERT || e.getType() == TableModelEvent.UPDATE) {
+                if (table.getRowCount() > 0 && table.getSelectedRow() < 0) {
+                    table.changeSelection(0, 0, false, false);
+                }
+            }
+        }
     }
 
 

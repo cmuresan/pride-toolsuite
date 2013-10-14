@@ -535,6 +535,24 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         return num;
     }
 
+    /**
+     * Get the number of peptides by Rank, in PRIDE XML all peptides are rank 1.
+     *
+     * @return int  the number of peptides.
+     */
+    @Override
+    public int getNumberOfPeptidesByRank(int rank) {
+        int num;
+        try {
+            // this method is overridden to use the reader directly
+            num = reader.getNumberOfPeptides();
+        } catch (Exception ex) {
+            throw new DataAccessException("Failed to retrieve number of peptides", ex);
+        }
+        return num;
+    }
+
+
     @Override
     public void close() {
         reader = null;

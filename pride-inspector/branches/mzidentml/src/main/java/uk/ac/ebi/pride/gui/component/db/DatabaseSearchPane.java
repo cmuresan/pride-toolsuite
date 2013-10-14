@@ -81,7 +81,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
         searchResultCheckBox = new JCheckBox();
         resetSearchButton = GUIUtilities.createLabelLikeButton(null, "Reset");
         JPanel panel4 = new JPanel();
-        JScrollPane scrollPane1 = new JScrollPane();
+        JScrollPane scrollPane1 = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         searchResultTable = TableFactory.createDatabaseSearchTable();
         resultSummaryPanel = new JPanel();
         searchResultLabel = new JLabel();
@@ -188,20 +188,20 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
                                             .addContainerGap())
                     );
                     panel3Layout.setVerticalGroup(
-                        panel3Layout.createParallelGroup()
-                            .addGroup(GroupLayout.Alignment.TRAILING, panel3Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(searchButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(searchTextField)
-                                    .addComponent(categoryComboBox)
-                                    .addComponent(searchLabel)
-                                    .addComponent(criteriaComboBox))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(resetSearchButton)
-                                    .addComponent(searchResultCheckBox))
-                                .addGap(18, 18, 18))
+                            panel3Layout.createParallelGroup()
+                                    .addGroup(GroupLayout.Alignment.TRAILING, panel3Layout.createSequentialGroup()
+                                            .addContainerGap()
+                                            .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                    .addComponent(searchButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(searchTextField)
+                                                    .addComponent(categoryComboBox)
+                                                    .addComponent(searchLabel)
+                                                    .addComponent(criteriaComboBox))
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                    .addComponent(resetSearchButton)
+                                                    .addComponent(searchResultCheckBox))
+                                            .addGap(18, 18, 18))
                     );
                 }
 

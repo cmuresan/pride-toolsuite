@@ -51,8 +51,8 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
     /**
      * the title for ptm label
      */
-    private final static String PTM_LABEL = "<html><b>PTM</b>: ";
-    private final static String PEPTIDE_TABLE_DESC = "Peptide";
+    private final static String PTM_LABEL = "<html><b>Modified AAs</b>: ";
+    private final static String PEPTIDE_TABLE_DESC = "Protein";
 
     /**
      * peptide table for peptide related details
@@ -313,7 +313,15 @@ public class PeptideSelectionPane extends DataAccessControllerPane<Peptide, Void
                     aminoAcids.append(aminoAcidEntry.getKey());
                     massDelta = aminoAcidEntry.getValue();
                 }
-                modStr += "[" + aminoAcids.toString() + " - " + (massDelta == -1 ? " Unknown" : formatter.format(massDelta)) + "] ";
+                String aaStringAA = aminoAcids.toString();
+                String aaString = "";
+                if (!aaStringAA.isEmpty()) {
+                    for (Character aaChar : aaStringAA.toCharArray()) {
+                        aaString += aaChar.toString() + ",";
+                    }
+                }
+                aaString = aaString.substring(0, aaString.length() - 1);
+                modStr += "[" + aaString + " - " + (massDelta == -1 ? " Unknown" : formatter.format(massDelta)) + "] ";
             }
             return modStr;
         }

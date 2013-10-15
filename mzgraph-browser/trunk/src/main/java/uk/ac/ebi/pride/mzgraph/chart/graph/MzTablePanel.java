@@ -39,12 +39,12 @@ import java.util.List;
  * table model Cell (row, column) and chart panel XYSeries (series, item).
  * When user click one cell, the chart panel point will highlight. On the contrary,
  * when user click a point, the table cell background color will display grey.
- *
+ * <p/>
  * Creator: Qingwei-XU
  * Date: 15/10/12
  */
 
-public class MzTablePanel extends JPanel implements PropertyChangeListener{
+public class MzTablePanel extends JPanel implements PropertyChangeListener {
     private ExperimentalFragmentedIonsScatterChartPanel scatterChartPanel;
     private ExperimentalParams params = ExperimentalParams.getInstance();
 
@@ -52,7 +52,7 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
     private ChartPanel chartPanel;
     private JPanel toolbar;
 
-//    private ExperimentalFragmentedIonsTableModel tableModel;
+    //    private ExperimentalFragmentedIonsTableModel tableModel;
     private ExperimentalFragmentedIonsTable table;
 
     /**
@@ -81,11 +81,12 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
             ammoniaChecker.setVisible(false);
             ionPairLabel.setVisible(true);
             ionPairChooser.setVisible(true);
+            ionPairChooser.setEnabled(false);
             rangeLabel.setVisible(false);
             rangeSlider.setVisible(false);
             tablePanel.setVisible(true);
             chartPanel.setVisible(true);
-        } else if (! table.isCalculate()) {
+        } else if (!table.isCalculate()) {
             // no manual annotations, and not calculate auto annotations too!
             table.setShowAuto(true);
             waterChecker.setVisible(false);
@@ -202,8 +203,8 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
         rangeSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider)e.getSource();
-                if (! source.getValueIsAdjusting()) {
+                JSlider source = (JSlider) e.getSource();
+                if (!source.getValueIsAdjusting()) {
                     double newRange = source.getValue() / 10d;
                     table.setRange(newRange);
                     source.setToolTipText(newRange + "Da");
@@ -324,6 +325,7 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
         flushPanel();
     }
 //
+
     /**
      * whether calculate auto annotations, or not.
      */
@@ -351,7 +353,7 @@ public class MzTablePanel extends JPanel implements PropertyChangeListener{
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                ExperimentalFragmentedIonsTable target = (ExperimentalFragmentedIonsTable)e.getSource();
+                ExperimentalFragmentedIonsTable target = (ExperimentalFragmentedIonsTable) e.getSource();
                 int row = target.getSelectedRow();
                 int column = target.getSelectedColumn();
 

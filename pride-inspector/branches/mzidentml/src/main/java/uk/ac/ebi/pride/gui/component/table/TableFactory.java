@@ -141,6 +141,7 @@ public class TableFactory {
 
         // hide peptide species column
         TableColumnExt peptideSpecies = (TableColumnExt) table.getColumn(PeptideSpeciesTableModel.TableHeader.PEPTIDE_SPECIES_COLUMN.getHeader());
+        peptideSpecies.setCellRenderer(new PeptideSpeciesCellRenderer());
         peptideSpecies.setVisible(false);
 
         return table;

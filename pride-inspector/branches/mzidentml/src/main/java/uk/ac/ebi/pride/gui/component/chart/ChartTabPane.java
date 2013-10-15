@@ -194,7 +194,9 @@ public class ChartTabPane extends DataAccessControllerPane<PrideDataReader, Void
 
         showThumbnailView(reader);
 
-        String title = PANE_TITLE + " (" + chartSize + ")";
+        //String title = PANE_TITLE + " (" + chartSize + ")";
+        String title = PANE_TITLE;
+
         setTitle(title);
 
         ControllerContentPane dataContentPane = (ControllerContentPane) viewerContext.getDataContentPane(controller);

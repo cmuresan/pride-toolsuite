@@ -13,7 +13,7 @@
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>ms-data-core-api</artifactId>
-            <version>0.3</version>
+            <version>0.11.8-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>

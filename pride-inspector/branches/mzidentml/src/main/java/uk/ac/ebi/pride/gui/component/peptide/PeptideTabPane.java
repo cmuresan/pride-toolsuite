@@ -98,9 +98,10 @@ public class PeptideTabPane extends PrideInspectorTabPane {
 
         // title for the tab pane
         try {
-            int numberOfPeptides = controller.getNumberOfPeptides();
-            String title = " (" + numberOfPeptides + ")";
-            this.setTitle(PEPTIDE_TITLE + title);
+            //int numberOfPeptides = controller.getNumberOfPeptides();
+            //String title = " (" + numberOfPeptides + ")";
+            //this.setTitle(PEPTIDE_TITLE + title);
+            this.setTitle(PEPTIDE_TITLE);
         } catch (DataAccessException dex) {
             String msg = String.format("%s failed on : %s", this, dex);
             logger.log(Level.ERROR, msg, dex);

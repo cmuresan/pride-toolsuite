@@ -102,9 +102,10 @@ public class ProteinTabPane extends PrideInspectorTabPane {
 
         // set the title for the panel
         try {
-            int ids = controller.getNumberOfProteins();
-            String numIdent = " (" + ids + ")";
-            this.setTitle(IDENTIFICATION_TITLE + numIdent);
+            //int ids = controller.getNumberOfProteins();
+            //String numIdent = " (" + ids + ")";
+            //this.setTitle(IDENTIFICATION_TITLE + numIdent);
+            this.setTitle(IDENTIFICATION_TITLE);
         } catch (DataAccessException dex) {
             String msg = String.format("%s failed on : %s", this, dex);
             logger.log(Level.ERROR, msg, dex);

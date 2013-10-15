@@ -73,17 +73,17 @@ public class MzDataTabPane extends PrideInspectorTabPane {
             String paneTitle = "";
             if (controller.hasSpectrum()) {
                 paneTitle = SPECTRUM_TITLE;
-                int ids = controller.getSpectrumIds().size();
-                paneTitle += " (" + ids + ")";
+                //int ids = controller.getSpectrumIds().size();
+                //paneTitle += " (" + ids + ")";
             }
             if (controller.hasChromatogram()) {
                 paneTitle += ((paneTitle.equals("")) ? "" : " & ") + CHROMATOGRAM_TITLE;
-                int ids = controller.getChromatogramIds().size();
-                paneTitle += " (" + ids + ")";
+                //int ids = controller.getChromatogramIds().size();
+                //paneTitle += " (" + ids + ")";
             }
 
             if ("".equals(paneTitle)) {
-                paneTitle = SPECTRUM_TITLE + " (0)";
+                // paneTitle = SPECTRUM_TITLE + " (0)";
             }
             // set the title
             this.setTitle(paneTitle);
@@ -148,7 +148,7 @@ public class MzDataTabPane extends PrideInspectorTabPane {
         }
     }
 
-    public void spectrumChange(){
+    public void spectrumChange() {
         // local event bus
         EventService eventBus = ContainerEventServiceFinder.getEventService(mzSelectionPane);
         Comparable id = mzSelectionPane.getFirstSpectrum();

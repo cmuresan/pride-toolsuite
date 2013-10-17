@@ -4,7 +4,7 @@
     <groupId>uk.ac.ebi.pride.gui</groupId>
     <artifactId>pride-inspector</artifactId>
     <packaging>jar</packaging>
-    <version>1.3.1</version>
+    <version>1.3.2</version>
     <name>pride-inspector</name>
     <url>http://code.google.com/p/pride-toolsuite/wiki/PRIDEInspector</url>
 

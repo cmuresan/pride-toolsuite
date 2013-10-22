@@ -518,11 +518,11 @@ public class DataAccessUtilities {
         List<CvParam> cps = new ArrayList<CvParam>();
         for (CvParam param : cvParams) {
             if (param.getAccession().equalsIgnoreCase(accession)) {
-                if (param.getCvLookupID() != null && !param.getCvLookupID().equalsIgnoreCase(cvLabel)) {
-                    // this could be the wrong CV param!!
-                    logger.warn("We may have got the wrong CV param: " + param.toString() + " compare to cvLabel: [" + cvLabel + "] accession: [" + accession + "]");
-                    // ToDo: proper logging (should perhaps fail, see comment above)
-                }
+//                if (param.getCvLookupID() != null && !param.getCvLookupID().equalsIgnoreCase(cvLabel)) {
+//                    // this could be the wrong CV param!!
+//                    logger.warn("We may have got the wrong CV param: " + param.toString() + " compare to cvLabel: [" + cvLabel + "] accession: [" + accession + "]");
+//                    // ToDo: proper logging (should perhaps fail, see comment above)
+//                }
                 cps.add(param);
             }
         }

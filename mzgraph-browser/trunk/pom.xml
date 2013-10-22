@@ -6,7 +6,7 @@
 
     <groupId>uk.ac.ebi.pride</groupId>
     <artifactId>pride-mzgraph-browser</artifactId>
-    <version>1.0.13-SNAPSHOT</version>
+    <version>1.0.15-SNAPSHOT</version>
 
     <dependencies>
         <!-- use ms-data-core-api package to create test set. -->

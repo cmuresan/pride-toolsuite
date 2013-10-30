@@ -84,6 +84,7 @@ public class MzDataTabPane extends PrideInspectorTabPane {
 
             if ("".equals(paneTitle)) {
                 // paneTitle = SPECTRUM_TITLE + " (0)";
+                paneTitle = SPECTRUM_TITLE;
             }
             // set the title
             this.setTitle(paneTitle);

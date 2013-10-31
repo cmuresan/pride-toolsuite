@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Peak Controller keep the information from different Peak files. It support mgf, ms2, pkl,
  * and DTa files. This files only contain the name of the file, the
- *
+ * <p/>
  * User: yperez
  * Date: 3/15/12
  * Time: 10:27 PM
@@ -45,7 +45,8 @@ public class PeakControllerImpl extends CachedDataAccessController {
      * Construct a data access controller using a given mzML file
      *
      * @param file jmzReader file
-     * @throws uk.ac.ebi.pride.data.controller.DataAccessException data access exception
+     * @throws uk.ac.ebi.pride.data.controller.DataAccessException
+     *          data access exception
      */
     public PeakControllerImpl(File file) {
         super(file, DataAccessMode.CACHE_AND_SOURCE);
@@ -54,27 +55,26 @@ public class PeakControllerImpl extends CachedDataAccessController {
 
     /**
      * Initialize the data access controller
-     *
      */
     private void initialize() {
 
         File file = (File) this.getSource();
         JMzReader um = null;
-        if(isValidFormat(file) != null){
-            try{
-                if(isValidFormat(file) == MgfFile.class ){
-                    um = new MgfFile(file);
+        if (isValidFormat(file) != null) {
+            try {
+                if (isValidFormat(file) == MgfFile.class) {
+                    um = new MgfFile(file, true);
                 }
-                if(isValidFormat(file) == DtaFile.class ){
+                if (isValidFormat(file) == DtaFile.class) {
                     um = new DtaFile(file);
                 }
-                if(isValidFormat(file) == PklFile.class ){
+                if (isValidFormat(file) == PklFile.class) {
                     um = new PklFile(file);
                 }
-                if(isValidFormat(file) == Ms2File.class ){
+                if (isValidFormat(file) == Ms2File.class) {
                     um = new Ms2File(file);
                 }
-            }catch(JMzReaderException e){
+            } catch (JMzReaderException e) {
                 String msg = "Error while trying to initialize the Peak file";
                 logger.error(msg, e);
                 throw new DataAccessException(msg, e);
@@ -217,7 +217,7 @@ public class PeakControllerImpl extends CachedDataAccessController {
     }
 
     @Override
-    public MzGraphMetaData getMzGraphMetaData(){
+    public MzGraphMetaData getMzGraphMetaData() {
         return null;
     }
 
@@ -235,13 +235,13 @@ public class PeakControllerImpl extends CachedDataAccessController {
     public static Class isValidFormat(File file) {
 
         String filename = file.getName().toLowerCase();
-        if(filename.endsWith(Constants.DTA_EXT)){
+        if (filename.endsWith(Constants.DTA_EXT)) {
             return DtaFile.class;
-        }else if(filename.endsWith(Constants.MGF_EXT)){
+        } else if (filename.endsWith(Constants.MGF_EXT)) {
             return MgfFile.class;
-        }else if(filename.endsWith(Constants.MS2_EXT)){
+        } else if (filename.endsWith(Constants.MS2_EXT)) {
             return Ms2File.class;
-        }else if(filename.endsWith(Constants.PKL_EXT)){
+        } else if (filename.endsWith(Constants.PKL_EXT)) {
             return PklFile.class;
         }
         return null;
@@ -250,10 +250,10 @@ public class PeakControllerImpl extends CachedDataAccessController {
     /**
      * The only file format that not contain any MetaData are the pure peak files.
      *
-     * @return  Return allways false because the MetaData Information is not supported for Peak Files
+     * @return Return allways false because the MetaData Information is not supported for Peak Files
      */
     @Override
-    public boolean hasMetaDataInformation(){
+    public boolean hasMetaDataInformation() {
         return false;
     }
 }

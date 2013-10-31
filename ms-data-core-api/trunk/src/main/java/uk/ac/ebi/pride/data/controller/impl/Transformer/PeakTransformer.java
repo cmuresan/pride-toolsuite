@@ -86,14 +86,20 @@ public class PeakTransformer {
         uk.ac.ebi.pride.term.CvTermReference cvRefInt = CvTermReference.INTENSITY_ARRAY;
         CvParam cvParam = new CvParam(cvRefInt.getAccession(), cvRefInt.getName(), cvRefInt.getCvLabel(), "", cvRefInt.getAccession(), cvRefInt.getName(), cvRefInt.getCvLabel());
         ParamGroup intParam = new ParamGroup(cvParam, null);
-
-        double[] intArray = new double[peakList.keySet().size()];
-        double[] mzArray = new double[peakList.keySet().size()];
-        int i = 0;
-        for (Double mz : peakList.keySet()) {
-            mzArray[i] = mz;
-            intArray[i] = peakList.get(mz);
-            i++;
+        double[] intArray;
+        double[] mzArray;
+        if (peakList != null && peakList.size() > 0) {
+            intArray = new double[peakList.keySet().size()];
+            mzArray = new double[peakList.keySet().size()];
+            int i = 0;
+            for (Double mz : peakList.keySet()) {
+                mzArray[i] = mz;
+                intArray[i] = peakList.get(mz);
+                i++;
+            }
+        } else {
+            intArray = new double[0];
+            mzArray = new double[0];
         }
 
         //Todo: How you can know if the intensity correspond with the mz value?

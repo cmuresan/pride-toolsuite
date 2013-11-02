@@ -19,9 +19,15 @@ import java.util.Map;
  * Date: 30-Aug-2010
  * Time: 11:52:45
  */
-public class DataAccessUtilities {
+public final class DataAccessUtilities {
 
     public static final Logger logger = LoggerFactory.getLogger(DataAccessUtilities.class);
+
+    /**
+     * Private Constructor
+     */
+    private DataAccessUtilities() {
+    }
 
     /**
      * Get a list of taxonomy accessions based on a given metadata
@@ -445,8 +451,6 @@ public class DataAccessUtilities {
                     } else {
                         score.addScore(type, scoreCvTerm, null);
                     }
-                } else {
-                    //  score.addScore(type, scoreCvTerm, null);
                 }
             }
         }

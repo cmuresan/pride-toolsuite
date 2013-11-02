@@ -9,6 +9,13 @@ import java.util.Map;
  */
 public final class MapUtils {
 
+    /**
+     * Private Constructor
+     */
+    private MapUtils() {
+
+    }
+
     public static <T, V> Map<T, V> createMapFromMap(Map<T, V> map) {
         Map<T, V> newMap = new HashMap<T, V>();
 

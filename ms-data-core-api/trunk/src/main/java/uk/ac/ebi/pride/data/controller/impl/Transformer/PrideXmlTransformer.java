@@ -15,10 +15,11 @@ import java.util.List;
 /**
  * PrideXmlTransformer contains a list of static methods which convert pride-jaxb objects to pride inspector core objects
  * <p/>
+ * User: yperez, rwang
  * Date: 17-Mar-2010
  * Time: 14:14:12
  */
-public class PrideXmlTransformer {
+public final class PrideXmlTransformer {
 
     /**
      * These are a list of default names to be used for the conversion
@@ -32,6 +33,13 @@ public class PrideXmlTransformer {
     private final static String SOURCE_FILE_TYPE = "source file type";
     private final static String PROTOCOL_ID = "protocol1";
     private final static int PROCESSING_METHOD_ORDER = 1;
+
+    /**
+     * Private Constructor
+     */
+    private PrideXmlTransformer() {
+
+    }
 
     /**
      * Convert spectrum

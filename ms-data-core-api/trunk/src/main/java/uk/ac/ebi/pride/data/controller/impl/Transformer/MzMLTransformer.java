@@ -17,7 +17,14 @@ import java.util.*;
  * Date: 08-Feb-2010
  * Time: 15:11:47
  */
-public class MzMLTransformer {
+public final class MzMLTransformer {
+
+    /**
+     * Prvate Constructor
+     */
+    private MzMLTransformer() {
+
+    }
 
     /**
      * Convert spectrum

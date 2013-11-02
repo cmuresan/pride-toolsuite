@@ -16,6 +16,13 @@ import java.util.List;
 public final class CollectionUtils {
 
     /**
+     * Private Costructor
+     */
+    private CollectionUtils() {
+
+    }
+
+    /**
      * Get the index of a element in a collection
      *
      * @param collection collection to search

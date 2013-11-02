@@ -15,18 +15,26 @@ import java.sql.Statement;
 /**
  * DBUtilities provides methods for database access.
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 01-Oct-2010
  * Time: 12:01:27
  */
-public class DBUtilities {
+public final class DBUtilities {
+
     private static final Logger logger = LoggerFactory.getLogger(DBUtilities.class);
+
+    /**
+     * Private Constructor
+     */
+    private DBUtilities() {
+
+    }
 
     /**
      * It is a good idea to call this method in the finally block.
      *
-     * @param stmt statement
-     * @param rs   result set
+     * @param stmt       statement
+     * @param rs         result set
      * @param connection Connection Object to the Database
      */
     @SuppressWarnings("unchecked")

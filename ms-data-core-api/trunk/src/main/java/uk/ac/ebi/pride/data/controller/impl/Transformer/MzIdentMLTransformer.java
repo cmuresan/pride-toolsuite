@@ -38,7 +38,14 @@ import java.util.*;
  * Date: 19/09/11
  * Time: 16:08
  */
-public class MzIdentMLTransformer {
+public final class MzIdentMLTransformer {
+
+    /**
+     * Private Constructor
+     */
+    private MzIdentMLTransformer() {
+
+    }
 
     private final static Map<String, IdentifiableParamGroup> fragmentationTable = new HashMap<String, IdentifiableParamGroup>();
 
@@ -541,6 +548,7 @@ public class MzIdentMLTransformer {
         if (oldPeptideEvidence != null) {
             int start = (oldPeptideEvidence.getStart() != null) ? oldPeptideEvidence.getStart() : -1;
             int end = (oldPeptideEvidence.getEnd() != null) ? oldPeptideEvidence.getEnd() : -1;
+            //System.out.println("Peptide Evidence: " + oldPeptideEvidence.getId());
             evidence = new PeptideEvidence(oldPeptideEvidence.getId(), oldPeptideEvidence.getName(), start, end, oldPeptideEvidence.isIsDecoy(), transformToPeptide(oldPeptideEvidence.getPeptide()), transformToDBSequence(oldPeptideEvidence.getDBSequence()));
         }
         return evidence;

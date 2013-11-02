@@ -4,10 +4,8 @@ package uk.ac.ebi.pride.data.io.file;
 
 import uk.ac.ebi.jmzml.model.mzml.*;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshaller;
-import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -30,43 +28,35 @@ public class MzMLUnmarshallerAdaptor extends MzMLUnmarshaller {
     }
 
     public CVList getCVList() {
-        CVList cvList = unmarshalFromXpath("/mzML/cvList", CVList.class);
-        return cvList;
+        return (CVList) unmarshalFromXpath("/mzML/cvList", CVList.class);
     }
 
     public FileDescription getFileDescription() {
-        FileDescription fileDescription = unmarshalFromXpath("/mzML/fileDescription", FileDescription.class);
-        return fileDescription;
+        return (FileDescription) unmarshalFromXpath("/mzML/fileDescription", FileDescription.class);
     }
 
     public ReferenceableParamGroupList getReferenceableParamGroupList() {
-        ReferenceableParamGroupList referenceableParamGroupList = unmarshalFromXpath("/mzML/referenceableParamGroupList", ReferenceableParamGroupList.class);
-        return referenceableParamGroupList;
+        return (ReferenceableParamGroupList) unmarshalFromXpath("/mzML/referenceableParamGroupList", ReferenceableParamGroupList.class);
     }
 
     public SampleList getSampleList() {
-        SampleList sampleList = unmarshalFromXpath("/mzML/sampleList", SampleList.class);
-        return sampleList;
+        return (SampleList) unmarshalFromXpath("/mzML/sampleList", SampleList.class);
     }
 
     public SoftwareList getSoftwares() {
-        SoftwareList softwareList = unmarshalFromXpath("/mzML/softwareList", SoftwareList.class);
-        return softwareList;
+        return (SoftwareList) unmarshalFromXpath("/mzML/softwareList", SoftwareList.class);
     }
 
     public ScanSettingsList getScanSettingsList() {
-        ScanSettingsList scanSettingsList = unmarshalFromXpath("/mzML/scanSettingsList", ScanSettingsList.class);
-        return scanSettingsList;
+        return (ScanSettingsList) unmarshalFromXpath("/mzML/scanSettingsList", ScanSettingsList.class);
     }
 
     public InstrumentConfigurationList getInstrumentConfigurationList() {
-        InstrumentConfigurationList instrumentConfigurationList = unmarshalFromXpath("/mzML/instrumentConfigurationList", InstrumentConfigurationList.class);
-        return instrumentConfigurationList;
+        return (InstrumentConfigurationList) unmarshalFromXpath("/mzML/instrumentConfigurationList", InstrumentConfigurationList.class);
     }
 
     public DataProcessingList getDataProcessingList() {
-        DataProcessingList dataProcessingList = unmarshalFromXpath("/mzML/dataProcessingList", DataProcessingList.class);
-        return dataProcessingList;
+        return (DataProcessingList) unmarshalFromXpath("/mzML/dataProcessingList", DataProcessingList.class);
     }
 
     public Set<String> getSpectrumIds() {

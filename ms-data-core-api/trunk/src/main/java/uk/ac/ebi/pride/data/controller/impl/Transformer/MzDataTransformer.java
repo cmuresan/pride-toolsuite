@@ -4,18 +4,26 @@ import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 /**
  * This class provide the functions to convert and transform mzData objects
  * to ms-core-api objetcs.
- *
+ * <p/>
  * User: yperez
  * Date: 3/15/12
  * Time: 9:19 AM
  */
-public class MzDataTransformer {
+public final class MzDataTransformer {
+
+    /**
+     * Private Constructor
+     */
+    private MzDataTransformer() {
+
+    }
 
     /**
      * Convert spectrum
@@ -40,29 +48,29 @@ public class MzDataTransformer {
 
             ParamGroup paramGroup = new ParamGroup();
             CvTermReference cvTerm = CvTermReference.MS_LEVEL;
-            CvParam cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),spectrum.getMsLevel().toString(),null,null,null);
+            CvParam cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), spectrum.getMsLevel().toString(), null, null, null);
             paramGroup.addCvParam(cvParam);
-            if(spectrum.getPrecursorMZ() != null || spectrum.getPrecursorIntensity() !=null || spectrum.getPrecursorCharge() !=null){
+            if (spectrum.getPrecursorMZ() != null || spectrum.getPrecursorIntensity() != null || spectrum.getPrecursorCharge() != null) {
                 precursors = new ArrayList<Precursor>();
                 ParamGroup ionSelected = new ParamGroup();
-                if(spectrum.getPrecursorMZ()!=null){
+                if (spectrum.getPrecursorMZ() != null) {
                     cvTerm = CvTermReference.ION_SELECTION_MZ;
-                    cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),spectrum.getPrecursorMZ().toString(),null,null,null);
+                    cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), spectrum.getPrecursorMZ().toString(), null, null, null);
                     ionSelected.addCvParam(cvParam);
                 }
-                if(spectrum.getPrecursorCharge()!=null){
+                if (spectrum.getPrecursorCharge() != null) {
                     cvTerm = CvTermReference.ION_SELECTION_CHARGE_STATE;
-                    cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),spectrum.getPrecursorCharge().toString(),null,null,null);
+                    cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), spectrum.getPrecursorCharge().toString(), null, null, null);
                     ionSelected.addCvParam(cvParam);
                 }
-                if(spectrum.getPrecursorIntensity()!=null){
+                if (spectrum.getPrecursorIntensity() != null) {
                     cvTerm = CvTermReference.ION_SELECTION_INTENSITY;
-                    cvParam = new CvParam(cvTerm.getAccession(),cvTerm.getName(),cvTerm.getCvLabel(),spectrum.getPrecursorIntensity().toString(),null,null,null);
+                    cvParam = new CvParam(cvTerm.getAccession(), cvTerm.getName(), cvTerm.getCvLabel(), spectrum.getPrecursorIntensity().toString(), null, null, null);
                     ionSelected.addCvParam(cvParam);
                 }
                 List<ParamGroup> listIons = new ArrayList<ParamGroup>();
                 listIons.add(ionSelected);
-                Precursor precursor = new Precursor(null,null,null,null,listIons,null);
+                Precursor precursor = new Precursor(null, null, null, null, listIons, null);
                 precursors.add(precursor);
             }
 
@@ -76,7 +84,7 @@ public class MzDataTransformer {
      * Convert param group
      *
      * @param oldParam jmzML param group
-     * @param <T>        any jmzml objects which extends param group
+     * @param <T>      any jmzml objects which extends param group
      * @return ParamGroup  param group
      */
     public static <T extends uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.Param> ParamGroup transformParamGroup(T oldParam) {
@@ -127,7 +135,7 @@ public class MzDataTransformer {
         if (oldCvParams != null) {
             for (uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.CvParam oldParam : oldCvParams) {
                 CvParam newParam = new CvParam(oldParam.getAccession(), oldParam.getName(), oldParam.getCvLabel(),
-                        oldParam.getValue(), null,null,null);
+                        oldParam.getValue(), null, null, null);
                 newCvParams.add(newParam);
             }
         }
@@ -146,7 +154,7 @@ public class MzDataTransformer {
         if (oldUserParams != null) {
             for (uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.UserParam oldParam : oldUserParams) {
                 UserParam newParam = new UserParam(oldParam.getName(), null,
-                        oldParam.getValue(), null,null,null);
+                        oldParam.getValue(), null, null, null);
                 newUserParams.add(newParam);
             }
         }
@@ -164,27 +172,30 @@ public class MzDataTransformer {
     private static List<BinaryDataArray> transformBinaryDataArrayList(Map<Double, Double> peakList) {
         List<BinaryDataArray> binaryDataArrays = new ArrayList<BinaryDataArray>();
         uk.ac.ebi.pride.term.CvTermReference cvRefMz = CvTermReference.MZ_ARRAY;
-        CvParam cvParamMz = new CvParam(cvRefMz.getAccession(),cvRefMz.getName(),cvRefMz.getCvLabel(),"",cvRefMz.getAccession(),cvRefMz.getName(),cvRefMz.getCvLabel());
-        ParamGroup mzParam = new ParamGroup(cvParamMz,null);
+        CvParam cvParamMz = new CvParam(cvRefMz.getAccession(), cvRefMz.getName(), cvRefMz.getCvLabel(), "", cvRefMz.getAccession(), cvRefMz.getName(), cvRefMz.getCvLabel());
+        ParamGroup mzParam = new ParamGroup(cvParamMz, null);
 
         uk.ac.ebi.pride.term.CvTermReference cvRefInt = CvTermReference.INTENSITY_ARRAY;
-        CvParam cvParam = new CvParam(cvRefInt.getAccession(),cvRefInt.getName(),cvRefInt.getCvLabel(),"",cvRefInt.getAccession(),cvRefInt.getName(),cvRefInt.getCvLabel());
-        ParamGroup intParam = new ParamGroup(cvParam,null);
+        CvParam cvParam = new CvParam(cvRefInt.getAccession(), cvRefInt.getName(), cvRefInt.getCvLabel(), "", cvRefInt.getAccession(), cvRefInt.getName(), cvRefInt.getCvLabel());
+        ParamGroup intParam = new ParamGroup(cvParam, null);
 
         double[] intArray = new double[peakList.keySet().size()];
-        double[] mzArray  = new double[peakList.keySet().size()];
+        double[] mzArray = new double[peakList.keySet().size()];
         int i = 0;
-        for(Double mz: peakList.keySet()){
-            mzArray[i]  = mz;
-            intArray[i] = peakList.get(mz);
+
+        Iterator iterator = peakList.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry mapEntry = (Map.Entry) iterator.next();
+            mzArray[i] = (Double) mapEntry.getKey();
+            intArray[i] = (Double) mapEntry.getValue();
             i++;
         }
 
         //Todo: How you can know if the intensity correspond with the mz value?
 
-        BinaryDataArray intBinaryArr = new BinaryDataArray(null, intArray,intParam);
+        BinaryDataArray intBinaryArr = new BinaryDataArray(null, intArray, intParam);
         binaryDataArrays.add(intBinaryArr);
-        BinaryDataArray mzBinaryArr = new BinaryDataArray(null, mzArray,mzParam);
+        BinaryDataArray mzBinaryArr = new BinaryDataArray(null, mzArray, mzParam);
         binaryDataArrays.add(mzBinaryArr);
 
         return binaryDataArrays;
@@ -258,11 +269,11 @@ public class MzDataTransformer {
             String id = oldSoftware.getName();
             String version = oldSoftware.getVersion();
             String name = oldSoftware.getName();
-            Software newSoftware = new Software(null, id, name, null,null,null,version);
+            Software newSoftware = new Software(null, id, name, null, null, null, version);
             //Todo: It is practically imposibble to match the data from this to ParamGroups
             // Todo: In the future will be interesting to show the attributes and not the ParamGroups
             softwares.add(newSoftware);
-         }
+        }
         return softwares;
     }
 
@@ -288,27 +299,27 @@ public class MzDataTransformer {
             Software software = null;
 
             // convert component list
-            List<InstrumentComponent> source   = null;
+            List<InstrumentComponent> source = null;
             List<InstrumentComponent> detector = null;
             List<InstrumentComponent> analyzer = null;
 
-            if(oldInstrument.getAnalyzerList() != null || oldInstrument.getDetector() != null || oldInstrument.getSource() != null){
+            if (oldInstrument.getAnalyzerList() != null || oldInstrument.getDetector() != null || oldInstrument.getSource() != null) {
                 int i = 0;
-                if(oldInstrument.getSource() != null){
-                    source   = new ArrayList<InstrumentComponent>();
+                if (oldInstrument.getSource() != null) {
+                    source = new ArrayList<InstrumentComponent>();
                     InstrumentComponent newSource = transformInstrumentComponent(i, oldInstrument.getSource());
                     source.add(newSource);
                     i++;
                 }
-                if(oldInstrument.getDetector() != null){
+                if (oldInstrument.getDetector() != null) {
                     detector = new ArrayList<InstrumentComponent>();
                     InstrumentComponent newDetector = transformInstrumentComponent(i, oldInstrument.getSource());
                     detector.add(newDetector);
                     i++;
                 }
-                if(oldInstrument.getAnalyzerList() != null){
+                if (oldInstrument.getAnalyzerList() != null) {
                     analyzer = new ArrayList<InstrumentComponent>();
-                    for (uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.Param param: oldInstrument.getAnalyzerList().getAnalyzer()){
+                    for (uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.Param param : oldInstrument.getAnalyzerList().getAnalyzer()) {
                         InstrumentComponent newAnalyzer = transformInstrumentComponent(i, param);
                         i++;
                         analyzer.add(newAnalyzer);
@@ -350,21 +361,21 @@ public class MzDataTransformer {
             dataProcessings = new ArrayList<DataProcessing>();
             List<ProcessingMethod> methods = null;
 
-            if(oldDataProcessing.getSoftware() != null || oldDataProcessing.getProcessingMethod() != null){
+            if (oldDataProcessing.getSoftware() != null || oldDataProcessing.getProcessingMethod() != null) {
                 methods = new ArrayList<ProcessingMethod>();
                 Software software = null;
                 ParamGroup paramGroup = null;
-                if(oldDataProcessing.getSoftware() != null){
+                if (oldDataProcessing.getSoftware() != null) {
                     List<Software> softwares = transformSoftware(oldDataProcessing.getSoftware());
                     software = softwares.get(0);
                 }
-                if(oldDataProcessing.getProcessingMethod() != null){
+                if (oldDataProcessing.getProcessingMethod() != null) {
                     paramGroup = transformParamGroup(oldDataProcessing.getProcessingMethod());
                 }
-                ProcessingMethod processingMethod = new ProcessingMethod(0,software,paramGroup);
+                ProcessingMethod processingMethod = new ProcessingMethod(0, software, paramGroup);
                 methods.add(processingMethod);
             }
-            dataProcessings.add(new DataProcessing(null,methods));
+            dataProcessings.add(new DataProcessing(null, methods));
         }
         return dataProcessings;
     }
@@ -384,15 +395,15 @@ public class MzDataTransformer {
             String path = oldSourceFile.getPathToFile();
             ParamGroup paramGroup = null;
             CvParam fileFormat = null;
-            if(oldSourceFile.getFileType() != null){
+            if (oldSourceFile.getFileType() != null) {
                 paramGroup = new ParamGroup();
                 CvTermReference cvReference = CvTermReference.MS_FILE_SPECTRUM;
                 // Kepp here the information of the file Type, is the only solution to convert mzXML attributes to CvTerms
-                CvParam cvParam = new CvParam(cvReference.getAccession(),cvReference.getName(),cvReference.getCvLabel(),oldSourceFile.getFileType(),null,null,null);
+                CvParam cvParam = new CvParam(cvReference.getAccession(), cvReference.getName(), cvReference.getCvLabel(), oldSourceFile.getFileType(), null, null, null);
                 paramGroup.addCvParam(cvParam);
                 fileFormat = cvParam;
             }
-            SourceFile newSourceFile = new SourceFile(paramGroup, id, name, path,fileFormat,null);
+            SourceFile newSourceFile = new SourceFile(paramGroup, id, name, path, fileFormat, null);
             sourceFiles.add(newSourceFile);
         }
         return sourceFiles;
@@ -410,12 +421,12 @@ public class MzDataTransformer {
             for (uk.ac.ebi.pride.tools.mzdata_parser.mzdata.model.Person contact : oldPersons) {
                 ParamGroup paramGroup = new ParamGroup();
                 CvTermReference contactTerm = CvTermReference.CONTACT_NAME;
-                CvParam cvParam = new CvParam(contactTerm.getAccession(),contactTerm.getName(),contactTerm.getCvLabel(),contact.getName(),null,null,null);
+                CvParam cvParam = new CvParam(contactTerm.getAccession(), contactTerm.getName(), contactTerm.getCvLabel(), contact.getName(), null, null, null);
                 paramGroup.addCvParam(cvParam);
                 contactTerm = CvTermReference.CONTACT_EMAIL;
-                cvParam = new CvParam(contactTerm.getAccession(),contactTerm.getName(),contactTerm.getCvLabel(),contact.getContactInfo(),null,null,null);
+                cvParam = new CvParam(contactTerm.getAccession(), contactTerm.getName(), contactTerm.getCvLabel(), contact.getContactInfo(), null, null, null);
                 paramGroup.addCvParam(cvParam);
-                Person person = new Person(paramGroup,contact.getName(),contact.getContactInfo());
+                Person person = new Person(paramGroup, contact.getName(), contact.getContactInfo());
                 persons.add(person);
             }
             return persons;

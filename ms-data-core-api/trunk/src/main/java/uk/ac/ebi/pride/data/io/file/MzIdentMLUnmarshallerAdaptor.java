@@ -26,7 +26,9 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
 
     public MzIdentMLUnmarshallerAdaptor(File mzIdentMLFile) throws ConfigurationException {
         super(mzIdentMLFile);
+        long currentT = System.currentTimeMillis();
         scanIdMappings();
+        System.out.println("Initialize mzidentml Time: " + (System.currentTimeMillis() - currentT) + " millis");
     }
 
     private void scanIdMappings() throws ConfigurationException {
@@ -222,7 +224,6 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
         }
         return spectraDataMap;
     }
-
 
     public Map<Comparable, SpectraData> getSpectraData(Set<Comparable> ids) throws JAXBException {
         Map<Comparable, SpectraData> spectraDataMap = new HashMap<Comparable, SpectraData>();

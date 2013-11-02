@@ -4,6 +4,7 @@ import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,15 @@ import java.util.Map;
  * Date: 3/15/12
  * Time: 10:49 PM
  */
-public class PeakTransformer {
+public final class PeakTransformer {
+
+    /**
+     * Private Constructor
+     */
+    private PeakTransformer() {
+
+    }
+
     /**
      * Convert spectrum
      *
@@ -86,20 +95,21 @@ public class PeakTransformer {
         uk.ac.ebi.pride.term.CvTermReference cvRefInt = CvTermReference.INTENSITY_ARRAY;
         CvParam cvParam = new CvParam(cvRefInt.getAccession(), cvRefInt.getName(), cvRefInt.getCvLabel(), "", cvRefInt.getAccession(), cvRefInt.getName(), cvRefInt.getCvLabel());
         ParamGroup intParam = new ParamGroup(cvParam, null);
-        double[] intArray;
-        double[] mzArray;
+        double[] intArray = new double[0];
+        double[] mzArray = new double[0];
+
         if (peakList != null && peakList.size() > 0) {
             intArray = new double[peakList.keySet().size()];
             mzArray = new double[peakList.keySet().size()];
             int i = 0;
-            for (Double mz : peakList.keySet()) {
-                mzArray[i] = mz;
-                intArray[i] = peakList.get(mz);
+
+            Iterator iterator = peakList.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry mapEntry = (Map.Entry) iterator.next();
+                mzArray[i] = (Double) mapEntry.getKey();
+                intArray[i] = (Double) mapEntry.getValue();
                 i++;
             }
-        } else {
-            intArray = new double[0];
-            mzArray = new double[0];
         }
 
         //Todo: How you can know if the intensity correspond with the mz value?

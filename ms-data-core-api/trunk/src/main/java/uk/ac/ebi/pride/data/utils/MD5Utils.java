@@ -9,19 +9,26 @@ import java.security.NoSuchAlgorithmException;
 /**
  * MD5Utils provides static method
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 24/06/11
  * Time: 10:01
  */
-public class MD5Utils {
+public final class MD5Utils {
+
+    /**
+     * Private Constructor
+     */
+    private MD5Utils() {
+
+    }
 
     /**
      * Generate md5 hash from a given string
      *
      * @param msg input string
      * @return String  md5 hash
-     * @throws java.security.NoSuchAlgorithmException java.security.NoSuchAlgorithmException
-     *
+     * @throws java.security.NoSuchAlgorithmException
+     *          java.security.NoSuchAlgorithmException
      */
     public static String generateHash(String msg) throws NoSuchAlgorithmException {
         if (msg == null) {
@@ -33,9 +40,9 @@ public class MD5Utils {
         m.reset();
         m.update(msg.getBytes());
 
-        byte[]     digest   = m.digest();
-        BigInteger bigInt   = new BigInteger(1, digest);
-        String     hashText = bigInt.toString(16);
+        byte[] digest = m.digest();
+        BigInteger bigInt = new BigInteger(1, digest);
+        String hashText = bigInt.toString(16);
 
         // zero pad to 32 chars
         while (hashText.length() < 32) {

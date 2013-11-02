@@ -173,9 +173,11 @@ public class Score {
     public List<CvTermReference> getCvTermReferenceWithValues() {
         List<CvTermReference> listReference = new ArrayList<CvTermReference>();
         for (Map<CvTermReference, Number> numberMap : scores.values()) {
-            for (CvTermReference cvTermReference : numberMap.keySet()) {
-                if (numberMap.get(cvTermReference) != null) {
-                    listReference.add(cvTermReference);
+            Iterator iterator = numberMap.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry mapEntry = (Map.Entry) iterator.next();
+                if (mapEntry.getValue() != null) {
+                    listReference.add((CvTermReference) mapEntry.getKey());
                 }
             }
         }

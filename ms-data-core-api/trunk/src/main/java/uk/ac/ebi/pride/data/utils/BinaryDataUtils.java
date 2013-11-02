@@ -23,22 +23,30 @@ import java.util.zip.Inflater;
  * Date: 29-Mar-2010
  * Time: 11:58:24
  */
-public class BinaryDataUtils {
+public final class BinaryDataUtils {
+
     private static final Logger logger = LoggerFactory.getLogger(BinaryDataUtils.class);
+
+    /**
+     * Private Constructor
+     */
+    private BinaryDataUtils() {
+
+    }
 
     /**
      * Convert a byte array to a number array
      *
-     * @param byteArray      byte array
-     * @param dataType data type
-     * @param order    endianess
+     * @param byteArray byte array
+     * @param dataType  data type
+     * @param order     endianess
      * @return Number[]    number array
      */
     public static Number[] toNumberArray(byte[] byteArray, CvTermReference dataType, ByteOrder order) {
-        int        numOfByte = getNumOfByte(dataType);
-        int        arrLength = byteArray.length;
-        Number[]   results   = new Number[arrLength / numOfByte];
-        ByteBuffer buffer    = ByteBuffer.wrap(byteArray);
+        int numOfByte = getNumOfByte(dataType);
+        int arrLength = byteArray.length;
+        Number[] results = new Number[arrLength / numOfByte];
+        ByteBuffer buffer = ByteBuffer.wrap(byteArray);
 
         buffer.order(order);
 
@@ -47,29 +55,29 @@ public class BinaryDataUtils {
                 Number num;
 
                 switch (dataType) {
-                case INT_32_BIT :
-                    num = buffer.getInt(i);
+                    case INT_32_BIT:
+                        num = buffer.getInt(i);
 
-                    break;
+                        break;
 
-                case FLOAT_16_BIT :    // ToDo: *** provide implementation here ; break;
-                case FLOAT_32_BIT :
-                    num = buffer.getFloat(i);
+                    case FLOAT_16_BIT:    // ToDo: *** provide implementation here ; break;
+                    case FLOAT_32_BIT:
+                        num = buffer.getFloat(i);
 
-                    break;
+                        break;
 
-                case INT_64_BIT :
-                    num = buffer.getLong(i);
+                    case INT_64_BIT:
+                        num = buffer.getLong(i);
 
-                    break;
+                        break;
 
-                case FLOAT_64_BIT :
-                    num = buffer.getDouble(i);
+                    case FLOAT_64_BIT:
+                        num = buffer.getDouble(i);
 
-                    break;
+                        break;
 
-                default :
-                    num = null;
+                    default:
+                        num = null;
                 }
 
                 results[i / numOfByte] = num;
@@ -92,7 +100,7 @@ public class BinaryDataUtils {
      * @return double[] double array
      */
     public static double[] toDoubleArray(byte[] arr, CvTermReference dataType, ByteOrder order) {
-        Number[] numArr    = toNumberArray(arr, dataType, order);
+        Number[] numArr = toNumberArray(arr, dataType, order);
         double[] doubleArr = new double[numArr.length];
 
         for (int i = 0; i < numArr.length; i++) {
@@ -112,33 +120,33 @@ public class BinaryDataUtils {
         int numOfByte;
 
         switch (dataType) {
-        case INT_32_BIT :
-            numOfByte = 4;
+            case INT_32_BIT:
+                numOfByte = 4;
 
-            break;
+                break;
 
-        case FLOAT_16_BIT :
-            numOfByte = 2;
+            case FLOAT_16_BIT:
+                numOfByte = 2;
 
-            break;
+                break;
 
-        case FLOAT_32_BIT :
-            numOfByte = 4;
+            case FLOAT_32_BIT:
+                numOfByte = 4;
 
-            break;
+                break;
 
-        case INT_64_BIT :
-            numOfByte = 8;
+            case INT_64_BIT:
+                numOfByte = 8;
 
-            break;
+                break;
 
-        case FLOAT_64_BIT :
-            numOfByte = 8;
+            case FLOAT_64_BIT:
+                numOfByte = 8;
 
-            break;
+                break;
 
-        default :
-            numOfByte = -1;
+            default:
+                numOfByte = -1;
         }
 
         return numOfByte;
@@ -160,7 +168,7 @@ public class BinaryDataUtils {
 
         // Create an expandable byte array to hold the decompressed data
         ByteArrayOutputStream bos = new ByteArrayOutputStream(compressedData.length);
-        byte[]                buf = new byte[1024];
+        byte[] buf = new byte[1024];
 
         while (!decompressor.finished()) {
             try {
@@ -169,7 +177,7 @@ public class BinaryDataUtils {
                 bos.write(buf, 0, count);
             } catch (DataFormatException e) {
                 throw new IllegalStateException("Encountered wrong data format "
-                                                + "while trying to decompress binary data!", e);
+                        + "while trying to decompress binary data!", e);
             }
         }
 

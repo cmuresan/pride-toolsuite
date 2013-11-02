@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.data.core;
 
+import uk.ac.ebi.pride.data.utils.MD5Utils;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
@@ -72,43 +73,41 @@ public class FragmentIon extends ParamGroup {
 
         for (CvParam cvParam : cvParams) {
             String accession = cvParam.getAccession();
-            String value     = cvParam.getValue();
+            String value = cvParam.getValue();
 
             if (CvTermReference.PRODUCT_ION_MZ.getAccession().equals(accession)
                     || CvTermReference.PRODUCT_ION_MZ_PLGS.getAccession().equals(accession)
                     || CvTermReference.MS_PRODUCT_ION_MZ.getAccession().equals(accession)) {
                 mz = NumberUtilities.isNumber(value)
-                     ? Double.parseDouble(value)
-                     : mz;
+                        ? Double.parseDouble(value)
+                        : mz;
             } else if (CvTermReference.PRODUCT_ION_INTENSITY.getAccession().equals(accession)
-                       || CvTermReference.PRODUCT_ION_INTENSITY_PLGS.getAccession().equals(accession)
-                       || CvTermReference.MS_PRODUCT_ION_INTENSITY.getAccession().equals(accession)) {
+                    || CvTermReference.PRODUCT_ION_INTENSITY_PLGS.getAccession().equals(accession)
+                    || CvTermReference.MS_PRODUCT_ION_INTENSITY.getAccession().equals(accession)) {
                 intensity = NumberUtilities.isNumber(value)
-                            ? Double.parseDouble(value)
-                            : intensity;
+                        ? Double.parseDouble(value)
+                        : intensity;
             } else if (CvTermReference.PRODUCT_ION_MASS_ERROR.getAccession().equals(accession)
-                       || CvTermReference.PRODUCT_ION_MASS_ERROR_PLGS.getAccession().equals(accession)
-                       || CvTermReference.MS_PRODUCT_ION_MASS_ERROR.getAccession().equals(accession)) {
+                    || CvTermReference.PRODUCT_ION_MASS_ERROR_PLGS.getAccession().equals(accession)
+                    || CvTermReference.MS_PRODUCT_ION_MASS_ERROR.getAccession().equals(accession)) {
                 massError = NumberUtilities.isNumber(value)
-                            ? Double.parseDouble(value)
-                            : massError;
+                        ? Double.parseDouble(value)
+                        : massError;
             } else if (CvTermReference.PRODUCT_ION_RETENTION_TIME_ERROR.getAccession().equals(accession)
-                       || CvTermReference.PRODUCT_ION_RETENTION_TIME_ERROR_PLGS.getAccession().equals(accession)) {
+                    || CvTermReference.PRODUCT_ION_RETENTION_TIME_ERROR_PLGS.getAccession().equals(accession)) {
                 retentionTimeError = NumberUtilities.isNumber(value)
-                                     ? Double.parseDouble(value)
-                                     : retentionTimeError;
+                        ? Double.parseDouble(value)
+                        : retentionTimeError;
             } else if (CvTermReference.PRODUCT_ION_CHARGE.getAccession().equals(accession)) {
                 charge = NumberUtilities.isInteger(value)
-                         ? Integer.parseInt(value)
-                         : charge;
-            } else if (ionType == null) {
-                if (cvParam.getName().contains("ion")) {
-                    ionType          = cvParam.getName();
-                    location         = NumberUtilities.isInteger(value)
-                                       ? Integer.parseInt(value)
-                                       : location;
-                    ionTypeAccession = accession;
-                }
+                        ? Integer.parseInt(value)
+                        : charge;
+            } else if (ionType == null && cvParam.getName().contains("ion")) {
+                ionType = cvParam.getName();
+                location = NumberUtilities.isInteger(value)
+                        ? Integer.parseInt(value)
+                        : location;
+                ionTypeAccession = accession;
             }
         }
     }

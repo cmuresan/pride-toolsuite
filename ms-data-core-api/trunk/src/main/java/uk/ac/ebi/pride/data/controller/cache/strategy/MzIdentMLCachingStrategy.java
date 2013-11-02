@@ -98,16 +98,18 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
 
     protected void cacheSpectraData(MzIdentMLUnmarshallerAdaptor unmarshaller) {
         Map<Comparable, uk.ac.ebi.jmzidml.model.mzidml.SpectraData> oldSpectraDataMap = unmarshaller.getSpectraDataMap();
+
         if (oldSpectraDataMap != null && !oldSpectraDataMap.isEmpty()) {
             Map<Comparable, uk.ac.ebi.pride.data.core.SpectraData> spectraDataMapResult = new HashMap<Comparable, uk.ac.ebi.pride.data.core.SpectraData>();
 
-            for (Comparable id : oldSpectraDataMap.keySet()) {
-                uk.ac.ebi.pride.data.core.SpectraData spectraData = MzIdentMLTransformer.transformToSpectraData(oldSpectraDataMap.get(id));
+            Iterator iterator = oldSpectraDataMap.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry mapEntry = (Map.Entry) iterator.next();
+                uk.ac.ebi.pride.data.core.SpectraData spectraData = MzIdentMLTransformer.transformToSpectraData((uk.ac.ebi.jmzidml.model.mzidml.SpectraData) mapEntry.getValue());
                 if (isSpectraDataSupported(spectraData)) {
-                    spectraDataMapResult.put(id, spectraData);
+                    spectraDataMapResult.put((Comparable) mapEntry.getKey(), spectraData);
                 }
             }
-
             cache.clear(CacheEntry.SPECTRA_DATA);
             cache.storeInBatch(CacheEntry.SPECTRA_DATA, spectraDataMapResult);
         }

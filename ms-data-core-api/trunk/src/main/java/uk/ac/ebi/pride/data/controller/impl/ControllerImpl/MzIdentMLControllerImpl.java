@@ -790,7 +790,9 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         } else {
             Collection<String[]> ids = ((Map<Comparable, String[]>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM)).values();
             Set<String> idsSet = new TreeSet<String>();
-            for (String[] values : ids) idsSet.add(values[0] + "!" + values[1]);
+            for (String[] values : ids) {
+                idsSet.add(values[0] + "!" + values[1]);
+            }
             if (idsSet.contains(specId)) return true;
         }
         return false;
@@ -799,9 +801,11 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public void addMSController(List<File> dataAccessControllerFiles) {
         Map<SpectraData, File> spectraDataFileMap = checkMScontrollers(dataAccessControllerFiles);
 
-        for (SpectraData spectraData : spectraDataFileMap.keySet()) {
-            PeakControllerImpl peakListController = new PeakControllerImpl(spectraDataFileMap.get(spectraData));
-            msDataAccessControllers.put(spectraData.getId(), peakListController);
+        Iterator iterator = spectraDataFileMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry mapEntry = (Map.Entry) iterator.next();
+            PeakControllerImpl peakListController = new PeakControllerImpl((File) mapEntry.getKey());
+            msDataAccessControllers.put(((SpectraData) mapEntry.getKey()).getId(), peakListController);
         }
     }
 
@@ -812,12 +816,15 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         Map<SpectraData, File> spectraFileMap = new HashMap<SpectraData, File>();
 
         for (File file : mzIdentMLFiles) {
-            for (Comparable id : spectraDataMap.keySet()) {
-                SpectraData spectraData = spectraDataMap.get(id);
+            Iterator iterator = spectraDataMap.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry mapEntry = (Map.Entry) iterator.next();
+                SpectraData spectraData = (SpectraData) mapEntry.getValue();
                 if (spectraData.getLocation().indexOf(file.getName()) > 0) {
                     spectraFileMap.put(spectraData, file);
                 }
             }
+
         }
         return spectraFileMap;
     }
@@ -893,9 +900,11 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public int getNumberOfSpectra() {
         int numberOfSpectra = 0;
         if (!msDataAccessControllers.isEmpty()) {
-            for (Comparable idMsFile : msDataAccessControllers.keySet()) {
-                if (msDataAccessControllers.get(idMsFile) != null) {
-                    numberOfSpectra += msDataAccessControllers.get(idMsFile).getNumberOfSpectra();
+            Iterator iterator = msDataAccessControllers.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry mapEntry = (Map.Entry) iterator.next();
+                if (mapEntry.getValue() != null) {
+                    numberOfSpectra += ((DataAccessController) mapEntry.getValue()).getNumberOfSpectra();
                 }
             }
         }
@@ -906,8 +915,10 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public int getNumberOfIdentifiedSpectra() {
         Map<Comparable, List<Comparable>> spectraDataIdMap = (Map<Comparable, List<Comparable>>) getCache().get(CacheEntry.SPECTRADATA_TO_SPECTRUMIDS);
         int countSpectra = 0;
-        for (Comparable id : spectraDataIdMap.keySet()) {
-            countSpectra = +spectraDataIdMap.get(id).size();
+        Iterator iterator = spectraDataIdMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry mapEntry = (Map.Entry) iterator.next();
+            countSpectra += ((List<Comparable>) mapEntry.getValue()).size();
         }
         return countSpectra;
     }

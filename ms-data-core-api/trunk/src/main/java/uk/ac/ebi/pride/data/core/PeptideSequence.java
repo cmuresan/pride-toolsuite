@@ -93,7 +93,9 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
 
     public List<AminoAcid> getAminoAcidList() {
         List<AminoAcid> sequenceList = new ArrayList<AminoAcid>();
-        for (Character character : sequence.toCharArray()) sequenceList.add(AminoAcid.getAminoAcid(character));
+        for (Character character : sequence.toCharArray()) {
+            sequenceList.add(AminoAcid.getAminoAcid(character));
+        }
         return sequenceList;
     }
 

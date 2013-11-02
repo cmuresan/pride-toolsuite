@@ -49,7 +49,7 @@ public class CacheAccessor implements Cache {
      * @param value value
      */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings(value = "unchecked")
     public void store(CacheEntry type, Object key, Object value) {
         Object content = createIfNotExist(type);
 
@@ -67,7 +67,7 @@ public class CacheAccessor implements Cache {
 
             ((Map) content).put(key, value);
         } else if (content instanceof Collection) {
-            ((Collection)content).add(key);
+            ((Collection) content).add(key);
         } else {
             String errMsg = "Cannot store key-value pair to a data structure other than map";
 
@@ -209,8 +209,8 @@ public class CacheAccessor implements Cache {
         Object content = contents.get(type);
 
         if (content == null) {
-            Class   className = type.getDataStructType();
-            Integer size      = type.getSize();
+            Class className = type.getDataStructType();
+            Integer size = type.getSize();
 
             // create a new data structure with the specified size
             try {
@@ -245,7 +245,7 @@ public class CacheAccessor implements Cache {
 
     @SuppressWarnings("unchecked")
     private Object retrieveContent(CacheEntry type, Object key) {
-        Object result  = null;
+        Object result = null;
         Object content = contents.get(type);
 
         if (content != null) {

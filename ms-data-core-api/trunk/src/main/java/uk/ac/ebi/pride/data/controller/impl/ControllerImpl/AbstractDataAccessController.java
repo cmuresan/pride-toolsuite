@@ -22,8 +22,6 @@ import java.util.*;
  */
 public abstract class AbstractDataAccessController implements DataAccessController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractDataAccessController.class);
-
     private static final int NUMBER_OF_PROTEIN_TO_CHECK = 10;
     private static final int NUMBER_OF_PEPTIDE_TO_CHECK = 20;
 
@@ -527,7 +525,7 @@ public abstract class AbstractDataAccessController implements DataAccessControll
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings(value = "unchecked")
     public Collection<Comparable> getPeptideIds(Comparable proteinId) {
         Collection<Comparable> ids = new ArrayList<Comparable>();
         Protein protein = getProteinById(proteinId);
@@ -812,7 +810,9 @@ public abstract class AbstractDataAccessController implements DataAccessControll
                 if (peptide.getSpectrumIdentification().getScore() == null) {
                     score = DataAccessUtilities.getScore(peptide.getSpectrumIdentification());
                     peptide.getSpectrumIdentification().setScore(score);
-                } else score = peptide.getSpectrumIdentification().getScore();
+                } else {
+                    score = peptide.getSpectrumIdentification().getScore();
+                }
             }
         }
         return score;

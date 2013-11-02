@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.term.CvTermReference;
 
 import javax.xml.datatype.Duration;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,14 @@ import java.util.Map;
  * Date: 2/27/12
  * Time: 2:12 PM
  */
-public class MzXmlTransformer {
+public final class MzXmlTransformer {
+
+    /**
+     * Private Constructor
+     */
+    private MzXmlTransformer() {
+
+    }
 
     /**
      * Convert spectrum
@@ -86,9 +94,12 @@ public class MzXmlTransformer {
         double[] intArray = new double[peakList.keySet().size()];
         double[] mzArray = new double[peakList.keySet().size()];
         int i = 0;
-        for (Double mz : peakList.keySet()) {
-            mzArray[i] = mz;
-            intArray[i] = peakList.get(mz);
+
+        Iterator iterator = peakList.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry mapEntry = (Map.Entry) iterator.next();
+            mzArray[i] = (Double) mapEntry.getKey();
+            intArray[i] = (Double) mapEntry.getValue();
             i++;
         }
 

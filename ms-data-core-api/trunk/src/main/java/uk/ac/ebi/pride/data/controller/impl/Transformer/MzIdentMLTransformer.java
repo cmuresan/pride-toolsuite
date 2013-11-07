@@ -848,7 +848,8 @@ public final class MzIdentMLTransformer {
     public static Protocol transformToProteinDetectionProtocol(uk.ac.ebi.jmzidml.model.mzidml.ProteinDetectionProtocol oldProteinDetectionProtocol) {
         Protocol proteinDetectionProtocol = null;
         if (oldProteinDetectionProtocol != null) {
-            proteinDetectionProtocol = new Protocol(new ParamGroup(transformToCvParam(oldProteinDetectionProtocol.getAnalysisParams().getCvParam()), transformToUserParam(oldProteinDetectionProtocol.getAnalysisParams().getUserParam())),
+            ParamGroup analysisParam = (oldProteinDetectionProtocol.getAnalysisParams() != null) ? new ParamGroup(transformToCvParam(oldProteinDetectionProtocol.getAnalysisParams().getCvParam()), transformToUserParam(oldProteinDetectionProtocol.getAnalysisParams().getUserParam())) : new ParamGroup();
+            proteinDetectionProtocol = new Protocol(analysisParam,
                     oldProteinDetectionProtocol.getId(),
                     oldProteinDetectionProtocol.getName(),
                     transformToSoftware(oldProteinDetectionProtocol.getAnalysisSoftware()),

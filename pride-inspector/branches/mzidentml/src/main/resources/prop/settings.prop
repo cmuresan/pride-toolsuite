@@ -37,10 +37,10 @@ download.size.threshold = 200
 large.pride.experiments=9776
 
 # URL for downloading pride experiments in xml file format
-prider.my.projects.metadata.url=http://ves-ebi-4d.ebi.ac.uk:8080/prider-ws/users/projects
-prider.project.file.metadata.url=http://ves-ebi-4d.ebi.ac.uk:8080/prider-ws/projects/{accession}/files
-prider.assay.file.metadata.url=http://ves-ebi-4d.ebi.ac.uk:8080/prider-ws/assays/{accession}/files
-prider.file.download.url=http://ves-ebi-4d.ebi.ac.uk:8080/prider-ws/files/{fileId}
+prider.my.projects.metadata.url=http://wwwdev.ebi.ac.uk/pride/ws/archive/users/projects
+prider.project.file.metadata.url=http://wwwdev.ebi.ac.uk/pride/ws/archive/projects/{accession}/files
+prider.assay.file.metadata.url=http://wwwdev.ebi.ac.uk/pride/ws/archive/assays/{accession}/files
+prider.file.download.url=http://wwwdev.ebi.ac.uk/pride/ws/archive/files/{fileId}
 
 # URL for downloading proteomexchange submission
 px.submission.metadata.download.url=http://www.proteomexchange.org/px-ws/download/metadata

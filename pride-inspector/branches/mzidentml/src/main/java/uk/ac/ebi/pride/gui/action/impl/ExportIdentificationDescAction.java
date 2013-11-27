@@ -44,7 +44,7 @@ public class ExportIdentificationDescAction extends PrideAction {
         PrideInspectorContext context = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
         DataAccessController controller = context.getForegroundDataAccessController();
         String defaultFileName = controller.getName().split("\\" + DOT)[0] + "_" + FILE_NAME;
-        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Export Identification Descriptions", defaultFileName, false, TAB_SEP_FILE);
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Export Identification Descriptions", true, defaultFileName, false, TAB_SEP_FILE);
         ofd.setMultiSelectionEnabled(false);
         int result = ofd.showDialog(Desktop.getInstance().getMainComponent(), null);
         if (result == JFileChooser.APPROVE_OPTION) {

@@ -299,7 +299,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
         retrieveTask.addTaskListener(proteinTabPane);
 
         // register protein table model as a task listener
-        JXTreeTable identTable = (JXTreeTable)proteinTabPane.getIdentificationPane().getIdentificationTable();
+        JXTreeTable identTable = (JXTreeTable) proteinTabPane.getIdentificationPane().getIdentificationTable();
         retrieveTask.addTaskListener((TaskListener) identTable.getTreeTableModel());
 
         // register peptide tab as a task listener
@@ -307,7 +307,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
         // register peptide table model as a task listener
         JTable peptideTable = peptideTabPane.getPeptidePane().getPeptideTable();
-        retrieveTask.addTaskListener((TaskListener)peptideTable.getModel());
+        retrieveTask.addTaskListener((TaskListener) peptideTable.getModel());
 
         // register quantitative tab as a task listener
         try {
@@ -530,5 +530,10 @@ public class ControllerContentPane extends DataAccessControllerPane {
     public void removeTab(int index) {
         contentTabPane.removeTabAt(index);
     }
+
+    public void setEnableAt(int index, boolean status) {
+        contentTabPane.setEnabledAt(index, status);
+    }
+
 
 }

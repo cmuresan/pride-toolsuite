@@ -92,7 +92,7 @@ public class PTMDialog extends JDialog implements ActionListener {
 
         if (EXPORT_ACTION.equals(command)) {
             PrideInspectorContext context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
-            SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select Path Save To", "ptm", false, Constants.TAB_SEP_FILE);
+            SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select Path Save To", true, "ptm", false, Constants.TAB_SEP_FILE);
             ofd.setMultiSelectionEnabled(false);
             int result = ofd.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {

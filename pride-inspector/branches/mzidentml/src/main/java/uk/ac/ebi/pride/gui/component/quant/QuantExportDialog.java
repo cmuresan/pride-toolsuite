@@ -55,7 +55,7 @@ public class QuantExportDialog extends JDialog {
     private DataAccessController controller;
     private Collection<CvTermReference> listProteinScores;
 
-    public QuantExportDialog(Frame owner, JTable table, DataAccessController controller,Collection<CvTermReference> listProteinScores) {
+    public QuantExportDialog(Frame owner, JTable table, DataAccessController controller, Collection<CvTermReference> listProteinScores) {
         super(owner);
         this.table = table;
         this.controller = controller;
@@ -319,7 +319,7 @@ public class QuantExportDialog extends JDialog {
         // copy all the data
         int rowCnt = existingTableModel.getRowCount();
         for (int i = 0; i < rowCnt; i++) {
-            java.util.List<Object> row = (java.util.List<Object>)existingTableModel.getRow(i);
+            java.util.List<Object> row = (java.util.List<Object>) existingTableModel.getRow(i);
             row.remove(compareColumnIndex);
             tableModel.addRow(row);
         }
@@ -448,10 +448,10 @@ public class QuantExportDialog extends JDialog {
                 value = value.substring(0, value.length() - 1) + "\n";
 
                 for (int i = 0; i < rowCnt; i++) {
-                    Object protein =  proteinTable.getValueAt(i, protColIndex);
+                    Object protein = proteinTable.getValueAt(i, protColIndex);
                     String prot = null;
                     if (protein == null) {
-                        prot = ((ProteinAccession)protein).getMappedAccession();
+                        prot = ((ProteinAccession) protein).getMappedAccession();
                     }
 
                     if (prot != null && quantDataStartColIndex > -1) {
@@ -497,10 +497,10 @@ public class QuantExportDialog extends JDialog {
                     String url = getBaseURL();
                     if (url != null) {
                         for (int i = 0; i < rowCnt; i++) {
-                            Object protein =  proteinTable.getValueAt(i, protColIndex);
+                            Object protein = proteinTable.getValueAt(i, protColIndex);
                             String prot = null;
                             if (protein == null) {
-                                prot = ((ProteinAccession)protein).getMappedAccession();
+                                prot = ((ProteinAccession) protein).getMappedAccession();
                             }
 
                             if (prot != null) {
@@ -563,7 +563,7 @@ public class QuantExportDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
             DataAccessController controller = appContext.getForegroundDataAccessController();
             String defaultFileName = controller.getName().split("\\" + DOT)[0] + "_quantitative_data";
-            SimpleFileDialog ofd = new SimpleFileDialog(appContext.getOpenFilePath(), "Export Quantitative Data", defaultFileName, false, TAB_SEP_FILE);
+            SimpleFileDialog ofd = new SimpleFileDialog(appContext.getOpenFilePath(), "Export Quantitative Data", true, defaultFileName, false, TAB_SEP_FILE);
             ofd.setMultiSelectionEnabled(false);
             int result = ofd.showDialog(uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getMainComponent(), null);
             if (result == JFileChooser.APPROVE_OPTION) {

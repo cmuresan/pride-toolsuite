@@ -8,6 +8,7 @@ pride.helpdesk.email=pride-support@ebi.ac.uk
 # example files
 pride.inspector.pride.example.file=examples/pride-example.xml
 pride.inspector.mzml.example.file=examples/mzml-example.mzML
+pride.inspector.mzidentml.example.file=examples/mzidentml-example.mzid
 
 # pride website
 pride.website=http://www.ebi.ac.uk/pride

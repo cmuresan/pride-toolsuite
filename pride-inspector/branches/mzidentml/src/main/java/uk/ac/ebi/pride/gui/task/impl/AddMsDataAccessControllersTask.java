@@ -29,61 +29,81 @@ public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<Spectr
 
     DataAccessController controller;
     Map<SpectraData, File> spectraDataFileMap;
+    Map<Comparable, File> newFiles;
+    Map<Comparable, String> fileTypes;
     private PrideInspectorContext context = null;
 
-    public AddMsDataAccessControllersTask(DataAccessController controller, Map<SpectraData, File> spectraDataMap) {
+    public AddMsDataAccessControllersTask(DataAccessController controller, Map<Comparable, File> newfiles, Map<Comparable, String> fileTypes, Map<SpectraData, File> spectraDataMap) {
         this.controller = controller;
         spectraDataFileMap = spectraDataMap;
+        this.newFiles = newfiles;
+        this.fileTypes = fileTypes;
         context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
     }
 
     @Override
     protected Void doInBackground() throws Exception {
         try {
-            ((MzIdentMLControllerImpl) controller).addMSController(spectraDataFileMap);
-            //((MzIdentMLControllerImpl) controller).addMSController(msFileMap);
-            ControllerContentPane contentPane = (ControllerContentPane) context.getDataContentPane(controller);
+            boolean status = ((MzIdentMLControllerImpl) controller).addNewMSController(spectraDataFileMap, newFiles, fileTypes);
 
-            //Update the Summary Charts Tab
-            ChartTabPane chartContentPane = contentPane.getChartTabPane();
-            chartContentPane.populate();
+            if (status) {
+                //((MzIdentMLControllerImpl) controller).addMSController(msFileMap);
+                ControllerContentPane contentPane = (ControllerContentPane) context.getDataContentPane(controller);
 
-            //Update the Spectrum Tab
-            MzDataTabPane mzDataTabPane;
-            int index = contentPane.getMzDataTabIndex();
-            mzDataTabPane = new MzDataTabPane(controller, contentPane);
-            contentPane.removeTab(index);
-            contentPane.setMzDataTab(mzDataTabPane);
-            contentPane.insertTab(mzDataTabPane.getTitle(), mzDataTabPane.getIcon(), mzDataTabPane, mzDataTabPane.getTitle(), index);
-            mzDataTabPane.spectrumChange();
-            mzDataTabPane.populate();
+                //Update the Summary Charts Tab
+                ChartTabPane chartContentPane = contentPane.getChartTabPane();
+                chartContentPane.populate();
 
+                //Update the Spectrum Tab
+                MzDataTabPane mzDataTabPane;
+                int index = contentPane.getMzDataTabIndex();
+                mzDataTabPane = new MzDataTabPane(controller, contentPane);
+                contentPane.removeTab(index);
+                contentPane.setMzDataTab(mzDataTabPane);
+                contentPane.insertTab(mzDataTabPane.getTitle(), mzDataTabPane.getIcon(), mzDataTabPane, mzDataTabPane.getTitle(), index);
+                boolean hasSpectrum = controller.hasSpectrum();
+                boolean hasChromatogram = controller.hasChromatogram();
+                contentPane.setEnableAt(index, hasSpectrum || hasChromatogram);
+                if (hasSpectrum || hasChromatogram) {
+                    mzDataTabPane.spectrumChange();
+                    mzDataTabPane.populate();
+                }
+                PeptideTabPane peptideContentPane = contentPane.getPeptideTabPane();
+                //Update Protein Tab
+                ProteinTabPane proteinTabPane = contentPane.getProteinTabPane();
 
-            //Update the Peptide Tabs
-            PeptideTabPane peptideContentPane = contentPane.getPeptideTabPane();
-            //Add Spectrum View
-            peptideContentPane.getVizTabPane().addSpectrumViewPane();
-            //Add Spectrum View
-            peptideContentPane.getVizTabPane().addFragmentationViewPane();
+                if (hasSpectrum || hasChromatogram) {
 
-            peptideContentPane.peptideChange();
-            contentPane.populate();
+                    //Add Spectrum View
+                    peptideContentPane.getVizTabPane().addSpectrumViewPane();
+                    //Add Spectrum View
+                    peptideContentPane.getVizTabPane().addFragmentationViewPane();
 
-            //Update Protein Tab
-            ProteinTabPane proteinTabPane = contentPane.getProteinTabPane();
-            proteinTabPane.getVizTabPane().addSpectrumViewPane();
-            proteinTabPane.getVizTabPane().addFragmentationViewPane();
-            proteinTabPane.peptideChange();
-            proteinTabPane.populate();
+                    peptideContentPane.peptideChange();
+                    contentPane.populate();
 
-            RetrievePeptideSpectrumDetailTask task = new RetrievePeptideSpectrumDetailTask(controller);
-            JTable table = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
-            TableModel tableModel = table.getModel();
-            task.addTaskListener((TaskListener) tableModel);
+                    proteinTabPane.getVizTabPane().addSpectrumViewPane();
+                    proteinTabPane.getVizTabPane().addFragmentationViewPane();
+                    proteinTabPane.peptideChange();
+                    proteinTabPane.populate();
 
-            TaskUtil.startBackgroundTask(task, controller);
+                    RetrievePeptideSpectrumDetailTask task = new RetrievePeptideSpectrumDetailTask(controller);
+                    JTable table = contentPane.getPeptideTabPane().getPeptidePane().getPeptideTable();
+                    TableModel tableModel = table.getModel();
+                    task.addTaskListener((TaskListener) tableModel);
 
-            contentPane.populate();
+                    TaskUtil.startBackgroundTask(task, controller);
+
+                    contentPane.populate();
+                } else {
+                    peptideContentPane.getVizTabPane().removeSpectrumViewPane();
+                    peptideContentPane.getVizTabPane().removeFragmentationViewPane();
+
+                    proteinTabPane.getVizTabPane().removeSpectrumViewPane();
+                    proteinTabPane.getVizTabPane().removeFragmentationViewPane();
+                }
+            }
+
 
         } catch (DataAccessException e) {
             e.printStackTrace();

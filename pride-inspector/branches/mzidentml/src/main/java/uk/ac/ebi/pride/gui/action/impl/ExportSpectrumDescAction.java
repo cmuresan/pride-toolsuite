@@ -23,12 +23,12 @@ import static uk.ac.ebi.pride.gui.utils.Constants.TAB_SEP_FILE;
 
 /**
  * Export spectrum description
- *
+ * <p/>
  * User: rwang
  * Date: 01-Sep-2010
  * Time: 17:46:34
  */
-public class ExportSpectrumDescAction extends PrideAction{
+public class ExportSpectrumDescAction extends PrideAction {
     private static final Logger logger = LoggerFactory.getLogger(ExportSpectrumDescAction.class);
     private static final String FILE_NAME = "spectrum_desc";
 
@@ -45,8 +45,8 @@ public class ExportSpectrumDescAction extends PrideAction{
     public void actionPerformed(ActionEvent e) {
         PrideInspectorContext context = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
         DataAccessController controller = context.getForegroundDataAccessController();
-        String defaultFileName = controller.getName().split("\\" + DOT)[0]+ "_" + FILE_NAME;
-        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Export Spectrum Descriptions", defaultFileName, false, TAB_SEP_FILE);
+        String defaultFileName = controller.getName().split("\\" + DOT)[0] + "_" + FILE_NAME;
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Export Spectrum Descriptions", true, defaultFileName, false, TAB_SEP_FILE);
         ofd.setMultiSelectionEnabled(false);
         int result = ofd.showDialog(Desktop.getInstance().getMainComponent(), null);
         if (result == JFileChooser.APPROVE_OPTION) {
@@ -58,7 +58,7 @@ public class ExportSpectrumDescAction extends PrideAction{
         }
     }
 
-    @EventSubscriber (eventClass = ForegroundDataSourceEvent.class)
+    @EventSubscriber(eventClass = ForegroundDataSourceEvent.class)
     public void onForegroundDataSourceEvent(ForegroundDataSourceEvent evt) {
         try {
             DataAccessController controller = (DataAccessController) evt.getNewForegroundDataSource();

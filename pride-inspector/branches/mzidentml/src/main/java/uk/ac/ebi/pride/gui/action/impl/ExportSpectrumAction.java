@@ -48,7 +48,7 @@ public class ExportSpectrumAction extends PrideAction {
         PrideInspectorContext context = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
         DataAccessController controller = context.getForegroundDataAccessController();
         String defaultFileName = controller.getName().split("\\" + DOT)[0] + "_" + FILE_NAME;
-        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select File To Export Spectrum Data To", defaultFileName, false, MGF_FILE);
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select File To Export Spectrum Data To", true, defaultFileName, false, MGF_FILE);
         ofd.setMultiSelectionEnabled(false);
         int result = ofd.showDialog(Desktop.getInstance().getMainComponent(), null);
         if (result == JFileChooser.APPROVE_OPTION) {
@@ -65,7 +65,7 @@ public class ExportSpectrumAction extends PrideAction {
     @EventSubscriber(eventClass = ForegroundDataSourceEvent.class)
     public void onForegroundDataSourceEvent(ForegroundDataSourceEvent evt) {
         try {
-            DataAccessController controller = (DataAccessController)evt.getNewForegroundDataSource();
+            DataAccessController controller = (DataAccessController) evt.getNewForegroundDataSource();
             this.setEnabled(controller != null && controller.hasSpectrum());
         } catch (DataAccessException e) {
             logger.error("Failed to check the data access controller", e);

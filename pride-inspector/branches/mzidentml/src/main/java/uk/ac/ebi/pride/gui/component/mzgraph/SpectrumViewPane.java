@@ -225,7 +225,8 @@ public class SpectrumViewPane extends DataAccessControllerPane<Spectrum, Void> i
 
         BinaryDataArray mzBinary = spectrum == null ? null : spectrum.getMzBinaryDataArray();
         BinaryDataArray intentBinary = spectrum == null ? null : spectrum.getIntensityBinaryDataArray();
-        if (!mzBinary.isEmpty() && !intentBinary.isEmpty()) {
+
+        if (spectrum != null && !mzBinary.isEmpty() && !intentBinary.isEmpty()) {
             spectrumBrowser.setPeaks(mzBinary.getDoubleArray(), intentBinary.getDoubleArray());
             // set source name
             if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {

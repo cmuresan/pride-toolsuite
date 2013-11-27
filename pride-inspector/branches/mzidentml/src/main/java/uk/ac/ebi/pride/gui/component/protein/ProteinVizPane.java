@@ -172,4 +172,28 @@ public class ProteinVizPane extends DataAccessControllerPane implements EventBus
     public void setProteinSequencePaneIndex(int proteinSequencePaneIndex) {
         this.proteinSequencePaneIndex = proteinSequencePaneIndex;
     }
+
+    public void removeSpectrumViewPane() {
+        if (spectrumViewPane != null) {
+            for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+                if (tabbedPane.getComponent(i) instanceof SpectrumViewPane) {
+                    tabbedPane.remove(i);
+                    spectrumViewPane = null;
+                    proteinSequencePaneIndex--;
+                }
+            }
+        }
+    }
+
+    public void removeFragmentationViewPane() {
+        if (fragmentationTablePane != null) {
+            for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+                if (tabbedPane.getComponent(i) instanceof FragmentationTablePane) {
+                    tabbedPane.remove(i);
+                    fragmentationTablePane = null;
+                    proteinSequencePaneIndex--;
+                }
+            }
+        }
+    }
 }

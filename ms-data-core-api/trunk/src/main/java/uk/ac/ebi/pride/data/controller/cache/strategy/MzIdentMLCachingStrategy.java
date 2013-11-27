@@ -106,9 +106,9 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
             while (iterator.hasNext()) {
                 Map.Entry mapEntry = (Map.Entry) iterator.next();
                 uk.ac.ebi.pride.data.core.SpectraData spectraData = MzIdentMLTransformer.transformToSpectraData((uk.ac.ebi.jmzidml.model.mzidml.SpectraData) mapEntry.getValue());
-                if (isSpectraDataSupported(spectraData)) {
-                    spectraDataMapResult.put((Comparable) mapEntry.getKey(), spectraData);
-                }
+                //if (isSpectraDataSupported(spectraData)) {
+                spectraDataMapResult.put((Comparable) mapEntry.getKey(), spectraData);
+                //}
             }
             cache.clear(CacheEntry.SPECTRA_DATA);
             cache.storeInBatch(CacheEntry.SPECTRA_DATA, spectraDataMapResult);
@@ -119,6 +119,7 @@ public class MzIdentMLCachingStrategy extends AbstractCachingStrategy {
         return (!(MzIdentMLUtils.getSpectraDataIdFormat(spectraData) == Constants.SpecIdFormat.NONE ||
                 MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.NONE));
     }
+
 
     private void cacheProteinGroups(MzIdentMLUnmarshallerAdaptor unmarshaller) throws ConfigurationException {
         Set<String> proteinAmbiguityGroupIds = unmarshaller.getIDsForElement(MzIdentMLElement.ProteinAmbiguityGroup);

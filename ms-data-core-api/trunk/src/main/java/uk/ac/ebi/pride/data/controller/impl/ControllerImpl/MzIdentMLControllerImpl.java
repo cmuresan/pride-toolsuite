@@ -364,9 +364,11 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 Provider provider = getProvider();
                 //Get Creation Date
                 Date creationDate = unmarshaller.getCreationDate();
+                //Get SpectraData Files
+                List<SpectraData> spectraData = getSpectraDataFiles();
                 //Create the ExperimentMetaData Object
                 metaData = new ExperimentMetaData(additional, accession, title, version, shortLabel, samples, softwares,
-                        persons, sources, provider, organizations, references, creationDate, null, protocol);
+                        persons, sources, provider, organizations, references, creationDate, null, protocol, spectraData);
                 // store it in the cache
                 getCache().store(CacheEntry.EXPERIMENT_METADATA, metaData);
             } catch (Exception ex) {
@@ -737,6 +739,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      */
     @Override
     public Spectrum getSpectrumById(Comparable id, boolean useCache) {
+
         String[] spectrumIdArray = ((String) id).split("!");
         if (spectrumIdArray.length != 2) {
             spectrumIdArray = ((Map<Comparable, String[]>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM)).get(id);
@@ -781,6 +784,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return spectrumIds;
     }
 
+    /**
+     * Is identified Spectrum return true if the spectrum was identified
+     *
+     * @param specId
+     * @return
+     */
     @Override
     public boolean isIdentifiedSpectrum(Comparable specId) {
         String[] spectrumIdArray = ((Map<Comparable, String[]>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM)).get(specId);
@@ -798,7 +807,13 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return false;
     }
 
+    /**
+     * Add a List of MS Files to the mzidentml
+     *
+     * @param dataAccessControllerFiles
+     */
     public void addMSController(List<File> dataAccessControllerFiles) {
+
         Map<SpectraData, File> spectraDataFileMap = checkMScontrollers(dataAccessControllerFiles);
 
         Iterator iterator = spectraDataFileMap.entrySet().iterator();
@@ -809,13 +824,20 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         }
     }
 
-    public Map<SpectraData, File> checkMScontrollers(List<File> mzIdentMLFiles) {
+    /**
+     * Check if the ms File is supported and match with some of the par of the name in the Spectra Files
+     * This method should be used in high-throughput, when you add different files.
+     *
+     * @param msIdentMLFiles
+     * @return
+     */
+    public Map<SpectraData, File> checkMScontrollers(List<File> msIdentMLFiles) {
 
         Map<Comparable, SpectraData> spectraDataMap = getSpectraDataMap();
 
         Map<SpectraData, File> spectraFileMap = new HashMap<SpectraData, File>();
 
-        for (File file : mzIdentMLFiles) {
+        for (File file : msIdentMLFiles) {
             Iterator iterator = spectraDataMap.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry mapEntry = (Map.Entry) iterator.next();
@@ -824,11 +846,13 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                     spectraFileMap.put(spectraData, file);
                 }
             }
-
         }
         return spectraFileMap;
     }
 
+    /**
+     * @param spectraDataFileMap
+     */
     public void addMSController(Map<SpectraData, File> spectraDataFileMap) {
 
         Map<SpectraData, File> spectraDataControllerMap = getSpectraDataMSFiles();
@@ -852,6 +876,54 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         }
     }
 
+
+    public boolean addNewMSController(Map<SpectraData, File> spectraDataFileMap, Map<Comparable, File> newFiles, Map<Comparable, String> fileTypes) {
+
+        Map<SpectraData, File> spectraDataControllerMap = getSpectraDataMSFiles();
+
+        boolean changeStatus = false;
+
+        for (SpectraData spectraData : spectraDataControllerMap.keySet()) {
+            File newFile = newFiles.get(spectraData.getId());
+            String fileType = fileTypes.get(spectraData.getId());
+            File oldSpectraDataFile = spectraDataFileMap.get(spectraData);
+            if (oldSpectraDataFile != null && newFile == null) {
+                DataAccessController peakList = msDataAccessControllers.remove(spectraData.getId());
+                peakList.close();
+                changeStatus = true;
+            } else if (oldSpectraDataFile == null && newFile != null ||
+                    (Constants.getSpecFileFormat(fileType) != Constants.SpecFileFormat.NONE && oldSpectraDataFile != null && newFile != null && !newFile.getAbsolutePath().equalsIgnoreCase(oldSpectraDataFile.getAbsolutePath()))) {
+                DataAccessController peakList = createMSDataAccessController(newFile, fileType);
+                msDataAccessControllers.put(spectraData.getId(), peakList);
+                changeStatus = true;
+            }
+            if (changeStatus) {
+                getCache().clear(CacheEntry.SPECTRUM);
+            }
+        }
+        return changeStatus;
+    }
+
+    DataAccessController createMSDataAccessController(File file, String fileType) {
+        Constants.SpecFileFormat fileFormatType = Constants.SpecFileFormat.valueOf(fileType);
+        if (fileFormatType != null && file != null) {
+            if (fileFormatType == Constants.SpecFileFormat.MZXML)
+                return new MzXmlControllerImpl(file);
+            if (fileFormatType == Constants.SpecFileFormat.MGF)
+                return new PeakControllerImpl(file);
+            if (fileFormatType == Constants.SpecFileFormat.MZML)
+                return new MzMLControllerImpl(file);
+            if (fileFormatType == Constants.SpecFileFormat.DTA)
+                return new PeakControllerImpl(file);
+            if (fileFormatType == Constants.SpecFileFormat.PKL)
+                return new PeakControllerImpl(file);
+            if (fileFormatType == Constants.SpecFileFormat.MZDATA)
+                return new MzDataControllerImpl(file);
+            //Todo: Need to check if changes
+        }
+        return null;
+    }
+
     private Map<Comparable, SpectraData> getSpectraDataMap() {
         Map<Comparable, SpectraData> spectraDataMapResult = (Map<Comparable, SpectraData>) getCache().get(CacheEntry.SPECTRA_DATA);
         if (spectraDataMapResult == null) {
@@ -863,6 +935,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
     public Map<SpectraData, DataAccessController> getSpectraDataMSControllers() {
         Map<Comparable, SpectraData> spectraDataMap = getSpectraDataMap();
+
         Map<SpectraData, DataAccessController> mapResult = new HashMap<SpectraData, DataAccessController>();
 
         for (Comparable id : spectraDataMap.keySet()) {
@@ -875,9 +948,17 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return mapResult;
     }
 
+    /**
+     * Get the Spectra Data
+     *
+     * @return
+     */
     public Map<SpectraData, File> getSpectraDataMSFiles() {
+
         Map<SpectraData, DataAccessController> spectraDataControllerMAp = getSpectraDataMSControllers();
+
         Map<SpectraData, File> spectraDataFileMap = new HashMap<SpectraData, File>();
+
         for (SpectraData spectraData : spectraDataControllerMAp.keySet()) {
             DataAccessController controller = spectraDataControllerMAp.get(spectraData);
             spectraDataFileMap.put(spectraData, (controller == null) ? null : (File) controller.getSource());
@@ -885,9 +966,61 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         return spectraDataFileMap;
     }
 
+    public List<Comparable> getSupportedSpectraData() {
+        Map<Comparable, SpectraData> spectraDataControllerMAp = getSpectraDataMap();
+        List<Comparable> supported = new ArrayList<Comparable>();
+        for (Comparable id : spectraDataControllerMAp.keySet()) {
+            if (isSpectraDataSupported(spectraDataControllerMAp.get(id))) {
+                supported.add(id);
+            }
+        }
+        return supported;
+    }
+
+
+    private boolean isSpectraDataSupported(SpectraData spectraData) {
+        return (!(MzIdentMLUtils.getSpectraDataIdFormat(spectraData) == Constants.SpecIdFormat.NONE ||
+                MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.NONE));
+    }
+
+    /**
+     * Get the number of Spectra by File associated with the mzidentml
+     *
+     * @param spectraData
+     * @return
+     */
     public Integer getNumberOfSpectrabySpectraData(SpectraData spectraData) {
         Map<Comparable, List<Comparable>> spectraDataIdMap = (Map<Comparable, List<Comparable>>) getCache().get(CacheEntry.SPECTRADATA_TO_SPECTRUMIDS);
         return spectraDataIdMap.get(spectraData.getId()).size();
+    }
+
+    public List<Constants.SpecFileFormat> getFileTypeSupported(SpectraData spectraData) {
+        List<Constants.SpecFileFormat> fileFormats = new ArrayList<Constants.SpecFileFormat>();
+        Constants.SpecFileFormat spectraDataFormat = MzIdentMLUtils.getSpectraDataFormat(spectraData);
+        if (spectraDataFormat == Constants.SpecFileFormat.NONE) {
+            Constants.SpecIdFormat spectIdFormat = MzIdentMLUtils.getSpectraDataIdFormat(spectraData);
+            if (spectIdFormat == Constants.SpecIdFormat.MASCOT_QUERY_NUM) {
+                fileFormats.add(Constants.SpecFileFormat.MGF);
+            } else if (spectIdFormat == Constants.SpecIdFormat.MULTI_PEAK_LIST_NATIVE_ID) {
+                fileFormats.add(Constants.SpecFileFormat.NONE);
+                fileFormats.add(Constants.SpecFileFormat.DTA);
+                fileFormats.add(Constants.SpecFileFormat.MGF);
+                fileFormats.add(Constants.SpecFileFormat.PKL);
+            } else if (spectIdFormat == Constants.SpecIdFormat.SINGLE_PEAK_LIST_NATIVE_ID) {
+                fileFormats.add(Constants.SpecFileFormat.NONE);
+                fileFormats.add(Constants.SpecFileFormat.DTA);
+                fileFormats.add(Constants.SpecFileFormat.PKL);
+            } else if (spectIdFormat == Constants.SpecIdFormat.MZML_ID) {
+                fileFormats.add(Constants.SpecFileFormat.MZML);
+            } else if (spectIdFormat == Constants.SpecIdFormat.SCAN_NUMBER_NATIVE_ID) {
+                fileFormats.add(Constants.SpecFileFormat.MZXML);
+            } else if (spectIdFormat == Constants.SpecIdFormat.MZDATA_ID) {
+                fileFormats.add(Constants.SpecFileFormat.MZDATA);
+            }
+        } else {
+            fileFormats.add(spectraDataFormat);
+        }
+        return fileFormats;
     }
 
     /**

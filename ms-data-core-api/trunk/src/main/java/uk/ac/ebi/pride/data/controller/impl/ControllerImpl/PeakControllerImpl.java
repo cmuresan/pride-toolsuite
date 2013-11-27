@@ -146,6 +146,7 @@ public class PeakControllerImpl extends CachedDataAccessController {
      */
     @Override
     public Spectrum getSpectrumById(Comparable id, boolean useCache) {
+
         Spectrum spectrum = super.getSpectrumById(id, useCache);
         if (spectrum == null) {
             uk.ac.ebi.pride.tools.jmzreader.model.Spectrum rawSpec;

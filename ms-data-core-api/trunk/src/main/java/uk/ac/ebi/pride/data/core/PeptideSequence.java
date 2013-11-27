@@ -33,6 +33,10 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
      */
     private final List<SubstitutionModification> substitutionModifications;
 
+    public PeptideSequence(String sequence, List<Modification> modifications) {
+        this(null, null, null, sequence, modifications);
+    }
+
     public PeptideSequence(String id, String name, String sequence, List<Modification> modifications) {
         this(null, id, name, sequence, modifications, null);
     }
@@ -97,6 +101,15 @@ public class PeptideSequence extends IdentifiableParamGroup implements Comparabl
             sequenceList.add(AminoAcid.getAminoAcid(character));
         }
         return sequenceList;
+    }
+
+    public int length() {
+        return sequence.length();
+    }
+
+    public AminoAcid getAminoAcidByPosition(int index) {
+        char character = sequence.charAt(index);
+        return AminoAcid.getAminoAcid(character);
     }
 
     @Override

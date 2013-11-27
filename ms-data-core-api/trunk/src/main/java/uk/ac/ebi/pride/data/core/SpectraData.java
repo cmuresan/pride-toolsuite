@@ -28,16 +28,20 @@ public class SpectraData extends ExternalData {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         SpectraData that = (SpectraData) o;
 
-        return !(spectrumIdFormat != null ? !spectrumIdFormat.equals(that.spectrumIdFormat) : that.spectrumIdFormat != null);
+        if (!spectrumIdFormat.equals(that.spectrumIdFormat)) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return spectrumIdFormat != null ? spectrumIdFormat.hashCode() : 0;
+        int result = super.hashCode();
+        result = 31 * result + spectrumIdFormat.hashCode();
+        return result;
     }
 }
 

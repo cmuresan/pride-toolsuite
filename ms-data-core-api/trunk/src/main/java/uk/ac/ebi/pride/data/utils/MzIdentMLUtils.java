@@ -56,9 +56,11 @@ public final class MzIdentMLUtils {
             return Constants.SpecIdFormat.MZML_ID;
         if (accession.equals("MS:1000776"))
             return Constants.SpecIdFormat.SCAN_NUMBER_NATIVE_ID;
-        if (accession.equals("MS:1000770")) {
+        if (accession.equals("MS:1000770"))
             return Constants.SpecIdFormat.WIFF_NATIVE_ID;
-        }
+        if (accession.equals("MS:1000777"))
+            return Constants.SpecIdFormat.MZDATA_ID;
+
         return Constants.SpecIdFormat.NONE;
     }
 

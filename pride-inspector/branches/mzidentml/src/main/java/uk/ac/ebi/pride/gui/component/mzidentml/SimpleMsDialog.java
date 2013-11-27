@@ -8,7 +8,6 @@ import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.core.SpectraData;
 import uk.ac.ebi.pride.gui.GUIUtilities;
@@ -22,19 +21,18 @@ import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.AddMsDataAccessControllersTask;
 import uk.ac.ebi.pride.gui.utils.Constants;
 
+
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
+import javax.swing.table.*;
+import javax.swing.JComboBox;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -52,13 +50,20 @@ public class SimpleMsDialog extends JDialog {
 
     Map<SpectraData, File> msFileMap = null;
 
-    private static final int DEFAULT_HEIGHT = 30;
+    private static final int DEFAULT_HEIGHT = 25;
     private static final int START_ALPHA = 100;
     private static final int STOP_ALPHA = 150;
     private static final String ERROR_MESSAGE = "No Supported Spectra Data Files for this mzIdentml";
     private static final String WARNING = "spectra missing";
-    private static final String TOTAL_SPECTRUMS = "All Spectrums Found";
-    private static final String COLUMN_HEADER_REMOVE = "Remove";
+    private static final String TOTAL_SPECTRUMS = "All Spectrum Found";
+    private static final String COLUMN_HEADER_REMOVE = "Add/Remove";
+    private static final String COLUMN_HEADER_SOURCE = "Spectra File Source";
+    private static final String COLUMN_HEADER_NUMBER = "No. Spectra";
+    private static final String COLUMN_HEADER_MSFILE = "MS File";
+    private static final String COLUMN_HEADER_MSTYPE = "MS Type";
+    private static final String COLUMN_HEADER_ID = "File ID";
+    private static final String NO_SUPPORTED = "No Supported";
+
     private String message;
     private SummaryReportMessage.Type type;
 
@@ -68,223 +73,14 @@ public class SimpleMsDialog extends JDialog {
         context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
         this.controller = controller;
         initComponents();
-        customInitComponents();
     }
 
     /**
-     * This method initialize the custom components in the MsDialog
+     * Init Form Components
      */
-    private void customInitComponents() {
-
-        msFileTable.setModel(new DefaultTableModel(
-                new Object[][]{
-                },
-                new String[]{
-                        "Spectra File Source", "No. Spectras", "MS File", COLUMN_HEADER_REMOVE
-                }
-        ) {
-            Class<?>[] columnTypes = new Class<?>[]{
-                    String.class, Double.class, String.class, ImageIcon.class
-            };
-            boolean[] columnEditable = new boolean[]{
-                    false, false, false, false
-            };
-
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                return columnTypes[columnIndex];
-            }
-
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return columnEditable[columnIndex];
-            }
-        });
-
-        try {
-            msFileMap = ((MzIdentMLControllerImpl) controller).getSpectraDataMSFiles();
-
-        } catch (DataAccessException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        updateMSFileList(msFileMap);
-        msFileTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                msFileTableMouseReleased(e);
-            }
-        });
-    }
-
-    private void msFileTableMouseReleased(MouseEvent e) {
-        int row = msFileTable.rowAtPoint(e.getPoint());
-        int col = msFileTable.columnAtPoint(e.getPoint());
-        String colName = msFileTable.getColumnName(col);
-        if (colName.equals(COLUMN_HEADER_REMOVE) && row >= 0) {
-            DefaultTableModel model = (DefaultTableModel) msFileTable.getModel();
-            String fileName = (String) model.getValueAt(row, 2);
-            removeMStoSpectraDataSet(row, fileName);
-        }
-
-    }
-
-    private void addNewMsFile(ActionEvent e) {
-
-        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzData/Peak Files ",
-                null, true,
-                Constants.MGF_FILE,
-                Constants.MZXML_FILE,
-                Constants.MZML_FILE,
-                Constants.DTA_FILE,
-                Constants.XML_FILE);
-
-        int result = ofd.showDialog(this, null);
-
-        java.util.List<File> filesToOpen = new ArrayList<File>();
-
-        // check the selection results from open fiel dialog
-        if (result == JFileChooser.APPROVE_OPTION) {
-            filesToOpen.addAll(Arrays.asList(ofd.getSelectedFiles()));
-            File selectedFile = ofd.getSelectedFile();
-            String filePath = selectedFile.getPath();
-            // remember the path has visited
-            context.setOpenFilePath(filePath.replace(selectedFile.getName(), ""));
-        }
-        addMStoSpectraDataSet(filesToOpen);
-
-    }
-
-    private void addMStoSpectraDataSet(List<File> files) {
-        try {
-            msFileMap = ((MzIdentMLControllerImpl) controller).checkMScontrollers(files);
-        } catch (DataAccessException e1) {
-            logger.error("Failed to check the files as controllers", e1);
-        }
-        updateMSFileList(msFileMap);
-    }
-
-    private void removeMStoSpectraDataSet(int row, String fileName) {
-        try {
-            msFileMap = ((MzIdentMLControllerImpl) controller).getSpectraDataMSFiles();
-            int totalSpectras = 0;
-            int noMissSpectrums = 0;
-            for (SpectraData spectraData : msFileMap.keySet()) {
-                String msFileName = (msFileMap.get(spectraData) == null) ? "" : msFileMap.get(spectraData).getAbsolutePath();
-                int msSpectrums = ((MzIdentMLControllerImpl) controller).getNumberOfSpectrabySpectraData(spectraData);
-                totalSpectras += msSpectrums;
-                if (msFileName.equalsIgnoreCase(fileName)) {
-                    msFileMap.remove(spectraData);
-                    msFileMap.put(spectraData, null);
-                    msFileName = "";
-                }
-                updateTableRow(row, spectraData, msFileName);
-                noMissSpectrums = +((msFileMap.get(spectraData) == null) ? 0 : msSpectrums);
-            }
-            message = getMessage(msFileMap, totalSpectras - noMissSpectrums);
-            type = getMessageType(msFileMap, totalSpectras - noMissSpectrums);
-            updateMessage(type, message);
-            updateStatusSet(noMissSpectrums);
-            updateButtonStatus(type);
-        } catch (DataAccessException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-    }
-
-    private void updateTableRow(int row, SpectraData spectraData, String msFileName) {
-        msFileTable.getModel().setValueAt(spectraData.getId() + " " + ((spectraData.getName() == null) ? "" : ": " + spectraData.getName()), row, 0);
-        msFileTable.getModel().setValueAt(((MzIdentMLControllerImpl) controller).getNumberOfSpectrabySpectraData(spectraData), row, 1);
-        msFileTable.getModel().setValueAt(msFileName, row, 2);
-        msFileTable.getModel().setValueAt((msFileName.length() == 0) ? GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small.disable")) : GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small")), row, 3);
-    }
-
-    private void updateMSFileList(Map<SpectraData, File> spectraDataFileMap) {
-        if (spectraDataFileMap != null) {
-            clearTalbeMsFiles();
-            int totalSpectras = 0;
-            int noMissSpectrums = 0;
-            for (SpectraData spectraData : spectraDataFileMap.keySet()) {
-                String msFileName = (spectraDataFileMap.get(spectraData) == null) ? "" : spectraDataFileMap.get(spectraData).getAbsolutePath();
-                int countFile = fillTableRow(spectraData, msFileName);
-                totalSpectras = +countFile;
-                noMissSpectrums = +((spectraDataFileMap.get(spectraData) == null) ? 0 : countFile);
-            }
-            message = getMessage(spectraDataFileMap, totalSpectras - noMissSpectrums);
-            type = getMessageType(spectraDataFileMap, totalSpectras - noMissSpectrums);
-            updateMessage(type, message);
-            updateButtonStatus(type);
-            updateStatusSet(noMissSpectrums);
-        }
-    }
-
-    private void clearTalbeMsFiles() {
-        DefaultTableModel model = (DefaultTableModel) msFileTable.getModel();
-        for (int i = model.getRowCount() - 1; i >= 0; i--) {
-            model.removeRow(i);
-        }
-    }
-
-    private int fillTableRow(SpectraData spectraData, String msFileName) {
-        Object[] data = new Object[4];
-        data[0] = spectraData.getId() + " " + ((spectraData.getName() == null) ? "" : ": " + spectraData.getName());
-        data[1] = ((MzIdentMLControllerImpl) controller).getNumberOfSpectrabySpectraData(spectraData);
-        data[2] = msFileName;
-        data[3] = (msFileName.length() == 0) ? GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small.disable")) : GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small"));
-        ((DefaultTableModel) msFileTable.getModel()).addRow(data);
-        return (Integer) data[1];
-    }
-
-    private void updateStatusSet(int numberOfSpectrums) {
-        if (numberOfSpectrums > 0) {
-            setButton.setEnabled(true);
-        } else {
-            setButton.setEnabled(false);
-        }
-
-    }
-
-    private void updateMessage(SummaryReportMessage.Type type, String message) {
-        if (panelMessage.getComponentCount() > 0) panelMessage.removeAll();
-        RoundCornerLabel label = new RoundCornerLabel(getIcon(type), message, getBackgroundPaint(type), getBorderPaint(type));
-        label.setPreferredSize(new Dimension(50, DEFAULT_HEIGHT));
-        panelMessage.add(label);
-        panelMessage.revalidate();
-    }
-
-    private void updateButtonStatus(SummaryReportMessage.Type type) {
-        if (type == SummaryReportMessage.Type.ERROR) {
-            addButton.setEnabled(false);
-            setButton.setEnabled(false);
-        } else if (type == SummaryReportMessage.Type.SUCCESS) {
-            addButton.setEnabled(false);
-            setButton.setEnabled(true);
-        } else if (type == SummaryReportMessage.Type.WARNING) {
-            addButton.setEnabled(true);
-        }
-
-    }
-
-    private void cancelbuttonActionPerformed(ActionEvent e) {
-        dispose();
-    }
-
-    private void setMSFilesActionPerformed(ActionEvent e) {
-        AddMsDataAccessControllersTask task = new AddMsDataAccessControllersTask(controller, msFileMap);
-        TaskUtil.startBackgroundTask(task);
-        //context.replaceDataAccessController(controller,controller,true);
-        EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile("Spectra not found.*"))));
-        EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile("Missing spectra.*"))));
-        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(type, message, message)));
-        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Spectra found", "This data source contains spectra")));
-        dispose();
-
-    }
-
     private void initComponents() {
-        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner non-commercial license
+
         scrollPane1 = new JScrollPane();
-        msFileTable = new JTable();
         addButton = new JButton();
         separator1 = new JSeparator();
         setButton = new JButton();
@@ -292,43 +88,117 @@ public class SimpleMsDialog extends JDialog {
         panelMessage = new JPanel();
 
         //======== this ========
-        setTitle("Load related spectrum files");
+        setTitle("Open Ms files for");
         Container contentPane = getContentPane();
 
-        //======== scrollPane1 ========
-        {
+        //===== Create Custom Table ====
 
-            //---- msFileTable ----
-            msFileTable.setModel(new DefaultTableModel(
-                    new Object[][]{
-                            {null, null, null, null},
-                    },
-                    new String[]{
-                            "Spectra File Source", "No. Spectras", "MS File", "Remove"
-                    }
-            ));
-            {
-                TableColumnModel cm = msFileTable.getColumnModel();
-                cm.getColumn(0).setPreferredWidth(130);
-                cm.getColumn(1).setPreferredWidth(85);
-                cm.getColumn(2).setPreferredWidth(55);
-                cm.getColumn(3).setPreferredWidth(55);
-            }
-            scrollPane1.setViewportView(msFileTable);
-            scrollPane1.getViewport().setBackground(Color.white);
+        setTitle(OPEN_FILE);
+
+        String[] columns = new String[]{
+                COLUMN_HEADER_ID, COLUMN_HEADER_SOURCE, COLUMN_HEADER_NUMBER, COLUMN_HEADER_MSFILE, COLUMN_HEADER_MSTYPE, COLUMN_HEADER_REMOVE
+        };
+
+        msFileMap = ((MzIdentMLControllerImpl) controller).getSpectraDataMSFiles();
+
+        Object[][] data = new Object[msFileMap.size()][columns.length];
+
+        int i = 0;
+        JComboBox[] comboBoxes = new JComboBox[msFileMap.size()];
+
+        for (SpectraData spectraData : msFileMap.keySet()) {
+            String msFileName = (msFileMap.get(spectraData) == null) ? "" : msFileMap.get(spectraData).getAbsolutePath();
+            data[i][0] = spectraData.getId();
+            data[i][1] = (spectraData.getName() != null) ? spectraData.getName() : "";
+            data[i][2] = ((MzIdentMLControllerImpl) controller).getNumberOfSpectrabySpectraData(spectraData);
+            data[i][3] = msFileName;
+            List<uk.ac.ebi.pride.data.utils.Constants.SpecFileFormat> fileformats = ((MzIdentMLControllerImpl) controller).getFileTypeSupported(spectraData);
+            List<String> fileStrFormats = new ArrayList<String>(fileformats.size());
+            for (uk.ac.ebi.pride.data.utils.Constants.SpecFileFormat specFileFormat : fileformats)
+                fileStrFormats.add(specFileFormat.toString());
+            data[i][4] = (fileStrFormats.size() == 0) ? NO_SUPPORTED : fileformats.get(0);
+            if (fileStrFormats.size() == 0) fileStrFormats.add(NO_SUPPORTED);
+            JComboBox comboBox = new JComboBox(fileStrFormats.toArray());
+            comboBoxes[i] = comboBox;
+            i++;
         }
 
+        DefaultTableModel dm = new DefaultTableModel(data, columns) {
+            boolean[] columnEditable = new boolean[]{
+                    false, false, false, false, true, false
+            };
+
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return columnEditable[columnIndex];
+            }
+        };
+        for (i = 0; i < comboBoxes.length; i++) {
+            editors.add(new DefaultCellEditor(comboBoxes[i]));
+        }
+
+        msFileTable = new JTable(dm) {
+            //  Determine editor to be used by row
+            public TableCellEditor getCellEditor(int row, int column) {
+                int modelColumn = convertColumnIndexToModel(column);
+
+                if (modelColumn == 4 && row < msFileMap.size())
+                    return editors.get(row);
+                else
+                    return super.getCellEditor(row, column);
+            }
+        };
+
+        //msFileTable.setModel(dm);
+        //rowEditor = new RowEditor(msFileTable);
+
+        //msFileTable.getColumn(COLUMN_HEADER_MSFILE).setCellEditor(rowEditor);
+
+        TableColumnModel cm = msFileTable.getColumnModel();
+        cm.getColumn(0).setPreferredWidth(60);
+        cm.getColumn(1).setPreferredWidth(80);
+        cm.getColumn(2).setPreferredWidth(50);
+        cm.getColumn(3).setPreferredWidth(175);
+        cm.getColumn(4).setPreferredWidth(60);
+        cm.getColumn(5).setPreferredWidth(35);
+
+        // create combo box to select file type
+        TableColumn fileTypeColumn = msFileTable.getColumn(COLUMN_HEADER_MSTYPE);
+        // fileTypeColumn.setCellRenderer(new ComboBoxCellRenderer(uk.ac.ebi.pride.data.utils.Constants.SpecFileFormat.values()));
+        // fileTypeColumn.setCellEditor(new ComboBoxCellEditor(fileTypeGroups));
+        fileTypeColumn.setMinWidth(90);
+        fileTypeColumn.setMaxWidth(90);
+
+        // removal column
+        String removalColHeader = COLUMN_HEADER_REMOVE;
+        final TableColumn removalColumn = msFileTable.getColumn(removalColHeader);
+        removalColumn.setCellRenderer(new AddButoonCellRenderer());
+
+        msFileTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                msFileTableMouseReleased(e);
+            }
+        });
+
+        msFileTable.setRowHeight(DEFAULT_HEIGHT);
+
+        scrollPane1.setViewportView(msFileTable);
+        scrollPane1.getViewport().setBackground(Color.white);
+
+
         //---- addButton ----
-        addButton.setText("Add");
+        addButton.setText("Add Multiple Files");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addNewMsFile(e);
+                addMultipleMsFiles(e);
             }
         });
 
         //---- setButton ----
         setButton.setText("Set");
+        setButton.setEnabled(false);
         setButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -357,17 +227,17 @@ public class SimpleMsDialog extends JDialog {
                         .addGroup(contentPaneLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(contentPaneLayout.createParallelGroup()
-                                        .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
+                                        .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE)
                                         .addGroup(contentPaneLayout.createSequentialGroup()
                                                 .addComponent(addButton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(panelMessage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                                                .addGap(0, 354, Short.MAX_VALUE)
+                                                .addGap(0, 644, Short.MAX_VALUE)
                                                 .addComponent(cancelButton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(setButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(separator1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE))
+                                        .addComponent(separator1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE))
                                 .addContainerGap())
         );
         contentPaneLayout.setVerticalGroup(
@@ -389,7 +259,161 @@ public class SimpleMsDialog extends JDialog {
         );
         pack();
         setLocationRelativeTo(getOwner());
-        // JFormDesigner - End of component initialization  //GEN-END:initComponents
+        updateFormStatus(); // Update Status of all the Components
+    }
+
+    private void updateFormStatus() {
+        int totalSpectra = 0;
+        int missSpectrum = 0;
+        int noSupported = 0;
+        for (int i = 0; i < msFileTable.getRowCount(); i++) {
+            totalSpectra += (Integer) msFileTable.getValueAt(i, 2);
+            missSpectrum += (((String) msFileTable.getValueAt(i, 3)).length() == 0) ? (Integer) msFileTable.getValueAt(i, 2) : 0;
+            noSupported += (!((MzIdentMLControllerImpl) controller).getSupportedSpectraData().contains(msFileTable.getValueAt(i, 0))) ? (Integer) msFileTable.getValueAt(i, 2) : 0;
+        }
+        message = getMessage(missSpectrum, noSupported, totalSpectra);
+        type = getMessageType(missSpectrum, noSupported, totalSpectra);
+        updateMessage(type, message);
+    }
+
+    /**
+     * This method initialize the custom components in the MsDialog
+     */
+
+    private void msFileTableMouseReleased(MouseEvent e) {
+        int row = msFileTable.rowAtPoint(e.getPoint());
+        int col = msFileTable.columnAtPoint(e.getPoint());
+        String colName = msFileTable.getColumnName(col);
+        DefaultTableModel model = (DefaultTableModel) msFileTable.getModel();
+        String fileName = (String) model.getValueAt(row, 3);
+        Comparable idSpectra = (Comparable) model.getValueAt(row, 0);
+        boolean supported = ((MzIdentMLControllerImpl) controller).getSupportedSpectraData().contains(idSpectra);
+        if (colName.equals(COLUMN_HEADER_REMOVE) && row >= 0 && fileName.length() > 0) {
+            msFileTable.getModel().setValueAt("", row, 3);
+            setButton.setEnabled(true);
+            updateFormStatus();
+        } else if (supported && (colName.equals(COLUMN_HEADER_REMOVE) && row >= 0 && ((fileName == null) || (fileName.length() == 0)))) {
+            SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzData/Peak Files ",
+                    false, null, true,
+                    Constants.MGF_FILE,
+                    Constants.MZXML_FILE,
+                    Constants.MZML_FILE,
+                    Constants.DTA_FILE,
+                    Constants.XML_FILE);
+            int result = ofd.showDialog(this, null);
+
+            java.util.List<File> filesToOpen = new ArrayList<File>();
+
+            // check the selection results from open fiel dialog
+            if (result == JFileChooser.APPROVE_OPTION) {
+                filesToOpen.addAll(Arrays.asList(ofd.getSelectedFiles()));
+                File selectedFile = ofd.getSelectedFile();
+                String filePath = selectedFile.getPath();
+                // remember the path has visited
+                context.setOpenFilePath(filePath.replace(selectedFile.getName(), ""));
+                if (filePath != null && filePath.length() > 0) {
+                    msFileTable.getModel().setValueAt(filePath, row, 3);
+                    setButton.setEnabled(true);
+                    updateFormStatus();
+                }
+            }
+        }
+        repaint();
+    }
+
+    private void addMultipleMsFiles(ActionEvent e) {
+
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select mzML/mzXML/mzData/Peak Files ",
+                true, null, true,
+                Constants.MGF_FILE,
+                Constants.MZXML_FILE,
+                Constants.MZML_FILE,
+                Constants.DTA_FILE,
+                Constants.XML_FILE);
+
+        int result = ofd.showDialog(this, null);
+
+        java.util.List<File> filesToOpen = new ArrayList<File>();
+
+        // check the selection results from open fiel dialog
+        if (result == JFileChooser.APPROVE_OPTION) {
+            filesToOpen.addAll(Arrays.asList(ofd.getSelectedFiles()));
+            File selectedFile = ofd.getSelectedFile();
+            String filePath = selectedFile.getPath();
+            // remember the path has visited
+            context.setOpenFilePath(filePath.replace(selectedFile.getName(), ""));
+        }
+        addMultipleMStoSpectraData(filesToOpen);
+
+    }
+
+    private void addMultipleMStoSpectraData(List<File> files) {
+        Map<SpectraData, File> tempMapFile = ((MzIdentMLControllerImpl) controller).checkMScontrollers(files);
+        for (SpectraData spectraData : tempMapFile.keySet()) {
+            for (int i = 0; i < msFileTable.getRowCount(); i++) {
+                Comparable idSpectra = (Comparable) msFileTable.getValueAt(i, 0);
+                if (spectraData.getId().equals(idSpectra) && tempMapFile.get(spectraData).getAbsolutePath().length() > 0) {
+                    msFileTable.setValueAt(tempMapFile.get(spectraData).getAbsolutePath(), i, 3);
+                    setButton.setEnabled(true);
+                }
+            }
+        }
+        updateFormStatus();
+        revalidate();
+    }
+
+    private void updateMessage(SummaryReportMessage.Type type, String message) {
+        if (panelMessage.getComponentCount() > 0) panelMessage.removeAll();
+        RoundCornerLabel label = new RoundCornerLabel(getIcon(type), message, getBackgroundPaint(type), getBorderPaint(type));
+        label.setPreferredSize(new Dimension(50, DEFAULT_HEIGHT));
+        panelMessage.add(label);
+        panelMessage.revalidate();
+    }
+    /*
+    private void updateButtonStatus(SummaryReportMessage.Type type) {
+        if (type == SummaryReportMessage.Type.ERROR) {
+            addButton.setEnabled(false);
+            setButton.setEnabled(false);
+        } else if (type == SummaryReportMessage.Type.SUCCESS) {
+            addButton.setEnabled(false);
+            setButton.setEnabled(true);
+        } else if (type == SummaryReportMessage.Type.WARNING) {
+            addButton.setEnabled(true);
+        }
+
+    }*/
+
+    private void cancelbuttonActionPerformed(ActionEvent e) {
+        dispose();
+    }
+
+    private void setMSFilesActionPerformed(ActionEvent e) {
+        Map<Comparable, File> files = new HashMap<Comparable, File>();
+        Map<Comparable, String> fileTypes = new HashMap<Comparable, String>();
+        for (int i = 0; i < msFileTable.getRowCount(); i++) {
+            Comparable idSpectra = (Comparable) msFileTable.getValueAt(i, 0);
+            String filePath = (String) msFileTable.getValueAt(i, 3);
+            String fileType = (String) ((JComboBox) editors.get(i).getTableCellEditorComponent(msFileTable, msFileTable.getValueAt(i, 4), false, i, 4)).getSelectedItem();
+            if (filePath.length() > 0) {
+                files.put(idSpectra, new File(filePath));
+                fileTypes.put(idSpectra, fileType);
+            } else {
+                files.put(idSpectra, null);
+            }
+        }
+        AddMsDataAccessControllersTask task = new AddMsDataAccessControllersTask(controller, files, fileTypes, msFileMap);
+        TaskUtil.startBackgroundTask(task);
+        //context.replaceDataAccessController(controller,controller,true);
+        EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile("Spectra not found.*"))));
+        EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile("Missing spectra.*"))));
+        EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile("Spectra found.*"))));
+        EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile("All Spectrum Found.*"))));
+        EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile(".*spectra missing.*"))));
+
+        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(type, message, message)));
+        EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Spectra found", "This data source contains spectra")));
+        dispose();
+
     }
 
     /**
@@ -398,7 +422,6 @@ public class SimpleMsDialog extends JDialog {
      * @param type message type
      * @return Icon    message icon
      */
-
     private Icon getIcon(SummaryReportMessage.Type type) {
         switch (type) {
             case SUCCESS:
@@ -420,7 +443,6 @@ public class SimpleMsDialog extends JDialog {
      * @param type message type
      * @return Paint   background
      */
-
     private Paint getBackgroundPaint(SummaryReportMessage.Type type) {
         switch (type) {
             case SUCCESS:
@@ -442,7 +464,6 @@ public class SimpleMsDialog extends JDialog {
      * @param type message type
      * @return Paint   border color
      */
-
     private Paint getBorderPaint(SummaryReportMessage.Type type) {
         switch (type) {
             case SUCCESS:
@@ -458,29 +479,71 @@ public class SimpleMsDialog extends JDialog {
         }
     }
 
-    private SummaryReportMessage.Type getMessageType(Map<SpectraData, File> spectraDataMap, int total) {
-        if (spectraDataMap == null || spectraDataMap.size() < 1) {
+    private SummaryReportMessage.Type getMessageType(Integer missSpectrum, Integer noSupported, Integer totalSpectra) {
+        if (noSupported.intValue() == totalSpectra.intValue()) {
             return SummaryReportMessage.Type.ERROR;
-        } else if (total > 0) {
+        } else if (missSpectrum > 0) {
             return SummaryReportMessage.Type.WARNING;
-        } else if (total == 0) {
+        } else if (missSpectrum == 0) {
             return SummaryReportMessage.Type.SUCCESS;
         }
         return SummaryReportMessage.Type.INFO;
     }
 
-    private String getMessage(Map<SpectraData, File> spectraDataMap, Integer spectrumCount) {
-        if (spectraDataMap == null || spectraDataMap.size() < 1) {
+    private String getMessage(Integer missSpectrum, Integer noSupported, Integer totalSpectra) {
+        if (noSupported.intValue() == totalSpectra.intValue()) {
             return SimpleMsDialog.ERROR_MESSAGE;
-        } else if (spectrumCount == 0) {
+        } else if (missSpectrum == 0) {
             return SimpleMsDialog.TOTAL_SPECTRUMS;
-        } else if (spectrumCount > 0) {
-            return "[" + spectrumCount + "] " + SimpleMsDialog.WARNING;
+        } else if (missSpectrum > 0) {
+            return "[" + missSpectrum + "] " + SimpleMsDialog.WARNING;
         }
         return SimpleMsDialog.ERROR_MESSAGE;
 
     }
 
+    /**
+     * Draw a red cross for close the data access controller
+     */
+    private class AddButoonCellRenderer extends DefaultTableCellRenderer {
+
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                       boolean hasFocus, int row, int column) {
+            // get the original component
+            JLabel cell = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            Comparable idSpectra = (Comparable) msFileTable.getValueAt(row, 0);
+
+            boolean supported = ((MzIdentMLControllerImpl) controller).getSupportedSpectraData().contains(idSpectra);
+
+            String fileName = (String) msFileTable.getValueAt(row, 3);
+
+            Icon icon;
+            if (supported) {
+                if ((fileName == null || fileName.length() == 0)) {
+                    icon = GUIUtilities.loadImageIcon(context.getProperty("open.file.icon.small"));
+                } else {
+                    icon = GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small"));
+                }
+            } else {
+                icon = GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small.disable"));
+            }
+
+            cell.setIcon(icon);
+            // overwrite the background changing behavior when selected
+            cell.setBackground(Color.white);
+            // set the component to none focusable
+            cell.setFocusable(false);
+
+            cell.setHorizontalAlignment(CENTER);
+
+            //paintComponent((ImageIcon) icon, cell.getGraphics());
+
+            return cell;
+        }
+    }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
@@ -491,5 +554,6 @@ public class SimpleMsDialog extends JDialog {
     private JButton setButton;
     private JButton cancelButton;
     private JPanel panelMessage;
+    List<TableCellEditor> editors = new ArrayList<TableCellEditor>();
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

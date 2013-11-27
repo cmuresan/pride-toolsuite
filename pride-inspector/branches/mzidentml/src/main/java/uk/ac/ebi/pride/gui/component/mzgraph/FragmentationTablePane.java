@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
  */
 
 public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Void> implements EventBusSubscribable {
+
     private static final Logger logger = LoggerFactory.getLogger(FragmentationTablePane.class);
 
     private ExperimentalParams params = ExperimentalParams.getInstance();
@@ -158,32 +159,19 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
     private int getCharge(Peptide peptide) {
         int chartState = peptide.getSpectrumIdentification().getChargeState();
         return chartState;
-
-//        String value = getSelectedIonCvParamValue(
-//                peptide.getPeptideEvidence().getCvParams(),
-//                CvTermReference.PSI_ION_SELECTION_CHARGE_STATE,
-//                CvTermReference.ION_SELECTION_CHARGE_STATE
-//        );
-//
-//        if (value == null) {
-//            value = getSelectedIonCvParamValue(
-//                    peptide.getSpectrum().getPrecursors().get(0).getSelectedIons().get(0).getCvParams(),
-//                    CvTermReference.PSI_ION_SELECTION_CHARGE_STATE,
-//                    CvTermReference.ION_SELECTION_CHARGE_STATE
-//            );
-//        }
-//
-//        return value == null ? -1 : Integer.parseInt(value);
     }
 
     @Override
     public void succeed(TaskEvent<Peptide> peptideTaskEvent) {
+
         Peptide peptide = peptideTaskEvent.getValue();
 
-        BinaryDataArray mzBinary = peptide == null ? null : peptide.getSpectrum().getMzBinaryDataArray();
-        BinaryDataArray intentBinary = peptide == null ? null : peptide.getSpectrum().getIntensityBinaryDataArray();
+        JTabbedPane tabbedPane = (JTabbedPane) getParent();
 
-        if (!mzBinary.isEmpty() && !intentBinary.isEmpty()) {
+        BinaryDataArray mzBinary = (peptide == null || peptide.getSpectrum() == null) ? null : peptide.getSpectrum().getMzBinaryDataArray();
+        BinaryDataArray intentBinary = (peptide == null || peptide.getSpectrum() == null) ? null : peptide.getSpectrum().getIntensityBinaryDataArray();
+
+        if (tabbedPane != null && mzBinary != null && intentBinary != null && !mzBinary.isEmpty() && !intentBinary.isEmpty()) {
             int charge = getCharge(peptide);
 
             uk.ac.ebi.pride.mol.Peptide newPeptide = new PeptideTranslate(peptide).translate();
@@ -212,13 +200,14 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
                     table.setShowAuto(true);
                 }
 
-                JTabbedPane tabbedPane = (JTabbedPane) getParent();
                 // set fragmentation table tab panel enable or disable.
-                if (table.isCalculate()) {
-                    tabbedPane.setEnabledAt(1, true);
-                } else {
-                    tabbedPane.setEnabledAt(1, false);
-                    tabbedPane.setSelectedIndex(0);
+                if (tabbedPane != null) {
+                    if (table.isCalculate()) {
+                        tabbedPane.setEnabledAt(1, true);
+                    } else {
+                        tabbedPane.setEnabledAt(1, false);
+                        tabbedPane.setSelectedIndex(0);
+                    }
                 }
 
                 int tabPaneWidth = getParent().getWidth();

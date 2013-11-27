@@ -100,6 +100,7 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
 
     @Override
     public void subscribeToEventBus(EventService eventBus) {
+
         if (spectrumViewPane != null) {
             spectrumViewPane.subscribeToEventBus(null);
             fragmentationTablePane.subscribeToEventBus(null);
@@ -136,6 +137,7 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
     }
 
     public void addFragmentationViewPane() {
+
         fragmentationTablePane = new FragmentationTablePane(controller);
 
         int tabbedPaneIndex = 1;
@@ -154,4 +156,30 @@ public class PeptideVizPane extends DataAccessControllerPane implements EventBus
 
         fragmentationTablePane.subscribeToEventBus(null);
     }
+
+    public void removeSpectrumViewPane() {
+        if (spectrumViewPane != null) {
+            for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+                if (tabbedPane.getComponent(i) instanceof SpectrumViewPane) {
+                    tabbedPane.remove(i);
+                    spectrumViewPane = null;
+                    proteinSequencePaneIndex--;
+                }
+            }
+        }
+    }
+
+    public void removeFragmentationViewPane() {
+        if (fragmentationTablePane != null) {
+            for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+                if (tabbedPane.getComponent(i) instanceof FragmentationTablePane) {
+                    tabbedPane.remove(i);
+                    fragmentationTablePane = null;
+                    proteinSequencePaneIndex--;
+                }
+            }
+        }
+    }
+
+
 }

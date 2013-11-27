@@ -23,7 +23,7 @@ import static uk.ac.ebi.pride.gui.utils.Constants.TAB_SEP_FILE;
 
 /**
  * Export peptide related information from the current data source in view.
- *
+ * <p/>
  * User: rwang
  * Date: 13-Oct-2010
  * Time: 16:06:31
@@ -47,7 +47,7 @@ public class ExportPeptideDescAction extends PrideAction {
         PrideInspectorContext context = (PrideInspectorContext) Desktop.getInstance().getDesktopContext();
         DataAccessController controller = context.getForegroundDataAccessController();
         String defaultFileName = controller.getName().split("\\" + DOT)[0] + "_" + FILE_NAME;
-        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Export Peptide Descriptions", defaultFileName, false, TAB_SEP_FILE);
+        SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Export Peptide Descriptions", true, defaultFileName, false, TAB_SEP_FILE);
         ofd.setMultiSelectionEnabled(false);
         int result = ofd.showDialog(Desktop.getInstance().getMainComponent(), null);
         if (result == JFileChooser.APPROVE_OPTION) {
@@ -56,15 +56,15 @@ public class ExportPeptideDescAction extends PrideAction {
             String filePath = selectedFile.getPath();
             context.setOpenFilePath(filePath.replace(selectedFile.getName(), ""));
             ExportPeptideDescTask newTask = new ExportPeptideDescTask(controller, filePath + (filePath.endsWith(TAB_SEP_FILE) ? "" : TAB_SEP_FILE));
-            TaskUtil.startBackgroundTask(newTask,controller);
+            TaskUtil.startBackgroundTask(newTask, controller);
         }
     }
 
     @EventSubscriber(eventClass = ForegroundDataSourceEvent.class)
     public void onForegroundDataSourceEvent(ForegroundDataSourceEvent evt) {
         try {
-                DataAccessController controller = (DataAccessController) evt.getNewForegroundDataSource();
-                this.setEnabled(controller != null && controller.hasProtein());
+            DataAccessController controller = (DataAccessController) evt.getNewForegroundDataSource();
+            this.setEnabled(controller != null && controller.hasProtein());
         } catch (DataAccessException e) {
             logger.error("Failed to check data access controller", e);
         }

@@ -69,6 +69,7 @@ exit.title=Exit
 # try samples
 open.pride.xml.example.title=PRIDE XML
 open.mzml.example.title=mzML
+open.mzidentml.example.title=mzIdentML
 open.more.example.title=More examples...
 
 data.source.title=Experiments

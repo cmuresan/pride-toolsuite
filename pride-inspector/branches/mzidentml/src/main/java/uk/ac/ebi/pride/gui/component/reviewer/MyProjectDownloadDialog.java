@@ -107,7 +107,7 @@ public class MyProjectDownloadDialog extends JDialog implements TreeModelListene
             @Override
             public void actionPerformed(ActionEvent e) {
                 PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-                SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select Path Save To", null, false);
+                SimpleFileDialog ofd = new SimpleFileDialog(context.getOpenFilePath(), "Select Path Save To", true, null, false);
                 ofd.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 ofd.setMultiSelectionEnabled(false);
                 int result = ofd.showOpenDialog(MyProjectDownloadDialog.this);
@@ -289,30 +289,30 @@ public class MyProjectDownloadDialog extends JDialog implements TreeModelListene
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addComponent(summaryPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(fileSelectionScrollPane, GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE)
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addGroup(contentPanelLayout.createParallelGroup()
-                                    .addComponent(fileSelectionLabel)
-                                    .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(selectAllButton, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(deselectAllButton)))
-                            .addGap(0, 540, Short.MAX_VALUE))
+                        contentPanelLayout.createParallelGroup()
+                                .addComponent(summaryPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(fileSelectionScrollPane, GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE)
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addGroup(contentPanelLayout.createParallelGroup()
+                                                .addComponent(fileSelectionLabel)
+                                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                                        .addComponent(selectAllButton, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                        .addComponent(deselectAllButton)))
+                                        .addGap(0, 540, Short.MAX_VALUE))
                 );
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addComponent(summaryPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(fileSelectionLabel)
-                            .addGap(4, 4, 4)
-                            .addComponent(fileSelectionScrollPane, GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(selectAllButton)
-                                    .addComponent(deselectAllButton)))
+                        contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addComponent(summaryPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(fileSelectionLabel)
+                                        .addGap(4, 4, 4)
+                                        .addComponent(fileSelectionScrollPane, GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                .addComponent(selectAllButton)
+                                                .addComponent(deselectAllButton)))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -321,20 +321,20 @@ public class MyProjectDownloadDialog extends JDialog implements TreeModelListene
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 85, 85, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 85, 85, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0, 0.0, 0.0};
 
                 //---- cancelButton ----
                 cancelButton.setText("Cancel");
                 buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- downloadButton ----
                 downloadButton.setText("Download");
                 buttonBar.add(downloadButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }

@@ -43,40 +43,40 @@ public class MzIdMsDialog extends JDialog {
 
     private static final Logger logger = LoggerFactory.getLogger(MzIdMsDialog.class);
 
-    private static final String TITLE_FILES          = "mzIdentMl Files";
+    private static final String TITLE_FILES = "mzIdentMl Files";
 
-    private static final String TITLE_FILES_TOOLTIP  = "Files for the Analysis";
+    private static final String TITLE_FILES_TOOLTIP = "Files for the Analysis";
 
-    private static final String COLUMN_HEADER_TITLE  = "File Name";
+    private static final String COLUMN_HEADER_TITLE = "File Name";
 
-    private static final String COLUMN_HEADER_SIZE   = "Size (M)";
+    private static final String COLUMN_HEADER_SIZE = "Size (M)";
 
-    private static final String COLUMN_HEADER_TYPE   = "Type";
+    private static final String COLUMN_HEADER_TYPE = "Type";
 
     private static final String COLUMN_HEADER_REMOVE = "Remove";
 
-    private static final String DIALOG_TITLE         = "Load spectrum files";
+    private static final String DIALOG_TITLE = "Load spectrum files";
 
-    private static final String MZML_FILE            = "MZML";
+    private static final String MZML_FILE = "MZML";
 
-    private static final String MZXML_FILE           = "MZXML";
+    private static final String MZXML_FILE = "MZXML";
 
-    private static final String MZDATA_FILE          = "MZDATA";
+    private static final String MZDATA_FILE = "MZDATA";
 
-    private static final String MGF_FILE             = "MGF";
+    private static final String MGF_FILE = "MGF";
 
-    private static final String PKL_FILE             = "PKL";
+    private static final String PKL_FILE = "PKL";
 
 
     /**
      * table to display the mzidentml Files
-     **/
+     */
 
     private JTable sourceTable = null;
 
     /**
      * table model for table which displays the data access controllers.
-     **/
+     */
 
     private DataAccessTableModel sourceTableModel = null;
 
@@ -89,21 +89,20 @@ public class MzIdMsDialog extends JDialog {
     private Map<File, List<File>> mzidentmlFiles = null;
 
 
-
     public MzIdMsDialog(Frame owner, List<File> mzIdFiles) {
         super(owner);
         this.setTitle(DIALOG_TITLE);
-        this.setPreferredSize(new Dimension(600,445));
+        this.setPreferredSize(new Dimension(600, 445));
         fileList = mzIdFiles;
         initMzIdList(fileList);
-        context = (PrideInspectorContext)uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
+        context = (PrideInspectorContext) uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
         initComponents();
     }
 
-    private void initMzIdList(List<File> files){
+    private void initMzIdList(List<File> files) {
         mzidentmlFiles = new HashMap<File, List<File>>(fileList.size());
-        for(File file: files){
-            mzidentmlFiles.put(file,null);
+        for (File file : files) {
+            mzidentmlFiles.put(file, null);
         }
     }
 
@@ -147,22 +146,24 @@ public class MzIdMsDialog extends JDialog {
 
                     //---- msFileTable ----
                     msFileTable.setModel(new DefaultTableModel(
-                        new Object[][] {
-                        },
-                        new String[] {
-                            COLUMN_HEADER_TITLE, COLUMN_HEADER_SIZE, COLUMN_HEADER_TYPE, COLUMN_HEADER_REMOVE
-                        }
+                            new Object[][]{
+                            },
+                            new String[]{
+                                    COLUMN_HEADER_TITLE, COLUMN_HEADER_SIZE, COLUMN_HEADER_TYPE, COLUMN_HEADER_REMOVE
+                            }
                     ) {
-                        Class<?>[] columnTypes = new Class<?>[] {
-                            String.class, String.class, String.class, ImageIcon.class
+                        Class<?>[] columnTypes = new Class<?>[]{
+                                String.class, String.class, String.class, ImageIcon.class
                         };
-                        boolean[] columnEditable = new boolean[] {
-                            false, false, false, false
+                        boolean[] columnEditable = new boolean[]{
+                                false, false, false, false
                         };
+
                         @Override
                         public Class<?> getColumnClass(int columnIndex) {
                             return columnTypes[columnIndex];
                         }
+
                         @Override
                         public boolean isCellEditable(int rowIndex, int columnIndex) {
                             return columnEditable[columnIndex];
@@ -173,7 +174,8 @@ public class MzIdMsDialog extends JDialog {
                         cm.getColumn(0).setPreferredWidth(160);
                         cm.getColumn(1).setPreferredWidth(55);
                         cm.getColumn(2).setPreferredWidth(40);
-                        cm.getColumn(3).setPreferredWidth(60);
+                        cm.getColumn(3).setPreferredWidth(30);
+                        cm.getColumn(3).setWidth(30);
                     }
                     msFileTable.setBorder(null);
                     msFileTable.setGridColor(Color.white);
@@ -215,33 +217,33 @@ public class MzIdMsDialog extends JDialog {
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addComponent(separator1, GroupLayout.Alignment.TRAILING)
-                .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(contentPaneLayout.createParallelGroup()
-                        .addComponent(headerPanel, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
-                        .addComponent(splitPane1, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
-                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                            .addGap(0, 360, Short.MAX_VALUE)
-                            .addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(setButton, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)))
-                    .addContainerGap())
+                contentPaneLayout.createParallelGroup()
+                        .addComponent(separator1, GroupLayout.Alignment.TRAILING)
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(contentPaneLayout.createParallelGroup()
+                                        .addComponent(headerPanel, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
+                                        .addComponent(splitPane1, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
+                                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                                                .addGap(0, 360, Short.MAX_VALUE)
+                                                .addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(setButton, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap())
         );
         contentPaneLayout.setVerticalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addComponent(headerPanel, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(splitPane1, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(separator1, GroupLayout.PREFERRED_SIZE, 5, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(setButton, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-                    .addGap(11, 11, 11))
+                contentPaneLayout.createParallelGroup()
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                .addComponent(headerPanel, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(splitPane1, GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(separator1, GroupLayout.PREFERRED_SIZE, 5, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(setButton, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
+                                .addGap(11, 11, 11))
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -255,8 +257,8 @@ public class MzIdMsDialog extends JDialog {
 
         JPanel addButtonPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        JButton addButton = new JButton("Add");
-        addButton.setPreferredSize(new Dimension(70, 25));
+        JButton addButton = new JButton("Add Multiple Files");
+        addButton.setPreferredSize(new Dimension(140, 25));
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -277,7 +279,6 @@ public class MzIdMsDialog extends JDialog {
                 closeDialog();
             }
         });
-
 
 
         addButtonPane.add(addButton);
@@ -363,20 +364,23 @@ public class MzIdMsDialog extends JDialog {
      * table column title
      */
     public enum TableHeader {
-            DATA_SOURCE_COLUMN("Data Source", "Data Source");
-            private final String header;
-            private final String toolTip;
-            private TableHeader(String header, String tooltip) {
-                this.header = header;
-                this.toolTip = tooltip;
-            }
-            public String getHeader() {
-                return header;
-            }
-            public String getToolTip() {
-                return toolTip;
-            }
+        DATA_SOURCE_COLUMN("Data Source", "Data Source");
+        private final String header;
+        private final String toolTip;
+
+        private TableHeader(String header, String tooltip) {
+            this.header = header;
+            this.toolTip = tooltip;
         }
+
+        public String getHeader() {
+            return header;
+        }
+
+        public String getToolTip() {
+            return toolTip;
+        }
+    }
 
     /**
      * DataAccessTableModel tracks data sources stored in DataAccessMonitor
@@ -389,6 +393,7 @@ public class MzIdMsDialog extends JDialog {
         public String getColumnName(int column) {
             return TableHeader.values()[column].getHeader();
         }
+
         public int getColumnIndex(TableHeader header) {
             int index = -1;
             TableHeader[] headers = TableHeader.values();
@@ -427,30 +432,30 @@ public class MzIdMsDialog extends JDialog {
      * Data access table to show experiment name as tooltip
      */
     private static class DataAccessTable extends JTable {
-            private DataAccessTable(TableModel dm) {
-                super(dm);
-            }
-
-            @Override
-            public String getToolTipText(MouseEvent event) {
-                String tooltip = null;
-
-                Point p = event.getPoint();
-                int rowIndex = rowAtPoint(p);
-                int colIndex = columnAtPoint(p);
-                int realColIndex = convertColumnIndexToModel(colIndex);
-                TableModel model = getModel();
-                if (realColIndex == 0 && model != null) {
-                    Object value = model.getValueAt(rowIndex, 0);
-                    if (value != null) {
-                        tooltip = value.toString();
-                    }
-                } else {
-                    tooltip = super.getToolTipText(event);
-                }
-                return tooltip;
-            }
+        private DataAccessTable(TableModel dm) {
+            super(dm);
         }
+
+        @Override
+        public String getToolTipText(MouseEvent event) {
+            String tooltip = null;
+
+            Point p = event.getPoint();
+            int rowIndex = rowAtPoint(p);
+            int colIndex = columnAtPoint(p);
+            int realColIndex = convertColumnIndexToModel(colIndex);
+            TableModel model = getModel();
+            if (realColIndex == 0 && model != null) {
+                Object value = model.getValueAt(rowIndex, 0);
+                if (value != null) {
+                    tooltip = value.toString();
+                }
+            } else {
+                tooltip = super.getToolTipText(event);
+            }
+            return tooltip;
+        }
+    }
 
     /**
      * DataAccessTableCellRender draw a icon in front of each data access controller
@@ -463,7 +468,7 @@ public class MzIdMsDialog extends JDialog {
     private class DataAccessTableCellRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
+                                                       boolean hasFocus, int row, int column) {
             // get the original component
             final JLabel cell = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
@@ -493,7 +498,7 @@ public class MzIdMsDialog extends JDialog {
                 // get column name
                 String colName = sourceTable.getColumnName(col);
                 File file = fileList.get(row);
-                if (colName.equals(TableHeader.DATA_SOURCE_COLUMN.getHeader()) && file!=currentFile) {
+                if (colName.equals(TableHeader.DATA_SOURCE_COLUMN.getHeader()) && file != currentFile) {
                     currentFile = file;
                     removeTableMSFiles();
                     addTableMSFiles(mzidentmlFiles.get(file));
@@ -504,26 +509,27 @@ public class MzIdMsDialog extends JDialog {
     }
 
 
-    private void msFileTableMouseReleased(MouseEvent e){
+    private void msFileTableMouseReleased(MouseEvent e) {
         int row = msFileTable.rowAtPoint(e.getPoint());
         int col = msFileTable.columnAtPoint(e.getPoint());
         String colName = msFileTable.getColumnName(col);
-        if(colName.equals(COLUMN_HEADER_REMOVE) && row >= 0){
-            DefaultTableModel model = (DefaultTableModel)msFileTable.getModel();
+        if (colName.equals(COLUMN_HEADER_REMOVE) && row >= 0) {
+            DefaultTableModel model = (DefaultTableModel) msFileTable.getModel();
             model.removeRow(row);
             int rowSource = sourceTable.getSelectedRow();
             File file = fileList.get(rowSource);
             List<File> files = mzidentmlFiles.get(file);
             files.remove(row);
-            mzidentmlFiles.put(file,files);
+            mzidentmlFiles.put(file, files);
         }
         boolean enableSet = false;
-        for(File file: mzidentmlFiles.keySet())if(mzidentmlFiles.get(file) != null && mzidentmlFiles.get(file).size() > 0) enableSet = true;
+        for (File file : mzidentmlFiles.keySet())
+            if (mzidentmlFiles.get(file) != null && mzidentmlFiles.get(file).size() > 0) enableSet = true;
         setButton.setEnabled(enableSet);
     }
 
     private void addButtonActionPerformed(ActionEvent e) {
-        SimpleFileDialog simpleFileDialog = new SimpleFileDialog(context.getOpenFilePath(),"Open MS Files",null,true,
+        SimpleFileDialog simpleFileDialog = new SimpleFileDialog(context.getOpenFilePath(), "Open MS Files", true, null, true,
                 Constants.MZML_FILE,
                 Constants.MZXML_FILE,
                 Constants.MGF_FILE,
@@ -536,37 +542,37 @@ public class MzIdMsDialog extends JDialog {
         int result = simpleFileDialog.showDialog(this, null);
         List<File> files = new ArrayList<File>();
         if (result == JFileChooser.APPROVE_OPTION) {
-            for(File file: simpleFileDialog.getSelectedFiles()){
-                files = recursiveFileFolder(file,files);
+            for (File file : simpleFileDialog.getSelectedFiles()) {
+                files = recursiveFileFolder(file, files);
             }
             Set<File> nonRedundantFiles = new HashSet<File>(files);
             files = new ArrayList<File>(nonRedundantFiles);
             int selectedRow = sourceTable.getSelectedRow();
             List<File> currentFiles = mzidentmlFiles.get(fileList.get(selectedRow));
-            currentFiles = (currentFiles != null)? currentFiles:new ArrayList<File>();
+            currentFiles = (currentFiles != null) ? currentFiles : new ArrayList<File>();
             currentFiles.addAll(files);
             mzidentmlFiles.put(fileList.get(sourceTable.getSelectedRow()), currentFiles);
             addTableMSFiles(currentFiles);
-            if(mzidentmlFiles.size()>0) setButton.setEnabled(true);
+            if (mzidentmlFiles.size() > 0) setButton.setEnabled(true);
             //System.out.println(mzidentmlFiles.size());
         }
 
 
     }
 
-    private void removeTableMSFiles(){
-        DefaultTableModel dm = (DefaultTableModel)msFileTable.getModel();
+    private void removeTableMSFiles() {
+        DefaultTableModel dm = (DefaultTableModel) msFileTable.getModel();
         dm.getDataVector().removeAllElements();
         msFileTable.repaint();
     }
 
     private void addTableMSFiles(List<File> files) {
-        if(files != null){
-            for (File msFile: files){
+        if (files != null) {
+            for (File msFile : files) {
                 Object[] data = new Object[4];
                 data[0] = msFile.getName();
                 DecimalFormat decimalFormat = new DecimalFormat("#.####");
-                data[1] = decimalFormat.format(msFile.length()/(Math.pow(1024,2)));
+                data[1] = decimalFormat.format(msFile.length() / (Math.pow(1024, 2)));
                 data[2] = getFileType(msFile.getName());
                 data[3] = GUIUtilities.loadImageIcon(context.getProperty("delete.mzidentml.ms.icon.small"));
                 ((DefaultTableModel) msFileTable.getModel()).addRow(data);
@@ -574,32 +580,32 @@ public class MzIdMsDialog extends JDialog {
         }
     }
 
-    private List<File> recursiveFileFolder(File file, List<File> files){
-        if(!file.isDirectory()){
+    private List<File> recursiveFileFolder(File file, List<File> files) {
+        if (!file.isDirectory()) {
             files.add(file);
-        }else{
-            for(File fileOnDir: file.listFiles()){
+        } else {
+            for (File fileOnDir : file.listFiles()) {
                 String name = fileOnDir.getName();
-                  if(getFileType(name) != null || fileOnDir.isDirectory()){
-                    files = (recursiveFileFolder(fileOnDir,files));
+                if (getFileType(name) != null || fileOnDir.isDirectory()) {
+                    files = (recursiveFileFolder(fileOnDir, files));
                 }
             }
         }
         return files;
     }
 
-    private String getFileType(String name){
-        if(name.toLowerCase().endsWith(Constants.MGF_FILE)){
+    private String getFileType(String name) {
+        if (name.toLowerCase().endsWith(Constants.MGF_FILE)) {
             return MGF_FILE;
-        }else if(name.toLowerCase().endsWith(Constants.MZML_FILE)){
+        } else if (name.toLowerCase().endsWith(Constants.MZML_FILE)) {
             return MZML_FILE;
-        }else if(name.toLowerCase().endsWith(Constants.PKL_FILE)){
+        } else if (name.toLowerCase().endsWith(Constants.PKL_FILE)) {
             return PKL_FILE;
         }
         return null;
     }
 
-    public Map<File, List<File>>getMzIdentMlMap(){
+    public Map<File, List<File>> getMzIdentMlMap() {
         return mzidentmlFiles;
     }
 
@@ -608,16 +614,17 @@ public class MzIdMsDialog extends JDialog {
         // check file type
         if (MzMLControllerImpl.isValidFormat(file)) {
             classType = MZML_FILE;
-        }else if(MzXmlControllerImpl.isValidFormat(file)){
+        } else if (MzXmlControllerImpl.isValidFormat(file)) {
             classType = MZXML_FILE;
-        }else if(MzDataControllerImpl.isValidFormat(file)){
+        } else if (MzDataControllerImpl.isValidFormat(file)) {
             classType = MZDATA_FILE;
-        }else if(PeakControllerImpl.isValidFormat(file) != null){
+        } else if (PeakControllerImpl.isValidFormat(file) != null) {
             classType = PKL_FILE;
         }
 
         return classType;
     }
+
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JSplitPane splitPane1;

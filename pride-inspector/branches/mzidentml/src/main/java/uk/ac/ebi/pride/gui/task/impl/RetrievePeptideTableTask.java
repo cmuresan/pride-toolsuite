@@ -88,6 +88,8 @@ public class RetrievePeptideTableTask extends AbstractDataAccessTask<Void, Tuple
     @Override
     protected Void retrieve() throws Exception {
         try {
+
+            long currentT = System.currentTimeMillis();
             Collection<Comparable> identIds = controller.getProteinIds();
 
             int identSize = identIds.size();
@@ -113,6 +115,7 @@ public class RetrievePeptideTableTask extends AbstractDataAccessTask<Void, Tuple
                 }
 
             }
+            System.out.println("Load Peptides Time: " + (System.currentTimeMillis() - currentT) + " millis");
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve peptide related data";
             logger.error(msg, dex);

@@ -5,7 +5,6 @@ import javax.swing.filechooser.FileFilter;
 import java.io.File;
 
 /**
- * 
  * User: rwang
  * Date: 11-Feb-2010
  * Time: 11:54:20
@@ -17,19 +16,18 @@ public class SimpleFileDialog extends JFileChooser {
     private String[] fileFormats;
 
     /**
-     * 
-     * @param path  default path
-     * @param title title for the component
+     * @param path       default path
+     * @param title      title for the component
      * @param extensions a list of supported file extensions
      */
-    public SimpleFileDialog(String path, String title, String defaultFileName,
+    public SimpleFileDialog(String path, String title, boolean multiSelection, String defaultFileName,
                             boolean openDialog, String... extensions) {
         super(path);
         this.fileFormats = extensions;
         // set dialog title
         this.setDialogTitle(title == null ?
-                                (openDialog ? OPEN_FILE : SAVE_FILE) :
-                                 title);
+                (openDialog ? OPEN_FILE : SAVE_FILE) :
+                title);
         // set dialog default file name
         if (defaultFileName != null) {
             this.setSelectedFile(new File(defaultFileName));
@@ -38,7 +36,7 @@ public class SimpleFileDialog extends JFileChooser {
         this.setDialogType(openDialog ? JFileChooser.OPEN_DIALOG : JFileChooser.SAVE_DIALOG);
 
         this.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        this.setMultiSelectionEnabled(true);
+        this.setMultiSelectionEnabled(multiSelection);
         this.setFileFilter(new InnerFileFilter());
     }
 
@@ -53,16 +51,16 @@ public class SimpleFileDialog extends JFileChooser {
                 if (fileName.endsWith(fileFormat))
                     result = true;
             }
-            
+
             result = f.isDirectory() || result;
-            
+
             return result;
         }
 
         @Override
         public String getDescription() {
             StringBuilder str = new StringBuilder();
-            for(String fileFormat : fileFormats) {
+            for (String fileFormat : fileFormats) {
                 if (str.length() != 0)
                     str.append(" or ");
 

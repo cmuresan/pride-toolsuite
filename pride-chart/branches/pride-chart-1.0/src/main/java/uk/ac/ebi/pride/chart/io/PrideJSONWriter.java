@@ -10,9 +10,9 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 /**
-* User: qingwei
-* Date: 20/06/13
-*/
+ * User: qingwei
+ * Date: 20/06/13
+ */
 public class PrideJSONWriter {
     public static final String ERROR = "ErrorMessages";
     public static final String SERIES = "Series";
@@ -145,9 +145,9 @@ public class PrideJSONWriter {
                 }
             }
 
-            if (! hasData) {
+            if (!hasData) {
                 JSONObject obj = new JSONObject();
-                obj.put(ERROR, new String[] {PrideDataException.NO_PRECURSOR_CHARGE});
+                obj.put(ERROR, new String[]{PrideDataException.NO_PRECURSOR_CHARGE});
                 return obj;
             }
 
@@ -349,7 +349,7 @@ public class PrideJSONWriter {
         return values;
     }
 
-    private Collection<Object> getRangeValues(Collection<Integer> data) {
+    private Collection<Object> getIntegerRangeValues(Collection<Integer> data) {
         List<Object> values = new ArrayList<Object>();
 
         values.addAll(data);
@@ -369,7 +369,7 @@ public class PrideJSONWriter {
             Series series = new Series(
                     INTENSITY, null,
                     getDomainValues(histogram.keySet()),
-                    getRangeValues(histogram.values())
+                    getIntegerRangeValues(histogram.values())
             );
 
             JSONObject obj = new JSONObject();
@@ -400,7 +400,7 @@ public class PrideJSONWriter {
                 seriesList.add(new Series(
                         IDENTIFIED_SPECTRA, IDENTIFIED_SPECTRA,
                         getDomainValues(histogram.keySet()),
-                        getRangeValues(histogram.values())
+                        getIntegerRangeValues(histogram.values())
                 ));
             } else {
                 seriesList.add(new Series(
@@ -415,7 +415,7 @@ public class PrideJSONWriter {
                 seriesList.add(new Series(
                         UNIDENTIFIED_SPECTRA, UNIDENTIFIED_SPECTRA,
                         getDomainValues(histogram.keySet()),
-                        getRangeValues(histogram.values())
+                        getIntegerRangeValues(histogram.values())
                 ));
             } else {
                 seriesList.add(new Series(
@@ -438,7 +438,7 @@ public class PrideJSONWriter {
     }
 
     private JSONObject getErrorMessages(PrideChartType chartType) throws JSONException {
-        if (! reader.getErrorMap().containsKey(chartType)) {
+        if (!reader.getErrorMap().containsKey(chartType)) {
             return null;
         }
 

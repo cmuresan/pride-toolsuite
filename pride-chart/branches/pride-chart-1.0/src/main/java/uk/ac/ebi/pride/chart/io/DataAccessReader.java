@@ -67,7 +67,7 @@ public class DataAccessReader extends PrideDataReader {
 
     private Double calcDeltaMZ(Peptide peptide) {
         List<Double> modMassList = new ArrayList<Double>();
-        for (Modification mod  : peptide.getModifications()) {
+        for (Modification mod : peptide.getModifications()) {
             modMassList.add(mod.getMonoisotopicMassDelta().get(0));
         }
 
@@ -85,10 +85,10 @@ public class DataAccessReader extends PrideDataReader {
         sequence = sequence.replaceAll("[K|R]$", "");
 
         //We assume the hypothesis KR|P
-        sequence = sequence.replaceAll("[K|R]P","");
+        sequence = sequence.replaceAll("[K|R]P", "");
         int initialLength = sequence.length();
 
-        sequence = sequence.replaceAll("[K|R]","");
+        sequence = sequence.replaceAll("[K|R]", "");
         return initialLength - sequence.length();
     }
 
@@ -212,7 +212,7 @@ public class DataAccessReader extends PrideDataReader {
                 hasCharge = true;
             }
         }
-        if (! hasCharge) {
+        if (!hasCharge) {
             errorMap.put(PrideChartType.PRECURSOR_CHARGE, new PrideDataException(PrideDataException.NO_PRECURSOR_CHARGE));
             return;
         }
@@ -401,15 +401,14 @@ public class DataAccessReader extends PrideDataReader {
                 preCharge = peptide.getPrecursorCharge();
                 preMZ = peptide.getPrecursorMz();
             }
-
-            if (preCharge != null && controller.isIdentifiedSpectrum(spectrumId)) {
+            // Charge State must be less than 8, but some files can have the annotation wrong
+            if (preCharge != null && preCharge < 8 && controller.isIdentifiedSpectrum(spectrumId)) {
                 // Identified spectrum.
                 preChargeBars[preCharge - 1]++;
             }
 
-            if (preMZ != null && preCharge != null) {
-                preMassedList.add(new PrideData(
-                        preMZ * preCharge,
+            if (preMZ != null && preCharge != null && preCharge < 8) {
+                preMassedList.add(new PrideData(preMZ * preCharge,
                         controller.isIdentifiedSpectrum(spectrumId) ? PrideDataType.IDENTIFIED_SPECTRA : PrideDataType.UNIDENTIFIED_SPECTRA
                 ));
             }
@@ -424,7 +423,7 @@ public class DataAccessReader extends PrideDataReader {
 
             if (controller.getSpectrumMsLevel(spectrumId) == 2) {
                 noTandemSpectra = false;
-                peaksMSList.add(new PrideData(spectrum.getMzBinaryDataArray().getDoubleArray().length + 0.0d, PrideDataType.ALL_SPECTRA)) ;
+                peaksMSList.add(new PrideData(spectrum.getMzBinaryDataArray().getDoubleArray().length + 0.0d, PrideDataType.ALL_SPECTRA));
                 avgDataSource.addSpectrum(spectrum, dataType);
 
                 for (double v : spectrum.getIntensityBinaryDataArray().getDoubleArray()) {

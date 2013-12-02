@@ -69,6 +69,7 @@
     <mapID target="help.pride.download" url="html/usage/download_pride_exp.html"/>
 
     <mapID target="help.px.download" url="html/usage/download_px_submission.html"/>
+    <mapID target="help.ms.information" url="html/usage/ms_information.html"/>
 
     <mapID target="help.faq" url="html/faq.html"/>
     <mapID target="help.faq.pride" url="html/faq/pride.html"/>

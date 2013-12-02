@@ -16,11 +16,13 @@ public class PrideDataException extends Exception {
     public static final String NO_SUMMARY = "Summary data could not be retrieved from the experiment";
     public static final String NO_CORRECT_CHARGE = "No correct charges has been found";
 
+
     // new error messages.
     public static final String NO_PEPTIDE = "Peptide not found";
     public static final String NO_SPECTRA = "Spectra not found";
     public static final String NO_TANDEM_SPECTRA = "MS/MS Spectra not found";
     public static final String NO_PRECURSOR_CHARGE = "Precursor charge not found";
+    public static final String NO_PRECURSOR_MASS = "No correct mass has been found";
 
     public PrideDataException() {
     }

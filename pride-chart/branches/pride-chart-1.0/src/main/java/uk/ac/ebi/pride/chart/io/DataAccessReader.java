@@ -230,6 +230,18 @@ public class DataAccessReader extends PrideDataReader {
             return;
         }
 
+        boolean hasCharge = false;
+        for (int i = 0; i < preMassedList.size(); i++) {
+            if (preMassedList.get(i).getData() > 0.0) {
+                hasCharge = true;
+            }
+        }
+
+        if (!hasCharge) {
+            errorMap.put(PrideChartType.PRECURSOR_MASSES, new PrideDataException(PrideDataException.NO_PRECURSOR_MASS));
+            return;
+        }
+
         PrideEqualWidthHistogramDataSource dataSource = new PrideEqualWidthHistogramDataSource(
                 preMassedList.toArray(new PrideData[preMassedList.size()]),
                 true
@@ -312,7 +324,7 @@ public class DataAccessReader extends PrideDataReader {
                 peaksIntensityList.toArray(new PrideData[peaksIntensityList.size()]),
                 true
         );
-        dataSource.appendBin(new PrideHistogramBin(0, 10));
+        dataSource.appendBin(new PrideHistogramBin(0, 5));
         dataSource.appendBin(new PrideHistogramBin(10, 100));
         dataSource.appendBin(new PrideHistogramBin(100, 1000));
         dataSource.appendBin(new PrideHistogramBin(1000, 10000));
@@ -407,7 +419,7 @@ public class DataAccessReader extends PrideDataReader {
                 preChargeBars[preCharge - 1]++;
             }
 
-            if (preMZ != null && preCharge != null && preCharge < 8) {
+            if (preMZ != null && preMZ > -1 && preCharge != null && preCharge < 8) {
                 preMassedList.add(new PrideData(preMZ * preCharge,
                         controller.isIdentifiedSpectrum(spectrumId) ? PrideDataType.IDENTIFIED_SPECTRA : PrideDataType.UNIDENTIFIED_SPECTRA
                 ));

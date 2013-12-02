@@ -819,7 +819,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         Iterator iterator = spectraDataFileMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry mapEntry = (Map.Entry) iterator.next();
-            PeakControllerImpl peakListController = new PeakControllerImpl((File) mapEntry.getKey());
+            PeakControllerImpl peakListController = new PeakControllerImpl((File) mapEntry.getValue());
             msDataAccessControllers.put(((SpectraData) mapEntry.getKey()).getId(), peakListController);
         }
     }
@@ -979,9 +979,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
 
     private boolean isSpectraDataSupported(SpectraData spectraData) {
-        return (!(MzIdentMLUtils.getSpectraDataIdFormat(spectraData) == Constants.SpecIdFormat.NONE ||
-                MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.NONE));
+        //return (!(MzIdentMLUtils.getSpectraDataIdFormat(spectraData) == Constants.SpecIdFormat.NONE ||
+        //        MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.NONE));
+        return (!(MzIdentMLUtils.getSpectraDataIdFormat(spectraData) == Constants.SpecIdFormat.NONE));
+
     }
+
 
     /**
      * Get the number of Spectra by File associated with the mzidentml

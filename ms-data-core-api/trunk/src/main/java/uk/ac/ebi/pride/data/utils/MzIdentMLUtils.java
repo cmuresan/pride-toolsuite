@@ -76,6 +76,8 @@ public final class MzIdentMLUtils {
             return spectrumID.replaceAll("file=", "");
         } else if (fileIdFormat == Constants.SpecIdFormat.MZML_ID) {
             return spectrumID.replaceAll("mzMLid=", "");
+        } else if (fileIdFormat == Constants.SpecIdFormat.SCAN_NUMBER_NATIVE_ID) {
+            return spectrumID.replaceAll("scan=", "");
         } else {
             return spectrumID;
         }

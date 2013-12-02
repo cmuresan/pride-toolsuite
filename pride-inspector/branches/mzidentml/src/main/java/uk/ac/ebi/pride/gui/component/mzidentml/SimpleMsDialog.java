@@ -22,6 +22,7 @@ import uk.ac.ebi.pride.gui.task.impl.AddMsDataAccessControllersTask;
 import uk.ac.ebi.pride.gui.utils.Constants;
 
 
+import javax.help.CSH;
 import javax.swing.*;
 import javax.swing.table.*;
 import javax.swing.JComboBox;
@@ -86,6 +87,7 @@ public class SimpleMsDialog extends JDialog {
         setButton = new JButton();
         cancelButton = new JButton();
         panelMessage = new JPanel();
+        headerPanel = new JPanel();
 
         //======== this ========
         setTitle("Open Ms files for");
@@ -181,6 +183,15 @@ public class SimpleMsDialog extends JDialog {
             }
         });
 
+        Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
+        JButton helpButton = GUIUtilities.createLabelLikeButton(helpIcon, "Help");
+        helpButton.setForeground(Color.blue);
+        CSH.setHelpIDString(helpButton, "help.ms.information");
+        helpButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
+        helpButton.setBorder(BorderFactory.createEtchedBorder());
+
+        headerPanel.add(helpButton, BorderLayout.EAST);
+
         msFileTable.setRowHeight(DEFAULT_HEIGHT);
 
         scrollPane1.setViewportView(msFileTable);
@@ -233,6 +244,8 @@ public class SimpleMsDialog extends JDialog {
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(panelMessage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                                                .addComponent(helpButton)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addGap(0, 644, Short.MAX_VALUE)
                                                 .addComponent(cancelButton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -253,6 +266,7 @@ public class SimpleMsDialog extends JDialog {
                                 .addComponent(separator1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(helpButton)
                                         .addComponent(setButton)
                                         .addComponent(cancelButton))
                                 .addGap(13, 13, 13))
@@ -359,7 +373,7 @@ public class SimpleMsDialog extends JDialog {
             }
         }
         updateFormStatus();
-        revalidate();
+        repaint();
     }
 
     private void updateMessage(SummaryReportMessage.Type type, String message) {
@@ -369,19 +383,7 @@ public class SimpleMsDialog extends JDialog {
         panelMessage.add(label);
         panelMessage.revalidate();
     }
-    /*
-    private void updateButtonStatus(SummaryReportMessage.Type type) {
-        if (type == SummaryReportMessage.Type.ERROR) {
-            addButton.setEnabled(false);
-            setButton.setEnabled(false);
-        } else if (type == SummaryReportMessage.Type.SUCCESS) {
-            addButton.setEnabled(false);
-            setButton.setEnabled(true);
-        } else if (type == SummaryReportMessage.Type.WARNING) {
-            addButton.setEnabled(true);
-        }
 
-    }*/
 
     private void cancelbuttonActionPerformed(ActionEvent e) {
         dispose();
@@ -555,5 +557,6 @@ public class SimpleMsDialog extends JDialog {
     private JButton cancelButton;
     private JPanel panelMessage;
     List<TableCellEditor> editors = new ArrayList<TableCellEditor>();
+    private JPanel headerPanel;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

@@ -295,7 +295,7 @@ public class MzIdMsDialog extends JDialog {
         Icon helpIcon = GUIUtilities.loadIcon(context.getProperty("help.icon.small"));
         JButton helpButton = GUIUtilities.createLabelLikeButton(helpIcon, "Help");
         helpButton.setForeground(Color.blue);
-        CSH.setHelpIDString(helpButton, "help.px.download");
+        CSH.setHelpIDString(helpButton, "help.ms.information");
         helpButton.addActionListener(new CSH.DisplayHelpFromSource(context.getMainHelpBroker()));
         helpButton.setBorder(BorderFactory.createEtchedBorder());
 

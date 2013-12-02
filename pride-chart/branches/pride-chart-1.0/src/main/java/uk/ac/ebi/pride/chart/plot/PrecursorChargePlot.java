@@ -18,6 +18,7 @@ import java.util.TreeMap;
  * Date: 14/06/13
  */
 public class PrecursorChargePlot extends PrideXYPlot {
+
     public PrecursorChargePlot(XYDataset dataset) {
         this(dataset, true);
     }

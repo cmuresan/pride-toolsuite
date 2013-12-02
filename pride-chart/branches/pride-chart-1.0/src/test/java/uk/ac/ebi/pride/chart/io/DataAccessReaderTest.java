@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Collection;
 import java.util.SortedMap;
 
@@ -15,12 +16,11 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertArrayEquals;
 
 /**
-* User: qingwei
-* Date: 25/06/13
-*/
+ * User: qingwei
+ * Date: 25/06/13
+ */
 public class DataAccessReaderTest {
-    private File prideXMLFile = new File("testset/PRIDE_Exp_Complete_Ac_2.xml");
-    private File jsonFile = new File("testset/new_2.json");
+
 //    private File jsonFile = new File("testset/old_2.json");
 
 //    private File prideXMLFile = new File("testset/PRIDE_Exp_Complete_Ac_1643.xml");
@@ -31,6 +31,10 @@ public class DataAccessReaderTest {
 //    private ElderJSONReader jsonReader;
 
     public DataAccessReaderTest() throws Exception {
+        URL url = DataAccessReaderTest.class.getClassLoader().getResource("new_2.json");
+        File jsonFile = new File(url.toURI());
+        url = DataAccessReaderTest.class.getClassLoader().getResource("PRIDE_Exp_Complete_Ac_2.xml");
+        File prideXMLFile = new File(url.toURI());
         DataAccessController controller = new PrideXmlControllerImpl(prideXMLFile);
         dataReader = new DataAccessReader(controller);
         jsonReader = new JSONReader(jsonFile);

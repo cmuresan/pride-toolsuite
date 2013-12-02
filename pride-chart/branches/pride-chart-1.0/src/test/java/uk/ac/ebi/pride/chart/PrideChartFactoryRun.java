@@ -47,7 +47,7 @@ public class PrideChartFactoryRun {
 
 //        File jsonFile = new File("testset/new_2.json");
 //        File jsonFile = new File("testset/new_1643.json");
-        File jsonFile = new File("testset/new_10.json");
+        File jsonFile = new File("new_10.json");
         run.drawChartList(new JSONReader(jsonFile), PrideChartSummary.PROJECT_SUMMARY);
 
 //        File jsonFile = new File("testset/old_2.json");

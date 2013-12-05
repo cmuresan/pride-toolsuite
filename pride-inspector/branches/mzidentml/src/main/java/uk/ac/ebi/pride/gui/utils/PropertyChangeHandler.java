@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.gui.utils;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.Serializable;
 
 /**
  * PropertyChangeHandler provides a set of interfaces to register/remove property listeners,
@@ -11,7 +12,7 @@ import java.beans.PropertyChangeListener;
  * Date: 21-Aug-2010
  * Time: 18:02:58
  */
-public interface PropertyChangeHandler {
+public interface PropertyChangeHandler extends Serializable{
 
     public void addPropertyChangeListener(PropertyChangeListener listener);
 

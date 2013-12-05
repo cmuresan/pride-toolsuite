@@ -303,7 +303,7 @@ protein.sequence.tab.tooltip=Protein sequence converage for selected protein
 protein.sequence.missing.icon.small=icon/16x16/warning.png
 protein.sequence.missing.title = Protein sequences are not available, would you like to download them now?
 protein.sequence.unavailable.title = Protein sequence is not available
-protein.sequence.unchecked.title = Protein sequence is non-updated
+protein.sequence.unchecked.title = Protein sequence is not updated
 
 # internet connection
 internet.connection.warning.short.message=Internet Connection Required

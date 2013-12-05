@@ -82,31 +82,38 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
                 String protAcc = controller.getProteinAccession(protIdentId);
                 String protAccVersion = controller.getProteinAccessionVersion(protIdentId);
                 String database = controller.getSearchDatabase(protIdentId).getName();
-                AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
-                String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
+
+                try {
+                    AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
+                    String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
 
 
-                if (mappedProtAcc != null) {
-                    // get existing protein details
-                    Protein protDetails = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
-                    if (protDetails != null) {
-                        proteins.put(mappedProtAcc, protDetails);
+                    if (mappedProtAcc != null) {
+                        // get existing protein details
+                        Protein protDetails = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
+                        if (protDetails != null) {
+                            proteins.put(mappedProtAcc, protDetails);
+                        }
+
+                        accBuffer.put(protIdentId, mappedProtAcc);
+                        if (accBuffer.size() == MAX_BATCH_DOWNLOAD_SIZE) {
+                            // fetch and publish protein details
+                            fetchAndPublish(accBuffer, proteins);
+
+                            // clear accession buffer
+                            accBuffer.clear();
+
+                            // clear protein map
+                            proteins = new HashMap<String, Protein>();
+                        }
                     }
-
-                    accBuffer.put(protIdentId, mappedProtAcc);
-                    if (accBuffer.size() == MAX_BATCH_DOWNLOAD_SIZE) {
-                        // fetch and publish protein details
-                        fetchAndPublish(accBuffer, proteins);
-
-                        // clear accession buffer
-                        accBuffer.clear();
-
-                        // clear protein map
-                        proteins = new HashMap<String, Protein>();
-                    }
+                    // clear protein map
+                    proteins = new HashMap<String, Protein>();
+                } catch (IllegalArgumentException ex) {
+                    Protein protein = new Protein(protAcc);
+                    protein.setStatus(Protein.STATUS.UNKNOWN);
+                    proteins.put(protAcc, protein);
                 }
-                // clear protein map
-                proteins = new HashMap<String, Protein>();
             }
 
             // this is important for cancelling

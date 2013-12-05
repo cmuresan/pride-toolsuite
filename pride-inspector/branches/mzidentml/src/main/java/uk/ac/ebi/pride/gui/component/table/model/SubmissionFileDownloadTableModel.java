@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.gui.component.reviewer.SubmissionFileDetail;
 import uk.ac.ebi.pride.prider.dataprovider.file.ProjectFileType;
 
 import javax.swing.tree.TreePath;
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -118,7 +119,9 @@ public class SubmissionFileDownloadTableModel extends AbstractTreeTableModel {
             case FILE_TYPE_COLUMN:
                 return submissionEntry.getFileType();
             case FILE_SIZE_COLUMN:
-                return submissionEntry.getFileSize() / (1024 * 1024);
+                double fileSize = (submissionEntry.getFileSize() * 1.0) / (1024 * 1024);
+                DecimalFormat df = new DecimalFormat("#.###");
+                return df.format(fileSize);
             case DOWNLOAD_COLUMN:
                 return submissionEntry.isDownload();
         }

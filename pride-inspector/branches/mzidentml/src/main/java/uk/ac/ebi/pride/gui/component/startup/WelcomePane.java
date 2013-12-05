@@ -48,7 +48,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
     /**
      * Reviewer download
      */
-    private static final String REVIEWER_DOWNLOAD = "Download Project";
+    private static final String REVIEWER_DOWNLOAD = "Review Project";
 
     /**
      * getting help

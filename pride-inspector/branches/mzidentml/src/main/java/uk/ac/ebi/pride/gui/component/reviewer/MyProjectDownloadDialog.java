@@ -63,6 +63,10 @@ public class MyProjectDownloadDialog extends JDialog implements TreeModelListene
 
     private void createFileSelectionTable() {
         fileSelectionTable = new JXTreeTable();
+        ((JXTreeTable) fileSelectionTable).setClosedIcon(null);
+        ((JXTreeTable) fileSelectionTable).setLeafIcon(null);
+        ((JXTreeTable) fileSelectionTable).setOpenIcon(null);
+
         fileSelectionTable.getTableHeader().setReorderingAllowed(false);
         fileSelectionTableModel = new SubmissionFileDownloadTableModel();
         fileSelectionTableModel.addTreeModelListener(this);
@@ -70,7 +74,6 @@ public class MyProjectDownloadDialog extends JDialog implements TreeModelListene
         ((JXTreeTable) fileSelectionTable).setColumnControlVisible(false);
         fileSelectionTable.setFillsViewportHeight(true);
         fileSelectionTable.setCellEditor(new DefaultCellEditor(new JCheckBox()));
-
         fileSelectionTable.getColumnModel().getColumn(0).setPreferredWidth(400);
     }
 
@@ -86,7 +89,6 @@ public class MyProjectDownloadDialog extends JDialog implements TreeModelListene
 
         fileSelectionTableModel.addSubmissionFileDetails(submissionFileDetails);
         ((JXTreeTable) fileSelectionTable).packAll();
-        ((JXTreeTable) fileSelectionTable).expandAll();
 
         setSelectAllButtonAction();
 

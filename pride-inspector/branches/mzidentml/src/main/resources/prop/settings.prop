@@ -43,10 +43,6 @@ prider.project.file.metadata.url=http://wwwdev.ebi.ac.uk/pride/ws/archive/projec
 prider.assay.file.metadata.url=http://wwwdev.ebi.ac.uk/pride/ws/archive/assays/{accession}/files
 prider.file.download.url=http://wwwdev.ebi.ac.uk/pride/ws/archive/files/{fileId}
 
-# URL for downloading proteomexchange submission
-px.submission.metadata.download.url=http://www.proteomexchange.org/px-ws/download/metadata
-px.submission.file.download.url=http://www.proteomexchange.org/px-ws/download/file
-
 # URL for link to Ensembl Genome Browser
 ensembl.genome.browser.url=http://www.ensembl.org/%1$s/Location/Genome?type=ProteinAlignFeature
 

@@ -22,8 +22,8 @@ delete.mzidentml.ms.icon.small=icon/16x16/delete_enable.gif
 delete.mzidentml.ms.icon.small.disable=icon/16x16/delete_disable.gif
 
 
-reviewer.download.title=Download Projects
-reviewer.download.tooltip=Download Projects
+reviewer.download.title=Review Projects
+reviewer.download.tooltip=Review Projects
 pride.login.dialog.title = Login to PRIDE
 pride.login.button.title = Login
 pride.login.username.error.message = User name cannot be empty

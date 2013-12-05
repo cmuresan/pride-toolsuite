@@ -22,6 +22,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**
  *
@@ -103,6 +105,15 @@ public class PrideLoginDialog extends JDialog implements TaskListener<ProjectDet
         setLoginButtonAction();
 
         setCancelButtonAction();
+
+        passwordField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    loginButton.doClick();
+                }
+            }
+        });
     }
 
     private void setLoginButtonAction() {

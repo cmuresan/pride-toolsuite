@@ -28,6 +28,9 @@ import java.awt.event.ActionListener;
  * @author Rui Wang
  */
 public class PrideLoginDialog extends JDialog implements TaskListener<ProjectDetailList, String> {
+    private static final String REVIEWER = "review";
+    private static final String EMAIL_SIGN = "@";
+    private static final String EBI_EMAIL_DOMAIN = "ebi.ac.uk";
 
     private BalloonTip warningBalloonTip;
 
@@ -127,7 +130,13 @@ public class PrideLoginDialog extends JDialog implements TaskListener<ProjectDet
     }
 
     public String getUserName() {
-        return userNameField.getText();
+        String username = userNameField.getText();
+
+        if (username != null && username.toLowerCase().startsWith(REVIEWER) && !username.contains(EMAIL_SIGN)) {
+            username += EMAIL_SIGN + EBI_EMAIL_DOMAIN;
+        }
+
+        return username;
     }
 
     private void setCancelButtonAction() {

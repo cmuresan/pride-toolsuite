@@ -14,10 +14,10 @@ pride.inspector.mzidentml.example.file=examples/mzidentml-example.mzid
 pride.website=http://www.ebi.ac.uk/pride
 
 # pride inspector website
-pride.inspector.website=http://code.google.com/p/pride-toolsuite
+pride.inspector.download.website=http://www.ebi.ac.uk/pride/resources/tools/inspector/latest/desktop/pride-inspector.zip
 
 # pride inspector download website
-pride.inspector.download.website=http://code.google.com/p/pride-toolsuite/downloads/list
+pride.inspector.update.website=http://www.ebi.ac.uk/pride/resources/tools/inspector
 
 # the size of each mzdata batch load
 mzdata.batch.load.size=100

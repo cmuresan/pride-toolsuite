@@ -6,7 +6,6 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.core.SpectraData;
-import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.access.EmptyDataAccessController;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
@@ -150,7 +149,7 @@ public class OpenFileTask<D extends DataAccessController> extends TaskAdapter<Vo
         } catch (Exception err) {
             String msg = "Failed to loading from the file: " + file.getName();
             logger.error(msg, err);
-            GUIUtilities.error(Desktop.getInstance().getMainComponent(), msg, "Open File Error");
+//            GUIUtilities.error(Desktop.getInstance().getMainComponent(), msg, "Open File Error");
         }
     }
 

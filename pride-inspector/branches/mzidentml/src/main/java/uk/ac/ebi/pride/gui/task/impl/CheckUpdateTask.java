@@ -1,5 +1,7 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
+import uk.ac.ebi.pride.gui.PrideInspector;
+import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.utils.UpdateChecker;
 
@@ -20,6 +22,12 @@ public class CheckUpdateTask extends TaskAdapter<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        return UpdateChecker.hasUpdate();
+        DesktopContext context = PrideInspector.getInstance().getDesktopContext();
+        String updateUrl = context.getProperty("pride.inspector.update.website");
+        String currentVersion = context.getProperty("pride.inspector.version");
+
+        UpdateChecker updateChecker = new UpdateChecker(updateUrl);
+
+        return updateChecker.hasUpdate(currentVersion);
     }
 }

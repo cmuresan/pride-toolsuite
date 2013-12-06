@@ -43,7 +43,7 @@ public class GetMyProjectsMetadataTask extends Task<ProjectDetailList, String> {
         try {
             return restTemplate.getForObject(projectMetadataUrl, ProjectDetailList.class);
         } catch (RestClientException ex) {
-            publish("Failed to retrieve projects using given credentials");
+            publish("Failed to login, please check your username and password");
             return null;
         }
     }

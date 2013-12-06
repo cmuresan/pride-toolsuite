@@ -8,6 +8,18 @@
     <name>pride-inspector</name>
     <url>http://code.google.com/p/pride-toolsuite/wiki/PRIDEInspector</url>
 
+
+    <!--
+        Build Note:
+
+        To build desktop version, you need
+        mvn -P pi-desktop-build clean package
+
+        To build web start version, you must use command and use:
+        mvn -P
+
+    -->
+
     <licenses>
         <license>
             <name>Apache 2</name>

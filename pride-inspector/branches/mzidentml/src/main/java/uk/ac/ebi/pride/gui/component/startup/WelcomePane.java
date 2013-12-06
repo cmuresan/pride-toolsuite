@@ -347,7 +347,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         JPanel moreSamplePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         moreSamplePanel.setOpaque(false);
         Action openMoreExampleAction = new OpenUrlAction(context.getProperty("open.more.example.title"), null,
-                context.getProperty("pride.inspector.download.website"));
+                context.getProperty("pride.inspector.example.dataset.website"));
         JButton openMoreExampleButton = createLabelLikeButton(openMoreExampleAction);
         openMoreExampleButton.setAction(openMoreExampleAction);
 

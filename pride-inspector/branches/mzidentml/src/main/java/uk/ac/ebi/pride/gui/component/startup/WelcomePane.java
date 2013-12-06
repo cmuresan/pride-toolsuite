@@ -141,7 +141,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         JPanel trySamplePanel = createTrySamplePane();
 
         // learn more about panel
-        JPanel learnMoreAboutPanel = createLearnMoreAboutPane();
+//        JPanel learnMoreAboutPanel = createLearnMoreAboutPane();
 
         // feedback panel
         JPanel feedbackPanel = createFeedBackPane();
@@ -149,29 +149,26 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         // publication panel
         JPanel publicationPanel = createPublicationPanel();
 
-        // message panel
-        JPanel messagePanel = createMessagePanel();
-
-        JSplitPane bottomLeftBottomSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, feedbackPanel, publicationPanel);
-        bottomLeftBottomSplitPane.setDividerLocation(0.5);
-        bottomLeftBottomSplitPane.setResizeWeight(0.5);
-        bottomLeftBottomSplitPane.setOpaque(false);
-        bottomLeftBottomSplitPane.setBorder(BorderFactory.createEmptyBorder());
-        bottomLeftBottomSplitPane.setDividerSize(0);
-
-        JSplitPane bottomLeftSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, learnMoreAboutPanel, bottomLeftBottomSplitPane);
-        bottomLeftSplitPane.setDividerLocation(0.5);
-        bottomLeftSplitPane.setResizeWeight(0.5);
-        bottomLeftSplitPane.setOpaque(false);
-        bottomLeftSplitPane.setBorder(BorderFactory.createEmptyBorder());
-        bottomLeftSplitPane.setDividerSize(0);
-
-        JSplitPane bottomSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, bottomLeftSplitPane, messagePanel);
+        JSplitPane bottomSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, feedbackPanel, publicationPanel);
         bottomSplitPane.setDividerLocation(0.5);
         bottomSplitPane.setResizeWeight(0.5);
         bottomSplitPane.setOpaque(false);
         bottomSplitPane.setBorder(BorderFactory.createEmptyBorder());
         bottomSplitPane.setDividerSize(0);
+
+//        JSplitPane bottomLeftSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, learnMoreAboutPanel, bottomLeftBottomSplitPane);
+//        bottomLeftSplitPane.setDividerLocation(0.5);
+//        bottomLeftSplitPane.setResizeWeight(0.5);
+//        bottomLeftSplitPane.setOpaque(false);
+//        bottomLeftSplitPane.setBorder(BorderFactory.createEmptyBorder());
+//        bottomLeftSplitPane.setDividerSize(0);
+//
+//        JSplitPane bottomSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, bottomLeftBottomSplitPane, messagePanel);
+//        bottomSplitPane.setDividerLocation(0.5);
+//        bottomSplitPane.setResizeWeight(0.5);
+//        bottomSplitPane.setOpaque(false);
+//        bottomSplitPane.setBorder(BorderFactory.createEmptyBorder());
+//        bottomSplitPane.setDividerSize(0);
 
         JSplitPane topSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, quickStartPanel, trySamplePanel);
         topSplitPane.setResizeWeight(0.5);
@@ -180,7 +177,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         topSplitPane.setDividerSize(1);
 
         JSplitPane outerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topSplitPane, bottomSplitPane);
-        outerSplitPane.setResizeWeight(0.3);
+        outerSplitPane.setResizeWeight(0.8);
         outerSplitPane.setOpaque(false);
         outerSplitPane.setBorder(BorderFactory.createEmptyBorder());
         outerSplitPane.setDividerSize(1);
@@ -329,8 +326,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         openPrideExampleButton.setAction(openPrideExampleAction);
         buttonPanel.add(openPrideExampleButton, c);
 
-        c.gridy = 0;
-        c.gridx = 1;
+        c.gridy = 2;
         File mzIdentMlExampleFile = getExampleFiles(context.getProperty("pride.inspector.mzidentml.example.file"));
         List<File> mzIdentMlFiles = new ArrayList<File>();
         if (mzIdentMlExampleFile != null) {
@@ -540,6 +536,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         // add pride inspector
         JLabel inspectorDescLabel = new JLabel(PRIDE_INSPECTOR_CITE_MESSAGE, JLabel.LEFT);
         inspectorDescLabel.setFont(BUTTON_FONT);
+        inspectorDescLabel.setFont(inspectorDescLabel.getFont().deriveFont(12f));
         inspectorDescLabel.setForeground(LARGE_TITLE_COLOR);
         buttonPanel.add(inspectorDescLabel, c);
 
@@ -552,12 +549,15 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         inspectorPanel.setOpaque(false);
 
         JButton inspectorPublicationButton = createLabelLikeButton(new OpenUrlAction(context.getProperty("pride.inspector.publication.title"), null, context.getProperty("pride.inspector.publication.url")));
+        inspectorPublicationButton.setFont(inspectorDescLabel.getFont().deriveFont(12f));
         inspectorPanel.add(inspectorPublicationButton);
 
         JButton inspectorPDFButton = createLabelLikeButton(new OpenUrlAction(PDF, null, context.getProperty("pride.inspector.publication.pdf.url")));
+        inspectorPDFButton.setFont(inspectorDescLabel.getFont().deriveFont(12f));
         inspectorPanel.add(inspectorPDFButton);
 
         JButton inspectorPubMedButton = createLabelLikeButton(new OpenUrlAction(PUBMED, null, context.getProperty("pride.inspector.publication.pubmed.url")));
+        inspectorPubMedButton.setFont(inspectorDescLabel.getFont().deriveFont(12f));
         inspectorPanel.add(inspectorPubMedButton);
 
         buttonPanel.add(inspectorPanel, c);
@@ -569,36 +569,6 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         publicationPanel.add(positionalPanel, BorderLayout.CENTER);
 
         return publicationPanel;
-    }
-
-
-    private JPanel createMessagePanel() {
-        JPanel messagePanel = new JPanel(new BorderLayout());
-
-        // set transparency
-        messagePanel.setOpaque(false);
-
-//        // add title label
-//        JLabel title = new JLabel(INCOMING_MESSAGES, JLabel.LEFT);
-//        title.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 0));
-//        title.setFont(LARGE_TITLE_FONT);
-//        title.setForeground(LARGE_TITLE_COLOR);
-//        messagePanel.add(title, BorderLayout.NORTH);
-//
-//        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-//        panel.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 0));
-//        panel.setOpaque(false);
-//
-//        // create a message board component
-//        messageBoard = new MessageBoard();
-//        messageBoard.setOpaque(false);
-//        messageBoard.showMessage(MessageBoard.Type.INFO, context.getProperty("welcome.message"));
-//
-//
-//        panel.add(messageBoard);
-//        messagePanel.add(panel, BorderLayout.CENTER);
-
-        return messagePanel;
     }
 
     private void checkForUpdate() {

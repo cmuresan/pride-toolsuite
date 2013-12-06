@@ -29,7 +29,6 @@
         <tocitem text="Showing Protein Details" target="help.protein">
             <tocitem text="Obtain Protein Details" target="help.protein.details"/>
             <tocitem text="Protein Sequence Viewer" target="help.protein.viewer"/>
-            <tocitem text="Decoy Filter" target="help.protein.decoy"/>
         </tocitem>
         <tocitem text="Understanding Summary Charts" target="help.chart">
             <tocitem text="Peak Intensity Distribution Chart" target="help.chart.1"/>
@@ -44,8 +43,7 @@
         <tocitem text="Opening mzML or PRIDE XML Files" target="help.openfile"/>
         <tocitem text="Trying mzML or PRIDE XML Example Files" target="help.examples"/>
         <tocitem text="Connecting to PRIDE Public Database Instance" target="help.pridedb"/>
-        <tocitem text="Download Your Experiments from PRIDE" target="help.pride.download"/>
-        <tocitem text="Download Your Submissions from ProteomeXchange" target="help.px.download"/>
+        <tocitem text="Review Project" target="help.review.project"/>
         <tocitem text="Exporting Data from PRIDE Inspector" target="help.export"/>
         <tocitem text="Exporting Quantification Data from PRIDE Inspector" target="help.export.quant"/>
         <tocitem text="Quantification Principle" target="help.export.quant.principle"/>

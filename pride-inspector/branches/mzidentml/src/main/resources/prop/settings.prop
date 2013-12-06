@@ -19,6 +19,9 @@ pride.inspector.download.website=http://www.ebi.ac.uk/pride/resources/tools/insp
 # pride inspector download website
 pride.inspector.update.website=http://www.ebi.ac.uk/pride/resources/tools/inspector
 
+# pride inspector example dataset
+pride.inspector.example.dataset.website=http://www.ebi.ac.uk/pride/resources/tools/inspector/latest/example/ExampleDataSets.zip
+
 # the size of each mzdata batch load
 mzdata.batch.load.size=100
 

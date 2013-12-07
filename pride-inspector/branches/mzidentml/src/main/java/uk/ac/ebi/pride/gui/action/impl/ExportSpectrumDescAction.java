@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.gui.action.PrideAction;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
+import uk.ac.ebi.pride.gui.event.SpectrumAddEvent;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.ExportSpectrumDescTask;
 
@@ -62,6 +63,16 @@ public class ExportSpectrumDescAction extends PrideAction {
     public void onForegroundDataSourceEvent(ForegroundDataSourceEvent evt) {
         try {
             DataAccessController controller = (DataAccessController) evt.getNewForegroundDataSource();
+            this.setEnabled(controller != null && controller.hasSpectrum());
+        } catch (DataAccessException e) {
+            logger.error("Failed to check the data access controller", e);
+        }
+    }
+
+    @EventSubscriber(eventClass = SpectrumAddEvent.class)
+    public void onSpectrumAddEvent(SpectrumAddEvent evt) {
+        try {
+            DataAccessController controller = (DataAccessController) evt.getController();
             this.setEnabled(controller != null && controller.hasSpectrum());
         } catch (DataAccessException e) {
             logger.error("Failed to check the data access controller", e);

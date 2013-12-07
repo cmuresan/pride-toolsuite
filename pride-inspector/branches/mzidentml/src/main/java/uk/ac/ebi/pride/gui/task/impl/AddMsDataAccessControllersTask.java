@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
+import org.bushe.swing.event.EventBus;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
@@ -10,6 +11,8 @@ import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
 import uk.ac.ebi.pride.gui.component.protein.ProteinTabPane;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
+import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
+import uk.ac.ebi.pride.gui.event.SpectrumAddEvent;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
@@ -93,14 +96,17 @@ public class AddMsDataAccessControllersTask extends TaskAdapter<Void, Map<Spectr
                     task.addTaskListener((TaskListener) tableModel);
 
                     TaskUtil.startBackgroundTask(task, controller);
+                    EventBus.publish(new SpectrumAddEvent<DataAccessController>(this, controller, SpectrumAddEvent.Status.SPECTRUM_ADDED));
 
                     contentPane.populate();
                 } else {
                     peptideContentPane.getVizTabPane().removeSpectrumViewPane();
                     peptideContentPane.getVizTabPane().removeFragmentationViewPane();
 
+
                     proteinTabPane.getVizTabPane().removeSpectrumViewPane();
                     proteinTabPane.getVizTabPane().removeFragmentationViewPane();
+                    EventBus.publish(new SpectrumAddEvent<DataAccessController>(this, controller, SpectrumAddEvent.Status.SPECTRUM_REMOVED));
                 }
             }
 

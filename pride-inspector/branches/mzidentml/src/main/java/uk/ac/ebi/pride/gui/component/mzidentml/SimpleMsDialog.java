@@ -199,7 +199,7 @@ public class SimpleMsDialog extends JDialog {
 
 
         //---- addButton ----
-        addButton.setText("Add Multiple Files");
+        addButton.setText("Add spectra files");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

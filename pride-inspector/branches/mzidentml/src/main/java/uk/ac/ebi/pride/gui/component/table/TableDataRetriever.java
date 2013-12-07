@@ -20,6 +20,7 @@ import uk.ac.ebi.pride.util.NumberUtilities;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -317,6 +318,27 @@ public class TableDataRetriever {
             headers.addAll(getIsotopeLabellingMethodHeaders(methods, controller, refSampleIndex, isProteinIdent));
         }
 
+        return headers;
+    }
+
+    /**
+     * Get table header for quantitative data
+     *
+     * @param controller data access controller
+     * @return List<Object>    a list of quantitative table headers
+     * @throws DataAccessException data access exception
+     */
+    public static List<Object> getProteinScoreHeaders(DataAccessController controller) throws DataAccessException {
+        List<Object> headers = new ArrayList<Object>();
+
+        Collection<CvTermReference> cvHeaders = controller.getAvailableProteinLevelScores();
+
+        if (cvHeaders != null && !cvHeaders.isEmpty()) {
+            Iterator<CvTermReference> cvHeader = cvHeaders.iterator();
+            while (cvHeader.hasNext()) {
+                headers.add((cvHeader.next().getName()));
+            }
+        }
         return headers;
     }
 

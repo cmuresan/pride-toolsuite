@@ -19,11 +19,12 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * User: rwang
- * Date: 01-Sep-2010
+ * User: rwang, yperez
+ * Date: 01-Sep-2013
  * Time: 17:21:07
  */
 public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, Void> {
+
     private static final Logger logger = LoggerFactory.getLogger(ExportIdentificationDescTask.class);
     /**
      * the default task title
@@ -65,7 +66,7 @@ public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, V
             //------- Comment section -------
 
             // data source
-            if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
+            if (controller.getType().equals(DataAccessController.Type.XML_FILE) || controller.getType().equals(DataAccessController.Type.MZIDENTML)) {
                 writer.println("# Data source: " + ((File) controller.getSource()).getAbsolutePath());
             } else if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
                 writer.println("# Data source: pride public mysql instance");
@@ -74,7 +75,7 @@ public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, V
             // accession if exist
             String acc = (exp.getId() != null) ? exp.getId().toString() : null;
             if (acc != null) {
-                writer.println("# PRIDE accession: " + acc);
+                writer.println("# Experiment Accession: " + acc);
             }
 
             // number of spectrum
@@ -92,26 +93,35 @@ public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, V
                 writer.println("# Number of peptides: " + controller.getNumberOfPeptides());
             }
 
-            writer.println("Submitted Protein Accession" + Constants.TAB + "Mapped Protein Accession" + Constants.TAB + "Protein Name" + Constants.TAB +
-                    "Score" + Constants.TAB + "Threshold" + Constants.TAB + "Number of peptides" + Constants.TAB +
-                    "Number of distinct peptides" + Constants.TAB + "Number of PTMs");
+            writer.print("Submitted Protein Accession" + Constants.TAB
+                    + "Mapped Protein Accession" + Constants.TAB
+                    + "Protein Name" + Constants.TAB
+                    + "Threshold" + Constants.TAB
+                    + "PSM" + Constants.TAB
+                    + "Peptides" + Constants.TAB
+                    + "PTMs");
+            List<Object> headerScore = TableDataRetriever.getProteinScoreHeaders(controller);
+
+            boolean scorePresent = false;
+            if (!headerScore.isEmpty()) {
+                scorePresent = true;
+                writer.print(Constants.TAB);
+                for (int i = 0; i < headerScore.size() - 1; i++) {
+                    writer.print(headerScore.get(i).toString() + Constants.TAB);
+                }
+                writer.println(headerScore.get(headerScore.size() - 1));
+            } else {
+                // line break
+                writer.print(Constants.LINE_SEPARATOR);
+            }
+
+
             Collection<Comparable> identIds = controller.getProteinIds();
+
             for (Comparable identId : identIds) {
                 // a row of data
                 ProteinTableRow content = TableDataRetriever.getProteinTableRow(controller, identId, null);
-
-                //todo: this needs to implement
-
-//                // output the result
-//                // identification id is ignored
-//                for (int i = 0; i < content.size() - 1; i++) {
-//                    Object entry = content.get(i);
-//                    writer.print(entry == null ? "" : entry.toString());
-//                    writer.print(Constants.TAB);
-//                }
-
-                // line break
-                writer.print(Constants.LINE_SEPARATOR);
+                writeContent(content, writer, scorePresent);
 
                 // this is important for cancelling
                 if (Thread.interrupted()) {
@@ -135,5 +145,46 @@ public class ExportIdentificationDescTask extends AbstractDataAccessTask<Void, V
             }
         }
         return null;
+    }
+
+    private void writeContent(ProteinTableRow content, PrintWriter writer, boolean scorePresent) {
+
+        // Submitted Protein Accession
+        writer.print(content.getProteinAccession().getAccession() == null ? "" : content.getProteinAccession().getAccession());
+        writer.print(Constants.TAB);
+
+        //Mapped Protein Accession
+        writer.print(content.getProteinAccession().getMappedAccession() == null ? "" : content.getProteinAccession().getMappedAccession());
+        writer.print(Constants.TAB);
+
+        //Protein Name
+        writer.print(content.getProteinName() == null ? "" : content.getProteinName());
+        writer.print(Constants.TAB);
+
+        //Thershold
+        writer.print(content.getThreshold() == null ? "" : content.getThreshold());
+        writer.print(Constants.TAB);
+
+        //PSM
+        writer.print(content.getNumberOfPeptides() == null ? "" : content.getNumberOfPeptides());
+        writer.print(Constants.TAB);
+
+        //Peptides
+        writer.print(content.getNumberOfUniquePeptides() == null ? "" : content.getNumberOfUniquePeptides());
+        writer.print(Constants.TAB);
+
+        //PTMs
+        writer.print(content.getNumberOfPTMs() == null ? "" : content.getNumberOfPTMs());
+        writer.print(Constants.TAB);
+
+        if (scorePresent) {
+            for (int i = 0; i < content.getScores().size() - 1; i++) {
+                writer.print((content.getScores().get(i) == null ? "" : content.getScores().get(i)) + Constants.TAB);
+            }
+            writer.print((content.getScores().get(content.getScores().size() - 1) == null) ? "" : content.getScores().get(content.getScores().size() - 1));
+        }
+
+        // line break
+        writer.print(Constants.LINE_SEPARATOR);
     }
 }

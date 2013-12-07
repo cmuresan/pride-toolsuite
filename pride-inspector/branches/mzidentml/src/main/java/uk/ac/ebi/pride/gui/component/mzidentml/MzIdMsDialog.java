@@ -257,7 +257,7 @@ public class MzIdMsDialog extends JDialog {
 
         JPanel addButtonPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        JButton addButton = new JButton("Add Multiple Files");
+        JButton addButton = new JButton("Add spectra files");
         addButton.setPreferredSize(new Dimension(140, 25));
         addButton.addActionListener(new ActionListener() {
             @Override

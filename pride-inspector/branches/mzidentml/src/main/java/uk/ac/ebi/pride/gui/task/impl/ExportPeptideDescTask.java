@@ -26,13 +26,12 @@ import static uk.ac.ebi.pride.gui.utils.Constants.TAB;
 /**
  * Task to export peptide related information.
  * <p/>
- * User: rwang
- * Date: 13-Oct-2010
+ * User: rwang, yperez
+ * Date: 13-Oct-2013
  * Time: 16:08:37
- *
- * todo: this task is broken, please fix this
  */
 public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
+
     private static final Logger logger = LoggerFactory.getLogger(ExportIdentificationDescTask.class);
     /**
      * the default task title
@@ -69,16 +68,16 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
             ExperimentMetaData exp = controller.getExperimentMetaData();
 
             // data source
-            if (controller.getType().equals(DataAccessController.Type.XML_FILE)) {
-                writer.println("# Data source: " + ((File)controller.getSource()).getAbsolutePath());
+            if (controller.getType().equals(DataAccessController.Type.XML_FILE) || controller.getType().equals(DataAccessController.Type.MZIDENTML)) {
+                writer.println("# Data source: " + ((File) controller.getSource()).getAbsolutePath());
             } else if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
                 writer.println("# Data source: pride public mysql instance");
             }
 
             // accession if exist
-            String acc = (exp.getId() !=null)?exp.getId().toString():null;
+            String acc = (exp.getId() != null) ? exp.getId().toString() : null;
             if (acc != null) {
-                writer.println("# PRIDE accession: " + acc);
+                writer.println("# Experiment accession: " + acc);
             }
 
             // number of spectrum
@@ -120,6 +119,7 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
             writer.println(header.toString());
 
             Collection<Comparable> identIds = controller.getProteinIds();
+
             for (Comparable identId : identIds) {
                 Collection<Comparable> pepIds = controller.getPeptideIds(identId);
                 if (pepIds != null) {
@@ -128,14 +128,11 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
                         // get row data
                         PeptideTableRow content = TableDataRetriever.getPeptideTableRow(controller, identId, pepId);
 
-                        // output the rest of the results
-//                        for (int i = 0; i < content.size(); i++) {
-//                            if (!skipIndexes.contains(i + 1)) {
-//                                Object entry = content.get(i);
-//                                writer.print(entry == null ? "" : entry.toString());
-//                                writer.print(TAB);
-//                            }
-//                        }
+                        writer.print(content.getProteinAccession() == null ? "" : content.getProteinAccession().getAccession().toString());
+                        writer.print(TAB);
+
+                        writer.print(content.getProteinName() == null ? "" : content.getProteinName().toString());
+                        writer.print(TAB);
 
                         // line break
                         writer.print(LINE_SEPARATOR);

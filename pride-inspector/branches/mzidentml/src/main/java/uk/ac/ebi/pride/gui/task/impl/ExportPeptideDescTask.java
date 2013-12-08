@@ -6,7 +6,9 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
 import uk.ac.ebi.pride.data.core.ExperimentMetaData;
 import uk.ac.ebi.pride.gui.GUIUtilities;
+import uk.ac.ebi.pride.gui.component.peptide.PeptideRankingFilter;
 import uk.ac.ebi.pride.gui.component.table.TableDataRetriever;
+import uk.ac.ebi.pride.gui.component.table.model.PeptideSpeciesPSMTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableHeader;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableRow;
@@ -97,20 +99,24 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
 
             // in order to get a list of headers for export
             // first, we need to create an instance of PeptideTableModel
-            PeptideTableModel pepTableModel = new PeptideTableModel(controller.getAvailablePeptideLevelScores());
+            PeptideSpeciesPSMTableModel pepTableModel = new PeptideSpeciesPSMTableModel(controller.getAvailablePeptideLevelScores(), PeptideRankingFilter.LESS_EQUAL_THAN_ONE.getRankingThreshold());
             // a list of columns to be skipped
             List<Integer> skipIndexes = new ArrayList<Integer>();
-            // skip identification id
+
+            skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableHeader.PROTEIN_NAME.getHeader()));
+            skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableHeader.PROTEIN_STATUS.getHeader()));
+            skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableHeader.PEPTIDE_FIT.getHeader()));
+            skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableHeader.ADDITIONAL.getHeader()));
             skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableHeader.IDENTIFICATION_ID.getHeader()));
-            // skip peptide id
             skipIndexes.add(pepTableModel.getColumnIndex(PeptideTableHeader.PEPTIDE_ID.getHeader()));
-            // get number of columns in peptide table model
+
+
             int numOfCols = pepTableModel.getColumnCount();
             // iterate over each column to construct the header
             StringBuilder header = new StringBuilder();
             // ignore the last two columns
             // ignore row number
-            for (int i = 1; i < numOfCols; i++) {
+            for (int i = 0; i < numOfCols; i++) {
                 if (!skipIndexes.contains(i)) {
                     header.append(pepTableModel.getColumnName(i));
                     header.append(TAB);
@@ -128,10 +134,65 @@ public class ExportPeptideDescTask extends AbstractDataAccessTask<Void, Void> {
                         // get row data
                         PeptideTableRow content = TableDataRetriever.getPeptideTableRow(controller, identId, pepId);
 
-                        writer.print(content.getProteinAccession() == null ? "" : content.getProteinAccession().getAccession().toString());
+                        //Peptide Sequence
+                        writer.print(content.getSequence().getSequence() == null ? "" : content.getSequence().getSequence());
                         writer.print(TAB);
 
-                        writer.print(content.getProteinName() == null ? "" : content.getProteinName().toString());
+                        //Protein ID
+                        writer.print(content.getProteinAccession().getAccession() == null ? "" : content.getProteinAccession().getAccession());
+                        writer.print(TAB);
+
+                        //Sequence Coverage
+                        writer.print(content.getSequenceCoverage() == null ? "" : content.getSequenceCoverage());
+                        writer.print(TAB);
+
+                        //Peptide Ranking
+                        writer.print(content.getRanking() == null ? "" : content.getRanking());
+                        writer.print(TAB);
+
+                        //Peptide Delta
+                        writer.print(content.getDeltaMz() == null ? "" : content.getDeltaMz());
+                        writer.print(TAB);
+
+                        //Precursor charge
+                        writer.print(content.getPrecursorCharge() == null ? "" : content.getPrecursorCharge());
+                        writer.print(TAB);
+
+                        //Precursor m/z
+                        writer.print(content.getPrecursorMz() == null ? "" : content.getPrecursorMz());
+                        writer.print(TAB);
+
+                        //Modifications
+                        writer.print(content.getModificationNames() == null ? "" : content.getModificationNames());
+                        writer.print(TAB);
+
+                        //# Ions
+                        writer.print(content.getNumberOfFragmentIons() == null ? "" : content.getNumberOfFragmentIons());
+                        writer.print(TAB);
+
+                        //Scores
+                        if (content.getScores() != null && content.getScores().size() > 0) {
+                            for (Double value : content.getScores()) {
+                                writer.print(value == null ? "" : value);
+                                writer.print(TAB);
+
+                            }
+                        }
+
+                        //# Length
+                        writer.print(content.getSequenceLength() <= 0 ? "" : content.getSequenceLength());
+                        writer.print(TAB);
+
+                        //# Start
+                        writer.print(content.getSequenceStartPosition() == 0 ? "" : content.getSequenceStartPosition());
+                        writer.print(TAB);
+
+                        //# End
+                        writer.print(content.getSequenceEndPosition() == 0 ? "" : content.getSequenceEndPosition());
+                        writer.print(TAB);
+
+                        //# Spectrum ID
+                        writer.print(content.getSpectrumId() == null ? "" : content.getSpectrumId());
                         writer.print(TAB);
 
                         // line break

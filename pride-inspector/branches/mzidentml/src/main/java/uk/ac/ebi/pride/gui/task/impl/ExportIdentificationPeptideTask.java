@@ -89,6 +89,9 @@ public class ExportIdentificationPeptideTask extends AbstractDataAccessTask<Void
                 writer.println("# Number of peptides: " + controller.getNumberOfPeptides());
             }
 
+            writer.println("Protein Accession" + Constants.TAB + "Peptide Sequence");
+
+
             Collection<Comparable> identIds = controller.getProteinIds();
             for (Comparable identId : identIds) {
                 String accession = controller.getProteinAccession(identId);

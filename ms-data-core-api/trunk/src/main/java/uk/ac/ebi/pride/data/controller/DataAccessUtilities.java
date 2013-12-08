@@ -604,7 +604,6 @@ public final class DataAccessUtilities {
     }
 
     public static Integer getPrecursorCharge(List<Precursor> precursors) {
-
         if (precursors != null) {
             for (Precursor precursor : precursors) {
                 for (ParamGroup paramGroup : precursor.getSelectedIons()) {

@@ -141,6 +141,21 @@ public class Spectrum extends MzGraph {
         this.peptide = peptide;
     }
 
+    public double[][] getMassIntensityMap() {
+
+        double[] ionIntensities = getIntensityBinaryDataArray().getDoubleArray();
+        double[] ionMasses = getMzBinaryDataArray().getDoubleArray();
+
+        double[][] peakList = new double[ionIntensities.length][2];
+
+        for (int i = 0; i < peakList.length; i++) {
+            peakList[i][0] = ionMasses[i];
+            peakList[i][1] = ionIntensities[i];
+
+        }
+        return peakList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideDBAccessControllerImpl;
 import uk.ac.ebi.pride.data.core.*;
-import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
 
 import java.util.List;
 
@@ -24,15 +23,12 @@ public class PrideDataBaseControllerImplTest {
 
     @Before
     public void setUp() throws Exception {
-        // PooledConnectionFactory pooledConnectionFactory = PooledConnectionFactory.getInstance();
         prideController = new PrideDBAccessControllerImpl("10885");
-        //prideController = new PrideDBAccessControllerImpl("15086");
     }
 
     @After
     public void tearDown() throws Exception {
         prideController.close();
-        PooledConnectionFactory factory = PooledConnectionFactory.getInstance();
     }
 
     @Test
@@ -46,7 +42,7 @@ public class PrideDataBaseControllerImplTest {
     public void testGetAdditionals() throws Exception {
         ParamGroup additionals = prideController.getAdditional();
         assertTrue("The number of CvTermns Should be 4:", additionals.getCvParams().size() == 4);
-        assertEquals("The accession of the first CvTerm should be PRIDE:0000175", additionals.getCvParams().get(0).getAccession(), "PRIDE:0000097");
+        assertEquals("The accession of the first CvTerm should be PRIDE:0000175", additionals.getCvParams().get(0).getAccession(), "PRIDE:0000175");
         assertEquals("The name of the four CvTerm should be Experiment description", additionals.getCvParams().get(3).getName(), "Experiment description");
     }
 

@@ -815,13 +815,14 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public void addMSController(List<File> dataAccessControllerFiles) {
 
         Map<SpectraData, File> spectraDataFileMap = checkMScontrollers(dataAccessControllerFiles);
+        addMSController(spectraDataFileMap);
 
-        Iterator iterator = spectraDataFileMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry mapEntry = (Map.Entry) iterator.next();
-            PeakControllerImpl peakListController = new PeakControllerImpl((File) mapEntry.getValue());
-            msDataAccessControllers.put(((SpectraData) mapEntry.getKey()).getId(), peakListController);
-        }
+//        Iterator iterator = spectraDataFileMap.entrySet().iterator();
+//        while (iterator.hasNext()) {
+//            Map.Entry mapEntry = (Map.Entry) iterator.next();
+//            PeakControllerImpl peakListController = new PeakControllerImpl((File) mapEntry.getValue());
+//            msDataAccessControllers.put(((SpectraData) mapEntry.getKey()).getId(), peakListController);
+//        }
     }
 
     /**

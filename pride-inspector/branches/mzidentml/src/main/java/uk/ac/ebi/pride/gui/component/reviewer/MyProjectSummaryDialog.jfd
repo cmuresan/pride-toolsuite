@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "5.1.0.2.64" Java: "1.6.0_45" encoding: "UTF-8"
+JFDML JFormDesigner: "5.1.1.0.120" Java: "1.6.0_65" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -24,8 +24,8 @@ new FormModel {
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l {comp projectTitleScrollPane::l:::x, comp projectDescriptionScrollPane::l:::x, seq {par l {comp projectTitleLabel:::p::p, comp projectDescriptionLabel::l:p::p, comp publicationDateLabel::l:p::p}, space :0:0:x}, comp publcationDateTextField::l:::x}, space :::p}}"
-						"$verticalGroup": "par l {seq l {comp projectTitleLabel:::p::p, space :::p, comp projectTitleScrollPane:::p:50:p, space u:::p, comp projectDescriptionLabel:::p::p, space :::p, comp projectDescriptionScrollPane:::p:176:p, space :::p, comp publicationDateLabel:::p::p, space :::p, comp publcationDateTextField:::p::p, space ::14:x}}"
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp projectTitleScrollPane::l:::x, comp projectDescriptionScrollPane::l:::x, seq l {par l {comp projectTitleLabel:::p::p, comp projectDescriptionLabel::l:p::p, comp publicationDateLabel::l:p::p, comp publcationDateTextField::l:p:187:p}, space u:p::p, par l {seq {comp submissionTypeLabel:::p::p, space :0:0:x}, comp submissionTypeTextField:::::x}}}, space :::p}}"
+						"$verticalGroup": "par l {seq l {comp projectTitleLabel:::p::p, space :::p, comp projectTitleScrollPane:::p:50:p, space u:::p, comp projectDescriptionLabel:::p::p, space :::p, comp projectDescriptionScrollPane:::p:176:p, space :::p, par b {comp publicationDateLabel::b:p::p, comp submissionTypeLabel::b:p::p}, space :::p, par b {comp submissionTypeTextField::b:p::p, comp publcationDateTextField::b:p::p}, space ::14:x}}"
 					} ) {
 						name: "panel1"
 						"border": new javax.swing.border.EtchedBorder( 1, null, null )
@@ -59,6 +59,13 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "publcationDateTextField"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "submissionTypeLabel"
+							"text": "Submission type"
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "submissionTypeTextField"
 						} )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {

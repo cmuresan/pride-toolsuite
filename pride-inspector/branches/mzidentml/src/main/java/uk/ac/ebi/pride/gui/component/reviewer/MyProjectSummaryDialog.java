@@ -33,6 +33,8 @@ import java.util.List;
  * @author Rui Wang
  */
 public class MyProjectSummaryDialog extends JDialog implements TaskListener<FileDetailList, String> {
+    public static final String PRIVATE_PROJECT = "Private";
+
     private LoginRecord myLoginRecord;
 
     public MyProjectSummaryDialog(Frame owner) {
@@ -106,7 +108,11 @@ public class MyProjectSummaryDialog extends JDialog implements TaskListener<File
         Date publicationDate = projectDetail.getPublicationDate();
         if (publicationDate != null) {
             publcationDateTextField.setText(DateFormat.getDateInstance().format(publicationDate));
+        } else {
+            publcationDateTextField.setText(PRIVATE_PROJECT);
         }
+
+        submissionTypeTextField.setText(projectDetail.getSubmissionType().toString());
     }
 
     private void setLogoutButtonAction() {
@@ -214,6 +220,8 @@ public class MyProjectSummaryDialog extends JDialog implements TaskListener<File
         projectTitleArea = new JTextArea();
         publicationDateLabel = new JLabel();
         publcationDateTextField = new JTextField();
+        submissionTypeLabel = new JLabel();
+        submissionTypeTextField = new JTextField();
         controlBar = new JPanel();
         logoutButton = new JButton();
         cancelButton = new JButton();
@@ -270,63 +278,75 @@ public class MyProjectSummaryDialog extends JDialog implements TaskListener<File
                     //---- publicationDateLabel ----
                     publicationDateLabel.setText("Publication date");
 
+                    //---- submissionTypeLabel ----
+                    submissionTypeLabel.setText("Submission type");
+
                     GroupLayout panel1Layout = new GroupLayout(panel1);
                     panel1.setLayout(panel1Layout);
                     panel1Layout.setHorizontalGroup(
-                            panel1Layout.createParallelGroup()
-                                    .addGroup(panel1Layout.createSequentialGroup()
-                                            .addContainerGap()
-                                            .addGroup(panel1Layout.createParallelGroup()
-                                                    .addComponent(projectTitleScrollPane)
-                                                    .addComponent(projectDescriptionScrollPane)
-                                                    .addGroup(panel1Layout.createSequentialGroup()
-                                                            .addGroup(panel1Layout.createParallelGroup()
-                                                                    .addComponent(projectTitleLabel)
-                                                                    .addComponent(projectDescriptionLabel)
-                                                                    .addComponent(publicationDateLabel))
-                                                            .addGap(0, 0, Short.MAX_VALUE))
-                                                    .addComponent(publcationDateTextField))
-                                            .addContainerGap())
+                        panel1Layout.createParallelGroup()
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(panel1Layout.createParallelGroup()
+                                        .addComponent(projectTitleScrollPane)
+                                        .addComponent(projectDescriptionScrollPane)
+                                        .addGroup(panel1Layout.createSequentialGroup()
+                                                .addGroup(panel1Layout.createParallelGroup()
+                                                        .addComponent(projectTitleLabel)
+                                                        .addComponent(projectDescriptionLabel)
+                                                        .addComponent(publicationDateLabel)
+                                                        .addComponent(publcationDateTextField, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addGroup(panel1Layout.createParallelGroup()
+                                                        .addGroup(panel1Layout.createSequentialGroup()
+                                                                .addComponent(submissionTypeLabel)
+                                                                .addGap(0, 0, Short.MAX_VALUE))
+                                                        .addComponent(submissionTypeTextField))))
+                                .addContainerGap())
                     );
                     panel1Layout.setVerticalGroup(
-                            panel1Layout.createParallelGroup()
-                                    .addGroup(panel1Layout.createSequentialGroup()
-                                            .addComponent(projectTitleLabel)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(projectTitleScrollPane, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(projectDescriptionLabel)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(projectDescriptionScrollPane, GroupLayout.PREFERRED_SIZE, 176, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(publicationDateLabel)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(publcationDateTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                            .addContainerGap(14, Short.MAX_VALUE))
+                        panel1Layout.createParallelGroup()
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addComponent(projectTitleLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(projectTitleScrollPane, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(projectDescriptionLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(projectDescriptionScrollPane, GroupLayout.PREFERRED_SIZE, 176, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(publicationDateLabel)
+                                        .addComponent(submissionTypeLabel))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(submissionTypeTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(publcationDateTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(14, Short.MAX_VALUE))
                     );
                 }
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                        contentPanelLayout.createParallelGroup()
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addGroup(contentPanelLayout.createParallelGroup()
-                                                .addComponent(projectLabel)
-                                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                                        .addComponent(projectAccessionScrollPane, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)
-                                                        .addGap(12, 12, 12)
-                                                        .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                        .addContainerGap(12, GroupLayout.PREFERRED_SIZE))
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                    .addComponent(projectLabel)
+                                    .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(projectAccessionScrollPane, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)
+                                            .addGap(12, 12, 12)
+                                            .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addContainerGap(12, GroupLayout.PREFERRED_SIZE))
                 );
                 contentPanelLayout.setVerticalGroup(
-                        contentPanelLayout.createParallelGroup()
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addComponent(projectLabel)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(contentPanelLayout.createParallelGroup()
-                                                .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(projectAccessionScrollPane, GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)))
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addComponent(projectLabel)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                    .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(projectAccessionScrollPane, GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -335,26 +355,26 @@ public class MyProjectSummaryDialog extends JDialog implements TaskListener<File
             {
                 controlBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 controlBar.setLayout(new GridBagLayout());
-                ((GridBagLayout) controlBar.getLayout()).columnWidths = new int[]{0, 0, 85, 85, 80};
-                ((GridBagLayout) controlBar.getLayout()).columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0};
+                ((GridBagLayout)controlBar.getLayout()).columnWidths = new int[] {0, 0, 85, 85, 80};
+                ((GridBagLayout)controlBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0, 0.0};
 
                 //---- logoutButton ----
                 logoutButton.setText("Logout");
                 controlBar.add(logoutButton, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 5), 0, 0));
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- cancelButton ----
                 cancelButton.setText("Cancel");
                 controlBar.add(cancelButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 5), 0, 0));
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- viewFilesButton ----
                 viewFilesButton.setText("View files");
                 controlBar.add(viewFilesButton, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 0), 0, 0));
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(controlBar, BorderLayout.SOUTH);
         }
@@ -380,6 +400,8 @@ public class MyProjectSummaryDialog extends JDialog implements TaskListener<File
     private JTextArea projectTitleArea;
     private JLabel publicationDateLabel;
     private JTextField publcationDateTextField;
+    private JLabel submissionTypeLabel;
+    private JTextField submissionTypeTextField;
     private JPanel controlBar;
     private JButton logoutButton;
     private JButton cancelButton;

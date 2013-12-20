@@ -16,7 +16,7 @@
         mvn -P pi-desktop-build clean package
 
         To build web start version, you must use command and use:
-        mvn -P
+        mvn -P pi-webstart-build,webstart clean package
 
     -->
 
@@ -96,7 +96,7 @@
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>ms-data-core-api</artifactId>
-            <version>0.11.10-SNAPSHOT</version>
+            <version>0.11.10</version>
         </dependency>
 
         <dependency>

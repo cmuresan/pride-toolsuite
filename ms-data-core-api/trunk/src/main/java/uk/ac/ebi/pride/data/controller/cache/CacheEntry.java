@@ -20,9 +20,9 @@ public enum CacheEntry {
     PROTEIN_TO_PROTEIN_GROUP_ID(HashMap.class, null),           // Map<Comparable, Comparable>
     PROTEIN_GROUP_ID(ArrayList.class, null),                   // List of Protein Groups
     CHROMATOGRAM(CachedMap.class, 10),                         // Map<Chromatogram id, Chromatogram>
-    PROTEIN(CachedMap.class, 20),                              // Map<Identification id, Identification>
-    PROTEIN_GROUP(CachedMap.class, 10),                        // Map<Protein group id, Protein group>
-    PEPTIDE(CachedMap.class, 20),                              // Map<Tuple<Comparable, Comparable>, Peptide>
+    PROTEIN(CachedMap.class, 10),                              // Map<Identification id, Identification>
+    PROTEIN_GROUP(CachedMap.class, 5),                        // Map<Protein group id, Protein group>
+    PEPTIDE(CachedMap.class, 10),                              // Map<Tuple<Comparable, Comparable>, Peptide>
     EXPERIMENT_ACC(ArrayList.class, null),                     // List<Experiement Accession>
     EXPERIMENT_METADATA(ArrayList.class, null),                // List<Experiment Metadata>
     PROTEIN_METADATA(ArrayList.class, null),                   // List of Identification Metadata for Protein Identification

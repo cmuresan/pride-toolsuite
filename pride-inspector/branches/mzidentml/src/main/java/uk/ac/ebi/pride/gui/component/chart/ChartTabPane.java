@@ -71,7 +71,7 @@ public class ChartTabPane extends DataAccessControllerPane<PrideDataReader, Void
 
         // set the final icon
         PrideInspectorContext context = (PrideInspectorContext) PrideInspector.getInstance().getDesktopContext();
-//        this.setIcon(GUIUtilities.loadIcon(context.getProperty("chart.icon.small")));
+        //this.setIcon(GUIUtilities.loadIcon(context.getProperty("chart.icon.small")));
 
         // set the loading icon
         this.setLoadingIcon(GUIUtilities.loadIcon(context.getProperty("chart_loading.icon.small")));
@@ -94,8 +94,12 @@ public class ChartTabPane extends DataAccessControllerPane<PrideDataReader, Void
 
         if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
             lcd = new LoadChartDataTask(controller, (String) ((PrideDBAccessControllerImpl) controller).getExperimentAcc());
+            String msg = viewerContext.getProperty("chart.time.warning.message");
+            showWarningMessage(msg, false);
         } else {
             lcd = new LoadChartDataTask(controller);
+            String msg = viewerContext.getProperty("chart.time.warning.message");
+            showWarningMessage(msg, false);
         }
 
         // add a task listener
@@ -221,7 +225,7 @@ public class ChartTabPane extends DataAccessControllerPane<PrideDataReader, Void
      * @param icon icon to show
      */
     private void showIcon(Icon icon) {
-        if (parentComponent != null && parentComponent instanceof ControllerContentPane) {
+        if (parentComponent != null && parentComponent instanceof ControllerContentPane ) {
             ControllerContentPane contentPane = (ControllerContentPane) parentComponent;
             contentPane.setTabIcon(contentPane.getChartTabIndex(), icon);
         }

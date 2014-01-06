@@ -1,4 +1,4 @@
-#summary PRIDE Inspector is a desktop application to visualize and perform first quality assessment on Mass Spectrometry data.
+#summary PRIDE Inspector is a desktop application to visualise and perform first quality assessment on Mass Spectrometry data.
 #sidebar TableOfContents
 
 <table>
@@ -65,7 +65,7 @@ When you use PRIDE Inspector, please cite the following publication:
 
 ----
 ===Launch via Webstart===
-  Click <a href="http://www.ebi.ac.uk/pride/webstart/pride-inspector.jnlp">here</a> to launch directly the latest *PRIDE Inspector*. 
+  Click <a href="http://www.ebi.ac.uk/pride/resources/tools/inspector/latest/webstart/pride-inspector.jnlp">here</a> to launch directly the latest *PRIDE Inspector*. 
 
 Please note that Mac OS 10.8 (Mountain Lion) users or users of the Google Chrome browser, may have to execute additional steps. Please see FAQ section below if in doubt.
 
@@ -74,7 +74,7 @@ Please note that Mac OS 10.8 (Mountain Lion) users or users of the Google Chrome
 ----
 
 ===Download===
-You can get the latest *PRIDE Inspector* from our [http://code.google.com/p/pride-toolsuite/downloads/list Download Section], and download `pride-inspector-X.Y.zip` (where X and Y represent the version of the software). Unzipping the file, creates the following directory structure:
+You can get the latest *PRIDE Inspector* from our [http://www.ebi.ac.uk/pride/resources/tools/inspector/latest/desktop/pride-inspector.zip Download Section], and download `pride-inspector-X.Y.zip` (where X and Y represent the version of the software). Unzipping the file, creates the following directory structure:
 {{{
   pride-inspector-X.Y
      pride-inspector-X.Y.jar

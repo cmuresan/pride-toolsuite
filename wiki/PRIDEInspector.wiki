@@ -23,7 +23,7 @@
 ----
 ==About PRIDE Inspector==
 The key features include:
-  * Fast loading of *mzML*, *PRIDE XML* and *mzIdentML*files.
+  * Fast loading of *mzML*, *PRIDE XML* and *mzIdentML* files.
   * Search, access and download all PRIDE public database experiments.
   * Different views on spectra, chromatogram, protein, peptides and metadata.
   * Visualise quantification data for both protein and peptide identifications.

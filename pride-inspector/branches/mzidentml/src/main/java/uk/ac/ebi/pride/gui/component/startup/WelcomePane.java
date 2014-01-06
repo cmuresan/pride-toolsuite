@@ -332,7 +332,7 @@ public class WelcomePane extends JPanel implements TaskListener<Object, Object> 
         if (mzIdentMlExampleFile != null) {
             mzIdentMlFiles.add(mzIdentMlExampleFile);
         }
-        Action openMzIdentMlExampleAction = new OpenFileAction(context.getProperty("open.mzidentml.example.title"), circleIcon, prideXmlFiles);
+        Action openMzIdentMlExampleAction = new OpenFileAction(context.getProperty("open.mzidentml.example.title"), circleIcon, mzIdentMlFiles);
         openMzIdentMlExampleAction.setEnabled(mzIdentMlExampleFile != null && mzIdentMlExampleFile.exists());
         JButton mzIdentMlExampleButton = createLabelLikeButton(openMzIdentMlExampleAction);
         mzIdentMlExampleButton.setAction(openMzIdentMlExampleAction);

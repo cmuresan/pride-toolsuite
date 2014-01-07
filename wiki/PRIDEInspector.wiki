@@ -1,6 +1,9 @@
 #summary PRIDE Inspector is a desktop application to visualise and perform first quality assessment on Mass Spectrometry data.
 #sidebar TableOfContents
 
+== Quick Download ==
+Download the latest release: [http://www.ebi.ac.uk/pride/resources/tools/inspector/latest/desktop/pride-inspector.zip Download]
+
 <table>
   <tr>
     <td width="70%">

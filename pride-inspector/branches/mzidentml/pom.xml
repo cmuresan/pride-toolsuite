@@ -68,7 +68,7 @@
     </developers>
 
     <properties>
-        <assembly.dir>PRIDE_Inspector</assembly.dir>
+        <assembly.dir>${name}-${version}</assembly.dir>
     </properties>
 
     <dependencies>

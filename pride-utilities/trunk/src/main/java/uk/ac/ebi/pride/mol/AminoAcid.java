@@ -4,7 +4,7 @@ package uk.ac.ebi.pride.mol;
 /**
  * Enumeration of 20 amino acids.
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 14-Jun-2010
  * Time: 14:35:29
  */
@@ -33,6 +33,8 @@ public enum AminoAcid implements Mass {
     U("Selenocysteine", 'U', "SeC", "C3H5NOSe", 150.95363, 150.0379),
     V("Valine", 'V', "Val", "C5H9ON", 99.06841, 99.1326),
     W("Tryptophan", 'W', "Trp", "C11H10ON2", 186.07931, 186.2132),
+    /** Some Search Engines and Daabases used the X Amino Acid for unknown amino acids*/
+    X("Unknown Amino Acid", 'X', "Xaa", "Unknown",0.0,0.0),
     Y("Tyrosine", 'Y', "Tyr", "C9H9O2N", 163.06333, 163.1760),
     /** Z is an average btween E and Q */
     Z("Glutamine or glutamic acid", 'Z', "Glx", "", 128.55059, 128.6231);
@@ -125,6 +127,8 @@ public enum AminoAcid implements Mass {
                 return AminoAcid.U;
             case 'W':
                 return AminoAcid.W;
+            case 'X':
+                return AminoAcid.X;
             case 'Y':
                 return AminoAcid.Y;
             case 'Z':

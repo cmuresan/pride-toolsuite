@@ -224,6 +224,7 @@ public final class MzMLTransformer {
         BinaryDataArray newBinaryArr = null;
 
         if (oldBinaryArr != null) {
+
             byte[] binary = oldBinaryArr.getBinary();
 
             ParamGroup paramGroup = transformParamGroup(oldBinaryArr);

@@ -843,7 +843,10 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             while (iterator.hasNext()) {
                 Map.Entry mapEntry = (Map.Entry) iterator.next();
                 SpectraData spectraData = (SpectraData) mapEntry.getValue();
-                if (spectraData.getLocation().indexOf(file.getName()) > 0) {
+                if (spectraData.getLocation().indexOf(file.getName()) >= 0) {
+                    spectraFileMap.put(spectraData, file);
+                }else if(file.getName().contains(spectraData.getId().toString())
+                        || file.getName().contains(spectraData.getName())){
                     spectraFileMap.put(spectraData, file);
                 }
             }
@@ -870,7 +873,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                     if (MzIdentMLUtils.getSpectraDataFormat(spectraData) == Constants.SpecFileFormat.DTA)
                         msDataAccessControllers.put(spectraData.getId(), new PeakControllerImpl(spectraDataFileMap.get(spectraDataFile)));
                     //Todo: Need to check if changes
-
                 }
             }
 
@@ -996,35 +998,6 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public Integer getNumberOfSpectrabySpectraData(SpectraData spectraData) {
         Map<Comparable, List<Comparable>> spectraDataIdMap = (Map<Comparable, List<Comparable>>) getCache().get(CacheEntry.SPECTRADATA_TO_SPECTRUMIDS);
         return spectraDataIdMap.get(spectraData.getId()).size();
-    }
-
-    public List<Constants.SpecFileFormat> getFileTypeSupported(SpectraData spectraData) {
-        List<Constants.SpecFileFormat> fileFormats = new ArrayList<Constants.SpecFileFormat>();
-        Constants.SpecFileFormat spectraDataFormat = MzIdentMLUtils.getSpectraDataFormat(spectraData);
-        if (spectraDataFormat == Constants.SpecFileFormat.NONE) {
-            Constants.SpecIdFormat spectIdFormat = MzIdentMLUtils.getSpectraDataIdFormat(spectraData);
-            if (spectIdFormat == Constants.SpecIdFormat.MASCOT_QUERY_NUM) {
-                fileFormats.add(Constants.SpecFileFormat.MGF);
-            } else if (spectIdFormat == Constants.SpecIdFormat.MULTI_PEAK_LIST_NATIVE_ID) {
-                fileFormats.add(Constants.SpecFileFormat.NONE);
-                fileFormats.add(Constants.SpecFileFormat.DTA);
-                fileFormats.add(Constants.SpecFileFormat.MGF);
-                fileFormats.add(Constants.SpecFileFormat.PKL);
-            } else if (spectIdFormat == Constants.SpecIdFormat.SINGLE_PEAK_LIST_NATIVE_ID) {
-                fileFormats.add(Constants.SpecFileFormat.NONE);
-                fileFormats.add(Constants.SpecFileFormat.DTA);
-                fileFormats.add(Constants.SpecFileFormat.PKL);
-            } else if (spectIdFormat == Constants.SpecIdFormat.MZML_ID) {
-                fileFormats.add(Constants.SpecFileFormat.MZML);
-            } else if (spectIdFormat == Constants.SpecIdFormat.SCAN_NUMBER_NATIVE_ID) {
-                fileFormats.add(Constants.SpecFileFormat.MZXML);
-            } else if (spectIdFormat == Constants.SpecIdFormat.MZDATA_ID) {
-                fileFormats.add(Constants.SpecFileFormat.MZDATA);
-            }
-        } else {
-            fileFormats.add(spectraDataFormat);
-        }
-        return fileFormats;
     }
 
     /**

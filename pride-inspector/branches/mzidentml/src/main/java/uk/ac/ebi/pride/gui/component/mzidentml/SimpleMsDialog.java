@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.core.SpectraData;
+import uk.ac.ebi.pride.data.utils.MzIdentMLUtils;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.dialog.SimpleFileDialog;
@@ -114,7 +115,7 @@ public class SimpleMsDialog extends JDialog {
             data[i][1] = (spectraData.getName() != null) ? spectraData.getName() : "";
             data[i][2] = ((MzIdentMLControllerImpl) controller).getNumberOfSpectrabySpectraData(spectraData);
             data[i][3] = msFileName;
-            List<uk.ac.ebi.pride.data.utils.Constants.SpecFileFormat> fileformats = ((MzIdentMLControllerImpl) controller).getFileTypeSupported(spectraData);
+            List<uk.ac.ebi.pride.data.utils.Constants.SpecFileFormat> fileformats = MzIdentMLUtils.getFileTypeSupported(spectraData);
             List<String> fileStrFormats = new ArrayList<String>(fileformats.size());
             for (uk.ac.ebi.pride.data.utils.Constants.SpecFileFormat specFileFormat : fileformats)
                 fileStrFormats.add(specFileFormat.toString());

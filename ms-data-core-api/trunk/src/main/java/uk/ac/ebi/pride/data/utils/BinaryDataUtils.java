@@ -173,7 +173,9 @@ public final class BinaryDataUtils {
         while (!decompressor.finished()) {
             try {
                 int count = decompressor.inflate(buf);
-
+                if (count == 0 && decompressor.needsInput()) {
+                    break;
+                }
                 bos.write(buf, 0, count);
             } catch (DataFormatException e) {
                 throw new IllegalStateException("Encountered wrong data format "

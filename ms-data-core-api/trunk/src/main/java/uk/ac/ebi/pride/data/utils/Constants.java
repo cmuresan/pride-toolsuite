@@ -27,6 +27,7 @@ public class Constants {
         MZML_ID,
         MZDATA_ID,
         WIFF_NATIVE_ID,
+        SPECTRUM_NATIVE_ID,
         NONE
     }
 

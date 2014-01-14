@@ -21,7 +21,7 @@ import java.util.List;
  * 4. It may have one or more "spectrum attribute" (total ion current,
  * zoom scan, base peak m/z, ms level, spectrum title and etc al)
  * <p/>
- * User: rwang
+ * User: yperez, rwang
  * Date: 03-Feb-2010
  * Time: 08:46:05
  */
@@ -83,6 +83,12 @@ public class Spectrum extends MzGraph {
         this.precursors = CollectionUtils.createListFromList(precursors);
         this.products = CollectionUtils.createListFromList(products);
         this.peptide = peptide;
+    }
+
+    public Spectrum(Spectrum spectrum){
+        this(spectrum,spectrum.getId(),spectrum.getName(),spectrum.getIndex(),spectrum.getDataProcessing(),spectrum.getDefaultArrayLength(),
+             spectrum.getBinaryDataArrays(),spectrum.getSpotID(),spectrum.getSourceFile(),spectrum.getScanList(),spectrum.getPrecursors(),
+             spectrum.getProducts(),spectrum.getPeptide());
     }
 
     public String getSpotID() {
@@ -154,6 +160,19 @@ public class Spectrum extends MzGraph {
 
         }
         return peakList;
+    }
+
+    public void setMassIntensityMap(double[][] peakMap){
+
+        double[] mzArr  = new double[peakMap.length];
+        double[] intArr = new double[peakMap.length];
+
+        for(int i = 0; i < peakMap.length; i++){
+            mzArr[i]  = peakMap[i][0];
+            intArr[i] = peakMap[i][1];
+        }
+        getIntensityBinaryDataArray().setDoubleArray(intArr);
+        getMzBinaryDataArray().setDoubleArray(mzArr);
     }
 
     @Override

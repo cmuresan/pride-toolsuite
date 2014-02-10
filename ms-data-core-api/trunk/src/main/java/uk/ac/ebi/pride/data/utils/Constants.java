@@ -6,6 +6,12 @@ package uk.ac.ebi.pride.data.utils;
  */
 public class Constants {
 
+    /** algebraic sign */
+    private static final String SIGN = "[+-]";
+
+    /** integer expression */
+    public static final String INTEGER = SIGN + "?\\d+";
+
     private Constants() {
     }
 

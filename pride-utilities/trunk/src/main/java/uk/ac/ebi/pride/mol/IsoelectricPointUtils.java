@@ -24,7 +24,7 @@ public class IsoelectricPointUtils {
         return bjellpI.calculate(peptideSeq);
     }
 
-    private static String replaceSpecialAA(String seq){
+    public static String replaceSpecialAA(String seq){
         for(int i=0; i < seq.length(); i++){
             if(!bjellpI.Cterm_pI_expasy.containsKey(String.valueOf(seq.charAt(i)))){
                 seq = seq.replaceFirst(String.valueOf(seq.charAt(i)),"");

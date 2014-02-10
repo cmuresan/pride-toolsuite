@@ -72,9 +72,19 @@ public final class MzIdentMLUtils {
         Constants.SpecIdFormat fileIdFormat = getSpectraDataIdFormat(spectraData);
 
         if (fileIdFormat == Constants.SpecIdFormat.MASCOT_QUERY_NUM) {
-            return Integer.toString(Integer.parseInt(spectrumID.replaceAll("query=", "")) + 1);
+            String rValueStr = spectrumID.replaceAll("query=", "");
+            String id = null;
+            if(rValueStr.matches(Constants.INTEGER)){
+                id = Integer.toString(Integer.parseInt(rValueStr) + 1);
+            }
+            return id;
         } else if (fileIdFormat == Constants.SpecIdFormat.MULTI_PEAK_LIST_NATIVE_ID) {
-            return Integer.toString(Integer.parseInt(spectrumID.replaceAll("index=", "")) + 1);
+            String rValueStr = spectrumID.replaceAll("index=", "");
+            String id = null;
+            if(rValueStr.matches(Constants.INTEGER)){
+                id = Integer.toString(Integer.parseInt(rValueStr) + 1);
+            }
+            return id;
         } else if (fileIdFormat == Constants.SpecIdFormat.SINGLE_PEAK_LIST_NATIVE_ID) {
             return spectrumID.replaceAll("file=", "");
         } else if (fileIdFormat == Constants.SpecIdFormat.MZML_ID) {

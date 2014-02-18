@@ -61,10 +61,13 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      */
     private Map<Comparable, DataAccessController> msDataAccessControllers;
 
-
     public MzIdentMLControllerImpl(File file) {
+        this(file, false);
+    }
+
+    public MzIdentMLControllerImpl(File file, boolean inMemory) {
         super(file, DataAccessMode.CACHE_AND_SOURCE);
-        initialize();
+        initialize(inMemory);
     }
 
     /**
@@ -72,11 +75,11 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      * used the Cache System. In this case it wil be use cache for PROTEIN,
      * PEPTIDE, SAMPLE and SOFTWARE.
      */
-    protected void initialize() {
+    protected void initialize(boolean inMemory) {
         // create pride access utils
         File file = (File) getSource();
         try {
-            unmarshaller = new MzIdentMLUnmarshallerAdaptor(file);
+            unmarshaller = new MzIdentMLUnmarshallerAdaptor(file, inMemory);
         } catch (ConfigurationException e) {
             String msg = "Failed to create XML unmarshaller for mzIdentML file: " + file.getAbsolutePath();
             throw new DataAccessException(msg, e);
@@ -877,6 +880,11 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             }
 
         }
+    }
+
+
+    public void clearMSControllers() {
+        msDataAccessControllers.clear();
     }
 
 

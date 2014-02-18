@@ -25,7 +25,7 @@ public class MzIdentMLProteinGroupTest {
             throw new IllegalStateException("no file for input found!");
         }
         File inputFile = new File(url.toURI());
-        mzIdentMlController = new MzIdentMLControllerImpl(inputFile);
+        mzIdentMlController = new MzIdentMLControllerImpl(inputFile, true);
     }
 
     @After

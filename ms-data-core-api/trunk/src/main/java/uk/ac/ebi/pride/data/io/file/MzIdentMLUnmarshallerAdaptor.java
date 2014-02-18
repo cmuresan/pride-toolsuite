@@ -28,8 +28,8 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
 
     private AuditCollection auditCollection = null;
 
-    public MzIdentMLUnmarshallerAdaptor(File mzIdentMLFile) throws ConfigurationException {
-        super(mzIdentMLFile);
+    public MzIdentMLUnmarshallerAdaptor(File mzIdentMLFile, boolean inMemory) throws ConfigurationException {
+        super(mzIdentMLFile, inMemory);
         long currentT = System.currentTimeMillis();
         scanIdMappings();
         System.out.println("Initialize mzidentml Time: " + (System.currentTimeMillis() - currentT) + " millis");

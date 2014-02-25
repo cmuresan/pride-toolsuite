@@ -399,7 +399,7 @@ public final class MzIdentMLTransformer {
             String id = oldSpectrumIdentification.getId();
             String name = oldSpectrumIdentification.getName();
             int chargeState = oldSpectrumIdentification.getChargeState();
-            double massToCharge = (oldSpectrumIdentification.getExperimentalMassToCharge()==null)?-1:oldSpectrumIdentification.getExperimentalMassToCharge();
+            double massToCharge = oldSpectrumIdentification.getExperimentalMassToCharge();
             double calcMassToCharge = (oldSpectrumIdentification.getCalculatedMassToCharge() == null)?-1:oldSpectrumIdentification.getCalculatedMassToCharge();
             float pI = (float) 0.0;
             if (oldSpectrumIdentification.getCalculatedPI() != null) {

@@ -62,7 +62,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     private Map<Comparable, DataAccessController> msDataAccessControllers;
 
     public MzIdentMLControllerImpl(File file) {
-        this(file, false);
+        this(file, true);
     }
 
     public MzIdentMLControllerImpl(File file, boolean inMemory) {

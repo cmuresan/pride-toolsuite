@@ -171,6 +171,12 @@ public final class MzIdentMLTransformer {
         return null;
     }
 
+    /**
+     * Transform old Samples to Samples
+     * @param oldSamples old Samples Objects from jmzidentml
+     * @return
+     */
+
     public static List<Sample> transformToSample(List<uk.ac.ebi.jmzidml.model.mzidml.Sample> oldSamples) {
         List<Sample> samples = null;
         if (oldSamples != null) {
@@ -393,8 +399,8 @@ public final class MzIdentMLTransformer {
             String id = oldSpectrumIdentification.getId();
             String name = oldSpectrumIdentification.getName();
             int chargeState = oldSpectrumIdentification.getChargeState();
-            double massToCharge = oldSpectrumIdentification.getExperimentalMassToCharge();
-            double calcMassToCharge = oldSpectrumIdentification.getCalculatedMassToCharge();
+            double massToCharge = (oldSpectrumIdentification.getExperimentalMassToCharge()==null)?-1:oldSpectrumIdentification.getExperimentalMassToCharge();
+            double calcMassToCharge = (oldSpectrumIdentification.getCalculatedMassToCharge() == null)?-1:oldSpectrumIdentification.getCalculatedMassToCharge();
             float pI = (float) 0.0;
             if (oldSpectrumIdentification.getCalculatedPI() != null) {
                 pI = oldSpectrumIdentification.getCalculatedPI();

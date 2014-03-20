@@ -21,6 +21,7 @@ public class Constants {
     public static final String MS2_EXT = ".ms2";
     public static final String PKL_EXT = ".pkl";
     public static final String MZXML = ".mzxml";
+    public static final String APL   = ".apl";
 
     /**
      * Supported id format used in the spectrum file.

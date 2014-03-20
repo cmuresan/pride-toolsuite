@@ -12,6 +12,7 @@ import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.data.io.file.PeakUnmarshallerAdaptor;
 import uk.ac.ebi.pride.data.utils.Constants;
 import uk.ac.ebi.pride.data.utils.MD5Utils;
+import uk.ac.ebi.pride.tools.apl_parser.AplFile;
 import uk.ac.ebi.pride.tools.dta_parser.DtaFile;
 import uk.ac.ebi.pride.tools.jmzreader.JMzReader;
 import uk.ac.ebi.pride.tools.jmzreader.JMzReaderException;
@@ -73,6 +74,8 @@ public class PeakControllerImpl extends CachedDataAccessController {
                 }
                 if (isValidFormat(file) == Ms2File.class) {
                     um = new Ms2File(file);
+                }if(isValidFormat(file) == AplFile.class){
+                    um = new AplFile(file);
                 }
             } catch (JMzReaderException e) {
                 String msg = "Error while trying to initialize the Peak file";
@@ -244,6 +247,8 @@ public class PeakControllerImpl extends CachedDataAccessController {
             return Ms2File.class;
         } else if (filename.endsWith(Constants.PKL_EXT)) {
             return PklFile.class;
+        } else if (filename.endsWith(Constants.APL)){
+            return AplFile.class;
         }
         return null;
     }

@@ -708,12 +708,15 @@ public final class MzIdentMLTransformer {
         Provider provider = null;
         if (oldProvider != null) {
             Contact contact = null;
-            if (oldProvider.getContactRole().getOrganization() != null) {
-                contact = transformToOrganization(oldProvider.getContactRole().getOrganization());
-            } else if (oldProvider.getContactRole().getPerson() != null) {
-                contact = transformToPerson(oldProvider.getContactRole().getPerson());
+            CvParam role = null;
+            if(oldProvider.getContactRole() != null) {
+                if (oldProvider.getContactRole().getOrganization() != null) {
+                    contact = transformToOrganization(oldProvider.getContactRole().getOrganization());
+                } else if (oldProvider.getContactRole().getPerson() != null) {
+                    contact = transformToPerson(oldProvider.getContactRole().getPerson());
+                }
+                role = transformToCvParam(oldProvider.getContactRole().getRole().getCvParam());
             }
-            CvParam role = transformToCvParam(oldProvider.getContactRole().getRole().getCvParam());
             Software software = transformToSoftware(oldProvider.getSoftware());
             provider = new Provider(oldProvider.getId(), oldProvider.getName(), software, contact, role);
         }

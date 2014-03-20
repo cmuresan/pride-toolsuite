@@ -32,7 +32,7 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
         super(mzIdentMLFile, inMemory);
         long currentT = System.currentTimeMillis();
         scanIdMappings();
-        System.out.println("Initialize mzidentml Time: " + (System.currentTimeMillis() - currentT) + " millis");
+            System.out.println("Initialize mzidentml Time: " + (System.currentTimeMillis() - currentT) + " millis");
     }
 
     private void scanIdMappings() throws ConfigurationException {

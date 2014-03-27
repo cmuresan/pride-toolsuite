@@ -592,11 +592,13 @@ public final class PrideXmlTransformer {
 
     private static String getModificationName(ParamGroup paramGroup, String accession) {
         String name = null;
-        List<CvParam> cvParams = paramGroup.getCvParams();
-        if (cvParams != null) {
-            for (CvParam cvParam : cvParams) {
-                if (cvParam.getAccession().equals(accession)) {
-                    name = cvParam.getName();
+        if (paramGroup != null) {
+            List<CvParam> cvParams = paramGroup.getCvParams();
+            if (cvParams != null) {
+                for (CvParam cvParam : cvParams) {
+                    if (cvParam.getAccession().equals(accession)) {
+                        name = cvParam.getName();
+                    }
                 }
             }
         }

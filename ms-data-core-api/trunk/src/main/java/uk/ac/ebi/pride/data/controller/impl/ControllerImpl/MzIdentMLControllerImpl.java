@@ -469,7 +469,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
     /**
      * If the spectrum information associated with the identification files is provided
-     * then the mzidentml contains spectrums.
+     * then the mzidentml contains spectra.
      *
      * @return if the spectrum files is provided then is true else false.
      */
@@ -537,11 +537,14 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             Comparable spectrumId = getSpectrumIdBySpectrumIdentificationItemId(peptide.getSpectrumIdentification().getId());
             if (hasSpectrum()) {
                 Spectrum spectrum = getSpectrumById(spectrumId);
-                spectrum.setPeptide(peptide);
-                peptide.setSpectrum(spectrum);
+                if(spectrum != null) {
+                    spectrum.setPeptide(peptide);
+                    peptide.setSpectrum(spectrum);
 
-                getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorChargeParamGroup(spectrum));
-                getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+                    getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_CHARGE, spectrum.getId(), DataAccessUtilities.getPrecursorChargeParamGroup(spectrum));
+                    getCache().store(CacheEntry.SPECTRUM_LEVEL_PRECURSOR_MZ, spectrum.getId(), DataAccessUtilities.getPrecursorMz(spectrum));
+                }
+
             }
         }
     }
@@ -745,7 +748,11 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
 
         String[] spectrumIdArray = ((String) id).split("!");
         if (spectrumIdArray.length != 2) {
-            spectrumIdArray = ((Map<Comparable, String[]>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM)).get(id);
+            if(((Map<Comparable, String[]>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM)).containsKey(id)){
+                spectrumIdArray = ((Map<Comparable, String[]>) getCache().get(CacheEntry.PEPTIDE_TO_SPECTRUM)).get(id);
+            }else{
+                spectrumIdArray = null;
+            }
         }
 
         Spectrum spectrum = super.getSpectrumById(id, useCache);
@@ -753,7 +760,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             logger.debug("Get new spectrum from file: {}", id);
             try {
                 DataAccessController spectrumController = msDataAccessControllers.get(spectrumIdArray[1]);
-                if (spectrumController != null) {
+                if (spectrumController != null && spectrumController.getSpectrumIds().contains(spectrumIdArray[0])) {
                     spectrum = spectrumController.getSpectrumById(spectrumIdArray[0]);
                     if (useCache && spectrum != null) {
                         getCache().store(CacheEntry.SPECTRUM, id, spectrum);

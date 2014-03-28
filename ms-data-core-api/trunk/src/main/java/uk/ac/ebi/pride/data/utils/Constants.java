@@ -20,8 +20,10 @@ public class Constants {
     public static final String DTA_EXT = ".dta";
     public static final String MS2_EXT = ".ms2";
     public static final String PKL_EXT = ".pkl";
-    public static final String MZXML = ".mzxml";
-    public static final String APL   = ".apl";
+    public static final String MZXML_EXT = ".mzxml";
+    public static final String APL_EXT   = ".apl";
+    public static final String XML_EXT   = ".xml";
+    public static final String MZML_EXT  = ".mzML";
 
     /**
      * Supported id format used in the spectrum file.
@@ -67,6 +69,26 @@ public class Constants {
                 return SpecFileFormat.PKL;
         }
         return SpecFileFormat.NONE;
+    }
+
+    public static SpecFileFormat getSpecFileFormatFromLocation(String path){
+        if (path != null && path.length() > 0) {
+
+            if (path.toUpperCase().contains(MZXML_EXT.toUpperCase()))
+                return SpecFileFormat.MZXML;
+            if (path.toUpperCase().contains(DTA_EXT.toUpperCase()))
+                return SpecFileFormat.DTA;
+            if (path.toUpperCase().contains(MGF_EXT.toUpperCase()))
+                return SpecFileFormat.MGF;
+            if (path.toUpperCase().contains(XML_EXT.toUpperCase()))
+                return SpecFileFormat.MZDATA;
+            if (path.toUpperCase().contains(MZML_EXT.toUpperCase()))
+                return SpecFileFormat.MZML;
+            if (path.toUpperCase().contains(PKL_EXT.toUpperCase()))
+                return SpecFileFormat.PKL;
+        }
+        return SpecFileFormat.NONE;
+
     }
 
 

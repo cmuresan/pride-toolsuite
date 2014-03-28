@@ -98,21 +98,21 @@ public final class MzIdentMLUtils {
 
     public static List<Constants.SpecFileFormat> getFileTypeSupported(SpectraData spectraData) {
         List<Constants.SpecFileFormat> fileFormats = new ArrayList<Constants.SpecFileFormat>();
+
         Constants.SpecFileFormat spectraDataFormat = MzIdentMLUtils.getSpectraDataFormat(spectraData);
+
         if (spectraDataFormat == Constants.SpecFileFormat.NONE) {
             Constants.SpecIdFormat spectIdFormat = MzIdentMLUtils.getSpectraDataIdFormat(spectraData);
             if (spectIdFormat == Constants.SpecIdFormat.MASCOT_QUERY_NUM) {
                 fileFormats.add(Constants.SpecFileFormat.MGF);
-            } else if (spectIdFormat == Constants.SpecIdFormat.MULTI_PEAK_LIST_NATIVE_ID) {
-                fileFormats.add(Constants.SpecFileFormat.NONE);
-                fileFormats.add(Constants.SpecFileFormat.DTA);
-                fileFormats.add(Constants.SpecFileFormat.MGF);
-                fileFormats.add(Constants.SpecFileFormat.PKL);
-            } else if (spectIdFormat == Constants.SpecIdFormat.SINGLE_PEAK_LIST_NATIVE_ID) {
-                fileFormats.add(Constants.SpecFileFormat.NONE);
-                fileFormats.add(Constants.SpecFileFormat.DTA);
-                fileFormats.add(Constants.SpecFileFormat.PKL);
-            } else if (spectIdFormat == Constants.SpecIdFormat.MZML_ID) {
+            } else if (spectIdFormat == Constants.SpecIdFormat.MULTI_PEAK_LIST_NATIVE_ID || spectIdFormat == Constants.SpecIdFormat.SINGLE_PEAK_LIST_NATIVE_ID) {
+                spectraDataFormat = MzIdentMLUtils.getDataFormatFromFileExtension(spectraData);
+                fileFormats.add(spectraDataFormat);
+                if(spectraDataFormat != Constants.SpecFileFormat.DTA)  fileFormats.add(Constants.SpecFileFormat.DTA);
+                if(spectraDataFormat != Constants.SpecFileFormat.MGF)  fileFormats.add(Constants.SpecFileFormat.MGF);
+                if(spectraDataFormat != Constants.SpecFileFormat.PKL)  fileFormats.add(Constants.SpecFileFormat.PKL);
+                if(spectraDataFormat != Constants.SpecFileFormat.NONE) fileFormats.add(Constants.SpecFileFormat.NONE);
+            }else if (spectIdFormat == Constants.SpecIdFormat.MZML_ID) {
                 fileFormats.add(Constants.SpecFileFormat.MZML);
             } else if (spectIdFormat == Constants.SpecIdFormat.SCAN_NUMBER_NATIVE_ID) {
                 fileFormats.add(Constants.SpecFileFormat.MZXML);
@@ -150,5 +150,15 @@ public final class MzIdentMLUtils {
             classType = PeakControllerImpl.class;
         }
         return classType;
+    }
+
+    public static Constants.SpecFileFormat getDataFormatFromFileExtension(SpectraData spectradata){
+        Constants.SpecFileFormat fileFormat = Constants.SpecFileFormat.NONE;
+        if(spectradata.getLocation() !=null){
+            fileFormat = Constants.getSpecFileFormatFromLocation(spectradata.getLocation());
+        }else if(fileFormat == Constants.SpecFileFormat.NONE && spectradata.getName() != null){
+            fileFormat = Constants.getSpecFileFormatFromLocation(spectradata.getName());
+        }
+        return fileFormat;
     }
 }

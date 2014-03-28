@@ -247,7 +247,7 @@ public class PeakControllerImpl extends CachedDataAccessController {
             return Ms2File.class;
         } else if (filename.endsWith(Constants.PKL_EXT)) {
             return PklFile.class;
-        } else if (filename.endsWith(Constants.APL)){
+        } else if (filename.endsWith(Constants.APL_EXT)){
             return AplFile.class;
         }
         return null;

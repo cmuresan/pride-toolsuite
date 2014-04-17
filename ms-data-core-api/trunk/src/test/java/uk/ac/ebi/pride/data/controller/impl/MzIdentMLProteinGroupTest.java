@@ -16,6 +16,7 @@ import java.net.URL;
  * @version $Id$
  */
 public class MzIdentMLProteinGroupTest {
+
     private MzIdentMLControllerImpl mzIdentMlController = null;
 
     @Before

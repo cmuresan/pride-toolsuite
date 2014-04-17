@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * The MzIdentMLControllerImpl is the controller that retrieve the information from
  * the mzidentml files. It have support for Experiment Metadata (Global metadata),
  * also it have information about the IdentificationMetadata. The MzGraphMetaData is not
- * supported for this files because they not contains information about spectrums. The controller
+ * supported for this files because they not contains information about spectrum. The controller
  * support the mzidentml schema version 1.1.
  * <p/>
  * User: yperez
@@ -62,12 +62,19 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     private Map<Comparable, DataAccessController> msDataAccessControllers;
 
     public MzIdentMLControllerImpl(File file) {
-        this(file, true);
+        super(file,DataAccessMode.CACHE_AND_SOURCE);
+        long start_time = System.currentTimeMillis();
+        initialize(false);
+        long difference = System.currentTimeMillis() - start_time;
+        System.out.println("No memory Index Time: " + difference);
     }
 
-    public MzIdentMLControllerImpl(File file, boolean inMemory) {
+    public MzIdentMLControllerImpl(File file, Boolean inMemory) {
         super(file, DataAccessMode.CACHE_AND_SOURCE);
+        long start_time = System.currentTimeMillis();
         initialize(inMemory);
+        long difference = System.currentTimeMillis() - start_time;
+        System.out.println("Memory Index Time: " + difference);
     }
 
     /**
@@ -378,7 +385,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException("Failed to retrieve meta data", ex);
             }
         }
-
+        System.out.println("Protein Ids: " + getProteinIds().size());
+        System.out.println("Peptide Ids: " + getNumberOfPeptides());
         return metaData;
     }
 
@@ -1012,7 +1020,10 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
      */
     public Integer getNumberOfSpectrabySpectraData(SpectraData spectraData) {
         Map<Comparable, List<Comparable>> spectraDataIdMap = (Map<Comparable, List<Comparable>>) getCache().get(CacheEntry.SPECTRADATA_TO_SPECTRUMIDS);
-        return spectraDataIdMap.get(spectraData.getId()).size();
+        if(spectraDataIdMap != null && spectraDataIdMap.containsKey(spectraData.getId())){
+            return spectraDataIdMap.get(spectraData.getId()).size();
+        }
+        return 0;
     }
 
     /**
@@ -1040,11 +1051,13 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     public int getNumberOfIdentifiedSpectra() {
         Map<Comparable, List<Comparable>> spectraDataIdMap = (Map<Comparable, List<Comparable>>) getCache().get(CacheEntry.SPECTRADATA_TO_SPECTRUMIDS);
         int countSpectra = 0;
-        Iterator iterator = spectraDataIdMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry mapEntry = (Map.Entry) iterator.next();
-            countSpectra += ((List<Comparable>) mapEntry.getValue()).size();
-        }
+        if(spectraDataIdMap != null){
+            Iterator iterator = spectraDataIdMap.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry mapEntry = (Map.Entry) iterator.next();
+                if(mapEntry != null && mapEntry.getValue() != null)
+                    countSpectra += ((List<Comparable>) mapEntry.getValue()).size();
+            }                            }
         return countSpectra;
     }
 

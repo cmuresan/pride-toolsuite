@@ -32,9 +32,8 @@ public class SpectraData extends ExternalData {
 
         SpectraData that = (SpectraData) o;
 
-        if (!spectrumIdFormat.equals(that.spectrumIdFormat)) return false;
+        return spectrumIdFormat.equals(that.spectrumIdFormat);
 
-        return true;
     }
 
     @Override

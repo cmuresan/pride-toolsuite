@@ -330,7 +330,6 @@ public abstract class CachedDataAccessController extends AbstractDataAccessContr
         } else if (!DataAccessMode.CACHE_ONLY.equals(mode)) {
             mz = super.getPeptidePrecursorMz(proteinId, peptideId);
         }
-
         return mz;
     }
 

@@ -4,7 +4,7 @@ package uk.ac.ebi.pride.data.core;
  * CVLookup is referenced in every CvParam.
  * It serves as a reference to the original controlled vocabulary source.
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 04-Feb-2010
  * Time: 16:16:31
  */

@@ -62,19 +62,12 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     private Map<Comparable, DataAccessController> msDataAccessControllers;
 
     public MzIdentMLControllerImpl(File file) {
-        super(file,DataAccessMode.CACHE_AND_SOURCE);
-        long start_time = System.currentTimeMillis();
-        initialize(false);
-        long difference = System.currentTimeMillis() - start_time;
-        System.out.println("No memory Index Time: " + difference);
+        this(file, false);
     }
 
-    public MzIdentMLControllerImpl(File file, Boolean inMemory) {
+    public MzIdentMLControllerImpl(File file, boolean inMemory) {
         super(file, DataAccessMode.CACHE_AND_SOURCE);
-        long start_time = System.currentTimeMillis();
         initialize(inMemory);
-        long difference = System.currentTimeMillis() - start_time;
-        System.out.println("Memory Index Time: " + difference);
     }
 
     /**

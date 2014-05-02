@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * @author User #2
+ * @author yperez
  */
 public class SimpleMsDialog extends JDialog {
 

@@ -134,7 +134,7 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
             return proteinTableRow.getProteinAccessionStatus();
         } else if (ProteinTableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(columnName)) {
             return proteinTableRow.getSequenceCoverage();
-        } else if (ProteinTableHeader.THEORITICAL_ISOELECTRIC_POINT.getHeader().equals(columnName)) {
+        } else if (ProteinTableHeader.THEORETICAL_ISOELECTRIC_POINT.getHeader().equals(columnName)) {
             return proteinTableRow.getIsoelectricPoint();
         } else if (ProteinTableHeader.IDENTIFICATION_THRESHOLD.getHeader().equals(columnName)) {
             return proteinTableRow.getThreshold();

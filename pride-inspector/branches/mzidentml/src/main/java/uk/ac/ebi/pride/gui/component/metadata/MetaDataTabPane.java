@@ -83,7 +83,8 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
 
     @Override
     public void started(TaskEvent event) {
-        showIcon(getLoadingIcon());
+        parentComponent.revalidate();
+        parentComponent.repaint();
     }
 
     @Override
@@ -179,7 +180,7 @@ public class MetaDataTabPane extends DataAccessControllerPane<GeneralMetaDataGro
     // called when a background task finished to reset the icon
     @Override
     public void finished(TaskEvent<Void> event) {
-        showIcon(getIcon());
+       // showIcon(getIcon());
     }
 
     /**

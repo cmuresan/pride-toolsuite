@@ -90,7 +90,7 @@ public class TableFactory {
         seqCoverageColumn.setVisible(false);
 
         // isoelectric point column
-        TableColumnExt isoelectricColumn = (TableColumnExt) table.getColumn(ProteinTableHeader.THEORITICAL_ISOELECTRIC_POINT.getHeader());
+        TableColumnExt isoelectricColumn = (TableColumnExt) table.getColumn(ProteinTableHeader.THEORETICAL_ISOELECTRIC_POINT.getHeader());
         isoelectricColumn.setVisible(false);
 
         // add hyper link click listener
@@ -173,7 +173,8 @@ public class TableFactory {
                         ProteinTableHeader.PROTEIN_NAME.getHeader().equals(columnTitle) ||
                         ProteinTableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(columnTitle) ||
                         ProteinTableHeader.PROTEIN_STATUS.getHeader().equals(columnTitle) ||
-                        ProteinTableHeader.THEORITICAL_ISOELECTRIC_POINT.getHeader().equals(columnTitle)) {
+                        ProteinTableHeader.THEORETICAL_ISOELECTRIC_POINT.getHeader().equals(columnTitle) ||
+                        ProteinTableHeader.IDENTIFICATION_THRESHOLD.getHeader().equals(columnTitle)) {
                     columnExt.setVisible(false);
                 }
 
@@ -360,9 +361,9 @@ public class TableFactory {
         numOfFragmentIons.setVisible(false);
 
 //        // hide spectrum id column
-//        String spectrumIdHeader = PeptideTableHeader.SPECTRUM_ID.getHeader();
-//        TableColumnExt spectrumIdColumn = (TableColumnExt) table.getColumn(spectrumIdHeader);
-//        spectrumIdColumn.setVisible(false);
+        String spectrumIdHeader = PeptideTableHeader.SPECTRUM_ID.getHeader();
+        TableColumnExt spectrumIdColumn = (TableColumnExt) table.getColumn(spectrumIdHeader);
+        spectrumIdColumn.setVisible(false);
 
         // additional column
         String additionalColHeader = PeptideTableHeader.ADDITIONAL.getHeader();
@@ -652,7 +653,7 @@ public class TableFactory {
         seqCoverageColumn.setVisible(false);
 
         // isoelectric point column
-        TableColumnExt isoelectricColumn = (TableColumnExt) quantProteinTable.getColumn(ProteinTableHeader.THEORITICAL_ISOELECTRIC_POINT.getHeader());
+        TableColumnExt isoelectricColumn = (TableColumnExt) quantProteinTable.getColumn(ProteinTableHeader.THEORETICAL_ISOELECTRIC_POINT.getHeader());
         isoelectricColumn.setVisible(false);
 
         // threshold

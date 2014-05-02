@@ -174,7 +174,7 @@ public class QuantTabPane extends PrideInspectorTabPane {
 
     @Override
     public void started(TaskEvent event) {
-        showIcon(getLoadingIcon());
+      //  showIcon(getLoadingIcon());
     }
 
     @Override

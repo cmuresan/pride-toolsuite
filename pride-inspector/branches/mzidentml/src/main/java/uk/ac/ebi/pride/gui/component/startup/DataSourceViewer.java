@@ -12,6 +12,8 @@ import uk.ac.ebi.pride.gui.component.mzidentml.SimpleMsDialog;
 import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener;
 import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
+import uk.ac.ebi.pride.gui.event.ProcessingDataSourceEvent;
+
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -24,7 +26,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.ImageObserver;
-import java.util.Collection;
+import java.util.*;
+import java.util.List;
 
 /**
  * DataSourceViewer should be monitor the DataAccessControllers in
@@ -172,6 +175,20 @@ public class DataSourceViewer extends JPanel {
         sourceTable.repaint();
     }
 
+    @EventSubscriber(eventClass = ProcessingDataSourceEvent.class)
+    public void onProcessingDataSourceEvent(ProcessingDataSourceEvent evt){
+        DataAccessController controller = (DataAccessController) evt.getDataSource();
+        if(context.getDataAccessMonitor().containStatusController(controller, evt.getStatus()))
+            context.getDataAccessMonitor().removeStatusController(controller, evt.getStatus());
+        else
+            context.getDataAccessMonitor().addStatusController(controller,evt.getStatus());
+
+        sourceTable.revalidate();
+        sourceTable.repaint();
+    }
+
+
+
 
     @EventSubscriber(eventClass = AddDataSourceEvent.class)
     public void onAddDataSourceEvent(AddDataSourceEvent evt) {
@@ -310,14 +327,15 @@ public class DataSourceViewer extends JPanel {
             // get its content categories
             Collection<DataAccessController.ContentCategory> categories = controller.getContentCategories();
 
+            List<ProcessingDataSourceEvent.Status> status = context.getDataAccessMonitor().getStatusController(controller);
+
             // get the icon depending on the type of the data access controller
             ImageIcon icon = null;
             DataAccessController.Type type = controller.getType();
             if (DataAccessController.Type.XML_FILE.equals(type) || DataAccessController.Type.MZIDENTML.equals(type)) {
-                icon = GUIUtilities.loadImageIcon(context.getProperty(categories.isEmpty() ? "file.source.loading.small.icon" : "file.source.small.icon"));
-
+                icon = GUIUtilities.loadImageIcon(context.getProperty(categories.isEmpty() || status.size()>0 ? "file.source.loading.small.icon" : "file.source.small.icon"));
             } else if (DataAccessController.Type.DATABASE.equals(type)) {
-                icon = GUIUtilities.loadImageIcon(context.getProperty(categories.isEmpty() ? "database.source.loading.small.icon" : "database.source.small.icon"));
+                icon = GUIUtilities.loadImageIcon(context.getProperty(categories.isEmpty() || status.size()>0 ? "database.source.loading.small.icon" : "database.source.small.icon"));
             }
 
             // set the icon

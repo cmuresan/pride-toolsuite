@@ -11,7 +11,7 @@ public enum ProteinTableHeader {
     PROTEIN_NAME("Protein Name", "Protein Name Retrieved Using Web"),
     PROTEIN_STATUS("Status", "Status Of The Protein Accession"),
     PROTEIN_SEQUENCE_COVERAGE("Coverage", "Protein Sequence Coverage"),
-    THEORITICAL_ISOELECTRIC_POINT("pI", "Theoritical isoelectric point"),
+    THEORETICAL_ISOELECTRIC_POINT("pI", "Theoretical isoelectric point"),
     IDENTIFICATION_THRESHOLD("Threshold", "PRIDE Protein Threshold"),
     NUMBER_OF_PEPTIDES("# Peptides", "Number of Peptides"),
     NUMBER_OF_UNIQUE_PEPTIDES("# Distinct Peptides", "Number of Distinct Peptides"),

@@ -33,12 +33,22 @@ open.file.threshold = 500
 # if greater than the threshold, prescanning of the file won't be performed
 open.mzidentml.file.threshold = 200
 
+# Memory threshold for mzidentml file size (in M)
+# if greater than the threshold, the mzidentml file use the disk to retrieve the data
+memory.mzidentml.file.threshold = 100
+
+
 # threshold for download size (in M)
 # this will trigger a warning message if the download size is over this limit
 download.size.threshold = 200
 
 # public experiments to be ignored, this is too big to open in the PRIDE Inspector
 large.pride.experiments=9776
+
+# threshold to how many rows will be upload in tables
+open.threshold.table.peptide = 200
+open.threshold.table.protein = 200
+
 
 # URL for downloading pride experiments in xml file format
 prider.my.projects.metadata.url=http://ves-ebi-4d.ebi.ac.uk:8110/pride/ws/archive/project/list/user
@@ -55,6 +65,9 @@ pride.inspector.publication.title = Wang et al., Nat Biotechnol 2012; 30:130-132
 pride.inspector.publication.url = http://www.nature.com/nbt/journal/v30/n2/full/nbt.2112.html
 pride.inspector.publication.pdf.url = http://www.nature.com/nbt/journal/v30/n2/pdf/nbt.2112.pdf
 pride.inspector.publication.pubmed.url = http://www.ncbi.nlm.nih.gov/pubmed/22318026
+
+# PRIDE Database Out
+pride.inspector.pride.out.message = Be aware that PRIDE public database instance is not updated since December 2013.\n A web service replacement will be in place in the near future.
 
 # Delta m/z limits
 delta.mz.max.limit = 4

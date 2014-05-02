@@ -226,6 +226,7 @@ identification.tab.icon.small=icon/16x16/view.png
 identification.tab.loading.icon.small=icon/16x16/loading.gif
 peptide.tab.icon.small=icon/16x16/view.png
 peptide.tab.loading.icon.small=icon/16x16/loading.gif
+peptide.tab.loading.icon.small.intermediate=icon/16x16/progress-indeterminate.png
 mzdata.tab.icon.small=icon/16x16/view.png
 mzdata.tab.loading.icon.small=icon/16x16/loading.gif
 quantitation.tab.icon.small=icon/16x16/view.png

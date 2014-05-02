@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
+import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.chart.io.DataAccessReader;
@@ -10,6 +11,7 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.io.db.PooledConnectionFactory;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
+import uk.ac.ebi.pride.gui.event.ProcessingDataSourceEvent;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -75,7 +77,7 @@ public class LoadChartDataTask extends AbstractDataAccessTask<PrideDataReader, V
     @Override
     protected PrideDataReader retrieve() throws Exception {
         PrideDataReader reader = null;
-
+        EventBus.publish(new ProcessingDataSourceEvent<DataAccessController>(controller, ProcessingDataSourceEvent.Status.CHART_GENERATION, controller));
         try {
             if (controller.getType().equals(DataAccessController.Type.DATABASE)) {
                 reader = new ElderJSONReader(getJSONStringList());
@@ -91,7 +93,7 @@ public class LoadChartDataTask extends AbstractDataAccessTask<PrideDataReader, V
             logger.error(msg, ex);
             appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, ex));
         }
-
+        EventBus.publish(new ProcessingDataSourceEvent<DataAccessController>(controller, ProcessingDataSourceEvent.Status.CHART_GENERATION, controller));
         return reader;
     }
 }

@@ -112,6 +112,7 @@ public class TableDataRetriever {
 
         if (specId != null) {
             double mz = controller.getSpectrumPrecursorMz(specId);
+            mz = (mz == -1)? controller.getPeptidePrecursorMz(identId,peptideId):mz;
             List<Double> ptmMasses = new ArrayList<Double>();
             for (Modification mod : mods) {
                 List<Double> monoMasses = mod.getMonoisotopicMassDelta();
@@ -120,9 +121,9 @@ public class TableDataRetriever {
                 }
             }
             Double deltaMass = MoleculeUtilities.calculateDeltaMz(sequence, mz, charge, ptmMasses);
-            peptideTableRow.setDeltaMz(deltaMass == null ? null : NumberUtilities.scaleDouble(deltaMass, 2));
+            peptideTableRow.setDeltaMz(deltaMass == null ? null : NumberUtilities.scaleDouble(deltaMass, 4));
 
-            peptideTableRow.setPrecursorMz(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 2));
+            peptideTableRow.setPrecursorMz(mz == -1 ? null : NumberUtilities.scaleDouble(mz, 4));
         } else {
             peptideTableRow.setDeltaMz(null);
             peptideTableRow.setPrecursorMz(null);
@@ -201,7 +202,7 @@ public class TableDataRetriever {
         Protein protein = PrideInspectorCacheManager.getInstance().getProteinDetails(mappedProtAcc);
         if (protein != null) {
             protein = new AnnotatedProtein(protein);
-        } else if (controller.getProteinById(proteinId).getDbSequence() != null && controller.getProteinById(proteinId).getDbSequence().getSequence() != null) {
+        } else if (mappedProtAcc != null && controller.getProteinById(proteinId).getDbSequence() != null && controller.getProteinById(proteinId).getDbSequence().getSequence() != null) {
             protein = new AnnotatedProtein(mappedProtAcc, controller.getProteinById(proteinId).getDbSequence().getName(), Protein.STATUS.UNKNOWN, controller.getProteinById(proteinId).getDbSequence().getSequence());
             PrideInspectorCacheManager.getInstance().addProteinDetails(protein);
         }
@@ -217,7 +218,7 @@ public class TableDataRetriever {
         proteinTableRow.setSequenceCoverage(coverage);
 
         // isoelectric points
-        if (protein != null && protein.getSequenceString() != null) {
+        if (protein != null && protein.getSequenceString() != null && protein.getSequenceString().length()>0) {
             proteinTableRow.setIsoelectricPoint(IsoelectricPointUtils.calculate(protein.getSequenceString()));
         } else {
             proteinTableRow.setIsoelectricPoint(null);

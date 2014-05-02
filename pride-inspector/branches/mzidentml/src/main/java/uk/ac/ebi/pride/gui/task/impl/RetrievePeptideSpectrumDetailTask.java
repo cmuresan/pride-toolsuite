@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
+import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
@@ -10,6 +11,7 @@ import uk.ac.ebi.pride.gui.PrideInspectorCacheManager;
 import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
+import uk.ac.ebi.pride.gui.event.ProcessingDataSourceEvent;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.mol.MoleculeUtilities;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
@@ -70,6 +72,7 @@ public class RetrievePeptideSpectrumDetailTask extends TaskAdapter<Void, Tuple<T
 
         Map<Tuple<Comparable, Comparable>, Double> peptidePrecursorMap = new HashMap<Tuple<Comparable, Comparable>, Double>();
 
+        EventBus.publish(new ProcessingDataSourceEvent<DataAccessController>(controller, ProcessingDataSourceEvent.Status.SPECTRA_READING, controller));
 
         // iterate over each protein
         for (Comparable protIdentId : protIdentIds) {
@@ -83,7 +86,7 @@ public class RetrievePeptideSpectrumDetailTask extends TaskAdapter<Void, Tuple<T
         }
         publish(new Tuple<TableContentType, Object>(TableContentType.PEPTIDE_DELTA, peptideDeltaMap));
         publish(new Tuple<TableContentType, Object>(TableContentType.PEPTIDE_PRECURSOR_MZ, peptidePrecursorMap));
-
+        EventBus.publish(new ProcessingDataSourceEvent<DataAccessController>(controller, ProcessingDataSourceEvent.Status.SPECTRA_READING, controller));
         return null;
     }
 

@@ -84,8 +84,7 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
         // check the size of each file
         for (File file : files) {
             // get the length in bytes
-            long length = file.length();
-            if ((length / (1024 * 1024)) > fileSizeThreshold) {
+            if(isFileToBig(file, fileSizeThreshold)){
                 tooBig = true;
                 break;
             }
@@ -198,6 +197,7 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
                 Constants.MS2_FILE,
                 Constants.PKL_FILE,
                 Constants.DTA_FILE,
+                Constants.APL_FILE,
                 Constants.GZIPPED_FILE);
 
         int result = ofd.showDialog(Desktop.getInstance().getMainComponent(), null);
@@ -222,6 +222,9 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
      */
     @SuppressWarnings("unchecked")
     private void openFiles(List<File> files) {
+
+        long fileSizeThreshold = Long.parseLong(context.getProperty("memory.mzidentml.file.threshold"));
+
         Map<File, Class> openFiles = new HashMap<File, Class>();
         Map<File, List<File>> mzIdentMLFiles = new HashMap<File, List<File>>();
 
@@ -286,9 +289,13 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
 
                 OpenFileTask newTask;
                 if (mzIdentMLFiles.get(mzIdentML) != null && mzIdentMLFiles.get(mzIdentML).size() > 0) {
-                    newTask = new OpenFileTask(mzIdentML, mzIdentMLFiles.get(mzIdentML), MzIdentMLControllerImpl.class, msg, msg);
+                    newTask = (isFileToBig(mzIdentML,fileSizeThreshold))?
+                            new OpenFileTask(mzIdentML, mzIdentMLFiles.get(mzIdentML), MzIdentMLControllerImpl.class, msg, msg,false):
+                            new OpenFileTask(mzIdentML, mzIdentMLFiles.get(mzIdentML), MzIdentMLControllerImpl.class, msg, msg,true);
                 } else {
-                    newTask = new OpenFileTask(mzIdentML, MzIdentMLControllerImpl.class, msg, msg);
+                    newTask = (isFileToBig(mzIdentML,fileSizeThreshold))?
+                            new OpenFileTask(mzIdentML, null, MzIdentMLControllerImpl.class, msg, msg,false):
+                            new OpenFileTask(mzIdentML, null, MzIdentMLControllerImpl.class, msg, msg,true);
                 }
                 TaskUtil.startBackgroundTask(newTask);
             }
@@ -357,6 +364,12 @@ public class OpenFileAction extends PrideAction implements TaskListener<Void, Fi
         }
 
         return classType;
+    }
+
+    private Boolean isFileToBig(File file, long fileSizeThreshold){
+        long length = file.length();
+        if ((length / (1024 * 1024)) > fileSizeThreshold) return true;
+        return false;
     }
 
     @Override

@@ -111,7 +111,7 @@ public class ProteinTreeTableModel extends AbstractTreeTableModel implements Tas
             return proteinTableRow.getProteinAccessionStatus();
         } else if (ProteinTableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(columnName)) {
             return proteinTableRow.getSequenceCoverage();
-        } else if (ProteinTableHeader.THEORITICAL_ISOELECTRIC_POINT.getHeader().equals(columnName)) {
+        } else if (ProteinTableHeader.THEORETICAL_ISOELECTRIC_POINT.getHeader().equals(columnName)) {
             return proteinTableRow.getIsoelectricPoint();
         } else if (ProteinTableHeader.IDENTIFICATION_THRESHOLD.getHeader().equals(columnName)) {
             return proteinTableRow.getThreshold();
@@ -184,27 +184,27 @@ public class ProteinTreeTableModel extends AbstractTreeTableModel implements Tas
     private void addProteinTableRow(ProteinTableRow proteinTableRow) {
         Comparable proteinGroupId = proteinTableRow.getProteinGroupId();
 
-        if (proteinGroupId == null) {
-            // generate an random id
+            if (proteinGroupId == null) {
+                // generate an random id
             proteinGroupId = proteinTableRow.getProteinId().toString() + random.nextInt();
-        }
+            }
 
-        ProteinTableRow parentProteinTableRow = proteinGroupIdToProteinTableRow.get(proteinGroupId);
+            ProteinTableRow parentProteinTableRow = proteinGroupIdToProteinTableRow.get(proteinGroupId);
 
-        if (parentProteinTableRow == null) {
+            if (parentProteinTableRow == null) {
 
-            // add as a parent node
+                // add as a parent node
             proteinGroupIdToProteinTableRow.put(proteinGroupId, proteinTableRow);
 
             ((ProteinTableRow) getRoot()).addChildProteinTableRow(proteinTableRow);
             int childIndex = getIndexOfChild(getRoot(), proteinTableRow);
             modelSupport.fireChildAdded(new TreePath(getRoot()), childIndex, proteinTableRow);
 
-        } else {
+            } else {
             parentProteinTableRow.addChildProteinTableRow(proteinTableRow);
             int childIndex = getIndexOfChild(parentProteinTableRow, proteinTableRow);
             modelSupport.fireChildAdded(new TreePath(parentProteinTableRow), childIndex, proteinTableRow);
-        }
+            }
     }
 
     private void addProteinDetailData(Object value) {

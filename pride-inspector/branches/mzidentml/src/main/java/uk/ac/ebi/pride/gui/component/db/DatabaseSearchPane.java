@@ -4,6 +4,7 @@ import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.annotation.AnnotationProcessor;
 import org.bushe.swing.event.annotation.EventSubscriber;
 import uk.ac.ebi.pride.gui.GUIUtilities;
+import uk.ac.ebi.pride.gui.PrideInspectorContext;
 import uk.ac.ebi.pride.gui.component.DataAccessControllerPane;
 import uk.ac.ebi.pride.gui.component.table.TableFactory;
 import uk.ac.ebi.pride.gui.component.table.model.DatabaseSearchTableModel;
@@ -44,6 +45,7 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
     private JPanel resultSummaryPanel;
     private JButton closeButton;
     private JLabel searchResultLabel;
+    private PrideInspectorContext context;
 
     private int resultCount = 0;
 
@@ -64,7 +66,16 @@ public class DatabaseSearchPane extends DataAccessControllerPane<Void, Void> {
 
         // set the loading icon
         this.setLoadingIcon(GUIUtilities.loadIcon(appContext.getProperty("database.search.loading.icon.small")));
+
+        context = (PrideInspectorContext)uk.ac.ebi.pride.gui.desktop.Desktop.getInstance().getDesktopContext();
+
+        popupOffLineMessage();
     }
+
+    protected void popupOffLineMessage(){
+        JOptionPane.showMessageDialog(null,context.getProperty("pride.inspector.pride.out.message"),"PRIDE Instance Outdated",JOptionPane.OK_OPTION);
+    }
+
 
 
     protected void addComponents() {

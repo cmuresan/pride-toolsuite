@@ -7,7 +7,6 @@ import org.bushe.swing.event.EventService;
 import org.bushe.swing.event.EventSubscriber;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.DataAccessException;
-import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.component.PrideInspectorTabPane;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
@@ -19,8 +18,10 @@ import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
 import uk.ac.ebi.pride.gui.event.container.PSMEvent;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 
+
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * PeptideTabPane provides a peptide centric view to all peptides in one experiment.
@@ -74,7 +75,7 @@ public class PeptideTabPane extends PrideInspectorTabPane {
      */
     private ExpandPeptidePanelSubscriber expandPeptidePanelSubscriber;
 
-    /**
+       /**
      * Constructor
      *
      * @param controller data access controller
@@ -107,12 +108,11 @@ public class PeptideTabPane extends PrideInspectorTabPane {
             logger.log(Level.ERROR, msg, dex);
             appContext.addThrowableEntry(new ThrowableEntry(MessageType.ERROR, msg, dex));
         }
-
         // set the final icon
 //        this.setIcon(GUIUtilities.loadIcon(appContext.getProperty("peptide.tab.icon.small")));
 
         // set the loading icon
-        this.setLoadingIcon(GUIUtilities.loadIcon(appContext.getProperty("peptide.tab.loading.icon.small")));
+        //this.setLoadingIcon(GUIUtilities.loadIcon(appContext.getProperty("peptide.tab.loading.icon.small")));
     }
 
     /**
@@ -171,7 +171,11 @@ public class PeptideTabPane extends PrideInspectorTabPane {
 
     @Override
     public void started(TaskEvent event) {
-        showIcon(getLoadingIcon());
+        parentComponent.revalidate();
+        parentComponent.repaint();
+     //showIcon(getLoadingIcon());
+     //loadingIcon.addTaskListener(this);
+     //TaskUtil.startBackgroundTask(loadingIcon, controller);
     }
 
     @Override
@@ -231,4 +235,6 @@ public class PeptideTabPane extends PrideInspectorTabPane {
             }
         }
     }
+
+
 }

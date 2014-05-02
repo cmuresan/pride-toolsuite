@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
+import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
@@ -9,6 +10,7 @@ import uk.ac.ebi.pride.data.utils.CollectionUtils;
 import uk.ac.ebi.pride.gui.component.exception.ThrowableEntry;
 import uk.ac.ebi.pride.gui.component.message.MessageType;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
+import uk.ac.ebi.pride.gui.event.ProcessingDataSourceEvent;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
 import java.util.ArrayList;
@@ -85,6 +87,7 @@ public class RetrieveSpectrumTableTask extends AbstractDataAccessTask<Void, Tupl
     @Override
     protected Void retrieve() throws Exception {
         try {
+            EventBus.publish(new ProcessingDataSourceEvent<DataAccessController>(controller, ProcessingDataSourceEvent.Status.SPECTRA_READING, controller));
             Collection<Comparable> specIds = controller.getSpectrumIds();
 
             int specSize = specIds.size();
@@ -123,6 +126,7 @@ public class RetrieveSpectrumTableTask extends AbstractDataAccessTask<Void, Tupl
                 }
 
             }
+            EventBus.publish(new ProcessingDataSourceEvent<DataAccessController>(controller, ProcessingDataSourceEvent.Status.SPECTRA_READING,controller));
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve spectrum related data";
             logger.error(msg, dex);

@@ -23,6 +23,7 @@ import uk.ac.ebi.pride.gui.task.impl.ScanExperimentTask;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Collection;
 
 /**

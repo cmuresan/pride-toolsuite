@@ -43,6 +43,8 @@ public class OpenFileTask<D extends DataAccessController> extends TaskAdapter<Vo
 
     private List<File> msFiles = null;
 
+    private Boolean inMemory   = false;
+
     public OpenFileTask(File inputFile, Class<D> dataAccessControllerClass, String name, String description) {
         this.inputFile = inputFile;
         this.dataAccessControllerClass = dataAccessControllerClass;
@@ -52,13 +54,14 @@ public class OpenFileTask<D extends DataAccessController> extends TaskAdapter<Vo
         context = ((PrideInspectorContext) Desktop.getInstance().getDesktopContext());
     }
 
-    public OpenFileTask(File inputFile, List<File> msFiles, Class<D> dataAccessControllerClass, String name, String description) {
+    public OpenFileTask(File inputFile, List<File> msFiles, Class<D> dataAccessControllerClass, String name, String description, Boolean inMemory) {
         this.inputFile = inputFile;
         this.dataAccessControllerClass = dataAccessControllerClass;
         this.setName(name);
         this.setDescription(description);
         context = ((PrideInspectorContext) Desktop.getInstance().getDesktopContext());
         this.msFiles = msFiles;
+        this.inMemory = inMemory;
     }
 
 
@@ -70,7 +73,10 @@ public class OpenFileTask<D extends DataAccessController> extends TaskAdapter<Vo
         } else {
             // publish a notice for starting the file loading
             publish("Loading " + inputFile.getName());
-            createNewDataAccessController(inputFile);
+            if(inMemory)
+                createNewDataAccessController(inputFile,Boolean.TRUE);
+            else
+                createNewDataAccessController(inputFile);
         }
 
         return null;
@@ -123,7 +129,51 @@ public class OpenFileTask<D extends DataAccessController> extends TaskAdapter<Vo
 
 
             Constructor<D> cstruct = dataAccessControllerClass.getDeclaredConstructor(File.class);
+
             DataAccessController controller = cstruct.newInstance(inputFile);
+
+            if (MzIdentMLControllerImpl.class.equals(dataAccessControllerClass) && msFiles != null) {
+                try {
+                    //todo: this is strange way of implement
+                    Map<SpectraData, File> msFileMap = ((MzIdentMLControllerImpl) controller).checkMScontrollers(msFiles);
+                    ((MzIdentMLControllerImpl) controller).addMSController(msFileMap);
+                } catch (DataAccessException e1) {
+                    logger.error("Failed to check the files as controllers", e1);
+                }
+            }
+
+            // this is important for cancelling
+            if (Thread.interrupted()) {
+                // remove dummy
+                context.removeDataAccessController(dummy, false);
+                throw new InterruptedException();
+            } else {
+                // add the real thing
+                context.replaceDataAccessController(dummy, controller, false);
+            }
+        } catch (InterruptedException ex) {
+            logger.warn("File loading has been interrupted: {}", file.getName());
+        } catch (Exception err) {
+            String msg = "Failed to loading from the file: " + file.getName();
+            logger.error(msg, err);
+//            GUIUtilities.error(Desktop.getInstance().getMainComponent(), msg, "Open File Error");
+        }
+    }
+
+    /**
+     * Create new DB data access controller
+     *
+     * @param file file to open
+     */
+    private void createNewDataAccessController(File file, Boolean inmemory) {
+        try {
+            // create dummy
+            EmptyDataAccessController dummy = createEmptyDataAccessController();
+
+
+            Constructor<D> cstruct = dataAccessControllerClass.getDeclaredConstructor(File.class, Boolean.TYPE);
+
+            DataAccessController controller = cstruct.newInstance(inputFile, Boolean.TRUE);
 
             if (MzIdentMLControllerImpl.class.equals(dataAccessControllerClass) && msFiles != null) {
                 try {

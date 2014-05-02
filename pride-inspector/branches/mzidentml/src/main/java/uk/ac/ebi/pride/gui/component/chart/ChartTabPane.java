@@ -211,7 +211,7 @@ public class ChartTabPane extends DataAccessControllerPane<PrideDataReader, Void
 
     @Override
     public void started(TaskEvent event) {
-        showIcon(getLoadingIcon());
+     //   showIcon(getLoadingIcon());
     }
 
     @Override

@@ -15,7 +15,7 @@ import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import java.util.Collection;
 
 /**
- * User: rwang
+ * User: rwang, yperez
  * Date: 08-Sep-2010
  * Time: 10:25:11
  */
@@ -89,7 +89,7 @@ public class RetrievePeptideTableTask extends AbstractDataAccessTask<Void, Tuple
     protected Void retrieve() throws Exception {
         try {
 
-            long currentT = System.currentTimeMillis();
+
             Collection<Comparable> identIds = controller.getProteinIds();
 
             int identSize = identIds.size();
@@ -115,7 +115,7 @@ public class RetrievePeptideTableTask extends AbstractDataAccessTask<Void, Tuple
                 }
 
             }
-            System.out.println("Load Peptides Time: " + (System.currentTimeMillis() - currentT) + " millis");
+
         } catch (DataAccessException dex) {
             String msg = "Failed to retrieve peptide related data";
             logger.error(msg, dex);

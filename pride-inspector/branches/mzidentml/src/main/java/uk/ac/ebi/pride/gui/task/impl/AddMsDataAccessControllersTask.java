@@ -11,7 +11,6 @@ import uk.ac.ebi.pride.gui.component.mzdata.MzDataTabPane;
 import uk.ac.ebi.pride.gui.component.peptide.PeptideTabPane;
 import uk.ac.ebi.pride.gui.component.protein.ProteinTabPane;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
-import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.SpectrumAddEvent;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.gui.task.TaskListener;

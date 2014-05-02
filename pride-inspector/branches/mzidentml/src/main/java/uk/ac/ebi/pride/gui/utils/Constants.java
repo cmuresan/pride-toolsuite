@@ -79,6 +79,7 @@ public interface Constants {
     public static final String DTA_FILE = ".dta";
     public static final String MS2_FILE = ".ms2";
     public static final String PKL_FILE = ".pkl";
+    public static final String APL_FILE = ".apl";
 
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");

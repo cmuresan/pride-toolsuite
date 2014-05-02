@@ -4,12 +4,11 @@ import org.bushe.swing.event.EventBus;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
+import uk.ac.ebi.pride.gui.event.ProcessingDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.RemoveDataSourceEvent;
 import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * DataAccessMonitor acts as a data model for DataSourceViewer.
@@ -30,9 +29,16 @@ public class DataAccessMonitor extends PropertyChangeHelper {
      */
     private DataAccessController foregroundController = null;
 
+    /**
+     * This map maintains a reference between DataAccessController and Status for dataSource
+     */
+
+    private final Map<DataAccessController, List<ProcessingDataSourceEvent.Status>> dataAccessControllerStatus;
+
 
     public DataAccessMonitor() {
         this.controllers = Collections.synchronizedList(new ArrayList<DataAccessController>());
+        this.dataAccessControllerStatus = Collections.synchronizedMap(new HashMap<DataAccessController, List<ProcessingDataSourceEvent.Status>>());
     }
 
 
@@ -62,6 +68,12 @@ public class DataAccessMonitor extends PropertyChangeHelper {
                 setForegroundDataAccessController(controller);
             }
         }
+    }
+
+    public synchronized void setAllInitialDataAccessControllerStatuses(DataAccessController controller){
+        List<ProcessingDataSourceEvent.Status> statuses = new ArrayList<ProcessingDataSourceEvent.Status>();
+        statuses.add(ProcessingDataSourceEvent.Status.INIT_LOADING);
+        dataAccessControllerStatus.put(controller, statuses);
     }
 
     public synchronized void removeDataAccessController(DataAccessController controller) {
@@ -122,6 +134,7 @@ public class DataAccessMonitor extends PropertyChangeHelper {
             status = ForegroundDataSourceEvent.Status.DUMMY;
         } else if (oldController instanceof EmptyDataAccessController) {
             status = ForegroundDataSourceEvent.Status.DUMMY_TO_DATA;
+            setAllInitialDataAccessControllerStatuses(controller);
         } else if (newController == null) {
             status = ForegroundDataSourceEvent.Status.EMPTY;
         }
@@ -166,5 +179,38 @@ public class DataAccessMonitor extends PropertyChangeHelper {
                 return new ArrayList<DataAccessController>(controllers);
             }
         }
+    }
+
+    public synchronized void addStatusController(DataAccessController controller, ProcessingDataSourceEvent.Status status){
+        List<ProcessingDataSourceEvent.Status> statuses = null;
+        if(dataAccessControllerStatus.containsKey(controller)){
+            statuses = dataAccessControllerStatus.get(controller);
+        }else{
+            statuses = new ArrayList<ProcessingDataSourceEvent.Status>();
+        }
+        statuses.add(status);
+        dataAccessControllerStatus.put(controller,statuses);
+        //if(!dataAccessControllerStatus.get(controller).equals(status)) dataAccessControllerStatus.put(controller,status);
+    }
+
+    public synchronized void removeStatusController(DataAccessController controller, ProcessingDataSourceEvent.Status status){
+        List<ProcessingDataSourceEvent.Status> statuses = dataAccessControllerStatus.get(controller);
+        statuses.remove(status);
+        if(statuses.contains(ProcessingDataSourceEvent.Status.INIT_LOADING)) statuses.remove(ProcessingDataSourceEvent.Status.INIT_LOADING);
+        dataAccessControllerStatus.put(controller,statuses);
+    }
+
+    public synchronized List<ProcessingDataSourceEvent.Status> getStatusController(DataAccessController controller){
+        if(dataAccessControllerStatus.containsKey(controller)){
+            return dataAccessControllerStatus.get(controller);
+        }
+        return Collections.emptyList();
+    }
+
+    public boolean containStatusController(DataAccessController controller, ProcessingDataSourceEvent.Status status) {
+        if(dataAccessControllerStatus.containsKey(controller)){
+            return dataAccessControllerStatus.get(controller).contains(status);
+        }
+        return false;
     }
 }

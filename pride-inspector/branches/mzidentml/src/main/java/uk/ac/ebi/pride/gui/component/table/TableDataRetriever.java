@@ -194,7 +194,7 @@ public class TableDataRetriever {
         String protAccVersion = controller.getProteinAccessionVersion(proteinId);
         String database = (controller.getSearchDatabase(proteinId).getName() == null) ? "" : controller.getSearchDatabase(proteinId).getName();
         AccessionResolver resolver = new AccessionResolver(protAcc, protAccVersion, database, true);
-        String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : null;
+        String mappedProtAcc = resolver.isValidAccession() ? resolver.getAccession() : protAcc;
         proteinTableRow.setProteinAccession(new ProteinAccession(protAcc, mappedProtAcc));
 
         // get protein details

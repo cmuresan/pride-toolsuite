@@ -5,6 +5,7 @@
 package uk.ac.ebi.pride.gui.component.reviewer;
 
 import net.java.balloontip.BalloonTip;
+import uk.ac.ebi.pride.archive.web.service.model.project.ProjectDetailList;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
@@ -15,7 +16,6 @@ import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.GetMyProjectsMetadataTask;
 import uk.ac.ebi.pride.gui.utils.BalloonTipUtil;
 import uk.ac.ebi.pride.gui.utils.ColourUtil;
-import uk.ac.ebi.pride.prider.webservice.project.model.ProjectDetailList;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

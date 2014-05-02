@@ -39,7 +39,6 @@ import java.util.regex.Pattern;
  * Creator: Qingwei-XU
  * Date: 19/11/12
  */
-
 public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Void> implements EventBusSubscribable {
 
     private static final Logger logger = LoggerFactory.getLogger(FragmentationTablePane.class);
@@ -219,23 +218,23 @@ public class FragmentationTablePane extends DataAccessControllerPane<Peptide, Vo
                 EventBus.publish(new SummaryReportEvent(this, controller, new RemovalReportMessage(Pattern.compile(".*Annotation.*"))));
                 if (mzTablePanel.getTable().isShowAuto()) {
                     EventBus.publish(new SummaryReportEvent(
-                            this,
-                            controller,
-                            new SummaryReportMessage(
-                                    SummaryReportMessage.Type.WARNING,
-                                    "Auto MS/MS Annotations",
-                                    "Automatic MS/MS spectrum annotations."
-                            )
+                                    this,
+                                    controller,
+                                    new SummaryReportMessage(
+                                            SummaryReportMessage.Type.WARNING,
+                                            "Auto MS/MS Annotations",
+                                            "Automatic MS/MS spectrum annotations."
+                                    )
                     ));
                 } else {
                     EventBus.publish(new SummaryReportEvent(
-                            this,
-                            controller,
-                            new SummaryReportMessage(
-                                    SummaryReportMessage.Type.SUCCESS,
-                                    "Imported MS/MS Annotations",
-                                    "MS/MS annotations imported from the search engine."
-                            )
+                                    this,
+                                    controller,
+                                    new SummaryReportMessage(
+                                            SummaryReportMessage.Type.SUCCESS,
+                                            "Imported MS/MS Annotations",
+                                            "MS/MS annotations imported from the search engine."
+                                    )
                     ));
                 }
 

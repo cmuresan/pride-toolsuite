@@ -1,11 +1,20 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
-import org.apache.commons.httpclient.*;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.xerces.impl.dv.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.action.impl.OpenFileAction;
 import uk.ac.ebi.pride.gui.component.reviewer.SubmissionFileDetail;
@@ -62,7 +71,7 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
                     DesktopContext context = Desktop.getInstance().getDesktopContext();
 
                     // initialize the download
-                    String url = buildFileDownloadUrl(context.getProperty("prider.file.download.url"), submissionEntry.getId());
+                    String url = buildFileDownloadUrl(context.getProperty("prider.file.download.url"), submissionEntry.getProjectAccession(), submissionEntry.getFileName());
 
                     // get output file path
                     File output = new File(folder.getAbsolutePath() + File.separator + submissionEntry.getFileName());
@@ -88,52 +97,60 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
         return null;
     }
 
-    private String buildFileDownloadUrl(String url, Long fileId) {
-        url = url.replace("{fileId}", fileId + "");
+    private String buildFileDownloadUrl(String url, String accession, String fileName) {
+        url = url.replace("{accession}", accession);
+        url = url.replace("{file}", fileName);
         return url;
     }
 
     private File downloadFile(String url, File output, String userName, String password, long fileSize) throws IOException {
         // Create an instance of HttpClient.
-        HttpClient client = new HttpClient();
+        CloseableHttpClient client = HttpClients.createDefault();
 
+        final HttpClientContext httpClientContext = HttpClientContext.create();
         if (userName != null && password != null) {
-            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(userName, password);
-            client.getState().setCredentials(AuthScope.ANY, credentials);
+            // credential provider
+            final BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
+            basicCredentialsProvider.setCredentials(new AuthScope(AuthScope.ANY),
+                                                    new UsernamePasswordCredentials(userName, password));
+
+            httpClientContext.setCredentialsProvider(basicCredentialsProvider);
+
         }
 
         // Create a method instance.
-        GetMethod method = new GetMethod(url);
+        HttpGet method = new HttpGet(url);
 
         // Provide custom retry handler is necessary
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(3, false));
+//        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+
+        final CloseableHttpResponse response = client.execute(method, httpClientContext);
 
         BufferedOutputStream boutStream = null;
-        InputStream in = null;
+        InputStream inputStream = null;
         try {
-            // Execute the method.
-            int statusCode = client.executeMethod(method);
+            final HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                inputStream = entity.getContent();
 
-            if (statusCode != HttpStatus.SC_OK) {
-                System.err.println("Method failed: " + method.getStatusLine());
+                try {
+                    Header contentTypeHeader = response.getFirstHeader("Content-Type");
+                    if (contentTypeHeader != null && "application/x-gzip".equalsIgnoreCase(contentTypeHeader.getValue())) {
+                        inputStream = new GZIPInputStream(inputStream);
+                    }
+
+                    output = new File(output.getAbsolutePath().replace(".gz", ""));
+
+                    boutStream = new BufferedOutputStream(new FileOutputStream(output), BUFFER_SIZE);
+
+                    copyStream(inputStream, boutStream, fileSize);
+
+                    publish("Download has finished");
+
+                } finally {
+                    inputStream.close();
+                }
             }
-
-            // Read the response body.
-            in = method.getResponseBodyAsStream();
-
-            Header contentTypeHeader = method.getResponseHeader("Content-Type");
-            if (contentTypeHeader != null && "application/x-gzip".equalsIgnoreCase(contentTypeHeader.getValue())) {
-                in = new GZIPInputStream(in);
-            }
-
-            output = new File(output.getAbsolutePath().replace(".gz", ""));
-
-            boutStream = new BufferedOutputStream(new FileOutputStream(output), BUFFER_SIZE);
-
-            copyStream(in, boutStream, fileSize);
-
-            publish("Download has finished");
 
             return output;
         } catch (IOException ex) {
@@ -153,12 +170,23 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
                 boutStream.close();
             }
 
-            if (in != null) {
-                in.close();
+            if (inputStream != null) {
+                inputStream.close();
             }
         }
 
         return output;
+    }
+
+    private HttpHeaders getHeaders(String auth) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+        byte[] encodedAuthorisation = Base64.encode(auth.getBytes()).getBytes();
+        headers.add("Authorization", "Basic " + new String(encodedAuthorisation));
+
+        return headers;
     }
 
     private void copyStream(InputStream inputStream, BufferedOutputStream outputStream, long fileSize) throws IOException {

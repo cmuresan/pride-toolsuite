@@ -31,7 +31,7 @@ open.file.threshold = 500
 
 # threshold for mzidentml file size (in M)
 # if greater than the threshold, prescanning of the file won't be performed
-open.mzidentml.file.threshold = 70
+open.mzidentml.file.threshold = 200
 
 # threshold for download size (in M)
 # this will trigger a warning message if the download size is over this limit
@@ -41,10 +41,11 @@ download.size.threshold = 200
 large.pride.experiments=9776
 
 # URL for downloading pride experiments in xml file format
-prider.my.projects.metadata.url=http://www.ebi.ac.uk/pride/ws/archive/users/projects
-prider.project.file.metadata.url=http://www.ebi.ac.uk/pride/ws/archive/projects/{accession}/files
-prider.assay.file.metadata.url=http://www.ebi.ac.uk/pride/ws/archive/assays/{accession}/files
-prider.file.download.url=http://www.ebi.ac.uk/pride/ws/archive/files/{fileId}
+prider.my.projects.metadata.url=http://ves-ebi-4d.ebi.ac.uk:8110/pride/ws/archive/project/list/user
+prider.project.file.metadata.url=http://ves-ebi-4d.ebi.ac.uk:8110/pride/ws/archive/file/list/project/{accession}
+prider.assay.file.metadata.url=http://ves-ebi-4d.ebi.ac.uk:8110/pride/ws/archive/file/list/assay/{accession}
+prider.file.download.url=http://ves-ebi-4d.ebi.ac.uk:8110/pride/ws/archive/file/{accession}/{file}
+
 
 # URL for link to Ensembl Genome Browser
 ensembl.genome.browser.url=http://www.ensembl.org/%1$s/Location/Genome?type=ProteinAlignFeature

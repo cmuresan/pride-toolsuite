@@ -103,22 +103,19 @@ public class SummaryItemPanel extends JPanel {
         int[] count = new int[6];
         count[0] = submissionFileDetails.size();
         for (SubmissionFileDetail fileDetail : submissionFileDetails) {
-            switch (fileDetail.getFileType()) {
-                case RESULT:
-                    count[1]++;
-                    break;
-                case RAW:
-                    count[2]++;
-                    break;
-                case PEAK:
-                    count[3]++;
-                    break;
-                case SEARCH:
-                    count[4]++;
-                    break;
-                case OTHER:
-                    count[5]++;
-                    break;
+
+            final String fileType = fileDetail.getFileType();
+
+            if (fileType.equalsIgnoreCase("RESULT")) {
+                count[1]++;
+            } else if (fileType.equalsIgnoreCase("RAW")) {
+                count[2]++;
+            } else if (fileType.equalsIgnoreCase("PEAK")) {
+                count[3]++;
+            } else if (fileType.equalsIgnoreCase("SEARCH")) {
+                count[4]++;
+            } else if (fileType.equalsIgnoreCase("OTHER")) {
+                count[5]++;
             }
         }
         return count;

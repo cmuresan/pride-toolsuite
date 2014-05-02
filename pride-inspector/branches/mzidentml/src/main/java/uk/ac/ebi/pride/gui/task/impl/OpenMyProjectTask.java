@@ -2,14 +2,14 @@ package uk.ac.ebi.pride.gui.task.impl;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+import uk.ac.ebi.pride.archive.web.service.model.file.FileDetail;
+import uk.ac.ebi.pride.archive.web.service.model.file.FileDetailList;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.component.reviewer.MyProjectDownloadDialog;
 import uk.ac.ebi.pride.gui.component.reviewer.PrideLoginDialog;
 import uk.ac.ebi.pride.gui.component.reviewer.SubmissionFileDetail;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.task.*;
-import uk.ac.ebi.pride.prider.webservice.file.model.FileDetail;
-import uk.ac.ebi.pride.prider.webservice.file.model.FileDetailList;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class OpenMyProjectTask extends TaskAdapter<Void, Void> implements TaskLi
 
         if (fileDetailList != null) {
             List<SubmissionFileDetail> submissionFileDetails = new ArrayList<SubmissionFileDetail>();
-            for (FileDetail fileDetail : fileDetailList.getFileDetails()) {
+            for (FileDetail fileDetail : fileDetailList.getList()) {
                 submissionFileDetails.add(new SubmissionFileDetail(fileDetail));
             }
 

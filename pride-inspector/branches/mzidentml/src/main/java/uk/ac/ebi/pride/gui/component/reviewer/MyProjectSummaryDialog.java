@@ -4,6 +4,9 @@
 
 package uk.ac.ebi.pride.gui.component.reviewer;
 
+import uk.ac.ebi.pride.archive.web.service.model.file.FileDetail;
+import uk.ac.ebi.pride.archive.web.service.model.file.FileDetailList;
+import uk.ac.ebi.pride.archive.web.service.model.project.ProjectDetail;
 import uk.ac.ebi.pride.gui.GUIUtilities;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.PrideInspectorContext;
@@ -12,9 +15,6 @@ import uk.ac.ebi.pride.gui.task.TaskEvent;
 import uk.ac.ebi.pride.gui.task.TaskListener;
 import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.GetMyProjectFilesMetadataTask;
-import uk.ac.ebi.pride.prider.webservice.file.model.FileDetail;
-import uk.ac.ebi.pride.prider.webservice.file.model.FileDetailList;
-import uk.ac.ebi.pride.prider.webservice.project.model.ProjectDetail;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -72,7 +72,7 @@ public class MyProjectSummaryDialog extends JDialog implements TaskListener<File
 
     private void initProjectAccessionList() {
         DefaultListModel model = new DefaultListModel();
-        for (ProjectDetail projectDetail : myLoginRecord.getProjectDetailList().getProjectDetails()) {
+        for (ProjectDetail projectDetail : myLoginRecord.getProjectDetailList().getList()) {
             model.addElement(projectDetail.getAccession());
         }
         projectAccessionList.setModel(model);
@@ -86,7 +86,7 @@ public class MyProjectSummaryDialog extends JDialog implements TaskListener<File
                     int index = projectAccessionList.locationToIndex(e.getPoint());
                     String projectAccession = (String) projectAccessionList.getModel().getElementAt(index);
                     if (projectAccession != null) {
-                        ProjectDetail projectDetail = myLoginRecord.getProjectDetailList().getProjectDetailByAccession(projectAccession);
+                        ProjectDetail projectDetail = myLoginRecord.getProjectDetailList().getProjectByAccession(projectAccession);
                         updateProjectDetails(projectDetail);
                     }
                 }
@@ -97,7 +97,7 @@ public class MyProjectSummaryDialog extends JDialog implements TaskListener<File
 
         if (projectAccessionList.getModel().getSize() > 0) {
             projectAccessionList.setSelectedIndex(0);
-            updateProjectDetails(myLoginRecord.getProjectDetailList().getProjectDetails().get(0));
+            updateProjectDetails(myLoginRecord.getProjectDetailList().getList().get(0));
         }
     }
 
@@ -112,7 +112,7 @@ public class MyProjectSummaryDialog extends JDialog implements TaskListener<File
             publcationDateTextField.setText(PRIVATE_PROJECT);
         }
 
-        submissionTypeTextField.setText(projectDetail.getSubmissionType().toString());
+        submissionTypeTextField.setText(projectDetail.getSubmissionType());
     }
 
     private void setLogoutButtonAction() {
@@ -173,7 +173,7 @@ public class MyProjectSummaryDialog extends JDialog implements TaskListener<File
             MyProjectSummaryDialog.this.setVisible(false);
 
             List<SubmissionFileDetail> submissionFileDetails = new ArrayList<SubmissionFileDetail>();
-            for (FileDetail fileDetail : fileDetailList.getFileDetails()) {
+            for (FileDetail fileDetail : fileDetailList.getList()) {
                 submissionFileDetails.add(new SubmissionFileDetail(fileDetail));
             }
 

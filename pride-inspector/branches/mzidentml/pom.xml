@@ -4,7 +4,7 @@
     <groupId>uk.ac.ebi.pride.gui</groupId>
     <artifactId>pride-inspector</artifactId>
     <packaging>jar</packaging>
-    <version>2.0.0</version>
+    <version>2.0.1-SNAPSHOT</version>
     <name>pride-inspector</name>
     <url>http://code.google.com/p/pride-toolsuite/wiki/PRIDEInspector</url>
 
@@ -69,13 +69,36 @@
 
     <properties>
         <assembly.dir>${name}-${version}</assembly.dir>
+        <junit.version>4.11</junit.version>
+        <slf4j-api.version>1.7.5</slf4j-api.version>
+        <logback-core.version>1.0.11</logback-core.version>
+        <ms-data-core-api.version>0.11.22-SNAPSHOT</ms-data-core-api.version>
+        <pride-mzgraph-browser.version>1.0.16-SNAPSHOT</pride-mzgraph-browser.version>
+        <pride-chart.version>1.0.5-SNAPSHOT</pride-chart.version>
+        <javahelp.version>2.0.02</javahelp.version>
+        <pride-utilities.version>0.1.20</pride-utilities.version>
+        <jnlp-api.version>1.5.0</jnlp-api.version>
+        <commons-cli.version>1.2</commons-cli.version>
+        <eventbus.version>1.4</eventbus.version>
+        <swingx-all.version>1.6.5-1</swingx-all.version>
+        <ehcache.version>2.7.0</ehcache.version>
+        <balloontip.version>1.2.1</balloontip.version>
+        <protein-details-fetcher.version>1.0.1</protein-details-fetcher.version>
+        <accession-resolver.version>1.0.1</accession-resolver.version>
+        <prider-ws-model.version>0.1.6.1-SNAPSHOT</prider-ws-model.version>
+        <jackson-mapper-asl.version>1.9.9</jackson-mapper-asl.version>
+        <httpcore.version>4.3.2</httpcore.version>
+        <spring-web.version>3.2.3.RELEASE</spring-web.version>
+        <prider-data-provider-api.version>1.0</prider-data-provider-api.version>
+        <httpclient.version>4.3.3</httpclient.version>
+        <spring-security-core.version>3.2.1.RELEASE</spring-security-core.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -83,45 +106,45 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.5</version>
+            <version>${slf4j-api.version}</version>
         </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.0.11</version>
+            <version>${logback-core.version}</version>
         </dependency>
 
         <!--ms-core-api dependency-->
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>ms-data-core-api</artifactId>
-            <version>0.11.11</version>
+            <version>${ms-data-core-api.version}</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>pride-mzgraph-browser</artifactId>
-            <version>1.0.16-SNAPSHOT</version>
+            <version>${pride-mzgraph-browser.version}</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>pride-chart</artifactId>
-            <version>1.0.5-SNAPSHOT</version>
+            <version>${pride-chart.version}</version>
         </dependency>
 
         <!-- javaHelp -->
         <dependency>
             <groupId>javax.help</groupId>
             <artifactId>javahelp</artifactId>
-            <version>2.0.02</version>
+            <version>${javahelp.version}</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.pride</groupId>
             <artifactId>pride-utilities</artifactId>
-            <version>0.1.20</version>
+            <version>${pride-utilities.version}</version>
         </dependency>
 
         <dependency>
@@ -129,94 +152,94 @@
             <!--mvn install:install-file -Dfile="path\to\jdk\sample\jnlp\servlet\jnlp.jar" -DgroupId=javax.jnlp -DartifactId=jnlp-api -Dversion=1.5.0 =Dpackaging=jar-->
             <groupId>javax.jnlp</groupId>
             <artifactId>jnlp-api</artifactId>
-            <version>1.5.0</version>
+            <version>${jnlp-api.version}</version>
         </dependency>
 
         <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
-            <version>1.2</version>
+            <version>${commons-cli.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.bushe</groupId>
             <artifactId>eventbus</artifactId>
-            <version>1.4</version>
+            <version>${eventbus.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.swinglabs.swingx</groupId>
             <artifactId>swingx-all</artifactId>
-            <version>1.6.5-1</version>
+            <version>${swingx-all.version}</version>
         </dependency>
 
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-            <version>2.7.0</version>
+            <version>${ehcache.version}</version>
         </dependency>
 
         <dependency>
             <groupId>net.java.balloontip</groupId>
             <artifactId>balloontip</artifactId>
-            <version>1.2.1</version>
+            <version>${balloontip.version}</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.pride.tools</groupId>
             <artifactId>protein-details-fetcher</artifactId>
-            <version>1.0.1</version>
+            <version>${protein-details-fetcher.version}</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.pride.tools</groupId>
             <artifactId>accession-resolver</artifactId>
-            <version>1.0.1</version>
+            <version>${accession-resolver.version}</version>
         </dependency>
 
         <!-- PRIDE-R web service model-->
         <dependency>
             <groupId>uk.ac.ebi.pride.prider</groupId>
             <artifactId>prider-ws-model</artifactId>
-            <version>0.1.5</version>
+            <version>${prider-ws-model.version}</version>
         </dependency>
 
         <!--json-->
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.9</version>
+            <version>${jackson-mapper-asl.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>4.2.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
+            <version>${httpcore.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>3.2.3.RELEASE</version>
+            <version>${spring-web.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring-security-core.version}</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.pride.prider</groupId>
             <artifactId>prider-data-provider-api</artifactId>
-            <version>1.0</version>
+            <version>${prider-data-provider-api.version}</version>
         </dependency>
 
         <!-- apache commons httpcomponents-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.2.3</version>
+            <version>${httpclient.version}</version>
         </dependency>
     </dependencies>
 

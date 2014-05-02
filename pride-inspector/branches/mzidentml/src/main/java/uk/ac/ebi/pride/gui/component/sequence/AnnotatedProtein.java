@@ -1,8 +1,7 @@
 package uk.ac.ebi.pride.gui.component.sequence;
 
-import uk.ac.ebi.pride.gui.prop.PropertyChangeHelper;
+import uk.ac.ebi.pride.gui.utils.PropertyChangeHelper;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
-
 
 import java.beans.PropertyChangeListener;
 import java.util.*;

@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.gui.component.reviewer;
 
-import uk.ac.ebi.pride.prider.dataprovider.file.ProjectFileType;
-import uk.ac.ebi.pride.prider.webservice.file.model.FileDetail;
+import uk.ac.ebi.pride.archive.web.service.model.file.FileDetail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +30,20 @@ public class SubmissionFileDetail {
         this.sourceFileMappings = new ArrayList<SubmissionFileDetail>();
     }
 
-    public Long getId() {
-        return fileDetail.getId();
+//    public Long getId() {
+//        return fileDetail.getId();
+//    }
+
+    public String getProjectAccession() {
+        return fileDetail.getProjectAccession();
     }
 
-    public Long getAssayId() {
-        return fileDetail.getAssayId();
+    public void setProjectAccession(String projectAccession) {
+        fileDetail.setProjectAccession(projectAccession);
+    }
+
+    public String getAsssayAccession() {
+        return fileDetail.getAssayAccession();
     }
 
     public String getFileName() {
@@ -47,19 +54,19 @@ public class SubmissionFileDetail {
         fileDetail.setFileSize(fileSize);
     }
 
-    public void setAssayId(Long assayId) {
-        fileDetail.setAssayId(assayId);
+    public void setAssayAccession(String assayId) {
+        fileDetail.setAssayAccession(assayId);
     }
 
-    public void setId(Long id) {
-        fileDetail.setId(id);
-    }
+//    public void setId(Long id) {
+//        fileDetail.setId(id);
+//    }
 
-    public void setFileType(ProjectFileType fileType) {
+    public void setFileType(String fileType) {
         fileDetail.setFileType(fileType);
     }
 
-    public ProjectFileType getFileType() {
+    public String getFileType() {
         return fileDetail.getFileType();
     }
 

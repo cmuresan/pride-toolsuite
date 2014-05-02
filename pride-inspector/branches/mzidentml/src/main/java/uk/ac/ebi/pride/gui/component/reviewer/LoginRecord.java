@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.gui.component.reviewer;
 
-import uk.ac.ebi.pride.prider.webservice.project.model.ProjectDetailList;
+
+import uk.ac.ebi.pride.archive.web.service.model.project.ProjectDetailList;
 
 /**
  * @author Rui Wang

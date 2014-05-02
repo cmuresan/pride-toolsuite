@@ -2,7 +2,6 @@ package uk.ac.ebi.pride.gui.component.table.model;
 
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 import uk.ac.ebi.pride.gui.component.reviewer.SubmissionFileDetail;
-import uk.ac.ebi.pride.prider.dataprovider.file.ProjectFileType;
 
 import javax.swing.tree.TreePath;
 import java.text.DecimalFormat;
@@ -17,6 +16,7 @@ import java.util.Set;
  * @version $Id$
  */
 public class SubmissionFileDownloadTableModel extends AbstractTreeTableModel {
+    private static final String NOT_APPLICABLE = "N/A";
 
     public enum TableHeader {
 
@@ -47,10 +47,16 @@ public class SubmissionFileDownloadTableModel extends AbstractTreeTableModel {
     }
 
     public void addSubmissionFileDetails(List<SubmissionFileDetail> submissionFileDetails) {
+
         for (SubmissionFileDetail sourceFileDetail : submissionFileDetails) {
-            if (sourceFileDetail.getAssayId() != null && !sourceFileDetail.getFileType().equals(ProjectFileType.RESULT)) {
+            if (sourceFileDetail.getAsssayAccession() != null &&
+                !sourceFileDetail.getAsssayAccession().equalsIgnoreCase(NOT_APPLICABLE) &&
+                !sourceFileDetail.getFileType().equalsIgnoreCase("RESULT")) {
+
                 for (SubmissionFileDetail resultFileDetail : submissionFileDetails) {
-                    if (!sourceFileDetail.equals(resultFileDetail) && resultFileDetail.getFileType().equals(ProjectFileType.RESULT) && resultFileDetail.getAssayId().equals(sourceFileDetail.getAssayId())) {
+                    if (!sourceFileDetail.equals(resultFileDetail) &&
+                        resultFileDetail.getFileType().equalsIgnoreCase("RESULT") &&
+                        resultFileDetail.getAsssayAccession().equals(sourceFileDetail.getAsssayAccession())) {
                         resultFileDetail.addSourceFileMapping(sourceFileDetail);
                         sourceFileDetail.addResultFileMapping(resultFileDetail);
                     }
@@ -60,7 +66,9 @@ public class SubmissionFileDownloadTableModel extends AbstractTreeTableModel {
 
         // add all the result files to root
         for (SubmissionFileDetail submissionFileDetail : submissionFileDetails) {
-            if (submissionFileDetail.getAssayId() == null || submissionFileDetail.getFileType().equals(ProjectFileType.RESULT)) {
+            if (submissionFileDetail.getAsssayAccession() == null ||
+                submissionFileDetail.getAsssayAccession().equalsIgnoreCase(NOT_APPLICABLE) ||
+                    submissionFileDetail.getFileType().equalsIgnoreCase("RESULT")) {
                 ((SubmissionFileDetail)root).addSourceFileMapping(submissionFileDetail);
                 submissionFileDetail.addResultFileMapping((SubmissionFileDetail)root);
             }

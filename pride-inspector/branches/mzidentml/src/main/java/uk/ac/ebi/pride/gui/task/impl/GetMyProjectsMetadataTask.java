@@ -1,15 +1,15 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.springframework.http.client.CommonsClientHttpRequestFactory;
+import org.springframework.http.*;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import uk.ac.ebi.pride.archive.web.service.model.project.ProjectDetailList;
 import uk.ac.ebi.pride.gui.PrideInspector;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.task.Task;
-import uk.ac.ebi.pride.prider.webservice.project.model.ProjectDetailList;
+
+import java.util.Arrays;
 
 /**
  * GetPrideUserDetailTask retrieves pride user details using pride web service
@@ -21,6 +21,8 @@ public class GetMyProjectsMetadataTask extends Task<ProjectDetailList, String> {
 
     private RestTemplate restTemplate;
 
+    private HttpEntity<String> requestEntity;
+
     /**
      * Constructor
      *
@@ -28,11 +30,9 @@ public class GetMyProjectsMetadataTask extends Task<ProjectDetailList, String> {
      * @param password pride password
      */
     public GetMyProjectsMetadataTask(String userName, char[] password) {
-        HttpClient client = new HttpClient();
-        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(userName, new String(password));
-        client.getState().setCredentials(AuthScope.ANY, credentials);
-        CommonsClientHttpRequestFactory commons = new CommonsClientHttpRequestFactory(client);
-        this.restTemplate = new RestTemplate(commons);
+        final HttpHeaders headers = getHeaders(userName, password);
+        this.requestEntity = new HttpEntity<String>(headers);
+        this.restTemplate = new RestTemplate();
     }
 
     @Override
@@ -41,11 +41,26 @@ public class GetMyProjectsMetadataTask extends Task<ProjectDetailList, String> {
         String projectMetadataUrl = context.getProperty("prider.my.projects.metadata.url");
 
         try {
-            return restTemplate.getForObject(projectMetadataUrl, ProjectDetailList.class);
+            ResponseEntity<ProjectDetailList> entity = restTemplate.exchange(projectMetadataUrl, HttpMethod.GET, requestEntity, ProjectDetailList.class);
+            return entity.getBody();
         } catch (RestClientException ex) {
             publish("Failed to login, please check your username and password");
             return null;
         }
+    }
+
+    private HttpHeaders getHeaders(String userName, char[] password) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+        if (userName != null && password != null) {
+            String auth = userName + ":" + new String(password);
+            byte[] encodedAuthorisation = Base64.encode(auth.getBytes());
+            headers.add("Authorization", "Basic " + new String(encodedAuthorisation));
+        }
+
+        return headers;
     }
 
     @Override

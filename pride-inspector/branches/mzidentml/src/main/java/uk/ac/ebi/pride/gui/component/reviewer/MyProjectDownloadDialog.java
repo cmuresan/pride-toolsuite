@@ -13,7 +13,6 @@ import uk.ac.ebi.pride.gui.component.table.model.SubmissionFileDownloadTableMode
 import uk.ac.ebi.pride.gui.task.TaskUtil;
 import uk.ac.ebi.pride.gui.task.impl.GetPrideFileTask;
 import uk.ac.ebi.pride.gui.utils.BorderUtil;
-import uk.ac.ebi.pride.prider.dataprovider.file.ProjectFileType;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -136,7 +135,7 @@ public class MyProjectDownloadDialog extends JDialog implements TreeModelListene
             if (((SubmissionFileDetail) leaf).isDownload()) {
                 SubmissionFileDetail entry = (SubmissionFileDetail) leaf;
                 submissionFileDetails.add(entry);
-                if (entry.getFileType().equals(ProjectFileType.RESULT)) {
+                if (entry.getFileType().equalsIgnoreCase("RESULT")) {
                     toDownload = false;
                 }
             }

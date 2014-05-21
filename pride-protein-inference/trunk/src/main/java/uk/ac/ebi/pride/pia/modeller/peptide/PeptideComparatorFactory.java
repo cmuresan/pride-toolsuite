@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.pia.modeller.report.SortOrder;
 import uk.ac.ebi.pride.pia.modeller.score.ScoreModelEnum;
 import uk.ac.ebi.pride.pia.modeller.score.comparator.RankComparator;
@@ -11,15 +13,14 @@ import uk.ac.ebi.pride.pia.modeller.score.comparator.ScoreComparator;
 
 
 /**
- * Handles {@link Comparator}s for {@link ReportPeptide}s.
+ * Handles {@link Comparator}s for {@link Peptide}s.
  * 
  * @author julian
  *
  */
-public class ReportPeptideComparatorFactory {
+public class PeptideComparatorFactory {
 	
 	/**
-	 * the types of sorting available for a {@link ReportPeptide}
 	 * 
 	 * @author julian
 	 *
@@ -30,17 +31,17 @@ public class ReportPeptideComparatorFactory {
 		 */
 		SEQUENCE_SORT {
 			@Override
-			public Comparator<ReportPeptide> getNewInstance() {
-				return new Comparator<ReportPeptide>() {
+			public Comparator<Peptide> getNewInstance() {
+				return new Comparator<Peptide>() {
 					@Override
-					public int compare(ReportPeptide o1, ReportPeptide o2) {
+					public int compare(Peptide o1, Peptide o2) {
 						return o1.getSequence().compareTo(o2.getSequence());
 					}
 				};
 			}
 
 			@Override
-			public Comparator<ReportPeptide> getNewInstance(String value) {
+			public Comparator<Peptide> getNewInstance(String value) {
 				return null;
 			}
 			
@@ -55,17 +56,19 @@ public class ReportPeptideComparatorFactory {
 		 */
 		MISSED_SORT {
 			@Override
-			public Comparator<ReportPeptide> getNewInstance() {
-				return new Comparator<ReportPeptide>() {
+			public Comparator<Peptide> getNewInstance() {
+				return new Comparator<Peptide>() {
 					@Override
-					public int compare(ReportPeptide o1, ReportPeptide o2) {
-						return Integer.valueOf(o1.getMissedCleavages()).compareTo(o2.getMissedCleavages());
+					public int compare(Peptide o1, Peptide o2) {
+                        //Todo: Implement the misscleavage calculation for Peptides - Yasset
+						//return Integer.valueOf(o1.getPeptideEvidence().getPeptideSequence().get).compareTo(o2.getMissedCleavages());
+                        return 1;
 					}
 				};
 			}
 
 			@Override
-			public Comparator<ReportPeptide> getNewInstance(String value) {
+			public Comparator<Peptide> getNewInstance(String value) {
 				return null;
 			}
 			
@@ -79,12 +82,18 @@ public class ReportPeptideComparatorFactory {
 		 */
 		RANK_SORT {
 			@Override
-			public Comparator<ReportPeptide> getNewInstance() {
-				return new RankComparator<ReportPeptide>();
+			public Comparator<Peptide> getNewInstance() {
+                return new Comparator<Peptide>() {
+                    @Override
+                    public int compare(Peptide o1, Peptide o2) {
+                        return Integer.valueOf(new Integer(o1.getSpectrumIdentification().getRank()).compareTo(o2.getSpectrumIdentification().getRank()));
+
+                    }
+                };
 			}
 
 			@Override
-			public Comparator<ReportPeptide> getNewInstance(String value) {
+			public Comparator<Peptide> getNewInstance(String value) {
 				return null;
 			}
 			
@@ -98,17 +107,19 @@ public class ReportPeptideComparatorFactory {
 		 */
 		NR_PSMS_SORT {
 			@Override
-			public Comparator<ReportPeptide> getNewInstance() {
-				return new Comparator<ReportPeptide>() {
+			public Comparator<Peptide> getNewInstance() {
+				return new Comparator<Peptide>() {
 					@Override
-					public int compare(ReportPeptide o1, ReportPeptide o2) {
-						return Integer.valueOf(o1.getNrPSMs()).compareTo(o2.getNrPSMs());
+					public int compare(Peptide o1, Peptide o2) {
+                        //Todo: Implement the NrPSMs for each Peptide.
+						//return Integer.valueOf(o1.getNrPSMs()).compareTo(o2.getNrPSMs());
+                        return 1;
 					}
 				};
 			}
 
 			@Override
-			public Comparator<ReportPeptide> getNewInstance(String value) {
+			public Comparator<Peptide> getNewInstance(String value) {
 				return null;
 			}
 			
@@ -122,17 +133,19 @@ public class ReportPeptideComparatorFactory {
 		 */
 		NR_SPECTRA_SORT {
 			@Override
-			public Comparator<ReportPeptide> getNewInstance() {
-				return new Comparator<ReportPeptide>() {
+			public Comparator<Peptide> getNewInstance() {
+				return new Comparator<Peptide>() {
 					@Override
-					public int compare(ReportPeptide o1, ReportPeptide o2) {
-						return Integer.valueOf(o1.getNrSpectra()).compareTo(o2.getNrSpectra());
+					public int compare(Peptide o1, Peptide o2) {
+                        //Todo: Implement the NrSpectra for each Peptide - Yasset
+						//return Integer.valueOf(o1.getNrSpectra()).compareTo(o2.getNrSpectra());
+                        return 1;
 					}
 				};
 			}
 
 			@Override
-			public Comparator<ReportPeptide> getNewInstance(String value) {
+			public Comparator<Peptide> getNewInstance(String value) {
 				return null;
 			}
 			
@@ -147,13 +160,15 @@ public class ReportPeptideComparatorFactory {
 		 */
 		SCORE_SORT {
 			@Override
-			public Comparator<ReportPeptide> getNewInstance() {
+			public Comparator<Peptide> getNewInstance() {
 				return null;
 			}
 			
 			@Override
-			public Comparator<ReportPeptide> getNewInstance(final String scoreName) {
-				return new ScoreComparator<ReportPeptide>(scoreName);
+			public Comparator<Peptide> getNewInstance(final String scoreName) {
+				//Todo: We need to refine this in order to use the Peptides whitout extend the ms-data-core-api
+                //return new ScoreComparator<Peptide>(scoreName);
+                return null;
 			}
 			
 			@Override
@@ -169,7 +184,7 @@ public class ReportPeptideComparatorFactory {
 		 * 
 		 * @return
 		 */
-		public abstract Comparator<ReportPeptide> getNewInstance();
+		public abstract Comparator<Peptide> getNewInstance();
 		
 		
 		/**
@@ -179,7 +194,7 @@ public class ReportPeptideComparatorFactory {
 		 * @param value
 		 * @return
 		 */
-		public abstract Comparator<ReportPeptide> getNewInstance(final String value);
+		public abstract Comparator<Peptide> getNewInstance(final String value);
 	}
 	
 	
@@ -193,10 +208,10 @@ public class ReportPeptideComparatorFactory {
 	 * @param other
 	 * @return
 	 */
-	public static Comparator<ReportPeptide> descending(final Comparator<ReportPeptide> other) {
-		return new Comparator<ReportPeptide>() {
+	public static Comparator<Peptide> descending(final Comparator<Peptide> other) {
+		return new Comparator<Peptide>() {
 			@Override
-			public int compare(ReportPeptide o1, ReportPeptide o2) {
+			public int compare(Peptide o1, Peptide o2) {
 				return -1 * other.compare(o1, o2);
 			}
 		};
@@ -209,12 +224,12 @@ public class ReportPeptideComparatorFactory {
 	 * @param multipleOptions
 	 * @return
 	 */
-	public static Comparator<ReportPeptide> getComparator(final List<Comparator<ReportPeptide>> multipleOptions) {
-		return new Comparator<ReportPeptide>() {
-			public int compare(ReportPeptide o1, ReportPeptide o2) {
+	public static Comparator<Peptide> getComparator(final List<Comparator<Peptide>> multipleOptions) {
+		return new Comparator<Peptide>() {
+			public int compare(Peptide o1, Peptide o2) {
 				int result;
 				// check all options, the first not returning 0 (equal) gets returned
-				for (Comparator<ReportPeptide> option : multipleOptions) {
+				for (Comparator<Peptide> option : multipleOptions) {
 					result = option.compare(o1, o2);
 					if (result != 0) {
 						return result;
@@ -233,9 +248,9 @@ public class ReportPeptideComparatorFactory {
 	 * @param order
 	 * @return
 	 */
-	public static Comparator<ReportPeptide> getComparatorByName(String name, SortOrder order) {
+	public static Comparator<Peptide> getComparatorByName(String name, SortOrder order) {
 		
-		for (ReportPeptideComparatorFactory.CompareType comp : CompareType.values()) {
+		for (PeptideComparatorFactory.CompareType comp : CompareType.values()) {
 			if (name.equals(comp.toString())) {
 				return (order.equals(SortOrder.ascending)) ?
 						comp.getNewInstance() :
@@ -246,7 +261,7 @@ public class ReportPeptideComparatorFactory {
 		// it still may be a score comparator
 		if (name.startsWith(score_prefix)) {
 			String scoreName = name.substring(6);
-			Comparator<ReportPeptide> comp = ReportPeptideComparatorFactory.CompareType.SCORE_SORT.getNewInstance(scoreName);
+			Comparator<Peptide> comp = PeptideComparatorFactory.CompareType.SCORE_SORT.getNewInstance(scoreName);
 			
 			return (order.equals(SortOrder.ascending)) ?
 					comp :
@@ -265,7 +280,7 @@ public class ReportPeptideComparatorFactory {
 	public static Map<String, SortOrder> getInitialSortOrders() {
 		Map<String, SortOrder> orders = new HashMap<String, SortOrder>();
 		
-		for (ReportPeptideComparatorFactory.CompareType comp : CompareType.values()) {
+		for (PeptideComparatorFactory.CompareType comp : CompareType.values()) {
 			if (!comp.toString().startsWith(score_prefix)) {
 				orders.put(comp.toString(), SortOrder.unsorted);
 			}

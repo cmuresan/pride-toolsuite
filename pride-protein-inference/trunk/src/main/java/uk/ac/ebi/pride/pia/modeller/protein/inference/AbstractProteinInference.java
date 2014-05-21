@@ -103,17 +103,26 @@ public abstract class AbstractProteinInference {
 
 	/**
 	 * This method creates a Map from the groups' IDs to the associated
-	 * {@link uk.ac.ebi.pride.pia.modeller.peptide.ReportPeptide}s, which can be build and satisfy the currently set
+	 * {}s, which can be build and satisfy the currently set
 	 * filters.
-	 * 
-	 * @param groupMap
+	 *
 	 * @param considerModifications
 	 * @return
 	 */
-	public Map<Long, List<ReportPeptide>> createFilteredReportPeptides(Map<Long, Group> groupMap,
-                                                                       Map<String, ReportPSMSet> reportPSMSetMap,
-			boolean considerModifications, Map<String, Boolean> psmSetSettings) {
-		Map<Long, List<ReportPeptide>> peptidesMap = new HashMap<Long, List<ReportPeptide>>(groupMap.size() / 2);
+	public List<String> createFilteredReportPeptides(boolean considerModifications, Map<String, Boolean> psmSetSettings) {
+
+        List<Comparable> peptideIds = new ArrayList<Comparable>();
+
+        for(Comparable proteinId: controller.getProteinIds()){
+            peptideIds.addAll(controller.getPeptideIds(proteinId));
+
+        }
+
+        for(Comparable peptideId: peptideIds){
+
+
+        }
+
 	/*
 		for (Map.Entry<Long, Group> gIt : groupMap.entrySet()) {
 			Map<String, ReportPeptide> gPepsMap = new HashMap<String, ReportPeptide>();
@@ -290,130 +299,6 @@ public abstract class AbstractProteinInference {
 		}
 		
 		return peptidesMap;*/
-        return null;
-	}
-	
-	
-	/**
-	 * Tests for the given group, if it has any direct {@link ReportPeptide}s,
-	 * in the given Map. This Map should by created by 
-	 * {@link AbstractProteinInference#createFilteredReportPeptides(java.util.Map, java.util.Map, boolean, java.util.Map)} (Map, Map, boolean)}
-	 * prior to calling this function.
-	 *  
-	 * @param group
-	 * @param reportPeptidesMap
-	 * @return
-	 */
-	public boolean groupHasDirectReportPeptides(Group group,
-			Map<Long, List<ReportPeptide>> reportPeptidesMap) {
-		List<ReportPeptide> pepList = reportPeptidesMap.get(group.getID());
-		return ((pepList != null) && (pepList.size() > 0));
-	}
-	
-	
-	/**
-	 * Tests for the given group, if it has any {@link ReportPeptide}s, whether
-	 * direct or in the peptideChildren, in the given Map. This Map should be
-	 * created by {@link AbstractProteinInference#createFilteredReportPeptides(java.util.Map, java.util.Map, boolean, java.util.Map)} (Map, Map, boolean)}
-	 * prior to calling this function.
-	 *  
-	 * @param group
-	 * @param reportPeptidesMap
-	 * @return
-	 */
-	public boolean groupHasReportPeptides(Group group,
-			Map<Long, List<ReportPeptide>> reportPeptidesMap) {
-		// check for direct ReportPeptides
-		if (groupHasDirectReportPeptides(group, reportPeptidesMap)) {
-			return true;
-		}
-		
-		// check for ReportPeptides of the children
-		for (Group gIt : group.getAllPeptideChildren().values()) {
-			if (groupHasDirectReportPeptides(gIt, reportPeptidesMap)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	
-	/**
-	 * Creates a {@link ReportProtein} with for the given ID and puts it into
-	 * the proteins Map. For the {@link ReportPeptide}s of the protein, the
-	 * corresponding peptides in the <code>reportPeptidesMap</code> are used.
-	 * 
-	 * @param id ID of the protein (group in the groupMap)
-	 * @param proteins the final Map for the {@link ReportProtein}s
-	 * @param reportPeptidesMap maps from the protein / group ID to the peptides
-	 * @param groupMap all the groups (the PIA intermediate structure)
-	 * @param sameSets maps from the ID to all groups, which are the same protein
-	 * @param subGroups maps from the ID to all the groups, which are subgroups
-	 * @return
-	 */
-	protected ReportProtein createProtein(Long id, Map<Long, ReportProtein> proteins,
-			Map<Long, List<ReportPeptide>> reportPeptidesMap,
-			Map<Long, Group> groupMap, Map<Long, Set<Long>> sameSets,
-			Map<Long, Set<Long>> subGroups) {
-		/*ReportProtein protein = new ReportProtein(id);
-		if (proteins.put(id, protein) != null) {
-			logger.warn("protein " + id + " was already in the map! " +
-					protein.getAccessions() + " createProtein");
-		}
-		
-		// add direct peptides
-		if (reportPeptidesMap.containsKey(id)) {
-			for (ReportPeptide pep : reportPeptidesMap.get(id)) {
-				protein.addPeptide(pep);
-			}
-		}
-		
-		// add children's peptides
-		for (Group child : groupMap.get(id).getAllPeptideChildren().values()) {
-			if (reportPeptidesMap.containsKey(child.getID())) {
-				for (ReportPeptide pep : reportPeptidesMap.get(child.getID())) {
-					protein.addPeptide(pep);
-				}
-			}
-		}
-		
-		// add the direct accessions
-		for (Accession acc : groupMap.get(id).getProteinIds().values()) {
-			protein.addAccession(acc);
-		}
-		
-		// add all the accessions from the sameSets
-		if ((sameSets != null) &&  sameSets.containsKey(id)) {
-			for (Long sameID : sameSets.get(id)) {
-				if (!sameID.equals(id)) {
-					for (Accession acc : groupMap.get(sameID).getProteinIds().values()) {
-						protein.addAccession(acc);
-					}
-				}
-			}
-		}
-		
-		// add the subProteins
-		if ((subGroups != null) && subGroups.containsKey(id)) {
-			for (Long subID : subGroups.get(id)) {
-				ReportProtein subProtein = proteins.get(subID);
-				if (subProtein == null) {
-					subProtein = createProtein(subID, proteins, reportPeptidesMap,
-							groupMap, sameSets, subGroups);
-					proteins.put(subID, subProtein);
-				}
-				
-				protein.addToSubsets(subProtein);
-			}
-		}
-		
-		if (currentScoring != null) {
-			protein.setScore(currentScoring.calculateProteinScore(protein));
-		}
-		
-		return protein;
-		*/
         return null;
 	}
 

@@ -27,7 +27,7 @@ public class ReportPSM  implements PSMReportItem {
 	private Long ID;
 	
 	/** the associated spectrum */
-	private PeptideSpectrumMatch spectrum;
+	private Comparable spectrumID;
 
 	/** marks, if this PSM is a decoy */
 	private boolean isDecoy;
@@ -36,7 +36,7 @@ public class ReportPSM  implements PSMReportItem {
 	private boolean isFDRGood;
 	
 	/** all the accessions this PSM occurs in */
-	private Map<String, Accession> accessions;
+	private Map<String, String> accessions;
 	
 	/** the rank of the PSM */
 	private Long rank;

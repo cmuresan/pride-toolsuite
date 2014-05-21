@@ -35,6 +35,17 @@
             </roles>
             <timezone>0</timezone>
         </developer>
+        <developer>
+            <id>julian</id>
+            <name>Julian Uszkoreit</name>
+            <organization>Bioinformatic Group, Medical Proteomics/Bioanalytics, Ruhr-Universitaet Bochum, Medizinisches Proteom-Center</organization>
+            <organizationUrl>http://www.ebi.ac.uk/pride</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
+
     </developers>
 
     <properties>

@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.pia.modeller.report.filter.peptide;
 
+import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.pia.modeller.peptide.ReportPeptide;
 import uk.ac.ebi.pride.pia.modeller.psm.PSMReportItem;
 import uk.ac.ebi.pride.pia.modeller.psm.ReportPSM;
@@ -79,10 +80,10 @@ public class PeptideUniqueFilter extends AbstractFilter {
 	
 	@Override
 	public Object getObjectsValue(Object o) {
-		if (o instanceof ReportPeptide) {
+		if (o instanceof Peptide) {
 			Boolean isUnique = null;
 			
-			PSMReportItem psm = ((ReportPeptide) o).getPSMs().iterator().next();
+			PSMReportItem psm = ((Peptide) o).getPSMs().iterator().next();
 			if (psm instanceof ReportPSMSet) {
 				isUnique = ((ReportPSMSet) psm).getPSMs().iterator().next().
 						getSpectrum().getIsUnique();

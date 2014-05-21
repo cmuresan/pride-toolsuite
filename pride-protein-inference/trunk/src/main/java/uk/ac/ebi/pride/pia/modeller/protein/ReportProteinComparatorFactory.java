@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.pia.modeller.protein;
 
+import uk.ac.ebi.pride.data.core.Protein;
 import uk.ac.ebi.pride.pia.modeller.report.SortOrder;
 import uk.ac.ebi.pride.pia.modeller.score.comparator.RankComparator;
 
@@ -10,15 +11,11 @@ import java.util.Map;
 
 
 /**
- * Handles {@link Comparator}s for {@link ReportProtein}s.
- * 
- * @author julian
  *
  */
 public class ReportProteinComparatorFactory {
 	
 	/**
-	 * the types of sorting available for a {@link uk.ac.ebi.pride.pia.modeller.peptide.ReportPeptide}
 	 * 
 	 * @author julian
 	 *
@@ -29,8 +26,10 @@ public class ReportProteinComparatorFactory {
 		 */
 		RANK_SORT {
 			@Override
-			public Comparator<ReportProtein> getNewInstance() {
-				return new RankComparator<ReportProtein>();
+			public Comparator<Protein> getNewInstance() {
+				//return new RankComparator<Protein>();
+                //Todo: It would be great to know what is a Rank for a Protein, because this is not an information provided in the file - For Julian
+                return null;
 			}
 			
 			@Override
@@ -44,11 +43,13 @@ public class ReportProteinComparatorFactory {
 		 */
 		NR_SPECTRA_SORT {
 			@Override
-			public Comparator<ReportProtein> getNewInstance() {
-				return new Comparator<ReportProtein>() {
+			public Comparator<Protein> getNewInstance() {
+				return new Comparator<Protein>() {
 					@Override
-					public int compare(ReportProtein o1, ReportProtein o2) {
-						return o1.getNrSpectra().compareTo(o2.getNrSpectra());
+					public int compare(Protein o1, Protein o2) {
+                        //Todo: Implement this at Protein level also: Yasset
+						//return o1.getNrSpectra().compareTo(o2.getNrSpectra());
+                        return 1;
 					}
 				};
 			}
@@ -63,11 +64,13 @@ public class ReportProteinComparatorFactory {
 		 */
 		NR_PSMS_SORT {
 			@Override
-			public Comparator<ReportProtein> getNewInstance() {
-				return new Comparator<ReportProtein>() {
+			public Comparator<Protein> getNewInstance() {
+				return new Comparator<Protein>() {
 					@Override
-					public int compare(ReportProtein o1, ReportProtein o2) {
-						return o1.getNrPSMs().compareTo(o2.getNrPSMs());
+					public int compare(Protein o1, Protein o2) {
+                        //Todo: Implement this at Protein level also: Yasset
+						//return o1.getNrPSMs().compareTo(o2.getNrPSMs());
+                        return 1;
 					}
 				};
 			}
@@ -82,11 +85,13 @@ public class ReportProteinComparatorFactory {
 		 */
 		NR_PEPTIDES_SORT {
 			@Override
-			public Comparator<ReportProtein> getNewInstance() {
-				return new Comparator<ReportProtein>() {
+			public Comparator<Protein> getNewInstance() {
+				return new Comparator<Protein>() {
 					@Override
-					public int compare(ReportProtein o1, ReportProtein o2) {
-						return o1.getNrPeptides().compareTo(o2.getNrPeptides());
+					public int compare(Protein o1, Protein o2) {
+						// Todo: Implement this a Protein level also: Yasset
+                        //return o1.getNrPeptides().compareTo(o2.getNrPeptides());
+                        return 1;
 					}
 				};
 			}
@@ -102,10 +107,10 @@ public class ReportProteinComparatorFactory {
 		 */
 		SCORE_SORT {
 			@Override
-			public Comparator<ReportProtein> getNewInstance() {
-				return new Comparator<ReportProtein>() {
+			public Comparator<Protein> getNewInstance() {
+				return new Comparator<Protein>() {
 					@Override
-					public int compare(ReportProtein o1, ReportProtein o2) {
+					public int compare(Protein o1, Protein o2) {
 						if (o1.getScore().equals(Double.NaN) &&
 								o2.getScore().equals(Double.NaN)) {
 							return 0;
@@ -114,8 +119,9 @@ public class ReportProteinComparatorFactory {
 						} else if (o2.getScore().equals(Double.NaN)) {
 							return -1;
 						}
-						
-						return o1.getScore().compareTo(o2.getScore());
+						// Todo: Implement this in ms-data-core-api Rigth now the scores in ms-data-core-api are store using
+						//return o1.getScore().compareTo(o2.getScore());
+                        return 1;
 					}
 				};
 			}
@@ -131,10 +137,10 @@ public class ReportProteinComparatorFactory {
 		 */
 		SCORE_SORT_HIGHERSCOREBETTER {
 			@Override
-			public Comparator<ReportProtein> getNewInstance() {
-				return new Comparator<ReportProtein>() {
+			public Comparator<Protein> getNewInstance() {
+				return new Comparator<Protein>() {
 					@Override
-					public int compare(ReportProtein o1, ReportProtein o2) {
+					public int compare(Protein o1, Protein o2) {
 						if (o1.getScore().equals(Double.NaN) &&
 								o2.getScore().equals(Double.NaN)) {
 							return 0;
@@ -143,8 +149,9 @@ public class ReportProteinComparatorFactory {
 						} else if (o2.getScore().equals(Double.NaN)) {
 							return -1;
 						}
-						
-						return -o1.getScore().compareTo(o2.getScore());
+                        // Todo: Implement this in ms-data-core-api Rigth now the scores in ms-data-core-api are store using
+						//return -o1.getScore().compareTo(o2.getScore());
+                        return 1;
 					}
 				};
 			}
@@ -162,7 +169,7 @@ public class ReportProteinComparatorFactory {
 		 * 
 		 * @return
 		 */
-		public abstract Comparator<ReportProtein> getNewInstance();
+		public abstract Comparator<Protein> getNewInstance();
 		
 	}
 	
@@ -173,10 +180,10 @@ public class ReportProteinComparatorFactory {
 	 * @param other
 	 * @return
 	 */
-	public static Comparator<ReportProtein> descending(final Comparator<ReportProtein> other) {
-		return new Comparator<ReportProtein>() {
+	public static Comparator<Protein> descending(final Comparator<Protein> other) {
+		return new Comparator<Protein>() {
 			@Override
-			public int compare(ReportProtein o1, ReportProtein o2) {
+			public int compare(Protein o1, Protein o2) {
 				return -1 * other.compare(o1, o2);
 			}
 		};
@@ -189,12 +196,12 @@ public class ReportProteinComparatorFactory {
 	 * @param multipleOptions
 	 * @return
 	 */
-	public static Comparator<ReportProtein> getComparator(final List<Comparator<ReportProtein>> multipleOptions) {
-		return new Comparator<ReportProtein>() {
-			public int compare(ReportProtein o1, ReportProtein o2) {
+	public static Comparator<Protein> getComparator(final List<Comparator<Protein>> multipleOptions) {
+		return new Comparator<Protein>() {
+			public int compare(Protein o1, Protein o2) {
 				int result;
 				// check all options, the first not returning 0 (equal) gets returned
-				for (Comparator<ReportProtein> option : multipleOptions) {
+				for (Comparator<Protein> option : multipleOptions) {
 					result = option.compare(o1, o2);
 					if (result != 0) {
 						return result;
@@ -213,7 +220,7 @@ public class ReportProteinComparatorFactory {
 	 * @param order
 	 * @return
 	 */
-	public static Comparator<ReportProtein> getComparatorByName(String name, SortOrder order) {
+	public static Comparator<Protein> getComparatorByName(String name, SortOrder order) {
 		
 		for (ReportProteinComparatorFactory.CompareType comp : CompareType.values()) {
 			if (name.equals(comp.toString())) {

@@ -132,11 +132,9 @@ public class OccamsRazorInference extends AbstractProteinInference {
 		
 		return filters;
 	}
-	
-	@Override
-	public List<ReportProtein> calculateInference(Map<Long, Group> groupMap,
-                                                  Map<String, ReportPSMSet> reportPSMSetMap,
-                                                  boolean considerModifications,
+
+    @Override
+	public List<Group> calculateInference(boolean considerModifications,
                                                   Map<String, Boolean> psmSetSettings) {
         progress = 0.0;
 		logger.info(name + " calculateInference started...");
@@ -148,17 +146,7 @@ public class OccamsRazorInference extends AbstractProteinInference {
 		Map<Long, Map<Long, Group>> treeGroupMap =
 				new HashMap<Long, Map<Long,Group>>();
 		// get the clusters/trees
-		for (Map.Entry<Long, Group> groupIt : groupMap.entrySet()) {
-			Map<Long, Group> treeGroups =
-					treeGroupMap.get(groupIt.getValue().getTreeID());
-			
-			if (treeGroups == null) {
-				treeGroups = new HashMap<Long, Group>();
-				treeGroupMap.put(groupIt.getValue().getTreeID(), treeGroups);
-			}
-			
-			treeGroups.put(groupIt.getKey(), groupIt.getValue());
-		}
+
 		treeGroupsIterator = treeGroupMap.entrySet().iterator();
 		
 		logger.info("PIA trees sorted, " + treeGroupMap.size() + " trees");
@@ -167,7 +155,8 @@ public class OccamsRazorInference extends AbstractProteinInference {
 		reportProteins = new ArrayList<ReportProtein>();
 		
 		// the number of threads used for the inference
-		int nr_threads = getAllowedThreads();
+		//int nr_threads = getAllowedThreads();
+        int nr_threads = 4;
 		if (nr_threads < 1) {
 			nr_threads = Runtime.getRuntime().availableProcessors();
 		}
@@ -180,10 +169,8 @@ public class OccamsRazorInference extends AbstractProteinInference {
 		threads.clear();
 		for (int i=0; (i < nr_threads); i++) {
 			OccamsRazorWorkerThread workerThread =
-								new OccamsRazorWorkerThread(i+1,
-										this,
-										filters,
-										reportPSMSetMap,
+								new OccamsRazorWorkerThread(i+1,this,filters,
+
 										considerModifications,
 										psmSetSettings);
 			threads.add(workerThread);
@@ -243,15 +230,9 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	public String getShortName() {
 		return shortName;
 	}
-	
-	
-	@Override
-	public Long getProgressValue() {
-		return progress.longValue();
-	}
+
 
     public OccamsRazorInference(DataAccessController controller) {
         super(controller);
     }
-
 }

@@ -15,9 +15,9 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.pia.intermediate.Accession;
 import uk.ac.ebi.pride.pia.intermediate.PIAInputFile;
+import uk.ac.ebi.pride.pia.modeller.peptide.PeptideComparatorFactory;
 import uk.ac.ebi.pride.pia.modeller.peptide.PeptideExecuteCommands;
 import uk.ac.ebi.pride.pia.modeller.peptide.ReportPeptide;
-import uk.ac.ebi.pride.pia.modeller.peptide.ReportPeptideComparatorFactory;
 import uk.ac.ebi.pride.pia.modeller.psm.PSMReportItem;
 import uk.ac.ebi.pride.pia.modeller.psm.ReportPSM;
 import uk.ac.ebi.pride.pia.modeller.psm.ReportPSMSet;
@@ -300,7 +300,7 @@ public class PeptideModeller {
 				new ArrayList<Comparator<ReportPeptide>>();
 		
 		for (String sortKey : sortOrders) {
-			compares.add( ReportPeptideComparatorFactory.getComparatorByName(
+			compares.add( PeptideComparatorFactory.getComparatorByName(
                             sortKey,
                             sortables.get(sortKey))
 				);
@@ -308,7 +308,7 @@ public class PeptideModeller {
 		
 		if (fileReportPeptides.get(fileID) != null) {
 			Collections.sort(fileReportPeptides.get(fileID),
-					ReportPeptideComparatorFactory.getComparator(compares));
+					PeptideComparatorFactory.getComparator(compares));
 		}
 	}
 	

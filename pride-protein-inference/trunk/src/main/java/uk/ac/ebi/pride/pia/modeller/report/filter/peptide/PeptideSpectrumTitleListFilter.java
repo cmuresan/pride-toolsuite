@@ -1,11 +1,15 @@
 package uk.ac.ebi.pride.pia.modeller.report.filter.peptide;
 
+import uk.ac.ebi.pride.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.pia.modeller.peptide.ReportPeptide;
 import uk.ac.ebi.pride.pia.modeller.report.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.modeller.report.filter.FilterComparator;
 import uk.ac.ebi.pride.pia.modeller.report.filter.FilterType;
 import uk.ac.ebi.pride.pia.modeller.report.filter.RegisteredFilters;
 
+/**
+ * This class should work with IdentificableParamGroup and CVPArams.
+ */
 public class PeptideSpectrumTitleListFilter extends AbstractFilter {
 	
 	protected static final String shortName = RegisteredFilters.PEPTIDE_SPECTRUM_TITLE_LIST_FILTER.getShortName();
@@ -76,8 +80,8 @@ public class PeptideSpectrumTitleListFilter extends AbstractFilter {
 	
 	@Override
 	public Object getObjectsValue(Object o) {
-		if (o instanceof ReportPeptide) {
-			return ((ReportPeptide) o).getSpectrumTitles();
+		if (o instanceof SpectrumIdentification) {
+			return ((SpectrumIdentification) o);
 		} else {
 			// nothing supported
 			return null;

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.pia.intermediate.Accession;
 import uk.ac.ebi.pride.pia.intermediate.Group;
 import uk.ac.ebi.pride.pia.modeller.peptide.ReportPeptide;
@@ -45,7 +46,6 @@ public class OccamsRazorWorkerThread extends Thread {
 	public OccamsRazorWorkerThread(int ID,
                                    OccamsRazorInference parent,
                                    List<AbstractFilter> filters,
-                                   Map<String, ReportPSMSet> reportPSMSetMap,
                                    boolean considerModifications,
                                    Map<String, Boolean> psmSetSettings) {
 		this.ID = ID;
@@ -76,7 +76,7 @@ public class OccamsRazorWorkerThread extends Thread {
 	
 	private void processTree(Map<Long, Group> groupMap) {
 		// get the filtered report peptides mapping from the groups' IDs
-		Map<Long, List<ReportPeptide>> reportPeptidesMap =
+		Map<Long, List<Peptide>> reportPeptidesMap =
 				parent.createFilteredReportPeptides(groupMap, reportPSMSetMap,
 						considerModifications, psmSetSettings);
 		

@@ -24,7 +24,7 @@ import java.util.*;
  * An {@link AbstractProteinInference} calculates for the PIA groups,
  * which are to be reported and in which way.
  * 
- * @author julian, yperez
+ * @author julianu, yperez
  *
  */
 public abstract class AbstractProteinInference {

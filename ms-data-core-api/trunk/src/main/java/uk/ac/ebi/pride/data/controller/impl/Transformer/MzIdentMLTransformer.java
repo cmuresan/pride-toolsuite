@@ -281,27 +281,37 @@ public final class MzIdentMLTransformer {
     }
 
     public static Software transformToSoftware(uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftware oldSoftware) {
-        if (oldSoftware != null) {
+
+
+        /** The name of the software sometime is not annotated from writers and exporters
+         * in those cases we use the name in CvParams or User Params or Id in cases that no information
+         * is provided*/
+
+         if (oldSoftware != null) {
+            String name = oldSoftware.getName();
             Contact contact = null;
             if (oldSoftware.getContactRole() != null && oldSoftware.getContactRole().getOrganization() != null) {
                 contact = transformToOrganization(oldSoftware.getContactRole().getOrganization());
             } else if (oldSoftware.getContactRole() != null && oldSoftware.getContactRole().getPerson() != null) {
                 contact = transformToPerson(oldSoftware.getContactRole().getPerson());
             }
-            ParamGroup name = null;
+            ParamGroup cvName = null;
             if (oldSoftware.getSoftwareName() != null) {
-                name = new ParamGroup();
+                cvName = new ParamGroup();
                 if (oldSoftware.getSoftwareName().getCvParam() != null) {
                     CvParam cvParam = transformToCvParam(oldSoftware.getSoftwareName().getCvParam());
-                    name.addCvParam(cvParam);
+                    cvName.addCvParam(cvParam);
+                    if(name == null) name = getValueFromCvTerm(name, cvParam);
                 }
                 if (oldSoftware.getSoftwareName().getUserParam() != null) {
                     UserParam userParam = transformToUserParam(oldSoftware.getSoftwareName().getUserParam());
-                    name.addUserParam(userParam);
+                    cvName.addUserParam(userParam);
+                    if(name == null) name = getValueFromCvTerm(name, userParam);
                 }
             }
+            if(name == null && oldSoftware.getId() != null) name = oldSoftware.getId();
 
-            return new Software(name, oldSoftware.getId(), oldSoftware.getName(), contact, oldSoftware.getCustomizations(), oldSoftware.getUri(), oldSoftware.getVersion());
+            return new Software(cvName, oldSoftware.getId(), name, contact, oldSoftware.getCustomizations(), oldSoftware.getUri(), oldSoftware.getVersion());
         }
         return null;
     }
@@ -672,6 +682,12 @@ public final class MzIdentMLTransformer {
     }
 
     private static SearchDataBase transformToSeachDatabase(uk.ac.ebi.jmzidml.model.mzidml.SearchDatabase oldDatabase) {
+
+        String name = (oldDatabase != null)? oldDatabase.getName():null;
+        /** Software writers sometimes don't annotate the software name and
+         * we construct this value using the CVparams or Userparams. In case
+         * that no CvParams or Userparms is present we use the Id information*/
+
         CvParam fileFormat = (oldDatabase.getFileFormat() == null) ? null : transformToCvParam(oldDatabase.getFileFormat().getCvParam());
         String releaseDate = (oldDatabase.getReleaseDate() == null) ? null : oldDatabase.getReleaseDate().toString();
         int dataBaseSeq = (oldDatabase.getNumDatabaseSequences() == null) ? -1 : oldDatabase.getNumDatabaseSequences().intValue();
@@ -680,8 +696,17 @@ public final class MzIdentMLTransformer {
         if (oldDatabase.getDatabaseName() != null) {
             nameOfDatabase = new ParamGroup(transformToCvParam(oldDatabase.getDatabaseName().getCvParam()), transformToUserParam(oldDatabase.getDatabaseName().getUserParam()));
         }
+        if(name == null){
+            if(!nameOfDatabase.getCvParams().isEmpty()){
+                name = getValueFromCvTerm(name, nameOfDatabase.getCvParams().get(0));
+            }if(name == null && !nameOfDatabase.getUserParams().isEmpty()){
+                name = getValueFromCvTerm(name, nameOfDatabase.getUserParams().get(0));
+            }if(name == null){
+                name = oldDatabase.getId();
+            }
+        }
         return new SearchDataBase(oldDatabase.getId(),
-                oldDatabase.getName(), oldDatabase.getLocation(), fileFormat, oldDatabase.getExternalFormatDocumentation(), oldDatabase.getVersion(), releaseDate, dataBaseSeq, dataBaseRes, nameOfDatabase, transformToCvParam(oldDatabase.getCvParam()));
+                name, oldDatabase.getLocation(), fileFormat, oldDatabase.getExternalFormatDocumentation(), oldDatabase.getVersion(), releaseDate, dataBaseSeq, dataBaseRes, nameOfDatabase, transformToCvParam(oldDatabase.getCvParam()));
     }
 
     public static List<CVLookup> transformCVList(List<uk.ac.ebi.jmzidml.model.mzidml.Cv> cvList) {
@@ -917,5 +942,23 @@ public final class MzIdentMLTransformer {
         }
 
         return new ProteinGroup(paramGroup, proteinAmbiguityGroup.getId(), proteinAmbiguityGroup.getName(), proteins);
+    }
+
+    /**
+     * To get the information of a cvterm or user param and put in an String we normally take firstly
+     * the value of the Parameter and if is not provided we take the name. This function is important when
+     * information like the name of the object is not provide and the writers use only CvTerms.
+     * @param originalValue
+     * @param cvTerm
+     * @return
+     */
+    private static String getValueFromCvTerm(String originalValue, Parameter cvTerm){
+
+       if(cvTerm.getValue() != null && cvTerm.getValue().length() > 0){
+           originalValue = cvTerm.getValue();
+       }else if(cvTerm.getName() != null && cvTerm.getName().length() > 0){
+           originalValue = cvTerm.getName();
+       }
+       return originalValue;
     }
 }

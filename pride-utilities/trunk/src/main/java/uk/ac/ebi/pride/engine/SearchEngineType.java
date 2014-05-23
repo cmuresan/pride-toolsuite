@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * SearchEngineType defines a list of supported search engines.
  * <p/>
- * User: rwang
+ * User: yperez, rwang
  * Date: 01-Dec-2010
  * Time: 16:41:12
  */
@@ -48,7 +48,12 @@ public enum SearchEngineType {
     MYRIMATCH(Arrays.asList(CvTermReference.MS_MYRIMATCH_MVH,
             CvTermReference.MS_MYRIMATCH_MZFIDELITY,
             CvTermReference.MS_MYRIMATCH_NMATCHS,
-            CvTermReference.MS_MYRIMATCH_NOMATCHS));
+            CvTermReference.MS_MYRIMATCH_NOMATCHS)),
+
+    PEPTIDESHAKER(Arrays.asList(CvTermReference.MS_PEPTIDESHAKER_PSM_SCORE,
+            CvTermReference.MS_PEPTIDESHAKER_PSM_CONFIDENCE,
+            CvTermReference.MS_PEPTIDESHAKER_PROTEIN_SCORE,
+            CvTermReference.MS_PEPTIDESHAKER_PROTEIN_CONFIDENCE));
 
 
     private List<CvTermReference> searchEngineScores;

@@ -146,6 +146,7 @@ public enum CvTermReference {
     MS_SEQUEST_CONSENSUS_SCORE("MS", "MS:1001163", "Sequest:consensus score", "MS:1001153"),
     MS_SEQUEST_DELTA_CN("MS", "MS:1001156", "Sequest:deltacn", "MS:1001143"),
     MS_SEQUEST_XCORR("MS", "MS:1001155", "Sequest:xcorr", "MS:1001143"),
+    MS_SEQUEST_PROBABILITY("MS", "MS:1001154", "SEQUEST:probability", "MS:1001143"),
 
 
     SPECTRUM_MILL_PEPTIDE_SCORE("PRIDE", "PRIDE:0000177", "SpectrumMill Peptide Score", "PRIDE:0000049"),
@@ -170,6 +171,11 @@ public enum CvTermReference {
     MS_MSGF_QVALUE("MS", "MS:1002054", "MS-GF Q-value", "MS:1001143"),
     MS_MSGF_PEPQVALUE("MS", "MS:1002055", "MS-GF peptide-level Q-value", "MS:1001143"),
 
+    //PeptideShacker Scores
+    MS_PEPTIDESHAKER_PSM_SCORE("MS", "MS:1002466", "PeptideShaker: PSM Score", "MS:1001143"),
+    MS_PEPTIDESHAKER_PSM_CONFIDENCE("MS", "MS:1002467", "PeptideShaker: PSM Confidence", "MS:1001143"),
+    MS_PEPTIDESHAKER_PROTEIN_SCORE("MS", "MS:1002470", "PeptideShaker: Protein Score","MS:1001143"),
+    MS_PEPTIDESHAKER_PROTEIN_CONFIDENCE("MS", "MS:1002471", "PeptideShake: Protein Confidence","MS:1001143"),
 
     // Paragon:score
     MS_PARAGON_SCORE("MS", "MS:1001166", "Paragon:score", "MS:1001153"),

@@ -378,8 +378,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
                 throw new DataAccessException("Failed to retrieve meta data", ex);
             }
         }
-        System.out.println("Protein Ids: " + getProteinIds().size());
-        System.out.println("Peptide Ids: " + getNumberOfPeptides());
+        //System.out.println("Protein Ids: " + getProteinIds().size());
+        //System.out.println("Peptide Ids: " + getNumberOfPeptides());
         return metaData;
     }
 

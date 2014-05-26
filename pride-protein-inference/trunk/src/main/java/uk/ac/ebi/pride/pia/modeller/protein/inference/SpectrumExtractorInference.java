@@ -13,8 +13,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.pia.intermediate.Accession;
-import uk.ac.ebi.pride.pia.intermediate.Group;
-import uk.ac.ebi.pride.pia.intermediate.Peptide;
+import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
+import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
 import uk.ac.ebi.pride.pia.modeller.peptide.ReportPeptide;
 import uk.ac.ebi.pride.pia.modeller.protein.ReportProtein;
 import uk.ac.ebi.pride.pia.modeller.protein.ReportProteinComparatorFactory;
@@ -202,7 +202,7 @@ public class SpectrumExtractorInference extends AbstractProteinInference {
 	
 	
 	@Override
-	public List<ReportProtein> calculateInference(Map<Long, Group> groupMap,
+	public List<ReportProtein> calculateInference(Map<Long, IntermediateGroup> groupMap,
 			Map<String, ReportPSMSet> reportPSMSetMap,
 			boolean considerModifications,
 			Map<String, Boolean> psmSetSettings) {
@@ -259,8 +259,8 @@ public class SpectrumExtractorInference extends AbstractProteinInference {
 		usedSpectra = null;
 		
 		// maps from groupID/proteinID to the peptides, for (re-)scoring...
-		Map<Long, Set<Peptide>> groupsPeptides =
-				new HashMap<Long, Set<Peptide>>(groupMap.size());
+		Map<Long, Set<IntermediatePeptide>> groupsPeptides =
+				new HashMap<Long, Set<IntermediatePeptide>>(groupMap.size());
 		
 		// the (remaining) proteins
 		List<ReportProtein> proteinList =
@@ -268,7 +268,7 @@ public class SpectrumExtractorInference extends AbstractProteinInference {
 		
 		
 		logger.info("building groupsPeptides and first proteinList...");
-		for (Group grIt : groupMap.values()) {
+		for (IntermediateGroup grIt : groupMap.values()) {
 			// only groups with accessions are interesting
 			if (grIt.getProteinIds().size() > 0) {
 				// create protein, with same ID as groupID
@@ -283,11 +283,11 @@ public class SpectrumExtractorInference extends AbstractProteinInference {
 				proteinList.add(repProtein);
 				
 				// prepare peptide cache for protein
-				Set<Peptide> pepSet =
-						new HashSet<Peptide>(grIt.getAllPeptides().size());
+				Set<IntermediatePeptide> pepSet =
+						new HashSet<IntermediatePeptide>(grIt.getAllPeptides().size());
 				groupsPeptides.put(repProtein.getID(), pepSet);
 				
-				for (Peptide pep : grIt.getAllPeptides().values()) {
+				for (IntermediatePeptide pep : grIt.getAllPeptides().values()) {
 					// put peptide into cache
 					pepSet.add(pep);
 				}

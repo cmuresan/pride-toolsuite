@@ -11,19 +11,21 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import uk.ac.ebi.pride.pia.intermediate.Peptide;
-import uk.ac.ebi.pride.pia.intermediate.PeptideSpectrumMatch;
-import uk.ac.ebi.pride.pia.modeller.peptide.ReportPeptide;
-import uk.ac.ebi.pride.pia.modeller.protein.ReportProtein;
-import uk.ac.ebi.pride.pia.modeller.protein.ReportProteinComparatorFactory;
-import uk.ac.ebi.pride.pia.modeller.protein.scoring.AbstractScoring;
-import uk.ac.ebi.pride.pia.modeller.psm.PSMReportItem;
-import uk.ac.ebi.pride.pia.modeller.psm.ReportPSM;
-import uk.ac.ebi.pride.pia.modeller.psm.ReportPSMSet;
-import uk.ac.ebi.pride.pia.modeller.report.filter.AbstractFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.FilterFactory;
-import uk.ac.ebi.pride.pia.modeller.score.ScoreModel;
-import uk.ac.ebi.pride.pia.modeller.score.ScoreModelEnum;
+
+import de.mpc.pia.intermediate.Peptide;
+import de.mpc.pia.intermediate.PeptideSpectrumMatch;
+import de.mpc.pia.modeller.peptide.ReportPeptide;
+import de.mpc.pia.modeller.protein.ReportProtein;
+import de.mpc.pia.modeller.protein.ReportProteinComparatorFactory;
+import de.mpc.pia.modeller.protein.scoring.AbstractScoring;
+import de.mpc.pia.modeller.psm.PSMReportItem;
+import de.mpc.pia.modeller.psm.ReportPSM;
+import de.mpc.pia.modeller.psm.ReportPSMSet;
+import de.mpc.pia.modeller.report.filter.AbstractFilter;
+import de.mpc.pia.modeller.report.filter.FilterFactory;
+import de.mpc.pia.modeller.score.ScoreModel;
+import de.mpc.pia.modeller.score.ScoreModelEnum;
+
 
 
 public class SpectrumExtractorWorkerThread extends Thread {
@@ -41,7 +43,7 @@ public class SpectrumExtractorWorkerThread extends Thread {
 	private List<AbstractFilter> filters;
 	
 	/** maps from groupID/proteinID to the peptides */
-	private Map<Long, Set<Peptide>> groupsPeptides;
+	private Map<Long, Set<IntermediatePeptide>> groupsPeptides;
 	
 	/** maps of the ReportPSMSets (build by the PSM Viewer) */
 	private Map<String, ReportPSMSet> reportPSMSetMap;
@@ -91,7 +93,7 @@ public class SpectrumExtractorWorkerThread extends Thread {
 			SpectrumExtractorInference parent,
 			AbstractScoring scoring,
 			List<AbstractFilter> filters,
-			Map<Long, Set<Peptide>> groupsPeptides,
+			Map<Long, Set<IntermediatePeptide>> groupsPeptides,
 			Map<String, ReportPSMSet> reportPSMSetMap,
 			Map<Long, ReportPSM> reportPSMMap,
 			Map<String, Set<ReportPSMSet>> peptidesSpectra,
@@ -145,7 +147,7 @@ public class SpectrumExtractorWorkerThread extends Thread {
 		Set<String> peptideBlacklist = new HashSet<String>();
 		boolean iterate = true;
 		
-		ScoreModelEnum scoreModel =
+		ScoreModelEnum scoreModel = 
 				ScoreModelEnum.getModelByDescription(
 						scoring.getScoreSetting().getValue());
 		if (scoreModel == null) {
@@ -159,7 +161,7 @@ public class SpectrumExtractorWorkerThread extends Thread {
 			
 			// sort the PSMs or PSMSets (if COMBINED_FDR_SCORE is used) into the peptides
 			// all possible peptides with their PSMs are given for the protein
-			for (Peptide peptide : groupsPeptides.get(protein.getID())) {
+			for (IntermediatePeptide peptide : groupsPeptides.get(protein.getID())) {
 				// holds the getPeptideStringIDs, which are done
 				Set<String> modificationsDone = new HashSet<String>();
 				
@@ -255,7 +257,7 @@ public class SpectrumExtractorWorkerThread extends Thread {
 							}
 							
 							if (!FilterFactory.satisfiesFilterList(
-                                    psmSet, 0L, filters)) {
+									psmSet, 0L, filters)) {
 								// remove the PSMSet from the peptide
 								peptide.removeReportPSMSet((ReportPSMSet)psmSet,
 										psmSetSettings);

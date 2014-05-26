@@ -8,14 +8,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.pia.intermediate.Accession;
-import uk.ac.ebi.pride.pia.intermediate.Group;
-import uk.ac.ebi.pride.pia.modeller.peptide.ReportPeptide;
-import uk.ac.ebi.pride.pia.modeller.protein.ReportProtein;
-import uk.ac.ebi.pride.pia.modeller.psm.ReportPSMSet;
-import uk.ac.ebi.pride.pia.modeller.report.filter.AbstractFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.FilterFactory;
+
+import de.mpc.pia.intermediate.Accession;
+import de.mpc.pia.intermediate.Group;
+import de.mpc.pia.modeller.peptide.ReportPeptide;
+import de.mpc.pia.modeller.protein.ReportProtein;
+import de.mpc.pia.modeller.psm.ReportPSMSet;
+import de.mpc.pia.modeller.report.filter.AbstractFilter;
+import de.mpc.pia.modeller.report.filter.FilterFactory;
+
 
 
 public class OccamsRazorWorkerThread extends Thread {
@@ -44,10 +45,11 @@ public class OccamsRazorWorkerThread extends Thread {
 	
 	
 	public OccamsRazorWorkerThread(int ID,
-                                   OccamsRazorInference parent,
-                                   List<AbstractFilter> filters,
-                                   boolean considerModifications,
-                                   Map<String, Boolean> psmSetSettings) {
+			OccamsRazorInference parent,
+			List<AbstractFilter> filters,
+			Map<String, ReportPSMSet> reportPSMSetMap,
+			boolean considerModifications,
+			Map<String, Boolean> psmSetSettings) {
 		this.ID = ID;
 		this.parent = parent;
 		this.filters = filters;
@@ -62,7 +64,7 @@ public class OccamsRazorWorkerThread extends Thread {
 	@Override
 	public void run() {
 		int treeCount = 0;
-		Map.Entry<Long, Map<Long, Group>> treeEntry;
+		Map.Entry<Long, Map<Long, IntermediateGroup>> treeEntry;
 		
 		while (null != (treeEntry = parent.getNextTree())) {
 			processTree(treeEntry.getValue());
@@ -74,9 +76,9 @@ public class OccamsRazorWorkerThread extends Thread {
 	
 	
 	
-	private void processTree(Map<Long, Group> groupMap) {
+	private void processTree(Map<Long, IntermediateGroup> groupMap) {
 		// get the filtered report peptides mapping from the groups' IDs
-		Map<Long, List<Peptide>> reportPeptidesMap =
+		Map<Long, List<ReportPeptide>> reportPeptidesMap =
 				parent.createFilteredReportPeptides(groupMap, reportPSMSetMap,
 						considerModifications, psmSetSettings);
 		
@@ -93,8 +95,8 @@ public class OccamsRazorWorkerThread extends Thread {
 				new HashMap<Long, Set<Long>>(reportPeptidesMap.size());
 		
 		// create for each group, which has at least one peptide and accession, a ReportProtein
-		for (Map.Entry<Long, Group> groupIt : groupMap.entrySet()) {
-			if ((groupIt.getValue().getProteinIds().size() == 0) ||
+		for (Map.Entry<Long, IntermediateGroup> groupIt : groupMap.entrySet()) {
+			if ((groupIt.getValue().getAccessions().size() == 0) ||
 					!parent.groupHasReportPeptides(
 							groupIt.getValue(), reportPeptidesMap)) {
 				// this group has no peptides, skip it
@@ -104,7 +106,7 @@ public class OccamsRazorWorkerThread extends Thread {
 			ReportProtein protein = new ReportProtein(groupIt.getKey());
 			
 			// add the accessions
-			for (Accession acc : groupIt.getValue().getProteinIds().values()) {
+			for (Accession acc : groupIt.getValue().getAccessions().values()) {
 				protein.addAccession(acc);
 			}
 			
@@ -293,9 +295,6 @@ public class OccamsRazorWorkerThread extends Thread {
 					// TODO: for now, the proteins which "explain" no more peptides are not reported (this happens sometimes)
 					reportProteins.add(protein);
 					reportedPeptides.addAll(peptideKeysMap.get(protID));
-					
-				} else {
-					logger.debug("protein has no more peptides: " + protein.getAccessions().get(0).getAccession());
 				}
 				unreportedProteins.remove(protID);
 				

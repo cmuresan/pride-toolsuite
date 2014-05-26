@@ -151,14 +151,14 @@ public class PSMModeller {
 	
 	/**
 	 * Basic constructor, creates the {@link ReportPSM}s and
-	 * {@link ReportPSMSet}s from the given {@link uk.ac.ebi.pride.pia.intermediate.Group}s. The {@link Group}s
+	 * {@link ReportPSMSet}s from the given {@link uk.ac.ebi.pride.pia.intermediate.IntermediateGroup}s. The {@link IntermediateGroup}s
 	 * should derive from a {@link PIAInputFile}.
 	 * 
 	 * @param groups groups of the PIA intermediate file
 	 * @param inputFiles the used {@link PIAInputFile}s
 	 * @param fileName map, which will be filled with the scoreNames for each file
 	 */
-	public PSMModeller(Map<Long, Group> groups,
+	public PSMModeller(Map<Long, IntermediateGroup> groups,
 			Map<Long, PIAInputFile> inputFiles,
 			Map<String, SearchDataBase> searchDatabases,
 			Map<String, SpectraData> spectraData,

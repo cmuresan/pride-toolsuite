@@ -1,7 +1,5 @@
 package uk.ac.ebi.pride.pia.modeller.protein.inference;
 
-import uk.ac.ebi.pride.data.controller.DataAccessController;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,8 +19,7 @@ public class ProteinInferenceFactory {
 	 *
 	 */
 	public enum ProteinInferenceMethod {
-
-        REPORT_OCCAMS_RAZOR {
+		REPORT_OCCAMS_RAZOR {
 			@Override
 			public String getName() {
 				return OccamsRazorInference.name;
@@ -34,8 +31,8 @@ public class ProteinInferenceFactory {
 			}
 			
 			@Override
-			public OccamsRazorInference createInstanceOf(DataAccessController controller) {
-				return new OccamsRazorInference(controller);
+			public OccamsRazorInference createInstanceOf() {
+				return new OccamsRazorInference();
 			}
 		},
 		
@@ -51,10 +48,28 @@ public class ProteinInferenceFactory {
 			}
 			
 			@Override
-			public SpectrumExtractorInference createInstanceOf(DataAccessController controller) {
-				return new SpectrumExtractorInference(controller);
+			public SpectrumExtractorInference createInstanceOf() {
+				return new SpectrumExtractorInference();
 			}
 		},
+		/*
+		REPORT_PROTEIN_EXTRACTOR {
+			@Override
+			public String getName() {
+				return ProteinExtractorInference.name;
+			}
+			
+			@Override
+			public String getShortName() {
+				return ProteinExtractorInference.shortName;
+			}
+			
+			@Override
+			public ProteinExtractorInference createInstanceOf() {
+				return new ProteinExtractorInference();
+			}
+		},
+		*/
 		REPORT_ALL {
 			@Override
 			public String getName() {
@@ -67,8 +82,8 @@ public class ProteinInferenceFactory {
 			}
 			
 			@Override
-			public ReportAllInference createInstanceOf(DataAccessController controller) {
-				return new ReportAllInference(controller);
+			public ReportAllInference createInstanceOf() {
+				return new ReportAllInference();
 			}
 		},
 		;
@@ -89,7 +104,7 @@ public class ProteinInferenceFactory {
 		 * Returns a new instance of the filter.
 		 * @return
 		 */
-		public abstract AbstractProteinInference createInstanceOf(DataAccessController controller);
+		public abstract AbstractProteinInference createInstanceOf();
 	}
 	
 	
@@ -108,10 +123,10 @@ public class ProteinInferenceFactory {
 	 * @param shortName
 	 * @return
 	 */
-	public static AbstractProteinInference createInstanceOf(String shortName, DataAccessController controller) {
+	public static AbstractProteinInference createInstanceOf(String shortName) {
 		for (ProteinInferenceMethod filter : ProteinInferenceMethod.values()) {
 			if (filter.getShortName().equals(shortName)) {
-				return filter.createInstanceOf(controller);
+				return filter.createInstanceOf();
 			}
 		}
 		

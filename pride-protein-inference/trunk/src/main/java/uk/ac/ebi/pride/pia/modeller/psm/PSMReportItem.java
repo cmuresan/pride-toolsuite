@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.pia.modeller.psm;
 
 import uk.ac.ebi.pride.pia.intermediate.Modification;
-import uk.ac.ebi.pride.pia.intermediate.Peptide;
+import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
 import uk.ac.ebi.pride.pia.modeller.report.filter.Filterable;
 import uk.ac.ebi.pride.pia.modeller.score.FDRComputable;
 import uk.ac.ebi.pride.pia.modeller.score.FDRScoreComputable;
@@ -157,5 +157,5 @@ public interface PSMReportItem extends FDRComputable, FDRScoreComputable,
 	 * Returns the peptide in which this PSM occurs.
 	 * @return
 	 */
-	public Peptide getPeptide();
+	public IntermediatePeptide getPeptide();
 }

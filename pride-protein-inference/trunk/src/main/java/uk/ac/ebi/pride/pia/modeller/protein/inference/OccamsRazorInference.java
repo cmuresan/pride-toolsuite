@@ -7,21 +7,29 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.pia.intermediate.Group;
-import uk.ac.ebi.pride.pia.modeller.protein.ReportProtein;
-import uk.ac.ebi.pride.pia.modeller.psm.ReportPSMSet;
+
 import uk.ac.ebi.pride.pia.modeller.report.filter.peptide.NrPSMsPerPeptideFilter;
 import uk.ac.ebi.pride.pia.modeller.report.filter.peptide.NrSpectraPerPeptideFilter;
 import uk.ac.ebi.pride.pia.modeller.report.filter.peptide.PeptideFileListFilter;
 import uk.ac.ebi.pride.pia.modeller.report.filter.peptide.PeptideScoreFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.protein.*;
-import uk.ac.ebi.pride.pia.modeller.report.filter.psm.*;
+import uk.ac.ebi.pride.pia.modeller.report.filter.protein.NrPSMsPerProteinFilter;
+import uk.ac.ebi.pride.pia.modeller.report.filter.protein.NrPeptidesPerProteinFilter;
+import uk.ac.ebi.pride.pia.modeller.report.filter.protein.NrSpectraPerProteinFilter;
+import uk.ac.ebi.pride.pia.modeller.report.filter.protein.NrUniquePeptidesPerProteinFilter;
+import uk.ac.ebi.pride.pia.modeller.report.filter.protein.ProteinFileListFilter;
+import uk.ac.ebi.pride.pia.modeller.report.filter.protein.ProteinScoreFilter;
+import uk.ac.ebi.pride.pia.modeller.report.filter.psm.NrAccessionsPerPSMFilter;
+import uk.ac.ebi.pride.pia.modeller.report.filter.psm.NrPSMsPerPSMSetFilter;
+import uk.ac.ebi.pride.pia.modeller.report.filter.psm.PSMAccessionsFilter;
+import uk.ac.ebi.pride.pia.modeller.report.filter.psm.PSMFileListFilter;
+import uk.ac.ebi.pride.pia.modeller.report.filter.psm.PSMModificationsFilter;
+import uk.ac.ebi.pride.pia.modeller.report.filter.psm.PSMUniqueFilter;
 import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
 
+
 /**
- * This inference filter reports all the PIA {@link Group}s as protein, which
+ * This inference filter reports all the PIA {@link IntermediateGroup}s as protein, which
  * together fulfill the Occam's Razor constraints. I.e. the minimal set of
  * groups is reported, which contain all peptides and each protein is contained,
  * at least as subset of peptides.<br/>
@@ -56,7 +64,7 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	
 	
 	/** this iterator iterates over the mapping from the tree ID to its groups*/
-	private Iterator<Map.Entry<Long,Map<Long,Group>>> treeGroupsIterator;
+	private Iterator<Map.Entry<Long,Map<Long,IntermediateGroup>>> treeGroupsIterator;
 	
 	/** this list holds the reported proteins */
 	private List<ReportProtein> reportProteins;
@@ -74,7 +82,7 @@ public class OccamsRazorInference extends AbstractProteinInference {
 		for (Map.Entry<String, String>  scoreIt
 				: getAvailableScoreShorts().entrySet()) {
 			String[] filterNames = PSMScoreFilter.getShortAndFilteringName(
-                    scoreIt.getKey(), scoreIt.getValue());
+					scoreIt.getKey(), scoreIt.getValue());
 			if (filterNames != null) {
 				filters.add(new LabelValueContainer<String>(
 						filterNames[0], filterNames[1]));
@@ -108,7 +116,7 @@ public class OccamsRazorInference extends AbstractProteinInference {
 		for (Map.Entry<String, String> scoreIt
 				: getAvailableScoreShorts().entrySet()) {
 			String[] filterNames = PeptideScoreFilter.getShortAndFilteringName(
-                    scoreIt.getKey(), scoreIt.getValue());
+					scoreIt.getKey(), scoreIt.getValue());
 			if (filterNames != null) {
 				filters.add(new LabelValueContainer<String>(
 						filterNames[0], filterNames[1]));
@@ -132,21 +140,33 @@ public class OccamsRazorInference extends AbstractProteinInference {
 		
 		return filters;
 	}
-
-    @Override
-	public List<Group> calculateInference(boolean considerModifications,
-                                                  Map<String, Boolean> psmSetSettings) {
-        progress = 0.0;
+	
+	@Override
+	public List<ReportProtein> calculateInference(Map<Long, IntermediateGroup> groupMap,
+			Map<String, ReportPSMSet> reportPSMSetMap,
+			boolean considerModifications,
+			Map<String, Boolean> psmSetSettings) {
+		progress = 0.0;
 		logger.info(name + " calculateInference started...");
 		logger.info("scoring: " + getScoring().getName() + " with " + 
 				getScoring().getScoreSetting().getValue() + ", " +
 				getScoring().getPSMForScoringSetting().getValue() +
 				"\n\tpsmSetSettings: " + psmSetSettings);
 		
-		Map<Long, Map<Long, Group>> treeGroupMap =
-				new HashMap<Long, Map<Long,Group>>();
+		Map<Long, Map<Long, IntermediateGroup>> treeGroupMap =
+				new HashMap<Long, Map<Long,IntermediateGroup>>();
 		// get the clusters/trees
-
+		for (Map.Entry<Long, IntermediateGroup> groupIt : groupMap.entrySet()) {
+			Map<Long, IntermediateGroup> treeGroups =
+					treeGroupMap.get(groupIt.getValue().getTreeID());
+			
+			if (treeGroups == null) {
+				treeGroups = new HashMap<Long, IntermediateGroup>();
+				treeGroupMap.put(groupIt.getValue().getTreeID(), treeGroups);
+			}
+			
+			treeGroups.put(groupIt.getKey(), groupIt.getValue());
+		}
 		treeGroupsIterator = treeGroupMap.entrySet().iterator();
 		
 		logger.info("PIA trees sorted, " + treeGroupMap.size() + " trees");
@@ -155,8 +175,7 @@ public class OccamsRazorInference extends AbstractProteinInference {
 		reportProteins = new ArrayList<ReportProtein>();
 		
 		// the number of threads used for the inference
-		//int nr_threads = getAllowedThreads();
-        int nr_threads = 4;
+		int nr_threads = getAllowedThreads();
 		if (nr_threads < 1) {
 			nr_threads = Runtime.getRuntime().availableProcessors();
 		}
@@ -169,8 +188,10 @@ public class OccamsRazorInference extends AbstractProteinInference {
 		threads.clear();
 		for (int i=0; (i < nr_threads); i++) {
 			OccamsRazorWorkerThread workerThread =
-								new OccamsRazorWorkerThread(i+1,this,filters,
-
+								new OccamsRazorWorkerThread(i+1,
+										this,
+										filters,
+										reportPSMSetMap,
 										considerModifications,
 										psmSetSettings);
 			threads.add(workerThread);
@@ -199,7 +220,7 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	 * 
 	 * @return
 	 */
-	public synchronized Map.Entry<Long, Map<Long, Group>> getNextTree() {
+	public synchronized Map.Entry<Long, Map<Long, IntermediateGroup>> getNextTree() {
 		if (treeGroupsIterator != null) {
 			if (treeGroupsIterator.hasNext()) {
 				return treeGroupsIterator.next();
@@ -230,9 +251,10 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	public String getShortName() {
 		return shortName;
 	}
-
-
-    public OccamsRazorInference(DataAccessController controller) {
-        super(controller);
-    }
+	
+	
+	@Override
+	public Long getProgressValue() {
+		return progress.longValue();
+	}
 }

@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.pia.intermediate.Accession;
 import uk.ac.ebi.pride.pia.intermediate.Modification;
-import uk.ac.ebi.pride.pia.intermediate.Peptide;
-import uk.ac.ebi.pride.pia.intermediate.PeptideSpectrumMatch;
+import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
+import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
 import uk.ac.ebi.pride.pia.modeller.IdentificationKeySettings;
 import uk.ac.ebi.pride.pia.modeller.score.FDRData;
 import uk.ac.ebi.pride.pia.modeller.score.ScoreModel;
@@ -827,7 +827,7 @@ public class ReportPSMSet implements PSMReportItem {
 	
 	
 	@Override
-	public Peptide getPeptide() {
+	public IntermediatePeptide getPeptide() {
 		if (PSMs.size() > 0) {
 			return PSMs.get(0).getPeptide();
 		} else {

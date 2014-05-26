@@ -8,19 +8,19 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.pia.intermediate.Group;
-import uk.ac.ebi.pride.pia.modeller.peptide.ReportPeptide;
-import uk.ac.ebi.pride.pia.modeller.protein.ReportProtein;
-import uk.ac.ebi.pride.pia.modeller.psm.ReportPSMSet;
-import uk.ac.ebi.pride.pia.modeller.report.filter.FilterFactory;
-import uk.ac.ebi.pride.pia.modeller.report.filter.psm.NrPSMsPerPSMSetFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.psm.PSMScoreFilter;
-import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
+
+import de.mpc.pia.intermediate.Group;
+import de.mpc.pia.modeller.peptide.ReportPeptide;
+import de.mpc.pia.modeller.protein.ReportProtein;
+import de.mpc.pia.modeller.psm.ReportPSMSet;
+import de.mpc.pia.modeller.report.filter.FilterFactory;
+import de.mpc.pia.modeller.report.filter.psm.NrPSMsPerPSMSetFilter;
+import de.mpc.pia.modeller.report.filter.psm.PSMScoreFilter;
+import de.mpc.pia.tools.LabelValueContainer;
 
 
 /**
- * This inference filter reports all the PIA {@link Group}s as one protein.<br/>
+ * This inference filter reports all the PIA {@link IntermediateGroup}s as one protein.<br/>
  * This is similar to distinguish proteins simply by their peptides and report
  * every possible set and subset.
  * 
@@ -51,7 +51,7 @@ public class ReportAllInference extends AbstractProteinInference {
 		for (Map.Entry<String, String>  scoreIt
 				: getAvailableScoreShorts().entrySet()) {
 			String[] filterNames = PSMScoreFilter.getShortAndFilteringName(
-                    scoreIt.getKey(), scoreIt.getValue());
+					scoreIt.getKey(), scoreIt.getValue());
 			
 			if (filterNames != null) {
 				filters.add(new LabelValueContainer<String>(filterNames[0], filterNames[1]));
@@ -63,7 +63,7 @@ public class ReportAllInference extends AbstractProteinInference {
 	}
 	
 	@Override
-	public List<ReportProtein> calculateInference(Map<Long, Group> groupMap,
+	public List<ReportProtein> calculateInference(Map<Long, IntermediateGroup> groupMap,
 			Map<String, ReportPSMSet> reportPSMSetMap,
 			boolean considerModifications,
 			Map<String, Boolean> psmSetSettings) {
@@ -93,9 +93,9 @@ public class ReportAllInference extends AbstractProteinInference {
 		// put every group with accessions into the map
 		// TODO: this COULD be parallelized for speedup, if it is too slow...
 		Double progressStep = 80.0 / groupMap.size();
-		for (Map.Entry<Long, Group> gIt : groupMap.entrySet()) {
+		for (Map.Entry<Long, IntermediateGroup> gIt : groupMap.entrySet()) {
 			
-			if ((gIt.getValue().getProteinIds().size() > 0) &&
+			if ((gIt.getValue().getAccessions().size() > 0) &&
 					groupHasReportPeptides(gIt.getValue(), reportPeptidesMap)) {
 				// report this group
 				reportGroupsIDs.add(gIt.getKey());
@@ -110,7 +110,7 @@ public class ReportAllInference extends AbstractProteinInference {
 					}
 				}
 				
-				for (Group pepGroupIt : gIt.getValue().getAllPeptideChildren().values()) {
+				for (IntermediateGroup pepGroupIt : gIt.getValue().getAllPeptideChildren().values()) {
 					if (reportPeptidesMap.containsKey(pepGroupIt.getID())) {
 						for (ReportPeptide pepIt : reportPeptidesMap.get(pepGroupIt.getID())) {
 							allPeptidesSet.add(pepIt.getStringID());
@@ -232,8 +232,4 @@ public class ReportAllInference extends AbstractProteinInference {
 	public Long getProgressValue() {
 		return progress.longValue();
 	}
-
-    public ReportAllInference(DataAccessController controller) {
-        super(controller);
-    }
 }

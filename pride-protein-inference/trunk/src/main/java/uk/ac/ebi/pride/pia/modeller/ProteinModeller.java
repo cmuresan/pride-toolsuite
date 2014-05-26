@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.data.core.SearchDataBase;
 import uk.ac.ebi.pride.data.core.Software;
 import uk.ac.ebi.pride.pia.intermediate.Accession;
-import uk.ac.ebi.pride.pia.intermediate.Group;
+import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.pia.intermediate.Modification;
 import uk.ac.ebi.pride.pia.modeller.peptide.ReportPeptide;
 import uk.ac.ebi.pride.pia.modeller.protein.ProteinExecuteCommands;
@@ -77,8 +77,8 @@ public class ProteinModeller {
 	/** the corresponding {@link PSMModeller} */
 	private PeptideModeller peptideModeller;
 	
-	/** map of the {@link uk.ac.ebi.pride.pia.intermediate.Group}s in the intermediate structure */
-	private Map<Long, Group> intermediateGroups;
+	/** map of the {@link uk.ac.ebi.pride.pia.intermediate.IntermediateGroup}s in the intermediate structure */
+	private Map<Long, IntermediateGroup> intermediateGroups;
 	
 	
 	/** the FDR settings for the protein FDR */
@@ -107,7 +107,7 @@ public class ProteinModeller {
 	 * @param
 	 */
 	public ProteinModeller(PSMModeller psmModeller,
-			PeptideModeller peptideModeller, Map<Long, Group> groups,
+			PeptideModeller peptideModeller, Map<Long, IntermediateGroup> groups,
 			Map<String, SearchDataBase> searchDatabases,
 			Map<String, Software> analysisSoftware) {
 		if (psmModeller == null) {

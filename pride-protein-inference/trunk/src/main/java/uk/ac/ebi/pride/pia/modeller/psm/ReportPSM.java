@@ -562,7 +562,7 @@ public class ReportPSM  implements PSMReportItem {
 	
 	
 	@Override
-	public Peptide getPeptide() {
+	public IntermediatePeptide getPeptide() {
 		return getSpectrum().getPeptide();
 	}
 }

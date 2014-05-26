@@ -29,8 +29,6 @@ import java.util.*;
  */
 public abstract class AbstractProteinInference {
 
-    DataAccessController controller = null;
-	
 	/** list of the settings. */
 	protected List<AbstractFilter> filters;
 	
@@ -39,15 +37,17 @@ public abstract class AbstractProteinInference {
 	
 	/** the currently set scoring */
 	private AbstractScoring currentScoring;
-
+	
+	/** the number of allowed threads (smaller 1 = all available)*/
+	private int allowedThreads;
+	
 	/** the logger for this class */
 	private static final Logger logger= Logger.getLogger(AbstractProteinInference.class);
 
-    /** list of protein groups in the protein inference, if the file contains protein group information then
-     * this list is initialized with the controller information
-     * */
-    private List<Group> proteinDetectionList = null;
-
+    /** the data controller to access data from PRIDE data */
+    DataAccessController controller = null;
+	
+    
     /***
      * The constructor works using a DataAccessController. Any of the current implementations of this class
      * should use this controller to retrieve the peptide information and protein information.
@@ -58,6 +58,11 @@ public abstract class AbstractProteinInference {
 		this.filters = Collections.emptyList();
 		this.currentScoring = null;
         this.proteinDetectionList = initProteinGroup(controller);
+        
+        
+        
+        
+        controller.getSpectrumById(id)
 	}
 
     /**
@@ -392,5 +397,4 @@ public abstract class AbstractProteinInference {
     }
 
     /** ----- End of functions related with Scoring handling. ----- */
-
 }

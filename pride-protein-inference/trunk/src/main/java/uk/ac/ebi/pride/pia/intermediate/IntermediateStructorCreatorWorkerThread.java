@@ -50,9 +50,9 @@ public class IntermediateStructorCreatorWorkerThread extends Thread {
 			Map<Integer, IntermediateGroup> subGroups =
 					new HashMap<Integer, IntermediateGroup>();
 			
+			// mapping from the dbSequence IDs to the intermediateProteins
 			Map<Comparable, IntermediateProtein> dbSeqsToProteins =
 					new HashMap<Comparable, IntermediateProtein>();
-			
 			
 			for (Map.Entry<IntermediatePeptide, Set<DBSequence>> pepIt : cluster.entrySet()) {
 				
@@ -71,25 +71,13 @@ public class IntermediateStructorCreatorWorkerThread extends Thread {
 				insertIntoMap(pepIt.getKey(), proteins, subGroups);
 			}
 			
-			
-			// merge the groups into the thread groups
-			// TODO: merge directly into the parent!
-			/*
-			for (IntermediateGroup group : subGroups.values()) {
-				nrThreadGroups++;
-				group.setOffset(threadGroupOffset);
-				group.setTreeID(workedClusters);
-				threadGroups.put(nrThreadGroups, group);
-			}
-			threadGroupOffset = nrThreadGroups;
-			*/
-			
-			
+			// put the subGroups as new tree into the intermediateStructure
+			parent.addCluster(subGroups.values());
 			workedClusters++;
+			
+			// get the next cluster information
 			cluster = parent.getNextCluster();
 		}
-		
-		//parent.mergeClustersIntoMap(threadGroups, workedClusters);
 		
 		logger.info("<thread " + ID + " has no more work after " +
 				workedClusters + " clusters> ");

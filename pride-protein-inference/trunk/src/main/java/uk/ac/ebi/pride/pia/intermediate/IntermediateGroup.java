@@ -90,6 +90,16 @@ public class IntermediateGroup {
 	
 	
 	/**
+	 * Setter for the ID.
+	 * 
+	 * @return
+	 */
+	public void setID(Integer id) {
+		this.ID = id;
+	}
+	
+	
+	/**
 	 * Getter for the ID.
 	 * 
 	 * @return

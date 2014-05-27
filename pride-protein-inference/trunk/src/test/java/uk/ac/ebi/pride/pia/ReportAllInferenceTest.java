@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.After;
@@ -21,9 +22,12 @@ import uk.ac.ebi.pride.data.core.Protein;
 import uk.ac.ebi.pride.data.core.ProteinGroup;
 import uk.ac.ebi.pride.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
+import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructureCreator;
+import uk.ac.ebi.pride.pia.modeller.protein.inference.AbstractProteinInference;
+import uk.ac.ebi.pride.pia.modeller.protein.inference.ReportAllInference;
 
-public class OccamsRazorInferenceTest {
+public class ReportAllInferenceTest {
 	
 	private DataAccessController dataAccessController = null;
 	
@@ -31,8 +35,8 @@ public class OccamsRazorInferenceTest {
 	public void setUp() throws Exception {
 		//URL url = MzIdentMlControllerImplTest.class.getClassLoader().getResource("small.mzid");
 		//URL url = MzIdentMlControllerImplTest.class.getClassLoader().getResource("55merge_mascot_full.mzid");
-		//URL url = new URL("file:/mnt/data/uniNOBACKUP/PSI/protein_grouping/results/PIA/mascot/Rosetta_peak_list_2a_-_neat.mzid");
-		URL url = new URL("file:/mnt/data/uniNOBACKUP/PIA/testfiles/report-proteins-report_all-55merge.mzid");
+		URL url = new URL("file:/mnt/data/uniNOBACKUP/PSI/protein_grouping/results/PIA/mascot/Rosetta_peak_list_2a_-_neat.mzid");
+		//URL url = new URL("file:/mnt/data/uniNOBACKUP/PIA/testfiles/report-proteins-report_all-55merge.mzid");
 		
 		if (url == null) {
 		    throw new IllegalStateException("no file for input found!");
@@ -50,16 +54,12 @@ public class OccamsRazorInferenceTest {
 	@Test
 	public void testProteinGroup() throws Exception {
 		
-		IntermediateStructureCreator structCreator =
-				new IntermediateStructureCreator();
+		AbstractProteinInference proteinInference =
+				new ReportAllInference(dataAccessController, 4);
 		
-		for (Comparable proteinId : dataAccessController.getProteinIds()) {
-			for (Peptide pep : dataAccessController.getProteinById(proteinId).getPeptides()) {
-				structCreator.addSpectrumIdentification(pep.getSpectrumIdentification());
-			}
-		}
+		List<ProteinGroup> proteinGroups = 
+				proteinInference.calculateInference(false, null);
 		
-		structCreator.buildIntermediateStructure();
-		
+		System.out.println("Proteins: " + proteinGroups.size());
 	}
 }

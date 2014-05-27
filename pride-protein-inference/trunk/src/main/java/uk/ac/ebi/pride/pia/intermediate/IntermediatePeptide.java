@@ -116,7 +116,7 @@ public class IntermediatePeptide {
 	 * getter for the AccessionOccurrences
 	 * @return
 	 */
-	public Set<PeptideEvidence> getPeptideEvidence() {
+	public Set<PeptideEvidence> getPeptideEvidences() {
 		return pepEvidences;
 	}
 	

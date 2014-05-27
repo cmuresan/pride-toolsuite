@@ -9,18 +9,25 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import de.mpc.pia.intermediate.Group;
-import de.mpc.pia.modeller.peptide.ReportPeptide;
-import de.mpc.pia.modeller.protein.ReportProtein;
-import de.mpc.pia.modeller.psm.ReportPSMSet;
-import de.mpc.pia.modeller.report.filter.FilterFactory;
-import de.mpc.pia.modeller.report.filter.psm.NrPSMsPerPSMSetFilter;
-import de.mpc.pia.modeller.report.filter.psm.PSMScoreFilter;
-import de.mpc.pia.tools.LabelValueContainer;
+import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.core.DBSequence;
+import uk.ac.ebi.pride.data.core.Gel;
+import uk.ac.ebi.pride.data.core.Peptide;
+import uk.ac.ebi.pride.data.core.PeptideEvidence;
+import uk.ac.ebi.pride.data.core.Protein;
+import uk.ac.ebi.pride.data.core.ProteinGroup;
+import uk.ac.ebi.pride.data.core.Score;
+import uk.ac.ebi.pride.data.core.SpectrumIdentification;
+import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
+import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
+import uk.ac.ebi.pride.pia.intermediate.IntermediateProtein;
+import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
+import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
 
 /**
- * This inference filter reports all the PIA {@link IntermediateGroup}s as one protein.<br/>
+ * This inference filter reports all the PIA {@link IntermediateGroup}s as one protein.
+ * <p>
  * This is similar to distinguish proteins simply by their peptides and report
  * every possible set and subset.
  * 
@@ -28,6 +35,9 @@ import de.mpc.pia.tools.LabelValueContainer;
  *
  */
 public class ReportAllInference extends AbstractProteinInference {
+	
+	/** the logger for this class */
+	private static final Logger logger= Logger.getLogger(ReportAllInference.class);
 	
 	/** the human readable name of this filter */
 	protected static final String name = "Report All";
@@ -39,12 +49,16 @@ public class ReportAllInference extends AbstractProteinInference {
 	private Double progress;
 	
 	
-	/** the logger for this class */
-	private static final Logger logger= Logger.getLogger(ReportAllInference.class);
+	public ReportAllInference(DataAccessController controller, int nrThreads) {
+		super(controller, nrThreads);
+		
+		this.progress = 0.0;
+	}
 	
 	
 	@Override
 	public List<LabelValueContainer<String>> getFilterTypes() {
+		/*
 		List<LabelValueContainer<String>> filters = new ArrayList<LabelValueContainer<String>>();
 		
 		filters.add(new LabelValueContainer<String>(null, "--- PSM ---"));
@@ -60,160 +74,219 @@ public class ReportAllInference extends AbstractProteinInference {
 		filters.add(new LabelValueContainer<String>(NrPSMsPerPSMSetFilter.shortName(), NrPSMsPerPSMSetFilter.filteringName()));
 		
 		return filters;
+		*/
+		return null;
 	}
 	
+	
 	@Override
-	public List<ReportProtein> calculateInference(Map<Long, IntermediateGroup> groupMap,
+	public List<ProteinGroup> calculateInference( boolean considerModifications,
+    		Map<String, Boolean> psmSetSettings) {
+		/*
+		List<ReportProtein> calculateInference(Map<Long, IntermediateGroup> groupMap,
 			Map<String, ReportPSMSet> reportPSMSetMap,
 			boolean considerModifications,
 			Map<String, Boolean> psmSetSettings) {
+		*/
+		
 		progress = 0.0;
 		logger.info("calculateInference started...");
+		/*
 		logger.info("scoring: " + getScoring().getName() + " with " + 
 				getScoring().getScoreSetting().getValue() + ", " +
 				getScoring().getPSMForScoringSetting().getValue());
+		*/
 		
-		// maps from the groups' IDs to the reportPeptides
-		Map<Long, List<ReportPeptide>> reportPeptidesMap =
-			createFilteredReportPeptides(groupMap, reportPSMSetMap,
-					considerModifications, psmSetSettings);
-		
-		// groups with the IDs in this set should be reported
-		Set<Long> reportGroupsIDs = new HashSet<Long>();
+		// maps from the groups' IDs to the peptides, which should be reported
+		Map<Integer, Set<IntermediatePeptide>> groupIdToReportPeptides =
+			createFilteredPeptidesMap(considerModifications);
 		
 		// all the PSMs of the groups, including the PSMs in groups' children
-		Map<Long, Set<String>> groupsAllPeptides = new HashMap<Long, Set<String>>(groupMap.size());
+		Map<Integer, Set<IntermediatePeptide>> groupsAllPeptides =
+				new HashMap<Integer, Set<IntermediatePeptide>>(intermediateStructure.getNrGroups());
 		
-		// maps from the tree ID to the groupIDs
-		Map<Long, Set<Long>> treeMap = new HashMap<Long, Set<Long>>();
+		// maps from the groups' IDs to the groups  with equal PSMs after filtering
+		Map<Integer, Set<IntermediateGroup>> sameSets = null;
 		
-		// maps from the groups' IDs to the groups' IDs with equal PSMs after filtering
-		Map<Long, Set<Long>> sameSets = null;
+		// the finally returned list of protein groups
+		List<ProteinGroup> proteinGroups = new ArrayList<ProteinGroup>();
 		
-		// put every group with accessions into the map
-		// TODO: this COULD be parallelized for speedup, if it is too slow...
-		Double progressStep = 80.0 / groupMap.size();
-		for (Map.Entry<Long, IntermediateGroup> gIt : groupMap.entrySet()) {
+		for (Set<IntermediateGroup> cluster : intermediateStructure.getClusters().values()) {
 			
-			if ((gIt.getValue().getAccessions().size() > 0) &&
-					groupHasReportPeptides(gIt.getValue(), reportPeptidesMap)) {
-				// report this group
-				reportGroupsIDs.add(gIt.getKey());
+			Double progressStep = 89.0 / intermediateStructure.getNrClusters() / cluster.size();
+			Set<IntermediateGroup> clusterReportGroups = new HashSet<IntermediateGroup>(cluster.size());
+			
+			// put every group with direct accessions into the report map map
+			for (IntermediateGroup group : cluster) {
 				
-				// get the peptides of this group / protein
-				Set<String> allPeptidesSet = new HashSet<String>();
-				groupsAllPeptides.put(gIt.getKey(), allPeptidesSet);
 				
-				if (reportPeptidesMap.containsKey(gIt.getKey())) {
-					for (ReportPeptide pepIt : reportPeptidesMap.get(gIt.getKey())) {
-						allPeptidesSet.add(pepIt.getStringID());
-					}
-				}
+				logger.debug("proteins: " + group.getProteins()
+						+"\n\thasPeptides " + groupHasReportPeptides(group, groupIdToReportPeptides));
 				
-				for (IntermediateGroup pepGroupIt : gIt.getValue().getAllPeptideChildren().values()) {
-					if (reportPeptidesMap.containsKey(pepGroupIt.getID())) {
-						for (ReportPeptide pepIt : reportPeptidesMap.get(pepGroupIt.getID())) {
-							allPeptidesSet.add(pepIt.getStringID());
+				
+				if (((group.getProteins() != null) && (group.getProteins().size() > 0)) &&
+						groupHasReportPeptides(group, groupIdToReportPeptides)) {
+					// report this group
+					clusterReportGroups.add(group);
+					
+					// get the peptides of this group
+					Set<IntermediatePeptide> allPeptidesSet =new HashSet<IntermediatePeptide>();
+					groupsAllPeptides.put(group.getID(), allPeptidesSet);
+					
+					// add the direct peptides
+					if (groupIdToReportPeptides.containsKey(group.getID())) {
+						for (IntermediatePeptide peptide : groupIdToReportPeptides.get(group.getID())) {
+							allPeptidesSet.add(peptide);
 						}
-					}
-				}
-				
-				// fill the treeMap
-				Set<Long> treeSet = treeMap.get(gIt.getValue().getTreeID());
-				if (treeSet == null) {
-					treeSet = new HashSet<Long>();
-					treeMap.put(gIt.getValue().getTreeID(), treeSet);
-				}
-				treeSet.add(gIt.getKey());
-				
-			}
-			
-			progress += progressStep;
-		}
-		
-		// check for sameSets (if there were active filters)
-		if (filters.size() > 0) {
-			sameSets = new HashMap<Long, Set<Long>>(groupsAllPeptides.size());
-			Set<Long> newReportGroups = new HashSet<Long>(reportGroupsIDs.size());
-			
-			progressStep = 10.0 / groupsAllPeptides.size();
-			for (Map.Entry<Long, Set<String>> gIt : groupsAllPeptides.entrySet()) {
-				Long treeID = groupMap.get(gIt.getKey()).getTreeID();
-				
-				// every group gets a sameSet
-				Set<Long> sameSet = sameSets.get(gIt.getKey()); 
-				if (sameSet == null) {
-					sameSet = new HashSet<Long>();
-					sameSets.put(gIt.getKey(), sameSet);
-				}
-				
-				// check against the groups in the tree
-				for (Long checkID : treeMap.get(treeID)) {
-					if (gIt.getKey() == checkID) {
-						// don't check against self
-						continue;
 					}
 					
-					if (gIt.getValue().equals(groupsAllPeptides.get(checkID))) {
-						// ReportPeptides are the same in checkSet and grIt
-						sameSet.add(checkID);
-						
-						// if checkID's group had a sameSet before, merge the sameSets
-						Set<Long> checkSameSet = sameSets.get(checkID);
-						if (checkSameSet != null) {
-							sameSet.addAll(checkSameSet);
+					// add childrens' peptides
+					for (IntermediateGroup pepGroup : group.getAllPeptideChildren()) {
+						if (groupIdToReportPeptides.containsKey(pepGroup.getID())) {
+							for (IntermediatePeptide peptide : groupIdToReportPeptides.get(pepGroup.getID())) {
+								allPeptidesSet.add(peptide);
+							}
 						}
-						sameSets.put(checkID, sameSet);
 					}
-				}
-				
-				
-				// check, if any of the sameSet is already in the newReportGroups 
-				boolean anySameInReportGroups = false;
-				
-				for (Long sameID : sameSet) {
-					if (newReportGroups.contains(sameID)) {
-						anySameInReportGroups = true;
-						break;
-					}
-				}
-				
-				if (!anySameInReportGroups) {
-					// no sameGroup in reportGroups yet, put this one in
-					newReportGroups.add(gIt.getKey());
 				}
 				
 				progress += progressStep;
+				logger.debug("progress (step):  " + progress);
 			}
 			
-			reportGroupsIDs = newReportGroups;
-		}
-		
-		progress = 90.0;
-		
-		// now create the proteins from the groups, which are still in reportGroupsIDs
-		// the list, that will be returned
-		List<ReportProtein> reportProteinList = new ArrayList<ReportProtein>(reportGroupsIDs.size());
-		
-		// caching the proteins, especially the subSet proteins
-		Map<Long, ReportProtein> proteins = new HashMap<Long, ReportProtein>(reportGroupsIDs.size());
-		
-		progressStep = 10.0 / reportGroupsIDs.size();
-		for (Long gID : reportGroupsIDs) {
-			ReportProtein protein = createProtein(gID, proteins,
-					reportPeptidesMap, groupMap, sameSets, null);
-			
-			if (FilterFactory.satisfiesFilterList(protein, 0L, filters)) {
-				// if all the filters are satisfied, add the protein to the reportProteinList
-				reportProteinList.add(protein);
+			// check for sameSets (if there were active filters)
+			if (/*(filters != null ) && (filters.size() > 0)*/ true) {
+				
+				sameSets = new HashMap<Integer, Set<IntermediateGroup>>(groupsAllPeptides.size());
+				Set<Integer> newReportGroupIDs = new HashSet<Integer>(clusterReportGroups.size());
+				
+				for (Map.Entry<Integer, Set<IntermediatePeptide>> gIt : groupsAllPeptides.entrySet()) {
+					// every group gets a sameSet
+					Set<IntermediateGroup> sameSet = sameSets.get(gIt.getKey()); 
+					if (sameSet == null) {
+						sameSet = new HashSet<IntermediateGroup>();
+						sameSets.put(gIt.getKey(), sameSet);
+					}
+					
+					// check against the other report groups
+					for (IntermediateGroup checkGroup : clusterReportGroups) {
+						if (gIt.getKey() == checkGroup.getID()) {
+							// don't check against self
+							logger.debug("don't check " + gIt.getKey() + " with " + checkGroup.getID());
+							continue;
+						}
+						
+						if (gIt.getValue().equals(groupsAllPeptides.get(checkGroup.getID()))) {
+							// ReportPeptides are the same in checkSet and grIt
+							sameSet.add(checkGroup);
+							
+							// if checkID's group had a sameSet before, merge the sameSets
+							Set<IntermediateGroup> checkSameSet = sameSets.get(checkGroup.getID());
+							if (checkSameSet != null) {
+								sameSet.addAll(checkSameSet);
+							}
+							sameSets.put(checkGroup.getID(), sameSet);
+						}
+					}
+					
+					
+					// check, if any of the sameSet is already in the newReportGroups 
+					boolean anySameInReportGroups = false;
+					
+					for (IntermediateGroup sameGroup : sameSet) {
+						if (newReportGroupIDs.contains(sameGroup.getID())) {
+							anySameInReportGroups = true;
+							break;
+						}
+					}
+					
+					if (!anySameInReportGroups) {
+						// no sameGroup in reportGroups yet, put this one in
+						newReportGroupIDs.add(gIt.getKey());
+					}
+				}
+				
+				Set<IntermediateGroup> newReportGroups = new HashSet<IntermediateGroup>(newReportGroupIDs.size());
+				for (IntermediateGroup group : clusterReportGroups) {
+					if (newReportGroupIDs.contains(group.getID())) {
+						newReportGroups.add(group);
+					}
+				}
+				clusterReportGroups = newReportGroups;
 			}
 			
-			progress += progressStep;
+			
+			// now create the proteins from the groups, which are in clusterReportGroups
+			
+			for (IntermediateGroup group : clusterReportGroups) {
+				Set<Peptide> peptides = new HashSet<Peptide>();
+				List<Protein> proteins = new ArrayList<Protein>();
+				
+				logger.debug("group " + group.getID());
+				
+				for (IntermediatePeptide interPeptide : groupsAllPeptides.get(group.getID())) {
+					for (PeptideEvidence pepEvidence : interPeptide.getPeptideEvidences()) {
+						for (SpectrumIdentification specId : interPeptide.getPeptideSpectrumMatches()) {
+							peptides.add(new Peptide(pepEvidence, specId));
+						}
+					}
+					
+					logger.debug("\tpep " + interPeptide.getSequence());
+				}
+
+				Set<DBSequence> dbSequences = new HashSet<DBSequence>();
+				for (IntermediateProtein interProt : group.getProteins()) {
+					dbSequences.add(interProt.getRepresentative());
+				}
+				
+				if (sameSets != null) {
+					for (IntermediateGroup sameGroup : sameSets.get(group.getID())) {
+						if (sameGroup.getID() == group.getID()) {
+							logger.debug("don't add sequences " + group.getID() + " with " + sameGroup.getID());
+							continue;
+						}
+						
+						for (IntermediateProtein interProt : sameGroup.getProteins()) {
+							dbSequences.add(interProt.getRepresentative());
+						}
+					}
+				}
+				
+				
+				for (DBSequence dbSeq : dbSequences) {
+					
+					String protID = "PDH_" + group.getID() + "_" + dbSeq.getAccession();
+					Score score = null;
+					double sequenceCoverage = -1;
+					
+					Protein protein = new Protein(protID,
+							dbSeq.getAccession(),
+							dbSeq,
+							true /*passThreshold*/,
+							new ArrayList<Peptide>(peptides),
+							score,
+							-1 /*threshold*/,
+							sequenceCoverage,
+							null /*gel*/);
+					
+					proteins.add(protein);
+				}
+				
+				ProteinGroup proteinGroup = new ProteinGroup("PAG_" + group.getID(),
+						"PAG_" + group.getID(),
+						proteins);
+				
+				proteinGroups.add(proteinGroup);
+			}
+			
+			progress += 10.0 / intermediateStructure.getNrClusters();
+			logger.debug("progress cluster: " + progress);
 		}
 		
 		logger.info("calculateInference done.");
 		progress = 100.0;
-		return reportProteinList;
+		logger.debug("progress (done):  " + progress);
+		return proteinGroups;
 	}
 	
 	

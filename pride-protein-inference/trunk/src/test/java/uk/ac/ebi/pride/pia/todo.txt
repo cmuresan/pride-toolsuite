@@ -1,0 +1,6 @@
+
+- the PSMs must be grouped somewhere to support multiple search engine mixes
+  it should be possible to create a new merged "SpectrumIdentification" object
+  for the merged spectra.
+
+- activate filters

@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.pia.intermediate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +27,9 @@ public class IntermediateStructureCreator {
 	/** the logger for this class */
 	private static final Logger logger= Logger.getLogger(IntermediateStructureCreator.class);
 	
-	/** mapping from sequence to intermediatePeptide */
+	/** mapping from sequence to intermediatePeptide
+	 * TODO: we could decide in this class, whether a peptide is defined by the sequence only or also by the mods
+	 **/
 	private Map<String, IntermediatePeptide> peptides;
 	
 	/** mapping from db entry ID to entry */
@@ -41,11 +44,13 @@ public class IntermediateStructureCreator {
 	/** iterates over the clustered list of peptide -> dbSequence mapping */
 	private ListIterator<Map<IntermediatePeptide, Set<DBSequence>>> clusterIterator;
 	
+	private IntermediateStructure intermediateStructure;
+	
 	/** the maximal number of used threads */
 	private int numberThreads;
 	
 	
-	public IntermediateStructureCreator() {
+	public IntermediateStructureCreator(int threads) {
 		this.peptides = new HashMap<String, IntermediatePeptide>();
 		this.dbSequences = new HashMap<Comparable, DBSequence>();
 		this.proteinsToPeptidesMapping =
@@ -53,7 +58,9 @@ public class IntermediateStructureCreator {
 		this.peptidesToProteinsMapping = new HashMap<String, Set<DBSequence>>();
 
 		this.clusterIterator = null;
-		numberThreads = 4;
+		this.intermediateStructure = null;
+		
+		this.numberThreads = threads;
 	}
 	
 	
@@ -72,6 +79,7 @@ public class IntermediateStructureCreator {
 		} else {
 			dbSequencesSet = peptidesToProteinsMapping.get(pepSequence);
 		}
+		peptide.addSpectrum(spectrumIdentification);
 		
 		for (PeptideEvidence pepEvidence : spectrumIdentification.getPeptideEvidenceList()) {
 			Comparable sequenceID = pepEvidence.getDbSequence().getId();
@@ -111,19 +119,25 @@ public class IntermediateStructureCreator {
 	public IntermediateStructure buildIntermediateStructure() {
 		if ((peptides.size() < 1) || (dbSequences.size() < 1)) {
 			logger.error("no data to build the intermediate structure!");
+			return null;
+		}
+		
+		if (intermediateStructure != null) {
+			logger.error("The intermediate structure was already created!");
+			return null;
 		}
 		
 		// first cluster the data
 		List<Map<IntermediatePeptide, Set<DBSequence>>> clusterList = buildClusterList();
 		
+		// initialize the iterator
 		clusterIterator = clusterList.listIterator();
 		
-		IntermediateStructure intermediateStructure =
-				new IntermediateStructure();
-		
-		List<IntermediateStructorCreatorWorkerThread> threads;
+		// initialize the intermediate structure
+		intermediateStructure = new IntermediateStructure();
 		
 		// start the threads
+		List<IntermediateStructorCreatorWorkerThread> threads;
 		threads = new ArrayList<IntermediateStructorCreatorWorkerThread>(numberThreads);
 		for (int i = 0; i < numberThreads; i++) {
 			IntermediateStructorCreatorWorkerThread thread =
@@ -142,6 +156,10 @@ public class IntermediateStructureCreator {
 				return null;
 			}
 		}
+		
+		logger.debug("intermediate structure contains "
+				+ intermediateStructure.getNrClusters() + " clusters and "
+				+ intermediateStructure.getNrGroups() + " groups");
 		
 		return intermediateStructure;
 	}
@@ -272,6 +290,18 @@ public class IntermediateStructureCreator {
 				logger.error("The cluster iterator is not yet initialized!");
 				return null;
 			}
+		}
+	}
+	
+	
+	/**
+	 * Adds the given cluster information into the intermediate structure.
+	 * 
+	 * @param cluster
+	 */
+	protected synchronized void addCluster(Collection<IntermediateGroup> cluster) {
+		synchronized (intermediateStructure) {
+			intermediateStructure.addCluster(cluster);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.pia.modeller.protein.inference;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,14 +10,12 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import de.mpc.pia.intermediate.Accession;
-import de.mpc.pia.intermediate.Group;
-import de.mpc.pia.modeller.peptide.ReportPeptide;
-import de.mpc.pia.modeller.protein.ReportProtein;
-import de.mpc.pia.modeller.psm.ReportPSMSet;
-import de.mpc.pia.modeller.report.filter.AbstractFilter;
-import de.mpc.pia.modeller.report.filter.FilterFactory;
-
+import uk.ac.ebi.pride.data.core.Peptide;
+import uk.ac.ebi.pride.data.core.Protein;
+import uk.ac.ebi.pride.data.core.ProteinGroup;
+import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
+import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
+import uk.ac.ebi.pride.pia.modeller.report.filter.AbstractFilter;
 
 
 public class OccamsRazorWorkerThread extends Thread {
@@ -30,14 +29,8 @@ public class OccamsRazorWorkerThread extends Thread {
 	/** the applied inference filters */
 	private List<AbstractFilter> filters;
 	
-	/** maps of the ReportPSMSets (build by the PSM Viewer) */
-	private Map<String, ReportPSMSet> reportPSMSetMap;
-	
 	/** whether modifications are considered while inferring the peptides */
 	private boolean considerModifications;
-	
-	/** settings for PSMSet creation */
-	private Map<String, Boolean> psmSetSettings;
 	
 	
 	/** logger for this class */
@@ -47,15 +40,11 @@ public class OccamsRazorWorkerThread extends Thread {
 	public OccamsRazorWorkerThread(int ID,
 			OccamsRazorInference parent,
 			List<AbstractFilter> filters,
-			Map<String, ReportPSMSet> reportPSMSetMap,
-			boolean considerModifications,
-			Map<String, Boolean> psmSetSettings) {
+			boolean considerModifications) {
 		this.ID = ID;
 		this.parent = parent;
 		this.filters = filters;
-		this.reportPSMSetMap = reportPSMSetMap;
 		this.considerModifications = considerModifications;
-		this.psmSetSettings = psmSetSettings;
 		
 		this.setName("OccamsRazorWorkerThread-" + this.ID);
 	}
@@ -64,62 +53,89 @@ public class OccamsRazorWorkerThread extends Thread {
 	@Override
 	public void run() {
 		int treeCount = 0;
-		Map.Entry<Long, Map<Long, IntermediateGroup>> treeEntry;
-		
-		while (null != (treeEntry = parent.getNextTree())) {
-			processTree(treeEntry.getValue());
+		Set<IntermediateGroup> cluster = parent.getNextCluster();
+		while (cluster != null) {
+			processTree(cluster);
 			treeCount++;
+			cluster = parent.getNextCluster();
 		}
 		
-		logger.debug("worker " + ID + " finished after " + treeCount);
+		logger.info("inference worker " + ID + " finished after " + treeCount);
 	}
 	
-	
-	
-	private void processTree(Map<Long, IntermediateGroup> groupMap) {
+	/**
+	 * Do the protein inference on the cluster
+	 * 
+	 * @param cluster
+	 */
+	private void processTree(Set<IntermediateGroup> cluster) {
 		// get the filtered report peptides mapping from the groups' IDs
-		Map<Long, List<ReportPeptide>> reportPeptidesMap =
-				parent.createFilteredReportPeptides(groupMap, reportPSMSetMap,
-						considerModifications, psmSetSettings);
+		Map<Integer, Set<IntermediatePeptide>> groupIdToReportPeptides =
+				parent.createFilteredPeptidesMap(considerModifications);
 		
 		// the map of actually reported proteins
-		Map<Long, ReportProtein> proteins =
-				new HashMap<Long, ReportProtein>(reportPeptidesMap.size());
+		Map<Integer, ProteinGroup> proteins =
+				new HashMap<Integer, ProteinGroup>(groupIdToReportPeptides.size());
 		
+		/*
 		// maps from the protein/group IDs to the peptide keys 
 		Map<Long, Set<String>> peptideKeysMap =
 				new HashMap<Long, Set<String>>();
 		
 		// maps from the groups ID to the IDs, which have the same peptides
 		Map<Long, Set<Long>> sameSetMap =
-				new HashMap<Long, Set<Long>>(reportPeptidesMap.size());
+				new HashMap<Long, Set<Long>>(groupIdToReportPeptides.size());
+		*/
 		
-		// create for each group, which has at least one peptide and accession, a ReportProtein
-		for (Map.Entry<Long, IntermediateGroup> groupIt : groupMap.entrySet()) {
-			if ((groupIt.getValue().getAccessions().size() == 0) ||
-					!parent.groupHasReportPeptides(
-							groupIt.getValue(), reportPeptidesMap)) {
-				// this group has no peptides, skip it
+		// create for each group, which has at least one peptide and accession, a protein group (i.e. in this case a list of Proteins with same peptides)
+		for (IntermediateGroup group : cluster) {
+			if ((group.getProteins().size() == 0) ||
+					!parent.groupHasReportPeptides(group, groupIdToReportPeptides)) {
+				// this group has no parents or no peptides, skip it
 				continue;
 			}
 			
-			ReportProtein protein = new ReportProtein(groupIt.getKey());
+			String proteinGroupID = parent.createProteinGroupID(group);
+			ProteinGroup proteinGroup = new ProteinGroup(
+					proteinGroupID,
+					proteinGroupID,
+					new ArrayList<Protein>());
+			
+			
+			
+			Protein protein = new Protein(id, name, dbSequence, passThreshold, peptides, score, threshold, sequenceCoverage, gel);
+			
+			
+			
+			ReportProtein protein = new ReportProtein(group.getKey());
 			
 			// add the accessions
-			for (Accession acc : groupIt.getValue().getAccessions().values()) {
+			for (Accession acc : group.getValue().getAccessions().values()) {
 				protein.addAccession(acc);
 			}
 			
-			// add the peptides
-			Set<Long> pepGroupIDs = new HashSet<Long>();
+			// collect the peptides
+			List<Peptide> peptideList = new ArrayList<Peptide>();
+			Set<IntermediatePeptide> interPeptides = new HashSet<IntermediatePeptide>();
+			
+			interPeptides.addAll(groupIdToReportPeptides.get(group.getID()));
+			for (IntermediateGroup pepGroup : group.getAllPeptideChildren()) {
+				interPeptides.addAll(
+						groupIdToReportPeptides.get(pepGroup.getID()));
+			}
+			
+			for (IntermediatePeptide pep : interPeptides) {
+				add the peptides' psms to the psms fo the proteins...
+			}
+			
 			Set<String> peptideKeys = new HashSet<String>();
-			pepGroupIDs.add(groupIt.getKey());
+			pepGroupIDs.add(group.getKey());
 			pepGroupIDs.addAll(
-					groupIt.getValue().getAllPeptideChildren().keySet());
+					group.getValue().getAllPeptideChildren().keySet());
 			for (Long pepGroupID : pepGroupIDs) {
-				if (reportPeptidesMap.containsKey(pepGroupID)) {
+				if (groupIdToReportPeptides.containsKey(pepGroupID)) {
 					for (ReportPeptide peptide
-							: reportPeptidesMap.get(pepGroupID)) {
+							: groupIdToReportPeptides.get(pepGroupID)) {
 						if (!peptideKeys.add(peptide.getStringID())) {
 							logger.warn(
 									"Peptide already in list of peptides '" +
@@ -131,27 +147,30 @@ public class OccamsRazorWorkerThread extends Thread {
 				}
 			}
 			
+			
+			
+			
 			// get the proteins with same peptides and subgroups
 			Set<Long> sameSet = new HashSet<Long>();
 			for (Map.Entry<Long, Set<String>> peptideKeyIt
 					: peptideKeysMap.entrySet()) {
 				if (peptideKeyIt.getValue().equals(peptideKeys)) {
 					sameSet.add(peptideKeyIt.getKey());
-					sameSetMap.get(peptideKeyIt.getKey()).add(groupIt.getKey());
+					sameSetMap.get(peptideKeyIt.getKey()).add(group.getKey());
 				}
 			}
-			sameSetMap.put(groupIt.getKey(), sameSet);
+			sameSetMap.put(group.getKey(), sameSet);
 			
-			peptideKeysMap.put(groupIt.getKey(), peptideKeys);
+			peptideKeysMap.put(group.getKey(), peptideKeys);
 			
-			proteins.put(protein.getID(), protein);
+			proteins.put(group.getID(), proteinGroup);
 		}
 		
 		if (proteins.size() < 1) {
 			// no proteins could be created (e.g. due to filters?) 
 			return;
 		}
-		
+		/*
 		// merge proteins with same peptides
 		for (Map.Entry<Long, Set<Long>> sameSetIt : sameSetMap.entrySet()) {
 			Long protID = sameSetIt.getKey();
@@ -208,9 +227,9 @@ public class OccamsRazorWorkerThread extends Thread {
 		// check proteins for sub-proteins and intersections. this cannot be
 		// done before, because all proteins have to be built beforehand
 		Map<Long, Set<Long>> subProteinMap =
-				new HashMap<Long, Set<Long>>(reportPeptidesMap.size());
+				new HashMap<Long, Set<Long>>(groupIdToReportPeptides.size());
 		Map<Long, Set<Long>> intersectingProteinMap =
-				new HashMap<Long, Set<Long>>(reportPeptidesMap.size());
+				new HashMap<Long, Set<Long>>(groupIdToReportPeptides.size());
 		Set<Long> isSubProtein = new HashSet<Long>();
 		Set<String> reportedPeptides = new HashSet<String>();
 		for (Long proteinID : proteins.keySet()) {
@@ -309,5 +328,6 @@ public class OccamsRazorWorkerThread extends Thread {
 		if (reportProteins.size() > 0) {
 			parent.addToReports(reportProteins);
 		}
+		*/
 	}
 }

@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.controller.impl.MzIdentMLProteinGroupTest;
 import uk.ac.ebi.pride.data.controller.impl.MzIdentMlControllerImplTest;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.core.DBSequence;
@@ -25,9 +26,10 @@ import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructureCreator;
 import uk.ac.ebi.pride.pia.modeller.protein.inference.AbstractProteinInference;
+import uk.ac.ebi.pride.pia.modeller.protein.inference.OccamsRazorInference;
 import uk.ac.ebi.pride.pia.modeller.protein.inference.ReportAllInference;
 
-public class ReportAllInferenceTest {
+public class ProteinInferenceTest {
 	
 	private DataAccessController dataAccessController = null;
 	
@@ -35,8 +37,8 @@ public class ReportAllInferenceTest {
 	public void setUp() throws Exception {
 		//URL url = MzIdentMlControllerImplTest.class.getClassLoader().getResource("small.mzid");
 		//URL url = MzIdentMlControllerImplTest.class.getClassLoader().getResource("55merge_mascot_full.mzid");
-		URL url = new URL("file:/mnt/data/uniNOBACKUP/PSI/protein_grouping/results/PIA/mascot/Rosetta_peak_list_2a_-_neat.mzid");
-		//URL url = new URL("file:/mnt/data/uniNOBACKUP/PIA/testfiles/report-proteins-report_all-55merge.mzid");
+		//URL url = new URL("file:/mnt/data/uniNOBACKUP/PSI/protein_grouping/results/PIA/mascot/Rosetta_peak_list_2a_-_neat.mzid");
+		URL url = new URL("file:/mnt/data/uniNOBACKUP/PIA/testfiles/report-proteins-report_all-55merge_mascot_full.mzid");
 		
 		if (url == null) {
 		    throw new IllegalStateException("no file for input found!");
@@ -55,11 +57,39 @@ public class ReportAllInferenceTest {
 	public void testProteinGroup() throws Exception {
 		
 		AbstractProteinInference proteinInference =
-				new ReportAllInference(dataAccessController, 4);
+				new OccamsRazorInference(dataAccessController, 4);
 		
 		List<ProteinGroup> proteinGroups = 
-				proteinInference.calculateInference(false, null);
+				proteinInference.calculateInference(true);
 		
-		System.out.println("Proteins: " + proteinGroups.size());
+		System.out.println("Protein groups: " + proteinGroups.size());
+		/*
+		for (ProteinGroup group : proteinGroups) {
+			
+			StringBuilder accessions = new StringBuilder();
+			Set<SpectrumIdentification> psms = new HashSet<SpectrumIdentification>();
+			for (Protein protein : group.getProteinDetectionHypothesis()) {
+				if (accessions.length() > 0) {
+					accessions.append(',');
+				}
+				accessions.append(protein.getDbSequence().getAccession());
+				
+				
+				for (Peptide pep : protein.getPeptides()) {
+					psms.add(pep.getSpectrumIdentification());
+				}
+			}
+			
+			StringBuilder psmSB = new StringBuilder();
+			for (SpectrumIdentification psm : psms) {
+				psmSB.append('\n');
+				psmSB.append('\t');
+				psmSB.append(psm.getId());
+			}
+			
+			
+			System.out.println(accessions.toString() + psmSB.toString());
+		}
+		*/
 	}
 }

@@ -80,15 +80,7 @@ public class ReportAllInference extends AbstractProteinInference {
 	
 	
 	@Override
-	public List<ProteinGroup> calculateInference( boolean considerModifications,
-    		Map<String, Boolean> psmSetSettings) {
-		/*
-		List<ReportProtein> calculateInference(Map<Long, IntermediateGroup> groupMap,
-			Map<String, ReportPSMSet> reportPSMSetMap,
-			boolean considerModifications,
-			Map<String, Boolean> psmSetSettings) {
-		*/
-		
+	public List<ProteinGroup> calculateInference( boolean considerModifications) {
 		progress = 0.0;
 		logger.info("calculateInference started...");
 		/*
@@ -118,12 +110,6 @@ public class ReportAllInference extends AbstractProteinInference {
 			
 			// put every group with direct accessions into the report map map
 			for (IntermediateGroup group : cluster) {
-				
-				
-				logger.debug("proteins: " + group.getProteins()
-						+"\n\thasPeptides " + groupHasReportPeptides(group, groupIdToReportPeptides));
-				
-				
 				if (((group.getProteins() != null) && (group.getProteins().size() > 0)) &&
 						groupHasReportPeptides(group, groupIdToReportPeptides)) {
 					// report this group
@@ -151,11 +137,10 @@ public class ReportAllInference extends AbstractProteinInference {
 				}
 				
 				progress += progressStep;
-				logger.debug("progress (step):  " + progress);
 			}
 			
 			// check for sameSets (if there were active filters)
-			if (/*(filters != null ) && (filters.size() > 0)*/ true) {
+			if ((filters != null ) && (filters.size() > 0)) {
 				
 				sameSets = new HashMap<Integer, Set<IntermediateGroup>>(groupsAllPeptides.size());
 				Set<Integer> newReportGroupIDs = new HashSet<Integer>(clusterReportGroups.size());
@@ -172,7 +157,6 @@ public class ReportAllInference extends AbstractProteinInference {
 					for (IntermediateGroup checkGroup : clusterReportGroups) {
 						if (gIt.getKey() == checkGroup.getID()) {
 							// don't check against self
-							logger.debug("don't check " + gIt.getKey() + " with " + checkGroup.getID());
 							continue;
 						}
 						
@@ -217,21 +201,17 @@ public class ReportAllInference extends AbstractProteinInference {
 			
 			
 			// now create the proteins from the groups, which are in clusterReportGroups
-			
 			for (IntermediateGroup group : clusterReportGroups) {
 				Set<Peptide> peptides = new HashSet<Peptide>();
 				List<Protein> proteins = new ArrayList<Protein>();
 				
-				logger.debug("group " + group.getID());
-				
 				for (IntermediatePeptide interPeptide : groupsAllPeptides.get(group.getID())) {
 					for (PeptideEvidence pepEvidence : interPeptide.getPeptideEvidences()) {
 						for (SpectrumIdentification specId : interPeptide.getPeptideSpectrumMatches()) {
-							peptides.add(new Peptide(pepEvidence, specId));
+							Peptide pep = new Peptide(pepEvidence, specId);
+							peptides.add(pep);
 						}
 					}
-					
-					logger.debug("\tpep " + interPeptide.getSequence());
 				}
 
 				Set<DBSequence> dbSequences = new HashSet<DBSequence>();
@@ -242,7 +222,6 @@ public class ReportAllInference extends AbstractProteinInference {
 				if (sameSets != null) {
 					for (IntermediateGroup sameGroup : sameSets.get(group.getID())) {
 						if (sameGroup.getID() == group.getID()) {
-							logger.debug("don't add sequences " + group.getID() + " with " + sameGroup.getID());
 							continue;
 						}
 						
@@ -254,12 +233,11 @@ public class ReportAllInference extends AbstractProteinInference {
 				
 				
 				for (DBSequence dbSeq : dbSequences) {
-					
-					String protID = "PDH_" + group.getID() + "_" + dbSeq.getAccession();
 					Score score = null;
-					double sequenceCoverage = -1;
+					double sequenceCoverage = -1; // TODO: include calculation of these
 					
-					Protein protein = new Protein(protID,
+					Protein protein = new Protein(
+							createProteinID(group, dbSeq),
 							dbSeq.getAccession(),
 							dbSeq,
 							true /*passThreshold*/,
@@ -269,23 +247,28 @@ public class ReportAllInference extends AbstractProteinInference {
 							sequenceCoverage,
 							null /*gel*/);
 					
-					proteins.add(protein);
+					
+					if (/*TODO: turn on filtering on protein level*/ true) {
+						proteins.add(protein);
+					}
 				}
 				
-				ProteinGroup proteinGroup = new ProteinGroup("PAG_" + group.getID(),
-						"PAG_" + group.getID(),
-						proteins);
-				
-				proteinGroups.add(proteinGroup);
+				if (proteins.size() > 0) {
+					String groupID = createProteinGroupID(group);
+					ProteinGroup proteinGroup = new ProteinGroup(
+							groupID,
+							groupID,
+							proteins);
+					
+					proteinGroups.add(proteinGroup);
+				}
 			}
 			
 			progress += 10.0 / intermediateStructure.getNrClusters();
-			logger.debug("progress cluster: " + progress);
 		}
 		
 		logger.info("calculateInference done.");
 		progress = 100.0;
-		logger.debug("progress (done):  " + progress);
 		return proteinGroups;
 	}
 	

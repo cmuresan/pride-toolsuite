@@ -5,9 +5,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.core.ProteinGroup;
+import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.pia.modeller.report.filter.peptide.NrPSMsPerPeptideFilter;
 import uk.ac.ebi.pride.pia.modeller.report.filter.peptide.NrSpectraPerPeptideFilter;
 import uk.ac.ebi.pride.pia.modeller.report.filter.peptide.PeptideFileListFilter;
@@ -29,11 +33,11 @@ import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
 
 /**
- * This inference filter reports all the PIA {@link IntermediateGroup}s as protein, which
- * together fulfill the Occam's Razor constraints. I.e. the minimal set of
+ * This inference filter reports all the PIA {@link IntermediateGroup}s as protein,
+ * which together fulfill the Occam's Razor constraints. I.e. the minimal set of
  * groups is reported, which contain all peptides and each protein is contained,
- * at least as subset of peptides.<br/>
- * 
+ * at least as subset of peptides.
+ * <p>
  * There are 3 constraints for a Group, to be reported:<br/>
  * 1) it has no parent-Groups (but implicit accessions, there cannot be a Group
  * without parents and without accessions)<br/>
@@ -53,6 +57,9 @@ import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
  */
 public class OccamsRazorInference extends AbstractProteinInference {
 	
+	/** the logger for this class */
+	private static final Logger logger= Logger.getLogger(OccamsRazorInference.class);
+	
 	/** the human readable name of this filter */
 	protected static final String name = "Occam's Razor";
 	
@@ -64,17 +71,22 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	
 	
 	/** this iterator iterates over the mapping from the tree ID to its groups*/
-	private Iterator<Map.Entry<Long,Map<Long,IntermediateGroup>>> treeGroupsIterator;
+	private Iterator<Set<IntermediateGroup>> clustersIterator;
 	
 	/** this list holds the reported proteins */
-	private List<ReportProtein> reportProteins;
+	private List<ProteinGroup> reportProteinGroups;
 	
-	/** the logger for this class */
-	private static final Logger logger= Logger.getLogger(OccamsRazorInference.class);
+	
+	public OccamsRazorInference(DataAccessController controller, int nrThreads) {
+		super(controller, nrThreads);
+		
+		this.progress = 0.0;
+	}
 	
 	
 	@Override
 	public List<LabelValueContainer<String>> getFilterTypes() {
+		/*
 		List<LabelValueContainer<String>> filters = new ArrayList<LabelValueContainer<String>>();
 		
 		// PSM filters
@@ -139,61 +151,46 @@ public class OccamsRazorInference extends AbstractProteinInference {
 				NrUniquePeptidesPerProteinFilter.filteringName()));
 		
 		return filters;
+		*/
+		return null;
 	}
 	
 	@Override
-	public List<ReportProtein> calculateInference(Map<Long, IntermediateGroup> groupMap,
+	public List<ProteinGroup> calculateInference( boolean considerModifications) {
+		
+		/* public List<ReportProtein> calculateInference(Map<Long, IntermediateGroup> groupMap,
 			Map<String, ReportPSMSet> reportPSMSetMap,
 			boolean considerModifications,
-			Map<String, Boolean> psmSetSettings) {
+			Map<String, Boolean> psmSetSettings)*/
+		
 		progress = 0.0;
 		logger.info(name + " calculateInference started...");
+		/*
 		logger.info("scoring: " + getScoring().getName() + " with " + 
 				getScoring().getScoreSetting().getValue() + ", " +
 				getScoring().getPSMForScoringSetting().getValue() +
 				"\n\tpsmSetSettings: " + psmSetSettings);
+		*/
 		
-		Map<Long, Map<Long, IntermediateGroup>> treeGroupMap =
-				new HashMap<Long, Map<Long,IntermediateGroup>>();
-		// get the clusters/trees
-		for (Map.Entry<Long, IntermediateGroup> groupIt : groupMap.entrySet()) {
-			Map<Long, IntermediateGroup> treeGroups =
-					treeGroupMap.get(groupIt.getValue().getTreeID());
-			
-			if (treeGroups == null) {
-				treeGroups = new HashMap<Long, IntermediateGroup>();
-				treeGroupMap.put(groupIt.getValue().getTreeID(), treeGroups);
-			}
-			
-			treeGroups.put(groupIt.getKey(), groupIt.getValue());
-		}
-		treeGroupsIterator = treeGroupMap.entrySet().iterator();
-		
-		logger.info("PIA trees sorted, " + treeGroupMap.size() + " trees");
+		// initialize the cluster iterator
+		clustersIterator = intermediateStructure.getClusters().values().iterator();
 		
 		// initialize the reported list
-		reportProteins = new ArrayList<ReportProtein>();
+		reportProteinGroups = new ArrayList<ProteinGroup>();
 		
 		// the number of threads used for the inference
-		int nr_threads = getAllowedThreads();
-		if (nr_threads < 1) {
-			nr_threads = Runtime.getRuntime().availableProcessors();
-		}
-		logger.debug("used threads: " + nr_threads);
-		
 		List<OccamsRazorWorkerThread> threads =
-				new ArrayList<OccamsRazorWorkerThread>(nr_threads);
+				new ArrayList<OccamsRazorWorkerThread>(allowedThreads);
+		logger.info("using " + allowedThreads + " threads for inference");
 		
 		// initialize and start  the worker threads
-		threads.clear();
-		for (int i=0; (i < nr_threads); i++) {
+		for (int i=0; i < allowedThreads; i++) {
 			OccamsRazorWorkerThread workerThread =
 								new OccamsRazorWorkerThread(i+1,
 										this,
 										filters,
-										reportPSMSetMap,
-										considerModifications,
-										psmSetSettings);
+										considerModifications);
+			
 			threads.add(workerThread);
 			workerThread.start();
 		}
@@ -211,33 +208,33 @@ public class OccamsRazorInference extends AbstractProteinInference {
 		
 		progress = 100.0;
 		logger.info(name + " calculateInference done");
-		return reportProteins;
+		return reportProteinGroups;
 	}
 	
 	
 	/**
-	 * Returns the next tree in the map or null, if no more tree is available.
+	 * Returns the next cluster in the intermediate structure null, if no more
+	 * clusters are available.
 	 * 
 	 * @return
 	 */
-	public synchronized Map.Entry<Long, Map<Long, IntermediateGroup>> getNextTree() {
-		if (treeGroupsIterator != null) {
-			if (treeGroupsIterator.hasNext()) {
-				return treeGroupsIterator.next();
+	public synchronized Set<IntermediateGroup> getNextCluster() {
+		if (clustersIterator != null) {
+			if (clustersIterator.hasNext()) {
+				return clustersIterator.next();
 			}
 		}
-		
 		return null;
 	}
 	
 	
 	/**
-	 * Adds the newProteins to the list of reported {@link ReportProtein}s.
+	 * Adds the proteinGroups to the list of reported {@link ProteinGroup}s.
 	 * 
 	 * @param newProteins
 	 */
-	public synchronized void addToReports(List<ReportProtein> newProteins) {
-		reportProteins.addAll(newProteins);
+	public synchronized void addToReports(List<ProteinGroup> proteinGroups) {
+		reportProteinGroups.addAll(proteinGroups);
 	}
 	
 	

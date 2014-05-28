@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.pia.modeller.protein.inference;
 import org.apache.log4j.Logger;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.core.DBSequence;
 import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.data.core.ProteinGroup;
 import uk.ac.ebi.pride.data.core.SpectrumIdentification;
@@ -86,8 +87,7 @@ public abstract class AbstractProteinInference {
      * @return
      */
     public abstract List<ProteinGroup> calculateInference(
-    		boolean considerModifications,
-    		Map<String, Boolean> psmSetSettings);
+    		boolean considerModifications);
     
     
 	/**
@@ -116,7 +116,7 @@ public abstract class AbstractProteinInference {
 				
 				for (IntermediatePeptide pep : group.getPeptides()) {
 					for (SpectrumIdentification psm : pep.getPeptideSpectrumMatches()) {
-						if (/* TODO: turn on filtering! FilterFactory.satisfiesFilterList(psm, 0L, filters)*/ true) {
+						if (/* TODO: turn on filtering on PSM level! FilterFactory.satisfiesFilterList(psm, 0L, filters)*/ true) {
 							// all filters on PSM level are satisfied -> use this PSM
 							Comparable pepID = considerModifications ?
 									psm.getPeptideSequence().getId() : psm.getSequence();
@@ -136,7 +136,7 @@ public abstract class AbstractProteinInference {
 				
 				Set<IntermediatePeptide> groupsPeptides = new HashSet<IntermediatePeptide>();
 				for (IntermediatePeptide pep : groupsPepsMap.values()) {
-					if (/* TODO: turn on filtering! FilterFactory.satisfiesFilterList(pep, 0L, filters)*/ true) {
+					if (/* TODO: turn on filtering on peptide level! FilterFactory.satisfiesFilterList(pep, 0L, filters)*/ true) {
 						// the peptide does satisfy the filters
 						groupsPeptides.add(pep);
 					}
@@ -183,6 +183,27 @@ public abstract class AbstractProteinInference {
 		}
 		
 		return false;
+	}
+	
+	
+	/**
+	 * Ceates a unique ID for a ProteinAmbiguityGroup from the group ID
+	 * @param group
+	 * @return
+	 */
+	public String createProteinGroupID(IntermediateGroup group) {
+		return "PAG_" + group;
+	}
+	
+	
+	/**
+	 * Ceates a unique ID for a ProteinDetectionHypothesis from the group ID
+	 * @param group
+	 * @return
+	 */
+	public String createProteinID(IntermediateGroup group, DBSequence dbSeq) {
+		return "PDH_" + dbSeq.getAccession() + "_"
+				+ createProteinGroupID(group);
 	}
 	
 	

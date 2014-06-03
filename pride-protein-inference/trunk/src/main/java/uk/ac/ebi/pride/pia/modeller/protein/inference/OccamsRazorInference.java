@@ -1,10 +1,8 @@
 package uk.ac.ebi.pride.pia.modeller.protein.inference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -12,22 +10,6 @@ import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.ProteinGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
-import uk.ac.ebi.pride.pia.modeller.report.filter.peptide.NrPSMsPerPeptideFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.peptide.NrSpectraPerPeptideFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.peptide.PeptideFileListFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.peptide.PeptideScoreFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.protein.NrPSMsPerProteinFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.protein.NrPeptidesPerProteinFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.protein.NrSpectraPerProteinFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.protein.NrUniquePeptidesPerProteinFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.protein.ProteinFileListFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.protein.ProteinScoreFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.psm.NrAccessionsPerPSMFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.psm.NrPSMsPerPSMSetFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.psm.PSMAccessionsFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.psm.PSMFileListFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.psm.PSMModificationsFilter;
-import uk.ac.ebi.pride.pia.modeller.report.filter.psm.PSMUniqueFilter;
 import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
 
@@ -74,7 +56,7 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	private Iterator<Set<IntermediateGroup>> clustersIterator;
 	
 	/** this list holds the reported proteins */
-	private List<ProteinGroup> reportProteinGroups;
+	private List<InferenceProteinGroup> reportProteinGroups;
 	
 	
 	public OccamsRazorInference(DataAccessController controller, int nrThreads) {
@@ -156,7 +138,7 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	}
 	
 	@Override
-	public List<ProteinGroup> calculateInference( boolean considerModifications) {
+	public List<InferenceProteinGroup> calculateInference( boolean considerModifications) {
 		
 		/* public List<ReportProtein> calculateInference(Map<Long, IntermediateGroup> groupMap,
 			Map<String, ReportPSMSet> reportPSMSetMap,
@@ -176,7 +158,7 @@ public class OccamsRazorInference extends AbstractProteinInference {
 		clustersIterator = intermediateStructure.getClusters().values().iterator();
 		
 		// initialize the reported list
-		reportProteinGroups = new ArrayList<ProteinGroup>();
+		reportProteinGroups = new ArrayList<InferenceProteinGroup>();
 		
 		// the number of threads used for the inference
 		List<OccamsRazorWorkerThread> threads =
@@ -233,7 +215,7 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	 * 
 	 * @param newProteins
 	 */
-	public synchronized void addToReports(List<ProteinGroup> proteinGroups) {
+	public synchronized void addToReports(List<InferenceProteinGroup> proteinGroups) {
 		reportProteinGroups.addAll(proteinGroups);
 	}
 	

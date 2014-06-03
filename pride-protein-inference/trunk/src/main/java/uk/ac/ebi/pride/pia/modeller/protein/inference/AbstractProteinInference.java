@@ -86,8 +86,28 @@ public abstract class AbstractProteinInference {
      * @param psmSetSettings
      * @return
      */
-    public abstract List<ProteinGroup> calculateInference(
+    public abstract List<InferenceProteinGroup> calculateInference(
     		boolean considerModifications);
+    
+    
+    /**
+     * Create the list of {@link ProteinGroup}s (i.e. ProteinAmbiguityGroups in
+     * mzIdentML)
+     * 
+     * @param interferedProteins
+     * @return
+     */
+    public List<ProteinGroup> createProteinGroups(List<InferenceProteinGroup> interferedProteins) {
+    	List<ProteinGroup> proteinGroups = new ArrayList<ProteinGroup>(interferedProteins.size());
+    	
+    	int count = 1;
+    	for (InferenceProteinGroup interGroup : interferedProteins) {
+    		proteinGroups.add(interGroup.createProteinGroup());
+    		count++;
+    	}
+    	
+    	return proteinGroups;
+    }
     
     
 	/**

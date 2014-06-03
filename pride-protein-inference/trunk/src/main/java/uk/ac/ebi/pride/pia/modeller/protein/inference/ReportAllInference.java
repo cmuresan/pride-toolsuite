@@ -10,18 +10,10 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.core.DBSequence;
-import uk.ac.ebi.pride.data.core.Gel;
-import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.data.core.PeptideEvidence;
-import uk.ac.ebi.pride.data.core.Protein;
-import uk.ac.ebi.pride.data.core.ProteinGroup;
-import uk.ac.ebi.pride.data.core.Score;
 import uk.ac.ebi.pride.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateProtein;
-import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
 
@@ -80,7 +72,7 @@ public class ReportAllInference extends AbstractProteinInference {
 	
 	
 	@Override
-	public List<ProteinGroup> calculateInference( boolean considerModifications) {
+	public List<InferenceProteinGroup> calculateInference( boolean considerModifications) {
 		progress = 0.0;
 		logger.info("calculateInference started...");
 		/*
@@ -101,7 +93,7 @@ public class ReportAllInference extends AbstractProteinInference {
 		Map<Integer, Set<IntermediateGroup>> sameSets = null;
 		
 		// the finally returned list of protein groups
-		List<ProteinGroup> proteinGroups = new ArrayList<ProteinGroup>();
+		List<InferenceProteinGroup> proteinGroups = new ArrayList<InferenceProteinGroup>();
 		
 		for (Set<IntermediateGroup> cluster : intermediateStructure.getClusters().values()) {
 			
@@ -199,24 +191,14 @@ public class ReportAllInference extends AbstractProteinInference {
 				clusterReportGroups = newReportGroups;
 			}
 			
-			
 			// now create the proteins from the groups, which are in clusterReportGroups
 			for (IntermediateGroup group : clusterReportGroups) {
-				Set<Peptide> peptides = new HashSet<Peptide>();
-				List<Protein> proteins = new ArrayList<Protein>();
+				InferenceProteinGroup proteinGroup =
+						new InferenceProteinGroup(createProteinGroupID(group));
 				
-				for (IntermediatePeptide interPeptide : groupsAllPeptides.get(group.getID())) {
-					for (PeptideEvidence pepEvidence : interPeptide.getPeptideEvidences()) {
-						for (SpectrumIdentification specId : interPeptide.getPeptideSpectrumMatches()) {
-							Peptide pep = new Peptide(pepEvidence, specId);
-							peptides.add(pep);
-						}
-					}
-				}
-
-				Set<DBSequence> dbSequences = new HashSet<DBSequence>();
+				// add the proteins to the group
 				for (IntermediateProtein interProt : group.getProteins()) {
-					dbSequences.add(interProt.getRepresentative());
+					proteinGroup.addProtein(interProt);
 				}
 				
 				if (sameSets != null) {
@@ -226,40 +208,18 @@ public class ReportAllInference extends AbstractProteinInference {
 						}
 						
 						for (IntermediateProtein interProt : sameGroup.getProteins()) {
-							dbSequences.add(interProt.getRepresentative());
+							proteinGroup.addProtein(interProt);
 						}
 					}
 				}
 				
-				
-				for (DBSequence dbSeq : dbSequences) {
-					Score score = null;
-					double sequenceCoverage = -1; // TODO: include calculation of these
-					
-					Protein protein = new Protein(
-							createProteinID(group, dbSeq),
-							dbSeq.getAccession(),
-							dbSeq,
-							true /*passThreshold*/,
-							new ArrayList<Peptide>(peptides),
-							score,
-							-1 /*threshold*/,
-							sequenceCoverage,
-							null /*gel*/);
-					
-					
-					if (/*TODO: turn on filtering on protein level*/ true) {
-						proteins.add(protein);
+				for (IntermediatePeptide interPeptide : groupsAllPeptides.get(group.getID())) {
+					for (SpectrumIdentification specId : interPeptide.getPeptideSpectrumMatches()) {
+						proteinGroup.addSpectrumIdentification(specId);
 					}
 				}
 				
-				if (proteins.size() > 0) {
-					String groupID = createProteinGroupID(group);
-					ProteinGroup proteinGroup = new ProteinGroup(
-							groupID,
-							groupID,
-							proteins);
-					
+				if (/*TODO: activate protein and peptide level filtering*/ true) {
 					proteinGroups.add(proteinGroup);
 				}
 			}

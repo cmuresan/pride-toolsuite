@@ -503,7 +503,8 @@ public class PrideXmlControllerImpl extends CachedDataAccessController {
         Peptide peptide = super.getPeptideByIndex(proteinId, index, useCache);
         if (peptide == null) {
             logger.debug("Get new peptide from file: {}-{}", proteinId, index);
-            peptide = PrideXmlTransformer.transformPeptide(reader.getPeptide(proteinId.toString(), Integer.parseInt(index.toString())));
+            Protein protein = getProteinById(proteinId);
+            peptide = PrideXmlTransformer.transformPeptide(reader.getPeptide(proteinId.toString(), Integer.parseInt(index.toString())), protein.getDbSequence(), index);
             if (useCache && peptide != null) {
                 // store peptide
                 getCache().store(CacheEntry.PEPTIDE, new Tuple<Comparable, Comparable>(proteinId, index), peptide);

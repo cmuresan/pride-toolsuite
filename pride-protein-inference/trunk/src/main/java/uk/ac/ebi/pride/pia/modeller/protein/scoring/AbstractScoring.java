@@ -1,10 +1,8 @@
 package uk.ac.ebi.pride.pia.modeller.protein.scoring;
 
-import uk.ac.ebi.pride.pia.modeller.protein.ReportProtein;
 import uk.ac.ebi.pride.pia.modeller.protein.scoring.settings.PSMForScoring;
 import uk.ac.ebi.pride.pia.modeller.report.settings.Setting;
 import uk.ac.ebi.pride.pia.modeller.report.settings.SettingType;
-import uk.ac.ebi.pride.pia.modeller.score.ScoreModelEnum;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -116,6 +114,7 @@ public abstract class AbstractScoring {
 	 * Returns a descriptive String of the settings
 	 * @return
 	 */
+	/*
 	public String getDescriptiveSettings() {
 		StringBuffer description = new StringBuffer();
 		
@@ -133,7 +132,7 @@ public abstract class AbstractScoring {
 		
 		return description.toString();
 	}
-	
+	*/
 	
 	/**
 	 * Returns whether a higher or a lower score is better.
@@ -178,7 +177,7 @@ public abstract class AbstractScoring {
 	 * 
 	 * @param protein
 	 */
-	public abstract Double calculateProteinScore(ReportProtein protein);
+	//public abstract Double calculateProteinScore(ReportProtein protein);
 	
 	
 	/**
@@ -188,6 +187,7 @@ public abstract class AbstractScoring {
 	 * 
 	 * @param proteinList
 	 */
+	/*
 	public final void calculateProteinScores(List<ReportProtein> proteinList) {
 		Map<Long, ReportProtein> subProteins = new HashMap<Long, ReportProtein>();
 		
@@ -208,11 +208,13 @@ public abstract class AbstractScoring {
 			subProtein.setScore(calculateProteinScore(subProtein));
 		}
 	}
+	*/
 	
 	/**
 	 * Creates a copy of this scoring, containing only the selected settings.
 	 * @return
 	 */
+	/*
 	public final AbstractScoring smallCopy() {
 		Map<String, String> scoreNameMap = new HashMap<String, String>(1);
 		
@@ -227,4 +229,5 @@ public abstract class AbstractScoring {
 		
 		return scoring;
 	}
+	*/
 }

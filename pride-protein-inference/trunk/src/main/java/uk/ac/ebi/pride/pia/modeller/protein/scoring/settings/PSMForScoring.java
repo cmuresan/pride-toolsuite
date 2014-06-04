@@ -1,12 +1,5 @@
 package uk.ac.ebi.pride.pia.modeller.protein.scoring.settings;
 
-import uk.ac.ebi.pride.pia.modeller.peptide.ReportPeptide;
-import uk.ac.ebi.pride.pia.modeller.protein.ReportProtein;
-import uk.ac.ebi.pride.pia.modeller.psm.PSMReportItem;
-import uk.ac.ebi.pride.pia.modeller.psm.ReportPSM;
-import uk.ac.ebi.pride.pia.modeller.psm.ReportPSMSet;
-import uk.ac.ebi.pride.pia.modeller.score.ScoreModel;
-import uk.ac.ebi.pride.pia.modeller.score.ScoreModelEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +24,8 @@ public enum PSMForScoring {
 		public String getShortName() {
 			return "best";
 		}
-
+		
+		/*
 		@Override
 		public List<ScoreModel> getProteinsScores(ReportProtein protein,
 				String scoreShortName) {
@@ -46,9 +40,9 @@ public enum PSMForScoring {
 					scores.add(pepScore);
 				}
 			}
-			
 			return scores;
 		}
+		*/
 	},
 	/**
 	 * use all PSMs of the peptide for score calculation
@@ -63,7 +57,8 @@ public enum PSMForScoring {
 		public String getShortName() {
 			return "all";
 		}
-
+		
+		/*
 		@Override
 		public List<ScoreModel> getProteinsScores(ReportProtein protein,
 				String scoreShortName) {
@@ -100,6 +95,7 @@ public enum PSMForScoring {
 			
 			return scores;
 		}
+		*/
 	},
 	;
 	
@@ -122,7 +118,7 @@ public enum PSMForScoring {
 	 * 
 	 * @return
 	 */
-	public abstract List<ScoreModel> getProteinsScores(ReportProtein protein, String scoreShortName);
+	//public abstract List<ScoreModel> getProteinsScores(ReportProtein protein, String scoreShortName);
 	
 	
 	/**
@@ -131,6 +127,7 @@ public enum PSMForScoring {
 	 * 
 	 * @return
 	 */
+	/*
 	public static List<ScoreModel> getProteinsScores(String methodName,
 			ReportProtein protein, String scoreShortName) {
 		for (PSMForScoring method : values()) {
@@ -141,4 +138,5 @@ public enum PSMForScoring {
 		
 		return new ArrayList<ScoreModel>(0);
 	}
+	*/
 }

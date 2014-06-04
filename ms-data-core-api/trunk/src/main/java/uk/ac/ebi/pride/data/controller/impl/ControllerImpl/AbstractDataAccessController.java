@@ -524,6 +524,22 @@ public abstract class AbstractDataAccessController implements DataAccessControll
         return score;
     }
 
+    /**
+     * The Coverage is compute as the number of identified (AminoAcid/TotalAminoAcids)*100
+     * @param proteinId
+     * @return
+     */
+    @Override
+    public double getProteinCoverage(Comparable proteinId){
+        Protein protein = getProteinById(proteinId);
+        Double coverage = null;
+        if(protein != null){
+            coverage = Double.valueOf((DataAccessUtilities.getProteinCoverage(protein)/protein.getDbSequence().getSequence().length())*100);
+            protein.setSequenceCoverage(coverage);
+        }
+        return coverage;
+    }
+
     @Override
     @SuppressWarnings(value = "unchecked")
     public Collection<Comparable> getPeptideIds(Comparable proteinId) {

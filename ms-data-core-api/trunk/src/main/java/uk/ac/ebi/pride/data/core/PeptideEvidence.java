@@ -164,38 +164,40 @@ public class PeptideEvidence extends IdentifiableParamGroup {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if ((o == null) || (getClass() != o.getClass())) {
-            return false;
-        }
-
-        if (!super.equals(o)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         PeptideEvidence that = (PeptideEvidence) o;
 
-        return decoy == that.decoy && endPosition.equals(that.endPosition) && frame.equals(that.frame) && postResidue == that.postResidue && preResidue == that.preResidue && startPosition.equals(that.startPosition) && !((dbSequence != null) ? !dbSequence.equals(that.dbSequence) : that.dbSequence != null) && !((peptideSequence != null) ? !peptideSequence.equals(that.peptideSequence) : that.peptideSequence != null) && !((translationTable != null) ? !translationTable.equals(that.translationTable) : that.translationTable != null);
+        if (postResidue != that.postResidue) return false;
+        if (preResidue != that.preResidue) return false;
+        if (dbSequence != null ? !dbSequence.equals(that.dbSequence) : that.dbSequence != null) return false;
+        if (decoy != null ? !decoy.equals(that.decoy) : that.decoy != null) return false;
+        if (endPosition != null ? !endPosition.equals(that.endPosition) : that.endPosition != null) return false;
+        if (frame != null ? !frame.equals(that.frame) : that.frame != null) return false;
+        if (peptideSequence != null ? !peptideSequence.equals(that.peptideSequence) : that.peptideSequence != null)
+            return false;
+        if (startPosition != null ? !startPosition.equals(that.startPosition) : that.startPosition != null)
+            return false;
+        if (translationTable != null ? !translationTable.equals(that.translationTable) : that.translationTable != null)
+            return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-
-        result = 31 * result + startPosition;
-        result = 31 * result + endPosition;
-        result = 31 * result + (int) preResidue;
+        result = 31 * result + (dbSequence != null ? dbSequence.hashCode() : 0);
+        result = 31 * result + (endPosition != null ? endPosition.hashCode() : 0);
+        result = 31 * result + (frame != null ? frame.hashCode() : 0);
+        result = 31 * result + peptideSequence.hashCode();
         result = 31 * result + (int) postResidue;
-        result = 31 * result + ((translationTable != null) ? translationTable.hashCode() : 0);
-        result = 31 * result + frame;
-        result = 31 * result + (decoy ? 1 : 0);
-        result = 31 * result + ((peptideSequence != null) ? peptideSequence.hashCode() : 0);
-        result = 31 * result + ((dbSequence != null) ? dbSequence.hashCode() : 0);
-
+        result = 31 * result + (int) preResidue;
+        result = 31 * result + (startPosition != null ? startPosition.hashCode() : 0);
+        result = 31 * result + (translationTable != null ? translationTable.hashCode() : 0);
+        result = 31 * result + (decoy != null ? decoy.hashCode() : 0);
         return result;
     }
 }

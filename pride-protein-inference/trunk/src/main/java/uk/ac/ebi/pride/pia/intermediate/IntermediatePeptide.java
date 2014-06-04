@@ -96,6 +96,10 @@ public class IntermediatePeptide {
 			for (PeptideEvidence pepEvidence : spectrumIdentification.getPeptideEvidenceList()) {
 				pepEvidences.add(pepEvidence);
 			}
+		} else {
+			
+			System.out.println("already in set (but are the pepEvidences?) " + spectrumIdentification.getId());
+			
 		}
 		
 		return changed;

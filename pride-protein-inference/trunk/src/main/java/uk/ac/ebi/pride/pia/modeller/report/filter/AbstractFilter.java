@@ -1,11 +1,11 @@
 package uk.ac.ebi.pride.pia.modeller.report.filter;
 
-import uk.ac.ebi.pride.pia.intermediate.Modification;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import uk.ac.ebi.pride.data.core.Modification;
 
 public abstract class AbstractFilter {
 	
@@ -212,6 +212,7 @@ public abstract class AbstractFilter {
 				
 			case modification:
 				if (objValue instanceof List<?>) {
+					/* TODO: reactivate modification */
 					return satisfiesModificationFilter((List<Modification>)objValue);
 				} else {
 					// TODO: throw exception or something
@@ -413,13 +414,13 @@ public abstract class AbstractFilter {
 			boolean has_description = false;
 			if (o != null) {
 				for (Modification mod : o) {
-					
+					/* TODO: reactivate modification
 					if ((mod.getDescription() != null) &&
 							(mod.getDescription().equals((String)getFilterValue()))) {
 						has_description = true;
 						break;
 					}
-					
+					*/
 				}
 			}
 			return getFilterNegate() ^ has_description;
@@ -429,12 +430,12 @@ public abstract class AbstractFilter {
 			boolean has_mass = false;
 			if (o != null) {
 				for (Modification mod : o) {
-					
+					/*
 					if (mod.getMassString().equals((String)getFilterValue())) {
 						has_mass = true;
 						break;
 					}
-					
+					*/
 				}
 			}
 			return getFilterNegate() ^ has_mass;
@@ -444,12 +445,13 @@ public abstract class AbstractFilter {
 			boolean has_residue = false;
 			if (o != null) {
 				for (Modification mod : o) {
-					
+					/*
 					if ((mod.getResidue() != null) &&
 							mod.getResidue().toString().startsWith((String)getFilterValue())) {
 						has_residue = true;
 						break;
 					}
+					*/
 				}
 			}
 			return getFilterNegate() ^ has_residue;

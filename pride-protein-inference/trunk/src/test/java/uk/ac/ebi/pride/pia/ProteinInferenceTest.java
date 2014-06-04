@@ -13,6 +13,7 @@ import org.junit.Test;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.impl.MzIdentMlControllerImplTest;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
+import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
 import uk.ac.ebi.pride.data.core.Peptide;
 import uk.ac.ebi.pride.data.core.Protein;
 import uk.ac.ebi.pride.data.core.ProteinGroup;
@@ -28,16 +29,18 @@ public class ProteinInferenceTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		URL url = MzIdentMlControllerImplTest.class.getClassLoader().getResource("small.mzid");
+		//URL url = MzIdentMlControllerImplTest.class.getClassLoader().getResource("small.mzid");
 		//URL url = new URL("file:/mnt/data/uniNOBACKUP/PSI/protein_grouping/results/PIA/mascot/Rosetta_peak_list_2a_-_neat.mzid");
-		//URL url = new URL("file:/mnt/data/uniNOBACKUP/PIA/testfiles/report-proteins-report_all-55merge_mascot_full.mzid");
-		
+		URL url = new URL("file:/mnt/data/uniNOBACKUP/PIA/testfiles/report-proteins-report_all-55merge_mascot_full.mzid");
+        //URL url = ProteinInferenceTest.class.getClassLoader().getResource("PRIDE_Exp_Complete_Ac_10885.xml");
+        
 		if (url == null) {
 		    throw new IllegalStateException("no file for input found!");
 		}
 		File inputFile = new File(url.toURI());
 		
 		dataAccessController = new MzIdentMLControllerImpl(inputFile, true);
+		//dataAccessController = new PrideXmlControllerImpl(inputFile);
 	}
 	
 	@After

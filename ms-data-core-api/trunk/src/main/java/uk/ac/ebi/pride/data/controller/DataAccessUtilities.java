@@ -7,10 +7,7 @@ import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.term.CvTermReference;
 import uk.ac.ebi.pride.util.NumberUtilities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * DataAccessUtilities provides methods for getting information out from the core objects.
@@ -615,4 +612,115 @@ public final class DataAccessUtilities {
 
         return null;
     }
+
+    /**
+     * Number of aminoacids covered
+     * @param protein
+     * @return
+     */
+    public static Integer getProteinCoverage(Protein protein) {
+
+        List<PeptideEvidence> evidences = new ArrayList<PeptideEvidence>();
+
+        if (protein.getPeptides().size() > 0) {
+
+            int numOfValidPeptides = 0;
+
+            // remove invalid peptide
+            String sequence = protein.getDbSequence().getSequence();
+
+            if (sequence != null && !"".equals(sequence)) {
+                Iterator<Peptide> peptideIter = protein.getPeptides().iterator();
+                while (peptideIter.hasNext()) {
+                    Peptide peptide = peptideIter.next();
+                    if (DataAccessUtilities.isValidPeptideAnnotation(protein, peptide)) {
+                        evidences.add(peptide.getPeptideEvidence());
+                    } else {
+                        numOfValidPeptides++;
+                    }
+                }
+            }
+
+            // peptide coverage array
+            // it is the length of the protein sequence, and contains the count of sequence coverage for each position
+            int length = sequence == null ? 0 : sequence.length();
+            int[] coverageArr = new int[length];
+            for (PeptideEvidence uniquePeptide : evidences) {
+                Set<Integer> startingPos = new HashSet<Integer>();
+                boolean strictValidPeptideAnnotation = DataAccessUtilities.isStrictValidPeptideAnnotation(protein, uniquePeptide);
+                if (strictValidPeptideAnnotation) {
+                    startingPos.add(uniquePeptide.getStartPosition() - 1);
+                } else {
+                    startingPos.addAll(DataAccessUtilities.searchStartingPosition(protein, uniquePeptide));
+                }
+
+                for (Integer start : startingPos) {
+                    // if the position does match
+                    int peptideLen = uniquePeptide.getPeptideSequence().length();
+                    int end = start + peptideLen - 1;
+
+                    // iterate peptide
+                    for (int i = start; i <= end; i++) {
+                        coverageArr[i] += 1;
+                    }
+                }
+            }
+
+            // colour code the peptide positions
+            int numOfAminoAcidCovered = 0;
+            for (int count : coverageArr) {
+                if (count != 0) {
+                    numOfAminoAcidCovered++;
+                }
+            }
+
+            return numOfAminoAcidCovered;
+        }
+
+        return null;
+    }
+
+    private static Set<Integer> searchStartingPosition(Protein protein, PeptideEvidence uniquePeptide) {
+        Set<Integer> pos = new HashSet<Integer>();
+
+        if (protein.getDbSequence().getSequence() != null && uniquePeptide.getPeptideSequence().getSequence() != null) {
+            String sequenceString = protein.getDbSequence().getSequence();
+            String subSeq = uniquePeptide.getPeptideSequence().getSequence();
+            int previousIndex = -1;
+            int index = -1;
+
+            while((index = (previousIndex == -1 ? sequenceString.indexOf(subSeq) : sequenceString.indexOf(subSeq, previousIndex + 1))) > -1) {
+                pos.add(index);
+                previousIndex = index;
+            }
+        }
+
+        return pos;
+    }
+
+    private static boolean isStrictValidPeptideAnnotation(Protein protein, PeptideEvidence uniquePeptide) {
+        if(uniquePeptide.getStartPosition() <= protein.getDbSequence().getLength() &&
+                uniquePeptide.getStartPosition() >=1 &&
+                uniquePeptide.getEndPosition() >= uniquePeptide.getStartPosition() &&
+                protein.getDbSequence().getSequence().substring(uniquePeptide.getStartPosition() - 1, uniquePeptide.getEndPosition()) != null &&
+                protein.getDbSequence().getSequence().substring(uniquePeptide.getStartPosition() - 1, uniquePeptide.getEndPosition()).equals(uniquePeptide.getPeptideSequence().getSequence().toUpperCase())){
+            return true;
+        }
+        return false;
+
+    }
+
+    /**
+     * This funtion validate if a peptide sequence is included inside a protein sequence
+     * @param protein
+     * @param peptide
+     * @return
+     */
+    private static boolean isValidPeptideAnnotation(Protein protein, Peptide peptide) {
+        return protein.getDbSequence().getSequence() != null
+                && peptide.getPeptideSequence().getSequence() != null
+                && protein.getDbSequence().getSequence().contains(peptide.getSequence());
+    }
+
+
 }

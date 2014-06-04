@@ -82,6 +82,13 @@ public interface ProteinDataAccess {
     public double getProteinScore(Comparable proteinId);
 
     /**
+     * This function returns the protein coverage for a protein
+     * @param proteinId
+     * @return
+     */
+    public double getProteinCoverage(Comparable proteinId);
+
+    /**
      * Get protein identification score
      *
      * @param proteinId Protein Id

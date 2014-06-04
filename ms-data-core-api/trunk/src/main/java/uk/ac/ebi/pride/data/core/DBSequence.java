@@ -105,18 +105,23 @@ public class DBSequence extends IdentifiableParamGroup {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if ((o == null) || (getClass() != o.getClass())) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         DBSequence that = (DBSequence) o;
 
-        return length == that.length && accession.equals(that.accession) && accessionVersion.equals(that.accessionVersion) && searchDataBase.equals(that.searchDataBase) && sequence.equals(that.sequence) && spliceIsoform.equals(that.spliceIsoform);
+        if (length != that.length) return false;
+        if (accession != null ? !accession.equals(that.accession) : that.accession != null) return false;
+        if (accessionVersion != null ? !accessionVersion.equals(that.accessionVersion) : that.accessionVersion != null)
+            return false;
+        if (searchDataBase != null ? !searchDataBase.equals(that.searchDataBase) : that.searchDataBase != null)
+            return false;
+        if (sequence != null ? !sequence.equals(that.sequence) : that.sequence != null) return false;
+        if (spliceIsoform != null ? !spliceIsoform.equals(that.spliceIsoform) : that.spliceIsoform != null)
+            return false;
 
+        return true;
     }
 
     @Override

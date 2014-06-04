@@ -854,10 +854,10 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
             while (iterator.hasNext()) {
                 Map.Entry mapEntry = (Map.Entry) iterator.next();
                 SpectraData spectraData = (SpectraData) mapEntry.getValue();
-                if (spectraData.getLocation().indexOf(file.getName()) >= 0) {
+                if (spectraData.getLocation() != null && spectraData.getLocation().indexOf(file.getName()) >= 0) {
                     spectraFileMap.put(spectraData, file);
                 }else if(file.getName().contains(spectraData.getId().toString())
-                        || file.getName().contains(spectraData.getName())){
+                        || (spectraData.getName() != null && file.getName().contains(spectraData.getName()))){
                     spectraFileMap.put(spectraData, file);
                 }
             }

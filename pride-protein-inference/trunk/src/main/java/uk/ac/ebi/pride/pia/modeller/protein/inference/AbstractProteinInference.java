@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.DBSequence;
 import uk.ac.ebi.pride.data.core.Peptide;
+import uk.ac.ebi.pride.data.core.Protein;
 import uk.ac.ebi.pride.data.core.ProteinGroup;
 import uk.ac.ebi.pride.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
@@ -67,7 +68,8 @@ public abstract class AbstractProteinInference {
         		new IntermediateStructureCreator(this.allowedThreads);
 		
 		for (Comparable proteinId : controller.getProteinIds()) {
-			for (Peptide pep : controller.getProteinById(proteinId).getPeptides()) {
+			Protein protein = controller.getProteinById(proteinId);
+			for (Peptide pep : protein.getPeptides()) {
 				structCreator.addSpectrumIdentification(pep.getSpectrumIdentification());
 			}
 		}

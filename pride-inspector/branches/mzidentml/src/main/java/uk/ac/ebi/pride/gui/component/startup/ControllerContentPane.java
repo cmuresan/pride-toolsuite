@@ -104,7 +104,7 @@ public class ControllerContentPane extends DataAccessControllerPane {
 
             checkMzDataPresence(categories);
 
-            checkProteinPresence(categories);
+            checkProteinPresence(categories, controller);
 
             checkPeptidePresence(categories);
 
@@ -168,15 +168,24 @@ public class ControllerContentPane extends DataAccessControllerPane {
         }
     }
 
-    private void checkProteinPresence(Collection<DataAccessController.ContentCategory> categories) {
+    private void checkProteinPresence(Collection<DataAccessController.ContentCategory> categories, DataAccessController controller) {
         if (categories.contains(DataAccessController.ContentCategory.PROTEIN)) {
             proteinTabEnabled = controller.hasProtein();
             contentTabPane.setEnabledAt(proteinTabIndex, proteinTabEnabled);
             if (proteinTabEnabled) {
                 EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Proteins found", "This data source contains protein identifications")));
+                checkProteinGroupPresence(controller);
             } else {
                 EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.ERROR, "Proteins not found", "This data source does not contain protein identifications")));
             }
+        }
+    }
+
+    private void checkProteinGroupPresence(DataAccessController controller){
+        if(controller.hasProteinAmbiguityGroup()){
+            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.SUCCESS, "Protein Group found", "This data source contains protein group information")));
+        }else{
+            EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.WARNING, "Proteins Group not found", "This data source does not contain protein group information")));
         }
     }
 

@@ -51,8 +51,8 @@ public class IdentificationMetadataPanel extends JPanel {
 
             String nameProtocol = proteinProtocol.getName();
             if (nameProtocol == null) nameProtocol = "Dafault";
-            String softwareProtocol = proteinProtocol.getAnalysisSoftware().getName();
-            proteinProtocolLabel.setText("Protein Identification Protocol: " + nameProtocol + ", Software " + softwareProtocol);
+            String softwareProtocol = (proteinProtocol != null && proteinProtocol.getAnalysisSoftware() != null)?proteinProtocol.getAnalysisSoftware().getName():"";
+            proteinProtocolLabel.setText("Protein Identification Protocol: " + nameProtocol + ", Software: " + softwareProtocol);
             proteinProtocolLabel.setToolTipText(nameProtocol);
             // protocol table
             proteinProtocolTable = TableFactory.createParamTable(proteinProtocol.getAnalysisParam());
@@ -72,11 +72,11 @@ public class IdentificationMetadataPanel extends JPanel {
                 if (name == null) name = "Default";
                 String software = spectrumIdentificationProtocol.getAnalysisSoftware().getName();
                 PeptideIdentificationMetadataPanel peptideComp = new PeptideIdentificationMetadataPanel(spectrumIdentificationProtocol);
-                peptideProtocolTabbedPane.addTab("Protocol " + name + ", Software" + software, peptideComp);
+                peptideProtocolTabbedPane.addTab("Protocol " + name + ", Software: " + software, peptideComp);
             }
         } else {
             PeptideIdentificationMetadataPanel peptideComp = new PeptideIdentificationMetadataPanel(null);
-            peptideProtocolTabbedPane.addTab("Default Peptide Protocol", peptideComp);
+            peptideProtocolTabbedPane.addTab("Default Peptide Protocol: ", peptideComp);
         }
     }
 

@@ -4,7 +4,7 @@
     <groupId>uk.ac.ebi.pride.gui</groupId>
     <artifactId>pride-inspector</artifactId>
     <packaging>jar</packaging>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.1.0</version>
     <name>pride-inspector</name>
     <url>http://code.google.com/p/pride-toolsuite/wiki/PRIDEInspector</url>
 
@@ -55,16 +55,6 @@
             </roles>
             <timezone>0</timezone>
         </developer>
-        <developer>
-            <id>fabregat</id>
-            <name>Antonio Fabregat</name>
-            <organization>Proteomics Services Team, PANDA Group, EMBL-European Bioinformatics Institute</organization>
-            <organizationUrl>http://www.ebi.ac.uk/pride</organizationUrl>
-            <roles>
-                <role>developer</role>
-            </roles>
-            <timezone>0</timezone>
-        </developer>
     </developers>
 
     <properties>
@@ -72,20 +62,20 @@
         <junit.version>4.11</junit.version>
         <slf4j-api.version>1.7.5</slf4j-api.version>
         <logback-core.version>1.0.11</logback-core.version>
-        <ms-data-core-api.version>0.11.22-SNAPSHOT</ms-data-core-api.version>
-        <pride-mzgraph-browser.version>1.0.16-SNAPSHOT</pride-mzgraph-browser.version>
-        <pride-chart.version>1.0.5-SNAPSHOT</pride-chart.version>
+        <ms-data-core-api.version>0.11.24</ms-data-core-api.version>
+        <pride-mzgraph-browser.version>1.0.15</pride-mzgraph-browser.version>
+        <pride-chart.version>1.0.5</pride-chart.version>
         <javahelp.version>2.0.02</javahelp.version>
-        <pride-utilities.version>0.1.20</pride-utilities.version>
+        <pride-utilities.version>0.1.22</pride-utilities.version>
         <jnlp-api.version>1.5.0</jnlp-api.version>
         <commons-cli.version>1.2</commons-cli.version>
         <eventbus.version>1.4</eventbus.version>
         <swingx-all.version>1.6.5-1</swingx-all.version>
         <ehcache.version>2.7.0</ehcache.version>
         <balloontip.version>1.2.1</balloontip.version>
-        <protein-details-fetcher.version>1.0.1</protein-details-fetcher.version>
-        <accession-resolver.version>1.0.1</accession-resolver.version>
-        <prider-ws-model.version>0.1.6.1-SNAPSHOT</prider-ws-model.version>
+        <protein-details-fetcher.version>1.0.4</protein-details-fetcher.version>
+        <accession-resolver.version>1.0.3</accession-resolver.version>
+        <prider-ws-model.version>0.1.6.1</prider-ws-model.version>
         <jackson-mapper-asl.version>1.9.9</jackson-mapper-asl.version>
         <httpcore.version>4.3.2</httpcore.version>
         <spring-web.version>3.2.3.RELEASE</spring-web.version>
@@ -174,6 +164,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>${ehcache.version}</version>
@@ -199,8 +195,8 @@
 
         <!-- PRIDE-R web service model-->
         <dependency>
-            <groupId>uk.ac.ebi.pride.prider</groupId>
-            <artifactId>prider-ws-model</artifactId>
+            <groupId>uk.ac.ebi.pride.archive</groupId>
+            <artifactId>webservice-model</artifactId>
             <version>${prider-ws-model.version}</version>
         </dependency>
 

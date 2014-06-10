@@ -1,14 +1,15 @@
 package uk.ac.ebi.pride.pia.intermediate;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import uk.ac.ebi.pride.data.core.PeptideEvidence;
-import uk.ac.ebi.pride.data.core.SpectrumIdentification;
-
 /**
- * A peptide class, which defines a peptide by its sequence only.
+ * A peptide class, which is used in the intermediate structure.
  * 
  * @author julian
  *
@@ -22,10 +23,7 @@ public class IntermediatePeptide {
 	private IntermediateGroup group;
 	
 	/** List of identifications for this peptide */
-	private Set<SpectrumIdentification> peptideSpectrumMatches;
-	
-	/** the peptide evidences */
-	private Set<PeptideEvidence> pepEvidences;
+	private Map<Comparable, IntermediatePeptideSpectrumMatch> peptideSpectrumMatches;
 	
 	
 	/**
@@ -36,8 +34,30 @@ public class IntermediatePeptide {
 	public IntermediatePeptide(String sequence) {
 		this.sequence = sequence;
 		this.group = null;
-		this.peptideSpectrumMatches = new HashSet<SpectrumIdentification>();
-		this.pepEvidences = new HashSet<PeptideEvidence>();
+		this.peptideSpectrumMatches = new HashMap<Comparable, IntermediatePeptideSpectrumMatch>();
+	}
+	
+	
+	/**
+	 * Returns an identifier for the peptide
+	 * 
+	 * @return
+	 */
+	public Comparable getID() {
+		return computeID(sequence);
+	}
+	
+	
+	/**
+	 * Returns the ID comoputed by the given arguments.
+	 * <p>
+	 * This is for probable future integration of modifications
+	 * 
+	 * @param sequence
+	 * @return
+	 */
+	public static String computeID(String sequence) {
+		return sequence;
 	}
 	
 	
@@ -69,36 +89,18 @@ public class IntermediatePeptide {
 	
 	
 	/**
-	 * Setter for the peptideSpectrumMatches
-	 * 
-	 * @param spectra
-	 */
-	public void setSpectra(Collection<SpectrumIdentification> spectrumIDs) {
-		this.peptideSpectrumMatches =
-				new HashSet<SpectrumIdentification>(spectrumIDs);
-	}
-	
-	
-	/**
-	 * adds the given peptideSpectrumMatches to the list of
-	 * peptideSpectrumMatches
+	 * adds the given spectrumIdentification to the peptide's PSMs
 	 * 
 	 * @param spectrum
 	 * @return true if this peptide did not already contain the spectrum identification
 	 */
-	public boolean addSpectrum(SpectrumIdentification spectrumIdentification) {
-		
-		boolean changed = false;
-		
-		if (peptideSpectrumMatches.add(spectrumIdentification)) {
-			changed = true;
-			
-			for (PeptideEvidence pepEvidence : spectrumIdentification.getPeptideEvidenceList()) {
-				pepEvidences.add(pepEvidence);
-			}
+	public boolean addPeptideSpectrumMatch(IntermediatePeptideSpectrumMatch spectrumIdentification) {
+		if (!peptideSpectrumMatches.containsKey(spectrumIdentification.getID())) {
+			peptideSpectrumMatches.put(spectrumIdentification.getID(), spectrumIdentification);
+			return true;
 		}
 		
-		return changed;
+		return false;
 	}
 	
 	
@@ -107,31 +109,22 @@ public class IntermediatePeptide {
 	 * 
 	 * @return
 	 */
-	public Set<SpectrumIdentification> getPeptideSpectrumMatches() {
-		return peptideSpectrumMatches;
-	}
-	
-	
-	/**
-	 * getter for the AccessionOccurrences
-	 * @return
-	 */
-	public Set<PeptideEvidence> getPeptideEvidences() {
-		return pepEvidences;
+	public List<IntermediatePeptideSpectrumMatch> getPeptideSpectrumMatches() {
+		return new ArrayList<IntermediatePeptideSpectrumMatch>(peptideSpectrumMatches.values());
 	}
 	
 	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (obj == null || !(obj instanceof IntermediatePeptide)) return false;
 		
 		IntermediatePeptide peptide = (IntermediatePeptide)obj;
 		
-		return !((sequence != null) ? !sequence.equals(peptide.sequence) : (peptide.sequence != null)) && 
-				!((group != null) ? !group.getID().equals(peptide.group.getID()) : (peptide.group != null)) &&
-				!((peptideSpectrumMatches != null) ? !peptideSpectrumMatches.equals(peptide.peptideSpectrumMatches) : (peptide.peptideSpectrumMatches != null)) &&
-				!((pepEvidences != null) ? !pepEvidences.equals(peptide.pepEvidences) : (peptide.pepEvidences != null));
+		if (!sequence.equals(peptide.getSequence())) return false;
+		
+		return !((group != null) ? !group.getID().equals(peptide.getGroup().getID()) : (peptide.getGroup() != null)) &&
+				!((peptideSpectrumMatches != null) ? !peptideSpectrumMatches.equals(peptide.getPeptideSpectrumMatches()) : (peptide.getPeptideSpectrumMatches() != null));
 	}
 	
 	
@@ -140,7 +133,6 @@ public class IntermediatePeptide {
         int result = (sequence != null) ? sequence.hashCode() : 0;
         result = 31 * result + ((group != null) ? group.getID().hashCode() : 0);
         result = 31 * result + ((peptideSpectrumMatches != null) ? peptideSpectrumMatches.hashCode() : 0);
-        result = 31 * result + ((pepEvidences != null) ? pepEvidences.hashCode() : 0);
         return result;
 	}
 }

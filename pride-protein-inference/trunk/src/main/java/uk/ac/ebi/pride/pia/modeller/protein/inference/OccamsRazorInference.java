@@ -51,6 +51,9 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	/** the progress of the inference */
 	private Double progress;
 	
+	/** variable to calculate the progress faster*/
+	private Double progressStep;
+	
 	
 	/** this iterator iterates over the mapping from the tree ID to its groups*/
 	private Iterator<Set<IntermediateGroup>> clustersIterator;
@@ -166,6 +169,7 @@ public class OccamsRazorInference extends AbstractProteinInference {
 		logger.info("using " + allowedThreads + " threads for inference");
 		
 		// initialize and start  the worker threads
+		progressStep = 89.0 / intermediateStructure.getNrClusters();
 		for (int i=0; i < allowedThreads; i++) {
 			OccamsRazorWorkerThread workerThread =
 								new OccamsRazorWorkerThread(i+1,
@@ -176,6 +180,8 @@ public class OccamsRazorInference extends AbstractProteinInference {
 			threads.add(workerThread);
 			workerThread.start();
 		}
+		
+		progress += 10.0;
 		
 		// wait for the threads to finish
 		for (OccamsRazorWorkerThread workerThread : threads) {

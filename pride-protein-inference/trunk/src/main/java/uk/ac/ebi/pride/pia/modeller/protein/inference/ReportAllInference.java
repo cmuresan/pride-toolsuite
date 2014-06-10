@@ -10,9 +10,9 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
-import uk.ac.ebi.pride.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
+import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateProtein;
 import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
@@ -81,10 +81,6 @@ public class ReportAllInference extends AbstractProteinInference {
 				getScoring().getPSMForScoringSetting().getValue());
 		*/
 		
-		// maps from the groups' IDs to the peptides, which should be reported
-		Map<Integer, Set<IntermediatePeptide>> groupIdToReportPeptides =
-			createFilteredPeptidesMap(considerModifications);
-		
 		// all the PSMs of the groups, including the PSMs in groups' children
 		Map<Integer, Set<IntermediatePeptide>> groupsAllPeptides =
 				new HashMap<Integer, Set<IntermediatePeptide>>(intermediateStructure.getNrGroups());
@@ -96,6 +92,10 @@ public class ReportAllInference extends AbstractProteinInference {
 		List<InferenceProteinGroup> proteinGroups = new ArrayList<InferenceProteinGroup>();
 		
 		for (Set<IntermediateGroup> cluster : intermediateStructure.getClusters().values()) {
+			
+			// maps from the groups' IDs to the peptides, which should be reported
+			Map<Integer, Set<IntermediatePeptide>> groupIdToReportPeptides =
+				createClustersFilteredPeptidesMap(cluster, considerModifications);
 			
 			Double progressStep = 89.0 / intermediateStructure.getNrClusters() / cluster.size();
 			Set<IntermediateGroup> clusterReportGroups = new HashSet<IntermediateGroup>(cluster.size());
@@ -214,8 +214,8 @@ public class ReportAllInference extends AbstractProteinInference {
 				}
 				
 				for (IntermediatePeptide interPeptide : groupsAllPeptides.get(group.getID())) {
-					for (SpectrumIdentification specId : interPeptide.getPeptideSpectrumMatches()) {
-						proteinGroup.addSpectrumIdentification(specId);
+					for (IntermediatePeptideSpectrumMatch psm : interPeptide.getPeptideSpectrumMatches()) {
+						proteinGroup.addPeptideSpectrumMatch(psm);
 					}
 				}
 				

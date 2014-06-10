@@ -10,9 +10,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import uk.ac.ebi.pride.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
+import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateProtein;
 import uk.ac.ebi.pride.pia.modeller.report.filter.AbstractFilter;
 
@@ -30,6 +30,7 @@ public class OccamsRazorWorkerThread extends Thread {
 	
 	/** whether modifications are considered while inferring the peptides */
 	private boolean considerModifications;
+	
 	
 	
 	/** logger for this class */
@@ -68,9 +69,9 @@ public class OccamsRazorWorkerThread extends Thread {
 	 * @param cluster
 	 */
 	private void processTree(Set<IntermediateGroup> cluster) {
-		// get the filtered report peptides mapping from the groups' IDs
+		// create the filtered report peptides mapping from the groups' IDs
 		Map<Integer, Set<IntermediatePeptide>> groupIdToReportPeptides =
-				parent.createFilteredPeptidesMap(considerModifications);
+				parent.createClustersFilteredPeptidesMap(cluster, considerModifications);
 		
 		// the map of actually reported proteins
 		List<InferenceProteinGroup> proteins =
@@ -100,10 +101,10 @@ public class OccamsRazorWorkerThread extends Thread {
 						groupIdToReportPeptides.get(pepGroup.getID()));
 			}
 			
-			Set<SpectrumIdentification> spectrumIdentifications =
-					new HashSet<SpectrumIdentification>();
+			Set<IntermediatePeptideSpectrumMatch> psms =
+					new HashSet<IntermediatePeptideSpectrumMatch>();
 			for (IntermediatePeptide pep : interPeptides) {
-				spectrumIdentifications.addAll(
+				psms.addAll(
 						pep.getPeptideSpectrumMatches());
 			}
 			
@@ -111,13 +112,14 @@ public class OccamsRazorWorkerThread extends Thread {
 			boolean addedToExistingGroup = false;
 			if ((filters != null ) && (filters.size() > 0)) {
 				for (InferenceProteinGroup existingGroup : proteins) {
-					if (existingGroup.getSpectrumIdentifications().equals(spectrumIdentifications)) {
+					if (existingGroup.getSpectrumIdentifications().equals(psms)) {
 						// add the proteins
 						for (IntermediateProtein protein : group.getProteins()) {
 							existingGroup.addProtein(protein);
 						}
 						
 						addedToExistingGroup = true;
+						
 						break;
 					} 
 				}
@@ -125,7 +127,6 @@ public class OccamsRazorWorkerThread extends Thread {
 			
 			// no existing group with same PSMs -> create new group
 			if (!addedToExistingGroup) {
-				
 				String proteinGroupID = parent.createProteinGroupID(group);
 				InferenceProteinGroup proteinGroup = new InferenceProteinGroup(proteinGroupID);
 				
@@ -135,14 +136,14 @@ public class OccamsRazorWorkerThread extends Thread {
 				}
 				
 				// add the PSMs
-				proteinGroup.addSpectrumIdentifications(spectrumIdentifications);
+				proteinGroup.addSpectrumIdentifications(psms);
 				
 				// and add a peptide mapping
 				Set<Comparable> peptides =
-						new HashSet<Comparable>(spectrumIdentifications.size());
-				for (SpectrumIdentification specID : spectrumIdentifications) {
+						new HashSet<Comparable>(psms.size());
+				for (IntermediatePeptideSpectrumMatch psm : psms) {
 					peptides.add(
-							getPSMsPeptideKey(specID, considerModifications));
+							getPSMsPeptideKey(psm, considerModifications));
 				}
 				
 				proteinIDsToPeptideIDs.put(proteinGroupID, peptides);
@@ -276,11 +277,9 @@ public class OccamsRazorWorkerThread extends Thread {
 			}
 			
 			for (InferenceProteinGroup protein : groupsWithMostPeptides) {
-				if (nrMostPeps > 0) {
-					// TODO: for now, the proteins which "explain" no more peptides are not reported (this happens sometimes)
-					reportProteins.add(protein);
-					reportedPeptides.addAll(proteinIDsToPeptideIDs.get(protein.getID()));
-				}
+				reportProteins.add(protein);
+				reportedPeptides.addAll(proteinIDsToPeptideIDs.get(protein.getID()));
+				
 				unreportedProteins.remove(protein.getID());
 				
 				// add the subproteins
@@ -303,11 +302,12 @@ public class OccamsRazorWorkerThread extends Thread {
 	 * @param considerModification
 	 * @return
 	 */
-	private static Comparable getPSMsPeptideKey(SpectrumIdentification psm, boolean considerModification) {
+	private static Comparable getPSMsPeptideKey(IntermediatePeptideSpectrumMatch psm, boolean considerModification) {
 		if (considerModification) {
-			return psm.getPeptideSequence().getId();
+			return psm.getSpectrumIdentification().getPeptideSequence().getId();
 		} else {
-			return psm.getSequence();
+			
+			return psm.getSpectrumIdentification().getSequence();
 		}
 	}
 }

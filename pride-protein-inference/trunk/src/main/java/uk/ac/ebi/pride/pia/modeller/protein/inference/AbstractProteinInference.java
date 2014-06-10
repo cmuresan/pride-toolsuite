@@ -4,14 +4,14 @@ import org.apache.log4j.Logger;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.DBSequence;
-import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.data.core.Protein;
 import uk.ac.ebi.pride.data.core.ProteinGroup;
-import uk.ac.ebi.pride.data.core.SpectrumIdentification;
+import uk.ac.ebi.pride.pia.intermediate.DataImportController;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
+import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructureCreator;
+import uk.ac.ebi.pride.pia.intermediate.impl.PrideImportController;
 import uk.ac.ebi.pride.pia.modeller.protein.scoring.AbstractScoring;
 import uk.ac.ebi.pride.pia.modeller.report.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
@@ -50,7 +50,7 @@ public abstract class AbstractProteinInference {
 	protected IntermediateStructure intermediateStructure;
     
     
-    /***
+    /**
      * The constructor works using a DataAccessController. Any of the current
      * implementations of this class should use this controller to retrieve the
      * peptide information and protein information.
@@ -63,16 +63,20 @@ public abstract class AbstractProteinInference {
 		this.currentScoring = null;
 		this.allowedThreads = nrThreads;
 		
-		// create the interemdiate structure from the data given by the controller
+		// create the intermediate structure from the data given by the controller
         IntermediateStructureCreator structCreator =
         		new IntermediateStructureCreator(this.allowedThreads);
 		
-		for (Comparable proteinId : controller.getProteinIds()) {
-			Protein protein = controller.getProteinById(proteinId);
-			for (Peptide pep : protein.getPeptides()) {
-				structCreator.addSpectrumIdentification(pep.getSpectrumIdentification());
-			}
-		}
+        
+        DataImportController importController = new PrideImportController(controller);
+		logger.info("start importing data from the controller");
+        importController.addAllSpectrumIdentificationsToStructCreator(structCreator);
+        
+        
+		logger.info("creating intermediate structure with\n\t"
+				+ structCreator.getNrSpectrumIdentifications() + " spectrum identifications\n\t"
+				+ structCreator.getNrPeptides() + " peptides\n\t"
+				+ structCreator.getNrProteins() + " protein accessions");
 		
 		intermediateStructure = structCreator.buildIntermediateStructure();
 	}
@@ -102,10 +106,8 @@ public abstract class AbstractProteinInference {
     public List<ProteinGroup> createProteinGroups(List<InferenceProteinGroup> interferedProteins) {
     	List<ProteinGroup> proteinGroups = new ArrayList<ProteinGroup>(interferedProteins.size());
     	
-    	int count = 1;
     	for (InferenceProteinGroup interGroup : interferedProteins) {
     		proteinGroups.add(interGroup.createProteinGroup());
-    		count++;
     	}
     	
     	return proteinGroups;
@@ -124,53 +126,83 @@ public abstract class AbstractProteinInference {
 				new HashMap<Integer, Set<IntermediatePeptide>>(intermediateStructure.getNrGroups() / 2);
 		
 		for (Set<IntermediateGroup> cluster : intermediateStructure.getClusters().values()) {
-			// this could be parallelized for each cluster...
-			for (IntermediateGroup group : cluster) {
-				
-				if ((group.getPeptides() == null) ||
-						(group.getPeptides().size() < 1)) {
-					// no peptides in the group -> go on
-					continue;
-				}
-				
-				Map<Comparable, IntermediatePeptide> groupsPepsMap =
-						new HashMap<Comparable, IntermediatePeptide>();
-				
-				for (IntermediatePeptide pep : group.getPeptides()) {
-					for (SpectrumIdentification psm : pep.getPeptideSpectrumMatches()) {
-						if (/* TODO: turn on filtering on PSM level! FilterFactory.satisfiesFilterList(psm, 0L, filters)*/ true) {
-							// all filters on PSM level are satisfied -> use this PSM
-							Comparable pepID = considerModifications ?
-									psm.getPeptideSequence().getId() : psm.getSequence();
-							
-							// get the peptide of this PSM
-							IntermediatePeptide psmsPeptide = groupsPepsMap.get(pepID);
-							if (psmsPeptide == null) {
-								// no peptide for the pepID in the map yet
-								psmsPeptide = new IntermediatePeptide(psm.getSequence());
-								groupsPepsMap.put(pepID, psmsPeptide);
-							}
-							
-							psmsPeptide.addSpectrum(psm);
-						}
-					}
-				}
-				
-				Set<IntermediatePeptide> groupsPeptides = new HashSet<IntermediatePeptide>();
-				for (IntermediatePeptide pep : groupsPepsMap.values()) {
-					if (/* TODO: turn on filtering on peptide level! FilterFactory.satisfiesFilterList(pep, 0L, filters)*/ true) {
-						// the peptide does satisfy the filters
-						groupsPeptides.add(pep);
-					}
-				}
-				groupIdToPeptides.put(group.getID(), groupsPeptides);
+			
+			Map<Integer, Set<IntermediatePeptide>> clustersGroupIdToPeptides =
+					createClustersFilteredPeptidesMap(cluster, considerModifications);
+			
+			if (clustersGroupIdToPeptides != null) {
+				groupIdToPeptides.putAll(clustersGroupIdToPeptides);
 			}
 		}
 		
 		return groupIdToPeptides;
 	}
 	
-
+	
+	/**
+	 * This method creates a Map from the groups' IDs to the associated
+	 * {@link IntermediatePeptide}s of the given cluster, which satisfy the
+	 * currently set filters.
+	 * 
+	 * @param considerModifications
+	 * @return
+	 */
+	public Map<Integer, Set<IntermediatePeptide>> createClustersFilteredPeptidesMap(
+			Set<IntermediateGroup> cluster, boolean considerModifications) {
+		Map<Integer, Set<IntermediatePeptide>> groupIdToPeptides =
+				new HashMap<Integer, Set<IntermediatePeptide>>(intermediateStructure.getNrGroups() / 2);
+		
+		for (IntermediateGroup group : cluster) {
+			
+			if ((group.getPeptides() == null) ||
+					(group.getPeptides().size() < 1)) {
+				// no peptides in the group -> go on
+				continue;
+			}
+			
+			Map<Comparable, IntermediatePeptide> groupsPepsMap =
+					new HashMap<Comparable, IntermediatePeptide>();
+			
+			for (IntermediatePeptide pep : group.getPeptides()) {
+				
+				for (IntermediatePeptideSpectrumMatch psm : pep.getPeptideSpectrumMatches()) {
+					if (/* TODO: turn on filtering on PSM level! FilterFactory.satisfiesFilterList(psm, 0L, filters)*/ true) {
+						// all filters on PSM level are satisfied -> use this PSM
+						Comparable pepID = considerModifications ?
+								psm.getSpectrumIdentification().getPeptideSequence().getId()
+								: pep.getSequence();
+						
+						// get the peptide of this PSM
+						IntermediatePeptide psmsPeptide = groupsPepsMap.get(pepID);
+						if (psmsPeptide == null) {
+							// no peptide for the pepID in the map yet
+							
+							/** TODO: maybe use the same peptides as in teh intermediate structure, but make a filtering on the PSMs effective... a list, which PSMs are passing the filter... */
+							psmsPeptide = new IntermediatePeptide(pep.getSequence());
+							groupsPepsMap.put(pepID, psmsPeptide);
+						}
+						
+						psmsPeptide.addPeptideSpectrumMatch(psm);
+					}
+				}
+				
+				
+			}
+			
+			Set<IntermediatePeptide> groupsPeptides = new HashSet<IntermediatePeptide>();
+			for (IntermediatePeptide pep : groupsPepsMap.values()) {
+				if (/* TODO: turn on filtering on peptide level! FilterFactory.satisfiesFilterList(pep, 0L, filters)*/ true) {
+					// the peptide does satisfy the filters
+					groupsPeptides.add(pep);
+				}
+			}
+			groupIdToPeptides.put(group.getID(), groupsPeptides);
+		}
+		
+		return groupIdToPeptides;
+	}
+	
+	
 	/**
 	 * Tests for the given group, if it has any direct {@link IntermediatePeptide}s,
 	 * in the given Map. This Map should by created by 

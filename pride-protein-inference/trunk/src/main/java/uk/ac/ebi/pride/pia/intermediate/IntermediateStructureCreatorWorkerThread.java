@@ -17,7 +17,7 @@ import uk.ac.ebi.pride.data.core.DBSequence;
  * @author julian
  *
  */
-public class IntermediateStructorCreatorWorkerThread extends Thread {
+public class IntermediateStructureCreatorWorkerThread extends Thread {
 	
 	/** the ID of this worker thread */
 	private int ID;
@@ -27,10 +27,10 @@ public class IntermediateStructorCreatorWorkerThread extends Thread {
 	
 	
 	/** logger for this class */
-	private static final Logger logger = Logger.getLogger(IntermediateStructorCreatorWorkerThread.class);
+	private static final Logger logger = Logger.getLogger(IntermediateStructureCreatorWorkerThread.class);
 	
 	
-	public IntermediateStructorCreatorWorkerThread(int ID, IntermediateStructureCreator parent) {
+	public IntermediateStructureCreatorWorkerThread(int ID, IntermediateStructureCreator parent) {
 		this.ID = ID;
 		this.parent = parent;
 		
@@ -41,7 +41,7 @@ public class IntermediateStructorCreatorWorkerThread extends Thread {
 	@Override
 	public void run() {
 		int workedClusters = 0;
-		Map<IntermediatePeptide, Set<DBSequence>> cluster;
+		Map<Comparable, Set<Comparable>> cluster;
 		
 		// get the next available cluster from the parent
 		cluster = parent.getNextCluster();
@@ -54,21 +54,17 @@ public class IntermediateStructorCreatorWorkerThread extends Thread {
 			Map<Comparable, IntermediateProtein> dbSeqsToProteins =
 					new HashMap<Comparable, IntermediateProtein>();
 			
-			for (Map.Entry<IntermediatePeptide, Set<DBSequence>> pepIt : cluster.entrySet()) {
+			for (Map.Entry<Comparable, Set<Comparable>> pepIt : cluster.entrySet()) {
+				
+				IntermediatePeptide pep = parent.getPeptide(pepIt.getKey());
 				
 				Set<IntermediateProtein> proteins =
 						new HashSet<IntermediateProtein>(pepIt.getValue().size());
-				for (DBSequence dbSeq : pepIt.getValue()) {
-					// while converting the dbSequences-set, build up a map
-					IntermediateProtein protein = dbSeqsToProteins.get(dbSeq.getId());
-					if (protein == null) {
-						protein = new IntermediateProtein(dbSeq);
-						dbSeqsToProteins.put(dbSeq.getId(), protein);
-					}
-					proteins.add(protein);
+				for (Comparable proteinID : pepIt.getValue()) {
+					proteins.add(parent.getProtein(proteinID));
 				}
 				
-				insertIntoMap(pepIt.getKey(), proteins, subGroups);
+				insertIntoMap(pep, proteins, subGroups);
 			}
 			
 			// put the subGroups as new tree into the intermediateStructure
@@ -104,13 +100,13 @@ public class IntermediateStructorCreatorWorkerThread extends Thread {
 		for (IntermediateProtein protein : proteins) {
 			Integer id = (protein.getGroup() == null) ? -1 : protein.getGroup().getID();
 			
-			Set<IntermediateProtein> groupsSequences = groupToProteinsMap.get(id);
-			if (groupsSequences == null) {
-				groupsSequences = new HashSet<IntermediateProtein>();
-				groupToProteinsMap.put(id, groupsSequences);
+			Set<IntermediateProtein> groupsProteins = groupToProteinsMap.get(id);
+			if (groupsProteins == null) {
+				groupsProteins = new HashSet<IntermediateProtein>();
+				groupToProteinsMap.put(id, groupsProteins);
 			}
 			
-			groupsSequences.add(protein);
+			groupsProteins.add(protein);
 		}
 		
 		if ((groupToProteinsMap.size() == 1) && (groupToProteinsMap.containsKey(-1))) {

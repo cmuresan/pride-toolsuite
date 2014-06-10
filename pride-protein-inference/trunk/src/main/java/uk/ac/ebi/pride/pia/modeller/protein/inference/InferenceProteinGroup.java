@@ -13,6 +13,7 @@ import uk.ac.ebi.pride.data.core.Protein;
 import uk.ac.ebi.pride.data.core.ProteinGroup;
 import uk.ac.ebi.pride.data.core.Score;
 import uk.ac.ebi.pride.data.core.SpectrumIdentification;
+import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateProtein;
 
 /**
@@ -30,7 +31,7 @@ public class InferenceProteinGroup {
 	private Set<IntermediateProtein> proteins;
 	
 	/** the identifications leading to this group */
-	private Set<SpectrumIdentification> spectrumIdentifications;
+	private Set<IntermediatePeptideSpectrumMatch> spectrumIdentifications;
 	
 	/** any subgroups */
 	private Set<InferenceProteinGroup> subGroups;
@@ -44,7 +45,7 @@ public class InferenceProteinGroup {
 	public InferenceProteinGroup(String id) {
 		this.ID = id;
 		this.proteins = new HashSet<IntermediateProtein>();
-		this.spectrumIdentifications = new HashSet<SpectrumIdentification>();
+		this.spectrumIdentifications = new HashSet<IntermediatePeptideSpectrumMatch>();
 		this.subGroups = new HashSet<InferenceProteinGroup>();
 	}
 	
@@ -74,30 +75,30 @@ public class InferenceProteinGroup {
 	
 	
 	/**
-	 * Adds one SpectrumIdentification to the set of spectrum identifications
+	 * Adds one IntermediatePeptideSpectrumMatch to the set of spectrum identifications
 	 * @param specID
 	 * @return
 	 */
-	public boolean addSpectrumIdentification(SpectrumIdentification specID) {
+	public boolean addPeptideSpectrumMatch(IntermediatePeptideSpectrumMatch specID) {
 		return spectrumIdentifications.add(specID);
 	}
 	
 	
 	/**
-	 * Adds a colelction of SpectrumIdentifications to the set of spectrum identifications
+	 * Adds a collection of IntermediatePeptideSpectrumMatches to the set of spectrum identifications
 	 * @param specID
 	 * @return
 	 */
-	public boolean addSpectrumIdentifications(Collection<SpectrumIdentification> specIDs) {
+	public boolean addSpectrumIdentifications(Collection<IntermediatePeptideSpectrumMatch> specIDs) {
 		return spectrumIdentifications.addAll(specIDs);
 	}
 	
 	
 	/**
-	 * Returns the set of SpectrumIdentifications
+	 * Returns the set of IntermediatePeptideSpectrumMatches
 	 * @return
 	 */
-	public Set<SpectrumIdentification> getSpectrumIdentifications() {
+	public Set<IntermediatePeptideSpectrumMatch> getSpectrumIdentifications() {
 		return spectrumIdentifications;
 	}
 	
@@ -129,11 +130,12 @@ public class InferenceProteinGroup {
 	public ProteinGroup createProteinGroup() {
 		Set<DBSequence> dbSequences = new HashSet<DBSequence>();
 		for (IntermediateProtein interProt : proteins) {
-			dbSequences.add(interProt.getRepresentative());
+			dbSequences.add(interProt.getDBSequence());
 		}
 		
 		Set<Peptide> peptides = new HashSet<Peptide>();
-		for (SpectrumIdentification specID : spectrumIdentifications) {
+		for (IntermediatePeptideSpectrumMatch psm : spectrumIdentifications) {
+			SpectrumIdentification specID = psm.getSpectrumIdentification();
 			for (PeptideEvidence pepEvidence : specID.getPeptideEvidenceList()) {
 				Peptide pep = new Peptide(pepEvidence, specID);
 				peptides.add(pep);

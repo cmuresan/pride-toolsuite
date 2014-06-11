@@ -224,7 +224,7 @@ public class IntermediateStructureCreator {
 	public int getNrSpectrumIdentifications() {
 		int nrSpectrumIdentifications = 0;
 		for (IntermediatePeptide pep : peptides.values()) {
-			nrSpectrumIdentifications += pep.getPeptideSpectrumMatches().size();
+			nrSpectrumIdentifications += pep.getAllPeptideSpectrumMatches().size();
 		}
 		return nrSpectrumIdentifications;
 	}

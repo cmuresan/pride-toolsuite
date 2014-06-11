@@ -14,6 +14,7 @@ import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateProtein;
+import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
 
@@ -41,8 +42,9 @@ public class ReportAllInference extends AbstractProteinInference {
 	private Double progress;
 	
 	
-	public ReportAllInference(DataAccessController controller, int nrThreads) {
-		super(controller, nrThreads);
+	public ReportAllInference(DataAccessController controller,
+			List<AbstractFilter> filters, boolean filterPSMsOnImport, int nrThreads) {
+		super(controller, filters, filterPSMsOnImport, nrThreads);
 		
 		this.progress = 0.0;
 	}

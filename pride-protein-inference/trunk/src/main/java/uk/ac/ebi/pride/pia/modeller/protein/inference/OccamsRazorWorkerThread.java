@@ -14,7 +14,7 @@ import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateProtein;
-import uk.ac.ebi.pride.pia.modeller.report.filter.AbstractFilter;
+import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
 
 
 public class OccamsRazorWorkerThread extends Thread {

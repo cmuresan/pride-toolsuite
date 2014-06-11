@@ -12,8 +12,9 @@ import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructureCreator;
 import uk.ac.ebi.pride.pia.intermediate.impl.PrideImportController;
+import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
+import uk.ac.ebi.pride.pia.modeller.filter.FilterUtilities;
 import uk.ac.ebi.pride.pia.modeller.protein.scoring.AbstractScoring;
-import uk.ac.ebi.pride.pia.modeller.report.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
 import java.util.*;
@@ -58,8 +59,9 @@ public abstract class AbstractProteinInference {
      * @param controller
      * @param nrThreads
      */
-	public AbstractProteinInference(DataAccessController controller, int nrThreads) {
-		this.filters = new ArrayList<AbstractFilter>();
+	public AbstractProteinInference(DataAccessController controller,
+			List<AbstractFilter> filters, boolean filterPSMsOnImport, int nrThreads) {
+		this.filters = (filters == null) ? new ArrayList<AbstractFilter>() : filters;
 		this.currentScoring = null;
 		this.allowedThreads = nrThreads;
 		
@@ -67,8 +69,13 @@ public abstract class AbstractProteinInference {
         IntermediateStructureCreator structCreator =
         		new IntermediateStructureCreator(this.allowedThreads);
 		
+        DataImportController importController;
+        if (filterPSMsOnImport) {
+        	importController = new PrideImportController(controller, filters);
+        } else {
+        	importController = new PrideImportController(controller);
+        }
         
-        DataImportController importController = new PrideImportController(controller);
 		logger.info("start importing data from the controller");
         importController.addAllSpectrumIdentificationsToStructCreator(structCreator);
         
@@ -165,34 +172,38 @@ public abstract class AbstractProteinInference {
 			
 			for (IntermediatePeptide pep : group.getPeptides()) {
 				
-				for (IntermediatePeptideSpectrumMatch psm : pep.getPeptideSpectrumMatches()) {
-					if (/* TODO: turn on filtering on PSM level! FilterFactory.satisfiesFilterList(psm, 0L, filters)*/ true) {
-						// all filters on PSM level are satisfied -> use this PSM
-						Comparable pepID = considerModifications ?
-								psm.getSpectrumIdentification().getPeptideSequence().getId()
-								: pep.getSequence();
-						
-						// get the peptide of this PSM
-						IntermediatePeptide psmsPeptide = groupsPepsMap.get(pepID);
-						if (psmsPeptide == null) {
-							// no peptide for the pepID in the map yet
-							
-							/** TODO: maybe use the same peptides as in teh intermediate structure, but make a filtering on the PSMs effective... a list, which PSMs are passing the filter... */
-							psmsPeptide = new IntermediatePeptide(pep.getSequence());
-							groupsPepsMap.put(pepID, psmsPeptide);
-						}
-						
-						psmsPeptide.addPeptideSpectrumMatch(psm);
-					}
+				if (!considerModifications) {
+					// use the same IntermediatePeptide as in the intermediate structure
+					pep.filterOutAllPSMs();
+					groupsPepsMap.put(pep.getSequence(), pep);
 				}
 				
-				
+				for (IntermediatePeptideSpectrumMatch psm : pep.getAllPeptideSpectrumMatches()) {
+					if (FilterUtilities.satisfiesFilterList(psm, filters)) {
+						// all filters on PSM level are satisfied -> use this PSM
+						if (!considerModifications) {
+							pep.psmPassesFilter(psm.getID());
+						} else {
+							Comparable pepID = 
+									psm.getSpectrumIdentification().getPeptideSequence().getId();
+							// get the peptide of this PSM
+							IntermediatePeptide psmsPeptide = groupsPepsMap.get(pepID);
+							if (psmsPeptide == null) {
+								// no peptide for the pepID in the map yet
+								psmsPeptide = new IntermediatePeptide(pep.getSequence());
+								groupsPepsMap.put(pepID, psmsPeptide);
+							}
+							psmsPeptide.addPeptideSpectrumMatch(psm);
+						}
+					}
+				}
 			}
 			
 			Set<IntermediatePeptide> groupsPeptides = new HashSet<IntermediatePeptide>();
 			for (IntermediatePeptide pep : groupsPepsMap.values()) {
-				if (/* TODO: turn on filtering on peptide level! FilterFactory.satisfiesFilterList(pep, 0L, filters)*/ true) {
-					// the peptide does satisfy the filters
+				if (pep.getPeptideSpectrumMatches().size() > 0
+						/* TODO: turn on filtering on peptide level! && FilterFactory.satisfiesFilterList(pep, 0L, filters)*/) {
+					// this peptide has PSMs and does satisfy the filters
 					groupsPeptides.add(pep);
 				}
 			}

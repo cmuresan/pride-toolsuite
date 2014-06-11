@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.ProteinGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
+import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
 
@@ -62,8 +63,9 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	private List<InferenceProteinGroup> reportProteinGroups;
 	
 	
-	public OccamsRazorInference(DataAccessController controller, int nrThreads) {
-		super(controller, nrThreads);
+	public OccamsRazorInference(DataAccessController controller,
+			List<AbstractFilter> filters, boolean filterPSMsOnImport, int nrThreads) {
+		super(controller, filters, filterPSMsOnImport, nrThreads);
 		
 		this.progress = 0.0;
 	}

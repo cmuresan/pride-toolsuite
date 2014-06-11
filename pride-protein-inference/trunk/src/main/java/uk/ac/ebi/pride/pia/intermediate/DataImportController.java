@@ -5,6 +5,9 @@ public interface DataImportController {
 	
 	/**
 	 * Adds all spectrum Identifications to the {@link IntermediateStructureCreator}
+	 * 
+	 * @param structCreator
+	 * @param filterPSMsOnImport whether the PSMs should be filered during the import
 	 */
 	public void addAllSpectrumIdentificationsToStructCreator(IntermediateStructureCreator structCreator);
 }

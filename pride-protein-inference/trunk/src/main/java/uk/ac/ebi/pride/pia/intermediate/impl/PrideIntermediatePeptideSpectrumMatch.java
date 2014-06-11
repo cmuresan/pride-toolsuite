@@ -1,9 +1,15 @@
 package uk.ac.ebi.pride.pia.intermediate.impl;
 
+import java.util.Map;
+
 import uk.ac.ebi.pride.data.controller.DataAccessController;
+import uk.ac.ebi.pride.data.controller.DataAccessUtilities;
 import uk.ac.ebi.pride.data.core.PeptideSequence;
+import uk.ac.ebi.pride.data.core.Score;
 import uk.ac.ebi.pride.data.core.SpectrumIdentification;
+import uk.ac.ebi.pride.engine.SearchEngineType;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
+import uk.ac.ebi.pride.term.CvTermReference;
 
 
 /**
@@ -21,9 +27,6 @@ public class PrideIntermediatePeptideSpectrumMatch implements IntermediatePeptid
 	private Comparable proteinID;
 	
 	private Comparable peptideID;
-	
-	
-	private SpectrumIdentification psm;
 	
 	
 	public PrideIntermediatePeptideSpectrumMatch(DataAccessController controller,

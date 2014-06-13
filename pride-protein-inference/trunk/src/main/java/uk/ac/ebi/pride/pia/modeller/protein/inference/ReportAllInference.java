@@ -9,11 +9,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateProtein;
+import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
@@ -42,10 +42,9 @@ public class ReportAllInference extends AbstractProteinInference {
 	private Double progress;
 	
 	
-	public ReportAllInference(DataAccessController controller,
-			List<AbstractFilter> filters, boolean filterPSMsOnImport, int nrThreads) {
-		super(controller, filters, filterPSMsOnImport, nrThreads);
-		
+	public ReportAllInference(IntermediateStructure intermediateStructure,
+			List<AbstractFilter> filters, int nrThreads) {
+		super(intermediateStructure, filters, nrThreads);
 		this.progress = 0.0;
 	}
 	

@@ -1,14 +1,20 @@
 package uk.ac.ebi.pride.pia.modeller.filter.psm;
 
-import uk.ac.ebi.pride.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.modeller.filter.FilterComparator;
 import uk.ac.ebi.pride.pia.modeller.filter.FilterType;
+import uk.ac.ebi.pride.pia.modeller.protein.scores.ScoreUtilities;
 import uk.ac.ebi.pride.term.CvTermReference;
 
+
+/**
+ * Filters for a score on PSM level.
+ * 
+ * @author julian
+ *
+ */
 public class PSMScoreFilter extends AbstractFilter {
-	
 	
 	protected final String shortName;
 	
@@ -22,18 +28,25 @@ public class PSMScoreFilter extends AbstractFilter {
 	
 	public static String prefix = "psm_score_filter_";
 	
-	private CvTermReference cvTerm;
+	private String cvAccession;
 	
 	
 	public PSMScoreFilter(FilterComparator arg, Double value, boolean negate,
-			String scoreAccession) {
-		cvTerm = CvTermReference.getCvRefByAccession(scoreAccession);
+			String scoreAccession, boolean oboLookup) {
+		cvAccession = null;
+		
+		CvTermReference cvTerm = CvTermReference.getCvRefByAccession(scoreAccession);
 		if (cvTerm == null) {
 			// try with "MS" enhenced name
 			cvTerm = CvTermReference.getCvRefByAccession("MS:" + scoreAccession);
 		}
-		
 		if (cvTerm != null) {
+			cvAccession = cvTerm.getAccession();
+		} else if (oboLookup) {
+			cvAccession = ScoreUtilities.findAccessionInObo(scoreAccession);
+		}
+		
+		if (cvAccession != null) {
 			this.comparator = arg;
 			this.value = value;
 			this.negate = negate;
@@ -85,23 +98,7 @@ public class PSMScoreFilter extends AbstractFilter {
 	@Override
 	public Object getObjectsValue(Object o) {
 		if (o instanceof IntermediatePeptideSpectrumMatch) {
-			// return the first score for the cvTerm or null, if this PSM has no valid score
-			
-			SpectrumIdentification psm = ((IntermediatePeptideSpectrumMatch) o).getSpectrumIdentification();
-			for (Number value : psm.getScore().getScores(cvTerm)) {
-				if (value != null) {
-					return value.doubleValue();
-				}
-			}
-			return null;
-		} else if (o instanceof SpectrumIdentification) {
-			// return the first score for the cvTerm or null, if this PSM has no valid score
-			for (Number value : ((SpectrumIdentification) o).getScore().getScores(cvTerm)) {
-				if (value != null) {
-					return value.doubleValue();
-				}
-			}
-			return null;
+			return ((IntermediatePeptideSpectrumMatch) o).getScore(cvAccession);
 		} else if (o instanceof Number) {
 			return ((Number) o).doubleValue();
 		} else {
@@ -114,8 +111,6 @@ public class PSMScoreFilter extends AbstractFilter {
 	public boolean supportsClass(Object c) {
 		// only support SpectrumIdentification and Number
 		if (c instanceof IntermediatePeptideSpectrumMatch) {
-			return true;
-		} else if (c instanceof SpectrumIdentification) {
 			return true;
 		} else if (c instanceof Number) {
 			return true;

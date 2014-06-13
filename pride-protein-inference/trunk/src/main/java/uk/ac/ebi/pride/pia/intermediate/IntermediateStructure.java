@@ -1,8 +1,10 @@
 package uk.ac.ebi.pride.pia.intermediate;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -121,5 +123,21 @@ public class IntermediateStructure {
 	 */
 	public int getNrPeptides() {
 		return peptides.size();
+	}
+	
+	
+	/**
+	 * Returns all intermediate PSMs of the structure
+	 * @return
+	 */
+	public List<IntermediatePeptideSpectrumMatch> getAllIntermediatePSMs() {
+		List<IntermediatePeptideSpectrumMatch> psms =
+				new ArrayList<IntermediatePeptideSpectrumMatch>(getNrPeptides());
+		
+		for (IntermediatePeptide pep : peptides) {
+			psms.addAll(pep.getAllPeptideSpectrumMatches());
+		}
+		
+		return psms;
 	}
 }

@@ -2,19 +2,15 @@ package uk.ac.ebi.pride.pia.modeller.protein.inference;
 
 import org.apache.log4j.Logger;
 
-import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.DBSequence;
 import uk.ac.ebi.pride.data.core.ProteinGroup;
-import uk.ac.ebi.pride.pia.intermediate.DataImportController;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
-import uk.ac.ebi.pride.pia.intermediate.IntermediateStructureCreator;
-import uk.ac.ebi.pride.pia.intermediate.impl.PrideImportController;
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.modeller.filter.FilterUtilities;
-import uk.ac.ebi.pride.pia.modeller.protein.scoring.AbstractScoring;
+import uk.ac.ebi.pride.pia.modeller.protein.scores.AbstractScoring;
 import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
 import java.util.*;
@@ -54,42 +50,23 @@ public abstract class AbstractProteinInference {
     /**
      * The constructor works using a DataAccessController. Any of the current
      * implementations of this class should use this controller to retrieve the
-     * peptide information and protein information.
+     * psm, peptide and protein information.
      * 
      * @param controller
+     * @param filters any filters, which should be applied
+     * @param filterPSMsOnImport if true, the PSMs hich fo not pass teh filtering are not imported into the intermediate structure
      * @param nrThreads
      */
-	public AbstractProteinInference(DataAccessController controller,
-			List<AbstractFilter> filters, boolean filterPSMsOnImport, int nrThreads) {
+	public AbstractProteinInference(IntermediateStructure intermediateStructure,
+			List<AbstractFilter> filters, int nrThreads) {
+		this.intermediateStructure = intermediateStructure;
 		this.filters = (filters == null) ? new ArrayList<AbstractFilter>() : filters;
 		this.currentScoring = null;
 		this.allowedThreads = nrThreads;
-		
-		// create the intermediate structure from the data given by the controller
-        IntermediateStructureCreator structCreator =
-        		new IntermediateStructureCreator(this.allowedThreads);
-		
-        DataImportController importController;
-        if (filterPSMsOnImport) {
-        	importController = new PrideImportController(controller, filters);
-        } else {
-        	importController = new PrideImportController(controller);
-        }
-        
-		logger.info("start importing data from the controller");
-        importController.addAllSpectrumIdentificationsToStructCreator(structCreator);
-        
-        
-		logger.info("creating intermediate structure with\n\t"
-				+ structCreator.getNrSpectrumIdentifications() + " spectrum identifications\n\t"
-				+ structCreator.getNrPeptides() + " peptides\n\t"
-				+ structCreator.getNrProteins() + " protein accessions");
-		
-		intermediateStructure = structCreator.buildIntermediateStructure();
+		logger.debug("starting inference with following filters: " + filters);
 	}
 	
 	
-
     /**
      * calculateInference is the method of the abstract class which allows the
      * class to compute the protein groups and create the List of different

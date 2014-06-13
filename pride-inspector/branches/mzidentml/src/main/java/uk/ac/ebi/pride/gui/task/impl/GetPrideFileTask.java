@@ -2,28 +2,27 @@ package uk.ac.ebi.pride.gui.task.impl;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.xerces.impl.dv.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.gui.action.impl.OpenFileAction;
 import uk.ac.ebi.pride.gui.component.reviewer.SubmissionFileDetail;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.desktop.DesktopContext;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
-import uk.ac.ebi.pride.gui.task.TaskUtil;
 
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -77,7 +76,9 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
                     File output = new File(folder.getAbsolutePath() + File.separator + submissionEntry.getFileName());
 
                     // download submission file
-                    output = downloadFile(url, output, user, password, submissionEntry.getFileSize());
+                    String host = context.getProperty("prider.host.url");
+                    int port = Integer.parseInt(context.getProperty("prider.host.port"));
+                    output = downloadFile(host, port, url, output, user, password, submissionEntry.getFileSize());
 
                     // open file
                     if (toOpenFile && output != null) {
@@ -97,34 +98,37 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
         return null;
     }
 
-    private String buildFileDownloadUrl(String url, String accession, String fileName) {
+    private String buildFileDownloadUrl(String url, String accession, String fileName) throws UnsupportedEncodingException {
         url = url.replace("{accession}", accession);
-        url = url.replace("{file}", fileName);
+        url = url.replace("{file}", URLEncoder.encode(fileName, "UTF-8").replace("+", "%20"));
         return url;
     }
 
-    private File downloadFile(String url, File output, String userName, String password, long fileSize) throws IOException {
+    private File downloadFile(String host, int port, String url, File output, String userName, String password, long fileSize) throws IOException {
+        HttpHost target = new HttpHost(host, port, "http");
+
         // Create an instance of HttpClient.
         CloseableHttpClient client = HttpClients.createDefault();
 
-        final HttpClientContext httpClientContext = HttpClientContext.create();
         if (userName != null && password != null) {
             // credential provider
-            final BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
+            BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
             basicCredentialsProvider.setCredentials(new AuthScope(AuthScope.ANY),
                                                     new UsernamePasswordCredentials(userName, password));
 
-            httpClientContext.setCredentialsProvider(basicCredentialsProvider);
+            client = HttpClients.custom().setDefaultCredentialsProvider(basicCredentialsProvider).build();
 
         }
 
+        HttpClientContext httpClientContext = HttpClientContext.create();
+        BasicAuthCache authCache = new BasicAuthCache();
+        BasicScheme basicScheme = new BasicScheme();
+        authCache.put(target, basicScheme);
+        httpClientContext.setAuthCache(authCache);
+
         // Create a method instance.
         HttpGet method = new HttpGet(url);
-
-        // Provide custom retry handler is necessary
-//        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
-
-        final CloseableHttpResponse response = client.execute(method, httpClientContext);
+        CloseableHttpResponse response = client.execute(target, method, httpClientContext);
 
         BufferedOutputStream boutStream = null;
         InputStream inputStream = null;
@@ -178,17 +182,6 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
         return output;
     }
 
-    private HttpHeaders getHeaders(String auth) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-
-        byte[] encodedAuthorisation = Base64.encode(auth.getBytes()).getBytes();
-        headers.add("Authorization", "Basic " + new String(encodedAuthorisation));
-
-        return headers;
-    }
-
     private void copyStream(InputStream inputStream, BufferedOutputStream outputStream, long fileSize) throws IOException {
         int readCount = 0;
         byte data[] = new byte[BUFFER_SIZE];
@@ -210,17 +203,5 @@ public class GetPrideFileTask extends TaskAdapter<Void, String> {
         }
         outputStream.flush();
         setProgress(100);
-    }
-
-
-    /**
-     * Open downloaded file
-     *
-     * @param output downloaded file
-     */
-    @SuppressWarnings("unchecked")
-    private void openFile(File output, Class<? extends DataAccessController> controllerClass) {
-        OpenFileTask openFileTask = new OpenFileTask(output, controllerClass, "Opening download file", output.getAbsolutePath());
-        TaskUtil.startBackgroundTask(openFileTask);
     }
 }

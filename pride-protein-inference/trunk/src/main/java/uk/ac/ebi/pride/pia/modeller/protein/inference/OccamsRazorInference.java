@@ -7,9 +7,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.ProteinGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
+import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
@@ -29,11 +29,6 @@ import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
  * Groups, which have the peptides). If the pepChildGroups are not fully
  * explained by any other Group fulfilling 1), report the Group. (If it is
  * explained by any other, set it as a subGroup of it).
- * 
- * <p>
- * 
- * TODO: to make this even faster it would be possible to thread the method by
- * the tree IDs
  * 
  * @author julian
  * 
@@ -63,10 +58,9 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	private List<InferenceProteinGroup> reportProteinGroups;
 	
 	
-	public OccamsRazorInference(DataAccessController controller,
-			List<AbstractFilter> filters, boolean filterPSMsOnImport, int nrThreads) {
-		super(controller, filters, filterPSMsOnImport, nrThreads);
-		
+	public OccamsRazorInference(IntermediateStructure intermediateStructure,
+			List<AbstractFilter> filters, int nrThreads) {
+		super(intermediateStructure, filters, nrThreads);
 		this.progress = 0.0;
 	}
 	
@@ -225,6 +219,7 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	 */
 	public synchronized void addToReports(List<InferenceProteinGroup> proteinGroups) {
 		reportProteinGroups.addAll(proteinGroups);
+		progress += progressStep;
 	}
 	
 	

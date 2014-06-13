@@ -1,6 +1,6 @@
-package uk.ac.ebi.pride.pia.modeller.protein.scoring;
+package uk.ac.ebi.pride.pia.modeller.protein.scores;
 
-import uk.ac.ebi.pride.pia.modeller.protein.scoring.settings.PSMForScoring;
+import uk.ac.ebi.pride.pia.modeller.protein.scores.settings.PSMForScoring;
 import uk.ac.ebi.pride.pia.modeller.report.settings.Setting;
 import uk.ac.ebi.pride.pia.modeller.report.settings.SettingType;
 

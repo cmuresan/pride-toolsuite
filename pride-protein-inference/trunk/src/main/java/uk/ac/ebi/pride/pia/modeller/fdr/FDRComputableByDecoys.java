@@ -47,6 +47,20 @@ public interface FDRComputableByDecoys {
 	
 	
 	/**
+	 * Sets the smoothed FDRScore value.
+	 * @return
+	 */
+	public void setFDRScore(Double fdrScore);
+	
+	
+	/**
+	 * Gets the smoothed FDRScore value.
+	 * @return
+	 */
+	public Double getFDRScore();
+	
+	
+	/**
 	 * Returns true, if the item is a decoy, or false, if not.
 	 * @return
 	 */

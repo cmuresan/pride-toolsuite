@@ -1,8 +1,8 @@
-package uk.ac.ebi.pride.pia.modeller.protein.scores;
+package uk.ac.ebi.pride.pia.modeller.scores;
 
-import uk.ac.ebi.pride.pia.modeller.protein.scores.settings.PSMForScoring;
 import uk.ac.ebi.pride.pia.modeller.report.settings.Setting;
 import uk.ac.ebi.pride.pia.modeller.report.settings.SettingType;
+import uk.ac.ebi.pride.pia.modeller.scores.settings.PSMForScoring;
 
 import java.util.ArrayList;
 import java.util.HashMap;

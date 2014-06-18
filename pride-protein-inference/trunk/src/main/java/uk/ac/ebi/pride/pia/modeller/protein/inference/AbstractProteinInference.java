@@ -10,8 +10,8 @@ import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.modeller.filter.FilterUtilities;
-import uk.ac.ebi.pride.pia.modeller.protein.scores.AbstractScoring;
-import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
+import uk.ac.ebi.pride.pia.modeller.scores.peptide.PeptideScoring;
+import uk.ac.ebi.pride.pia.modeller.scores.protein.ProteinScoring;
 
 import java.util.*;
 
@@ -37,8 +37,11 @@ public abstract class AbstractProteinInference {
 	/** list of the settings. */
 	protected List<AbstractFilter> filters;
 	
-	/** the currently set scoring */
-	protected AbstractScoring currentScoring;
+	/** the currently set peptide scoring */
+	protected PeptideScoring peptideScoring;
+	
+	/** the currently set protein scoring */
+	protected ProteinScoring proteinScoring;
 	
 	/** the number of allowed threads (smaller 1 = all available)*/
 	protected int allowedThreads;
@@ -58,10 +61,12 @@ public abstract class AbstractProteinInference {
      * @param nrThreads
      */
 	public AbstractProteinInference(IntermediateStructure intermediateStructure,
+			PeptideScoring peptideScoring, ProteinScoring proteinScoring,
 			List<AbstractFilter> filters, int nrThreads) {
 		this.intermediateStructure = intermediateStructure;
 		this.filters = (filters == null) ? new ArrayList<AbstractFilter>() : filters;
-		this.currentScoring = null;
+		this.peptideScoring = peptideScoring;
+		this.proteinScoring = proteinScoring;
 		this.allowedThreads = nrThreads;
 		logger.debug("starting inference with following filters: " + filters);
 	}
@@ -148,19 +153,14 @@ public abstract class AbstractProteinInference {
 					new HashMap<Comparable, IntermediatePeptide>();
 			
 			for (IntermediatePeptide pep : group.getPeptides()) {
-				
 				if (!considerModifications) {
 					// use the same IntermediatePeptide as in the intermediate structure
-					pep.filterOutAllPSMs();
 					groupsPepsMap.put(pep.getSequence(), pep);
-				}
-				
-				for (IntermediatePeptideSpectrumMatch psm : pep.getAllPeptideSpectrumMatches()) {
-					if (FilterUtilities.satisfiesFilterList(psm, filters)) {
-						// all filters on PSM level are satisfied -> use this PSM
-						if (!considerModifications) {
-							pep.psmPassesFilter(psm.getID());
-						} else {
+					pep.filterPSMs(filters);
+				} else {
+					for (IntermediatePeptideSpectrumMatch psm : pep.getAllPeptideSpectrumMatches()) {
+						if (FilterUtilities.satisfiesFilterList(psm, filters)) {
+							// all filters on PSM level are satisfied -> use this PSM
 							Comparable pepID = 
 									psm.getSpectrumIdentification().getPeptideSequence().getId();
 							// get the peptide of this PSM
@@ -258,80 +258,57 @@ public abstract class AbstractProteinInference {
 	public abstract Long getProgressValue();
 	
 	
-    /** ----- Start of functions related with Filters handling. ----- */
-
-    /**
-     * Returns a List of SelectItems representing the available filters for this
-     * inference.
-     *
-     * @return
-     */
-    public abstract List<LabelValueContainer<String>> getFilterTypes();
-    
-    
-    /**
-     * Get the human readable name of the filter.
-     * @return
-     */
-    public abstract String getName();
-    
-    
-    /**
-     * Get the unique machine readable short name of the filter.
-     * @return
-     */
-    public abstract String getShortName();
-    
-    
-    /**
-     * adds a new filter to the inference filters.
-     * @param newFilter
-     * @return
-     */
-    public boolean addFilter(AbstractFilter newFilter) {
-        return filters.add(newFilter);
-    }
-
-    /**
-     * Returns a {@link List} of all filter settings for this inference filter.
-     * @return
-     */
-    public List<AbstractFilter> getFilters() {
-        return filters;
-    }
-
-    /**
-     * Removes the filter given by the index
-     */
-    public AbstractFilter removeFilter(int index) {
-        if ((index >= 0) &&
-                (index < filters.size())) {
-            return filters.remove(index);
-        }
-
-        return null;
-    }
-
-    /** ----- End of functions related with Filters handling. ----- */
-    
-    
-    /** ----- Start of functions related with Scoring handling. ----- */
-    
-    /**
-     * Setter for the currently set scoring.
-     * @param scoring
-     */
-    public void setScoring(AbstractScoring scoring) {
-        this.currentScoring = scoring;
-    }
-
-    /**
-     * Getter for the currently set scoring.
-     * @return
-     */
-    public AbstractScoring getScoring() {
-        return currentScoring;
-    }
-
-    /** ----- End of functions related with Scoring handling. ----- */
+	/**
+	 * Get the human readable name of the inference method.
+	 * @return
+	 */
+	public abstract String getName();
+	
+	
+	/**
+	 * Get the unique machine readable short name of the inference method.
+	 * @return
+	 */
+	public abstract String getShortName();
+	
+	
+	/**
+	 * Returns a List of SelectItems representing the available filters for this
+	 * inference.
+	 *
+	 * @return
+	 */
+	//public abstract List<LabelValueContainer<String>> getFilterTypes();
+	
+	
+	/**
+	 * adds a new filter to the inference filters.
+	 * @param newFilter
+	 * @return
+	 */
+	public boolean addFilter(AbstractFilter newFilter) {
+	    return filters.add(newFilter);
+	}
+	
+	
+	/**
+	 * Returns a {@link List} of all filter settings for this inference filter.
+	 * @return
+	 */
+	public List<AbstractFilter> getFilters() {
+	    return filters;
+	}
+	
+	
+	/**
+	 * Removes the filter at the given index
+	 */
+	public AbstractFilter removeFilter(int index) {
+		if ((index >= 0) &&
+				(index < filters.size())) {
+			return filters.remove(index);
+		}
+		
+		return null;
+	}
 }

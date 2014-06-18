@@ -6,6 +6,8 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.PeptideEvidence;
 import uk.ac.ebi.pride.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
+import uk.ac.ebi.pride.pia.modeller.filter.psm.PSMScoreFilter;
+import uk.ac.ebi.pride.pia.modeller.scores.CvScore;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 
@@ -38,6 +40,9 @@ public class PrideIntermediatePeptideSpectrumMatch implements IntermediatePeptid
 	/** the calculated q-value */
 	private Double qValue;
 	
+	/** the calculated FDR Score value */
+	private Double fdrScore;
+	
 	
 	public PrideIntermediatePeptideSpectrumMatch(DataAccessController controller,
 			Comparable proteinID, Comparable peptideID) {
@@ -47,6 +52,7 @@ public class PrideIntermediatePeptideSpectrumMatch implements IntermediatePeptid
 		this.isDecoy = null;
 		this.fdrValue = null;
 		this.qValue = null;
+		this.fdrScore = null;
 	}
 	
 	
@@ -61,17 +67,21 @@ public class PrideIntermediatePeptideSpectrumMatch implements IntermediatePeptid
 	
 	@Override
 	public Double getScore(String scoreAccession) {
-		CvTermReference cvTermRef = CvTermReference.getCvRefByAccession(scoreAccession);
-		if (cvTermRef != null) {
-			List<Number> scores = 
-					getSpectrumIdentification().getScore().getScores(cvTermRef);
-			
-			if (scores.size() > 0) {
-				return scores.get(0).doubleValue();
+		if (CvScore.PSI_PSM_LEVEL_FDRSCORE.getAccession().equals(scoreAccession)) {
+			return getFDRScore();
+		} else {
+			CvTermReference cvTermRef = CvTermReference.getCvRefByAccession(scoreAccession);
+			if (cvTermRef != null) {
+				List<Number> scores = 
+						getSpectrumIdentification().getScore().getScores(cvTermRef);
+				
+				if (scores.size() > 0) {
+					return scores.get(0).doubleValue();
+				}
 			}
+			
+			return null;
 		}
-		
-		return null;
 	}
 	
 	
@@ -96,7 +106,7 @@ public class PrideIntermediatePeptideSpectrumMatch implements IntermediatePeptid
 	
 	
 	@Override
-	public void setIsDecoy(Boolean isdecoy) {
+	public void setIsDecoy(Boolean isDecoy) {
 		this.isDecoy = isDecoy;
 	}
 	
@@ -128,6 +138,18 @@ public class PrideIntermediatePeptideSpectrumMatch implements IntermediatePeptid
 	@Override
 	public Double getQValue() {
 		return qValue;
+	}
+	
+	
+	@Override
+	public void setFDRScore(Double fdrScore) {
+		this.fdrScore = fdrScore;
+	}
+	
+	
+	@Override
+	public Double getFDRScore() {
+		return fdrScore;
 	}
 	
 	

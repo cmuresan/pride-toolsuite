@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.pia.modeller.protein.scores;
+package uk.ac.ebi.pride.pia.modeller.scores;
 
 import java.util.Comparator;
 import java.util.HashMap;

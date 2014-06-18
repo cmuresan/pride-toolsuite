@@ -11,6 +11,8 @@ import uk.ac.ebi.pride.data.core.ProteinGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
+import uk.ac.ebi.pride.pia.modeller.scores.peptide.PeptideScoring;
+import uk.ac.ebi.pride.pia.modeller.scores.protein.ProteinScoring;
 import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
 
@@ -59,15 +61,16 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	
 	
 	public OccamsRazorInference(IntermediateStructure intermediateStructure,
+			PeptideScoring peptideScoring, ProteinScoring proteinScoring,
 			List<AbstractFilter> filters, int nrThreads) {
-		super(intermediateStructure, filters, nrThreads);
+		super(intermediateStructure, peptideScoring, proteinScoring, filters, nrThreads);
+		
 		this.progress = 0.0;
 	}
 	
-	
+	/*
 	@Override
 	public List<LabelValueContainer<String>> getFilterTypes() {
-		/*
 		List<LabelValueContainer<String>> filters = new ArrayList<LabelValueContainer<String>>();
 		
 		// PSM filters
@@ -132,9 +135,9 @@ public class OccamsRazorInference extends AbstractProteinInference {
 				NrUniquePeptidesPerProteinFilter.filteringName()));
 		
 		return filters;
-		*/
 		return null;
 	}
+	 */
 	
 	@Override
 	public List<InferenceProteinGroup> calculateInference( boolean considerModifications) {

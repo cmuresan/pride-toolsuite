@@ -15,6 +15,8 @@ import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateProtein;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
+import uk.ac.ebi.pride.pia.modeller.scores.peptide.PeptideScoring;
+import uk.ac.ebi.pride.pia.modeller.scores.protein.ProteinScoring;
 import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
 
@@ -43,15 +45,15 @@ public class ReportAllInference extends AbstractProteinInference {
 	
 	
 	public ReportAllInference(IntermediateStructure intermediateStructure,
+			PeptideScoring peptideScoring, ProteinScoring proteinScoring,
 			List<AbstractFilter> filters, int nrThreads) {
-		super(intermediateStructure, filters, nrThreads);
+		super(intermediateStructure, peptideScoring, proteinScoring, filters, nrThreads);
 		this.progress = 0.0;
 	}
 	
-	
+	/*
 	@Override
 	public List<LabelValueContainer<String>> getFilterTypes() {
-		/*
 		List<LabelValueContainer<String>> filters = new ArrayList<LabelValueContainer<String>>();
 		
 		filters.add(new LabelValueContainer<String>(null, "--- PSM ---"));
@@ -67,10 +69,9 @@ public class ReportAllInference extends AbstractProteinInference {
 		filters.add(new LabelValueContainer<String>(NrPSMsPerPSMSetFilter.shortName(), NrPSMsPerPSMSetFilter.filteringName()));
 		
 		return filters;
-		*/
 		return null;
 	}
-	
+	*/
 	
 	@Override
 	public List<InferenceProteinGroup> calculateInference( boolean considerModifications) {

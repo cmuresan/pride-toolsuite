@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.pia.modeller.protein.scores.settings;
+package uk.ac.ebi.pride.pia.modeller.scores.settings;
 
 
 import java.util.ArrayList;

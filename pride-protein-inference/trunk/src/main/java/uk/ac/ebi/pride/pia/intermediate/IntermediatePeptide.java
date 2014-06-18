@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
+import uk.ac.ebi.pride.pia.modeller.filter.FilterUtilities;
+
 
 /**
  * A peptide class, which is used in the intermediate structure.
@@ -28,6 +31,12 @@ public class IntermediatePeptide {
 	/** The PSMs passing a given filter */
 	private Set<Comparable> psmsPassingFilter;
 	
+	/** the peptide score */
+	private Double score;
+	
+	/** The IDs of the PSMs, which were used to calculate the peptide score */
+	private Set<Comparable> scoringPSMIDs;
+	
 	
 	/**
 	 * Basic constructor, only initializes the sequence
@@ -39,6 +48,8 @@ public class IntermediatePeptide {
 		this.group = null;
 		this.peptideSpectrumMatches = new HashMap<Comparable, IntermediatePeptideSpectrumMatch>();
 		this.psmsPassingFilter = null;
+		this.score = Double.NaN;
+		this.scoringPSMIDs = null;
 	}
 	
 	
@@ -147,26 +158,98 @@ public class IntermediatePeptide {
 	
 	
 	/**
-	 * Makes all filtering obsolete, i.e. all PSMs are passing the filters.
+	 * Filters the PSMs using the given filters. Any prior filtering will be
+	 * deleted.
+	 * 
+	 * @param filters
 	 */
-	public void removeFilteringEffects() {
-		psmsPassingFilter = null;
-	}
-	
-	
-	/**
-	 * Makes all PSMs failing the filters (or initializes the filtering)
-	 */
-	public void filterOutAllPSMs() {
+	public void filterPSMs(List<AbstractFilter> filters) {
 		psmsPassingFilter = new HashSet<Comparable>();
+		
+		for (IntermediatePeptideSpectrumMatch psm : getAllPeptideSpectrumMatches()) {
+			if (FilterUtilities.satisfiesFilterList(psm, filters)) {
+				psmsPassingFilter.add(psm.getID());
+				
+			}
+		}
 	}
 	
 	
 	/**
-	 * Makes the given PSM pass the filters
+	 * Getter for the peptide score. If the score is not given, it may be null
+	 * or {@value Double#NaN}. 
+	 * 
+	 * @return
 	 */
-	public void psmPassesFilter(Comparable psmID) {
-		psmsPassingFilter.add(psmID);
+	public Double getScore() {
+		return score;
+	}
+	
+	
+	/**
+	 * Sets the score of the peptide.
+	 * 
+	 * @param score
+	 */
+	public void setScore(Double score) {
+		this.score = score;
+	}
+	
+	
+	/**
+	 * Adds one psm ID to the set of IDs, which were currently used for the
+	 * peptide scoring.
+	 * 
+	 * @param psmID
+	 */
+	public void addScoringPeptideID(Comparable psmID) {
+		if (scoringPSMIDs == null) {
+			scoringPSMIDs = new HashSet<Comparable>();
+		}
+		
+		scoringPSMIDs.add(psmID);
+	}
+	
+	
+	/**
+	 * Removes all information about which PSMs were used for scoring.
+	 */
+	public void removeAllScoringInformation() {
+		scoringPSMIDs = null;
+	}
+	
+	
+	/**
+	 * Returns the IDs of PSMs used for scoring
+	 * @return
+	 */
+	public Set<Comparable> getScoringPSMIDs() {
+		if (scoringPSMIDs == null) {
+			return new HashSet<Comparable>();
+		} else {
+			return scoringPSMIDs;
+		}
+	}
+	
+	
+	/**
+	 * Returns the PSMs used for scoring
+	 * @return
+	 */
+	public Set<IntermediatePeptideSpectrumMatch> getScoringPSMs() {
+		HashSet<IntermediatePeptideSpectrumMatch> psms =  new HashSet<IntermediatePeptideSpectrumMatch>();
+		
+		if (scoringPSMIDs == null) {
+			return psms;
+		} else {
+			for (Comparable psmID : scoringPSMIDs) {
+				IntermediatePeptideSpectrumMatch psm = peptideSpectrumMatches.get(psmID);
+				if (psm != null) {
+					psms.add(psm);
+				}
+			}
+			return psms;
+		}
 	}
 	
 	

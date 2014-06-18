@@ -1,4 +1,4 @@
-package uk.ac.ebi.pride.pia.modeller.protein.scores;
+package uk.ac.ebi.pride.pia.modeller.scores;
 
 /**
  * Enumeration of known CV terms, for faster access
@@ -65,6 +65,10 @@ public enum CvScore{
 	
 	// percolator:score
 	//PSI_PERCULATOR_SCORE("MS", "MS:1001492", "percolator:score", "MS:1001143"),
+	
+	
+	PSI_PSM_LEVEL_FDRSCORE("MS", "MS:1002355", "PSM-level FDRScore", false),
+	PSI_PSM_LEVEL_COMBINED_FDRSCORE("MS", "MS:1002356", "PSM-level combined FDRScore", false),
 	;
 	
 	

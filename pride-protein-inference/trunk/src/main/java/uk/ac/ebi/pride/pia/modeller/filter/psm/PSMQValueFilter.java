@@ -6,25 +6,25 @@ import uk.ac.ebi.pride.pia.modeller.filter.FilterComparator;
 import uk.ac.ebi.pride.pia.modeller.filter.FilterType;
 
 /**
- * Filter for decoys on PSM level.
+ * Filters for accessions on PSM level.
  * 
  * @author julian
  *
  */
-public class PSMDecoyFilter extends AbstractFilter {
+public class PSMQValueFilter extends AbstractFilter {
 	
-	protected static final String shortName = "psm_decoy_filter";
+	protected static final String shortName = "psm_qvalue_filter";
 	
-	private static final String name = "Decoy Filter for PSM";
+	private static final String name = "Q-Value Filter for PSM";
 	
-	private static final String filteringName = "Decoy (PSM)";
+	private static final String filteringName = "Q-Value (PSM)";
 	
-	private static final FilterType filterType = FilterType.bool;
+	private static final FilterType filterType = FilterType.numerical;
 	
-	private Boolean value;
+	private Double value;
 	
 	
-	public PSMDecoyFilter(FilterComparator arg, Boolean value, boolean negate) {
+	public PSMQValueFilter(FilterComparator arg, Double value, boolean negate) {
 		this.comparator = arg;
 		this.value = value;
 		this.negate = negate;
@@ -35,45 +35,39 @@ public class PSMDecoyFilter extends AbstractFilter {
 	public String getShortName() {
 		return shortName;
 	}
-	
-	
+
 	@Override
 	public String getName() {
 		return name;
 	}
-	
-	
+
 	@Override
 	public String getFilteringName() {
 		return filteringName;
 	}
-	
-	
+
 	@Override
 	public Object getFilterValue() {
 		return value;
 	}
-	
-	
+
 	@Override
 	public FilterType getFilterType() {
 		return filterType;
 	}
-	
-	
+
 	@Override
 	public Object getObjectsValue(Object o) {
 		if (o instanceof IntermediatePeptideSpectrumMatch) {
-			return ((IntermediatePeptideSpectrumMatch) o).getIsDecoy();
+			return ((IntermediatePeptideSpectrumMatch) o).getQValue();
 		} else {
 			return null;
 		}
 	}
-	
-	
+
 	@Override
 	public boolean supportsClass(Object c) {
-		if ((c instanceof IntermediatePeptideSpectrumMatch)) {
+		if (c instanceof IntermediatePeptideSpectrumMatch) {
 			return true;
 		} else {
 			return false;

@@ -4,8 +4,8 @@ import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.modeller.filter.FilterComparator;
 import uk.ac.ebi.pride.pia.modeller.filter.FilterType;
-import uk.ac.ebi.pride.pia.modeller.protein.scores.ScoreUtilities;
-import uk.ac.ebi.pride.term.CvTermReference;
+import uk.ac.ebi.pride.pia.modeller.scores.CvScore;
+import uk.ac.ebi.pride.pia.modeller.scores.ScoreUtilities;
 
 
 /**
@@ -35,13 +35,13 @@ public class PSMScoreFilter extends AbstractFilter {
 			String scoreAccession, boolean oboLookup) {
 		cvAccession = null;
 		
-		CvTermReference cvTerm = CvTermReference.getCvRefByAccession(scoreAccession);
-		if (cvTerm == null) {
+		CvScore cvScore = CvScore.getCvRefByAccession(scoreAccession);
+		if (cvScore == null) {
 			// try with "MS" enhenced name
-			cvTerm = CvTermReference.getCvRefByAccession("MS:" + scoreAccession);
+			cvScore = CvScore.getCvRefByAccession("MS:" + scoreAccession);
 		}
-		if (cvTerm != null) {
-			cvAccession = cvTerm.getAccession();
+		if (cvScore != null) {
+			cvAccession = cvScore.getAccession();
 		} else if (oboLookup) {
 			cvAccession = ScoreUtilities.findAccessionInObo(scoreAccession);
 		}
@@ -51,9 +51,9 @@ public class PSMScoreFilter extends AbstractFilter {
 			this.value = value;
 			this.negate = negate;
 			
-			this.name = cvTerm.getName() + " Filter for PSM";
-			this.filteringName = cvTerm.getName() + " (PSM)";
-			this.shortName = prefix + cvTerm.getAccession();
+			this.name = cvScore.getName() + " Filter for PSM";
+			this.filteringName = cvScore.getName() + " (PSM)";
+			this.shortName = prefix + cvScore.getAccession();
 		} else {
 			this.comparator = null;
 			this.value = null;
@@ -118,5 +118,28 @@ public class PSMScoreFilter extends AbstractFilter {
 		
 		return false;
 	}
-
+	
+	
+	@Override
+	public String toString() {
+		StringBuilder str = new StringBuilder(getShortName());
+		
+		if (cvAccession != null) {
+			str.append(" (");
+			str.append(CvScore.getCvRefByAccession(cvAccession).getName());
+			str.append(")");
+		}
+		
+		if (getFilterNegate()) {
+			str.append(" not");
+		}
+		
+		str.append(" ");
+		str.append(getFilterComparator().toString());
+		
+		str.append(" ");
+		str.append(getFilterValue());
+		
+		return str.toString();
+	}
 }

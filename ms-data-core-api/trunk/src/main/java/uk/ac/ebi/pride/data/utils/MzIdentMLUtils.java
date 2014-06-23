@@ -1,12 +1,24 @@
 package uk.ac.ebi.pride.data.utils;
 
 
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.*;
 import uk.ac.ebi.pride.data.core.SpectraData;
+import uk.ac.ebi.pride.tools.ErrorHandlerIface;
+import uk.ac.ebi.pride.tools.GenericSchemaValidator;
+import uk.ac.ebi.pride.tools.ValidationErrorHandler;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * MzIdentML utilities class. It contains all functions related with mzidentMl validation
@@ -17,6 +29,8 @@ import java.util.List;
  * Time: 4:17 PM
  */
 public final class MzIdentMLUtils {
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MzIdentMLUtils.class);
 
     private MzIdentMLUtils() {
     }
@@ -160,5 +174,24 @@ public final class MzIdentMLUtils {
             fileFormat = Constants.getSpecFileFormatFromLocation(spectradata.getName());
         }
         return fileFormat;
+    }
+
+    public static List<String> validateMzIdentMLSchema(File resultFile) throws SAXException, FileNotFoundException, URISyntaxException, MalformedURLException {
+        GenericSchemaValidator genericValidator = new GenericSchemaValidator();
+        URI url = MzIdentMLUtils.class.getClassLoader().getResource("mzIdentML1.1.0.xsd").toURI();
+        genericValidator.setSchema(url);
+        List<String> errorMsgs;
+
+        logger.info("XML schema validation on " + resultFile.getName());
+        ErrorHandlerIface handler = new ValidationErrorHandler();
+        genericValidator.setErrorHandler(handler);
+        BufferedReader br = new BufferedReader(new FileReader(resultFile));
+        genericValidator.validate(br);
+
+        //noinspection unchecked
+        errorMsgs = handler.getErrorMessages(); // ToDo: make ErrorHandlerIface type safe
+
+
+        return errorMsgs;
     }
 }

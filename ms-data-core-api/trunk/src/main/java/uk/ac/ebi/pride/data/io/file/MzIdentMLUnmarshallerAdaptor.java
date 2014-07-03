@@ -28,11 +28,17 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
 
     private AuditCollection auditCollection = null;
 
+    private boolean avoidProteinInference = false;
+
     public MzIdentMLUnmarshallerAdaptor(File mzIdentMLFile, boolean inMemory) throws ConfigurationException {
         super(mzIdentMLFile, inMemory);
-        //long currentT = System.currentTimeMillis();
         scanIdMappings();
-        //System.out.println("Initialize mzidentml Time: " + (System.currentTimeMillis() - currentT) + " millis");
+    }
+
+    public MzIdentMLUnmarshallerAdaptor(File mzIdentMLFile, boolean inMemory, boolean avoidProteinInference) throws ConfigurationException{
+       super(mzIdentMLFile, inMemory);
+       this.avoidProteinInference = avoidProteinInference;
+       scanIdMappings();
     }
 
     private void scanIdMappings() throws ConfigurationException {
@@ -49,6 +55,7 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
         List<IndexElement> peptideEvidenceRefIndexElements = this.index.getIndexElements(MzIdentMLElement.PeptideEvidenceRef.getXpath());
 
         boolean proteinGroupPresent = hasProteinGroup();
+        proteinGroupPresent = (avoidProteinInference == true)?false:proteinGroupPresent;
 
         scanForIdMappings(spectrumIdentResultIdToIndexElements, spectrumIdentItemIdToIndexElements, peptideEvidenceRefIndexElements, proteinGroupPresent);
 
@@ -234,7 +241,7 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
     public boolean hasProteinGroup() throws ConfigurationException {
         Set<String> proteinAmbiguityGroupIds = this.getIDsForElement(MzIdentMLElement.ProteinAmbiguityGroup);
 
-        return proteinAmbiguityGroupIds != null && !proteinAmbiguityGroupIds.isEmpty();
+        return proteinAmbiguityGroupIds != null && !proteinAmbiguityGroupIds.isEmpty() && !avoidProteinInference;
     }
 
     public List<SpectrumIdentificationItem> getSpectrumIdentificationsByIds(List<Comparable> spectrumIdentIds) throws JAXBException {

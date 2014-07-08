@@ -178,8 +178,12 @@ public abstract class AbstractProteinInference {
 			
 			Set<IntermediatePeptide> groupsPeptides = new HashSet<IntermediatePeptide>();
 			for (IntermediatePeptide pep : groupsPepsMap.values()) {
-				if (pep.getPeptideSpectrumMatches().size() > 0
-						/* TODO: turn on filtering on peptide level! && FilterFactory.satisfiesFilterList(pep, 0L, filters)*/) {
+				if (peptideScoring != null) {
+					peptideScoring.calculatePeptideScore(pep);
+				}
+				
+				if ((pep.getPeptideSpectrumMatches().size() > 0) &&
+						FilterUtilities.satisfiesFilterList(pep, filters)) {
 					// this peptide has PSMs and does satisfy the filters
 					groupsPeptides.add(pep);
 				}
@@ -225,6 +229,25 @@ public abstract class AbstractProteinInference {
 		}
 		
 		return false;
+	}
+	
+	
+	/**
+	 * Return a peptide key, depending on whether the modifications are taken
+	 * into account or not.
+	 * 
+	 * @param peptide
+	 * @param considerModifications
+	 * @return
+	 */
+	static public final Comparable getPeptideKey(IntermediatePeptide peptide, boolean considerModifications) {
+		if (considerModifications) {
+			// return one of the PSMs' peptideSequence's IDs (these include the sequence and mods)
+			return peptide.getAllPeptideSpectrumMatches().get(0).getSpectrumIdentification().getPeptideSequence().getId();
+		} else {
+			// just return the sequence
+			return peptide.getSequence();
+		}
 	}
 	
 	

@@ -1,10 +1,11 @@
-package uk.ac.ebi.pride.pia.modeller.scores;
+package uk.ac.ebi.pride.pia.modeller.scores.psm;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
+import uk.ac.ebi.pride.pia.modeller.scores.ScoreUtilities;
 
 /**
  * Compares the scores of {@link IntermediatePeptideSpectrumMatch}es
@@ -17,6 +18,7 @@ public class IntermediatePSMComparator implements Comparator<IntermediatePeptide
 	/** the accession of the compared score */
 	private String scoreAccession;
 	
+	/** whether a higher score is better for the compared PSM score */
 	private boolean higherScoreBetter;
 	
 	/** a score lookup map */
@@ -58,32 +60,18 @@ public class IntermediatePSMComparator implements Comparator<IntermediatePeptide
 			score2 = null;
 		}
 		
-		if ((score1 == null) && 
-				(score2 == null)) {
-			// both PSMs don't have this score
-			return 0;
-		} else if ((score1 == null) && 
-				(score2 != null)) {
-			// psm1 does not have the score
-			return 1;
-		} else if ((score1 != null) && 
-				(score2 == null)) {
-			// psm2 does not have the score
-			return -1;
-		} else {
-			// both scores are != null
-			if (score1.equals(Double.NaN)) {
-				// NaN is always considered worse than anything (like null)
-				return 1;
-			} else if (score2.equals(Double.NaN)) {
-				return -1;
-			} else {
-				if (higherScoreBetter) {
-					return -score1.compareTo(score2);
-				} else {
-					return score1.compareTo(score2);
-				}
-			}
-		}
+		return compareValues(score1, score2);
+	}
+	
+	
+	/**
+	 * Compares the values of two PSM scores.
+	 * 
+	 * @param o1
+	 * @param o2
+	 * @return
+	 */
+	public int compareValues(Double score1, Double score2) {
+		return ScoreUtilities.compareValues(score1, score2, higherScoreBetter);
 	}
 }

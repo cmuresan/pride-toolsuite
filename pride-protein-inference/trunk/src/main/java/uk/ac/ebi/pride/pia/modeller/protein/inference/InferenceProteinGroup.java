@@ -2,8 +2,10 @@ package uk.ac.ebi.pride.pia.modeller.protein.inference;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import uk.ac.ebi.pride.data.core.DBSequence;
@@ -13,8 +15,10 @@ import uk.ac.ebi.pride.data.core.Protein;
 import uk.ac.ebi.pride.data.core.ProteinGroup;
 import uk.ac.ebi.pride.data.core.Score;
 import uk.ac.ebi.pride.data.core.SpectrumIdentification;
+import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateProtein;
+import uk.ac.ebi.pride.pia.modeller.scores.ScoringItemType;
 
 /**
  * This group bundles the information about an inferred protein group.
@@ -30,11 +34,21 @@ public class InferenceProteinGroup {
 	/** the proteins in this group */
 	private Set<IntermediateProtein> proteins;
 	
-	/** the identifications leading to this group */
-	private Set<IntermediatePeptideSpectrumMatch> spectrumIdentifications;
+	/** the identified peptides leading to this group */
+	private Map<Comparable, IntermediatePeptide> intermediatePeptides;
 	
 	/** any subgroups */
 	private Set<InferenceProteinGroup> subGroups;
+	
+	/** whether modifications were considered to distinguish pepttides of this protein group */
+	boolean considerModifications;
+	
+	/** the protein score */
+	private Double score;
+	
+	/** The IDs of the intermediatePeptides mapping to the type of scoring. If a
+	 *  peptide's ID is not a key in the map, it is assumed to not score */
+	private Map<Comparable, ScoringItemType> peptideScorings;
 	
 	
 	/**
@@ -42,11 +56,14 @@ public class InferenceProteinGroup {
 	 *  
 	 * @param sequence
 	 */
-	public InferenceProteinGroup(String id) {
+	public InferenceProteinGroup(String id, boolean considerModifications) {
 		this.ID = id;
 		this.proteins = new HashSet<IntermediateProtein>();
-		this.spectrumIdentifications = new HashSet<IntermediatePeptideSpectrumMatch>();
+		this.intermediatePeptides = new HashMap<Comparable, IntermediatePeptide>();
 		this.subGroups = new HashSet<InferenceProteinGroup>();
+		this.considerModifications = considerModifications;
+		this.score = Double.NaN;
+		this.peptideScorings = null;
 	}
 	
 	
@@ -75,31 +92,62 @@ public class InferenceProteinGroup {
 	
 	
 	/**
-	 * Adds one IntermediatePeptideSpectrumMatch to the set of spectrum identifications
+	 * Adds one IntermediatePeptide to the map of peptides
 	 * @param specID
 	 * @return
 	 */
-	public boolean addPeptideSpectrumMatch(IntermediatePeptideSpectrumMatch specID) {
-		return spectrumIdentifications.add(specID);
+	public IntermediatePeptide addPeptide(IntermediatePeptide peptide) {
+		Comparable peptideID =
+				AbstractProteinInference.getPeptideKey(peptide, considerModifications);
+		return intermediatePeptides.put(peptideID, peptide);
 	}
 	
 	
 	/**
-	 * Adds a collection of IntermediatePeptideSpectrumMatches to the set of spectrum identifications
+	 * Adds a collection of IntermediatePeptides to the map of peptides
 	 * @param specID
 	 * @return
 	 */
-	public boolean addSpectrumIdentifications(Collection<IntermediatePeptideSpectrumMatch> specIDs) {
-		return spectrumIdentifications.addAll(specIDs);
+	public boolean addPeptides(Collection<IntermediatePeptide> peptides) {
+		boolean changes = false;
+		
+		for (IntermediatePeptide peptide : peptides) {
+			Comparable peptideID =
+					AbstractProteinInference.getPeptideKey(peptide, considerModifications);
+			changes |= (intermediatePeptides.put(peptideID, peptide) != null);
+		}
+		
+		return changes;
 	}
 	
 	
 	/**
-	 * Returns the set of IntermediatePeptideSpectrumMatches
+	 * Returns the set of IntermediatePeptides
 	 * @return
 	 */
-	public Set<IntermediatePeptideSpectrumMatch> getSpectrumIdentifications() {
-		return spectrumIdentifications;
+	public Set<IntermediatePeptide> getPeptides() {
+		return new HashSet<IntermediatePeptide>(intermediatePeptides.values());
+	}
+	
+	
+	/**
+	 * Getter for the protein score. If the score is not given, it may be null
+	 * or {@value Double#NaN}. 
+	 * 
+	 * @return
+	 */
+	public Double getScore() {
+		return score;
+	}
+	
+	
+	/**
+	 * Sets the score of the protein.
+	 * 
+	 * @param score
+	 */
+	public void setScore(Double score) {
+		this.score = score;
 	}
 	
 	
@@ -122,6 +170,72 @@ public class InferenceProteinGroup {
 	}
 	
 	
+	
+	/**
+	 * Sets the scoring type of the stated peptide to the given {@link ScoringItemType}.
+	 * 
+	 * @param psmID
+	 */
+	public void setPeptidesScoringType(IntermediatePeptide peptide, ScoringItemType type) {
+		if (peptideScorings == null) {
+			peptideScorings = new HashMap<Comparable, ScoringItemType>();
+		}
+		
+		Comparable peptideID =
+				AbstractProteinInference.getPeptideKey(peptide, considerModifications);
+		if (intermediatePeptides.containsKey(peptideID)) {
+			peptideScorings.put(peptideID, type);
+		}
+	}
+	
+	
+	/**
+	 * Returns the {@link ScoringItemType} of the peptide
+	 * 
+	 * @param psmID
+	 * @return
+	 */
+	public ScoringItemType getPeptidesScoringType(IntermediatePeptide peptide) {
+		Comparable peptideID =
+				AbstractProteinInference.getPeptideKey(peptide, considerModifications);
+		
+		if ((peptideScorings == null) || !peptideScorings.containsKey(peptideID)) {
+			return ScoringItemType.NOT_SCORING;
+		} else {
+			return peptideScorings.get(peptideID);
+		}
+	}
+	
+	
+	/**
+	 * Removes all information about which peptides were used for scoring.
+	 */
+	public void removeAllScoringInformation() {
+		peptideScorings = null;
+	}
+	
+	
+	/**
+	 * Returns the peptides with the given {@link ScoringItemType}, which also pass the 
+	 * @return
+	 */
+	public Set<IntermediatePeptide> getPeptidesWithScoringType(ScoringItemType type) {
+		HashSet<IntermediatePeptide> peptides =  new HashSet<IntermediatePeptide>();
+		
+		if ((peptideScorings == null) && (ScoringItemType.NOT_SCORING.equals(type))) {
+			return getPeptides();
+		} else {
+			for (IntermediatePeptide peptide : getPeptides()) {
+				if (getPeptidesScoringType(peptide).equals(type)) {
+					peptides.add(peptide);
+				}
+			}
+		}
+		
+		return peptides;
+	}
+	
+	
 	/**
 	 * Creates a {@link ProteinGroup} (a protein ambiguity group in mzIdentML)
 	 * from this inferred protein group.
@@ -133,12 +247,16 @@ public class InferenceProteinGroup {
 			dbSequences.add(interProt.getDBSequence());
 		}
 		
-		Set<Peptide> peptides = new HashSet<Peptide>();
-		for (IntermediatePeptideSpectrumMatch psm : spectrumIdentifications) {
-			SpectrumIdentification specID = psm.getSpectrumIdentification();
-			for (PeptideEvidence pepEvidence : specID.getPeptideEvidenceList()) {
-				Peptide pep = new Peptide(pepEvidence, specID);
-				peptides.add(pep);
+		Set<Peptide> peptideHypotheses = new HashSet<Peptide>();
+		for (IntermediatePeptide peptide : getPeptides()) {
+			for (IntermediatePeptideSpectrumMatch psm : peptide.getPeptideSpectrumMatches()) {
+				SpectrumIdentification specID = psm.getSpectrumIdentification();
+				for (PeptideEvidence pepEvidence : specID.getPeptideEvidenceList()) {
+					Peptide pep = new Peptide(pepEvidence, specID);
+					peptideHypotheses.add(pep);
+					
+					// TODO: set the scoring information
+				}
 			}
 		}
 		
@@ -152,7 +270,7 @@ public class InferenceProteinGroup {
 					dbSeq.getAccession(),
 					dbSeq,
 					true /*passThreshold*/,
-					new ArrayList<Peptide>(peptides),
+					new ArrayList<Peptide>(peptideHypotheses),
 					score,
 					-1 /*threshold*/,
 					sequenceCoverage,
@@ -186,7 +304,7 @@ public class InferenceProteinGroup {
 		
 		if (ID != group.ID) return false;
 		return !((proteins != null) ? !proteins.equals(group.proteins) : (group.proteins != null)) &&
-				!((spectrumIdentifications != null) ? !spectrumIdentifications.equals(group.spectrumIdentifications) : (group.spectrumIdentifications != null)) &&
+				!((intermediatePeptides != null) ? !intermediatePeptides.equals(group.intermediatePeptides) : (group.intermediatePeptides != null)) &&
 				!((subGroups != null) ? !subGroups.equals(group.subGroups) : (group.subGroups != null));
 	}
 	
@@ -195,7 +313,7 @@ public class InferenceProteinGroup {
 	public int hashCode() {
         int result = ID.hashCode();
         result = 31 * result + ((proteins != null) ? proteins.hashCode() : 0);
-        result = 31 * result + ((spectrumIdentifications != null) ? spectrumIdentifications.hashCode() : 0);
+        result = 31 * result + ((intermediatePeptides != null) ? intermediatePeptides.hashCode() : 0);
         result = 31 * result + ((subGroups != null) ? subGroups.hashCode() : 0);
         return result;
 	}

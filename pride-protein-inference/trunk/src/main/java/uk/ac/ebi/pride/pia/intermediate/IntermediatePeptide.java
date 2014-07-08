@@ -9,6 +9,7 @@ import java.util.Set;
 
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.modeller.filter.FilterUtilities;
+import uk.ac.ebi.pride.pia.modeller.scores.ScoringItemType;
 
 
 /**
@@ -34,8 +35,9 @@ public class IntermediatePeptide {
 	/** the peptide score */
 	private Double score;
 	
-	/** The IDs of the PSMs, which were used to calculate the peptide score */
-	private Set<Comparable> scoringPSMIDs;
+	/** The IDs of the PSMs mapping to the type of scoring. If a PSM's ID is not
+	 *  a key in the map, it is assumed to not score */
+	private Map<Comparable, ScoringItemType> psmScorings;
 	
 	
 	/**
@@ -49,7 +51,7 @@ public class IntermediatePeptide {
 		this.peptideSpectrumMatches = new HashMap<Comparable, IntermediatePeptideSpectrumMatch>();
 		this.psmsPassingFilter = null;
 		this.score = Double.NaN;
-		this.scoringPSMIDs = null;
+		this.psmScorings = null;
 	}
 	
 	
@@ -126,9 +128,10 @@ public class IntermediatePeptide {
 	
 	
 	/**
-	 * Getter for the psms.
+	 * Getter for the PSMs.
 	 * <p>
-	 * If a passing set is created, only the passing PSMs are returned. 
+	 * If a passing set is created (i.e. data is filtered), only the passing
+	 * PSMs are returned. 
 	 * 
 	 * @return
 	 */
@@ -144,6 +147,23 @@ public class IntermediatePeptide {
 			return psms;
 		} else {
 			return new ArrayList<IntermediatePeptideSpectrumMatch>(peptideSpectrumMatches.values());
+		}
+	}
+	
+	
+	/**
+	 * Getter for the number of PSMs.
+	 * <p>
+	 * If a passing set is created (i.e. data is filtered), only the passing
+	 * PSMs are returned.
+	 *  
+	 * @return
+	 */
+	public Integer getNumberOfPeptideSpectrumMatches() {
+		if (psmsPassingFilter != null) {
+			return psmsPassingFilter.size();
+		} else {
+			return peptideSpectrumMatches.size();
 		}
 	}
 	
@@ -197,17 +217,36 @@ public class IntermediatePeptide {
 	
 	
 	/**
-	 * Adds one psm ID to the set of IDs, which were currently used for the
-	 * peptide scoring.
+	 * Sets the scoring type of the stated PSM to the given {@link ScoringItemType}.
 	 * 
 	 * @param psmID
 	 */
-	public void addScoringPeptideID(Comparable psmID) {
-		if (scoringPSMIDs == null) {
-			scoringPSMIDs = new HashSet<Comparable>();
+	public void setPSMsScoringType(IntermediatePeptideSpectrumMatch psm, ScoringItemType type) {
+		if (psmScorings == null) {
+			psmScorings = new HashMap<Comparable, ScoringItemType>();
 		}
 		
-		scoringPSMIDs.add(psmID);
+		Comparable psmID = psm.getID();
+		if (peptideSpectrumMatches.containsKey(psmID)) {
+			psmScorings.put(psmID, type);
+		}
+	}
+	
+	
+	/**
+	 * Returns the {@link ScoringItemType} of the PSM
+	 * 
+	 * @param psmID
+	 * @return
+	 */
+	public ScoringItemType getPSMsScoringType(IntermediatePeptideSpectrumMatch psm) {
+		Comparable psmID = psm.getID();
+		
+		if ((psmScorings == null) || !psmScorings.containsKey(psmID)) {
+			return ScoringItemType.NOT_SCORING;
+		} else {
+			return psmScorings.get(psmID);
+		}
 	}
 	
 	
@@ -215,41 +254,30 @@ public class IntermediatePeptide {
 	 * Removes all information about which PSMs were used for scoring.
 	 */
 	public void removeAllScoringInformation() {
-		scoringPSMIDs = null;
+		psmScorings = null;
 	}
 	
 	
 	/**
-	 * Returns the IDs of PSMs used for scoring
+	 * Returns the PSMs with the given {@link ScoringItemType}, which also pass
+	 * any filterings.
+	 * 
 	 * @return
 	 */
-	public Set<Comparable> getScoringPSMIDs() {
-		if (scoringPSMIDs == null) {
-			return new HashSet<Comparable>();
-		} else {
-			return scoringPSMIDs;
-		}
-	}
-	
-	
-	/**
-	 * Returns the PSMs used for scoring
-	 * @return
-	 */
-	public Set<IntermediatePeptideSpectrumMatch> getScoringPSMs() {
+	public Set<IntermediatePeptideSpectrumMatch> getPSMsWithScoringType(ScoringItemType type) {
 		HashSet<IntermediatePeptideSpectrumMatch> psms =  new HashSet<IntermediatePeptideSpectrumMatch>();
 		
-		if (scoringPSMIDs == null) {
-			return psms;
+		if ((psmScorings == null) && (ScoringItemType.NOT_SCORING.equals(type))) {
+			return new HashSet<IntermediatePeptideSpectrumMatch>(getPeptideSpectrumMatches());
 		} else {
-			for (Comparable psmID : scoringPSMIDs) {
-				IntermediatePeptideSpectrumMatch psm = peptideSpectrumMatches.get(psmID);
-				if (psm != null) {
+			for (IntermediatePeptideSpectrumMatch psm : getPeptideSpectrumMatches()) {
+				if (getPSMsScoringType(psm).equals(type)) {
 					psms.add(psm);
 				}
 			}
-			return psms;
 		}
+		
+		return psms;
 	}
 	
 	

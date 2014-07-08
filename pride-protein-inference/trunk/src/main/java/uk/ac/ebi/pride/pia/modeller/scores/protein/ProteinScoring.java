@@ -1,35 +1,32 @@
 package uk.ac.ebi.pride.pia.modeller.scores.protein;
 
 import uk.ac.ebi.pride.pia.modeller.protein.inference.InferenceProteinGroup;
-import uk.ac.ebi.pride.pia.modeller.scores.CvScore;
-import uk.ac.ebi.pride.pia.modeller.scores.ScoreUtilities;
+import uk.ac.ebi.pride.pia.modeller.scores.peptide.PeptideScoring;
 
 public abstract class ProteinScoring {
 	
-	/** accession of the base score */
-	protected String scoreAccession;
+	/** use a spectrum only once for protein scoring */
+	protected boolean countSpectrumOnce;
 	
-	/** whether higher value of the base score is better than a lower value */
-	protected boolean higherScoreBetter;
+	/** the peptide scoring used */
+	protected PeptideScoring peptideScoring;
 	
 	
 	/**
-	 * Creates a new scoring object and determines (if appropriate), if a higher
-	 * value is better for the given base-score. 
 	 * 
-	 * @param scoreAccession
-	 * @param oboLookup
+	 * @param countSpectrumOnce if set to true and a spectrum is in the scoring
+	 * set of more than one peptide, only the peptide with the highest score is
+	 * used for full scoring. This resolves some conflicts with PSMs for
+	 * different modifications from the same spectra
 	 */
-	public ProteinScoring(String scoreAccession, boolean oboLookup) {
-		if (!CvScore.hasAccession(scoreAccession)) {
-			if (!oboLookup ||
-					(ScoreUtilities.findAccessionInObo(scoreAccession) == null)) {
-				scoreAccession = null;
-			}
+	public ProteinScoring(boolean countSpectrumOnce, PeptideScoring peptideScoring) {
+		
+		if (countSpectrumOnce) {
+			System.err.println("Spectrum counting only once does not work yet!");
 		}
 		
-		this.scoreAccession = scoreAccession;
-		higherScoreBetter = ScoreUtilities.isHigherScoreBetter(scoreAccession, oboLookup);
+		this.countSpectrumOnce = countSpectrumOnce;
+		this.peptideScoring = peptideScoring;
 	}
 	
 	

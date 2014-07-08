@@ -13,7 +13,6 @@ import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.modeller.scores.peptide.PeptideScoring;
 import uk.ac.ebi.pride.pia.modeller.scores.protein.ProteinScoring;
-import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
 
 

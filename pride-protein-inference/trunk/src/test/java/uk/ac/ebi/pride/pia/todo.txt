@@ -1,16 +1,32 @@
 
-- activate filtering
-    - PSM  DONE
-    - peptides
-    - proteins
+NEEDED:
+- the SpectrumIdentificationItem's or SpectrumIdentificationResult's spectrumID
 
+
+URGENT:
+- Testing with mzidentml - with and without protein inference information
+               pride
+
+- comparisons
+
+
+afterwards:
 - how can a spectrumIdentification have the same score with different values? can it actually?
+
+- import multiple files (see also next note)
 
 - the PSMs must be grouped somewhere to support multiple search engine mixes
   it should be possible to create a new merged "SpectrumIdentification" object
   for the merged spectra.
 
 - implement obo lookup for scores (in ScoreUtilities)
+
+
+
+ideas:
+- at the moment, possible "sub-proteins" not passing filters are not shown at all (but removed)
+   --> maybe create them and show as "not passing/filtered out" sub-proteins
+
 
 
 Testing:

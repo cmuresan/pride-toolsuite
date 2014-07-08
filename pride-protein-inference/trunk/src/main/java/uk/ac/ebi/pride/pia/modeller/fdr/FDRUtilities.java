@@ -196,6 +196,9 @@ public class FDRUtilities {
 			
 			item.setFDRScore((item.getScore(scoreAccession)-sLast)*g + qLast);
 		}
+		
+		
+		System.err.println("decoys: " + nrDecoys + " targets: " + nrTargets);
 	}
 	
 	

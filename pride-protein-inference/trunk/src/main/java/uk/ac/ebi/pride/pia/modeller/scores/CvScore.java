@@ -67,6 +67,8 @@ public enum CvScore{
 	//PSI_PERCULATOR_SCORE("MS", "MS:1001492", "percolator:score", "MS:1001143"),
 	
 	
+	PSI_PSM_LEVEL_LOCAL_FDR("MS", "MS:1002351", "PSM-level local FDR", false),
+	PSI_PSM_LEVEL_Q_VALUE("MS", "MS:1002354", "PSM-level q-value", false),
 	PSI_PSM_LEVEL_FDRSCORE("MS", "MS:1002355", "PSM-level FDRScore", false),
 	PSI_PSM_LEVEL_COMBINED_FDRSCORE("MS", "MS:1002356", "PSM-level combined FDRScore", false),
 	;

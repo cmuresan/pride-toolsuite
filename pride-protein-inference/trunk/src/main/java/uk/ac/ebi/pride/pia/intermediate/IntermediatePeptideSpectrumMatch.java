@@ -21,6 +21,22 @@ public interface IntermediatePeptideSpectrumMatch extends FDRComputableByDecoys 
 	
 	
 	/**
+	 * Returns the ID of the used controller for importing.
+	 * @return
+	 */
+	public Comparable getControllerID();
+	
+	
+	/**
+	 * Returns the ID of the originating file. If the PSM is imported from a
+	 * file, which holds the identifications of more than one file, the IDs
+	 * should be able to distinguish the original files.
+	 * @return
+	 */
+	public Comparable getFileID();
+	
+	
+	/**
 	 * Getter for the isDecoy flag.
 	 * <p>
 	 * If the decoy was not set by setIsDecoy, the decoy status of the original

@@ -7,7 +7,7 @@ import uk.ac.ebi.pride.pia.modeller.scores.ScoreUtilities;
 public abstract class PeptideScoring {
 	
 	/** accession of the base score */
-	protected String scoreAccession;
+	protected String baseScoreAccession;
 	
 	/** whether higher value of the base score is better than a lower value */
 	protected boolean higherScoreBetter;
@@ -28,7 +28,7 @@ public abstract class PeptideScoring {
 			}
 		}
 		
-		this.scoreAccession = scoreAccession;
+		this.baseScoreAccession = scoreAccession;
 		higherScoreBetter = ScoreUtilities.isHigherScoreBetter(scoreAccession, oboLookup);
 	}
 	
@@ -38,6 +38,9 @@ public abstract class PeptideScoring {
 	 * calculation, the PSMs which are retrieved from the intermediate peptide,
 	 * may be only the ones passing a set filter, if the peptide was filtered
 	 * before.
+	 * <p>
+	 * The scoring PSMs are set in the intermediatePeptide, as well as the final
+	 * score.
 	 * 
 	 * @param intermediatePeptide
 	 */

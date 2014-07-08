@@ -37,4 +37,46 @@ public class ScoreUtilities {
 		return false;
 	}
 	
+	
+	/**
+	 * Compares the values of two values considered to be scores.
+	 * <p>
+	 * null and NaN is always considered to be worse than any other value.
+	 * 
+	 * @param score1
+	 * @param score2
+	 * @param higherScoreBetter whether a higher score value is considered to be better
+	 * @return an int smaller 0, if score1 is considered better than score 2, 0
+	 * if both are considered to be equal, bigger 0 if score2 is better than
+	 * score1
+	 */
+	public static int compareValues(Double score1, Double score2, boolean higherScoreBetter) {
+		if ((score1 == null) && 
+				(score2 == null)) {
+			// both PSMs don't have this score
+			return 0;
+		} else if ((score1 == null) && 
+				(score2 != null)) {
+			// psm1 does not have the score
+			return 1;
+		} else if ((score1 != null) && 
+				(score2 == null)) {
+			// psm2 does not have the score
+			return -1;
+		} else {
+			// both scores are != null
+			if (score1.equals(Double.NaN)) {
+				// NaN is always considered worse than anything (null likewise)
+				return 1;
+			} else if (score2.equals(Double.NaN)) {
+				return -1;
+			} else {
+				if (higherScoreBetter) {
+					return -score1.compareTo(score2);
+				} else {
+					return score1.compareTo(score2);
+				}
+			}
+		}
+	}
 }

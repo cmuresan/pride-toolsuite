@@ -12,9 +12,9 @@ import org.apache.log4j.Logger;
 
 import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
-import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateProtein;
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
+import uk.ac.ebi.pride.pia.modeller.filter.FilterUtilities;
 
 
 public class OccamsRazorWorkerThread extends Thread {
@@ -90,7 +90,7 @@ public class OccamsRazorWorkerThread extends Thread {
 				continue;
 			}
 			
-			// collect the PSMs
+			// collect the peptides
 			Set<IntermediatePeptide> interPeptides = new HashSet<IntermediatePeptide>();
 			
 			if (groupIdToReportPeptides.containsKey(group.getID())) {
@@ -101,50 +101,46 @@ public class OccamsRazorWorkerThread extends Thread {
 						groupIdToReportPeptides.get(pepGroup.getID()));
 			}
 			
-			Set<IntermediatePeptideSpectrumMatch> psms =
-					new HashSet<IntermediatePeptideSpectrumMatch>();
-			for (IntermediatePeptide pep : interPeptides) {
-				psms.addAll(
-						pep.getPeptideSpectrumMatches());
-			}
-			
-			// look for an existing proteinGroup with same PSMs
+			// look for an existing proteinGroup with same peptides
 			boolean addedToExistingGroup = false;
 			if ((filters != null ) && (filters.size() > 0)) {
 				for (InferenceProteinGroup existingGroup : proteins) {
-					if (existingGroup.getSpectrumIdentifications().equals(psms)) {
+					
+					if (existingGroup.getPeptides().equals(interPeptides)) {
 						// add the proteins
 						for (IntermediateProtein protein : group.getProteins()) {
 							existingGroup.addProtein(protein);
 						}
 						
 						addedToExistingGroup = true;
-						
 						break;
-					} 
+					}
 				}
 			}
 			
 			// no existing group with same PSMs -> create new group
 			if (!addedToExistingGroup) {
 				String proteinGroupID = parent.createProteinGroupID(group);
-				InferenceProteinGroup proteinGroup = new InferenceProteinGroup(proteinGroupID);
+				InferenceProteinGroup proteinGroup = new InferenceProteinGroup(proteinGroupID, considerModifications);
 				
 				// add the proteins
 				for (IntermediateProtein protein : group.getProteins()) {
 					proteinGroup.addProtein(protein);
 				}
 				
-				// add the PSMs
-				proteinGroup.addSpectrumIdentifications(psms);
+				// add the peptides
+				proteinGroup.addPeptides(interPeptides);
 				
 				// and add a peptide mapping
 				Set<Comparable> peptides =
-						new HashSet<Comparable>(psms.size());
-				for (IntermediatePeptideSpectrumMatch psm : psms) {
-					peptides.add(
-							getPSMsPeptideKey(psm, considerModifications));
+						new HashSet<Comparable>(interPeptides.size());
+				
+				for (IntermediatePeptide peptide : interPeptides) {
+					peptides.add(parent.getPeptideKey(peptide, considerModifications));
 				}
+				
+				// calculate the protein's score
+				parent.proteinScoring.calculateProteinScore(proteinGroup);
 				
 				proteinIDsToPeptideIDs.put(proteinGroupID, peptides);
 				proteins.add(proteinGroup);
@@ -162,7 +158,7 @@ public class OccamsRazorWorkerThread extends Thread {
 			
 			while (proteinIterator.hasNext()) {
 				InferenceProteinGroup proteinGroup = proteinIterator.next();
-				if (/*TODO: activate protein and peptide level filtering*/ false) {
+				if (!FilterUtilities.satisfiesFilterList(proteinGroup, filters)) {
 					proteinIterator.remove();
 				}
 			}
@@ -292,22 +288,6 @@ public class OccamsRazorWorkerThread extends Thread {
 		
 		if (reportProteins.size() > 0) {
 			parent.addToReports(reportProteins);
-		}
-	}
-	
-	
-	/**
-	 * 
-	 * @param psm
-	 * @param considerModification
-	 * @return
-	 */
-	private static Comparable getPSMsPeptideKey(IntermediatePeptideSpectrumMatch psm, boolean considerModification) {
-		if (considerModification) {
-			return psm.getSpectrumIdentification().getPeptideSequence().getId();
-		} else {
-			
-			return psm.getSpectrumIdentification().getSequence();
 		}
 	}
 }

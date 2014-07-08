@@ -28,7 +28,7 @@ public abstract class AbstractFilter {
 	
 	
 	/**
-	 * returns the human readable name, which includes the filtering explanation
+	 * returns the human readable name, which can be used in a drop-down menu (shorter than getName)
 	 * @return
 	 */
 	public abstract String getFilteringName();

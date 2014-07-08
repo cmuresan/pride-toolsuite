@@ -11,17 +11,16 @@ import org.apache.log4j.Logger;
 
 import uk.ac.ebi.pride.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
-import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateProtein;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
+import uk.ac.ebi.pride.pia.modeller.filter.FilterUtilities;
 import uk.ac.ebi.pride.pia.modeller.scores.peptide.PeptideScoring;
 import uk.ac.ebi.pride.pia.modeller.scores.protein.ProteinScoring;
-import uk.ac.ebi.pride.pia.tools.LabelValueContainer;
 
 
 /**
- * This inference filter reports all the PIA {@link IntermediateGroup}s as one protein.
+ * This inference reports all the PIA {@link IntermediateGroup}s as one protein.
  * <p>
  * This is similar to distinguish proteins simply by their peptides and report
  * every possible set and subset.
@@ -74,7 +73,7 @@ public class ReportAllInference extends AbstractProteinInference {
 	*/
 	
 	@Override
-	public List<InferenceProteinGroup> calculateInference( boolean considerModifications) {
+	public List<InferenceProteinGroup> calculateInference(boolean considerModifications) {
 		progress = 0.0;
 		logger.info("calculateInference started...");
 		/*
@@ -110,7 +109,7 @@ public class ReportAllInference extends AbstractProteinInference {
 					clusterReportGroups.add(group);
 					
 					// get the peptides of this group
-					Set<IntermediatePeptide> allPeptidesSet =new HashSet<IntermediatePeptide>();
+					Set<IntermediatePeptide> allPeptidesSet = new HashSet<IntermediatePeptide>();
 					groupsAllPeptides.put(group.getID(), allPeptidesSet);
 					
 					// add the direct peptides
@@ -167,7 +166,6 @@ public class ReportAllInference extends AbstractProteinInference {
 						}
 					}
 					
-					
 					// check, if any of the sameSet is already in the newReportGroups 
 					boolean anySameInReportGroups = false;
 					
@@ -196,7 +194,7 @@ public class ReportAllInference extends AbstractProteinInference {
 			// now create the proteins from the groups, which are in clusterReportGroups
 			for (IntermediateGroup group : clusterReportGroups) {
 				InferenceProteinGroup proteinGroup =
-						new InferenceProteinGroup(createProteinGroupID(group));
+						new InferenceProteinGroup(createProteinGroupID(group), considerModifications);
 				
 				// add the proteins to the group
 				for (IntermediateProtein interProt : group.getProteins()) {
@@ -216,12 +214,16 @@ public class ReportAllInference extends AbstractProteinInference {
 				}
 				
 				for (IntermediatePeptide interPeptide : groupsAllPeptides.get(group.getID())) {
-					for (IntermediatePeptideSpectrumMatch psm : interPeptide.getPeptideSpectrumMatches()) {
-						proteinGroup.addPeptideSpectrumMatch(psm);
-					}
+					// peptides are already filtered in createClustersFilteredPeptidesMap
+					proteinGroup.addPeptide(interPeptide);
 				}
 				
-				if (/*TODO: activate protein and peptide level filtering*/ true) {
+				if (proteinScoring != null) {
+					proteinScoring.calculateProteinScore(proteinGroup);
+				}
+				
+				if (FilterUtilities.satisfiesFilterList(proteinGroup, filters)) {
+					// add only proteinGroups, which satisfy the filtering
 					proteinGroups.add(proteinGroup);
 				}
 			}

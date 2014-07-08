@@ -10,4 +10,10 @@ public interface DataImportController {
 	 * @param filterPSMsOnImport whether the PSMs should be filered during the import
 	 */
 	public void addAllSpectrumIdentificationsToStructCreator(IntermediateStructureCreator structCreator);
+	
+	
+	/**
+	 * Some controllers should be closed after usage.
+	 */
+	public void close();
 }

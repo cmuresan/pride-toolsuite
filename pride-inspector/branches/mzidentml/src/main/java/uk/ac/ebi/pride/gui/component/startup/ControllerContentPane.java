@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.gui.component.startup;
 
 import org.bushe.swing.event.EventBus;
+import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTreeTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -309,8 +310,11 @@ public class ControllerContentPane extends DataAccessControllerPane {
         retrieveTask.addTaskListener(proteinTabPane);
 
         // register protein table model as a task listener
-        JXTreeTable identTable = (JXTreeTable) proteinTabPane.getIdentificationPane().getIdentificationTable();
-        retrieveTask.addTaskListener((TaskListener) identTable.getTreeTableModel());
+        JXTable identTable = (JXTable) proteinTabPane.getIdentificationPane().getIdentificationTable();
+        if(controller.hasProteinAmbiguityGroup())
+           retrieveTask.addTaskListener((TaskListener) ((JXTreeTable) identTable).getTreeTableModel());
+        else
+           retrieveTask.addTaskListener((TaskListener) identTable.getModel());
 
         // register peptide tab as a task listener
         retrieveTask.addTaskListener(peptideTabPane);

@@ -18,6 +18,7 @@ import uk.ac.ebi.pride.gui.component.table.model.ProteinTableRow;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
 import uk.ac.ebi.pride.gui.event.ProcessingDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.SummaryReportEvent;
+import uk.ac.ebi.pride.gui.event.container.SortProteinTableEvent;
 
 
 import java.util.*;
@@ -104,7 +105,9 @@ public class ScanExperimentTask extends AbstractDataAccessTask<Void, Tuple<Table
                     checkInterruption();
                 }
                 }
-            EventBus.publish(new ProcessingDataSourceEvent<DataAccessController>(controller, ProcessingDataSourceEvent.Status.IDENTIFICATION_READING,controller));
+                EventBus.publish(new ProcessingDataSourceEvent<DataAccessController>(controller, ProcessingDataSourceEvent.Status.IDENTIFICATION_READING,controller));
+            if(controller.hasProteinAmbiguityGroup())
+                EventBus.publish(new SortProteinTableEvent(controller, SortProteinTableEvent.Type.ENABLE_SORT));
 
             if (missingSpectrumLinks > 0) {
                 EventBus.publish(new SummaryReportEvent(this, controller, new SummaryReportMessage(SummaryReportMessage.Type.WARNING, "Missing spectra [" + missingSpectrumLinks + "]", "The number of peptides without spectrum links")));

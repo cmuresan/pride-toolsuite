@@ -18,4 +18,18 @@ public class ColourUtil {
     public static final Color TEXT_FIELD_NORMAL_COLOUR = Color.white;
     public static final Color HYPERLINK_COLOUR = new Color(98, 146, 179);
 
+    /**
+     * Returns a color whose brightness has been scaled by the provided factor.
+     * @param color The input color.
+     * @param factor The scale factor.
+     * @return The rescaled color.
+     */
+    public static Color getRescaledColor(Color color, float factor) {
+        float hsbVals[] = Color.RGBtoHSB(
+                color.getRed(), color.getGreen(),
+                color.getBlue(), null);
+        return Color.getHSBColor(
+                hsbVals[0], hsbVals[1], factor * hsbVals[2]);
+    }
+
 }

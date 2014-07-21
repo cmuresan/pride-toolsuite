@@ -2,10 +2,8 @@ package uk.ac.ebi.pride.gui.component.table;
 
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.table.ColumnFactory;
 import org.jdesktop.swingx.table.DefaultTableColumnModelExt;
 import org.jdesktop.swingx.table.TableColumnExt;
-import org.jdesktop.swingx.treetable.TreeTableModel;
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.*;
 import uk.ac.ebi.pride.gui.GUIUtilities;
@@ -13,24 +11,24 @@ import uk.ac.ebi.pride.gui.component.table.listener.*;
 import uk.ac.ebi.pride.gui.component.table.model.*;
 import uk.ac.ebi.pride.gui.component.table.renderer.*;
 import uk.ac.ebi.pride.gui.component.table.sorter.NumberTableRowSorter;
+import uk.ac.ebi.pride.gui.component.table.sorttreetable.*;
 import uk.ac.ebi.pride.gui.desktop.Desktop;
 import uk.ac.ebi.pride.gui.url.*;
 import uk.ac.ebi.pride.gui.utils.Constants;
 import uk.ac.ebi.pride.term.CvTermReference;
 
 import javax.swing.*;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import javax.swing.tree.TreePath;
-import java.util.Collection;
-import java.util.HashSet;
+import javax.swing.table.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
 import java.util.List;
 import java.util.regex.Pattern;
 
 /**
  * TableFactory can be used to different type of tables.
  * <p/>
- * User: rwang
+ * User: yperez
  * Date: 11-Sep-2010
  * Time: 13:39:00
  */
@@ -53,13 +51,39 @@ public class TableFactory {
         return createDefaultJXTable(new ChromatogramTableModel());
     }
 
+
+
     /**
-     * Build a table to display identification related details.
+     * Build a table to display peptide related details.
+     *
+     * @param listProteinScores List of Reference Scores
+     * @return JTable   peptide table
+     */
+    public static JXTable createProteinTable(final Collection<CvTermReference> listProteinScores, final boolean hasProteinGroups, DataAccessController controller) {
+        JXTable table;
+        if(hasProteinGroups){
+            SortableProteinTreeTableModel proteinTreeTableModel = new SortableProteinTreeTableModel(new SortableProteinNode(),listProteinScores);
+            table   = createDefaultJXTreeTable(proteinTreeTableModel, hasProteinGroups);
+            String protAccColumnHeader = PeptideTreeTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
+            table.addMouseMotionListener(new TableCellMouseMotionListener(table, protAccColumnHeader));
+            table.addMouseListener(new HyperLinkCellMouseClickListener(table, protAccColumnHeader, new ProteinAccHyperLinkGenerator()));
+
+        }else{
+            table = createProteinTable(listProteinScores, controller);
+        }
+        //    proteinTreeTableModel.getTreeModelSupport().fireTreeStructureChanged(new TreePath(proteinTreeTableModel.getRoot()));
+
+        return table;
+    }
+
+
+    /**
+     * Build a table to display identification related details when protein inference is not present
      *
      * @param controller data access controller
      * @return JTable   identification table
      */
-    public static JTable createProteinTable(Collection<CvTermReference> listProteinScores, DataAccessController controller) {
+    public static JXTable createProteinTable(Collection<CvTermReference> listProteinScores, DataAccessController controller) {
 
         ProteinTableModel identTableModel = new ProteinTableModel(listProteinScores);
         JXTable table = createDefaultJXTable(identTableModel);
@@ -67,8 +91,9 @@ public class TableFactory {
         TableColumnExt proteinIdColumn = (TableColumnExt) table.getColumn(ProteinTableHeader.PROTEIN_ID.getHeader());
         proteinIdColumn.setVisible(false);
 
-        TableColumnExt proteinGroupIdColumn = (TableColumnExt) table.getColumn(ProteinTableHeader.PROTEIN_GROUP_ID.getHeader());
-        proteinGroupIdColumn.setVisible(false);
+        //When file do not contains protein inference then this filed must be removed
+        //TableColumnExt proteinGroupIdColumn = (TableColumnExt) table.getColumn(ProteinTableHeader.PROTEIN_GROUP_ID.getHeader());
+        //proteinGroupIdColumn.setVisible(false);
 
         TableColumnExt compareColumn = (TableColumnExt) table.getColumn(ProteinTableHeader.COMPARE.getHeader());
         compareColumn.setVisible(false);
@@ -92,6 +117,10 @@ public class TableFactory {
         // isoelectric point column
         TableColumnExt isoelectricColumn = (TableColumnExt) table.getColumn(ProteinTableHeader.THEORETICAL_ISOELECTRIC_POINT.getHeader());
         isoelectricColumn.setVisible(false);
+
+        // isoelectric point column
+        TableColumnExt Threshold = (TableColumnExt) table.getColumn(ProteinTableHeader.IDENTIFICATION_THRESHOLD.getHeader());
+        Threshold.setVisible(false);
 
         // add hyper link click listener
         String protAccColumnHeader = ProteinTableHeader.PROTEIN_ACCESSION.getHeader();
@@ -143,159 +172,6 @@ public class TableFactory {
         TableColumnExt peptideSpecies = (TableColumnExt) table.getColumn(PeptideSpeciesTableModel.TableHeader.PEPTIDE_SPECIES_COLUMN.getHeader());
         peptideSpecies.setCellRenderer(new PeptideSpeciesCellRenderer());
         peptideSpecies.setVisible(false);
-
-        return table;
-    }
-
-    /**
-     * Build a table to display peptide related details.
-     *
-     * @param listPeptideScores List of Reference Scores
-     * @return JTable   peptide table
-     */
-    public static JXTreeTable createProteinTreeTable(final Collection<CvTermReference> listPeptideScores, final boolean hasProteinGroups) {
-
-        ProteinTreeTableModel proteinTreeTableModel = new ProteinTreeTableModel(listPeptideScores);
-        final JXTreeTable table = createDefaultJXTreeTable(proteinTreeTableModel);
-
-        table.setColumnFactory(new ColumnFactory() {
-            @Override
-            public void configureTableColumn(TableModel model, TableColumnExt columnExt) {
-                super.configureTableColumn(model, columnExt);
-
-                // peptide sequence column renderer
-                String columnTitle = columnExt.getTitle();
-                // set column visibility
-                if (ProteinTableHeader.COMPARE.getHeader().equals(columnTitle) ||
-//                        ProteinTableHeader.PROTEIN_GROUP_ID.getHeader().equals(columnTitle) ||
-                        ProteinTableHeader.ADDITIONAL.getHeader().equals(columnTitle) ||
-                        ProteinTableHeader.PROTEIN_ID.getHeader().equals(columnTitle) ||
-                        ProteinTableHeader.PROTEIN_NAME.getHeader().equals(columnTitle) ||
-                        ProteinTableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(columnTitle) ||
-                        ProteinTableHeader.PROTEIN_STATUS.getHeader().equals(columnTitle) ||
-                        ProteinTableHeader.THEORETICAL_ISOELECTRIC_POINT.getHeader().equals(columnTitle) ||
-                        ProteinTableHeader.IDENTIFICATION_THRESHOLD.getHeader().equals(columnTitle)) {
-                    columnExt.setVisible(false);
-                }
-
-                if (!hasProteinGroups && ProteinTableHeader.PROTEIN_GROUP_ID.getHeader().equals(columnTitle)) {
-                    columnExt.setVisible(false);
-                }
-
-                // set protein name column width
-                if (ProteinTableHeader.PROTEIN_NAME.getHeader().equals(columnTitle)) {
-                    columnExt.setPreferredWidth(200);
-                }
-
-                // sequence coverage column
-                if (ProteinTableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(columnTitle)) {
-                    columnExt.setCellRenderer(new SequenceCoverageRenderer());
-                }
-
-                // ptm accession hyperlink
-                if (ProteinTableHeader.PROTEIN_ACCESSION.getHeader().equals(columnTitle)) {
-                    columnExt.setCellRenderer(new ProteinAccessionHyperLinkCellRenderer());
-                }
-
-                // set additional column
-                if (PeptideTreeTableModel.TableHeader.ADDITIONAL.getHeader().equals(columnTitle)) {
-                    Icon icon = GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("view.detail.small.icon"));
-                    columnExt.setCellRenderer(new IconRenderer(icon));
-                    columnExt.setMaxWidth(50);
-                }
-            }
-        });
-
-        // add hyper link click listener
-        String protAccColumnHeader = PeptideTreeTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
-        table.addMouseMotionListener(new TableCellMouseMotionListener(table, protAccColumnHeader));
-        table.addMouseListener(new HyperLinkCellMouseClickListener(table, protAccColumnHeader, new ProteinAccHyperLinkGenerator()));
-
-        proteinTreeTableModel.getTreeModelSupport().fireTreeStructureChanged(new TreePath(proteinTreeTableModel.getRoot()));
-
-        return table;
-    }
-
-    /**
-     * Build a table to display peptide related details.
-     *
-     * @param listPeptideScores List of Reference Scores
-     * @return JTable   peptide table
-     */
-    public static JXTreeTable createPeptideTreeTable(Collection<CvTermReference> listPeptideScores, int defaultRankingThreshold) {
-
-        PeptideTreeTableModel peptideTableModel = new PeptideTreeTableModel(listPeptideScores, defaultRankingThreshold);
-        JXTreeTable table = createDefaultJXTreeTable(peptideTableModel);
-
-        table.setColumnFactory(new ColumnFactory() {
-            @Override
-            public void configureTableColumn(TableModel model, TableColumnExt columnExt) {
-                super.configureTableColumn(model, columnExt);
-
-                // peptide sequence column renderer
-                String columnTitle = columnExt.getTitle();
-                // set column visibility
-                if (PeptideTreeTableModel.TableHeader.SPECTRUM_ID.getHeader().equals(columnTitle) ||
-                        PeptideTreeTableModel.TableHeader.IDENTIFICATION_ID.getHeader().equals(columnTitle) ||
-                        PeptideTreeTableModel.TableHeader.PEPTIDE_FIT.getHeader().equals(columnTitle) ||
-                        PeptideTreeTableModel.TableHeader.PEPTIDE_ID.getHeader().equals(columnTitle) ||
-                        PeptideTreeTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(columnTitle) ||
-                        PeptideTreeTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(columnTitle) ||
-                        PeptideTreeTableModel.TableHeader.PROTEIN_STATUS.getHeader().equals(columnTitle) ||
-                        PeptideTreeTableModel.TableHeader.THEORITICAL_ISOELECTRIC_POINT_COLUMN.getHeader().equals(columnTitle) ||
-                        PeptideTreeTableModel.TableHeader.NUMBER_OF_FRAGMENT_IONS_COLUMN.getHeader().equals(columnTitle) ||
-                        PeptideTreeTableModel.TableHeader.ADDITIONAL.getHeader().equals(columnTitle)) {
-                    columnExt.setVisible(false);
-                }
-
-                // peptide sequence column renderer
-                if (PeptideTreeTableModel.TableHeader.PEPTIDE_COLUMN.getHeader().equals(columnTitle)) {
-                    columnExt.setMinWidth(200);
-                }
-
-                // delta mass column
-                if (PeptideTreeTableModel.TableHeader.DELTA_MASS_COLUMN.getHeader().equals(columnTitle)) {
-                    double minLimit = Double.parseDouble(Desktop.getInstance().getDesktopContext().getProperty("delta.mz.min.limit"));
-                    double maxLimit = Double.parseDouble(Desktop.getInstance().getDesktopContext().getProperty("delta.mz.max.limit"));
-                    DeltaMZRenderer renderer = new DeltaMZRenderer(minLimit, maxLimit);
-                    columnExt.setCellRenderer(renderer);
-                }
-
-                // peptide sequence present in protein sequence
-                if (PeptideTreeTableModel.TableHeader.PEPTIDE_FIT.getHeader().equals(columnTitle)) {
-                    columnExt.setCellRenderer(new PeptideFitCellRenderer());
-                }
-
-                // set protein name column width
-                if (PeptideTreeTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(columnTitle)) {
-                    columnExt.setPreferredWidth(200);
-                }
-
-                // sequence coverage column
-                if (PeptideTreeTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(columnTitle)) {
-                    columnExt.setCellRenderer(new SequenceCoverageRenderer());
-                }
-
-                // ptm accession hyperlink
-                if (PeptideTreeTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader().equals(columnTitle)) {
-                    columnExt.setCellRenderer(new ProteinAccessionHyperLinkCellRenderer());
-                }
-
-                // set additional column
-                if (PeptideTreeTableModel.TableHeader.ADDITIONAL.getHeader().equals(columnTitle)) {
-                    Icon icon = GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("view.detail.small.icon"));
-                    columnExt.setCellRenderer(new IconRenderer(icon));
-                    columnExt.setMaxWidth(50);
-                }
-            }
-        });
-
-        // add hyper link click listener
-        String protAccColumnHeader = PeptideTreeTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
-        table.addMouseMotionListener(new TableCellMouseMotionListener(table, protAccColumnHeader));
-        table.addMouseListener(new HyperLinkCellMouseClickListener(table, protAccColumnHeader, new ProteinAccHyperLinkGenerator()));
-
-        peptideTableModel.getTreeModelSupport().fireTreeStructureChanged(new TreePath(peptideTableModel.getRoot()));
 
         return table;
     }
@@ -818,19 +694,64 @@ public class TableFactory {
         return table;
     }
 
-    private static JXTreeTable createDefaultJXTreeTable(TreeTableModel tableModel) {
-        final JXTreeTable table = new JXTreeTable();
+    private static ProteinSortableTreeTable createDefaultJXTreeTable(SortableProteinTreeTableModel tableModel, boolean hasProteinGropus) {
+        //final JXTreeTable table = new JXTreeTable();
+        ProteinSortableTreeTable table= new ProteinSortableTreeTable(tableModel,hasProteinGropus);
+        String[] columnHeaderTooltips = new String[tableModel.getColumnTooltips().size()];
+        for(int i = 0; i < tableModel.getColumnTooltips().size(); i++)
+            columnHeaderTooltips[i] = tableModel.getColumnTooltips().get(i);
+        // Install component header
+        TableColumnModel tcm = table.getColumnModel();
+        final ComponentTableHeader ch = new ComponentTableHeader(tcm, columnHeaderTooltips);
+        table.setTableHeader(ch);
+
+        // Install mouse listeners in header for right-click popup capabilities
+        MouseAdapter ma = createHeaderMouseAdapter(table);
+
+        ch.addMouseListener(ma);
+        ch.addMouseMotionListener(ma);
 
         // set table column model needs to happen before set tree table model
-        table.setTreeTableModel(tableModel);
+        //table.setTreeTableModel(tableModel);
+
         table.setClosedIcon(null);
         table.setLeafIcon(null);
         table.setOpenIcon(null);
 
-        configureTable(table);
+        configureTreeTable(table);
 
         return table;
     }
+
+    private static void configureTreeTable(JXTreeTable table) {
+        JPopupMenu popupMenu = new TablePopupMenu(table);
+
+        table.setComponentPopupMenu(popupMenu);
+
+        // selection mode
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        // set column control visible
+        table.setColumnControlVisible(true);
+
+        // auto fill
+        table.setFillsViewportHeight(true);
+
+        // row height
+        table.setRowHeight(20);
+
+        // prevent dragging of column
+        //table.getTableHeader().setReorderingAllowed(false);
+
+        // remove border
+        table.setBorder(BorderFactory.createEmptyBorder());
+
+        ((AbstractTableModel) table.getModel()).fireTableStructureChanged();
+        table.setRootVisible(false);
+        table.setSortable(false);
+    }
+
+
 
     private static void configureTable(JXTable table) {
         JPopupMenu popupMenu = new TablePopupMenu(table);
@@ -859,4 +780,247 @@ public class TableFactory {
         // remove border
         table.setBorder(BorderFactory.createEmptyBorder());
     }
+
+    /**
+     * Build a table to display peptide related details.
+     *
+     * @param listPeptideScores List of Reference Scores
+     * @return JTable   peptide table
+     */
+    public static JXTreeTable createPeptideTreeTable(Collection<CvTermReference> listPeptideScores, int defaultRankingThreshold) {
+
+        //PeptideTreeTableModel peptideTableModel = new PeptideTreeTableModel(listPeptideScores, defaultRankingThreshold);
+        //JXTreeTable table = createDefaultJXTreeTable(peptideTableModel);
+/*
+        table.setColumnFactory(new ColumnFactory() {
+            @Override
+            public void configureTableColumn(TableModel model, TableColumnExt columnExt) {
+                super.configureTableColumn(model, columnExt);
+
+                // peptide sequence column renderer
+                String columnTitle = columnExt.getTitle();
+                // set column visibility
+                if (PeptideTreeTableModel.TableHeader.SPECTRUM_ID.getHeader().equals(columnTitle) ||
+                        PeptideTreeTableModel.TableHeader.IDENTIFICATION_ID.getHeader().equals(columnTitle) ||
+                        PeptideTreeTableModel.TableHeader.PEPTIDE_FIT.getHeader().equals(columnTitle) ||
+                        PeptideTreeTableModel.TableHeader.PEPTIDE_ID.getHeader().equals(columnTitle) ||
+                        PeptideTreeTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(columnTitle) ||
+                        PeptideTreeTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(columnTitle) ||
+                        PeptideTreeTableModel.TableHeader.PROTEIN_STATUS.getHeader().equals(columnTitle) ||
+                        PeptideTreeTableModel.TableHeader.THEORITICAL_ISOELECTRIC_POINT_COLUMN.getHeader().equals(columnTitle) ||
+                        PeptideTreeTableModel.TableHeader.NUMBER_OF_FRAGMENT_IONS_COLUMN.getHeader().equals(columnTitle) ||
+                        PeptideTreeTableModel.TableHeader.ADDITIONAL.getHeader().equals(columnTitle)) {
+                    columnExt.setVisible(false);
+                }
+
+                // peptide sequence column renderer
+                if (PeptideTreeTableModel.TableHeader.PEPTIDE_COLUMN.getHeader().equals(columnTitle)) {
+                    columnExt.setMinWidth(200);
+                }
+
+                // delta mass column
+                if (PeptideTreeTableModel.TableHeader.DELTA_MASS_COLUMN.getHeader().equals(columnTitle)) {
+                    double minLimit = Double.parseDouble(Desktop.getInstance().getDesktopContext().getProperty("delta.mz.min.limit"));
+                    double maxLimit = Double.parseDouble(Desktop.getInstance().getDesktopContext().getProperty("delta.mz.max.limit"));
+                    DeltaMZRenderer renderer = new DeltaMZRenderer(minLimit, maxLimit);
+                    columnExt.setCellRenderer(renderer);
+                }
+
+                // peptide sequence present in protein sequence
+                if (PeptideTreeTableModel.TableHeader.PEPTIDE_FIT.getHeader().equals(columnTitle)) {
+                    columnExt.setCellRenderer(new PeptideFitCellRenderer());
+                }
+
+                // set protein name column width
+                if (PeptideTreeTableModel.TableHeader.PROTEIN_NAME.getHeader().equals(columnTitle)) {
+                    columnExt.setPreferredWidth(200);
+                }
+
+                // sequence coverage column
+                if (PeptideTreeTableModel.TableHeader.PROTEIN_SEQUENCE_COVERAGE.getHeader().equals(columnTitle)) {
+                    columnExt.setCellRenderer(new SequenceCoverageRenderer());
+                }
+
+                // ptm accession hyperlink
+                if (PeptideTreeTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader().equals(columnTitle)) {
+                    columnExt.setCellRenderer(new ProteinAccessionHyperLinkCellRenderer());
+                }
+
+                // set additional column
+                if (PeptideTreeTableModel.TableHeader.ADDITIONAL.getHeader().equals(columnTitle)) {
+                    Icon icon = GUIUtilities.loadIcon(Desktop.getInstance().getDesktopContext().getProperty("view.detail.small.icon"));
+                    columnExt.setCellRenderer(new IconRenderer(icon));
+                    columnExt.setMaxWidth(50);
+                }
+            }
+        });
+
+        // add hyper link click listener
+        String protAccColumnHeader = PeptideTreeTableModel.TableHeader.PROTEIN_ACCESSION_COLUMN.getHeader();
+        table.addMouseMotionListener(new TableCellMouseMotionListener(table, protAccColumnHeader));
+        table.addMouseListener(new HyperLinkCellMouseClickListener(table, protAccColumnHeader, new ProteinAccHyperLinkGenerator()));
+
+        peptideTableModel.getTreeModelSupport().fireTreeStructureChanged(new TreePath(peptideTableModel.getRoot()));
+*/
+//        return table;
+        return null;
+    }
+
+    /**
+     * Creates and configures a mouse adapter for tree table headers to display a context menu.
+     * @return the header mouse adapter
+     */
+    public static MouseAdapter createHeaderMouseAdapter(final JXTreeTable treeTbl) {
+        // TODO: maybe integrate functionality into tree table class
+        final ComponentTableHeader ch = (ComponentTableHeader) treeTbl.getTableHeader();
+        MouseAdapter ma = new MouseAdapter() {
+            /**
+             * The column view index of the last pressed column header.<br>
+             */
+            private int col = -1;
+
+            /**
+             * Creates and configures the current column header's context menu.
+             * @return the context menu
+             */
+            private JPopupMenu createPopup() {
+                JPopupMenu popup = new JPopupMenu() {
+                    @Override
+                    public void setVisible(boolean b) {
+                        // automatically raise the column header when popup is dismissed
+                        if (!b) {
+                            raise();
+                        }
+                        super.setVisible(b);
+                    }
+                };
+
+                // Create sub-menu containing sorting-related items
+                JMenu sortMenu = new JMenu("Sort");
+                //		sortMenu.setIcon(IconConstants.SORT_ICON);
+
+                int modelCol = treeTbl.convertColumnIndexToModel(col);
+                SortOrder order = ((TreeTableRowSorter) treeTbl.getRowSorter()).getSortOrder(modelCol);
+                JMenuItem ascChk = new JRadioButtonMenuItem("Ascending", order == SortOrder.ASCENDING);
+                JMenuItem desChk = new JRadioButtonMenuItem("Descending", order == SortOrder.DESCENDING);
+                JMenuItem unsChk = new JRadioButtonMenuItem("Unsorted", order == SortOrder.UNSORTED);
+
+                ActionListener sortListener = new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        SortOrder order = SortOrder.valueOf(
+                                ((AbstractButton) evt.getSource()).getText().toUpperCase());
+                        ((TreeTableRowSorter) treeTbl.getRowSorter()).setSortOrder(
+                                treeTbl.convertColumnIndexToModel(col), order);
+                    }
+                };
+                ascChk.addActionListener(sortListener);
+                desChk.addActionListener(sortListener);
+                unsChk.addActionListener(sortListener);
+
+                sortMenu.add(ascChk);
+                sortMenu.add(desChk);
+                sortMenu.add(unsChk);
+
+                // Create sub-menu containing non-leaf value aggregation functions
+//				JMenu aggrMenu = new JMenu("Aggregate Function");
+//				aggrMenu.setIcon(IconConstants.CALCULATOR_ICON);
+
+                ActionListener aggrListener = new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt) {
+                        TableColumnExt column = (TableColumnExt) treeTbl.getColumnExt(col);
+                    }
+                };
+                TableColumnExt column = (TableColumnExt) treeTbl.getColumnExt(col);
+                popup.add(sortMenu);
+//				popup.add(aggrMenu);
+//				popup.add(hideItem);
+                return popup;
+            }
+
+            @Override
+            public void mousePressed(MouseEvent me) {
+                int col = ch.columnAtPoint(me.getPoint());
+                if(!treeTbl.isSortable())
+                    col = -1;
+                // Check whether right mouse button has been pressed
+                if ((col != -1) && (me.getButton() == MouseEvent.BUTTON1)) {
+                    this.col = col;
+                    lower();
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent me) {
+                if ((me.getButton() == MouseEvent.BUTTON3) &&
+                        (ch.getBounds().contains(me.getPoint()))) {
+                    // don't show popup for web resources column
+                    if (!" ".equals(treeTbl.getColumn(this.col).getIdentifier())) {
+                        this.createPopup().show(ch, ch.getHeaderRect(this.col).x - 1, ch.getHeight() - 1);
+                    } else {
+                        this.raise();
+                    }
+                }
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent me) {
+                TableColumn draggedColumn = ch.getDraggedColumn();
+                if (draggedColumn != null) {
+                    int col = treeTbl.convertColumnIndexToView(draggedColumn.getModelIndex());
+                    if ((col != -1) && (col != this.col)) {
+                        this.col = col;
+                    }
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent me) {
+                if ((this.col != -1) &&
+                        ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK)) {
+                    raise();
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent me) {
+                if ((this.col != -1) &&
+                        ((me.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK)) {
+                    lower();
+                }
+            }
+
+            /**
+             * Convenience method to configure the column header to appear pressed.
+             */
+            private void lower() {
+                TableCellRenderer hr = ch.getColumnModel().getColumn(this.col).getHeaderRenderer();
+                if (hr instanceof ComponentHeaderRenderer) {
+                    ComponentHeaderRenderer chr = (ComponentHeaderRenderer) hr;
+                    chr.getPanel().setBorder(BorderFactory.createCompoundBorder(
+                            BorderFactory.createLineBorder(Color.GRAY),
+                            BorderFactory.createEmptyBorder(1, 1, 0, -1)));
+                    chr.getPanel().setOpaque(true);
+                    ch.repaint(ch.getHeaderRect(this.col));
+                }
+            }
+
+            /**
+             * Convenience method to configure the column header to not appear pressed.
+             */
+            private void raise() {
+                TableCellRenderer hr = ch.getColumnModel().getColumn(this.col).getHeaderRenderer();
+                if (hr instanceof ComponentHeaderRenderer) {
+                    ComponentHeaderRenderer chr = (ComponentHeaderRenderer) hr;
+                    chr.getPanel().setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+                    chr.getPanel().setOpaque(false);
+                    ch.repaint(ch.getHeaderRect(this.col));
+                }
+            }
+        };
+
+        return ma;
+    }
+
 }

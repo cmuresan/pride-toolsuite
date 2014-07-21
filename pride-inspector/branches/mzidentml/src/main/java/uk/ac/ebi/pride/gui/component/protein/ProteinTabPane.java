@@ -16,8 +16,10 @@ import uk.ac.ebi.pride.gui.component.peptide.PeptideVizPane;
 import uk.ac.ebi.pride.gui.component.startup.ControllerContentPane;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableHeader;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideTableModel;
+import uk.ac.ebi.pride.gui.component.table.sorttreetable.ProteinSortableTreeTable;
 import uk.ac.ebi.pride.gui.event.container.ExpandPanelEvent;
 import uk.ac.ebi.pride.gui.event.container.PSMEvent;
+import uk.ac.ebi.pride.gui.event.container.SortProteinTableEvent;
 import uk.ac.ebi.pride.gui.task.TaskEvent;
 
 import javax.swing.*;

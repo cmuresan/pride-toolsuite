@@ -4,7 +4,7 @@ import org.bushe.swing.event.AbstractEventServiceEvent;
 import uk.ac.ebi.pride.gui.component.table.model.PeptideSpecies;
 
 /**
- * @author Rui Wang
+ * @author yperez, rwang
  * @version $Id$
  */
 public class PeptideSpeciesEvent extends AbstractEventServiceEvent {

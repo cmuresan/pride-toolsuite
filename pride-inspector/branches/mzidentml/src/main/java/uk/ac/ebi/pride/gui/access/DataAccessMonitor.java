@@ -15,7 +15,7 @@ import java.util.*;
  * It maintains a list of DataAccessControllers currently in use in PRIDE GUI.
  * DataAccessControllers represent data sources, which could be either file or database.
  * <p/>
- * User: rwang
+ * User: yperez, rwang
  * Date: 26-Feb-2010
  * Time: 11:10:57
  */

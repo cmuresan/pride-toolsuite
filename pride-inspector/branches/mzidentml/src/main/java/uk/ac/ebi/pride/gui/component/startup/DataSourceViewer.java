@@ -13,6 +13,7 @@ import uk.ac.ebi.pride.gui.component.table.listener.TableCellMouseMotionListener
 import uk.ac.ebi.pride.gui.event.AddDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ForegroundDataSourceEvent;
 import uk.ac.ebi.pride.gui.event.ProcessingDataSourceEvent;
+import uk.ac.ebi.pride.gui.event.container.SortProteinTableEvent;
 
 
 import javax.swing.*;
@@ -33,7 +34,7 @@ import java.util.List;
  * DataSourceViewer should be monitor the DataAccessControllers in
  * DataAccessMonitor.
  * <p/>
- * User: rwang
+ * User: yprez, rwang
  * Date: 26-Feb-2010
  * Time: 10:42:08
  */
@@ -186,9 +187,6 @@ public class DataSourceViewer extends JPanel {
         sourceTable.revalidate();
         sourceTable.repaint();
     }
-
-
-
 
     @EventSubscriber(eventClass = AddDataSourceEvent.class)
     public void onAddDataSourceEvent(AddDataSourceEvent evt) {
@@ -397,7 +395,7 @@ public class DataSourceViewer extends JPanel {
     /**
      * Draw a red cross for close the data access controller
      * */
-     private class MzidentMLMSCellRenderer extends DefaultTableCellRenderer {
+    private class MzidentMLMSCellRenderer extends DefaultTableCellRenderer {
 
 
         @Override

@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Abstract class of protein table model
+ * Abstract class of protein table model When the file do not contains protein inference
  * <p/>
- * User: rwang
+ * User: yperez, rwang
  * Date: 24/08/2011
  * Time: 16:21
  */
@@ -45,6 +45,9 @@ public class AbstractProteinTableModel extends ProgressiveListTableModel<Void, T
                 }
             }
         }
+        //Remove protein group from header because is not supported for files without protein Inference
+        columnNames.remove(ProteinTableHeader.PROTEIN_GROUP_ID.getHeader());
+
     }
 
     @Override

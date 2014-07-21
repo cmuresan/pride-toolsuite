@@ -1,5 +1,9 @@
 package uk.ac.ebi.pride.gui.utils;
 
+import org.jdesktop.swingx.decorator.*;
+
+import javax.swing.*;
+import javax.swing.SortOrder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
@@ -80,4 +84,5 @@ public class GraphicsUtils {
         }
         return new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
     }
+
 }

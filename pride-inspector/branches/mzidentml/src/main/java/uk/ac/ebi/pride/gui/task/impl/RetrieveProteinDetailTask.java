@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.gui.task.impl;
 
+import org.bushe.swing.event.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.Tuple;
@@ -9,6 +10,7 @@ import uk.ac.ebi.pride.gui.component.sequence.AnnotatedProtein;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideAnnotation;
 import uk.ac.ebi.pride.gui.component.sequence.PeptideFitState;
 import uk.ac.ebi.pride.gui.component.table.model.TableContentType;
+import uk.ac.ebi.pride.gui.event.container.SortProteinTableEvent;
 import uk.ac.ebi.pride.gui.task.TaskAdapter;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.ProteinDetailFetcher;
 import uk.ac.ebi.pride.tools.protein_details_fetcher.model.Protein;
@@ -75,7 +77,13 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
         // protein map
         Map<String, Protein> proteins = new HashMap<String, Protein>();
 
+        if(controller.hasProteinAmbiguityGroup())
+            EventBus.publish(new SortProteinTableEvent(controller, SortProteinTableEvent.Type.DISABLE_SORT));
+
         try {
+
+
+
             // iterate over each protein
             for (Comparable protIdentId : protIdentIds) {
                 // get mapped protein accession
@@ -127,7 +135,8 @@ public class RetrieveProteinDetailTask extends TaskAdapter<Void, Tuple<TableCont
         } catch (InterruptedException e) {
             logger.warn("Protein name download has been cancelled");
         }
-
+        if(controller.hasProteinAmbiguityGroup())
+            EventBus.publish(new SortProteinTableEvent(controller, SortProteinTableEvent.Type.ENABLE_SORT));
         return null;
     }
 

@@ -163,7 +163,8 @@ public class TableDataRetriever {
                 if (!values.isEmpty()) {
                     // take the first by default
                     //content.add(values.get(0));
-                    peptideTableRow.addScore(NumberUtilities.scaleDouble(values.get(0).doubleValue(), 4));
+                    Double value =  (values.get(0) != null)?NumberUtilities.scaleDouble(values.get(0).doubleValue(),4):-1.0;
+                    peptideTableRow.addScore(value);
 
                 } else {
                     peptideTableRow.addScore(null);

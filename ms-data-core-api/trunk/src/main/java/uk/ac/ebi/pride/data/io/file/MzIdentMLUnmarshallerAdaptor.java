@@ -174,7 +174,7 @@ public class MzIdentMLUnmarshallerAdaptor extends MzIdentMLUnmarshaller {
          * This is the only way that we can use now to retrieve the name property
          * In the future we need to think in more elaborated way.
          */
-        return (properties.containsKey("name")) ? properties.get("name") : "Unknown experiment (mzIdentML)";
+        return (properties.containsKey("name")) ? properties.get("name") : "no assay title provided (mzIdentML)";
     }
 
     public Date getCreationDate() {

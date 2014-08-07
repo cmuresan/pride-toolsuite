@@ -855,7 +855,8 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
         Map<SpectraData, File> spectraFileMap = new HashMap<SpectraData, File>();
 
         for (File file : msIdentMLFiles) {
-            Iterator iterator = spectraDataMap.entrySet().iterator();
+            Set<Map.Entry<Comparable, SpectraData>> entries = spectraDataMap.entrySet();
+            Iterator iterator = entries.iterator();
             while (iterator.hasNext()) {
                 Map.Entry mapEntry = (Map.Entry) iterator.next();
                 SpectraData spectraData = (SpectraData) mapEntry.getValue();
@@ -951,7 +952,7 @@ public class MzIdentMLControllerImpl extends CachedDataAccessController {
     private Map<Comparable, SpectraData> getSpectraDataMap() {
         Map<Comparable, SpectraData> spectraDataMapResult = (Map<Comparable, SpectraData>) getCache().get(CacheEntry.SPECTRA_DATA);
         if (spectraDataMapResult == null) {
-            return Collections.emptyMap();
+            return new HashMap<Comparable, SpectraData>();
         } else {
             return spectraDataMapResult;
         }

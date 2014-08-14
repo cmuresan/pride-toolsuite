@@ -10,7 +10,7 @@ import uk.ac.ebi.pridemod.model.PRIDEModPTM;
 import uk.ac.ebi.pridemod.model.PTM;
 import uk.ac.ebi.pridemod.model.Specificity;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class PRIDEModDataAccessController extends AbstractDataAccessController {
      *
      * @param xml
      */
-    public PRIDEModDataAccessController(File xml) {
+    public PRIDEModDataAccessController(InputStream xml) {
         super(xml);
 
         PrideModReader reader = new PrideModReader(xml);

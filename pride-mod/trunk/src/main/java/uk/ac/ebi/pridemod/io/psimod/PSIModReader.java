@@ -4,8 +4,7 @@ import org.obolibrary.oboformat.model.Frame;
 import org.obolibrary.oboformat.model.OBODoc;
 import org.obolibrary.oboformat.parser.OBOFormatParser;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -19,10 +18,16 @@ public class PSIModReader {
      */
     private OBODoc oboDoc = null;
 
-    public PSIModReader(File file) throws IOException {
+    public PSIModReader(InputStream inputStream) throws IOException {
         OBOFormatParser oboReader = new OBOFormatParser();
-        oboDoc = oboReader.parse(file);
-        oboDoc.getInstanceFrames();
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        try {
+            oboDoc = oboReader.parse(bufferedReader);
+            oboDoc.getInstanceFrames();
+        } finally {
+            bufferedReader.close();
+        }
     }
 
     public Collection<Frame> getTermCollection(){

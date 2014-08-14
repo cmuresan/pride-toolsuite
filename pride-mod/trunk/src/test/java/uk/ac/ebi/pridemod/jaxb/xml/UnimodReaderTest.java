@@ -6,7 +6,7 @@ import org.junit.Test;
 import uk.ac.ebi.pridemod.io.unimod.xml.UnimodReader;
 
 import javax.xml.bind.JAXBException;
-import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 
 /**
@@ -29,10 +29,9 @@ public class UnimodReaderTest {
 
     @Test
     public void unimodReader() {
-        URL fileName = UnimodReaderTest.class.getClassLoader().getResource("unimod.xml");
-        File file = new File(fileName.getPath());
+        InputStream inputStream = UnimodReaderTest.class.getClassLoader().getResourceAsStream("unimod.xml");
         try {
-            UnimodReader unimodreader = new UnimodReader(file);
+            UnimodReader unimodreader = new UnimodReader(inputStream);
         } catch (JAXBException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pridemod.model.PTM;
 
-import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
@@ -17,12 +17,11 @@ public class PRIDEModDataAccessControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        URL url = PRIDEModDataAccessControllerTest.class.getClassLoader().getResource("pride_mods.xml");
-        if (url == null) {
+        InputStream inputStream = PRIDEModDataAccessControllerTest.class.getClassLoader().getResourceAsStream("pride_mods.xml");
+        if (inputStream == null) {
             throw new IllegalStateException("no file for input found!");
         }
-        File inputFile = new File(url.toURI());
-        prideModDataAccessController = new PRIDEModDataAccessController(inputFile);
+        prideModDataAccessController = new PRIDEModDataAccessController(inputStream);
     }
 
     @After

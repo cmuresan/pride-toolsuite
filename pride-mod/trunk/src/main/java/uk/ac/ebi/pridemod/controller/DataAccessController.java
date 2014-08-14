@@ -3,7 +3,7 @@ package uk.ac.ebi.pridemod.controller;
 import uk.ac.ebi.pridemod.model.PTM;
 import uk.ac.ebi.pridemod.model.Specificity;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -14,7 +14,7 @@ public interface DataAccessController {
 
 
 
-    public File getSource();
+    public InputStream getSource();
     /**
      * PTM accession
      * @param accession

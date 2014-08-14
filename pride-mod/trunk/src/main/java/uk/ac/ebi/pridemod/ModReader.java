@@ -1,5 +1,6 @@
 package uk.ac.ebi.pridemod;
 
+import ch.qos.logback.core.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pridemod.controller.impl.PRIDEModDataAccessController;
@@ -10,7 +11,8 @@ import uk.ac.ebi.pridemod.model.PTM;
 import uk.ac.ebi.pridemod.model.Specificity;
 import uk.ac.ebi.pridemod.utils.PRIDEModUtils;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
@@ -25,17 +27,17 @@ public class ModReader {
     /**
      * Local definition of Unimod
      */
-    private static URL unimodUrl    = ModReader.class.getClassLoader().getResource("unimod.xml");
-
-    /**
-     * Local definition of pride mod
-     */
-    private static URL prideModdUrl = ModReader.class.getClassLoader().getResource("pride_mods.xml");
+    private static InputStream unimodUrl    = ModReader.class.getClassLoader().getResourceAsStream("unimod.xml");
 
     /**
      * Local definition of psiMod
      */
-    private static URL psiModUrl    = ModReader.class.getClassLoader().getResource("PSI-MOD.obo");
+    private static InputStream psiModUrl    = ModReader.class.getClassLoader().getResourceAsStream("PSI-MOD.obo");
+
+    /**
+     * Local definition of pride mod
+     */
+    private static InputStream prideModdUrl = ModReader.class.getClassLoader().getResourceAsStream("pride_mods.xml");
 
     private UnimodDataAccessController unimodController;
 
@@ -47,13 +49,27 @@ public class ModReader {
 
     protected ModReader(){
         try {
-            unimodController = new UnimodDataAccessController(new File(unimodUrl.toURI()));
-            psiModController = new PSIModDataAccessController(new File(psiModUrl.toURI()));
-            prideModController = new PRIDEModDataAccessController(new File(prideModdUrl.toURI()));
-        } catch (URISyntaxException e) {
+            unimodController = new UnimodDataAccessController(unimodUrl);
+            psiModController = new PSIModDataAccessController(psiModUrl);
+            prideModController = new PRIDEModDataAccessController(prideModdUrl);
+        } catch (Exception e) {
             String msg = "Exception while trying to read Database files..";
             logger.error(msg, e);
             throw new DataAccessException(msg, e);
+        } finally {
+            try {
+                if(unimodUrl!= null){
+                    unimodUrl.close();
+                }
+                if(psiModUrl!= null){
+                    psiModUrl.close();
+                }
+                if(psiModUrl!= null){
+                    psiModUrl.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

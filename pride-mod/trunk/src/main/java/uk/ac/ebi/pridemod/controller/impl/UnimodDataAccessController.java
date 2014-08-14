@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pridemod.model.UniModPTM;
 
 import javax.xml.bind.JAXBException;
-import java.io.File;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +30,7 @@ public class UnimodDataAccessController extends AbstractDataAccessController{
 
     private static final Logger logger = LoggerFactory.getLogger(UnimodDataAccessController.class);
 
-    public UnimodDataAccessController(File xml) {
+    public UnimodDataAccessController(InputStream xml) {
         super(xml);
         try {
             UnimodReader reader = new UnimodReader(xml);

@@ -12,8 +12,8 @@ import uk.ac.ebi.pridemod.model.PSIModPTM;
 import uk.ac.ebi.pridemod.model.PTM;
 import uk.ac.ebi.pridemod.model.Specificity;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -50,10 +50,10 @@ public class PSIModDataAccessController extends AbstractDataAccessController{
 
     private static final Logger logger = LoggerFactory.getLogger(UnimodDataAccessController.class);
 
-    public PSIModDataAccessController(File file) {
-        super(file);
+    public PSIModDataAccessController(InputStream inputStream) {
+        super(inputStream);
         try {
-            PSIModReader psiModReader = new PSIModReader(file);
+            PSIModReader psiModReader = new PSIModReader(inputStream);
             initPTMMap(psiModReader.getTermCollection());
         } catch (IOException e) {
             String msg = "Exception while trying to read the Unimod file";

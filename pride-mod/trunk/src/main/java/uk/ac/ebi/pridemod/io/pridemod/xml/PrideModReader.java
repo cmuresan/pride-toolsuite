@@ -11,7 +11,7 @@ import uk.ac.ebi.pridemod.io.slimmod.model.SlimModification;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
+import java.io.InputStream;
 import java.util.regex.Pattern;
 
 
@@ -40,8 +40,8 @@ public class PrideModReader {
     /*public PrideModReader(URL url) {
         this(FileUtils.getFileFromURL(url));
     } */
-    public PrideModReader(File file) {
-        if (file == null) {
+    public PrideModReader(InputStream inputStream) {
+        if (inputStream == null) {
             throw new IllegalArgumentException("Xml file to be indexed must not be null");
         }
         // create extractor
@@ -50,7 +50,7 @@ public class PrideModReader {
         try {
             // create unmarshaller
             this.unmarshaller = PrideModUnmarshallerFactory.getInstance().initializeUnmarshaller();
-            prideMod_whole = (PrideMod) unmarshaller.unmarshal(file);
+            prideMod_whole = (PrideMod) unmarshaller.unmarshal(inputStream);
         } catch (JAXBException e) {
             throw new IllegalArgumentException("Error unmarshalling XML file: " + e.getMessage(), e);
         }

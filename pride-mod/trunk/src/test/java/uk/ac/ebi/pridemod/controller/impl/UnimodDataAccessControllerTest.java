@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pridemod.model.PTM;
 
-import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
@@ -18,12 +18,11 @@ public class UnimodDataAccessControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        URL url = UnimodDataAccessControllerTest.class.getClassLoader().getResource("unimod.xml");
-        if (url == null) {
+        InputStream inputStream = UnimodDataAccessControllerTest.class.getClassLoader().getResourceAsStream("unimod.xml");
+        if (inputStream == null) {
             throw new IllegalStateException("no file for input found!");
         }
-        File inputFile = new File(url.toURI());
-        unimodDataAccessController = new UnimodDataAccessController(inputFile);
+        unimodDataAccessController = new UnimodDataAccessController(inputStream);
     }
 
     @After

@@ -7,7 +7,7 @@ import uk.ac.ebi.pridemod.io.unimod.xml.unmarshaller.UnimodUnmarshallerFactory;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
+import java.io.InputStream;
 import java.util.regex.Pattern;
 
 
@@ -30,13 +30,10 @@ public class UnimodReader {
      * @param xml
      * @throws JAXBException
      */
-    public UnimodReader(File xml) throws JAXBException {
+    public UnimodReader(InputStream xml) throws JAXBException {
         if (xml == null) {
             throw new IllegalArgumentException("Xml file to be indexed must not be null");
-        } else if (!xml.exists()) {
-            throw new IllegalArgumentException("Xml file to be indexed does not exist: " + xml.getAbsolutePath());
         }
-
         // create unmarshaller
         this.unmarshaller = UnimodUnmarshallerFactory.getInstance().initializeUnmarshaller();
         unimod_whole = (Unimod) unmarshaller.unmarshal(xml);

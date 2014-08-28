@@ -63,9 +63,8 @@ public class PTModification {
         if (monoMassDeltas != null ? !monoMassDeltas.equals(that.monoMassDeltas) : that.monoMassDeltas != null)
             return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (type != null ? !type.equals(that.type) : that.type != null) return false;
+        return !(type != null ? !type.equals(that.type) : that.type != null);
 
-        return true;
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 /**
  * <code> NumberUtilities </code> provides methods for number handling.
  * <p/>
- * User: rwang
+ * User: rwang, yperez
  * Date: 10-Oct-2010
  * Time: 10:03:46
  */
@@ -18,6 +18,9 @@ public class NumberUtilities {
      * @return boolean  true if it is a number
      */
     public static boolean isNumber(String string) {
+        if(string.length() ==1 && !Character.isDigit(string.charAt(0))){
+            return false;
+        }
         if (string == null || string.isEmpty()) {
             return false;
         }

@@ -185,9 +185,8 @@ public class AminoAcidSequence implements Mass {
 
         AminoAcidSequence aminoAcidSequence = (AminoAcidSequence) o;
 
-        if (aminoAcids != null ? !aminoAcids.equals(aminoAcidSequence.aminoAcids) : aminoAcidSequence.aminoAcids != null) return false;
+        return !(aminoAcids != null ? !aminoAcids.equals(aminoAcidSequence.aminoAcids) : aminoAcidSequence.aminoAcids != null);
 
-        return true;
     }
 
     @Override

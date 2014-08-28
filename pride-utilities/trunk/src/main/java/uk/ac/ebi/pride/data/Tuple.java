@@ -43,9 +43,8 @@ public class Tuple <K, V> implements Serializable {
         Tuple tuple = (Tuple) o;
 
         if (key != null ? !key.equals(tuple.key) : tuple.key != null) return false;
-        if (value != null ? !value.equals(tuple.value) : tuple.value != null) return false;
+        return !(value != null ? !value.equals(tuple.value) : tuple.value != null);
 
-        return true;
     }
 
     @Override

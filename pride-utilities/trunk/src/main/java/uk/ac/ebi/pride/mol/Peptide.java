@@ -243,13 +243,13 @@ public class Peptide {
         StringBuilder sb = new StringBuilder();
 
         if (n_terminal != null && ! n_terminal.equals(Group.H)) {
-            sb.append(n_terminal.getName() + "-");
+            sb.append(n_terminal.getName()).append("-");
         }
 
         sb.append(getSequence());
 
         if (c_terminal != null && ! c_terminal.equals(Group.OH)) {
-            sb.append("-" + c_terminal.getName());
+            sb.append("-").append(c_terminal.getName());
         }
 
         return sb.toString();

@@ -53,7 +53,7 @@ public class IsoelectricPointUtils {
             int counter = 0;
             double pHs = -2;
             double pHe = 16;
-            double pHm = 0;
+            double pHm;
 
             while ((counter < iterationMax) && (Math.abs(pHs - pHe) >= epsilon)) {
                 pHm = (pHs + pHe) / 2;
@@ -77,7 +77,7 @@ public class IsoelectricPointUtils {
 
         private double getpI(Map<String,Double> AApI_n, Map<String,Double> AApI_c, Map<String,Double> AApI_side, double PH){
             String sideAA;
-            double pHpK = 0.0D;
+            double pHpK;
             double FoRmU = 0.0D;
 
             String ntermAA = String.valueOf(this.seq.charAt(0));

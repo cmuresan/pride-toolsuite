@@ -5,9 +5,7 @@ import uk.ac.ebi.pride.mol.NeutralLoss;
 /**
  * Collection of methods for FragmentIonType
  * <p/>
- * User: rwang
- * Date: 21-Oct-2010
- * Time: 14:22:04
+ * @author rwang
  */
 public class FragmentIonUtilities {
     /**

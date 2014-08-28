@@ -51,9 +51,8 @@ public class NeutralLoss implements Mass, Cloneable {
         if (Double.compare(that.avgMass, avgMass) != 0) return false;
         if (Double.compare(that.monoMass, monoMass) != 0) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (sign != null ? !sign.equals(that.sign) : that.sign != null) return false;
+        return !(sign != null ? !sign.equals(that.sign) : that.sign != null);
 
-        return true;
     }
 
     @Override

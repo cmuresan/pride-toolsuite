@@ -11,7 +11,7 @@ import static uk.ac.ebi.pride.mol.NuclearParticle.PROTON;
 /**
  * <p>Utility class for Molecule operations</p>
  *
- * @author Antonio Fabregat
+ * @author Yasset Perez-Riverol
  *         Date: 24-sep-2010
  *         Time: 11:51:12
  */

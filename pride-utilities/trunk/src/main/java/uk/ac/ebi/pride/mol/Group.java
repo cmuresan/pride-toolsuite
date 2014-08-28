@@ -109,9 +109,8 @@ public class Group {
         Group group = (Group) o;
 
         if (Double.compare(group.mass, mass) != 0) return false;
-        if (elements != null ? !elements.equals(group.elements) : group.elements != null) return false;
+        return !(elements != null ? !elements.equals(group.elements) : group.elements != null);
 
-        return true;
     }
 
     @Override

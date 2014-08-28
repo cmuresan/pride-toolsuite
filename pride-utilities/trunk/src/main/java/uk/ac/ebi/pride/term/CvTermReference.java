@@ -13,6 +13,49 @@ import java.util.Collection;
  */
 public enum CvTermReference {
 
+    MS_ANALYSIS_SOFTWARE("MS", "MS:1001456", "Analysis software", "MS:1000531"),
+    MS_SOFTWARE("MS","MS:1000531", "Software", "MS:0000000"),
+    MS_DATABASE("MS", "MS:1001013", "database name", "MS:1001011"),
+    MS_PUBLICATION_DOI("MS", "MS:1001922", "doi", "MS:1000878"),
+
+
+    MS_SEARCH_PARAM_FIXED_MOD("MS", "MS:1002453", "No fixed modifications searched", "MS:1002094"),
+    MS_SEARCH_PARAM_VAR_MOD("MS", "MS:1002454", "No variable modifications searched", "MS:1002094"),
+
+    MS_FDR_PROTEIN("MS","MS:1001447", "prot:FDR threshold", "MS:1002485"),
+    MS_LOCAL_FDR_PROTEIN("MS","MS:1002364", "protein-level local FDR","MS:1001116"),
+    MS_GLOBAL_FDR_PROTEIN("MS","MS:1001214", "protein-level global FDR","MS:1001116"),
+
+    MS_FDR_PSM("MS","MS:1002260","PSM:FDR threshold","MS:1002483"),
+    MS_LOCAL_FDR_PSM("MS","MS:1002351","PSM-level local FDR","MS:1002483"),
+    MS_GLOBAL_FDR_PSM("MS","MS:1002350","PSM-level global FDR","MS:1002483"),
+
+    PRIDE_DECOY_HIT("PRIDE", "PRIDE:0000303", "Decoy hit", null),
+
+    PRIDE_GEL_BASED_EXPERIMENT("PRIDE", "PRIDE:0000305", "Gel-based experiment", null),
+    PRIDE_GEL_IDENTIFIER("PRIDE", "PRIDE:0000304", "Gel identifier", null),
+    PRIDE_GEL_SPOT_IDENTIFIER("PRIDE", "PRIDE:0000300", "Gel spot identifier", null),
+
+    PRIDE_INDISTINGUISHABLE_ACCESSION("PRIDE", "PRIDE:0000098", "Indistinguishable alternative protein accession",null),
+    PRIDE_PROTEIN_NAME("PRIDE", "PRIDE:0000063", "Protein description line", null),
+
+    PRIDE_REFERENCE_DOI("PRIDE", "PRIDE:0000042", "DOI",null),
+    PRIDE_REFERENCE_PUBMED("PRIDE", "PRIDE:0000029", "PubMed", null),
+
+    PRIDE_DOWNSTREAM_FLANKING_SEQUENCE("PRIDE", "PRIDE:0000066", "Downstream flanking sequence", null),
+    PRIDE_UPSTREAM_FLANKING_SEQUENCE("PRIDE", "PRIDE:0000065", "Upstream flanking sequence", null),
+
+    MS_CHARGE_STATE("MS", "MS:1000041", "charge state", null),
+    MS_PRECURSOR_MZ("MS", "MS:1000744", "selected ion m/z", null),
+
+    MS_DECOY_PEPTIDE("MS", "MS:1002217", "decoy peptide", null),
+
+    MS_PSI_MZDATA_FILE("MS", "MS:1000564", "PSI mzData file", null),
+    MS_SPEC_NATIVE_ID_FORMAT("MS", "MS:1000777", "spectrum identifier nativeID format", null),
+
+    MS_FIXED_MOD("MS", "MS:1002453", "No fixed modifications searched", null),
+    MS_VAR_MOD("MS", "MS:1002454", "No variable modifications searched", null),
+
     SCAN_POLARITY("MS", "MS:1000465", "scan polarity", "MS:1000441"),
     NEGATIVE_SCAN("MS", "MS:1000129", "negative scan", "MS:1000441"),
     POSITIVE_SCAN("MS", "MS:1000130", "positive scan", "MS:1000441"),
@@ -44,6 +87,7 @@ public enum CvTermReference {
     CONTACT_NAME("MS", "MS:1000586", "contact name", "MS:1000585"),
     CONTACT_ORG("MS", "MS:1000590", "contact organization", "MS:1000585"),
     CONTACT_EMAIL("MS", "MS:1000589", "contact email", "MS:1000585"),
+    MS_PROTEIN_DESCRIPTION("MS","MS:1001088","protein description", "MS:1001116"),
     CONVERSION_TO_MZML("MS", "MS:1000544", "Conversion to mzML", "MS:1000452"),
     INSTRUMENT_MODEL("MS", "MS:1000031", "instrument model", "MS:1000463"),
     SCAN_WINDOW_LOWER_LIMIT("MS", "MS:1000501", "scan window lower limit", "MS:1000040"),
@@ -54,6 +98,7 @@ public enum CvTermReference {
     PRODUCT_ION_MZ("PRIDE", "PRIDE:0000188", "product ion m/z", "PRIDE:0000187"),
     PRODUCT_ION_MZ_PLGS("Water", "PLGS:00024", "product ion m/z", null),
     MS_PRODUCT_ION_MZ("MS", "MS:1001225", "product ion m/z", "MS:1001221"),
+    MS_NEUTRAL_LOSS("MS","MS:1001524","fragment neutral loss","MS:1001471"),
 
     PRODUCT_ION_INTENSITY("PRIDE", "PRIDE:0000189", "product ion intensity", "PRIDE:0000187"),
     PRODUCT_ION_INTENSITY_PLGS("Water", "PLGS:00025", "product ion intensity", null),
@@ -122,6 +167,8 @@ public enum CvTermReference {
     /*Definition of most important Search engines parameters from PRIDE */
 
     X_CORRELATION("PRIDE", "PRIDE:0000013", "X correlation", "PRIDE:0000049"),
+
+    MS_SEARCH_ENGINE_SPECIFIC_SCORE("MS", "MS:1001153", "search engine specific score", null),
 
     OMSSA_E_VALUE("PRIDE", "PRIDE:0000185", "OMSSA E-value", "PRIDE:0000049"),
     OMSSA_P_VALUE("PRIDE", "PRIDE:0000186", "OMSSA P-value", "PRIDE:0000049"),

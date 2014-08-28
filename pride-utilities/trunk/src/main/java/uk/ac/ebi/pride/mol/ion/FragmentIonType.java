@@ -52,9 +52,8 @@ public class FragmentIonType implements Cloneable {
         FragmentIonType that = (FragmentIonType) o;
 
         if (label != null ? !label.equals(that.label) : that.label != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        return !(name != null ? !name.equals(that.name) : that.name != null);
 
-        return true;
     }
 
     @Override

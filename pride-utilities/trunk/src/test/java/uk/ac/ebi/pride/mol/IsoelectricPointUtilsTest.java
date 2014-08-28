@@ -30,7 +30,7 @@ public class IsoelectricPointUtilsTest {
 
     @Test
     public void testCalculate() throws Exception {
-        String peptideSeq = new String("GGTAVILDIFR");
+        String peptideSeq = "GGTAVILDIFR";
         peptideSeq = peptideSeq.replace("*","");
         peptideSeq = IsoelectricPointUtils.replaceSpecialAA(peptideSeq);
         double pi = bjellpI.calculate(peptideSeq);

@@ -30,6 +30,7 @@ import uk.ac.ebi.pride.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructureCreator;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructureCreatorWorkerThread;
 import uk.ac.ebi.pride.pia.intermediate.prideimpl.PrideImportController;
+import uk.ac.ebi.pride.pia.modeller.PIAModeller;
 import uk.ac.ebi.pride.pia.modeller.fdr.FDRUtilities;
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.modeller.filter.FilterComparator;
@@ -52,40 +53,23 @@ import uk.ac.ebi.pride.pia.modeller.scores.protein.ProteinScoringMultiplicative;
 import uk.ac.ebi.pride.pia.modeller.scores.psm.IntermediatePSMComparator;
 import uk.ac.ebi.pride.term.CvTermReference;
 
-public class ProteinInferenceTest {
+public class ProteinInferenceTestMultipleFiles {
 	
 	/** logger for this class */
-	private static final Logger logger = Logger.getLogger(ProteinInferenceTest.class);
+	private static final Logger logger = Logger.getLogger(ProteinInferenceTestMultipleFiles.class);
 	
-	private File inputFile = null;
+	/** the PIA modeller */
+	private PIAModeller piaModeller;
 	
-	private DataImportController importController = null;
 	
 	@Before
 	public void setUp() throws Exception {
-		//URL url = MzIdentMlControllerImplTest.class.getClassLoader().getResource("small.mzid");
-		//URL url = MzIdentMlControllerImplTest.class.getClassLoader().getResource("55merge_mascot_full.mzid");
-		//URL url = new URL("file:/mnt/data/uniNOBACKUP/PSI/protein_grouping/results/PIA/mascot/Rosetta_peak_list_2a_-_neat.mzid");
-		URL url = ProteinInferenceTest.class.getClassLoader().getResource("report-proteins-report_all-55merge_mascot_full.mzid");
-		//URL url = ProteinInferenceTest.class.getClassLoader().getResource("PRIDE_Exp_Complete_Ac_10885.xml");
-		//URL url = new URL("file:/mnt/data/uniNOBACKUP/PIA/testfiles/report-proteins-Test.mzid");
-		//URL url = new URL("file:/mnt/data/uniNOBACKUP/PIA/testfiles/report-proteins-Joana_10153.mzid");
-		
-		//URL url = new URL("file:/mnt/data/uniNOBACKUP/PIA/pia-pride/comparison/standard-prot-mix/LT20060105_S_18MIX_04-F200892-pia.mzid");
-		//URL url = new URL("file:/mnt/data/uniNOBACKUP/PIA/pia-pride/comparison/yeast-gold/070119-07-000-F200950-pia.mzid");
-		
-		if (url == null) {
-		    throw new IllegalStateException("no file for input found!");
-		}
-		
-		inputFile = new File(url.toURI());
+		piaModeller = new PIAModeller();
 	}
 	
 	@After
 	public void tearDown() throws Exception {
-		if (importController != null) {
-			importController.close();
-		}
+		piaModeller.close();
 	}
 	
 	@Test
@@ -96,13 +80,10 @@ public class ProteinInferenceTest {
 		//
 		int allowedThreads = 4;
 		boolean considerModifications = false;
-		boolean filterPSMsOnImport = false;
 		String fdrScoreAccession = CvScore.PSI_MASCOT_SCORE.getAccession();
 		String peptideScoreAccession = CvScore.PSI_MASCOT_SCORE.getAccession();
 		boolean oboLookup = false;
 		
-		
-		logger.info("using " + inputFile.getAbsolutePath());
 		
 		// ---------------------------------------------------------------------
 		// set up some filters
@@ -124,37 +105,23 @@ public class ProteinInferenceTest {
 		//filters.add(filter);
 		
 		
+		
+		
 		// ---------------------------------------------------------------------
 		// first create the intermediate structure from the data given by the controller
 		//
-        if (filterPSMsOnImport) {
-        	importController = new PrideImportController(inputFile, filters);
-        } else {
-        	importController = new PrideImportController(inputFile);
-        }
-        
-        IntermediateStructureCreator structCreator =
-        		new IntermediateStructureCreator(allowedThreads);
+		piaModeller.addFile("/mnt/data/uniNOBACKUP/PIA/testfiles/55merge/55merge_mascot_full.mzid");
+		piaModeller.addFile("/mnt/data/uniNOBACKUP/PIA/testfiles/55merge/55merge_omssa.mzid");
 		
-		logger.info("start importing data from the controller");
-        importController.addAllSpectrumIdentificationsToStructCreator(structCreator);
-        
-        
-        logger.info("creating intermediate structure with\n\t"
-				+ structCreator.getNrSpectrumIdentifications() + " spectrum identifications\n\t"
-				+ structCreator.getNrPeptides() + " peptides\n\t"
-				+ structCreator.getNrProteins() + " protein accessions");
 		
-		IntermediateStructure intermediateStructure = structCreator.buildIntermediateStructure();
-		// the creator is no longer needed
-		structCreator = null;
+		piaModeller.buildIntermediateStructure();
 		
 		
 		// ---------------------------------------------------------------------
 		// calculate FDR
 		
 		// sort the PSMs by score
-		
+		/*
 		logger.info("sorting PSMs by score");
 		List<IntermediatePeptideSpectrumMatch> psms =
 				new ArrayList<IntermediatePeptideSpectrumMatch>(intermediateStructure.getAllIntermediatePSMs());
@@ -164,12 +131,12 @@ public class ProteinInferenceTest {
 		logger.info("   sorting done");
 		
 		// then calculate the FDR and FDRScore
-		/*
+		
 		PSMAccessionsFilter decoyFilter =
 				new PSMAccessionsFilter(FilterComparator.regex_only, "Rnd.*", false);
 		int nrDecoys = FDRUtilities.markDecoys(psms, decoyFilter);
 		logger.info("   decoys marked (" + nrDecoys + "/" + psms.size() + ")");
-		*/
+		
 		FDRUtilities.calculateFDR(psms, fdrScoreAccession);
 		logger.info("   fdr calculation done");
 		
@@ -177,11 +144,12 @@ public class ProteinInferenceTest {
 		logger.info("   FDRScore calculation done");
 		
 		psms = null;	// this list is no longer needed
-		
+		*/
 		
 		// ---------------------------------------------------------------------
 		// perform the protein inference
 		//
+		/*
 		PeptideScoring pepScoring = 
 				new PeptideScoringUseBestPSM(peptideScoreAccession, oboLookup);
 		ProteinScoring protScoring =
@@ -195,7 +163,7 @@ public class ProteinInferenceTest {
 				proteinInference.calculateInference(considerModifications);
 		
 		logger.info("inferred groups: " + inferenceGroups.size());
-        
+        */
         
 		// ---------------------------------------------------------------------
 		// create the ProteinGroups from the inference groups
@@ -212,6 +180,7 @@ public class ProteinInferenceTest {
 		// ---------------------------------------------------------------------
 		// print out some information
 		//
+		/*
 		for (InferenceProteinGroup group : inferenceGroups) {
 			
 			StringBuilder groupText = new StringBuilder();
@@ -239,7 +208,7 @@ public class ProteinInferenceTest {
 			groupText.append(" (");
 			groupText.append(group.getScore());
 			groupText.append(')');
-			/*
+			///
 			groupText.append('\n');
 			
 			for (IntermediatePeptide peptide : group.getPeptides()) {
@@ -256,10 +225,10 @@ public class ProteinInferenceTest {
 				
 				groupText.append('\n');
 			}
-			*/
+			///
 			logger.info(groupText);
 		}
-		
+		*/
 		/*
         for (ProteinGroup group : proteinGroups) {
 			
@@ -296,7 +265,5 @@ public class ProteinInferenceTest {
 			logger.info(accessions.toString() + psmSB.toString());
 		}
 		*/
-		
-		importController.close();
 	}
 }

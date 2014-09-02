@@ -73,55 +73,6 @@ public class IntermediateStructureCreator {
 	
 	
 	/**
-	 * Adds a single spectrumIdentification to the structure creator. This
-	 * method should only be called by a {@link DataImportController} while
-	 * importing the information.
-	 * 
-	 * @param spectrumIdentification
-	 * @param controller
-	 */
-	/*
-	public void addSpectrumIdentification(SpectrumIdentification spectrumIdentification,
-			DataImportController controller) {
-		String pepSequence = spectrumIdentification.getSequence();
-		
-		IntermediatePeptide peptide = peptides.get(pepSequence);
-		Set<DBSequence> dbSequencesSet = null;
-		
-		if (peptide == null) {
-			peptide = new IntermediatePeptide(pepSequence);
-			peptides.put(pepSequence, peptide);
-			
-			dbSequencesSet = new HashSet<DBSequence>();
-			peptidesToProteinsMapping.put(pepSequence, dbSequencesSet);
-		} else {
-			dbSequencesSet = peptidesToProteinsMapping.get(pepSequence);
-		}
-		if (peptide.addSpectrum(spectrumIdentification)) {
-			nrSpectrumIdentifications++;
-		}
-		
-		for (PeptideEvidence pepEvidence : spectrumIdentification.getPeptideEvidenceList()) {
-			Comparable sequenceID = pepEvidence.getDbSequence().getId();
-			Set<IntermediatePeptide> peptidesSet = null;
-			if (!proteins.containsKey(sequenceID)) {
-				proteins.put(sequenceID, pepEvidence.getDbSequence());
-				
-				peptidesSet = new HashSet<IntermediatePeptide>();
-				proteinsToPeptidesMapping.put(sequenceID, peptidesSet);
-			} else {
-				peptidesSet = proteinsToPeptidesMapping.get(sequenceID);
-			}
-			
-			dbSequencesSet.add(pepEvidence.getDbSequence());
-			
-			peptidesSet.add(peptide);
-		}
-	}
-	*/
-	
-	
-	/**
 	 * returns true, if the peptides map already contains a peptide with the
 	 * given ID
 	 * @param peptideID
@@ -247,6 +198,11 @@ public class IntermediateStructureCreator {
 			return null;
 		}
 		
+        logger.info("creating intermediate structure with\n\t"
+				+ getNrSpectrumIdentifications() + " spectrum identifications\n\t"
+				+ getNrPeptides() + " peptides\n\t"
+				+ getNrProteins() + " protein accessions");
+        
 		// first cluster the data
 		List<Map<Comparable, Set<Comparable>>> clusterList = buildClusterList();
 		

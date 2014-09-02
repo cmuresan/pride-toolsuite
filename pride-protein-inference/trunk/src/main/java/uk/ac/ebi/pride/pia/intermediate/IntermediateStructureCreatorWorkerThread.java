@@ -7,8 +7,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import uk.ac.ebi.pride.data.core.DBSequence;
-
 
 /**
  * This thread builds up the intermediate structure given the peptide to

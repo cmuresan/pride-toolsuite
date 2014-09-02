@@ -1,17 +1,16 @@
 package uk.ac.ebi.pride.pia.intermediate.prideimpl;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.data.controller.impl.ControllerImpl.PrideXmlControllerImpl;
-import uk.ac.ebi.pride.data.core.Peptide;
-import uk.ac.ebi.pride.data.core.Protein;
 import uk.ac.ebi.pride.data.utils.MzIdentMLUtils;
 import uk.ac.ebi.pride.pia.intermediate.DataImportController;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptide;
@@ -20,6 +19,9 @@ import uk.ac.ebi.pride.pia.intermediate.IntermediateProtein;
 import uk.ac.ebi.pride.pia.intermediate.IntermediateStructureCreator;
 import uk.ac.ebi.pride.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.pia.modeller.filter.FilterUtilities;
+import uk.ac.ebi.pride.pia.modeller.scores.CvScore;
+import uk.ac.ebi.pride.pia.modeller.scores.ScoreUtilities;
+import uk.ac.ebi.pride.term.CvTermReference;
 
 
 public class PrideImportController implements DataImportController {
@@ -32,6 +34,9 @@ public class PrideImportController implements DataImportController {
 	
 	/** the applied filters during the import */
 	private List<AbstractFilter> filters;
+	
+	/** the input file name of this controller */
+	private String inputFileName;
 	
 	
 	/**
@@ -96,6 +101,8 @@ public class PrideImportController implements DataImportController {
 	 * @param filters
 	 */
 	private void initialize(File inputFile, InputFileType fileType, List<AbstractFilter> filters) {
+		inputFileName = null;
+		
 		switch (fileType) {
 			case PRIDE_XML:
 				this.controller = new PrideXmlControllerImpl(inputFile);
@@ -107,7 +114,24 @@ public class PrideImportController implements DataImportController {
 				break;
 		}
 		
-		this.filters = (filters == null) ? new ArrayList<AbstractFilter>() : filters;
+		if (this.controller != null) {
+			inputFileName = inputFile.getAbsolutePath();
+			this.filters = (filters == null) ? new ArrayList<AbstractFilter>() : filters;
+			
+			controller.getContentCategories();
+		}
+	}
+	
+	
+	@Override
+	public String getID() {
+		return controller.getUid();
+	}
+	
+	
+	@Override
+	public String getInputFileName() {
+		return inputFileName;
 	}
 	
 	
@@ -119,9 +143,6 @@ public class PrideImportController implements DataImportController {
 	
 	@Override
 	public void addAllSpectrumIdentificationsToStructCreator(IntermediateStructureCreator structCreator) {
-		
-		logger.debug("scores: " + controller.getAvailablePeptideLevelScores());
-		
 		int nrProteins = controller.getNumberOfProteins();
 		logger.info(nrProteins + " proteins to go");
 		

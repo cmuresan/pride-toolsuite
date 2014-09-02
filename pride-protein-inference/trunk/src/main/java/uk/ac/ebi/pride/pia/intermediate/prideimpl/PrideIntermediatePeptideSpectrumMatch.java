@@ -6,7 +6,6 @@ import uk.ac.ebi.pride.data.controller.DataAccessController;
 import uk.ac.ebi.pride.data.core.PeptideEvidence;
 import uk.ac.ebi.pride.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.pia.intermediate.IntermediatePeptideSpectrumMatch;
-import uk.ac.ebi.pride.pia.modeller.filter.psm.PSMScoreFilter;
 import uk.ac.ebi.pride.pia.modeller.scores.CvScore;
 import uk.ac.ebi.pride.term.CvTermReference;
 
@@ -20,7 +19,7 @@ import uk.ac.ebi.pride.term.CvTermReference;
 public class PrideIntermediatePeptideSpectrumMatch implements IntermediatePeptideSpectrumMatch {
 	
 	/** a unique ID (cached on the first accession) */
-	private Comparable id;
+	private String id;
 	
 	/** the used PRIDE dataAccessController */
 	private DataAccessController controller;
@@ -57,7 +56,7 @@ public class PrideIntermediatePeptideSpectrumMatch implements IntermediatePeptid
 	
 	
 	@Override
-	public Comparable getID() {
+	public String getID() {
 		if (id == null) {
 			id = getControllerID() + ":" + getSpectrumIdentification().getId();
 		}
@@ -66,16 +65,8 @@ public class PrideIntermediatePeptideSpectrumMatch implements IntermediatePeptid
 	
 	
 	@Override
-	public Comparable getControllerID() {
+	public String getControllerID() {
 		return controller.getUid();
-	}
-	
-	
-	@Override
-	public Comparable getFileID() {
-		/* need to implement the originating file, if in a collection of PSMs (i.e. if the mzIdentML has multiple SpectrumIdentificationLists) */
-		System.err.println("getFileID is not completely implemented for " + this.getClass().getCanonicalName());
-		return getControllerID();
 	}
 	
 	

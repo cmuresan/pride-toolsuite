@@ -5,6 +5,28 @@
 Download the latest release: [http://www.ebi.ac.uk/pride/resources/tools/inspector/latest/desktop/pride-inspector.zip Download]
 ----
 
+= The PRIDE Toolsuite Project Just moved to [https://github.com/PRIDE-Toolsuite GitHub] =
+
+<font color="#ff0000 size="26"">The PRIDE Toolsuite project has been moved to <strong>[https://github.com/PRIDE-Toolsuite GitHub]</strong> and divided in two main projects [https://github.com/PRIDE-Toolsuite PRIDE Toolsuite] and [https://github.com/PRIDE-Utilities PRIDE Utilities], if you have are interested in new releases and the updated code. The libraries and code were organised in</font>:
+
+<table><tr><td width=600 height=100>
+<strong>PRIDE Toolsuite</strong>
+
+  * [http://github.com/PRIDE-Toolsuite/pride-inspector PRIDE Inspector]
+  * [http://github.com/PRIDE-Toolsuite/inspector-mzgraph-browser PRIDE mzGraph Browser]
+  * [http://github.com/PRIDE-Toolsuite/inspector-quality-chart PRIDE Quality Charts]
+  * [http://github.com/PRIDE-Toolsuite/inspector-swing-utils PRIDE Inspector Swing Utilities]
+   
+<strong>PRIDE Utilities</strong>
+
+  * [http://github.com/PRIDE-Utilities/ms-data-core-api ms-data-core-api]
+  * [http://github.com/PRIDE-Utilities/pride-utilities pride-utilities]
+
+</td><td>[http://github.com/PRIDE-Toolsuite http://pride-toolsuite.googlecode.com/svn/wiki/images/googlecode-to-github.png]</td>
+</tr></table>
+
+----
+
 <table>
   <tr>
     <td width="70%">
